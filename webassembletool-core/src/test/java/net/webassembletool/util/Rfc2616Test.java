@@ -2,6 +2,7 @@ package net.webassembletool.util;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -56,6 +57,16 @@ public class Rfc2616Test extends TestCase {
 			}
 
 			@Override
+			public Collection<String> getHeaders(String name) {
+				String value = getHeader(name);
+				if (value != null) {
+					return Collections.singleton(value);
+				} else {
+					return null;
+				}
+			}
+
+			@Override
 			public Collection<String> getHeaderNames() {
 				return null;
 			}
@@ -100,6 +111,11 @@ public class Rfc2616Test extends TestCase {
 
 			@Override
 			public String getHeader(String name) {
+				return null;
+			}
+
+			@Override
+			public Collection<String> getHeaders(String name) {
 				return null;
 			}
 

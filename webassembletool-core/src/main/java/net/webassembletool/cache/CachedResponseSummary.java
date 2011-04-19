@@ -1,30 +1,30 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.webassembletool.output.Output;
-import net.webassembletool.resource.Resource;
 
 /**
- * A summary of a response, which does not include body content. Can be used to
- * check the validity of a resource before actually getting it.
+ * A summary of a response, which does not include body content. Can be used to check the validity of a resource before
+ * actually getting it.
  * 
  * @author Nicolas Richeton
  * 
  */
-public class CachedResponseSummary extends Resource implements Serializable {
-	private Map<String, Object> headers;
-	private int statusCode;
+public class CachedResponseSummary extends BaseCachedResource {
+	private static final long serialVersionUID = 5229420665779140066L;
 	private Map<String, String> requestHeaders;
 	private boolean responseBody;
 	private String cacheKey;
 	private Date localDate;
-	private String statusMessage;
+
+	public CachedResponseSummary(Map<String, List<String>> headers, int statusCode, String statusMessage) {
+		super(headers, statusCode, statusMessage);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -52,20 +52,9 @@ public class CachedResponseSummary extends Resource implements Serializable {
 		this.cacheKey = cacheKey;
 	}
 
-	public CachedResponseSummary() {
-	}
-
 	@Override
 	public boolean hasResponseBody() {
 		return responseBody;
-	}
-
-	public void setHeaders(Map<String, Object> headers) {
-		this.headers = headers;
-	}
-
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
 	}
 
 	public void setRequestHeaders(Map<String, String> requestHeaders) {
@@ -84,26 +73,6 @@ public class CachedResponseSummary extends Resource implements Serializable {
 	@Override
 	public void render(Output output) throws IOException {
 		throw new IOException("CachedResponseSummary cannot be rendered");
-	}
-
-	@Override
-	public int getStatusCode() {
-		return statusCode;
-	}
-
-	@Override
-	public Collection<String> getHeaderNames() {
-		return headers.keySet();
-	}
-
-	@Override
-	public final String getHeader(String key) {
-		for (Entry<String, Object> entry : headers.entrySet()) {
-			if (key.equalsIgnoreCase(entry.getKey().toString())) {
-				return entry.getValue().toString();
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -127,12 +96,4 @@ public class CachedResponseSummary extends Resource implements Serializable {
 		return cacheKey;
 	}
 
-	@Override
-	public String getStatusMessage() {
-		return statusMessage;
-	}
-
-	public void setStatusMessage(String statusMessage) {
-		this.statusMessage = statusMessage;
-	}
 }

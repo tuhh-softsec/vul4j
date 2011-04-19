@@ -10,10 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Represents the location of a requested resource with all the necessary
- * parameters. When proxyMode is set to true, the resource should not be cached
- * and any cookie or parameter coming from the original request should be
- * forwarded to the target server.
+ * Represents the location of a requested resource with all the necessary parameters. When proxyMode is set to true, the
+ * resource should not be cached and any cookie or parameter coming from the original request should be forwarded to the
+ * target server.
  * 
  * @author Francois-Xavier Bonnet
  */
@@ -48,8 +47,7 @@ public class ResourceContext {
 		this.proxy = proxyMode;
 	}
 
-	public ResourceContext(Driver driver, String relUrl,
-			Map<String, String> parameters, HttpServletRequest originalRequest,
+	public ResourceContext(Driver driver, String relUrl, Map<String, String> parameters, HttpServletRequest originalRequest,
 			HttpServletResponse originalResponse) {
 		this.driver = driver;
 		this.relUrl = relUrl;
@@ -60,17 +58,6 @@ public class ResourceContext {
 		}
 		this.originalRequest = originalRequest;
 		this.originalResponse = originalResponse;
-	}
-
-	@Override
-	public ResourceContext clone() {
-		ResourceContext ret = new ResourceContext(driver, relUrl, parameters,
-				originalRequest, originalResponse);
-		ret.setPreserveHost(preserveHost);
-		ret.setProxy(proxy);
-		ret.setNeededForTransformation(neededForTransformation);
-		ret.setValidators(validators);
-		return ret;
 	}
 
 	public String getRelUrl() {

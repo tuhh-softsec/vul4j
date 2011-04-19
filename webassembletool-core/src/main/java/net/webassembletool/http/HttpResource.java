@@ -19,9 +19,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -142,7 +142,7 @@ public class HttpResource extends Resource {
 			// provider application and remove any jsessionid in the URL
 			location = rewriteLocation(location);
 			location = removeSessionId(location);
-			output.addHeader(HttpHeaders.LOCATION, location);
+			output.setHeader(HttpHeaders.LOCATION, location);
 		}
 		String charset = httpClientResponse.getContentCharset();
 		if (charset != null) {
@@ -266,6 +266,11 @@ public class HttpResource extends Resource {
 	@Override
 	public String getHeader(String name) {
 		return httpClientResponse.getHeader(name);
+	}
+
+	@Override
+	public Collection<String> getHeaders(String name) {
+		return Arrays.asList(httpClientResponse.getHeaders(name));
 	}
 
 	@Override

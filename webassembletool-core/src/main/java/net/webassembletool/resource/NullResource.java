@@ -40,6 +40,11 @@ public class NullResource extends Resource {
 	}
 
 	@Override
+	public Collection<String> getHeaders(String name) {
+		return Collections.emptySet();
+	}
+
+	@Override
 	public String getStatusMessage() {
 		return "Not found";
 	}

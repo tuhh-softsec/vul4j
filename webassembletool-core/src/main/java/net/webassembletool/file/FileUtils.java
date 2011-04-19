@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -21,15 +24,21 @@ class FileUtils {
 	}
 
 	public static HeadersFile loadHeaders(File src) throws IOException {
-		InputStream in = new FileInputStream(src);
+		LineNumberReader in = new LineNumberReader(new InputStreamReader(new FileInputStream(src), "UTF-8"));
 		try {
-			Properties prop = new Properties();
-			prop.load(in);
-
 			HeadersFile result = new HeadersFile();
-			for (Entry<Object, Object> header : prop.entrySet()) {
-				String key = header.getKey().toString();
-				String value = header.getValue().toString();
+
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				if (line.startsWith("#")) {
+					continue;
+				}
+				int idx = line.indexOf('=');
+				if (idx == -1) {
+					continue;
+				}
+				String key = line.substring(0, idx).trim();
+				String value = line.substring(idx + 1);
 				if (StringUtils.isNumeric(key)) {
 					result.setStatusCode(Integer.parseInt(key));
 					result.setStatusMessage(value);
@@ -44,16 +53,17 @@ class FileUtils {
 		}
 	}
 
-	public static void storeHeaders(File dest, HeadersFile headers)
-			throws IOException {
-		OutputStream out = new FileOutputStream(dest);
+	public static void storeHeaders(File dest, HeadersFile headers) throws IOException {
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dest), "UTF-8"));
 		try {
-			Properties prop = new Properties();
-			for (Entry<String, Object> entry : headers.getHeadersMap().entrySet()) {
-				prop.setProperty(entry.getKey(), entry.getValue().toString());
+			out.println("#Headers");
+			out.println("#" + new Date().toString());
+			for (Entry<String, List<String>> entry : headers.getHeadersMap().entrySet()) {
+				for (String value : entry.getValue()) {
+					out.println(entry.getKey() + "=" + value);
+				}
 			}
-			prop.setProperty(Integer.toString(headers.getStatusCode()), headers.getStatusMessage());
-			prop.store(out, "Headers");
+			out.println(Integer.toString(headers.getStatusCode()) + "=" + headers.getStatusMessage());
 		} finally {
 			out.close();
 		}

@@ -9,12 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import net.webassembletool.output.Output;
 
 /**
- * An HTML page or resource (image, stylesheet...) that can be rendered to an
- * HttpServletResponse.<br />
- * A resource can come directly from a proxied request but also from a cache or
- * a file.<br />
- * A resource must be released after using it in order to release open files or
- * network connections.
+ * An HTML page or resource (image, stylesheet...) that can be rendered to an HttpServletResponse.<br />
+ * A resource can come directly from a proxied request but also from a cache or a file.<br />
+ * A resource must be released after using it in order to release open files or network connections.
  * 
  * @author Francois-Xavier Bonnet
  * 
@@ -51,34 +48,32 @@ public abstract class Resource {
 
 	public boolean isError() {
 		int statusCode = getStatusCode();
-		return statusCode != HttpServletResponse.SC_OK
-				&& statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
-				&& statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY
-				&& statusCode != HttpServletResponse.SC_NOT_MODIFIED;
+		return statusCode != HttpServletResponse.SC_OK && statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
+				&& statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY && statusCode != HttpServletResponse.SC_NOT_MODIFIED;
 	}
 
 	/**
-	 * Get resource header.
-	 * <p>
-	 * However it would be better to allow multiple values for single name retrieval.
+	 * Get first resource header value for provided name.
 	 * 
 	 * @param name
 	 *            Header name (not null)
 	 * @return Header value or null
+	 * @see #getHeaders(String)
 	 */
 	public abstract String getHeader(String name);
+
+	/** Returns all available header values for provided name. */
+	public abstract Collection<String> getHeaders(String name);
 
 	/** Returns all available header names found in resource. */
 	public abstract Collection<String> getHeaderNames();
 
 	/**
-	 * Get header of the request which was used to get this resource. This can
-	 * be used to check cache matching especially when the "Vary" header is
-	 * used.
+	 * Get header of the request which was used to get this resource. This can be used to check cache matching
+	 * especially when the "Vary" header is used.
 	 * 
 	 * <p>
-	 * This method is intended to be overridden when saving request header is
-	 * supported by the implementation.
+	 * This method is intended to be overridden when saving request header is supported by the implementation.
 	 * 
 	 * @return Map or null if request header was not saved or found.
 	 */
@@ -88,8 +83,7 @@ public abstract class Resource {
 
 	/**
 	 * 
-	 * Naive implementation of hasResponseBody : return true if responseCode was
-	 * 200.
+	 * Naive implementation of hasResponseBody : return true if responseCode was 200.
 	 * 
 	 * <p>
 	 * This method is intended to be overridden by implementations.
@@ -97,9 +91,9 @@ public abstract class Resource {
 	 */
 	public boolean hasResponseBody() {
 		switch (getStatusCode()) {
-		case HttpServletResponse.SC_OK:
-		case HttpServletResponse.SC_PARTIAL_CONTENT:
-			return true;
+			case HttpServletResponse.SC_OK:
+			case HttpServletResponse.SC_PARTIAL_CONTENT:
+				return true;
 
 		}
 		return false;

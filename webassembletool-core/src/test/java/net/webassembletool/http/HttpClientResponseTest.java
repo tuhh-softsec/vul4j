@@ -108,6 +108,29 @@ public class HttpClientResponseTest extends TestCase {
 		control.verify();
 	}
 
+	public void testGetHeaders() throws IOException {
+		// initial set up
+		StatusLine statusLine = new BasicStatusLine(new ProtocolVersion("p", 1, 2), HttpServletResponse.SC_MOVED_PERMANENTLY,
+				"reason");
+		EasyMock.expect(httpResponse.getStatusLine()).andReturn(statusLine).anyTimes();
+		EasyMock.expect(httpResponse.getEntity()).andReturn(null);
+		// getHeaderNames behaviour
+		Header[] headers = new Header[] { new BasicHeader("h1", "value 1"), new BasicHeader("h1", "value 2"),
+				new BasicHeader("h2", "value 3") };
+		EasyMock.expect(httpResponse.getHeaders("header-name")).andReturn(headers);
+		control.replay();
+
+		tested = new HttpClientResponse(httpResponse, null);
+		String[] actual = tested.getHeaders("header-name");
+
+		assertNotNull(actual);
+		assertEquals(3, actual.length);
+		assertEquals("value 1", actual[0]);
+		assertEquals("value 2", actual[1]);
+		assertEquals("value 3", actual[2]);
+		control.verify();
+	}
+
 	private String[] toArray(Collection<String> src) {
 		String[] result = src.toArray(new String[src.size()]);
 		Arrays.sort(result);

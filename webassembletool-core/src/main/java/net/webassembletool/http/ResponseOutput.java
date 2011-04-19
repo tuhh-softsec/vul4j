@@ -2,6 +2,7 @@ package net.webassembletool.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,19 +46,23 @@ public class ResponseOutput extends Output {
 	 * Copy all the headers to the response
 	 */
 	private void copyHeaders() {
-		for (Entry<String, Object> entry : getHeaders().entrySet()) {
-			response.setHeader(entry.getKey(), entry.getValue().toString());
+		for (Entry<String, List<String>> entry : getHeaders().entrySet()) {
+			List<String> values = entry.getValue();
+			for (String value : values) {
+				response.addHeader(entry.getKey(), value);
+			}
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
-		if (outputStream != null)
+		if (outputStream != null) {
 			try {
 				outputStream.close();
 			} catch (IOException e) {
 				throw new OutputException(e);
 			}
+		}
 	}
 }

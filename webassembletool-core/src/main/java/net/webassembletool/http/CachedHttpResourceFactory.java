@@ -27,14 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CachedHttpResourceFactory implements ResourceFactory {
-	private static final Logger log = LoggerFactory
-			.getLogger(CachedHttpResourceFactory.class);
-	private ResourceFactory httpResourceFactory;
-	private DriverConfiguration config;
+	private static final Logger log = LoggerFactory.getLogger(CachedHttpResourceFactory.class);
+	private final ResourceFactory httpResourceFactory;
+	private final DriverConfiguration config;
 	private final Cache cache;
 
-	public CachedHttpResourceFactory(ResourceFactory httpResourceFactory,
-			DriverConfiguration config) {
+	public CachedHttpResourceFactory(ResourceFactory httpResourceFactory, DriverConfiguration config) {
 		super();
 		this.httpResourceFactory = httpResourceFactory;
 		this.config = config;
@@ -49,28 +47,25 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	}
 
 	public Resource getResource(ResourceContext resourceContext) throws HttpErrorPage {
-		String httpUrl = ResourceUtils
-				.getHttpUrlWithQueryString(resourceContext);
-		
-		ResourceProxyWithContext ret = new ResourceProxyWithContext(); 
+		String httpUrl = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
+
+		ResourceProxyWithContext ret = new ResourceProxyWithContext();
 		ret.setResourceContext(resourceContext);
 		ret.setCache(cache);
 		ret.setHttpUrl(httpUrl);
-		
+
 		try {
 			tryLoadFromCache(ret);
-			if(!ret.isReady()){
+			if (!ret.isReady()) {
 				tryLoadFromHttp(ret);
 			}
-			if(!ret.isReady())
-			{
+			if (!ret.isReady()) {
 				tryLoadFromExpiredCache(ret);
 			}
-			if(!ret.isReady())
-			{
+			if (!ret.isReady()) {
 				tryLoadFromFileSystem(ret);
 			}
-			if(!ret.isReady()){
+			if (!ret.isReady()) {
 				loadWithError(ret);
 			}
 			return ret;
@@ -81,11 +76,11 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 			// must discard the entry inside the cache or the file system
 			// because it is not complete
 			ret.setMemoryOutput(null);
-			
+
 			if (ret.getFileOutput() != null) {
 				ret.getFileOutput().delete();
 			}
-			 throw new ResponseException(httpUrl + " could not be retrieved", t);
+			throw new ResponseException(httpUrl + " could not be retrieved", t);
 		}
 	}
 
@@ -110,10 +105,8 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	private void tryLoadFromFileSystem(ResourceProxyWithContext ret) throws IOException {
 		// Resource could not be loaded neither from HTTP, nor from the
 		// cache, let's try from the file system
-		if (config.getLocalBase() != null
-				&& Rfc2616.isCacheable(ret.getResourceContext())) {
-			ret.setFileResource(ResourceUtils.createFileResource(
-					config.getLocalBase(), ret.getResourceContext()));
+		if (config.getLocalBase() != null && Rfc2616.isCacheable(ret.getResourceContext())) {
+			ret.setFileResource(ResourceUtils.createFileResource(config.getLocalBase(), ret.getResourceContext()));
 			if (!ret.getFileResource().isError()) {
 				// on reinitialise l'output pour ne pas ecraser le fichier
 				// stocke sur le disque
@@ -138,14 +131,11 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 		// Try to load it from HTTP
 		if (config.getBaseURL() != null) {
 			// Prepare a FileOutput to store the result on the file system
-			if (config.isPutInCache()
-					&& Rfc2616.isCacheable(ret.getResourceContext())) {
-				ret.setFileOutput( ResourceUtils.createFileOutput(
-						config.getLocalBase(), ret.getResourceContext()));
+			if (config.isPutInCache() && Rfc2616.isCacheable(ret.getResourceContext())) {
+				ret.setFileOutput(ResourceUtils.createFileOutput(config.getLocalBase(), ret.getResourceContext()));
 			}
 
-			Map<String, String> validators = cache.getValidators(
-					ret.getResourceContext(), ret.getCachedResource());
+			Map<String, String> validators = cache.getValidators(ret.getResourceContext(), ret.getCachedResource());
 			// ResourceContext resourceContext = ret.getResourceContext().clone();
 			ResourceContext resourceContext = ret.getResourceContext();
 			Map<String, String> originalValidators = resourceContext.getValidators();
@@ -155,8 +145,7 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 			} finally {
 				resourceContext.setValidators(originalValidators);
 			}
-			ret.setHttpResource(cache.select(ret.getResourceContext(), ret.getCachedResource(),
-					ret.getHttpResource()));
+			ret.setHttpResource(cache.select(ret.getResourceContext(), ret.getCachedResource(), ret.getHttpResource()));
 
 			// If there is an error, we will try to reuse an old cache entry
 			if (!ret.getHttpResource().isError()) {
@@ -169,30 +158,27 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	private void tryLoadFromCache(ResourceProxyWithContext ret) {
 		if (Rfc2616.isCacheable(ret.getResourceContext())) {
 			// Try to load the resource from cache
-			
+
 			ret.setCachedResource(cache.get(ret.getResourceContext()));
 			boolean needsValidation = true;
 			if (ret.getCachedResource() != null) {
 				needsValidation = false;
 				if (config.getCacheRefreshDelay() <= 0) {
 					// Auto http cache
-					if (Rfc2616.needsValidation(ret.getResourceContext(),
-							ret.getCachedResource())) {
+					if (Rfc2616.needsValidation(ret.getResourceContext(), ret.getCachedResource())) {
 						needsValidation = true;
 					}
 				} else {
 					// Forced expiration delay
 					if (Rfc2616.requiresRefresh(ret.getResourceContext())
-							|| Rfc2616.getAge(ret.getCachedResource()) > config
-									.getCacheRefreshDelay() * 1000L) {
+							|| Rfc2616.getAge(ret.getCachedResource()) > config.getCacheRefreshDelay() * 1000L) {
 						needsValidation = true;
 					}
 				}
 			}
 			if (log.isDebugEnabled()) {
 				String message = "Needs validation=" + needsValidation;
-				message += " cacheRefreshDelay="
-						+ config.getCacheRefreshDelay();
+				message += " cacheRefreshDelay=" + config.getCacheRefreshDelay();
 				if (ret.getCachedResource() != null) {
 					message += " cachedResource=" + ret.getCachedResource();
 				}
@@ -225,107 +211,83 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 		private Cache cache = null;
 		private String httpUrl = null;
 		private boolean ready = false;
-		
 
 		public String getHttpUrl() {
 			return httpUrl;
 		}
 
-
-
 		public void setHttpUrl(String httpUrl) {
 			this.httpUrl = httpUrl;
 		}
-
-
 
 		public boolean isReady() {
 			return ready;
 		}
 
-
-
 		public void setReady(boolean ready) {
 			this.ready = ready;
 		}
 
-
-
 		public CachedResponse getCachedResource() {
 			return cachedResource;
 		}
-		
-		
 
 		public void setProxyResource(Resource resource) {
 			this.resource = resource;
 		}
 
-
-
 		public void setCachedResource(CachedResponse cachedResource) {
 			this.cachedResource = cachedResource;
 		}
-
 
 		public Resource getHttpResource() {
 			return httpResource;
 		}
 
-
 		public void setHttpResource(Resource httpResource) {
 			this.httpResource = httpResource;
 		}
-
 
 		public FileResource getFileResource() {
 			return fileResource;
 		}
 
-
 		public void setFileResource(FileResource fileResource) {
 			this.fileResource = fileResource;
 		}
-
 
 		public void setMemoryOutput(CacheOutput memoryOutput) {
 			this.memoryOutput = memoryOutput;
 		}
 
-
 		public FileOutput getFileOutput() {
 			return fileOutput;
 		}
-
 
 		public void setFileOutput(FileOutput fileOutput) {
 			this.fileOutput = fileOutput;
 		}
 
-
 		public ResourceContext getResourceContext() {
 			return resourceContext;
 		}
-
 
 		public void setResourceContext(ResourceContext resourceContext) {
 			this.resourceContext = resourceContext;
 		}
 
-
 		public void setCache(Cache cache) {
 			this.cache = cache;
 		}
-
 
 		@Override
 		public void render(Output output) throws IOException {
 			MultipleOutput multipleOutput = new MultipleOutput();
 			multipleOutput.addOutput(output);
-			if(null != this.memoryOutput){
+			if (null != this.memoryOutput) {
 				multipleOutput.addOutput(this.memoryOutput);
 			}
-			if(null != this.fileOutput){
+			if (null != this.fileOutput) {
 				multipleOutput.addOutput(this.fileOutput);
 			}
 			resource.render(multipleOutput);
@@ -360,38 +322,51 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 		}
 
 		@Override
+		public Collection<String> getHeaders(String name) {
+			return resource.getHeaders(name);
+		}
+
+		@Override
 		public Collection<String> getHeaderNames() {
 			return resource.getHeaderNames();
 		}
 
+		@Override
 		public boolean isError() {
 			return resource.isError();
 		}
 
+		@Override
 		public int hashCode() {
 			return resource.hashCode();
 		}
 
+		@Override
 		public String getRequestHeader(String name) {
 			return resource.getRequestHeader(name);
 		}
 
+		@Override
 		public boolean hasResponseBody() {
 			return resource.hasResponseBody();
 		}
 
+		@Override
 		public Date getLocalDate() {
 			return resource.getLocalDate();
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			return resource.equals(obj);
 		}
 
+		@Override
 		public String toString() {
 			return resource.toString();
 		}
 
+		@Override
 		public String getStatusMessage() {
 			return resource.getStatusMessage();
 		}

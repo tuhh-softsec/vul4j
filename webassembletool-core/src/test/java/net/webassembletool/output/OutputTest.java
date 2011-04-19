@@ -36,9 +36,8 @@ public class OutputTest extends TestCase {
 
 		Output actual = new MockOutput();
 		tested.copyHeaders(actual);
-		assertEquals("headers are different", 3, actual.getHeaders().size());
-		assertEquals("headers are different", tested.getHeaders(), actual
-				.getHeaders());
+		assertEquals("headers are different", 1, actual.getHeaders().size());
+		assertEquals("headers are different", tested.getHeaders(), actual.getHeaders());
 	}
 
 	public void testWrite() throws UnsupportedEncodingException {
@@ -55,8 +54,7 @@ public class OutputTest extends TestCase {
 			fail("should throw OutputException");
 		} catch (OutputException e) {
 			assertNotNull(e.getCause());
-			assertTrue(
-					"cause should be instance of UnsupportedEncodingException",
+			assertTrue("cause should be instance of UnsupportedEncodingException",
 					e.getCause() instanceof UnsupportedEncodingException);
 		}
 
@@ -72,14 +70,12 @@ public class OutputTest extends TestCase {
 			fail("should throw OutputException");
 		} catch (OutputException e) {
 			assertNotNull(e.getCause());
-			assertTrue("cause should be instance of IOException",
-					e.getCause() instanceof IOException);
+			assertTrue("cause should be instance of IOException", e.getCause() instanceof IOException);
 		}
 	}
 
 	public void testFileOutput() throws Exception {
-		FileOutput fo = new FileOutput(new File("./target/test.txt"), new File(
-				"./target/test.txt.headers"));
+		FileOutput fo = new FileOutput(new File("./target/test.txt"), new File("./target/test.txt.headers"));
 		fo.setStatus(22, "someMessage");
 		fo.addHeader("headerName1", "headerValue1");
 		fo.open();
@@ -88,16 +84,13 @@ public class OutputTest extends TestCase {
 		assertEquals(22, fo.getStatusCode());
 		assertEquals("someMessage", fo.getStatusMessage());
 
-		
-		FileResource fr = new FileResource(new File("./target/test.txt"),
-				new File("./target/test.txt.headers"));
+		FileResource fr = new FileResource(new File("./target/test.txt"), new File("./target/test.txt.headers"));
 		fr.render(fo);
 
 		assertEquals(404, fr.getStatusCode());
 		assertEquals(null, fr.getHeader("name"));
 
 		fr.release();
-		
 
 		fo.close();
 		fo.delete();

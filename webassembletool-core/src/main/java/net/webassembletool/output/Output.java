@@ -3,17 +3,18 @@ package net.webassembletool.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * An Output is designed to collect the response to a successfull HTTP request,
- * typically an HTML page or any other file type with all the headers sent by
- * the server.<br />
+ * An Output is designed to collect the response to a successfull HTTP request, typically an HTML page or any other file
+ * type with all the headers sent by the server.<br />
  * 
- * Output implementations may handle the data as needed : write it to an
- * HttpServletResponse, save it to a File or a database for example.
+ * Output implementations may handle the data as needed : write it to an HttpServletResponse, save it to a File or a
+ * database for example.
  * 
  * @author Francois-Xavier Bonnet
  * 
@@ -26,7 +27,7 @@ public abstract class Output {
 	private String charsetName;
 	private int statusCode;
 	private String statusMessage;
-	private final Map<String, Object> headers = new HashMap<String, Object>();
+	private final Map<String, List<String>> headers = new HashMap<String, List<String>>();
 
 	/**
 	 * Sets the HTTP status code of the response
@@ -57,41 +58,33 @@ public abstract class Output {
 		this.statusMessage = statusMessage;
 	}
 
-	protected final Map<String, Object> getHeaders() {
+	protected final Map<String, List<String>> getHeaders() {
 		return headers;
 	}
 
 	public final String getHeader(String key) {
-		for (Entry<String, Object> entry : headers.entrySet()) {
-			if (key.equalsIgnoreCase(entry.getKey())) {
-				return entry.getValue().toString();
+		String result = null;
+		for (Entry<String, List<String>> entry : headers.entrySet()) {
+			if (key.equalsIgnoreCase(entry.getKey()) && !entry.getValue().isEmpty()) {
+				result = entry.getValue().get(0);
+				break;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	public final void setHeader(String key, String value) {
 		String keyToRemove = null;
-		for (Entry<String, Object> entry : headers.entrySet()) {
-			if (key.equalsIgnoreCase(entry.getKey())) {
-				keyToRemove = entry.getKey();
+		for (String header : headers.keySet()) {
+			if (key.equalsIgnoreCase(header)) {
+				keyToRemove = header;
 				break;
 			}
 		}
 		if (keyToRemove != null) {
 			headers.remove(keyToRemove);
 		}
-		headers.put(key, value);
-	}
-
-	/**
-	 * Copy all headers from this output to the <code>dest</code> Output
-	 * 
-	 * @param dest
-	 *            destination output
-	 */
-	public final void copyHeaders(Output dest) {
-		dest.headers.putAll(headers);
+		addHeader(key, value);
 	}
 
 	/**
@@ -103,7 +96,28 @@ public abstract class Output {
 	 *            The value of the header
 	 */
 	public final void addHeader(String name, String value) {
-		headers.put(name, value);
+		List<String> values = null;
+		for (Entry<String, List<String>> entry : headers.entrySet()) {
+			if (name.equalsIgnoreCase(entry.getKey())) {
+				values = entry.getValue();
+				break;
+			}
+		}
+		if (values == null) {
+			values = new ArrayList<String>();
+			headers.put(name, values);
+		}
+		values.add(value);
+	}
+
+	/**
+	 * Copy all headers from this output to the <code>dest</code> Output
+	 * 
+	 * @param dest
+	 *            destination output
+	 */
+	public final void copyHeaders(Output dest) {
+		dest.headers.putAll(headers);
 	}
 
 	public final String getCharsetName() {
@@ -123,8 +137,7 @@ public abstract class Output {
 
 	/**
 	 * Opens the OutputStreams that may be needed by the OutPut.<br />
-	 * The headers and charset may be ignored if not defined before calling this
-	 * method.<br />
+	 * The headers and charset may be ignored if not defined before calling this method.<br />
 	 * Any opened Output should be closed in order to release the resources.
 	 */
 	public abstract void open();
@@ -146,10 +159,11 @@ public abstract class Output {
 
 	public final void write(String string) {
 		try {
-			if (charsetName != null)
+			if (charsetName != null) {
 				getOutputStream().write(string.getBytes(charsetName));
-			else
+			} else {
 				getOutputStream().write(string.getBytes("ISO-8859-1"));
+			}
 		} catch (UnsupportedEncodingException e) {
 			throw new OutputException(e);
 		} catch (IOException e) {

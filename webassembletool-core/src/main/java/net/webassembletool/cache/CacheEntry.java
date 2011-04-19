@@ -1,6 +1,7 @@
 package net.webassembletool.cache;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,15 +41,13 @@ class CacheEntry implements Serializable {
 	private long lastClean = -1;
 
 	/**
-	 * A list a all responses for this ResourceContext. Only includes
-	 * informations which can be used to decide if a cached response matches to
-	 * a new resource context. On matching, the complete cache value need to be
-	 * retrieved from cached.
+	 * A list a all responses for this ResourceContext. Only includes informations which can be used to decide if a
+	 * cached response matches to a new resource context. On matching, the complete cache value need to be retrieved
+	 * from cached.
 	 * 
 	 * <p>
-	 * Responses described in responseSummaries may have been removed from
-	 * cache. In that case, the retrieve operation fails and the summary is
-	 * removed from this entry.
+	 * Responses described in responseSummaries may have been removed from cache. In that case, the retrieve operation
+	 * fails and the summary is removed from this entry.
 	 * 
 	 */
 	private final List<CachedResponseSummary> responseSummaries = new CopyOnWriteArrayList<CachedResponseSummary>();
@@ -64,13 +63,11 @@ class CacheEntry implements Serializable {
 	}
 
 	/**
-	 * Returns the first matching cache entry for this request, this entry may
-	 * be valid or stale but Etag must match If-None-Match header from the
-	 * request and vary headers must be the same in the request and in the
-	 * original request that caused this entry to get cached.
+	 * Returns the first matching cache entry for this request, this entry may be valid or stale but Etag must match
+	 * If-None-Match header from the request and vary headers must be the same in the request and in the original
+	 * request that caused this entry to get cached.
 	 * <p>
-	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have
-	 * been updated thus need to be persisted.
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have been updated thus need to be persisted.
 	 * 
 	 * @param resourceContext
 	 * @return the first matching cache entry for this request
@@ -106,23 +103,20 @@ class CacheEntry implements Serializable {
 
 	/**
 	 * 
-	 * Returns a cached response from cache. If the response is no longer in
-	 * cache, any reference in CacheEntry is cleaned and entry is marked dirty.
+	 * Returns a cached response from cache. If the response is no longer in cache, any reference in CacheEntry is
+	 * cleaned and entry is marked dirty.
 	 * 
 	 * @param summary
 	 *            Summary of cached response
 	 * @return CachedResponse or null if no longer in cache.
 	 */
-	private CachedResponse getCacheResponseAndClean(
-			CachedResponseSummary summary) {
-		CachedResponse cachedResponse = (CachedResponse) storage.get(summary
-				.getCacheKey());
+	private CachedResponse getCacheResponseAndClean(CachedResponseSummary summary) {
+		CachedResponse cachedResponse = (CachedResponse) storage.get(summary.getCacheKey());
 
 		// Handle case when resource is no longer in cache.
 		if (cachedResponse == null) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Resource " + summary.getCacheKey()
-						+ "is no longer in cache. Removing");
+				LOG.debug("Resource " + summary.getCacheKey() + "is no longer in cache. Removing");
 			}
 			if (responseSummaries.contains(summary)) {
 				responseSummaries.remove(summary);
@@ -134,8 +128,8 @@ class CacheEntry implements Serializable {
 	}
 
 	/**
-	 * Return the first existing CacheResponse. If responses have been removed
-	 * from cache, entry is updated and marked dirty.
+	 * Return the first existing CacheResponse. If responses have been removed from cache, entry is updated and marked
+	 * dirty.
 	 * 
 	 * 
 	 * @return CachedResponse or null
@@ -152,16 +146,14 @@ class CacheEntry implements Serializable {
 	}
 
 	/**
-	 * Computes http entity tags in the incoming request with the ones in all
-	 * the cached response in order to make a conditional request to the server
-	 * with headers "If-Modified-Since" and "If-None-Match"
+	 * Computes http entity tags in the incoming request with the ones in all the cached response in order to make a
+	 * conditional request to the server with headers "If-Modified-Since" and "If-None-Match"
 	 * 
 	 * @param resourceContext
 	 *            The resource we want to get
 	 * @param cachedResponse
 	 *            The current stale version of the resource
-	 * @return The headers "If-Modified-Since" and "If-None-Match" to add to the
-	 *         request
+	 * @return The headers "If-Modified-Since" and "If-None-Match" to add to the request
 	 */
 	public Map<String, String> getValidators(ResourceContext resourceContext, Resource cachedResponse) {
 		HashMap<String, String> result = new HashMap<String, String>();
@@ -169,8 +161,7 @@ class CacheEntry implements Serializable {
 		if (ifNoneMatch != null) {
 			result.put(HttpHeaders.IF_NONE_MATCH, ifNoneMatch);
 		}
-		String ifModifiedSince = getIfModifiedSince(resourceContext,
-				cachedResponse);
+		String ifModifiedSince = getIfModifiedSince(resourceContext, cachedResponse);
 		if (ifModifiedSince != null) {
 			result.put(HttpHeaders.IF_MODIFIED_SINCE, ifModifiedSince);
 		}
@@ -179,10 +170,8 @@ class CacheEntry implements Serializable {
 
 	private String getIfNoneMatch(ResourceContext resourceContext) {
 		Set<String> etags = new HashSet<String>();
-		if (resourceContext.isProxy()
-				&& !resourceContext.isNeededForTransformation()) {
-			String ifNoneMatch = resourceContext.getOriginalRequest()
-					.getHeader(HttpHeaders.IF_NONE_MATCH);
+		if (resourceContext.isProxy() && !resourceContext.isNeededForTransformation()) {
+			String ifNoneMatch = resourceContext.getOriginalRequest().getHeader(HttpHeaders.IF_NONE_MATCH);
 			if (ifNoneMatch != null) {
 				Matcher matcher = ETAG_PATTERN.matcher(ifNoneMatch);
 				while (!matcher.hitEnd()) {
@@ -214,35 +203,27 @@ class CacheEntry implements Serializable {
 	}
 
 	private String getIfModifiedSince(ResourceContext resourceContext, Resource cachedResponse) {
-		String requestedIfModifiedSinceString = resourceContext
-				.getOriginalRequest().getHeader(HttpHeaders.IF_MODIFIED_SINCE);
-		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(
-				resourceContext, HttpHeaders.IF_MODIFIED_SINCE);
+		String requestedIfModifiedSinceString = resourceContext.getOriginalRequest().getHeader(HttpHeaders.IF_MODIFIED_SINCE);
+		Date requestedIfModifiedSinceDate = Rfc2616.getDateHeader(resourceContext, HttpHeaders.IF_MODIFIED_SINCE);
 		String cacheLastModifiedString = null;
 		Date cacheLastModifiedDate = null;
 		if (cachedResponse != null && cachedResponse.hasResponseBody()) {
-			cacheLastModifiedString = cachedResponse
-					.getHeader(HttpHeaders.LAST_MODIFIED);
-			cacheLastModifiedDate = Rfc2616.getDateHeader(cachedResponse,
-					HttpHeaders.LAST_MODIFIED);
+			cacheLastModifiedString = cachedResponse.getHeader(HttpHeaders.LAST_MODIFIED);
+			cacheLastModifiedDate = Rfc2616.getDateHeader(cachedResponse, HttpHeaders.LAST_MODIFIED);
 		}
-		if (resourceContext.isNeededForTransformation()
-				|| requestedIfModifiedSinceDate == null
-				|| (cacheLastModifiedDate != null && cacheLastModifiedDate
-						.after(requestedIfModifiedSinceDate))) {
+		if (resourceContext.isNeededForTransformation() || requestedIfModifiedSinceDate == null
+				|| (cacheLastModifiedDate != null && cacheLastModifiedDate.after(requestedIfModifiedSinceDate))) {
 			return cacheLastModifiedString;
 		}
 		return requestedIfModifiedSinceString;
 	}
 
 	/**
-	 * Selects the response to the request between a cache entry (if return code
-	 * is 304) and the resource sent by the server (if return code is 200).
-	 * Updates the cache.
+	 * Selects the response to the request between a cache entry (if return code is 304) and the resource sent by the
+	 * server (if return code is 200). Updates the cache.
 	 * 
 	 * <p>
-	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have
-	 * been updated thus need to be persisted.
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content may have been updated thus need to be persisted.
 	 * 
 	 * @param resourceContext
 	 * @param cachedResponse
@@ -263,13 +244,11 @@ class CacheEntry implements Serializable {
 				// No e-tag specified by the server
 				// The not modified response is for the if-modified-since we
 				// sent
-				String sentIfModifiedSince = getIfModifiedSince(
-						resourceContext, cachedResponse);
+				String sentIfModifiedSince = getIfModifiedSince(resourceContext, cachedResponse);
 				if (sentIfModifiedSince != null) {
 					if (!resourceContext.isNeededForTransformation()
-							&& sentIfModifiedSince.equals(resourceContext
-									.getOriginalRequest().getHeader(
-											HttpHeaders.IF_MODIFIED_SINCE))) {
+							&& sentIfModifiedSince.equals(resourceContext.getOriginalRequest().getHeader(
+									HttpHeaders.IF_MODIFIED_SINCE))) {
 						result = newResource;
 					} else {
 						result = cachedResponse;
@@ -285,8 +264,7 @@ class CacheEntry implements Serializable {
 					}
 				}
 			} else {
-				if (!resourceContext.isNeededForTransformation()
-						&& Rfc2616.etagMatches(resourceContext, newResource)) {
+				if (!resourceContext.isNeededForTransformation() && Rfc2616.etagMatches(resourceContext, newResource)) {
 					result = newResource;
 				} else {
 					result = findByEtag(etag);
@@ -296,12 +274,10 @@ class CacheEntry implements Serializable {
 				updateHeaders(cachedResponse, newResource);
 			}
 			if (result == null) {
-				LOG.warn("Invalid 304 response, neededForTransformation: "
-						+ resourceContext.isNeededForTransformation()
+				LOG.warn("Invalid 304 response, neededForTransformation: " + resourceContext.isNeededForTransformation()
 						+ " etag: " + etag);
-				throw new HttpErrorPage(
-						HttpServletResponse.SC_PRECONDITION_FAILED,
-						"Invalid 304 response", "Invalid 304 response");
+				throw new HttpErrorPage(HttpServletResponse.SC_PRECONDITION_FAILED, "Invalid 304 response",
+						"Invalid 304 response");
 			}
 		} else {
 			result = newResource;
@@ -318,7 +294,7 @@ class CacheEntry implements Serializable {
 		LOG.debug("findByEtag(" + etag + ")");
 		for (CachedResponseSummary summary : responseSummaries) {
 
-			if (etag.equals(summary.getHeader("Etag"))) {
+			if (etag.equals(Rfc2616.getEtag(summary))) {
 				// seems the right resource. Try to get it from cache
 				CachedResponse cachedResponse = getCacheResponseAndClean(summary);
 				if (cachedResponse != null) {
@@ -332,9 +308,9 @@ class CacheEntry implements Serializable {
 	}
 
 	private void copyHeader(Resource source, CachedResponse dest, String name) {
-		String value = source.getHeader(name);
-		if (value != null) {
-			dest.setHeader(name, value);
+		Collection<String> values = source.getHeaders(name);
+		for (String value : values) {
+			dest.addHeader(name, value);
 		}
 	}
 
@@ -352,19 +328,17 @@ class CacheEntry implements Serializable {
 	/**
 	 * Add a response to the cache.
 	 * <p>
-	 * Be sure to check CacheEntry#isDirty() on return. Entry content will
-	 * probably be updated thus need to be persisted.
+	 * Be sure to check CacheEntry#isDirty() on return. Entry content will probably be updated thus need to be
+	 * persisted.
 	 * 
 	 * @param resourceContext
-	 *            must be the resourceContext used to get resource. Not the one
-	 *            of this cache entry.
+	 *            must be the resourceContext used to get resource. Not the one of this cache entry.
 	 * @param resource
 	 *            the new response.
 	 */
 	public void put(ResourceContext resourceContext, CachedResponse resource) {
 		// Don't put in cache null or not modified responses
-		if (resource != null
-				&& resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
+		if (resource != null && resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
 
 			// Inject headers from the original request.
 			resource.setRequestHeadersFromRequest(resourceContext.getOriginalRequest());
@@ -399,43 +373,46 @@ class CacheEntry implements Serializable {
 			}
 		}
 	}
-	
-	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (lastClean ^ (lastClean >>> 32));
-		result = prime
-				* result
-				+ ((responseSummaries == null) ? 0 : responseSummaries
-						.hashCode());
+		result = prime * result + ((responseSummaries == null) ? 0 : responseSummaries.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CacheEntry other = (CacheEntry) obj;
-		if (lastClean != other.lastClean)
+		if (lastClean != other.lastClean) {
 			return false;
+		}
 		if (responseSummaries == null) {
-			if (other.responseSummaries != null)
+			if (other.responseSummaries != null) {
 				return false;
-		} else if (!responseSummaries.equals(other.responseSummaries))
+			}
+		} else if (!responseSummaries.equals(other.responseSummaries)) {
 			return false;
+		}
 		if (url == null) {
-			if (other.url != null)
+			if (other.url != null) {
 				return false;
-		} else if (!url.equals(other.url))
+			}
+		} else if (!url.equals(other.url)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -466,11 +443,9 @@ class CacheEntry implements Serializable {
 		Map<String, String> vary = Rfc2616.getVary(resourceContext, resource);
 		if (vary != null) {
 			cacheKey.append(" vary={");
-			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
-					.iterator(); iterator.hasNext();) {
+			for (Iterator<Entry<String, String>> iterator = vary.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, String> header = iterator.next();
-				cacheKey.append(header.getKey()).append("=")
-						.append(header.getValue()).append(";");
+				cacheKey.append(header.getKey()).append("=").append(header.getValue()).append(";");
 			}
 			cacheKey.append("}");
 		}

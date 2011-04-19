@@ -154,8 +154,11 @@ public class AggregatorTest extends TestCase {
 		WebResponse resp = webConversation.getResponse(req);
 		assertEquals("Status should be " + HttpServletResponse.SC_MOVED_TEMPORARILY, HttpServletResponse.SC_MOVED_TEMPORARILY,
 				resp.getResponseCode());
+		String[] locations = resp.getHeaderFields("Location");
+		assertNotNull(locations);
+		assertEquals("should be only one location: " + Arrays.asList(locations), 1, locations.length);
 		assertEquals("Redirect header did not match", "http://localhost:8080/webassembletool-app-aggregator/redirected.jsp",
-				resp.getHeaderField("Location"));
+				locations[0]);
 	}
 
 	public void testSpaceInUrl() throws Exception {
