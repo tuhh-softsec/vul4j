@@ -175,13 +175,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             // Impossible
         }
 
-        boolean excludeComments = true;
-        String c14nAlgorithm = canonicalizationMethod.getAlgorithm();
-        if (CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS.equals(c14nAlgorithm)
-            || CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS.equals(c14nAlgorithm)) {
-            excludeComments = false;
-        }
-        DOMSubTreeData subTree = new DOMSubTreeData(localSiElem, excludeComments);
+        DOMSubTreeData subTree = new DOMSubTreeData(localSiElem, true);
 
         try {
             ((DOMCanonicalizationMethod) 
