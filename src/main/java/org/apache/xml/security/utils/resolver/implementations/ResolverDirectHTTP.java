@@ -93,13 +93,13 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
      * Method resolve
      *
      * @param uri
-     * @param BaseURI
+     * @param baseURI
      *
      * @throws ResourceResolverException
      * @return 
-     * $todo$ calculate the correct URI from the attribute and the BaseURI
+     * $todo$ calculate the correct URI from the attribute and the baseURI
      */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
         throws ResourceResolverException {
         try {
             boolean useProxy = false;
@@ -134,9 +134,9 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
             // calculate new URI
             URI uriNew = null;
             try {
-                uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+                uriNew = getNewURI(uri.getNodeValue(), baseURI);
             } catch (URISyntaxException ex) {
-                throw new ResourceResolverException("generic.EmptyMessage", ex, uri, BaseURI);
+                throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
             }
 
             URL url = uriNew.toURL();
@@ -214,9 +214,9 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
             return result;
         } catch (MalformedURLException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, BaseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
         } catch (IOException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, BaseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
         }
     }
 
@@ -224,10 +224,10 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
      * We resolve http URIs <I>without</I> fragment...
      *
      * @param uri
-     * @param BaseURI
+     * @param baseURI
      *  @return true if can be resolved
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
+    public boolean engineCanResolve(Attr uri, String baseURI) {
         if (uri == null) {
             if (log.isDebugEnabled()) {
                 log.debug("quick fail, uri == null");
@@ -249,7 +249,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
         }
 
         if (uriNodeValue.startsWith("http:") ||
-            (BaseURI != null && BaseURI.startsWith("http:") )) {
+            (baseURI != null && baseURI.startsWith("http:") )) {
             if (log.isDebugEnabled()) {
                 log.debug("I state that I can resolve " + uriNodeValue);
             }
@@ -270,12 +270,12 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
         return (String[]) ResolverDirectHTTP.properties.clone();
     }
 
-    private static URI getNewURI(String uri, String BaseURI) throws URISyntaxException {
+    private static URI getNewURI(String uri, String baseURI) throws URISyntaxException {
         URI newUri = null;
-        if (BaseURI == null || "".equals(BaseURI)) {
+        if (baseURI == null || "".equals(baseURI)) {
             newUri = new URI(uri);
         } else {
-            newUri = new URI(BaseURI).resolve(uri);
+            newUri = new URI(baseURI).resolve(uri);
         }
         
         // if the URI contains a fragment, ignore it

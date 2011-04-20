@@ -48,9 +48,9 @@ public class ResolverFragment extends ResourceResolverSpi {
      *
      * @inheritDoc
      * @param uri
-     * @param BaseURI
+     * @param baseURI
      */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) 
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI) 
         throws ResourceResolverException {
 
         String uriNodeValue = uri.getNodeValue();
@@ -81,7 +81,7 @@ public class ResolverFragment extends ResourceResolverSpi {
             if (selectedElem == null) {
                 Object exArgs[] = { id };
                 throw new ResourceResolverException(
-                    "signature.Verification.MissingID", exArgs, uri, BaseURI
+                    "signature.Verification.MissingID", exArgs, uri, baseURI
                 );
             }
             if (log.isDebugEnabled()) {
@@ -95,8 +95,8 @@ public class ResolverFragment extends ResourceResolverSpi {
         result.setExcludeComments(true);
 
         result.setMIMEType("text/xml");
-        if (BaseURI != null && BaseURI.length() > 0) {
-            result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+        if (baseURI != null && baseURI.length() > 0) {
+            result.setSourceURI(baseURI.concat(uri.getNodeValue()));      
         } else {
             result.setSourceURI(uri.getNodeValue());      
         }
@@ -107,9 +107,9 @@ public class ResolverFragment extends ResourceResolverSpi {
      * Method engineCanResolve
      * @inheritDoc
      * @param uri
-     * @param BaseURI
+     * @param baseURI
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
+    public boolean engineCanResolve(Attr uri, String baseURI) {
         if (uri == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Quick fail for null uri");

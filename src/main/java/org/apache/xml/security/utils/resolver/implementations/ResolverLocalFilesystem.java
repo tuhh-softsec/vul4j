@@ -46,11 +46,11 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
         throws ResourceResolverException {
         try {
             // calculate new URI
-            URI uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+            URI uriNew = getNewURI(uri.getNodeValue(), baseURI);
 
             String fileName =
                 ResolverLocalFilesystem.translateUriToFilename(uriNew.toString());
@@ -61,7 +61,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
             return result;
         } catch (Exception e) {
-            throw new ResourceResolverException("generic.EmptyMessage", e, uri, BaseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", e, uri, baseURI);
         }
     }
 
@@ -103,7 +103,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
+    public boolean engineCanResolve(Attr uri, String baseURI) {
         if (uri == null) {
             return false;
         }
@@ -120,7 +120,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
                 log.debug("I was asked whether I can resolve " + uriNodeValue);
             }
 
-            if (uriNodeValue.startsWith("file:") || BaseURI.startsWith("file:")) {
+            if (uriNodeValue.startsWith("file:") || baseURI.startsWith("file:")) {
                 if (log.isDebugEnabled()) {
                     log.debug("I state that I can resolve " + uriNodeValue);
                 }
@@ -135,12 +135,12 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         return false;
     }
 
-    private static URI getNewURI(String uri, String BaseURI) throws URISyntaxException {
+    private static URI getNewURI(String uri, String baseURI) throws URISyntaxException {
         URI newUri = null;
-        if (BaseURI == null || "".equals(BaseURI)) {
+        if (baseURI == null || "".equals(baseURI)) {
             newUri = new URI(uri);
         } else {
-            newUri = new URI(BaseURI).resolve(uri);
+            newUri = new URI(baseURI).resolve(uri);
         }
         
         // if the URI contains a fragment, ignore it

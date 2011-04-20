@@ -651,6 +651,11 @@ public class Init {
                     key, (Class<CanonicalizerSpi>)defaultC14nAlgorithms.get(key)
                 );
             }
+            
+            //
+            // Register the default resolvers
+            //
+            ResourceResolver.registerDefaultResolvers();
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();

@@ -350,7 +350,7 @@
       <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverFragment"
                 DESCRIPTION="A simple resolver for requests of same-document URIs" />
       <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverXPointer"
-                DESCRIPTION="A simple resolver for requests of XPointer fragents" />
+                DESCRIPTION="A simple resolver for requests of XPointer fragments" />
    </ResourceResolvers>
    <KeyResolver>
       <!-- This section contains a list of KeyResolvers that are available in

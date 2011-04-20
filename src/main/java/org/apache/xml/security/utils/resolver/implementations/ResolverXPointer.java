@@ -56,7 +56,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
         throws ResourceResolverException {
 
         Node resultNode = null;
@@ -73,7 +73,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                 Object exArgs[] = { id };
 
                 throw new ResourceResolverException(
-                    "signature.Verification.MissingID", exArgs, uri, BaseURI
+                    "signature.Verification.MissingID", exArgs, uri, baseURI
                 );
             }
         }
@@ -81,8 +81,8 @@ public class ResolverXPointer extends ResourceResolverSpi {
         XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
         result.setMIMEType("text/xml");
-        if (BaseURI != null && BaseURI.length() > 0) {
-            result.setSourceURI(BaseURI.concat(uri.getNodeValue()));      
+        if (baseURI != null && baseURI.length() > 0) {
+            result.setSourceURI(baseURI.concat(uri.getNodeValue()));      
         } else {
             result.setSourceURI(uri.getNodeValue());      
         }
@@ -93,7 +93,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
+    public boolean engineCanResolve(Attr uri, String baseURI) {
         if (uri == null) {
             return false;
         }

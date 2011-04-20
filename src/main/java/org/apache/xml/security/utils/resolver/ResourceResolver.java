@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
+import org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem;
+import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.w3c.dom.Attr;
 
 /**
@@ -34,12 +38,22 @@ public class ResourceResolver {
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(ResourceResolver.class);
-
+    
     /** these are the system-wide resolvers */
-    private static List<ResourceResolver> resolverVector = new ArrayList<ResourceResolver>(10);
-
-    /** Field transformSpi */
-    protected ResourceResolverSpi resolverSpi = null;
+    private static List<ResourceResolver> resolverList = new ArrayList<ResourceResolver>();
+    
+    private static List<Class<? extends ResourceResolverSpi>> defaultResolverList = 
+        new ArrayList<Class<? extends ResourceResolverSpi>>();
+    
+    static {
+        defaultResolverList.add(ResolverFragment.class);
+        defaultResolverList.add(ResolverLocalFilesystem.class);
+        defaultResolverList.add(ResolverXPointer.class);
+        defaultResolverList.add(ResolverDirectHTTP.class);
+    }
+    
+    /** Field resolverSpi */
+    private final ResourceResolverSpi resolverSpi;
 
     /**
      * Constructor ResourceResolver
@@ -49,10 +63,9 @@ public class ResourceResolver {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private ResourceResolver(String className)
-        throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        this.resolverSpi =
-            (ResourceResolverSpi) Class.forName(className).newInstance();
+    private ResourceResolver(Class<? extends ResourceResolverSpi> className)
+        throws IllegalAccessException, InstantiationException {
+        this.resolverSpi = className.newInstance();
     }
 
     /**
@@ -73,38 +86,34 @@ public class ResourceResolver {
      *
      * @throws ResourceResolverException
      */
-    public synchronized static final ResourceResolver getInstance(Attr uri, String baseURI)
+    public static final ResourceResolver getInstance(Attr uri, String baseURI)
         throws ResourceResolverException {
-        for (int i = 0; i < resolverVector.size(); i++) {
-            ResourceResolver resolver = resolverVector.get(i);
-            ResourceResolver resolverTmp = null;
-            
-            if (resolver.resolverSpi.engineIsThreadSafe()) {
-                resolverTmp = resolver;
-            } else {
-                try {
-                    resolverTmp = 
-                        new ResourceResolver(
-                            (ResourceResolverSpi)resolver.resolverSpi.getClass().newInstance()
-                        );
-                } catch (InstantiationException e) {
-                    throw new ResourceResolverException("", e, uri, baseURI);
-                } catch (IllegalAccessException e) {
-                    throw new ResourceResolverException("", e, uri, baseURI);			
+        synchronized (resolverList) {
+            for (ResourceResolver resolver : resolverList) {
+                ResourceResolver resolverTmp = resolver;
+                if (!resolver.resolverSpi.engineIsThreadSafe()) {
+                    try {
+                        resolverTmp = 
+                            new ResourceResolver(resolver.resolverSpi.getClass().newInstance());
+                    } catch (InstantiationException e) {
+                        throw new ResourceResolverException("", e, uri, baseURI);
+                    } catch (IllegalAccessException e) {
+                        throw new ResourceResolverException("", e, uri, baseURI);			
+                    }
+                }
+    
+                if (log.isDebugEnabled()) {
+                    log.debug(
+                        "check resolvability by class " + resolverTmp.getClass().getName()
+                    );
+                }
+    
+                if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
+                    return resolverTmp;
                 }
             }
-
-            if (log.isDebugEnabled()) {
-                log.debug(
-                    "check resolvability by class " + resolver.resolverSpi.getClass().getName()
-                );
-            }
-
-            if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
-                return resolverTmp;
-            }
         }
-
+        
         Object exArgs[] = { ((uri != null) ? uri.getNodeValue() : "null"), baseURI };
 
         throw new ResourceResolverException("utils.resolver.noClass", exArgs, uri, baseURI);
@@ -120,7 +129,7 @@ public class ResourceResolver {
      *
      * @throws ResourceResolverException
      */
-    public static final ResourceResolver getInstance(
+    public static ResourceResolver getInstance(
         Attr uri, String baseURI, List<ResourceResolver> individualResolvers
     ) throws ResourceResolverException {
         if (log.isDebugEnabled()) {
@@ -136,8 +145,8 @@ public class ResourceResolver {
                 ResourceResolver resolver = individualResolvers.get(i);
 
                 if (resolver != null) {
-                    String currentClass = resolver.resolverSpi.getClass().getName();
                     if (log.isDebugEnabled()) {
+                        String currentClass = resolver.resolverSpi.getClass().getName();
                         log.debug("check resolvability by class " + currentClass);
                     }
 
@@ -157,8 +166,17 @@ public class ResourceResolver {
      *
      * @param className the name of the ResourceResolverSpi class to be registered
      */
+    @SuppressWarnings("unchecked")
     public static void register(String className) {
-        register(className, false);
+        try {
+            Class<ResourceResolverSpi> resourceResolverClass = 
+                (Class<ResourceResolverSpi>) Class.forName(className);
+            register(resourceResolverClass, false);
+        } catch (NoClassDefFoundError e) {
+            log.warn("Error loading resolver " + className + " disabling it");
+        } catch (ClassNotFoundException e) {
+            log.warn("Error loading resolver " + className + " disabling it");
+        }
     }
 
     /**
@@ -167,42 +185,56 @@ public class ResourceResolver {
      *
      * @param className the name of the ResourceResolverSpi class to be registered
      */
+    @SuppressWarnings("unchecked")
     public static void registerAtStart(String className) {
-        register(className, true);
+        try {
+            Class<ResourceResolverSpi> resourceResolverClass = 
+                (Class<ResourceResolverSpi>) Class.forName(className);
+            register(resourceResolverClass, true);
+        } catch (NoClassDefFoundError e) {
+            log.warn("Error loading resolver " + className + " disabling it");
+        } catch (ClassNotFoundException e) {
+            log.warn("Error loading resolver " + className + " disabling it");
+        }
     }
 
-    private synchronized static void register(String className, boolean start) {
+    /**
+     * Registers a ResourceResolverSpi class. This method logs a warning if the class 
+     * cannot be registered.
+     * @param className
+     * @param start
+     */
+    public static void register(Class<ResourceResolverSpi> className, boolean start) {
         try {
             ResourceResolver resolver = new ResourceResolver(className);
-            if (start) {
-                resolverVector.add(0, resolver);
-            } else {	       
-                resolverVector.add(resolver);
+            synchronized(resolverList) {
+                if (start) {
+                    resolverList.add(0, resolver);
+                } else {	       
+                    resolverList.add(resolver);
+                }
             }
             if (log.isDebugEnabled()) {
                 log.debug("Registered resolver: " + className);
             }
         } catch (Exception e) {
-            log.warn("Error loading resolver " + className +" disabling it");
-        } catch (NoClassDefFoundError e) {
-            log.warn("Error loading resolver " + className +" disabling it");
+            log.warn("Error loading resolver " + className + " disabling it");
         }
     }
-
+    
     /**
-     * Method resolveStatic
-     *
-     * @param uri
-     * @param baseURI
-     * @return the resource
-     *
-     * @throws ResourceResolverException
+     * Register the default ResourceResolvers
      */
-    public static XMLSignatureInput resolveStatic(Attr uri, String baseURI)
-        throws ResourceResolverException {
-        ResourceResolver myResolver = ResourceResolver.getInstance(uri, baseURI);
-
-        return myResolver.resolve(uri, baseURI);
+    public static void registerDefaultResolvers() {
+        synchronized(resolverList) {
+            for (Class<? extends ResourceResolverSpi> defaultResolverClass : defaultResolverList) {
+                try {
+                    resolverList.add(new ResourceResolver(defaultResolverClass));
+                } catch (Exception e) {
+                    log.warn("Error loading resolver " + defaultResolverClass + " disabling it");
+                }
+            }
+        }
     }
 
     /**
@@ -216,7 +248,7 @@ public class ResourceResolver {
      */
     public XMLSignatureInput resolve(Attr uri, String baseURI)
         throws ResourceResolverException {
-        return this.resolverSpi.engineResolve(uri, baseURI);
+        return resolverSpi.engineResolve(uri, baseURI);
     }
 
     /**
@@ -226,7 +258,7 @@ public class ResourceResolver {
      * @param value
      */
     public void setProperty(String key, String value) {
-        this.resolverSpi.engineSetProperty(key, value);
+        resolverSpi.engineSetProperty(key, value);
     }
 
     /**
@@ -236,7 +268,7 @@ public class ResourceResolver {
      * @return the value of the property
      */
     public String getProperty(String key) {
-        return this.resolverSpi.engineGetProperty(key);
+        return resolverSpi.engineGetProperty(key);
     }
 
     /**
@@ -245,7 +277,7 @@ public class ResourceResolver {
      * @param properties
      */
     public void addProperties(Map<String, String> properties) {
-        this.resolverSpi.engineAddProperies(properties);
+        resolverSpi.engineAddProperies(properties);
     }
 
     /**
@@ -254,7 +286,7 @@ public class ResourceResolver {
      * @return all property keys.
      */
     public String[] getPropertyKeys() {
-        return this.resolverSpi.engineGetPropertyKeys();
+        return resolverSpi.engineGetPropertyKeys();
     }
 
     /**
@@ -264,7 +296,7 @@ public class ResourceResolver {
      * @return true if the resolver understands the property
      */
     public boolean understandsProperty(String propertyToTest) {
-        return this.resolverSpi.understandsProperty(propertyToTest);
+        return resolverSpi.understandsProperty(propertyToTest);
     }
 
     /**
@@ -275,6 +307,6 @@ public class ResourceResolver {
      * @return true if it can resolve the uri
      */
     private boolean canResolve(Attr uri, String baseURI) {
-        return this.resolverSpi.engineCanResolve(uri, baseURI);
+        return resolverSpi.engineCanResolve(uri, baseURI);
     }
 }

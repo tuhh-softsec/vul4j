@@ -55,14 +55,14 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     }
 
     /** @inheritDoc */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) {
+    public XMLSignatureInput engineResolve(Attr uri, String baseURI) {
         return this.input;
     }
 
     /**    
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
+    public boolean engineCanResolve(Attr uri, String baseURI) {
         if (uri == null) {
             return true;
         }
