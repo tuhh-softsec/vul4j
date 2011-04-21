@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
  * @author Stanislav Bernatskyi
  */
 public class DriverFactory {
-	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(DriverFactory.class);
 
 	private static final String DEFAULT_INSTANCE = "default";
 	private static final Map<String, Driver> INSTANCIES = new HashMap<String, Driver>();
@@ -33,21 +34,42 @@ public class DriverFactory {
 
 	/** Loads all instancies according to default configuration file */
 	public final static void configure() {
-		InputStream inputStream = Driver.class.getResourceAsStream("driver.properties");
+		InputStream inputStream = Driver.class
+				.getResourceAsStream("driver.properties");
+
+		// load driver-ext.properties if exists
+
+		InputStream extInputStream = DriverFactory.class.getClassLoader()
+				.getResourceAsStream("driver-ext.properties");
+
 		try {
+			Properties merged = new Properties();
 			if (inputStream != null) {
 				Properties props = new Properties();
 				props.load(inputStream);
-				configure(props);
+				merged.putAll(props);
 			}
+
+			if (extInputStream != null) {
+				Properties extProps = new Properties();
+				extProps.load(extInputStream);
+				merged.putAll(extProps);
+			}
+
+			configure(merged);
 		} catch (IOException e) {
-			ConfigurationException ce = new ConfigurationException("Error loading configuration", e);
+			ConfigurationException ce = new ConfigurationException(
+					"Error loading configuration", e);
 			LOG.error(ce.getMessage(), ce);
 			throw ce;
 		} finally {
 			try {
 				if (inputStream != null) {
 					inputStream.close();
+				}
+
+				if (extInputStream != null) {
+					extInputStream.close();
 				}
 			} catch (IOException e) {
 				LOG.error("failed to close stream", e);
@@ -63,7 +85,8 @@ public class DriverFactory {
 	 */
 	public final static void configure(Properties props) {
 		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
-		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
+		for (Enumeration<?> enumeration = props.propertyNames(); enumeration
+				.hasMoreElements();) {
 			String propertyName = (String) enumeration.nextElement();
 			String prefix;
 			String name;
@@ -90,7 +113,10 @@ public class DriverFactory {
 		}
 	}
 
-	/** Registers new {@linkplain Driver} under provided name with specified properties. */
+	/**
+	 * Registers new {@linkplain Driver} under provided name with specified
+	 * properties.
+	 */
 	public static void configure(String name, Properties props) {
 		String effectiveName = name;
 		if (effectiveName == null) {
@@ -128,12 +154,14 @@ public class DriverFactory {
 		}
 		synchronized (INSTANCIES) {
 			if (INSTANCIES.isEmpty()) {
-				throw new ConfigurationException("Driver has not been configured and driver.properties file was not found");
+				throw new ConfigurationException(
+						"Driver has not been configured and driver.properties file was not found");
 			}
 			Driver instance = INSTANCIES.get(effectiveInstanceName);
 			if (instance == null) {
-				ConfigurationException e = new ConfigurationException("No configuration properties found for factory : "
-						+ effectiveInstanceName);
+				ConfigurationException e = new ConfigurationException(
+						"No configuration properties found for factory : "
+								+ effectiveInstanceName);
 				LOG.error(e.getMessage(), e);
 				throw e;
 			}
