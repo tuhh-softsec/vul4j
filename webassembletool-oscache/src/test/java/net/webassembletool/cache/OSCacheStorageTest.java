@@ -1,7 +1,10 @@
 package net.webassembletool.cache;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.Vector;
@@ -66,7 +69,7 @@ public class OSCacheStorageTest extends TestCase{
 		assertEquals(cachedResponse, newCachedResponse);
 		
 		byte[] byteArray = "test".getBytes("utf-8");
-		Map<String, Object> headers = new HashMap<String, Object>();
+		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Date", "Wed, 02 Mar 2011 12:30:03 GMT");
 		headers.put("Server", "Apache/2.2.12 (Ubuntu)");
 		headers.put("Set-Cookie", "sdnsessionhash=5b55e10d5184470e607e0f0001781f77; path=/; HttpOnly");
@@ -81,14 +84,22 @@ public class OSCacheStorageTest extends TestCase{
 		int statusCode = 200;
 		String statusMessage = "OK";
 		
-		cachedResponse = new CachedResponse(byteArray, "utf-8", headers, statusCode, statusMessage);
+		cachedResponse = new CachedResponse(byteArray, "utf-8", createHeaders(headers), statusCode, statusMessage);
 		key = UUID.randomUUID().toString();
 		cache.put(key, cachedResponse);
 		newCachedResponse = cache.get(key, CachedResponse.class);
 		
 		assertEquals(cachedResponse, newCachedResponse);
 	}
-	
+
+	private Map<String, List<String>> createHeaders(Map<String, String> src) {
+		Map<String, List<String>> result = new HashMap<String, List<String>>(src.size());
+		for (Entry<String, String> entry : src.entrySet()) {
+			result.put(entry.getKey(), Collections.singletonList(entry.getValue()));
+		}
+		return result;
+	}
+
 	public void testCachingCacheEntry() throws Exception{
 		CacheStorage cache = getCache();
 		String url = "http://google.com";
@@ -96,7 +107,7 @@ public class OSCacheStorageTest extends TestCase{
 		String key = UUID.randomUUID().toString();
 		
 		byte[] byteArray = "test".getBytes("utf-8");
-		Map<String, Object> headers = new HashMap<String, Object>();
+		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Date", "Wed, 02 Mar 2011 12:30:03 GMT");
 		headers.put("Server", "Apache/2.2.12 (Ubuntu)");
 		headers.put("Set-Cookie", "sdnsessionhash=5b55e10d5184470e607e0f0001781f77; path=/; HttpOnly");
@@ -111,7 +122,7 @@ public class OSCacheStorageTest extends TestCase{
 		int statusCode = 200;
 		String statusMessage = "OK";
 		
-		CachedResponse cachedResponse = new CachedResponse(byteArray, "utf-8", headers, statusCode, statusMessage);
+		CachedResponse cachedResponse = new CachedResponse(byteArray, "utf-8", createHeaders(headers), statusCode, statusMessage);
 		
 		HttpServletRequest originalRequest = EasyMock.createMock(HttpServletRequest.class);
 		HttpServletResponse originalResponse = EasyMock.createMock(HttpServletResponse.class);
@@ -127,7 +138,7 @@ public class OSCacheStorageTest extends TestCase{
 		requestHeaders.put("Connection", "keep-alive");
 		requestHeaders.put("Cache-Control", "max-age=0");
 		
-		EasyMock.expect(originalRequest.getHeaderNames()).andReturn(new Vector(requestHeaders.keySet()).elements()).anyTimes();
+		EasyMock.expect(originalRequest.getHeaderNames()).andReturn(Collections.enumeration(requestHeaders.keySet())).anyTimes();
 		EasyMock.expect(originalRequest.getHeader((String)EasyMock.anyObject())).andAnswer(new IAnswer<String>() {
 
 			public String answer() throws Throwable {
