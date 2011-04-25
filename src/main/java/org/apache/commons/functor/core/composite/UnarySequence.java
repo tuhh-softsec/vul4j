@@ -52,24 +52,35 @@ public class UnarySequence<A> implements UnaryProcedure<A>, Serializable {
      * Create a new UnarySequence.
      */
     public UnarySequence() {
+        super();
     }
 
     /**
-     * Create a new UnarySequence.
-     * @param p UnaryProcedure to add
+     * Create a new UnarySequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public UnarySequence(UnaryProcedure<? super A> p) {
-        then(p);
+    public UnarySequence(UnaryProcedure<? super A>... procedures) {
+        this();
+        if (procedures != null) {
+            for (UnaryProcedure<? super A> p : procedures) {
+                then(p);
+            }
+        }
     }
 
     /**
-     * Create a new UnarySequence.
-     * @param p UnaryProcedure to add
-     * @param q UnaryProcedure to add
+     * Create a new UnarySequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public UnarySequence(UnaryProcedure<? super A> p, UnaryProcedure<? super A> q) {
-        then(p);
-        then(q);
+    public UnarySequence(Iterable<UnaryProcedure<? super A>> procedures) {
+        this();
+        if (procedures != null) {
+            for (UnaryProcedure<? super A> p : procedures) {
+                then(p);
+            }
+        }
     }
 
     // modifiers

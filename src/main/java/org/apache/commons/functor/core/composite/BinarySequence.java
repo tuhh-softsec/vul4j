@@ -52,24 +52,35 @@ public class BinarySequence<L, R> implements BinaryProcedure<L, R>, Serializable
      * Create a new BinarySequence.
      */
     public BinarySequence() {
+        super();
     }
 
     /**
-     * Create a new BinarySequence.
-     * @param p BinaryProcedure to add
+     * Create a new BinarySequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public BinarySequence(BinaryProcedure<? super L, ? super R> p) {
-        then(p);
+    public BinarySequence(BinaryProcedure<? super L, ? super R>... procedures) {
+        this();
+        if (procedures != null) {
+            for (BinaryProcedure<? super L, ? super R> p : procedures) {
+                then(p);
+            }
+        }
     }
 
     /**
-     * Create a new BinarySequence.
-     * @param p BinaryProcedure to add
-     * @param q BinaryProcedure to add
+     * Create a new BinarySequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public BinarySequence(BinaryProcedure<? super L, ? super R> p, BinaryProcedure<? super L, ? super R> q) {
-        then(p);
-        then(q);
+    public BinarySequence(Iterable<BinaryProcedure<? super L, ? super R>> procedures) {
+        this();
+        if (procedures != null) {
+            for (BinaryProcedure<? super L, ? super R> p : procedures) {
+                then(p);
+            }
+        }
     }
 
     /**

@@ -52,24 +52,35 @@ public class Sequence implements Procedure, Serializable {
      * Create a new Sequence.
      */
     public Sequence() {
+        super();
     }
 
     /**
-     * Create a new Sequence.
-     * @param p Procedure to add
+     * Create a new Sequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public Sequence(Procedure p) {
-        then(p);
+    public Sequence(Procedure... procedures) {
+        this();
+        if (procedures != null) {
+            for (Procedure p : procedures) {
+                then(p);
+            }
+        }
     }
 
     /**
-     * Create a new Sequence.
-     * @param p Procedure to add
-     * @param q Procedure to add
+     * Create a new Sequence instance.
+     *
+     * @param procedures to run sequentially
      */
-    public Sequence(Procedure p, Procedure q) {
-        then(p);
-        then(q);
+    public Sequence(Iterable<Procedure> procedures) {
+        this();
+        if (procedures != null) {
+            for (Procedure p : procedures) {
+                then(p);
+            }
+        }
     }
 
     // modifiers
