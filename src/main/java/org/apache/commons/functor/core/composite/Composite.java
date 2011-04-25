@@ -31,7 +31,12 @@ public final class Composite {
     // constructor - for beanish apis
     // ------------------------------------------------------------------------
     /**
-     * Create a new Composite.
+     * <p>{@code Composite} instances should NOT be constructed in
+     * standard programming. Instead, the methods of the class should be invoked
+     * statically.</p>
+     *
+     * <p>This constructor is public to permit tools that require a JavaBean
+     * instance to operate.</p>
      */
     public Composite() { }
 
