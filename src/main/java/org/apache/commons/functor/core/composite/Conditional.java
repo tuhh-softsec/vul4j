@@ -37,7 +37,12 @@ public final class Conditional {
     // ------------------------------------------------------------------------
 
     /**
-     * Create a new Conditional.
+     * <p>{@code Conditional} instances should NOT be constructed in
+     * standard programming. Instead, the methods of the class should be invoked
+     * statically.</p>
+     *
+     * <p>This constructor is public to permit tools that require a JavaBean
+     * instance to operate.</p>
      */
     public Conditional() { }
 
