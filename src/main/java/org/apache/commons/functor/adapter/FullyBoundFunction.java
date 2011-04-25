@@ -40,11 +40,11 @@ import org.apache.commons.functor.Function;
  */
 public final class FullyBoundFunction<T> implements Function<T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<Object, Object, ? extends T> function;
-    /** The left parameter to pass to that function. */
-    private Object left;
-    /** The right parameter to pass to that function. */
-    private Object right;
+    private final BinaryFunction<Object, Object, ? extends T> function;
+    /** The left parameter to pass to {@code function}. */
+    private final Object left;
+    /** The right parameter to pass to {@code function}. */
+    private final Object right;
 
     /**
      * Create a new FullyBoundFunction.

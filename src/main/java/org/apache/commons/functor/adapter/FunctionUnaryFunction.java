@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class FunctionUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link Function Function} I'm wrapping. */
-    private Function<? extends T> function;
+    private final Function<? extends T> function;
 
     /**
      * Create a new FunctionUnaryFunction.

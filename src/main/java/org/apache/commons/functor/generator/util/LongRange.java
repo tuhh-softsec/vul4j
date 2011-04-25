@@ -29,9 +29,9 @@ public final class LongRange extends BaseGenerator<Long> {
     // attributes
     //---------------------------------------------------------------
 
-    private long from;
-    private long to;
-    private long step;
+    private final long from;
+    private final long to;
+    private final long step;
 
     // constructors
     //---------------------------------------------------------------

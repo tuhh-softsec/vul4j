@@ -27,7 +27,7 @@ import org.apache.commons.functor.core.composite.ConditionalUnaryProcedure;
  * @version $Revision$ $Date$
  */
 public class FilteredGenerator<E> extends BaseGenerator<E> {
-    private UnaryPredicate<? super E> pred;
+    private final UnaryPredicate<? super E> pred;
 
     /**
      * Create a new FilteredGenerator.

@@ -40,7 +40,7 @@ abstract class BaseBinaryPredicateList<L, R> implements BinaryPredicate<L, R>, S
 
     // attributes
     // ------------------------------------------------------------------------
-    private List<BinaryPredicate<? super L, ? super R>> list = new ArrayList<BinaryPredicate<? super L, ? super R>>();
+    private final List<BinaryPredicate<? super L, ? super R>> list = new ArrayList<BinaryPredicate<? super L, ? super R>>();
 
     // constructor
     // ------------------------------------------------------------------------

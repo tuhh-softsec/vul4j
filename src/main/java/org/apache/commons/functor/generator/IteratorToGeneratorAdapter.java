@@ -30,7 +30,7 @@ public final class IteratorToGeneratorAdapter<E> extends BaseGenerator<E> {
     // instance variables
     //-----------------------------------------------------
 
-    private Iterator<? extends E> iter = null;
+    private final Iterator<? extends E> iter;
 
     // constructors
     //-----------------------------------------------------

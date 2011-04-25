@@ -39,7 +39,7 @@ import org.apache.commons.functor.Procedure;
  */
 public final class FunctionProcedure implements Procedure, Serializable {
     /** The {@link Function Function} I'm wrapping. */
-    private Function<?> function;
+    private final Function<?> function;
 
     /**
      * Create an {@link Procedure Procedure} wrapping

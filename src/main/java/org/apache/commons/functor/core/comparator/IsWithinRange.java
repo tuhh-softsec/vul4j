@@ -37,9 +37,9 @@ public class IsWithinRange<A extends Comparable<A>> implements UnaryPredicate<A>
      ***************************************************/
 
     /** The minimum value of the range. */
-    private A min = null;
+    private final A min;
     /** The maximum value of the range. */
-    private A max = null;
+    private final A max;
 
     /***************************************************
      *  Constructors

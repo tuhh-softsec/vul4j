@@ -53,7 +53,7 @@ public class TransformedBinaryFunction<L, R, T> implements BinaryFunction<L, R, 
         }
     }
 
-    private Helper<?> helper;
+    private final Helper<?> helper;
 
     /**
      * Create a new TransformedBinaryFunction.

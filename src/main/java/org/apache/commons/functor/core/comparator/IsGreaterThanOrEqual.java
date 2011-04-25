@@ -40,7 +40,7 @@ public final class IsGreaterThanOrEqual<T> implements BinaryPredicate<T, T>, Ser
     public static final IsGreaterThanOrEqual<Comparable<?>> INSTANCE = IsGreaterThanOrEqual
             .<Comparable<?>> instance();
 
-    private Comparator<? super T> comparator = null;
+    private final Comparator<? super T> comparator;
 
     /**
      * Construct a <code>IsGreaterThanOrEqual</code> {@link BinaryPredicate predicate}

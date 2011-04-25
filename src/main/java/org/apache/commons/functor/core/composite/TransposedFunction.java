@@ -42,7 +42,7 @@ import org.apache.commons.functor.BinaryFunction;
 public class TransposedFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryFunction<? super R, ? super L, ? extends T> function;
+    private final BinaryFunction<? super R, ? super L, ? extends T> function;
 
     // constructor
     // ------------------------------------------------------------------------

@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class BoundPredicate implements Predicate, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate<Object> predicate;
-    /** The parameter to pass to that predicate. */
-    private Object param;
+    private final UnaryPredicate<Object> predicate;
+    /** The parameter to pass to {@code predicate}. */
+    private final Object param;
 
     /**
      * Create a new BoundPredicate instance.

@@ -30,10 +30,17 @@ import org.apache.commons.functor.generator.Generator;
  * @author Jason Horman (jason@jhorman.org)
  */
 public class CollectionTransformer<E> implements UnaryFunction<Generator<? extends E>, Collection<? super E>> {
+    /*
+     * TODO revisit this class... it could stand a more-descriptive name.  Also, it's a little
+     * hard to say whether, for an instance constructed without a specific target collection,
+     * #evaluate() should return a new ArrayList for each call, or continue adding to
+     * a single ArrayList instance (the current behavior).
+     * Perhaps this is more a documentation issue than anything.
+     */
 
     // instance methods
     //---------------------------------------------------
-    private Collection<? super E> toFill = null;
+    private final Collection<? super E> toFill;
 
     // constructors
     //---------------------------------------------------
@@ -41,7 +48,7 @@ public class CollectionTransformer<E> implements UnaryFunction<Generator<? exten
      * Create a new CollectionTransformer.
      */
     public CollectionTransformer() {
-        toFill = new ArrayList<E>();
+        this(null);
     }
 
     /**
@@ -49,7 +56,13 @@ public class CollectionTransformer<E> implements UnaryFunction<Generator<? exten
      * @param toFill Collection to fill
      */
     public CollectionTransformer(Collection<? super E> toFill) {
-        this.toFill = toFill;
+        Collection<? super E> coll;
+        if (toFill == null) {
+            coll = new ArrayList<E>();
+        } else {
+            coll = toFill;
+        }
+        this.toFill = coll;
     }
 
     // instance methods

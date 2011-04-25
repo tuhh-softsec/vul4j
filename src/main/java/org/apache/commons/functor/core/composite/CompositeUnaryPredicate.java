@@ -48,7 +48,7 @@ import org.apache.commons.functor.adapter.UnaryPredicateUnaryFunction;
 public final class CompositeUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private CompositeUnaryFunction<? super A, Boolean> function = null;
+    private final CompositeUnaryFunction<? super A, Boolean> function;
 
     // constructor
     // ------------------------------------------------------------------------

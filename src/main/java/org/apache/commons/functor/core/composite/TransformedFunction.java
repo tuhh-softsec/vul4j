@@ -53,7 +53,7 @@ public class TransformedFunction<T> implements Function<T>, Serializable {
         }
     }
 
-    private Helper<?> helper;
+    private final Helper<?> helper;
 
     /**
      * Create a new TransformedFunction.

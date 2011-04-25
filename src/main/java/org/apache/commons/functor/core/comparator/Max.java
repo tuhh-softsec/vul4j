@@ -36,7 +36,7 @@ public final class Max<T> implements BinaryFunction<T, T, T>, Serializable {
      */
     public static final Max<Comparable<?>> INSTANCE = Max.<Comparable<?>>instance();
 
-    private Comparator<T> comparator = null;
+    private final Comparator<T> comparator;
 
     /**
      * Create a new Max.

@@ -42,7 +42,7 @@ public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializ
      */
     public static final IsNotEquivalent<Comparable<?>> INSTANCE = IsNotEquivalent.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator = null;
+    private final Comparator<? super T> comparator;
 
     /**
      * Create a new IsNotEquivalent.

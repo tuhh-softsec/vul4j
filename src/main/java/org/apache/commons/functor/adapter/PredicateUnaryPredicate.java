@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class PredicateUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link Predicate Predicate} I'm wrapping. */
-    private Predicate predicate;
+    private final Predicate predicate;
 
     /**
      * Create a new PredicateUnaryPredicate.

@@ -39,7 +39,7 @@ public final class IsLessThan<T> implements BinaryPredicate<T, T>, Serializable 
      */
     public static final IsLessThan<Comparable<?>> INSTANCE = IsLessThan.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator = null;
+    private final Comparator<? super T> comparator;
 
     /**
      * Construct a <code>IsLessThan</code> {@link BinaryPredicate predicate}

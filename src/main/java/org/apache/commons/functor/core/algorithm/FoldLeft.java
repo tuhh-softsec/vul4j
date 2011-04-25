@@ -77,7 +77,7 @@ public class FoldLeft<T> implements UnaryFunction<Generator<T>, T>, BinaryFuncti
 
     }
 
-    private BinaryFunction<? super T, ? super T, ? extends T> function;
+    private final BinaryFunction<? super T, ? super T, ? extends T> function;
 
     /**
      * Create a new FoldLeft.

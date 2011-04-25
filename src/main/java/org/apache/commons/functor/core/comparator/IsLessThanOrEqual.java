@@ -39,7 +39,7 @@ public final class IsLessThanOrEqual<T> implements BinaryPredicate<T, T>, Serial
      */
     public static final IsLessThanOrEqual<Comparable<?>> INSTANCE = IsLessThanOrEqual.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator = null;
+    private final Comparator<? super T> comparator;
 
     /**
      * Construct a <code>IsLessThanOrEqual</code> {@link BinaryPredicate predicate}

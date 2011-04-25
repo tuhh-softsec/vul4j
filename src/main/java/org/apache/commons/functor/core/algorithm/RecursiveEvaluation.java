@@ -27,8 +27,8 @@ import org.apache.commons.functor.Function;
  * function of a type other than that expected is returned.
  */
 public class RecursiveEvaluation implements Function<Object>, Serializable {
+    private final Class<?> functionType;
     private Function<?> function;
-    private Class<?> functionType;
 
     /**
      * Create a new RecursiveEvaluation. Recursion will continue while the

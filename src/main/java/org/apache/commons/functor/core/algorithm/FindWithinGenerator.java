@@ -62,14 +62,16 @@ public final class FindWithinGenerator<E> implements BinaryFunction<Generator<? 
         }
     }
 
-    private boolean useIfNone;
-    private E ifNone;
+    private final boolean useIfNone;
+    private final E ifNone;
 
     /**
      * Create a new FindWithinGenerator.
      */
     public FindWithinGenerator() {
         super();
+        ifNone = null;
+        useIfNone = false;
     }
 
     /**
@@ -77,7 +79,7 @@ public final class FindWithinGenerator<E> implements BinaryFunction<Generator<? 
      * @param ifNone object to return if the Generator contains no matches.
      */
     public FindWithinGenerator(E ifNone) {
-        this();
+        super();
         this.ifNone = ifNone;
         useIfNone = true;
     }

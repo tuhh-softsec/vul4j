@@ -45,9 +45,9 @@ public final class ConditionalBinaryProcedure<L, R> implements BinaryProcedure<L
 
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate<? super L, ? super R> ifPred;
-    private BinaryProcedure<? super L, ? super R> thenProc;
-    private BinaryProcedure<? super L, ? super R> elseProc;
+    private final BinaryPredicate<? super L, ? super R> ifPred;
+    private final BinaryProcedure<? super L, ? super R> thenProc;
+    private final BinaryProcedure<? super L, ? super R> elseProc;
 
     // constructor
     // ------------------------------------------------------------------------

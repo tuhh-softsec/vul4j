@@ -70,7 +70,7 @@ public class BinaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L,
         }
     }
 
-    private Helper<?, ?> helper;
+    private final Helper<?, ?> helper;
 
     // constructor
     // ------------------------------------------------------------------------

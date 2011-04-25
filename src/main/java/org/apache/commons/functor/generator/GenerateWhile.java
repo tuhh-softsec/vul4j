@@ -26,7 +26,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  */
 public class GenerateWhile<E> extends BaseGenerator<E> {
-    private UnaryPredicate<? super E> test;
+    private final UnaryPredicate<? super E> test;
 
     /**
      * Create a new GenerateWhile.

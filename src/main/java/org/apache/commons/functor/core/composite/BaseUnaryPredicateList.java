@@ -40,7 +40,7 @@ abstract class BaseUnaryPredicateList<A> implements UnaryPredicate<A>, Serializa
 
     // attributes
     // ------------------------------------------------------------------------
-    private List<UnaryPredicate<? super A>> list = new ArrayList<UnaryPredicate<? super A>>();
+    private final List<UnaryPredicate<? super A>> list = new ArrayList<UnaryPredicate<? super A>>();
 
     // constructor
     // ------------------------------------------------------------------------

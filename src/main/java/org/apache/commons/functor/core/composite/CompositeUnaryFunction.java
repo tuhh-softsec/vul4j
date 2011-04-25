@@ -111,7 +111,7 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
         }
     }
 
-    private UnaryFunction<? super A, ? extends T> function;
+    private final UnaryFunction<? super A, ? extends T> function;
 
     /**
      * Create a new CompositeUnaryFunction.

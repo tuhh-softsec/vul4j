@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class IgnoreLeftFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction<? super R, ? extends T> function = null;
+    private final UnaryFunction<? super R, ? extends T> function;
 
     /**
      * Create a new IgnoreLeftFunction.

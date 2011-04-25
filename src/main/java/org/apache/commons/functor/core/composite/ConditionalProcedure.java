@@ -44,9 +44,9 @@ import org.apache.commons.functor.core.NoOp;
 public final class ConditionalProcedure implements Procedure, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Procedure thenProc = null;
-    private Procedure elseProc = null;
+    private final Predicate ifPred;
+    private final Procedure thenProc;
+    private final Procedure elseProc;
 
     // constructor
     // ------------------------------------------------------------------------

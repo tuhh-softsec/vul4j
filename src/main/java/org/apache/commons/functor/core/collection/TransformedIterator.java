@@ -30,8 +30,8 @@ public final class TransformedIterator<E, T> implements Iterator<T> {
     // attributes
     // ------------------------------------------------------------------------
 
-    private UnaryFunction<? super E, ? extends T> function = null;
-    private Iterator<? extends E> iterator = null;
+    private final UnaryFunction<? super E, ? extends T> function;
+    private final Iterator<? extends E> iterator;
 
     // constructor
     // ------------------------------------------------------------------------

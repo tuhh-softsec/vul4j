@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class RightBoundFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super A, Object, ? extends T> function;
-    /** The parameter to pass to that function. */
-    private Object param;
+    private final BinaryFunction<? super A, Object, ? extends T> function;
+    /** The parameter to pass to {@code function}. */
+    private final Object param;
 
     /**
      * @param function the function to adapt

@@ -39,8 +39,10 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public final class BoundFunction<T> implements Function<T>, Serializable {
-    private UnaryFunction<Object, ? extends T> function;
-    private Object arg;
+    /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
+    private final UnaryFunction<Object, ? extends T> function;
+    /** The argument to pass to {@code function} */
+    private final Object arg;
 
     /**
      * Create a new BoundFunction instance.

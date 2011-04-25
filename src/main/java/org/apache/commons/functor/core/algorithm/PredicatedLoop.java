@@ -27,8 +27,8 @@ import org.apache.commons.functor.Procedure;
  * @version $Revision$ $Date$
  */
 abstract class PredicatedLoop implements Procedure, Serializable {
-    private Procedure body;
-    private Predicate test;
+    private final Procedure body;
+    private final Predicate test;
 
     /**
      * Create a new PredicatedLoop.

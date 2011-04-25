@@ -44,9 +44,9 @@ import org.apache.commons.functor.core.NoOp;
 public final class ConditionalUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate<? super A> ifPred = null;
-    private UnaryProcedure<? super A> thenProc = null;
-    private UnaryProcedure<? super A> elseProc = null;
+    private final UnaryPredicate<? super A> ifPred;
+    private final UnaryProcedure<? super A> thenProc;
+    private final UnaryProcedure<? super A> elseProc;
 
     // constructor
     // ------------------------------------------------------------------------

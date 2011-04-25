@@ -54,7 +54,7 @@ public class TransformedProcedure implements Procedure, Serializable {
         }
     }
 
-    private Helper<?> helper;
+    private final Helper<?> helper;
 
     /**
      * Create a new TransformedProcedure.

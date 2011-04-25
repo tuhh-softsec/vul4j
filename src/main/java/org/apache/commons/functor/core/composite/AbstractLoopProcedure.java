@@ -30,8 +30,8 @@ import java.io.Serializable;
  * @author Rodney Waldhoff
  */
 public abstract class AbstractLoopProcedure implements Procedure, Serializable {
-    private Predicate condition;
-    private Procedure action;
+    private final Predicate condition;
+    private final Procedure action;
 
     /**
      * Create a new AbstractLoopProcedure.

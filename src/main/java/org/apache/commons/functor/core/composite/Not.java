@@ -38,7 +38,7 @@ public final class Not implements Predicate, Serializable {
 
     // attributes
     // ------------------------------------------------------------------------
-    private Predicate predicate = null;
+    private final Predicate predicate;
 
     // constructor
     // ------------------------------------------------------------------------

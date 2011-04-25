@@ -25,7 +25,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * @author Matt Benson
  */
 public final class BinaryProcedureUnaryProcedure<A> implements UnaryProcedure<A> {
-    private BinaryProcedure<? super A, ? super A> procedure;
+    private final BinaryProcedure<? super A, ? super A> procedure;
 
     /**
      * Create a new BinaryProcedureUnaryProcedure.

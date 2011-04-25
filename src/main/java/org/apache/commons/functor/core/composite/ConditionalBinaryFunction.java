@@ -44,9 +44,9 @@ import org.apache.commons.functor.BinaryPredicate;
 public final class ConditionalBinaryFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate<? super L, ? super R> ifPred;
-    private BinaryFunction<? super L, ? super R, ? extends T> thenFunc;
-    private BinaryFunction<? super L, ? super R, ? extends T> elseFunc;
+    private final BinaryPredicate<? super L, ? super R> ifPred;
+    private final BinaryFunction<? super L, ? super R, ? extends T> thenFunc;
+    private final BinaryFunction<? super L, ? super R, ? extends T> elseFunc;
 
     // constructor
     // ------------------------------------------------------------------------

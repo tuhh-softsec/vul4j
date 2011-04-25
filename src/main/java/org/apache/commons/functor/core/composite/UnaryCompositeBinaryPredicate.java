@@ -67,7 +67,7 @@ public class UnaryCompositeBinaryPredicate<L, R> implements BinaryPredicate<L, R
 
     // attributes
     // ------------------------------------------------------------------------
-    private Helper<?, ?> helper;
+    private final Helper<?, ?> helper;
 
     // constructor
     // ------------------------------------------------------------------------

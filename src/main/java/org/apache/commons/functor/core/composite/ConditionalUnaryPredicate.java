@@ -43,9 +43,9 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class ConditionalUnaryPredicate<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate<? super A> ifPred = null;
-    private UnaryPredicate<? super A> thenPred = null;
-    private UnaryPredicate<? super A> elsePred = null;
+    private final UnaryPredicate<? super A> ifPred;
+    private final UnaryPredicate<? super A> thenPred;
+    private final UnaryPredicate<? super A> elsePred;
 
     // constructor
     // ------------------------------------------------------------------------

@@ -36,8 +36,8 @@ public final class GeneratorContains<T> implements BinaryPredicate<Generator<? e
      * Helper procedure.
      */
     private class ContainsProcedure implements UnaryProcedure<T> {
+        private final UnaryPredicate<? super T> pred;
         private boolean found;
-        private UnaryPredicate<? super T> pred;
 
         /**
          * Create a new ContainsProcedure.

@@ -42,7 +42,7 @@ public final class IsEquivalent<T> implements BinaryPredicate<T, T>, Serializabl
      */
     public static final IsEquivalent<Comparable<?>> INSTANCE = IsEquivalent.<Comparable<?>> instance();
 
-    private Comparator<? super T> comparator;
+    private final Comparator<? super T> comparator;
 
     /**
      * Create a new IsEquivalent.

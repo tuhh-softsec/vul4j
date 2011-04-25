@@ -44,9 +44,9 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class ConditionalUnaryFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate<? super A> ifPred;
-    private UnaryFunction<? super A, ? extends T> thenFunc;
-    private UnaryFunction<? super A, ? extends T> elseFunc;
+    private final UnaryPredicate<? super A> ifPred;
+    private final UnaryFunction<? super A, ? extends T> thenFunc;
+    private final UnaryFunction<? super A, ? extends T> elseFunc;
 
     // constructor
     // ------------------------------------------------------------------------

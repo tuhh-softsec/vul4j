@@ -41,9 +41,9 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class LeftBoundPredicate<A> implements UnaryPredicate<A>, Serializable {
 
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<Object, ? super A> predicate;
-    /** The parameter to pass to that predicate. */
-    private Object param;
+    private final BinaryPredicate<Object, ? super A> predicate;
+    /** The parameter to pass to {@code predicate}. */
+    private final Object param;
 
     /**
      * Create a new LeftBoundPredicate.

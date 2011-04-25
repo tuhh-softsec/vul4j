@@ -39,7 +39,7 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class UnaryPredicateUnaryFunction<A> implements UnaryFunction<A, Boolean>, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate<? super A> predicate;
+    private final UnaryPredicate<? super A> predicate;
 
     /**
      * Create a new UnaryPredicateUnaryFunction.

@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class BoundProcedure implements Procedure, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure<Object> procedure;
-    /** The parameter to pass to that procedure. */
-    private Object param;
+    private final UnaryProcedure<Object> procedure;
+    /** The parameter to pass to {@code procedure}. */
+    private final Object param;
 
     /**
      * Create a new BoundProcedure instance.

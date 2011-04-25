@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryProcedure;
 public final class UnaryFunctionUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
 
     /** The {@link UnaryFunction UnaryFunction} I'm wrapping. */
-    private UnaryFunction<? super A, ?> function;
+    private final UnaryFunction<? super A, ?> function;
 
     /**
      * Create an {@link UnaryProcedure UnaryProcedure} wrapping

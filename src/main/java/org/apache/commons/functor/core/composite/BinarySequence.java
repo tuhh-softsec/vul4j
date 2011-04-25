@@ -44,7 +44,7 @@ import org.apache.commons.functor.BinaryProcedure;
 public class BinarySequence<L, R> implements BinaryProcedure<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private List<BinaryProcedure<? super L, ? super R>> list = new ArrayList<BinaryProcedure<? super L, ? super R>>();
+    private final List<BinaryProcedure<? super L, ? super R>> list = new ArrayList<BinaryProcedure<? super L, ? super R>>();
 
     // constructor
     // ------------------------------------------------------------------------

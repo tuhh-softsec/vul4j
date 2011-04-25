@@ -35,10 +35,10 @@ public final class IndexOfInGenerator<T> implements BinaryFunction<Generator<? e
      * Helper procedure.
      */
     private class IndexProcedure implements UnaryProcedure<T> {
-        private Generator<? extends T> generator;
+        private final Generator<? extends T> generator;
+        private final UnaryPredicate<? super T> pred;
         private long index = -1L;
         private long current = 0L;
-        private UnaryPredicate<? super T> pred;
 
         /**
          * Create a new IndexProcedure.

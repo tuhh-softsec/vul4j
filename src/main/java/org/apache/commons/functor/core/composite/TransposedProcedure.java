@@ -42,7 +42,7 @@ import org.apache.commons.functor.BinaryProcedure;
 public class TransposedProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryProcedure<? super R, ? super L> procedure = null;
+    private final BinaryProcedure<? super R, ? super L> procedure;
 
     // constructor
     // ------------------------------------------------------------------------

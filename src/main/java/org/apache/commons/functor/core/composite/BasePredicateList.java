@@ -39,7 +39,7 @@ import org.apache.commons.functor.Predicate;
 abstract class BasePredicateList implements Predicate, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private List<Predicate> list = new ArrayList<Predicate>();
+    private final List<Predicate> list = new ArrayList<Predicate>();
 
     // constructor
     // ------------------------------------------------------------------------

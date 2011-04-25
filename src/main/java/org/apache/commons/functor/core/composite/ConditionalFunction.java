@@ -44,9 +44,9 @@ import org.apache.commons.functor.Predicate;
 public final class ConditionalFunction<T> implements Function<T>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Function<? extends T> thenFunc = null;
-    private Function<? extends T> elseFunc = null;
+    private final Predicate ifPred;
+    private final Function<? extends T> thenFunc;
+    private final Function<? extends T> elseFunc;
 
     // constructor
     // ------------------------------------------------------------------------

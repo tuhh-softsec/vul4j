@@ -43,9 +43,9 @@ import org.apache.commons.functor.Predicate;
 public final class ConditionalPredicate implements Predicate, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private Predicate ifPred = null;
-    private Predicate thenPred = null;
-    private Predicate elsePred = null;
+    private final Predicate ifPred;
+    private final Predicate thenPred;
+    private final Predicate elsePred;
 
     // constructor
     // ------------------------------------------------------------------------

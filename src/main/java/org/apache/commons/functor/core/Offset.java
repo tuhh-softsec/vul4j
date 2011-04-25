@@ -34,7 +34,7 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class Offset implements Predicate, UnaryPredicate<Object>, BinaryPredicate<Object, Object> {
     // instance variables
     //---------------------------------------------------------------
-    private int min;
+    private final int min;
     private int current;
 
     /**

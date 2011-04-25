@@ -30,9 +30,9 @@ public final class IntegerRange extends BaseGenerator<Integer> {
     // attributes
     //---------------------------------------------------------------
 
-    private int from;
-    private int to;
-    private int step;
+    private final int from;
+    private final int to;
+    private final int step;
 
     // constructors
     //---------------------------------------------------------------

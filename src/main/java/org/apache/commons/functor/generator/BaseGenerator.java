@@ -30,13 +30,14 @@ import org.apache.commons.functor.generator.util.CollectionTransformer;
 public abstract class BaseGenerator<E> implements Generator<E> {
 
     /** A generator can wrap another generator. */
-    private Generator<?> wrappedGenerator = null;
+    private final Generator<?> wrappedGenerator;
 
     /** Set to true when the generator is {@link #stop stopped}. */
     private boolean stopped = false;
 
     /** Create a new generator. */
     public BaseGenerator() {
+        this(null);
     }
 
     /**

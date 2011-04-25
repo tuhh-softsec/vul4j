@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class IgnoreRightProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
     /** The {@link UnaryProcedure UnaryProcedure} I'm wrapping. */
-    private UnaryProcedure<? super L> procedure;
+    private final UnaryProcedure<? super L> procedure;
 
     /**
      * Create a new IgnoreRightProcedure.

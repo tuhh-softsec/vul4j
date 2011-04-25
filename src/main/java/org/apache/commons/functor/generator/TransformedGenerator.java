@@ -25,7 +25,7 @@ import org.apache.commons.functor.UnaryProcedure;
  * @version $Revision$ $Date$
  */
 public class TransformedGenerator<I, E> extends BaseGenerator<E> {
-    private UnaryFunction<? super I, ? extends E> func;
+    private final UnaryFunction<? super I, ? extends E> func;
 
     /**
      * Create a new TransformedGenerator.

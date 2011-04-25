@@ -34,7 +34,7 @@ import org.apache.commons.functor.BinaryPredicate;
  */
 public final class BinaryFunctionBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super L, ? super R, Boolean> function;
+    private final BinaryFunction<? super L, ? super R, Boolean> function;
 
     /**
      * Create an {@link BinaryPredicate BinaryPredicate} wrapping the given

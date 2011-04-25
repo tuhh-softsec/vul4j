@@ -34,7 +34,7 @@ public final class ComparatorFunction<T> implements BinaryFunction<T, T, Integer
      */
     public static final ComparatorFunction<Comparable<?>> INSTANCE = ComparatorFunction.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator;
+    private final Comparator<? super T> comparator;
 
     /**
      * Create a new ComparatorFunction.

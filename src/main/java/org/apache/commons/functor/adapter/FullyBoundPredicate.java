@@ -41,11 +41,11 @@ import org.apache.commons.functor.Predicate;
 public final class FullyBoundPredicate implements Predicate, Serializable {
 
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<Object, Object> predicate;
-    /** The left parameter to pass to that predicate. */
-    private Object left;
-    /** The right parameter to pass to that predicate. */
-    private Object right;
+    private final BinaryPredicate<Object, Object> predicate;
+    /** The left parameter to pass to {@code predicate}. */
+    private final Object left;
+    /** The right parameter to pass to {@code predicate}. */
+    private final Object right;
 
     /**
      * Create a new FullyBoundPredicate instance.

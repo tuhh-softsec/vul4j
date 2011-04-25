@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class IgnoreRightPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     /** The {@link UnaryPredicate UnaryPredicate} I'm wrapping. */
-    private UnaryPredicate<? super L> predicate;
+    private final UnaryPredicate<? super L> predicate;
 
     /**
      * Create a new IgnoreRightPredicate.

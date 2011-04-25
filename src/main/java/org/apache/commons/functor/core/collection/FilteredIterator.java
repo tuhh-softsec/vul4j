@@ -31,8 +31,9 @@ public final class FilteredIterator<T> implements Iterator<T> {
     // attributes
     // ------------------------------------------------------------------------
 
-    private UnaryPredicate<? super T> predicate = null;
-    private Iterator<? extends T> iterator = null;
+    private final UnaryPredicate<? super T> predicate;
+    private final Iterator<? extends T> iterator;
+
     private T next = null;
     private boolean nextSet = false;
     private boolean canRemove = false;

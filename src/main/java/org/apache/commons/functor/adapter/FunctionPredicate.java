@@ -39,7 +39,7 @@ import org.apache.commons.functor.Predicate;
 public final class FunctionPredicate implements Predicate, Serializable {
 
     /** The {@link Function Function} I'm wrapping. */
-    private Function<Boolean> function;
+    private final Function<Boolean> function;
 
     /**
      * Create a new FunctionPredicate.

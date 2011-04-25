@@ -36,7 +36,7 @@ public final class Min<T> implements BinaryFunction<T, T, T>, Serializable {
      */
     public static final Min<Comparable<?>> INSTANCE = Min.<Comparable<?>>instance();
 
-    private Comparator<T> comparator = null;
+    private final Comparator<T> comparator;
 
     /**
      * Create a new Min.

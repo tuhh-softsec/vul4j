@@ -37,14 +37,16 @@ public class FoldRight<T> implements UnaryFunction<Generator<T>, T>, BinaryFunct
      * Helper class
      */
     private class FoldRightHelper implements UnaryProcedure<T> {
-        private T seed;
-        private Stack<T> stk = new Stack<T>();
-        private boolean hasSeed;
+        private final Stack<T> stk = new Stack<T>();
+        private final T seed;
+        private final boolean hasSeed;
 
         /**
          * Create a seedless FoldRightHelper.
          */
         public FoldRightHelper() {
+            seed = null;
+            hasSeed = false;
         }
 
         /**
@@ -84,7 +86,7 @@ public class FoldRight<T> implements UnaryFunction<Generator<T>, T>, BinaryFunct
 
     }
 
-    private BinaryFunction<? super T, ? super T, ? extends T> function;
+    private final BinaryFunction<? super T, ? super T, ? extends T> function;
 
     /**
      * Create a new FoldRight.

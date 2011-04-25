@@ -48,7 +48,7 @@ import org.apache.commons.functor.adapter.UnaryProcedureUnaryFunction;
 public final class CompositeUnaryProcedure<A> implements UnaryProcedure<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private CompositeUnaryFunction<? super A, Object> function = null;
+    private final CompositeUnaryFunction<? super A, Object> function;
 
     // constructor
     // ------------------------------------------------------------------------

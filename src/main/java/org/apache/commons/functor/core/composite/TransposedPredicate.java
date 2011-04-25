@@ -42,7 +42,7 @@ import org.apache.commons.functor.BinaryPredicate;
 public class TransposedPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private BinaryPredicate<? super R, ? super L> predicate;
+    private final BinaryPredicate<? super R, ? super L> predicate;
 
     // constructor
     // ------------------------------------------------------------------------

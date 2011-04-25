@@ -37,7 +37,7 @@ import org.apache.commons.functor.UnaryPredicate;
 public final class UnaryNot<A> implements UnaryPredicate<A>, Serializable {
     // attributes
     // ------------------------------------------------------------------------
-    private UnaryPredicate<? super A> predicate = null;
+    private final UnaryPredicate<? super A> predicate;
 
     // constructor
     // ------------------------------------------------------------------------

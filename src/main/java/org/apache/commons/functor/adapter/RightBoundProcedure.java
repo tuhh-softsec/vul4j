@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class RightBoundProcedure<A> implements UnaryProcedure<A>, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure<? super A, Object> procedure;
-    /** The parameter to pass to that procedure. */
-    private Object param;
+    private final BinaryProcedure<? super A, Object> procedure;
+    /** The parameter to pass to {@code procedure}. */
+    private final Object param;
 
     /**
      * Create a new RightBoundProcedure.

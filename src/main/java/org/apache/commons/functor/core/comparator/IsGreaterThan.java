@@ -39,7 +39,7 @@ public final class IsGreaterThan<T> implements BinaryPredicate<T, T>, Serializab
      */
     public static final IsGreaterThan<Comparable<?>> INSTANCE = IsGreaterThan.<Comparable<?>>instance();
 
-    private Comparator<? super T> comparator = null;
+    private final Comparator<? super T> comparator;
 
     /**
      * Construct a <code>IsGreaterThan</code> {@link BinaryPredicate predicate}

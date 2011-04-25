@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryProcedure;
  */
 public final class LeftBoundProcedure<A> implements UnaryProcedure<A>, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure<Object, ? super A> procedure;
-    /** The parameter to pass to that procedure. */
-    private Object param;
+    private final BinaryProcedure<Object, ? super A> procedure;
+    /** The parameter to pass to {@code procedure}. */
+    private final Object param;
 
     /**
      * Create a new LeftBoundProcedure.

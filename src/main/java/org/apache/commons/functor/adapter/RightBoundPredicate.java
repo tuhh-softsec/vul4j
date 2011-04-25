@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryPredicate;
  */
 public final class RightBoundPredicate<A> implements UnaryPredicate<A>, Serializable {
     /** The {@link BinaryPredicate BinaryPredicate} I'm wrapping. */
-    private BinaryPredicate<? super A, Object> predicate;
-    /** The parameter to pass to that predicate. */
-    private Object param;
+    private final BinaryPredicate<? super A, Object> predicate;
+    /** The parameter to pass to {@code predicate}. */
+    private final Object param;
 
     /**
      * Create a new RightBoundPredicate.

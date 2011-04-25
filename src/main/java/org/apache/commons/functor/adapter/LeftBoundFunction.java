@@ -40,9 +40,9 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public final class LeftBoundFunction<A, T> implements UnaryFunction<A, T>, Serializable {
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<Object, ? super A, ? extends T> function;
-    /** The parameter to pass to that function. */
-    private Object param = null;
+    private final BinaryFunction<Object, ? super A, ? extends T> function;
+    /** The parameter to pass to {@code function}. */
+    private final Object param;
 
     /**
      * Create a new LeftBoundFunction instance.

@@ -40,7 +40,7 @@ import org.apache.commons.functor.BinaryProcedure;
 public final class BinaryFunctionBinaryProcedure<L, R> implements BinaryProcedure<L, R>, Serializable {
 
     /** The {@link BinaryFunction BinaryFunction} I'm wrapping. */
-    private BinaryFunction<? super L, ? super R, ?> function;
+    private final BinaryFunction<? super L, ? super R, ?> function;
 
     /**
      * Create an {@link BinaryProcedure BinaryProcedure} wrapping

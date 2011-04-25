@@ -40,11 +40,11 @@ import org.apache.commons.functor.Procedure;
  */
 public final class FullyBoundProcedure implements Procedure, Serializable {
     /** The {@link BinaryProcedure BinaryProcedure} I'm wrapping. */
-    private BinaryProcedure<Object, Object> procedure;
-    /** The left parameter to pass to that procedure. */
-    private Object left;
-    /** The right parameter to pass to that procedure. */
-    private Object right;
+    private final BinaryProcedure<Object, Object> procedure;
+    /** The left parameter to pass to {@code procedure}. */
+    private final Object left;
+    /** The right parameter to pass to {@code procedure}. */
+    private final Object right;
 
     /**
      * Create a new FullyBoundProcedure instance.

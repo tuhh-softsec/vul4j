@@ -54,7 +54,7 @@ public class TransformedBinaryProcedure<L, R> implements BinaryProcedure<L, R>, 
         }
     }
 
-    private Helper<?> helper;
+    private final Helper<?> helper;
 
     /**
      * Create a new TransformedBinaryProcedure.
