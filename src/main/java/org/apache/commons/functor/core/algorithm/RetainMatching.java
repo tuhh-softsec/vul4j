@@ -30,7 +30,7 @@ import org.apache.commons.functor.core.composite.UnaryNot;
  */
 public final class RetainMatching<T> implements BinaryProcedure<Iterator<? extends T>, UnaryPredicate<? super T>>, Serializable {
     private static final RetainMatching<Object> INSTANCE = new RetainMatching<Object>();
-    
+
     private RemoveMatching<T> removeMatching = new RemoveMatching<T>();
 
     /**
