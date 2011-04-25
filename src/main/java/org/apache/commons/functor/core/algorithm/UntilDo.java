@@ -24,7 +24,7 @@ import org.apache.commons.functor.Procedure;
  *
  * @version $Revision$ $Date$
  */
-public class UntilDo extends PredicatedLoop{
+public class UntilDo extends PredicatedLoop {
 
     /**
      * Create a new UntilDo.
