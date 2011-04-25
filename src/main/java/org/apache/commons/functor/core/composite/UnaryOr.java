@@ -16,8 +16,6 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
-
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
@@ -48,30 +46,21 @@ public final class UnaryOr<A> extends BaseUnaryPredicateList<A> {
     }
 
     /**
-     * Create a new UnaryOr.
-     * @param p Predicate to add
+     * Create a new UnaryOr instance.
+     *
+     * @param predicates
      */
-    public UnaryOr(UnaryPredicate<? super A> p) {
-        super(p);
+    public UnaryOr(Iterable<UnaryPredicate<? super A>> predicates) {
+        super(predicates);
     }
 
     /**
-     * Create a new UnaryOr.
-     * @param p Predicate to add
-     * @param q Predicate to add
+     * Create a new UnaryOr instance.
+     *
+     * @param predicates
      */
-    public UnaryOr(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
-        super(p, q);
-    }
-
-    /**
-     * Create a new UnaryOr.
-     * @param p Predicate to add
-     * @param q Predicate to add
-     * @param r Predicate to add
-     */
-    public UnaryOr(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
-        super(p, q, r);
+    public UnaryOr(UnaryPredicate<? super A>... predicates) {
+        super(predicates);
     }
 
     // modifiers
@@ -92,8 +81,8 @@ public final class UnaryOr<A> extends BaseUnaryPredicateList<A> {
      * {@inheritDoc}
      */
     public boolean test(A a) {
-        for (Iterator<UnaryPredicate<? super A>> iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if (iter.next().test(a)) {
+        for (UnaryPredicate<? super A> p : getUnaryPredicateList()) {
+            if (p.test(a)) {
                 return true;
             }
         }

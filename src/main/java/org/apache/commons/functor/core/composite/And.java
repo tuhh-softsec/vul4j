@@ -16,8 +16,6 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
-
 import org.apache.commons.functor.Predicate;
 
 /**
@@ -40,6 +38,7 @@ public final class And extends BasePredicateList {
 
     // constructor
     // ------------------------------------------------------------------------
+    
     /**
      * Create a new And.
      */
@@ -48,30 +47,21 @@ public final class And extends BasePredicateList {
     }
 
     /**
-     * Create a new And.
-     * @param p Predicate to add
+     * Create a new And instance.
+     *
+     * @param predicates
      */
-    public And(Predicate p) {
-        super(p);
+    public And(Iterable<Predicate> predicates) {
+        super(predicates);
     }
 
     /**
-     * Create a new And.
-     * @param p Predicate to add
-     * @param q Predicate to add
+     * Create a new And instance.
+     *
+     * @param predicates
      */
-    public And(Predicate p, Predicate q) {
-        super(p, q);
-    }
-
-    /**
-     * Create a new And.
-     * @param p Predicate to add
-     * @param q Predicate to add
-     * @param r Predicate to add
-     */
-    public And(Predicate p, Predicate q, Predicate r) {
-        super(p, q, r);
+    public And(Predicate... predicates) {
+        super(predicates);
     }
 
     // modifiers
@@ -92,8 +82,8 @@ public final class And extends BasePredicateList {
      * {@inheritDoc}
      */
     public boolean test() {
-        for (Iterator<Predicate> iter = getPredicateIterator(); iter.hasNext();) {
-            if (!iter.next().test()) {
+        for (Predicate p : getPredicateList()) {
+            if (!p.test()) {
                 return false;
             }
         }

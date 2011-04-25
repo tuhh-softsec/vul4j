@@ -16,8 +16,6 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
-
 import org.apache.commons.functor.UnaryPredicate;
 
 /**
@@ -48,30 +46,21 @@ public final class UnaryAnd<A> extends BaseUnaryPredicateList<A> {
     }
 
     /**
-     * Create a new UnaryAnd.
-     * @param p UnaryPredicate to add
+     * Create a new UnaryAnd instance.
+     *
+     * @param predicates
      */
-    public UnaryAnd(UnaryPredicate<? super A> p) {
-        super(p);
+    public UnaryAnd(Iterable<UnaryPredicate<? super A>> predicates) {
+        super(predicates);
     }
 
     /**
-     * Create a new UnaryAnd.
-     * @param p UnaryPredicate to add
-     * @param q UnaryPredicate to add
+     * Create a new UnaryAnd instance.
+     *
+     * @param predicates
      */
-    public UnaryAnd(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
-        super(p, q);
-    }
-
-    /**
-     * Create a new UnaryAnd.
-     * @param p UnaryPredicate to add
-     * @param q UnaryPredicate to add
-     * @param r UnaryPredicate to add
-     */
-    public UnaryAnd(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
-        super(p, q, r);
+    public UnaryAnd(UnaryPredicate<? super A>... predicates) {
+        super(predicates);
     }
 
     // modifiers
@@ -92,8 +81,8 @@ public final class UnaryAnd<A> extends BaseUnaryPredicateList<A> {
      * {@inheritDoc}
      */
     public boolean test(A obj) {
-        for (Iterator<UnaryPredicate<? super A>> iter = getUnaryPredicateIterator(); iter.hasNext();) {
-            if (!iter.next().test(obj)) {
+        for (UnaryPredicate<? super A> p : getUnaryPredicateList()) {
+            if (!p.test(obj)) {
                 return false;
             }
         }

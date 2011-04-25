@@ -18,7 +18,6 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.functor.BinaryPredicate;
@@ -49,38 +48,37 @@ abstract class BaseBinaryPredicateList<L, R> implements BinaryPredicate<L, R>, S
      * Create a new BaseBinaryPredicateList.
      */
     protected BaseBinaryPredicateList() {
+        super();
     }
 
     /**
-     * Create a new BaseBinaryPredicateList.
-     * @param p BinaryPredicate to add
+     * Create a new BaseBinaryPredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p) {
-        addBinaryPredicate(p);
+    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R>... predicates) {
+        this();
+        if (predicates != null) {
+            for (BinaryPredicate<? super L, ? super R> p : predicates) {
+                addBinaryPredicate(p);
+            }
+        }
     }
 
     /**
-     * Create a new BaseBinaryPredicateList.
-     * @param p BinaryPredicate to add
-     * @param q BinaryPredicate to add
+     * Create a new BaseBinaryPredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q) {
-        addBinaryPredicate(p);
-        addBinaryPredicate(q);
+    protected BaseBinaryPredicateList(Iterable<BinaryPredicate<? super L, ? super R>> predicates) {
+        this();
+        if (predicates != null) {
+            for (BinaryPredicate<? super L, ? super R> p : predicates) {
+                addBinaryPredicate(p);
+            }
+        }
     }
-
-    /**
-     * Create a new BaseBinaryPredicateList.
-     * @param p BinaryPredicate to add
-     * @param q BinaryPredicate to add
-     * @param r BinaryPredicate to add
-     */
-    protected BaseBinaryPredicateList(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q, BinaryPredicate<? super L, ? super R> r) {
-        addBinaryPredicate(p);
-        addBinaryPredicate(q);
-        addBinaryPredicate(r);
-    }
-
+    
     // abstract
     // ------------------------------------------------------------------------
     /**
@@ -114,11 +112,11 @@ abstract class BaseBinaryPredicateList<L, R> implements BinaryPredicate<L, R>, S
     // protected
     // ------------------------------------------------------------------------
     /**
-     * Get an Iterator over the list contents.
-     * @return Iterator
+     * Get the "live" list of contained {@link BinaryPredicate} instances.
+     * @return List
      */
-    protected Iterator<BinaryPredicate<? super L, ? super R>> getBinaryPredicateIterator() {
-        return list.iterator();
+    protected List<BinaryPredicate<? super L, ? super R>> getBinaryPredicateList() {
+        return list;
     }
 
     /**

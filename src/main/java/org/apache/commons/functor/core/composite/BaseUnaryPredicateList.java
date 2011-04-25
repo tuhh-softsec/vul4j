@@ -18,7 +18,6 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.functor.UnaryPredicate;
@@ -49,36 +48,35 @@ abstract class BaseUnaryPredicateList<A> implements UnaryPredicate<A>, Serializa
      * Create a new BaseUnaryPredicateList.
      */
     protected BaseUnaryPredicateList() {
+        super();
     }
 
     /**
-     * Create a new BaseUnaryPredicateList.
-     * @param p single Predicate to add
+     * Create a new BaseUnaryPredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p) {
-        addUnaryPredicate(p);
+    protected BaseUnaryPredicateList(UnaryPredicate<? super A>... predicates) {
+        this();
+        if (predicates != null) {
+            for (UnaryPredicate<? super A> p : predicates) {
+                addUnaryPredicate(p);
+            }
+        }
     }
 
     /**
-     * Create a new BaseUnaryPredicateList.
-     * @param p Predicate to add
-     * @param q Predicate to add
+     * Create a new BaseUnaryPredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q) {
-        addUnaryPredicate(p);
-        addUnaryPredicate(q);
-    }
-
-    /**
-     * Create a new BaseUnaryPredicateList.
-     * @param p Predicate to add
-     * @param q Predicate to add
-     * @param r Predicate to add
-     */
-    protected BaseUnaryPredicateList(UnaryPredicate<? super A> p, UnaryPredicate<? super A> q, UnaryPredicate<? super A> r) {
-        addUnaryPredicate(p);
-        addUnaryPredicate(q);
-        addUnaryPredicate(r);
+    protected BaseUnaryPredicateList(Iterable<UnaryPredicate<? super A>> predicates) {
+        this();
+        if (predicates != null) {
+            for (UnaryPredicate<? super A> p : predicates) {
+                addUnaryPredicate(p);
+            }
+        }
     }
 
     // abstract
@@ -113,12 +111,13 @@ abstract class BaseUnaryPredicateList<A> implements UnaryPredicate<A>, Serializa
 
     // protected
     // ------------------------------------------------------------------------
+
     /**
-     * Get an Iterator over the contained UnaryPredicates.
-     * @return Iterator
+     * Get the "live" list of contained {@link UnaryPredicate}s.
+     * @return List
      */
-    protected Iterator<UnaryPredicate<? super A>> getUnaryPredicateIterator() {
-        return list.iterator();
+    protected List<UnaryPredicate<? super A>> getUnaryPredicateList() {
+        return list;
     }
 
     /**

@@ -16,8 +16,6 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
-
 import org.apache.commons.functor.Predicate;
 
 /**
@@ -48,30 +46,21 @@ public final class Or extends BasePredicateList {
     }
 
     /**
-     * Create a new Or.
-     * @param p Predicate to add
+     * Create a new Or instance.
+     *
+     * @param predicates
      */
-    public Or(Predicate p) {
-        super(p);
+    public Or(Iterable<Predicate> predicates) {
+        super(predicates);
     }
 
     /**
-     * Create a new Or.
-     * @param p Predicate to add
-     * @param q Predicate to add
+     * Create a new Or instance.
+     *
+     * @param predicates
      */
-    public Or(Predicate p, Predicate q) {
-        super(p, q);
-    }
-
-    /**
-     * Create a new Or.
-     * @param p Predicate to add
-     * @param q Predicate to add
-     * @param r Predicate to add
-     */
-    public Or(Predicate p, Predicate q, Predicate r) {
-        super(p, q, r);
+    public Or(Predicate... predicates) {
+        super(predicates);
     }
 
     /**
@@ -90,8 +79,8 @@ public final class Or extends BasePredicateList {
      * {@inheritDoc}
      */
     public boolean test() {
-        for (Iterator<Predicate> iter = getPredicateIterator(); iter.hasNext();) {
-            if (iter.next().test()) {
+        for (Predicate p : getPredicateList()) {
+            if (p.test()) {
                 return true;
             }
         }

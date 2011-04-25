@@ -18,7 +18,6 @@ package org.apache.commons.functor.core.composite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.functor.Predicate;
@@ -45,39 +44,38 @@ abstract class BasePredicateList implements Predicate, Serializable {
     // constructor
     // ------------------------------------------------------------------------
     /**
-     * Create a new BasePredicateList.
+     * Create a new BasePredicateList instance.
      */
     protected BasePredicateList() {
+        super();
     }
 
     /**
-     * Create a new BasePredicateList.
-     * @param p Predicate to add
+     * Create a new BasePredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BasePredicateList(Predicate p) {
-        addPredicate(p);
+    protected BasePredicateList(Predicate... predicates) {
+        this();
+        if (predicates != null) {
+            for (Predicate p : predicates) {
+                addPredicate(p);
+            }
+        }
     }
 
     /**
-     * Create a new BasePredicateList.
-     * @param p Predicate to add
-     * @param q Predicate to add
+     * Create a new BasePredicateList instance.
+     *
+     * @param predicates to add
      */
-    protected BasePredicateList(Predicate p, Predicate q) {
-        addPredicate(p);
-        addPredicate(q);
-    }
-
-    /**
-     * Create a new BasePredicateList.
-     * @param p Predicate to add
-     * @param q Predicate to add
-     * @param r Predicate to add
-     */
-    protected BasePredicateList(Predicate p, Predicate q, Predicate r) {
-        addPredicate(p);
-        addPredicate(q);
-        addPredicate(r);
+    protected BasePredicateList(Iterable<Predicate> predicates) {
+        this();
+        if (predicates != null) {
+            for (Predicate p : predicates) {
+                addPredicate(p);
+            }
+        }
     }
 
     // abstract
@@ -112,12 +110,13 @@ abstract class BasePredicateList implements Predicate, Serializable {
 
     // protected
     // ------------------------------------------------------------------------
+
     /**
-     * Get an Iterator over the contents of the list.
-     * @return Iterator<Predicate>
+     * Get the "live" list of {@link Predicate}s.
+     * @return List<Predicate>
      */
-    protected Iterator<Predicate> getPredicateIterator() {
-        return list.iterator();
+    protected List<Predicate> getPredicateList() {
+        return list;
     }
 
     /**

@@ -16,8 +16,6 @@
  */
 package org.apache.commons.functor.core.composite;
 
-import java.util.Iterator;
-
 import org.apache.commons.functor.BinaryPredicate;
 
 /**
@@ -48,31 +46,21 @@ public final class BinaryOr<L, R> extends BaseBinaryPredicateList<L, R> {
     }
 
     /**
-     * Create a new BinaryOr.
-     * @param p BinaryPredicate to add
+     * Create a new BinaryOr instance.
+     *
+     * @param predicates
      */
-    public BinaryOr(BinaryPredicate<? super L, ? super R> p) {
-        super(p);
+    public BinaryOr(BinaryPredicate<? super L, ? super R>... predicates) {
+        super(predicates);
     }
 
     /**
-     * Create a new BinaryOr.
-     * @param p BinaryPredicate to add
-     * @param q BinaryPredicate to add
+     * Create a new BinaryOr instance.
+     *
+     * @param predicates
      */
-    public BinaryOr(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q) {
-        super(p, q);
-    }
-
-    /**
-     * Create a new BinaryOr.
-     * @param p BinaryPredicate to add
-     * @param q BinaryPredicate to add
-     * @param r BinaryPredicate to add
-     */
-    public BinaryOr(BinaryPredicate<? super L, ? super R> p, BinaryPredicate<? super L, ? super R> q,
-            BinaryPredicate<? super L, ? super R> r) {
-        super(p, q, r);
+    public BinaryOr(Iterable<BinaryPredicate<? super L, ? super R>> predicates) {
+        super(predicates);
     }
 
     // modifiers
@@ -93,8 +81,8 @@ public final class BinaryOr<L, R> extends BaseBinaryPredicateList<L, R> {
      * {@inheritDoc}
      */
     public boolean test(L a, R b) {
-        for (Iterator<BinaryPredicate<? super L, ? super R>> iter = getBinaryPredicateIterator(); iter.hasNext();) {
-            if (iter.next().test(a, b)) {
+        for (BinaryPredicate<? super L, ? super R> p : getBinaryPredicateList()) {
+            if (p.test(a, b)) {
                 return true;
             }
         }
