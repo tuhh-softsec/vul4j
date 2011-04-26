@@ -431,7 +431,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             Attr N = (Attr) attrs.item(i);
             if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
                 // Not a namespace definition, ignore.
-                if (!XML_LANG_URI.equals(N.getNamespaceURI())) {
+                if (XML_LANG_URI.equals(N.getNamespaceURI())) {
                     xmlattrStack.addXmlnsAttr(N);
                 }
                 continue;
