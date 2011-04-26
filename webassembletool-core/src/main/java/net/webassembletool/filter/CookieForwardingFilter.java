@@ -14,10 +14,11 @@
 
 package net.webassembletool.filter;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,11 +27,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.ConfigurationException;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.cookie.SerializableBasicClientCookie2;
 import net.webassembletool.extension.ExtensionFactory;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
 import net.webassembletool.http.HttpHeaders;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +46,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class CookieForwardingFilter implements Filter {
-	private static final Logger logger = LoggerFactory.getLogger(ExtensionFactory.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ExtensionFactory.class);
 	static final String PROP_ATTRIBUTE = "forwardCookies";
 	private final Collection<String> forwardCookies = new HashSet<String>();
 
@@ -71,7 +77,8 @@ public class CookieForwardingFilter implements Filter {
 				}
 			}
 		} else {
-			throw new ConfigurationException("drivername." + PROP_ATTRIBUTE + " is empty : no cookie to forward.");
+			throw new ConfigurationException("drivername." + PROP_ATTRIBUTE
+					+ " is empty : no cookie to forward.");
 		}
 	}
 
@@ -82,18 +89,33 @@ public class CookieForwardingFilter implements Filter {
 	 *      net.webassembletool.output.Output)
 	 */
 	public void postRequest(HttpClientResponse response, ResourceContext context) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("postRequest");
+		}
 		HttpServletResponse dest = context.getOriginalResponse();
 		if (dest == null) {
 			return;
 		}
-
 		String[] cookies = response.getHeaders(HttpHeaders.SET_COOKIE);
 		if (cookies != null && cookies.length != 0) {
-			for (String cookie : cookies) {
-				int idx = cookie.indexOf('=');
-				if (idx != -1 && forwardCookies.contains(cookie.substring(0, idx))) {
-					dest.addHeader(HttpHeaders.SET_COOKIE, cookie);
+			try {
+				URL url = new URL(context.getDriver().getBaseURL());
+				for (String cookie : cookies) {
+					int idx = cookie.indexOf('=');
+					if (idx != -1
+							&& forwardCookies
+									.contains(cookie.substring(0, idx))) {
+						dest.addHeader(HttpHeaders.SET_COOKIE, cookie
+								+ "; Path=/");
+						if (logger.isDebugEnabled()) {
+							logger.debug("Adding cookie " + cookie
+									+ " to response headers");
+						}
+					}
 				}
+			} catch (MalformedURLException e) {
+				logger.error("Error : driver.baseUrl not a valid url");
+				throw new ConfigurationException("baseUrl not a valid url");
 			}
 		}
 	}
@@ -108,32 +130,44 @@ public class CookieForwardingFilter implements Filter {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");
 		}
-
-		List<Cookie> toForward = new ArrayList<Cookie>();
-
 		// Select the cookie to forward
+		CookieStore cookieStore = (CookieStore) context.getUserContext(true)
+				.getHttpContext().getAttribute(ClientContext.COOKIE_STORE);
+		if (cookieStore == null) {
+			logger.info("CookieStore not available in HTTP context");
+			return;
+		}
 		Cookie[] cookies = context.getOriginalRequest().getCookies();
 		if (cookies != null && cookies.length != 0) {
+			List<Cookie> toForward = new ArrayList<Cookie>();
 			for (Cookie cookie : cookies) {
 				if (forwardCookies.contains(cookie.getName())) {
 					toForward.add(cookie);
 				}
 			}
-		}
-
-		// Create and add the headers.
-		if (!toForward.isEmpty()) {
-			StringBuilder headerValue = new StringBuilder();
-			for (Iterator<Cookie> iter = toForward.iterator(); iter.hasNext();) {
-				Cookie cookie = iter.next();
-				headerValue.append(cookie.getName());
-				headerValue.append('=');
-				headerValue.append(cookie.getValue());
-				if (iter.hasNext()) {
-					headerValue.append("; ");
+			if (!toForward.isEmpty()) {
+				// add cookies to context cookie store
+				try {
+					URL url = new URL(context.getDriver().getBaseURL());
+					for (Cookie cookie : toForward) {
+						SerializableBasicClientCookie2 cookieToForward = new SerializableBasicClientCookie2(
+								cookie.getName(), cookie.getValue());
+						cookieToForward.setDomain(url.getHost());
+						String path = StringUtils.removeEnd(url.getPath(), "/");
+						if (StringUtils.isBlank(path)) {
+							path = "/";
+						}
+						cookieToForward.setPath(path);
+						if (logger.isDebugEnabled()) {
+							logger.debug("Forwarding cookie " + cookieToForward);
+						}
+						cookieStore.addCookie(cookieToForward);
+					}
+				} catch (MalformedURLException e) {
+					logger.error("Error : driver.baseUrl not a valid url");
+					throw new ConfigurationException("baseUrl not a valid url");
 				}
 			}
-			request.addHeader(HttpHeaders.COOKIE, headerValue.toString());
 		}
 
 	}

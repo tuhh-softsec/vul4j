@@ -81,8 +81,10 @@ public class CookieForwardingFilterTest extends TestCase {
 				+ "   , " + K_FORWARD2);
 		String uri = "test/request.html";
 
-		ResourceContext rc = new ResourceContext(new MockDriver("MockDriver"),
-				uri, null, request, response);
+		Properties driverProperties = new Properties();
+		driverProperties.setProperty("remoteUrlBase", "http://localhost:8080/");
+		ResourceContext rc = new ResourceContext(new MockDriver("MockDriver",
+				driverProperties), uri, null, request, response);
 
 		CookieForwardingFilter f = new CookieForwardingFilter();
 
@@ -100,9 +102,9 @@ public class CookieForwardingFilterTest extends TestCase {
 				request, true, true);
 		f.preRequest(clientRequest, rc);
 
-		Assert.assertTrue(clientRequest.getHeaders().containsKey("Cookie"));
-		Assert.assertEquals(K_FORWARD1 + "=" + V_FORWARD1 + "; " + K_FORWARD2
-				+ "=" + V_FORWARD2, clientRequest.getHeaders().get("Cookie"));
+		assertNotNull(rc.getUserContext(false).getCookies());
+		assertFalse(rc.getUserContext(false).getCookies().isEmpty());
+		assertTrue(rc.getUserContext(false).getCookies().size() == 2);
 
 		// Test post Request
 		SerializableBasicHttpContext context = new SerializableBasicHttpContext();
@@ -121,7 +123,8 @@ public class CookieForwardingFilterTest extends TestCase {
 
 		context.setAttribute(ExecutionContext.HTTP_TARGET_HOST, httpHost);
 
-		HttpClientResponse clientResponse = HttpClientResponse.create(httpHost, httpRequest, httpClient, context);
+		HttpClientResponse clientResponse = HttpClientResponse.create(httpHost,
+				httpRequest, httpClient, context);
 		f.postRequest(clientResponse, rc);
 
 		@SuppressWarnings("unchecked")
@@ -133,26 +136,39 @@ public class CookieForwardingFilterTest extends TestCase {
 	}
 
 	public void testPreRequest() {
+		Properties driverProperties = new Properties();
+		driverProperties.setProperty("remoteUrlBase", "http://localhost:8080/");
+		MockDriver provider = new MockDriver("mock", driverProperties);
 		tested.getForwardCookies().addAll(Arrays.asList("a", "b", "c"));
 		MockHttpServletRequest originalRequest = new MockHttpServletRequest();
-		originalRequest.setCookies(new Cookie[] { new Cookie("a", "value a"), new Cookie("c", "value c"),
-				new Cookie("d", "value d") });
+		originalRequest.setCookies(new Cookie[] { new Cookie("a", "value a"),
+				new Cookie("c", "value c"), new Cookie("d", "value d") });
 
-		HttpClientRequest request = new HttpClientRequest("url", null, false, false);
-		ResourceContext context = new ResourceContext(null, null, null, originalRequest, null);
+		HttpClientRequest request = new HttpClientRequest("url", null, false,
+				false);
+		ResourceContext context = new ResourceContext(provider, null, null,
+				originalRequest, null);
 		tested.preRequest(request, context);
-		assertNotNull(request.getHeaders());
-		assertEquals(1, request.getHeaders().size());
-		String cookie = request.getHeaders().get(HttpHeaders.COOKIE);
-		assertNotNull(cookie);
-		assertEquals("a=value a; c=value c", cookie);
+		assertNotNull(context.getUserContext(false).getCookies());
+		assertFalse(context.getUserContext(false).getCookies().isEmpty());
+		assertEquals(2, context.getUserContext(false).getCookies().size());
+		org.apache.http.cookie.Cookie cookie1 = context.getUserContext(false)
+				.getCookies().get(0);
+		org.apache.http.cookie.Cookie cookie2 = context.getUserContext(false)
+				.getCookies().get(1);
+		assertEquals("a", cookie1.getName());
+		assertEquals("c", cookie2.getName());
 	}
 
 	public void testPostRequest() {
+		Properties driverProperties = new Properties();
+		driverProperties.setProperty("remoteUrlBase", "http://localhost:8080/");
+		MockDriver provider = new MockDriver("mock", driverProperties);
 		MockHttpServletResponse originalResponse = new MockHttpServletResponse();
-
+		MockHttpServletRequest originalRequest = new MockHttpServletRequest();
 		tested.getForwardCookies().addAll(Arrays.asList("a", "b", "c"));
-		ResourceContext context = new ResourceContext(null, null, null, null, originalResponse);
+		ResourceContext context = new ResourceContext(provider, null, null,
+				originalRequest, originalResponse);
 		HttpClientResponse response = new HttpClientResponse(0, null) {
 			@Override
 			public String[] getHeaders(String name) {
@@ -162,9 +178,12 @@ public class CookieForwardingFilterTest extends TestCase {
 		};
 		tested.postRequest(response, context);
 		assertNotNull(originalResponse.getHeaders(HttpHeaders.SET_COOKIE));
-		assertEquals(2, originalResponse.getHeaders(HttpHeaders.SET_COOKIE).size());
-		assertEquals("a=value a", originalResponse.getHeaders(HttpHeaders.SET_COOKIE).get(0));
-		assertEquals("c=value c", originalResponse.getHeaders(HttpHeaders.SET_COOKIE).get(1));
+		assertEquals(2, originalResponse.getHeaders(HttpHeaders.SET_COOKIE)
+				.size());
+		assertEquals("a=value a; Path=/",
+				originalResponse.getHeaders(HttpHeaders.SET_COOKIE).get(0));
+		assertEquals("c=value c; Path=/",
+				originalResponse.getHeaders(HttpHeaders.SET_COOKIE).get(1));
 	}
 
 	public void testInit() {
@@ -172,7 +191,9 @@ public class CookieForwardingFilterTest extends TestCase {
 			tested.init(new Properties());
 			fail("should throw ConfigurationException");
 		} catch (ConfigurationException e) {
-			assertEquals("drivername.forwardCookies is empty : no cookie to forward.", e.getMessage());
+			assertEquals(
+					"drivername.forwardCookies is empty : no cookie to forward.",
+					e.getMessage());
 		}
 
 		Properties props = new Properties();
@@ -180,7 +201,8 @@ public class CookieForwardingFilterTest extends TestCase {
 		tested.init(props);
 		assertNotNull(tested.getForwardCookies());
 		assertEquals(3, tested.getForwardCookies().size());
-		List<String> cookieNames = new ArrayList<String>(tested.getForwardCookies());
+		List<String> cookieNames = new ArrayList<String>(
+				tested.getForwardCookies());
 		Collections.sort(cookieNames);
 		assertEquals("a", cookieNames.get(0));
 		assertEquals("b", cookieNames.get(1));
