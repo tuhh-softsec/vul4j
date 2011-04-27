@@ -376,6 +376,7 @@
 		    </dependency>
        </dependencies>
     </dependencyManagement>
+    <!-- 
 	<profiles>
 	  <profile>
 	    <id>release-sign-artifacts</id>
@@ -404,7 +405,7 @@
 	    </build>
 	  </profile>
 	</profiles>
-	
+	 -->
 	<modules>
 		<module>webassembletool-core</module>
 		<module>webassembletool-oscache</module>
