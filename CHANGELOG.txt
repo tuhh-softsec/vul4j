@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.0-SNAPSHOT
+    Fixed SANTUARIO-291: xml:id attributes are not correctly handled when using c14n11.
     Fixed SANTUARIO-266: c14n11 produces different signatures using version 1.4.3 and 1.4.4.
     Fixed SANTUARIO-254: Rework org.apache.xml.security.utils.resolver.ResourceResolver.
     Fixed SANTUARIO-263: Canonicalizer can't handle dynamical created DOM correctly. Thanks to Martin Koegler.
