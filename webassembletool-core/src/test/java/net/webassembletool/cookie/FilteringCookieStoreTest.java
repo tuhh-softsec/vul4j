@@ -13,10 +13,12 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 public class FilteringCookieStoreTest extends TestCase {
 	private FilteringCookieStore tested;
 
+	@Override
 	protected void setUp() {
 		tested = new FilteringCookieStore();
 	}
 
+	@Override
 	protected void tearDown() {
 		tested = null;
 	}
@@ -28,10 +30,12 @@ public class FilteringCookieStoreTest extends TestCase {
 		assertEquals(0, tested.getCookies().size());
 
 		tested.addCookie(new BasicClientCookie("a", "value"));
+		tested.cleanUpCookies();
 		assertNotNull(tested.getCookies());
 		assertEquals(0, tested.getCookies().size());
 
 		tested.addCookie(new BasicClientCookie("c", "value"));
+		tested.cleanUpCookies();
 		assertNotNull(tested.getCookies());
 		assertEquals(1, tested.getCookies().size());
 		assertEquals("c", tested.getCookies().get(0).getName());

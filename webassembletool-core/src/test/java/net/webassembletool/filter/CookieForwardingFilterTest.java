@@ -29,6 +29,7 @@ import net.webassembletool.ConfigurationException;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.MockDriver;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.UserContext;
 import net.webassembletool.http.HttpClientRequest;
 import net.webassembletool.http.HttpClientResponse;
 import net.webassembletool.http.HttpHeaders;
@@ -86,6 +87,9 @@ public class CookieForwardingFilterTest extends TestCase {
 		ResourceContext rc = new ResourceContext(new MockDriver("MockDriver",
 				driverProperties), uri, null, request, response);
 
+		UserContext userContext = rc.getDriver().createNewUserContext();
+		rc.getDriver().setUserContext(userContext, request);
+
 		CookieForwardingFilter f = new CookieForwardingFilter();
 
 		// Test init
@@ -139,10 +143,13 @@ public class CookieForwardingFilterTest extends TestCase {
 		Properties driverProperties = new Properties();
 		driverProperties.setProperty("remoteUrlBase", "http://localhost:8080/");
 		MockDriver provider = new MockDriver("mock", driverProperties);
+
 		tested.getForwardCookies().addAll(Arrays.asList("a", "b", "c"));
 		MockHttpServletRequest originalRequest = new MockHttpServletRequest();
 		originalRequest.setCookies(new Cookie[] { new Cookie("a", "value a"),
 				new Cookie("c", "value c"), new Cookie("d", "value d") });
+		UserContext userContext = provider.createNewUserContext();
+		provider.setUserContext(userContext, originalRequest);
 
 		HttpClientRequest request = new HttpClientRequest("url", null, false,
 				false);

@@ -49,90 +49,120 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class HttpResource extends Resource {
-	private final static Logger LOG = LoggerFactory.getLogger(HttpResource.class);
+	private final static Logger LOG = LoggerFactory
+			.getLogger(HttpResource.class);
 	private HttpClientResponse httpClientResponse;
 	private final ResourceContext target;
 	private final String url;
 
-	public HttpResource(HttpClient httpClient, ResourceContext resourceContext) throws IOException {
+	public HttpResource(HttpClient httpClient, ResourceContext resourceContext)
+			throws IOException {
 		this.target = resourceContext;
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
 		Driver driver = resourceContext.getDriver();
-		HttpServletRequest originalRequest = resourceContext.getOriginalRequest();
+		HttpServletRequest originalRequest = resourceContext
+				.getOriginalRequest();
 
 		// Retrieve session and other cookies
 		UserContext userContext = null;
 		boolean newUserContext = true;
 		if (driver.getUserContext(originalRequest, false) == null) {
-			// Create a temporary user context and cookie store.
+			// Create a new user context and cookie store.
 			userContext = driver.createNewUserContext();
 		} else {
 			userContext = driver.getUserContext(originalRequest, false);
 			newUserContext = false;
 		}
+
 		HttpContext httpContext = userContext.getHttpContext();
 
 		// Proceed with request
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
-		HttpClientRequest httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
+		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
+				originalRequest, proxy, preserveHost);
 		if (resourceContext.getValidators() != null) {
-			for (Entry<String, String> header : resourceContext.getValidators().entrySet()) {
-				LOG.debug("Adding validator: " + header.getKey() + ": " + header.getValue());
+			for (Entry<String, String> header : resourceContext.getValidators()
+					.entrySet()) {
+				LOG.debug("Adding validator: " + header.getKey() + ": "
+						+ header.getValue());
 				httpClientRequest.addHeader(header.getKey(), header.getValue());
 			}
 		}
 		// Auth handler
-		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
+		AuthenticationHandler authenticationHandler = driver
+				.getAuthenticationHandler();
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 
 		// Filter
 		Filter filter = driver.getFilter();
+		if (newUserContext && filter.needUserContext()) {
+			// Store user context in session. Filter requirement
+			resourceContext.getDriver().setUserContext(userContext,
+					originalRequest);
+		}
 		filter.preRequest(httpClientRequest, resourceContext);
 
 		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
-		// if (httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_PERMANENTLY
-		// || httpClientResponse.getStatusCode() == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-		// if (!httpClientResponse.getCurrentLocation().startsWith(resourceContext.getDriver().getBaseURL())) {
+		// if (httpClientResponse.getStatusCode() ==
+		// HttpServletResponse.SC_MOVED_PERMANENTLY
+		// || httpClientResponse.getStatusCode() ==
+		// HttpServletResponse.SC_MOVED_TEMPORARILY) {
+		// if
+		// (!httpClientResponse.getCurrentLocation().startsWith(resourceContext.getDriver().getBaseURL()))
+		// {
 		// LOG.debug("Current location should be started with: "
 		// + resourceContext.getDriver().getBaseURL());
-		// throw new IOException("Current location should be started with: " + resourceContext.getDriver().getBaseURL()
+		// throw new IOException("Current location should be started with: " +
+		// resourceContext.getDriver().getBaseURL()
 		// + " but it is: " + httpClientResponse.getCurrentLocation());
 		// }
 		// }
 
-		// Store context in session if cookies where created
-		if (newUserContext && !userContext.getCookies().isEmpty()) {
-			resourceContext.getDriver().setUserContext(userContext, originalRequest);
+		// Store context in session if cookies where created. Not needed if
+		// filter need userContext (already done)
+		if (!filter.needUserContext() && newUserContext
+				&& !userContext.getCookies().isEmpty()) {
+			resourceContext.getDriver().setUserContext(userContext,
+					originalRequest);
 		}
 
-		while (authenticationHandler.needsNewRequest(httpClientResponse, resourceContext)) {
+		while (authenticationHandler.needsNewRequest(httpClientResponse,
+				resourceContext)) {
 			// We must first ensure that the connection is always released, if
 			// not the connection manager's pool may be exhausted soon !
 			httpClientResponse.finish();
-			httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
+			httpClientRequest = new HttpClientRequest(url, originalRequest,
+					proxy, preserveHost);
 			// Auth handler
-			authenticationHandler.preRequest(httpClientRequest, resourceContext);
+			authenticationHandler
+					.preRequest(httpClientRequest, resourceContext);
 			// Filter
 			filter.preRequest(httpClientRequest, resourceContext);
-			httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
+			httpClientResponse = httpClientRequest.execute(httpClient,
+					httpContext);
 
-			// Store context if cookies where created
-			if (newUserContext && !userContext.getCookies().isEmpty()) {
-				resourceContext.getDriver().setUserContext(userContext, originalRequest);
+			// Store context if cookies where created. Not needed if filter need
+			// userContext (already done)
+			if (!filter.needUserContext() && newUserContext
+					&& !userContext.getCookies().isEmpty()) {
+				resourceContext.getDriver().setUserContext(userContext,
+						originalRequest);
 			}
 		}
 
 		if (isError()) {
-			LOG.warn("Problem retrieving URL: " + url + ": " + httpClientResponse.getStatusCode() + " "
+			LOG.warn("Problem retrieving URL: " + url + ": "
+					+ httpClientResponse.getStatusCode() + " "
 					+ httpClientResponse.getStatusText());
 		}
 	}
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
+		output.setStatus(httpClientResponse.getStatusCode(),
+				httpClientResponse.getStatusText());
 		Rfc2616.copyHeaders(target.getDriver().getConfiguration(), this, output);
 		target.getDriver().getFilter().postRequest(httpClientResponse, target);
 		String location = httpClientResponse.getHeader(HttpHeaders.LOCATION);
@@ -157,9 +187,11 @@ public class HttpResource extends Resource {
 				// Unzip the stream if necessary
 				String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
 				if (contentEncoding != null) {
-					if (!"gzip".equalsIgnoreCase(contentEncoding) && !"x-gzip".equalsIgnoreCase(contentEncoding)) {
-						throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding
-								+ "\" is not supported");
+					if (!"gzip".equalsIgnoreCase(contentEncoding)
+							&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
+						throw new UnsupportedContentEncodingException(
+								"Content-encoding \"" + contentEncoding
+										+ "\" is not supported");
 					}
 					inputStream = httpClientResponse.decompressStream();
 				}
@@ -170,7 +202,8 @@ public class HttpResource extends Resource {
 		}
 	}
 
-	private String rewriteLocation(String location) throws MalformedURLException {
+	private String rewriteLocation(String location)
+			throws MalformedURLException {
 		location = new URL(new URL(url), location).toString();
 		// Location header rewriting
 		HttpServletRequest request = target.getOriginalRequest();
@@ -189,7 +222,8 @@ public class HttpResource extends Resource {
 			// Remove relUrl from originalBase.
 			originalBase = originalBase.substring(0, pos);
 			// Add '/' at the end if absent
-			if (originalBase.charAt(originalBase.length() - 1) != '/' && driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
+			if (originalBase.charAt(originalBase.length() - 1) != '/'
+					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
 				originalBase += "/";
 			}
 		}
@@ -197,10 +231,13 @@ public class HttpResource extends Resource {
 		return location.replaceFirst(driverBaseUrl, originalBase);
 	}
 
-	private void removeSessionId(InputStream inputStream, Output output) throws IOException {
+	private void removeSessionId(InputStream inputStream, Output output)
+			throws IOException {
 		String jsessionid = RewriteUtils.getSessionId(target);
-		boolean textContentType = ResourceUtils.isTextContentType(httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE),
-				target.getDriver().getConfiguration().getParsableContentTypes());
+		boolean textContentType = ResourceUtils.isTextContentType(
+				httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE), target
+						.getDriver().getConfiguration()
+						.getParsableContentTypes());
 		if (jsessionid == null || !textContentType) {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
@@ -211,7 +248,8 @@ public class HttpResource extends Resource {
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
 			if (output.getHeader(HttpHeaders.CONTENT_LENGTH) != null) {
-				output.setHeader(HttpHeaders.CONTENT_LENGTH, Integer.toString(content.length()));
+				output.setHeader(HttpHeaders.CONTENT_LENGTH,
+						Integer.toString(content.length()));
 			}
 			OutputStream outputStream = output.getOutputStream();
 			IOUtils.write(content, outputStream, charset);

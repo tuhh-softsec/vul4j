@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.webassembletool.ConfigurationException;
 import net.webassembletool.ResourceContext;
+import net.webassembletool.cookie.CustomCookieStore;
 import net.webassembletool.cookie.SerializableBasicClientCookie2;
 import net.webassembletool.extension.ExtensionFactory;
 import net.webassembletool.http.HttpClientRequest;
@@ -34,7 +35,6 @@ import net.webassembletool.http.HttpClientResponse;
 import net.webassembletool.http.HttpHeaders;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,26 +96,20 @@ public class CookieForwardingFilter implements Filter {
 		if (dest == null) {
 			return;
 		}
+		// Do we need to clean cookies in the cookieStore ? Already done in
+		// prerequest
 		String[] cookies = response.getHeaders(HttpHeaders.SET_COOKIE);
 		if (cookies != null && cookies.length != 0) {
-			try {
-				URL url = new URL(context.getDriver().getBaseURL());
-				for (String cookie : cookies) {
-					int idx = cookie.indexOf('=');
-					if (idx != -1
-							&& forwardCookies
-									.contains(cookie.substring(0, idx))) {
-						dest.addHeader(HttpHeaders.SET_COOKIE, cookie
-								+ "; Path=/");
-						if (logger.isDebugEnabled()) {
-							logger.debug("Adding cookie " + cookie
-									+ " to response headers");
-						}
+			for (String cookie : cookies) {
+				int idx = cookie.indexOf('=');
+				if (idx != -1
+						&& forwardCookies.contains(cookie.substring(0, idx))) {
+					dest.addHeader(HttpHeaders.SET_COOKIE, cookie + "; Path=/");
+					if (logger.isDebugEnabled()) {
+						logger.debug("Adding cookie " + cookie
+								+ " to response headers");
 					}
 				}
-			} catch (MalformedURLException e) {
-				logger.error("Error : driver.baseUrl not a valid url");
-				throw new ConfigurationException("baseUrl not a valid url");
 			}
 		}
 	}
@@ -130,13 +124,19 @@ public class CookieForwardingFilter implements Filter {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");
 		}
-		// Select the cookie to forward
-		CookieStore cookieStore = (CookieStore) context.getUserContext(true)
-				.getHttpContext().getAttribute(ClientContext.COOKIE_STORE);
+		// Note : it's ok to assume cookieStore is an instance of
+		// CustomCookieStore since it has been set in HttpRessource
+		CustomCookieStore cookieStore = (CustomCookieStore) context
+				.getUserContext(false).getHttpContext()
+				.getAttribute(ClientContext.COOKIE_STORE);
 		if (cookieStore == null) {
 			logger.info("CookieStore not available in HTTP context");
 			return;
 		}
+		// Cleanup cookies before adding new ones
+		cookieStore.cleanUpCookies();
+
+		// Select the cookie to forward
 		Cookie[] cookies = context.getOriginalRequest().getCookies();
 		if (cookies != null && cookies.length != 0) {
 			List<Cookie> toForward = new ArrayList<Cookie>();
@@ -170,5 +170,14 @@ public class CookieForwardingFilter implements Filter {
 			}
 		}
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see net.webassembletool.filter.Filter#needUserContext()
+	 */
+	public boolean needUserContext() {
+		return true;
 	}
 }

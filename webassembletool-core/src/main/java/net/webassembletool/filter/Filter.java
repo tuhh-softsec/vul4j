@@ -34,14 +34,27 @@ public interface Filter extends Extension {
 
 	void postRequest(HttpClientResponse response, ResourceContext context);
 
+	/**
+	 * Does the filter need userContext ?
+	 * 
+	 * @return true if the filter needs the userContext to be setted beforehand
+	 */
+	boolean needUserContext();
+
 	Filter EMPTY = new Filter() {
 		public void init(Properties properties) {
 		}
 
-		public void preRequest(HttpClientRequest request, ResourceContext context) {
+		public void preRequest(HttpClientRequest request,
+				ResourceContext context) {
 		}
 
-		public void postRequest(HttpClientResponse response, ResourceContext context) {
+		public void postRequest(HttpClientResponse response,
+				ResourceContext context) {
+		}
+
+		public boolean needUserContext() {
+			return false;
 		}
 
 	};

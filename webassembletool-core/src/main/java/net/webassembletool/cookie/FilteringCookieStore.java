@@ -15,7 +15,9 @@
 package net.webassembletool.cookie;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.http.cookie.Cookie;
@@ -31,25 +33,10 @@ import org.slf4j.LoggerFactory;
 public class FilteringCookieStore extends SerializableBasicCookieStore {
 	/** Serialization ID. */
 	private static final long serialVersionUID = -2112501012354521287L;
-	private static final Logger logger = LoggerFactory.getLogger(FilteringCookieStore.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(FilteringCookieStore.class);
 
-	private final Collection<String> forwardCookies = new HashSet<String>();
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see net.webassembletool.cookie.SerializableBasicCookieStore#addCookie(org.apache.http.cookie.Cookie)
-	 */
-	@Override
-	public void addCookie(Cookie cookie) {
-		if (!forwardCookies.contains(cookie.getName())) {
-			super.addCookie(cookie);
-		} else {
-			if (logger.isInfoEnabled()) {
-				logger.info("Not storing " + cookie.getName());
-			}
-		}
-	}
+	private final Collection<String> discardCookies = new HashSet<String>();
 
 	/**
 	 * Get names of the cookies which are forwarded.
@@ -57,7 +44,7 @@ public class FilteringCookieStore extends SerializableBasicCookieStore {
 	 * @return cookie name list.
 	 */
 	Collection<String> getForwardCookies() {
-		return forwardCookies;
+		return discardCookies;
 	}
 
 	/**
@@ -75,10 +62,31 @@ public class FilteringCookieStore extends SerializableBasicCookieStore {
 		if (cookiesProperty != null) {
 			String attributes[] = cookiesProperty.split(",");
 			for (String cookieName : attributes) {
-				forwardCookies.add(cookieName.trim());
+				discardCookies.add(cookieName.trim());
 				if (logger.isInfoEnabled()) {
 					logger.info("Discarding cookie: " + cookieName);
 				}
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see net.webassembletool.cookie.SerializableBasicCookieStore#cleanUpCookies()
+	 */
+	@Override
+	public void cleanUpCookies() {
+		List<Cookie> cookies = getCookies();
+		for (Cookie cookie : cookies) {
+			if (discardCookies.contains(cookie.getName())) {
+				if (logger.isInfoEnabled()) {
+					logger.info("Removing cookie: " + cookie.getName());
+				}
+				SerializableBasicClientCookie2 newCookie = new SerializableBasicClientCookie2(
+						cookie);
+				newCookie.setExpiryDate(new Date(0));
+				super.addCookie(newCookie);
 			}
 		}
 	}

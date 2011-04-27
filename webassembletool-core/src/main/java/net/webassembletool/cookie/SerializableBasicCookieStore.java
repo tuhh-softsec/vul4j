@@ -21,12 +21,14 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 
 /**
- * Serializable implementation of {@link CookieStore}
+ * Serializable implementation of {@link CookieStore}.
  * 
  * @author Nicolas Richeton
  */
-public class SerializableBasicCookieStore extends BasicCookieStore implements CustomCookieStore {
-	/** Serial Id */
+public class SerializableBasicCookieStore extends BasicCookieStore implements
+		CustomCookieStore {
+
+	/** Serial Id. */
 	private static final long serialVersionUID = 5884817839252416275L;
 
 	/**
@@ -38,7 +40,21 @@ public class SerializableBasicCookieStore extends BasicCookieStore implements Cu
 		super.addCookie(new SerializableBasicClientCookie2(cookie));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see net.webassembletool.extension.Extension#init(java.util.Properties)
+	 */
 	public void init(Properties properties) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see net.webassembletool.cookie.CustomCookieStore#cleanUpCookies()
+	 */
+	public void cleanUpCookies() {
+		// Default implementation, does nothing
 	}
 
 }
