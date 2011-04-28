@@ -1406,18 +1406,16 @@ public class XMLCipher {
             logger.debug("Decrypted octets:\n" + octets);
         }
 
-        Node sourceParent =  element.getParentNode();
+        Node sourceParent = element.getParentNode();
+        Node decryptedNode = serializer.deserialize(octets, sourceParent);
 
-        DocumentFragment decryptedFragment = serializer.deserialize(octets, sourceParent);
-
-        // The de-serialiser returns a fragment whose children we need to
-        // take on.
+        // The de-serialiser returns a node whose children we need to take on.
         if (sourceParent != null && Node.DOCUMENT_NODE == sourceParent.getNodeType()) {
             // If this is a content decryption, this may have problems
             contextDocument.removeChild(contextDocument.getDocumentElement());
-            contextDocument.appendChild(decryptedFragment);
-        } else {
-            sourceParent.replaceChild(decryptedFragment, element);
+            contextDocument.appendChild(decryptedNode);
+        } else if (sourceParent != null) {
+            sourceParent.replaceChild(decryptedNode, element);
         }
 
         return contextDocument;
@@ -1491,10 +1489,9 @@ public class XMLCipher {
 
         // Obtain the encrypted octets 
         XMLCipherInput cipherInput = new XMLCipherInput(encryptedData);
-        byte [] encryptedBytes = cipherInput.getBytes();
+        byte[] encryptedBytes = cipherInput.getBytes();
 
         // Now create the working cipher
-
         String jceAlgorithm = 
             JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
         if (logger.isDebugEnabled()) {
@@ -1540,16 +1537,13 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", iape);
         }
 
-        byte[] plainBytes;
         try {
-            plainBytes = c.doFinal(encryptedBytes, ivLen, encryptedBytes.length - ivLen);
+            return c.doFinal(encryptedBytes, ivLen, encryptedBytes.length - ivLen);
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
         } catch (BadPaddingException bpe) {
             throw new XMLEncryptionException("empty", bpe);
         }
-
-        return plainBytes;
     }
 
     /*
@@ -1776,6 +1770,9 @@ public class XMLCipher {
      * @author  Axl Mattheus
      */
     private class Serializer {
+        
+        private DocumentBuilderFactory dbf;
+        
         /**
          * Initialize the <code>XMLSerializer</code> with the specified context
          * <code>Document</code>.
@@ -1834,12 +1831,13 @@ public class XMLCipher {
             for (int i = 0; i < content.getLength(); i++) {                
                 canon.canonicalizeSubtree(content.item(i));                
             }
-            baos.close();
-            return baos.toString("UTF-8");
+            String ret = baos.toString("UTF-8");
+            baos.reset();
+            return ret;
         }
 
         /**
-         * Use the Canoncializer to serialize the node
+         * Use the Canonicalizer to serialize the node
          * @param node
          * @return the canonicalization of the node
          * @throws Exception
@@ -1849,84 +1847,63 @@ public class XMLCipher {
             canon.setWriter(baos);			
             canon.notReset();
             canon.canonicalizeSubtree(node);			
-            baos.close();            
-            return baos.toString("UTF-8");
+            String ret = baos.toString("UTF-8");
+            baos.reset();
+            return ret;
         }
 
         /**
          * @param source
          * @param ctx
-         * @return the DocumentFragment resulting from the parse of the source
+         * @return the Node resulting from the parse of the source
          * @throws XMLEncryptionException
          */
-        DocumentFragment deserialize(String source, Node ctx) throws XMLEncryptionException {
-            DocumentFragment result;
-            final String tagname = "fragment";
-
+        Node deserialize(String source, Node ctx) throws XMLEncryptionException {
             // Create the context to parse the document against
             StringBuilder sb = new StringBuilder();
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><" + tagname);
+            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><dummy");
 
-            // Run through each node up to the document node and find any
-            // xmlns: nodes
-
+            // Run through each node up to the document node and find any xmlns: nodes
+            Map<String, String> storedNamespaces = new HashMap<String, String>();
             Node wk = ctx;
-
             while (wk != null) {
                 NamedNodeMap atts = wk.getAttributes();
-                int length;
                 if (atts != null) {
-                    length = atts.getLength();
-                } else {
-                    length = 0;
-                }
-
-                for (int i = 0 ; i < length ; ++i) {
-                    Node att = atts.item(i);
-                    if (att.getNodeName().startsWith("xmlns:") ||
-                        att.getNodeName().equals("xmlns")) {
-
-                        // Check to see if this node has already been found
-                        Node p = ctx;
-                        boolean found = false;
-                        while (p != wk) {
-                            NamedNodeMap tstAtts = p.getAttributes();
-                            if (tstAtts != null && 
-                                tstAtts.getNamedItem(att.getNodeName()) != null) {
-                                found = true;
-                                break;
-                            }
-                            p = p.getParentNode();
-                        }
-                        if (found == false) {
-                            // This is an attribute node
-                            sb.append(" " + att.getNodeName() + "=\"" + att.getNodeValue() + "\"");
+                    for (int i = 0; i < atts.getLength(); ++i) {
+                        Node att = atts.item(i);
+                        String nodeName = att.getNodeName();
+                        if ((nodeName.equals("xmlns") || nodeName.startsWith("xmlns:"))
+                            && !storedNamespaces.containsKey(att.getNodeName())) {
+                            sb.append(" " + nodeName + "=\"" + att.getNodeValue() + "\"");
+                            storedNamespaces.put(nodeName, att.getNodeValue());
                         }
                     }
                 }
                 wk = wk.getParentNode();
             }
-            sb.append(">" + source + "</" + tagname + ">");
+            sb.append(">" + source + "</dummy>");
             String fragment = sb.toString();
-
+            
             try {
-                DocumentBuilderFactory dbf =
-                    DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(true);
-                dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+                if (dbf == null) {
+                    dbf = DocumentBuilderFactory.newInstance();
+                    dbf.setNamespaceAware(true);
+                    dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+                    dbf.setValidating(false);
+                }
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document d = db.parse(new InputSource(new StringReader(fragment)));
-
+                
                 Element fragElt = 
                     (Element) contextDocument.importNode(d.getDocumentElement(), true);
-                result = contextDocument.createDocumentFragment();
+                DocumentFragment result = contextDocument.createDocumentFragment();
                 Node child = fragElt.getFirstChild();
                 while (child != null) {
                     fragElt.removeChild(child);
                     result.appendChild(child);
                     child = fragElt.getFirstChild();
                 }
-                // String outp = serialize(d);
+                return result;
             } catch (SAXException se) {
                 throw new XMLEncryptionException("empty", se);
             } catch (ParserConfigurationException pce) {
@@ -1934,8 +1911,6 @@ public class XMLCipher {
             } catch (IOException ioe) {
                 throw new XMLEncryptionException("empty", ioe);
             }
-
-            return result;
         }
     }
 
@@ -2721,7 +2696,7 @@ public class XMLCipher {
 
             /** @inheritDoc */
             public String getCarriedName() {
-                return (carriedName);
+                return carriedName;
             }
 
             /** @inheritDoc */
@@ -2867,7 +2842,7 @@ public class XMLCipher {
              * @return the encoding
              */
             public String getEncoding() {
-                return (encoding);
+                return encoding;
             }
             
             /**
