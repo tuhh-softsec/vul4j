@@ -109,7 +109,7 @@ public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataCont
         throws XMLSecurityException {
 
         if (cert.getVersion() < 3) {
-            Object exArgs[] = { new Integer(cert.getVersion()) };
+            Object exArgs[] = { Integer.valueOf(cert.getVersion()) };
             throw new XMLSecurityException("certificate.noSki.lowVersion", exArgs);
         }
 

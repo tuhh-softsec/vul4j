@@ -495,6 +495,9 @@ public class XMLUtils {
                     }            
                 }
             case Node.ENTITY_REFERENCE_NODE :
+                parent = node;
+                sibling = node.getFirstChild();
+                break;
             case Node.DOCUMENT_NODE :
                 parent = node;
                 sibling = node.getFirstChild();

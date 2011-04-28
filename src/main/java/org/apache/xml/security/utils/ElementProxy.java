@@ -38,7 +38,7 @@ import org.w3c.dom.Text;
 public abstract class ElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
-    protected static org.apache.commons.logging.Log log = 
+    protected static final org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(ElementProxy.class);
 
     /** Field constructionElement */

@@ -83,7 +83,7 @@ public class RFC2253Parser {
             for (int j = 0; (k = DN.indexOf(",", j)) >= 0; j = k + 1) {
                 l += countQuotes(DN, j, k);
 
-                if ((k > 0) && (DN.charAt(k - 1) != '\\') && (l % 2) != 1) {
+                if ((k > 0) && (DN.charAt(k - 1) != '\\') && (l % 2) == 0) {
                     sb.append(parseRDN(DN.substring(i, k).trim(), toXml) + ",");
 
                     i = k + 1;
@@ -116,7 +116,7 @@ public class RFC2253Parser {
         for (int j = 0; (k = str.indexOf("+", j)) >= 0; j = k + 1) {
             l += countQuotes(str, j, k);
 
-            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) != 1) {
+            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) == 0) {
                 sb.append(parseATAV(trim(str.substring(i, k)), toXml) + "+");
 
                 i = k + 1;
@@ -413,7 +413,7 @@ public class RFC2253Parser {
         for (int j = 0; (k = str.indexOf(symbol, j)) >= 0; j = k + 1) {
             l += countQuotes(str, j, k);
 
-            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) != 1) {
+            if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) == 0) {
                 sb.append(trim(str.substring(i, k)) + replace);
 
                 i = k + 1;

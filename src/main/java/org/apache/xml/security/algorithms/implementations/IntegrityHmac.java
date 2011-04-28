@@ -356,7 +356,7 @@ public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
             Element HMElem = 
                 XMLUtils.createElementInSignatureSpace(doc, Constants._TAG_HMACOUTPUTLENGTH);
             Text HMText =
-                doc.createTextNode(new Integer(this.HMACOutputLength).toString());
+                doc.createTextNode(Integer.valueOf(this.HMACOutputLength).toString());
 
             HMElem.appendChild(HMText);
             XMLUtils.addReturnToElement(element);

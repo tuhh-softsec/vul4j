@@ -276,7 +276,7 @@ public class CachedXPathFuncHereAPI {
         XPath xpath = null;
         Class[] classes = new Class[]{String.class, SourceLocator.class, PrefixResolver.class, int.class,
                                       ErrorListener.class, FunctionTable.class};
-        Object[] objects = new Object[]{str, null, prefixResolver, new Integer(XPath.SELECT), null, funcTable};
+        Object[] objects = new Object[]{str, null, prefixResolver, Integer.valueOf(XPath.SELECT), null, funcTable};
         try {
             Constructor constructor = XPath.class.getConstructor(classes);
             xpath = (XPath) constructor.newInstance(objects);

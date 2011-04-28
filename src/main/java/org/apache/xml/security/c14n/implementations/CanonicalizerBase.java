@@ -372,6 +372,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         if (currentNode != null && Node.ELEMENT_NODE == currentNode.getNodeType()) {
             getParentNameSpaces((Element)currentNode, ns);
         }
+        if (currentNode == null) {
+            return;
+        }
         Node sibling = null;
         Node parentNode = null;	
         OutputStream writer = this.writer;

@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
  * @author Christian Geuer-Pollmann
  * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
-public class XMLSignatureInput implements Cloneable {
+public class XMLSignatureInput {
     private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class);
 

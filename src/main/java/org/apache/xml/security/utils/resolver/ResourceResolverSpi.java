@@ -60,7 +60,7 @@ public abstract class ResourceResolverSpi {
         if (properties == null) {
             properties = new HashMap<String, String>();
         }
-        this.properties.put(key, value);
+        properties.put(key, value);
     }
 
     /**
@@ -73,19 +73,19 @@ public abstract class ResourceResolverSpi {
         if (properties == null) {
             return null;
         }
-        return this.properties.get(key);
+        return properties.get(key);
     }
 
     /**
      * 
      * @param properties
      */
-    public void engineAddProperies(Map<String, String> properties) {
-        if (properties != null) {
+    public void engineAddProperies(Map<String, String> newProperties) {
+        if (newProperties != null && !newProperties.isEmpty()) {
             if (properties == null) {
                 properties = new HashMap<String, String>();
             }
-            this.properties.putAll(properties);
+            properties.putAll(newProperties);
         }
     }
     

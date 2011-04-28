@@ -331,20 +331,20 @@ public class Init {
             new JCEMapper.Algorithm(null, null)
         );
         defaultAlgorithms.put(
-             XMLCipher.TRIPLEDES_KeyWrap, 
-             new JCEMapper.Algorithm("DESede", "DESedeWrap")
+            XMLCipher.TRIPLEDES_KeyWrap, 
+            new JCEMapper.Algorithm("DESede", "DESedeWrap")
         );
         defaultAlgorithms.put(
-             XMLCipher.AES_128_KeyWrap, 
-             new JCEMapper.Algorithm("AES", "AESWrap")
+            XMLCipher.AES_128_KeyWrap, 
+            new JCEMapper.Algorithm("AES", "AESWrap")
         );
         defaultAlgorithms.put(
-             XMLCipher.AES_192_KeyWrap, 
-             new JCEMapper.Algorithm("AES", "AESWrap")
+            XMLCipher.AES_192_KeyWrap, 
+            new JCEMapper.Algorithm("AES", "AESWrap")
         );
         defaultAlgorithms.put(
-             XMLCipher.AES_256_KeyWrap, 
-             new JCEMapper.Algorithm("AES", "AESWrap")
+            XMLCipher.AES_256_KeyWrap, 
+            new JCEMapper.Algorithm("AES", "AESWrap")
         );
         
         //
@@ -412,6 +412,10 @@ public class Init {
                 if ("Configuration".equals(config.getLocalName())) {
                     break;
                 }
+            }
+            if (config == null) {
+                log.error("Error in reading configuration file - Configuration element not found");
+                return;
             }
             for (Node el = config.getFirstChild(); el != null; el = el.getNextSibling()) {
                 if (el == null || Node.ELEMENT_NODE != el.getNodeType()) {

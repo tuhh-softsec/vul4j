@@ -160,7 +160,6 @@ public class NameSpaceSymbTable {
         needsClone();
         symb.put(prefix, entry);
         entry.rendered = true;
-        entry.level = nameSpaces;
         entry.lastrendered = entry.uri;				
         // Return the node for outputing.
         return entry.n;
@@ -285,9 +284,6 @@ public class NameSpaceSymbTable {
  * The internal structure of NameSpaceSymbTable.
  **/
 class NameSpaceSymbEntry implements Cloneable {
-    
-    /** the level where the definition was rendered(Only for inclusive) */
-    int level = 0;
     
     String prefix;
     
