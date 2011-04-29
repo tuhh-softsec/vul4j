@@ -112,7 +112,9 @@ public abstract class KeyInfoFactory {
     static {
         try {
             cl = Class.forName("javax.xml.crypto.dsig.XMLDSigSecurity");
-        } catch (ClassNotFoundException cnfe) { }
+        } catch (ClassNotFoundException cnfe) {
+            // not possible
+        }
         getImplMethod = (Method)
             AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {

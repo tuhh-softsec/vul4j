@@ -197,8 +197,7 @@ public class CachedXPathFuncHereAPI {
                     .getDocumentElement()
                     : namespaceNode);
 
-        // only check if string points to different object (for performance)
-        if (str!=xpathStr) {
+        if (!str.equals(xpathStr)) {
             if (str.indexOf("here()")>0) {
                 context.reset();
                 dtmManager=context.getDTMManager();
@@ -240,8 +239,7 @@ public class CachedXPathFuncHereAPI {
     public XObject eval(
         Node contextNode, Node xpathnode, String str, PrefixResolver prefixResolver)
     throws TransformerException {
-        // only check if string points to different object (for performance)
-        if (str!=xpathStr) {
+        if (!str.equals(xpathStr)) {
             if (str.indexOf("here()")>0) {
                 context.reset();
                 dtmManager=context.getDTMManager();

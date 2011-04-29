@@ -154,6 +154,9 @@ final class XMLDSigSecurity {
         } else if (type.equals("TransformService")) {
             typeClass = javax.xml.crypto.dsig.TransformService.class;
             m = false;
+        } else {
+            throw new NoSuchAlgorithmException
+                ("The type " + type + " does not correspond to a known type");
         }
         String key = type + "." + alg;
         if (provider == null) {

@@ -177,6 +177,20 @@ public abstract class DOMDigestMethod extends DOMStructure
 
         return (getAlgorithm().equals(odm.getAlgorithm()) && paramsEqual);
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (params != null) {
+            result = 31 * result + params.hashCode();
+        }
+        String algorithm = getAlgorithm();
+        if (algorithm != null) {
+            result = 31 * result + algorithm.hashCode();
+        }
+        
+        return result;
+    }
 
     /**
      * Marshals the algorithm-specific parameters to an Element and

@@ -61,7 +61,6 @@ public class ResourceResolver {
      * Constructor ResourceResolver
      *
      * @param className
-     * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
@@ -174,8 +173,6 @@ public class ResourceResolver {
             Class<ResourceResolverSpi> resourceResolverClass = 
                 (Class<ResourceResolverSpi>) Class.forName(className);
             register(resourceResolverClass, false);
-        } catch (NoClassDefFoundError e) {
-            log.warn("Error loading resolver " + className + " disabling it");
         } catch (ClassNotFoundException e) {
             log.warn("Error loading resolver " + className + " disabling it");
         }
@@ -193,8 +190,6 @@ public class ResourceResolver {
             Class<ResourceResolverSpi> resourceResolverClass = 
                 (Class<ResourceResolverSpi>) Class.forName(className);
             register(resourceResolverClass, true);
-        } catch (NoClassDefFoundError e) {
-            log.warn("Error loading resolver " + className + " disabling it");
         } catch (ClassNotFoundException e) {
             log.warn("Error loading resolver " + className + " disabling it");
         }
@@ -219,7 +214,9 @@ public class ResourceResolver {
             if (log.isDebugEnabled()) {
                 log.debug("Registered resolver: " + className);
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException e) {
+            log.warn("Error loading resolver " + className + " disabling it");
+        } catch (InstantiationException e) {
             log.warn("Error loading resolver " + className + " disabling it");
         }
     }
@@ -232,7 +229,9 @@ public class ResourceResolver {
             for (Class<? extends ResourceResolverSpi> defaultResolverClass : defaultResolverList) {
                 try {
                     resolverList.add(new ResourceResolver(defaultResolverClass));
-                } catch (Exception e) {
+                } catch (IllegalAccessException e) {
+                    log.warn("Error loading resolver " + defaultResolverClass + " disabling it");
+                } catch (InstantiationException e) {
                     log.warn("Error loading resolver " + defaultResolverClass + " disabling it");
                 }
             }
