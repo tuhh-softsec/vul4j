@@ -21,7 +21,9 @@ package org.apache.xml.security;
 import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -64,6 +66,11 @@ import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
+import org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem;
+import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -97,6 +104,8 @@ public class Init {
         new HashMap<String, JCEMapper.Algorithm>();
     private static Map<String, Class<? extends CanonicalizerSpi>> defaultC14nAlgorithms = 
         new HashMap<String, Class<? extends CanonicalizerSpi>>();
+    private static List<ResourceResolverSpi> defaultResolverList = 
+        new ArrayList<ResourceResolverSpi>();
     
     static {
         //
@@ -368,6 +377,14 @@ public class Init {
         defaultC14nAlgorithms.put(
             Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, Canonicalizer11_WithComments.class
         );
+        
+        //
+        // Default Resolvers
+        //
+        defaultResolverList.add(new ResolverFragment());
+        defaultResolverList.add(new ResolverLocalFilesystem());
+        defaultResolverList.add(new ResolverXPointer());
+        defaultResolverList.add(new ResolverDirectHTTP());
     }
     
     /**
@@ -659,7 +676,9 @@ public class Init {
             //
             // Register the default resolvers
             //
-            ResourceResolver.registerDefaultResolvers();
+            for (ResourceResolverSpi resourceResolverSpi : defaultResolverList) {
+                ResourceResolver.register(resourceResolverSpi, false);
+            }
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();

@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
-import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
-import org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem;
-import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.w3c.dom.Attr;
 
 /**
@@ -44,30 +40,8 @@ public class ResourceResolver {
     /** these are the system-wide resolvers */
     private static List<ResourceResolver> resolverList = new ArrayList<ResourceResolver>();
     
-    private static List<Class<? extends ResourceResolverSpi>> defaultResolverList = 
-        new ArrayList<Class<? extends ResourceResolverSpi>>();
-    
-    static {
-        defaultResolverList.add(ResolverFragment.class);
-        defaultResolverList.add(ResolverLocalFilesystem.class);
-        defaultResolverList.add(ResolverXPointer.class);
-        defaultResolverList.add(ResolverDirectHTTP.class);
-    }
-    
     /** Field resolverSpi */
     private final ResourceResolverSpi resolverSpi;
-
-    /**
-     * Constructor ResourceResolver
-     *
-     * @param className
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     */
-    private ResourceResolver(Class<? extends ResourceResolverSpi> className)
-        throws IllegalAccessException, InstantiationException {
-        this.resolverSpi = className.newInstance();
-    }
 
     /**
      * Constructor ResourceResolver
@@ -203,17 +177,8 @@ public class ResourceResolver {
      */
     public static void register(Class<ResourceResolverSpi> className, boolean start) {
         try {
-            ResourceResolver resolver = new ResourceResolver(className);
-            synchronized(resolverList) {
-                if (start) {
-                    resolverList.add(0, resolver);
-                } else {	       
-                    resolverList.add(resolver);
-                }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Registered resolver: " + className);
-            }
+            ResourceResolverSpi resourceResolverSpi = className.newInstance();
+            register(resourceResolverSpi, start);
         } catch (IllegalAccessException e) {
             log.warn("Error loading resolver " + className + " disabling it");
         } catch (InstantiationException e) {
@@ -222,22 +187,24 @@ public class ResourceResolver {
     }
     
     /**
-     * Register the default ResourceResolvers
+     * Registers a ResourceResolverSpi instance. This method logs a warning if the class 
+     * cannot be registered.
+     * @param className
+     * @param start
      */
-    public static void registerDefaultResolvers() {
+    public static void register(ResourceResolverSpi resourceResolverSpi, boolean start) {
         synchronized(resolverList) {
-            for (Class<? extends ResourceResolverSpi> defaultResolverClass : defaultResolverList) {
-                try {
-                    resolverList.add(new ResourceResolver(defaultResolverClass));
-                } catch (IllegalAccessException e) {
-                    log.warn("Error loading resolver " + defaultResolverClass + " disabling it");
-                } catch (InstantiationException e) {
-                    log.warn("Error loading resolver " + defaultResolverClass + " disabling it");
-                }
+            if (start) {
+                resolverList.add(0, new ResourceResolver(resourceResolverSpi));
+            } else {               
+                resolverList.add(new ResourceResolver(resourceResolverSpi));
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug("Registered resolver: " + resourceResolverSpi.toString());
+        }
     }
-
+    
     /**
      * Method resolve
      *
