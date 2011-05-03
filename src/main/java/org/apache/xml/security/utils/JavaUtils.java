@@ -113,17 +113,14 @@ public class JavaUtils {
      * @throws IOException
      */
     public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
-        byte refBytes[] = null;
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte buf[] = new byte[1024];
+        byte buf[] = new byte[4 * 1024];
         int len;
 
         while ((len = inputStream.read(buf)) > 0) {
             baos.write(buf, 0, len);
         }
 
-        refBytes = baos.toByteArray();
-        return refBytes;
+        return baos.toByteArray();
     }
 }

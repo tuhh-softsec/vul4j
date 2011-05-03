@@ -20,7 +20,6 @@ package org.apache.xml.security.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,15 +50,12 @@ import org.xml.sax.SAXException;
  * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
 public class XMLSignatureInput {
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLSignatureInput.class);
-
     /*
      * The XMLSignature Input can be either:
      *   A byteArray like with/or without InputStream.
      *   Or a nodeSet like defined either:
      *       * as a collection of nodes
-     *       * or as subnode excluding or not commets and excluding or 
+     *       * or as subnode excluding or not comments and excluding or 
      *         not other nodes.
      */
 
@@ -114,6 +110,8 @@ public class XMLSignatureInput {
    
     private boolean needsToBeExpanded = false;
     private OutputStream outputStream = null;
+    
+    private DocumentBuilderFactory dfactory;
 
     /**
      * Construct a XMLSignatureInput from an octet array.
@@ -124,7 +122,7 @@ public class XMLSignatureInput {
      * @param inputOctets an octet array which including XML document or node
      */
     public XMLSignatureInput(byte[] inputOctets) {
-        // NO  defensive copy
+        // NO defensive copy
         this.bytes = inputOctets;
     }
 
@@ -219,7 +217,7 @@ public class XMLSignatureInput {
             inputNodeSet = new HashSet<Node>();
             XMLUtils.getSet(subNode, inputNodeSet, excludeNode, excludeComments);
             return inputNodeSet;
-        } else if (this.isOctetStream()) {
+        } else if (isOctetStream()) {
             convertToNodes();
             Set<Node> result = new HashSet<Node>();
             XMLUtils.getSet(subNode, result, null, false); 
@@ -238,18 +236,26 @@ public class XMLSignatureInput {
      * @throws IOException
      */
     public InputStream getOctetStream() throws IOException  {
-        if (inputOctetStreamProxy instanceof FileInputStream) {
+        if (inputOctetStreamProxy != null) {
+            if (inputOctetStreamProxy.markSupported()) {
+                inputOctetStreamProxy.reset();
+            }
             return inputOctetStreamProxy;
-        } else {
-            return getResetableInputStream();                 
         }
+
+        if (bytes != null) {
+            inputOctetStreamProxy = new ByteArrayInputStream(bytes);
+            return inputOctetStreamProxy;
+        }
+
+        return null;
     }
 
     /**
      * @return real octet stream
      */
     public InputStream getOctetStreamReal () {
-        return this.inputOctetStreamProxy;
+        return inputOctetStreamProxy;
     }
 
     /**
@@ -263,17 +269,9 @@ public class XMLSignatureInput {
      * @throws IOException
      */
     public byte[] getBytes() throws IOException, CanonicalizationException {
-        if (bytes != null) {
-            return bytes;      
-        }
-        InputStream is = getResetableInputStream();
-        if (is != null) {
-            // resetable can read again bytes. 
-            if (bytes == null) {
-                is.reset();       
-                bytes = JavaUtils.getBytesFromStream(is);
-            } 	  	
-            return bytes;   	  	      
+        byte[] inputBytes = getBytesFromInputStream();
+        if (inputBytes != null) {
+            return inputBytes;
         }
         Canonicalizer20010315OmitComments c14nizer = new Canonicalizer20010315OmitComments();                  
         bytes = c14nizer.engineCanonicalize(this);         
@@ -286,8 +284,8 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with a Node set
      */
     public boolean isNodeSet() {
-        return ((this.inputOctetStreamProxy == null
-            && this.inputNodeSet != null) || isNodeSet);
+        return ((inputOctetStreamProxy == null
+            && inputNodeSet != null) || isNodeSet);
     }
 
     /**
@@ -296,8 +294,8 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with a Node set
      */
     public boolean isElement() {
-        return (this.inputOctetStreamProxy == null && this.subNode != null
-            && this.inputNodeSet == null && !isNodeSet);
+        return (inputOctetStreamProxy == null && subNode != null
+            && inputNodeSet == null && !isNodeSet);
     }
    
     /**
@@ -306,8 +304,8 @@ public class XMLSignatureInput {
      * @return true if the object has been set up with an octet stream
      */
     public boolean isOctetStream() {
-        return ((this.inputOctetStreamProxy != null || bytes != null)
-          && (this.inputNodeSet == null && subNode == null));
+        return ((inputOctetStreamProxy != null || bytes != null)
+          && (inputNodeSet == null && subNode == null));
     }
 
     /**
@@ -336,7 +334,7 @@ public class XMLSignatureInput {
      * @return true if the object has been set up correctly
      */
     public boolean isInitialized() {
-        return this.isOctetStream() || this.isNodeSet();
+        return isOctetStream() || isNodeSet();
     }
 
     /**
@@ -345,7 +343,7 @@ public class XMLSignatureInput {
      * @return MIMEType
      */
     public String getMIMEType() {
-        return this.MIMEType;
+        return MIMEType;
     }
 
     /**
@@ -363,7 +361,7 @@ public class XMLSignatureInput {
      * @return SourceURI
      */
     public String getSourceURI() {
-        return this.sourceURI;
+        return sourceURI;
     }
 
     /**
@@ -380,22 +378,22 @@ public class XMLSignatureInput {
      * @inheritDoc
      */
     public String toString() {
-        if (this.isNodeSet()) {
-            return "XMLSignatureInput/NodeSet/" + this.inputNodeSet.size()
-                   + " nodes/" + this.getSourceURI();         
+        if (isNodeSet()) {
+            return "XMLSignatureInput/NodeSet/" + inputNodeSet.size()
+                   + " nodes/" + getSourceURI();         
         } 
-        if (this.isElement()) {
-            return "XMLSignatureInput/Element/" + this.subNode
-                + " exclude "+ this.excludeNode + " comments:" 
-                + this.excludeComments +"/" + this.getSourceURI();
+        if (isElement()) {
+            return "XMLSignatureInput/Element/" + subNode
+                + " exclude "+ excludeNode + " comments:" 
+                + excludeComments +"/" + getSourceURI();
         }
         try {
-            return "XMLSignatureInput/OctetStream/" + this.getBytes().length
-                   + " octets/" + this.getSourceURI();
+            return "XMLSignatureInput/OctetStream/" + getBytes().length
+                   + " octets/" + getSourceURI();
         } catch (IOException iex) {
-            return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
+            return "XMLSignatureInput/OctetStream//" + getSourceURI();
         } catch (CanonicalizationException cex) {
-            return "XMLSignatureInput/OctetStream//" + this.getSourceURI();
+            return "XMLSignatureInput/OctetStream//" + getSourceURI();
         }
     }
 
@@ -489,25 +487,13 @@ public class XMLSignatureInput {
             c14nizer.setWriter(diOs);
             c14nizer.engineCanonicalize(this); 
         } else {
-            if (inputOctetStreamProxy instanceof FileInputStream) {
-                byte[] buffer = new byte[4 * 1024];
-                int bytesread = 0;
-                while ((bytesread = inputOctetStreamProxy.read(buffer)) != -1) {
-                    diOs.write(buffer, 0, bytesread);
-                }
-            } else {
-                InputStream is = getResetableInputStream();
-                if (bytes != null) {
-                    // already read write it, can be rea.
-                    diOs.write(bytes, 0, bytes.length);
-                } else {
-                    is.reset();            
-                    byte[] bytesT = new byte[1024];
-                    int num = 0;
-                    while ((num = is.read(bytesT)) > 0) {
-                        diOs.write(bytesT, 0, num);
-                    }
-                }
+            if (inputOctetStreamProxy.markSupported()) {
+                inputOctetStreamProxy.reset();
+            }
+            byte[] buffer = new byte[4 * 1024];
+            int bytesread = 0;
+            while ((bytesread = inputOctetStreamProxy.read(buffer)) != -1) {
+                diOs.write(buffer, 0, bytesread);
             }
         }
     }
@@ -519,31 +505,22 @@ public class XMLSignatureInput {
         outputStream = os;
     }
 
-    protected InputStream getResetableInputStream() throws IOException {    	
-        if (inputOctetStreamProxy instanceof ByteArrayInputStream) {
-            if (!inputOctetStreamProxy.markSupported()) {
-                throw new RuntimeException(
-                    "Accepted as Markable but not truly been" + inputOctetStreamProxy
-                );
-            }
-            return inputOctetStreamProxy;
-        }
+    private byte[] getBytesFromInputStream() throws IOException {       
         if (bytes != null) {
-            inputOctetStreamProxy = new ByteArrayInputStream(bytes);
-            return inputOctetStreamProxy;
+            return bytes;
         }
         if (inputOctetStreamProxy == null) {
             return null;
         }
         if (inputOctetStreamProxy.markSupported()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Mark Suported but not used as reset");
-            }
+            inputOctetStreamProxy.reset();       
+            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
+            return bytes;
+        } else {
+            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
+            inputOctetStreamProxy.close();
+            return bytes;
         }
-        bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
-        inputOctetStreamProxy.close();
-        inputOctetStreamProxy = new ByteArrayInputStream(bytes);
-        return inputOctetStreamProxy;
     }
         
     /**
@@ -578,9 +555,11 @@ public class XMLSignatureInput {
         
     void convertToNodes() throws CanonicalizationException, 
         ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-        dfactory.setValidating(false);        
-        dfactory.setNamespaceAware(true);
+        if (dfactory == null) {
+            dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setValidating(false);        
+            dfactory.setNamespaceAware(true);
+        }
         DocumentBuilder db = dfactory.newDocumentBuilder();
         // select all nodes, also the comments.        
         try {
