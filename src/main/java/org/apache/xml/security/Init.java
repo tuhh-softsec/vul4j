@@ -47,6 +47,14 @@ import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitCom
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
+import org.apache.xml.security.keys.keyresolver.implementations.DSAKeyValueResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.RSAKeyValueResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.RetrievalMethodResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509CertificateResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509IssuerSerialResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509SKIResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509SubjectNameResolver;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
@@ -106,6 +114,8 @@ public class Init {
         new HashMap<String, Class<? extends CanonicalizerSpi>>();
     private static List<ResourceResolverSpi> defaultResolverList = 
         new ArrayList<ResourceResolverSpi>();
+    private static List<KeyResolverSpi> defaultKeyResolverList = 
+        new ArrayList<KeyResolverSpi>();
     
     static {
         //
@@ -357,7 +367,7 @@ public class Init {
         );
         
         //
-        // Default IRI-Canonicalizer class pairs
+        // Default URI-Canonicalizer class pairs
         //
         defaultC14nAlgorithms.put(
             Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS, Canonicalizer20010315OmitComments.class
@@ -385,6 +395,17 @@ public class Init {
         defaultResolverList.add(new ResolverLocalFilesystem());
         defaultResolverList.add(new ResolverXPointer());
         defaultResolverList.add(new ResolverDirectHTTP());
+        
+        //
+        // Default KeyResolvers
+        //
+        defaultKeyResolverList.add(new RSAKeyValueResolver());
+        defaultKeyResolverList.add(new DSAKeyValueResolver());
+        defaultKeyResolverList.add(new X509CertificateResolver());
+        defaultKeyResolverList.add(new X509SKIResolver());
+        defaultKeyResolverList.add(new RetrievalMethodResolver());
+        defaultKeyResolverList.add(new X509SubjectNameResolver());
+        defaultKeyResolverList.add(new X509IssuerSerialResolver());
     }
     
     /**
@@ -679,10 +700,18 @@ public class Init {
             for (ResourceResolverSpi resourceResolverSpi : defaultResolverList) {
                 ResourceResolver.register(resourceResolverSpi, false);
             }
+            
+            //
+            // Register the default key resolvers
+            //
+            for (KeyResolverSpi keyResolverSpi : defaultKeyResolverList) {
+                KeyResolver.register(keyResolverSpi, false);
+            }
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();
         }
+        alreadyInitialized = true;
     }
 
 }

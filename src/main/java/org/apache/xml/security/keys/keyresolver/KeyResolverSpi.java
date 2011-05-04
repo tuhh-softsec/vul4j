@@ -97,7 +97,7 @@ public abstract class KeyResolverSpi {
         KeyResolverSpi tmp = this;    
         if (globalResolver) {
             try {
-                tmp = (KeyResolverSpi) getClass().newInstance();    	    
+                tmp = getClass().newInstance();    	    
             } catch (InstantiationException e) {
                 throw new KeyResolverException("", e);
             } catch (IllegalAccessException e) {
@@ -224,7 +224,7 @@ public abstract class KeyResolverSpi {
             return null;
         }
 
-        return (String)properties.get(key);
+        return properties.get(key);
     }
 
     /**
