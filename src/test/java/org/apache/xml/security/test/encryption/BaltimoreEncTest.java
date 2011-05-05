@@ -131,7 +131,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         org.apache.xml.security.Init.init();
 
         // Register our key resolver
-        KeyResolver.register("org.apache.xml.security.test.encryption.BobKeyResolver");
+        KeyResolver.register("org.apache.xml.security.test.encryption.BobKeyResolver", false);
 
         // Check what algorithms are available
 

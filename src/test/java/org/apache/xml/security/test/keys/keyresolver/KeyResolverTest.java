@@ -154,7 +154,7 @@ public class KeyResolverTest extends org.junit.Assert {
         // Register a KeyResolver for the PrivateKey
         MyPrivateKeyResolver.pk = privKey;
         MyPrivateKeyResolver.pkName = keyName;
-        KeyResolver.registerAtStart(MyPrivateKeyResolver.class.getName());
+        KeyResolver.registerAtStart(MyPrivateKeyResolver.class.getName(), false);
         KeyResolverSpi resolver = (KeyResolverSpi)KeyResolver.iterator().next();
         assertEquals(MyPrivateKeyResolver.class.getName(), resolver.getClass().getName());
 

@@ -589,7 +589,7 @@ public class Init {
                 if (tag.equals("KeyResolver")){
                     Element[] resolverElem = 
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "Resolver");
-
+                    List<String> classNames = new ArrayList<String>(resolverElem.length);
                     for (int i = 0; i < resolverElem.length; i++) {
                         String JAVACLASS =
                             resolverElem[i].getAttributeNS(null, "JAVACLASS");
@@ -607,8 +607,9 @@ public class Init {
                                           + ": For unknown purposes");
                             }
                         }
-                        KeyResolver.register(JAVACLASS);
+                        classNames.add(JAVACLASS);
                     }
+                    KeyResolver.registerClassNames(classNames);
                 }
 
 
@@ -704,9 +705,7 @@ public class Init {
             //
             // Register the default key resolvers
             //
-            for (KeyResolverSpi keyResolverSpi : defaultKeyResolverList) {
-                KeyResolver.register(keyResolverSpi, false);
-            }
+            KeyResolver.register(defaultKeyResolverList);
         } catch (Exception ex) {
             log.error(ex);
             ex.printStackTrace();
