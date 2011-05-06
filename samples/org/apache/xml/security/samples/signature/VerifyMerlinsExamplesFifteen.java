@@ -90,7 +90,6 @@ public class VerifyMerlinsExamplesFifteen {
         String merlinsDir =
             "samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-fifteen/";
         String filenames[] = { merlinsDir + "signature-enveloping-hmac-sha1.xml",
-                               merlinsDir + "signature-enveloping-hmac-sha1-40.xml",
                                merlinsDir + "signature-enveloped-dsa.xml",
                                merlinsDir + "signature-enveloping-b64-dsa.xml",
                                merlinsDir + "signature-enveloping-dsa.xml",
@@ -98,21 +97,14 @@ public class VerifyMerlinsExamplesFifteen {
                                merlinsDir + "signature-external-b64-dsa.xml",
                                merlinsDir + "signature-external-dsa.xml"
         };
-        int start = 0;
-        // int end = filenames.length;
-        int end = 2;
 
-        for (int i = start; i < 2; i++) {
-            String signatureFileName = filenames[i];
-
-            try {
-                verifyHMAC(dbf, signatureFileName);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            verifyHMAC(dbf, filenames[0]);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
-        for (int i = 2; i < filenames.length; i++) {
+        for (int i = 1; i < filenames.length; i++) {
             String signatureFileName = filenames[i];
 
             try {

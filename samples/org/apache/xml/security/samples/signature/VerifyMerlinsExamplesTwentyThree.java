@@ -97,7 +97,6 @@ public class VerifyMerlinsExamplesTwentyThree {
                                merlinsDir + "signature-enveloped-dsa.xml",
                                merlinsDir + "signature-enveloping-b64-dsa.xml",
                                merlinsDir + "signature-enveloping-dsa.xml",
-                               merlinsDir + "signature-enveloping-hmac-sha1-40.xml",
                                merlinsDir + "signature-enveloping-hmac-sha1.xml",
                                merlinsDir + "signature-enveloping-rsa.xml",
                                merlinsDir + "signature-external-b64-dsa.xml",
