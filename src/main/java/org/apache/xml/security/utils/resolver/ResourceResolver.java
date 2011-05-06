@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
+import org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem;
+import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.w3c.dom.Attr;
 
 /**
@@ -202,6 +206,18 @@ public class ResourceResolver {
         }
         if (log.isDebugEnabled()) {
             log.debug("Registered resolver: " + resourceResolverSpi.toString());
+        }
+    }
+    
+    /**
+     * This method registers the default resolvers.
+     */
+    public static void registerDefaultResolvers() {
+        synchronized(resolverList) {
+            resolverList.add(new ResourceResolver(new ResolverFragment()));
+            resolverList.add(new ResourceResolver(new ResolverLocalFilesystem()));
+            resolverList.add(new ResourceResolver(new ResolverXPointer()));
+            resolverList.add(new ResourceResolver(new ResolverDirectHTTP()));
         }
     }
     

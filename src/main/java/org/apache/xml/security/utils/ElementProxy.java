@@ -488,6 +488,21 @@ public abstract class ElementProxy {
         }
         prefixMappings.put(namespace, prefix);
     }
+    
+    /**
+     * This method registers the default prefixes.
+     */
+    public static void registerDefaultPrefixes() throws XMLSecurityException {
+        setDefaultPrefix("http://www.w3.org/2000/09/xmldsig#", "ds");
+        setDefaultPrefix("http://www.w3.org/2001/04/xmlenc#", "xenc");
+        setDefaultPrefix("http://www.xmlsecurity.org/experimental#", "experimental");
+        setDefaultPrefix("http://www.w3.org/2002/04/xmldsig-filter2", "dsig-xpath-old");
+        setDefaultPrefix("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-xpath");
+        setDefaultPrefix("http://www.w3.org/2001/10/xml-exc-c14n#", "ec");
+        setDefaultPrefix(
+            "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter", "xx"
+        );
+    }
 
     /**
      * Method getDefaultPrefix

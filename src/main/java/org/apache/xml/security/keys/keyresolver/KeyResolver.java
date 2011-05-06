@@ -27,6 +27,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.crypto.SecretKey;
 
+import org.apache.xml.security.keys.keyresolver.implementations.DSAKeyValueResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.RSAKeyValueResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.RetrievalMethodResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509CertificateResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509IssuerSerialResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509SKIResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.X509SubjectNameResolver;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -254,22 +261,19 @@ public class KeyResolver {
     }
     
     /**
-     * This method is used for registering {@link KeyResolverSpi}s which are
-     * available to <I>all</I> {@link org.apache.xml.security.keys.KeyInfo} objects. This means that
-     * personalized {@link KeyResolverSpi}s should only be registered directly
-     * to the {@link org.apache.xml.security.keys.KeyInfo} using 
-     * {@link org.apache.xml.security.keys.KeyInfo#registerInternalKeyResolver}.
-     *
-     * @param keyResolverSpi a KeyResolverSpi instance to register
-     * @param start whether to register the KeyResolverSpi at the start of the list or not
+     * This method registers the default resolvers.
      */
-    public static void register(
-        List<KeyResolverSpi> keyResolverSpiList
-    ) {
-        List<KeyResolver> keyResolverList = new ArrayList<KeyResolver>(keyResolverSpiList.size());
-        for (KeyResolverSpi keyResolverSpi : keyResolverSpiList) {
-            keyResolverList.add(new KeyResolver(keyResolverSpi));
-        }
+    public static void registerDefaultResolvers() {
+        
+        List<KeyResolver> keyResolverList = new ArrayList<KeyResolver>();
+        keyResolverList.add(new KeyResolver(new RSAKeyValueResolver()));
+        keyResolverList.add(new KeyResolver(new DSAKeyValueResolver()));
+        keyResolverList.add(new KeyResolver(new X509CertificateResolver()));
+        keyResolverList.add(new KeyResolver(new X509SKIResolver()));
+        keyResolverList.add(new KeyResolver(new RetrievalMethodResolver()));
+        keyResolverList.add(new KeyResolver(new X509SubjectNameResolver()));
+        keyResolverList.add(new KeyResolver(new X509IssuerSerialResolver()));
+        
         resolverVector.addAll(keyResolverList);
     }
 

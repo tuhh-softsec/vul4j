@@ -28,6 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.security.c14n.implementations.Canonicalizer11_OmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer11_WithComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclWithComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
+import org.apache.xml.security.c14n.implementations.Canonicalizer20010315WithComments;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -81,8 +87,8 @@ public class Canonicalizer {
     public static final String ALGO_ID_C14N11_WITH_COMMENTS = 
         ALGO_ID_C14N11_OMIT_COMMENTS + "#WithComments";
 
-    private static Map<String, Class<CanonicalizerSpi>> canonicalizerHash = 
-        new ConcurrentHashMap<String, Class<CanonicalizerSpi>>();
+    private static Map<String, Class<? extends CanonicalizerSpi>> canonicalizerHash = 
+        new ConcurrentHashMap<String, Class<? extends CanonicalizerSpi>>();
     
     private final CanonicalizerSpi canonicalizerSpi;
 
@@ -94,7 +100,8 @@ public class Canonicalizer {
      */
     private Canonicalizer(String algorithmURI) throws InvalidCanonicalizerException {
         try {
-            Class<CanonicalizerSpi> implementingClass = canonicalizerHash.get(algorithmURI);
+            Class<? extends CanonicalizerSpi> implementingClass = 
+                canonicalizerHash.get(algorithmURI);
 
             canonicalizerSpi = implementingClass.newInstance();
             canonicalizerSpi.reset = true;
@@ -129,7 +136,8 @@ public class Canonicalizer {
     public static void register(String algorithmURI, String implementingClass)
         throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
         // check whether URI is already registered
-        Class<CanonicalizerSpi> registeredClass = canonicalizerHash.get(algorithmURI);
+        Class<? extends CanonicalizerSpi> registeredClass = 
+            canonicalizerHash.get(algorithmURI);
 
         if (registeredClass != null)  {
             Object exArgs[] = { algorithmURI, registeredClass };
@@ -137,7 +145,7 @@ public class Canonicalizer {
         }
 
         canonicalizerHash.put(
-            algorithmURI, (Class<CanonicalizerSpi>)Class.forName(implementingClass)
+            algorithmURI, (Class<? extends CanonicalizerSpi>)Class.forName(implementingClass)
         );
     }
     
@@ -151,7 +159,7 @@ public class Canonicalizer {
     public static void register(String algorithmURI, Class<CanonicalizerSpi> implementingClass)
         throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
         // check whether URI is already registered
-        Class<CanonicalizerSpi> registeredClass = canonicalizerHash.get(algorithmURI);
+        Class<? extends CanonicalizerSpi> registeredClass = canonicalizerHash.get(algorithmURI);
 
         if (registeredClass != null)  {
             Object exArgs[] = { algorithmURI, registeredClass };
@@ -159,6 +167,36 @@ public class Canonicalizer {
         }
 
         canonicalizerHash.put(algorithmURI, implementingClass);
+    }
+    
+    /**
+     * This method registers the default algorithms.
+     */
+    public static void registerDefaultAlgorithms() {
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS, 
+            Canonicalizer20010315OmitComments.class
+        );
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, 
+            Canonicalizer20010315WithComments.class
+        );
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS, 
+            Canonicalizer20010315ExclOmitComments.class
+        );
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS, 
+            Canonicalizer20010315ExclWithComments.class
+        );
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, 
+            Canonicalizer11_OmitComments.class
+        );
+        canonicalizerHash.put(
+            Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, 
+            Canonicalizer11_WithComments.class
+        );
     }
 
     /**
