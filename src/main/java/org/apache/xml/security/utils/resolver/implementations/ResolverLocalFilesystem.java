@@ -128,7 +128,11 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
                 }
                 return true;
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("But I can't");

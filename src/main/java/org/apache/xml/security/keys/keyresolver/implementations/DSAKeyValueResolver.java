@@ -21,7 +21,6 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
@@ -31,6 +30,11 @@ import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
 public class DSAKeyValueResolver extends KeyResolverSpi {
+    
+    /** {@link org.apache.commons.logging} logging facility */
+    private static org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(DSAKeyValueResolver.class);
+
 
     /**
      * Method engineResolvePublicKey
@@ -68,6 +72,9 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
 
             return pk;
         } catch (XMLSecurityException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             //do nothing
         }
 

@@ -149,7 +149,11 @@ public class XMLX509Certificate extends SignatureElementProxy implements XMLX509
             for (int i = 0; i < bytes.length; i++) {
                 result = 31 * result + bytes[i];
             }
-        } catch (XMLSecurityException e) {}
+        } catch (XMLSecurityException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
         return result;
     }
 

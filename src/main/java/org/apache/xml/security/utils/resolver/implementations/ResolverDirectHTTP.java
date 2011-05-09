@@ -164,24 +164,22 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
                 // check if Basic authentication is required
                 String auth = urlConnection.getHeaderField("WWW-Authenticate");
 
-                if (auth != null) {
+                if (auth != null && auth.startsWith("Basic")) {
                     // do http basic authentication
-                    if (auth.startsWith("Basic")) {
-                        String user =
-                            engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpBasicUser]);
-                        String pass =
-                            engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpBasicPass]);
+                    String user =
+                        engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpBasicUser]);
+                    String pass =
+                        engineGetProperty(ResolverDirectHTTP.properties[ResolverDirectHTTP.HttpBasicPass]);
 
-                        if ((user != null) && (pass != null)) {
-                            urlConnection = url.openConnection();
+                    if ((user != null) && (pass != null)) {
+                        urlConnection = url.openConnection();
 
-                            String password = user + ":" + pass;
-                            String encodedPassword = Base64.encode(password.getBytes("ISO-8859-1"));
+                        String password = user + ":" + pass;
+                        String encodedPassword = Base64.encode(password.getBytes("ISO-8859-1"));
 
-                            // set authentication property in the http header
-                            urlConnection.setRequestProperty("Authorization",
-                                                             "Basic " + encodedPassword);
-                        }
+                        // set authentication property in the http header
+                        urlConnection.setRequestProperty("Authorization",
+                                                         "Basic " + encodedPassword);
                     }
                 }
             }

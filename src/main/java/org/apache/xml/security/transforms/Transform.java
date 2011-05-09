@@ -115,7 +115,7 @@ public final class Transform extends SignatureElementProxy {
             XMLUtils.addReturnToElement(doc, contextNodes);
         }
 
-        transformSpi = initializeTransform(doc, algorithmURI, contextNodes);
+        transformSpi = initializeTransform(algorithmURI, contextNodes);
     }
 
     /**
@@ -132,7 +132,7 @@ public final class Transform extends SignatureElementProxy {
     public Transform(Document doc, String algorithmURI, NodeList contextNodes)
         throws InvalidTransformException {
         super(doc);
-        transformSpi = initializeTransform(doc, algorithmURI, contextNodes);
+        transformSpi = initializeTransform(algorithmURI, contextNodes);
     }
 
     /**
@@ -334,7 +334,7 @@ public final class Transform extends SignatureElementProxy {
     /**
      * Initialize the transform object.
      */
-    private TransformSpi initializeTransform(Document doc, String algorithmURI, NodeList contextNodes)
+    private TransformSpi initializeTransform(String algorithmURI, NodeList contextNodes)
         throws InvalidTransformException {
 
         this.constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM, algorithmURI);

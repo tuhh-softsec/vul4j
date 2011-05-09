@@ -75,10 +75,9 @@ public class HelperNodeList implements NodeList {
      * @throws IllegalArgumentException
      */
     public void appendChild(Node node) throws IllegalArgumentException {
-        if (this.allNodesMustHaveSameParent && this.getLength() > 0) {
-            if (this.item(0).getParentNode() != node.getParentNode()) {
-                throw new IllegalArgumentException("Nodes have not the same Parent");
-            }
+        if (this.allNodesMustHaveSameParent && this.getLength() > 0
+            && this.item(0).getParentNode() != node.getParentNode()) {
+            throw new IllegalArgumentException("Nodes have not the same Parent");
         }
         nodes.add(node);
     }

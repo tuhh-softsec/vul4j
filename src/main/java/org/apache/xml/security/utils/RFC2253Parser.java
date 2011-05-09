@@ -190,7 +190,7 @@ public class RFC2253Parser {
             int i = 0;
             char c;
 
-            for (; (i = sr.read()) > -1; ) {
+            while ((i = sr.read()) > -1) {
                 c = (char) i;
 
                 //the following char is defined at 4.Relationship with RFC1779 and LDAPv2 inrfc2253
@@ -263,7 +263,7 @@ public class RFC2253Parser {
         int i = 0;
         char c;
 
-        for (; (i = sr.read()) > -1; ) {
+        while ((i = sr.read()) > -1) {
             c = (char) i;
 
             if (c == '\\') {
@@ -304,7 +304,7 @@ public class RFC2253Parser {
         StringReader sr = new StringReader(string);
         int i = 0;
 
-        for (; (i = sr.read()) > -1; ) {
+        while ((i = sr.read()) > -1) {
             if (i < 32) {
                 sb.append('\\');
                 sb.append(Integer.toHexString(i));
@@ -329,7 +329,7 @@ public class RFC2253Parser {
         int i = 0;
         char c;
 
-        for (; (i = sr.read()) > -1; ) {
+        while ((i = sr.read()) > -1) {
             c = (char) i;
 
             if (c == '\\') {
@@ -460,10 +460,8 @@ public class RFC2253Parser {
         int i = str.indexOf(trimed) + trimed.length();
 
         if ((str.length() > i) && trimed.endsWith("\\")
-            && !trimed.endsWith("\\\\")) {
-            if (str.charAt(i) == ' ') {
-                trimed = trimed + " ";
-            }
+            && !trimed.endsWith("\\\\") && (str.charAt(i) == ' ')) {
+            trimed = trimed + " ";
         }
 
         return trimed;

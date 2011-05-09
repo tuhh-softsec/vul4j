@@ -34,6 +34,10 @@ import java.util.List;
  */
 public final class ClassLoaderUtils {
     
+    /** {@link org.apache.commons.logging} logging facility */
+    private static final org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(ClassLoaderUtils.class);
+    
     private ClassLoaderUtils() {
     }
     
@@ -116,6 +120,9 @@ public final class ClassLoaderUtils {
         try {
             urls = Thread.currentThread().getContextClassLoader().getResources(resourceName);
         } catch (IOException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             //ignore
         }
         if (!urls.hasMoreElements() && resourceName.startsWith("/")) {
@@ -126,6 +133,9 @@ public final class ClassLoaderUtils {
                         resourceName.substring(1)
                     );
             } catch (IOException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
+                }
                 // ignore
             }
         }
@@ -138,6 +148,9 @@ public final class ClassLoaderUtils {
             try {
                 urls = cluClassloader.getResources(resourceName);
             } catch (IOException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
+                }
                 // ignore
             }
         }
@@ -146,6 +159,9 @@ public final class ClassLoaderUtils {
             try {
                 urls = cluClassloader.getResources(resourceName.substring(1));
             } catch (IOException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
+                }
                 // ignore
             }
         }
@@ -157,6 +173,9 @@ public final class ClassLoaderUtils {
                 try {
                     urls = cl.getResources(resourceName);
                 } catch (IOException e) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(e);
+                    }
                     // ignore
                 }
             }
@@ -193,6 +212,9 @@ public final class ClassLoaderUtils {
         try {
             return (url != null) ? url.openStream() : null;
         } catch (IOException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             return null;
         }
     }
@@ -220,6 +242,9 @@ public final class ClassLoaderUtils {
                 return cl.loadClass(className);
             }            
         } catch (ClassNotFoundException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             //ignore
         }
         return loadClass2(className, callingClass);
@@ -238,6 +263,9 @@ public final class ClassLoaderUtils {
                 if (callingClass != null && callingClass.getClassLoader() != null) {
                     return callingClass.getClassLoader().loadClass(className);
                 }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
             }
             throw ex;
         }

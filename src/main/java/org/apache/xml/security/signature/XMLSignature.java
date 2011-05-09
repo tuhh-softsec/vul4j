@@ -547,6 +547,9 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 so.close();
             } catch (IOException ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug(ex);
+                }
                 // Impossible...
             } catch (XMLSecurityException ex) {
                 throw ex;
@@ -652,6 +655,9 @@ public final class XMLSignature extends SignatureElementProxy {
                 // retrieve the byte[] from the stored signature
                 sigBytes = this.getSignatureValue();
             } catch (IOException ex) {
+                if (log.isDebugEnabled()) {
+                    log.debug(ex);
+                }
                 // Impossible...
             } catch (XMLSecurityException ex) {
                 throw ex;

@@ -97,7 +97,11 @@ public class JavaUtils {
             if (fos != null) {
                 try {
                     fos.close();
-                } catch (IOException ioe) {}
+                } catch (IOException ioe) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(ioe);
+                    }
+                }
             }
         }
     }

@@ -325,6 +325,9 @@ public class Manifest extends SignatureElementProxy {
                                         new Manifest((Element) n, signedManifestNodes.getSourceURI());
                                     break findManifest;
                                 } catch (XMLSecurityException ex) {
+                                    if (log.isDebugEnabled()) {
+                                        log.debug(ex);
+                                    }
                                     // Hm, seems not to be a ds:Manifest
                                 }
                             }

@@ -112,7 +112,11 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
                 cipher.init(XMLCipher.UNWRAP_MODE, kek);
                 EncryptedKey ek = cipher.loadEncryptedKey(element);
                 key = (SecretKey) cipher.decryptKey(ek, algorithm);
-            } catch (XMLEncryptionException e) {}
+            } catch (XMLEncryptionException e) {
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
+                }
+            }
         }
 
         return key;

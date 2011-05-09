@@ -238,17 +238,14 @@ class XPath2NodeFilter implements NodeFilter {
                 result = -1;
             }
         } 
-        if (result != -1){ 
-            if (hasIntersectNodes) {
-                if ((inIntersect == -1) || (level <= inIntersect)) {
-                    if (!inList(n, intersectNodes)) {
-                        inIntersect = -1;
-                        result = 0;
-                    } else {
-                        inIntersect = level;   			   
-                    }		   
-                }
-            }
+        if (result != -1 && hasIntersectNodes 
+            && ((inIntersect == -1) || (level <= inIntersect))) { 
+            if (!inList(n, intersectNodes)) {
+                inIntersect = -1;
+                result = 0;
+            } else {
+                inIntersect = level;   			   
+            }		   
         }
 
         if (level <= inUnion) {

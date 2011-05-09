@@ -174,6 +174,9 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         try {
             bos.flush();
         } catch (IOException e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
             // Impossible
         }
 

@@ -249,10 +249,8 @@ public class CachedXPathFuncHereAPI {
             } catch (TransformerException ex) {
                 //Try to see if it is a problem with the classloader.
                 Throwable th= ex.getCause();
-                if (th instanceof ClassNotFoundException) {
-                    if (th.getMessage().indexOf("FuncHere")>0) {
-                        throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0")/*,*/+ex);
-                    }
+                if (th instanceof ClassNotFoundException && th.getMessage().indexOf("FuncHere")>0) {
+                    throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0")/*,*/+ex);
                 }
                 throw ex;
             }
@@ -279,6 +277,9 @@ public class CachedXPathFuncHereAPI {
             Constructor constructor = XPath.class.getConstructor(classes);
             xpath = (XPath) constructor.newInstance(objects);
         } catch (Throwable t) {
+            if (log.isDebugEnabled()) {
+                log.debug(t);
+            }
         }
         if (xpath == null) {
             xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);

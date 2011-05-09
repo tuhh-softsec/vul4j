@@ -216,7 +216,7 @@ public abstract class DOMKeyValue extends DOMStructure implements KeyValue {
 
     static final class DSA extends DOMKeyValue {
         // DSAKeyValue CryptoBinaries
-        private DOMCryptoBinary p, q, g, y, j, seed, pgen;
+        private DOMCryptoBinary p, q, g, y, j; //, seed, pgen;
         private KeyFactory dsakf;
 
         DSA(PublicKey key) throws KeyException {
@@ -289,11 +289,13 @@ public abstract class DOMKeyValue extends DOMStructure implements KeyValue {
                 j = new DOMCryptoBinary(curElem.getFirstChild());
                 curElem = DOMUtils.getNextSiblingElement(curElem);
             }
+            /*
             if (curElem != null) {
                 seed = new DOMCryptoBinary(curElem.getFirstChild());
                 curElem = DOMUtils.getNextSiblingElement(curElem);
                 pgen = new DOMCryptoBinary(curElem.getFirstChild());
             }
+            */
             //@@@ do we care about j, pgenCounter or seed?
             DSAPublicKeySpec spec = new DSAPublicKeySpec(y.getBigNum(),
                                                          p.getBigNum(),

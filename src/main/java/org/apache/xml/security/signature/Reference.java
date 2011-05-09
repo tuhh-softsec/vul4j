@@ -204,7 +204,7 @@ public class Reference extends SignatureElementProxy {
             el = XMLUtils.getNextElement(el.getNextSibling());
         }
         digestMethodElem = el;
-        digestValueElement = XMLUtils.getNextElement(digestMethodElem.getNextSibling());;
+        digestValueElement = XMLUtils.getNextElement(digestMethodElem.getNextSibling());
         this.manifest = manifest;
     }
 
@@ -514,24 +514,23 @@ public class Reference extends SignatureElementProxy {
             }
 
             Set<String> inclusiveNamespaces = new HashSet<String>();
-            if (c14nTransform != null) {
-                if (c14nTransform.length(
+            if (c14nTransform != null
+                && (c14nTransform.length(
                     InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
-                    InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1) {
+                    InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1)) {
 
-                    // there is one InclusiveNamespaces element
-                    InclusiveNamespaces in = 
-                        new InclusiveNamespaces(
-                            XMLUtils.selectNode(
-                                c14nTransform.getElement().getFirstChild(),
-                                InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
-                                InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES, 
-                                0
-                            ), this.getBaseURI());
+                // there is one InclusiveNamespaces element
+                InclusiveNamespaces in = 
+                    new InclusiveNamespaces(
+                        XMLUtils.selectNode(
+                            c14nTransform.getElement().getFirstChild(),
+                            InclusiveNamespaces.ExclusiveCanonicalizationNamespace, 
+                            InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES, 
+                            0
+                        ), this.getBaseURI());
 
-                    inclusiveNamespaces = 
-                        InclusiveNamespaces.prefixStr2Set(in.getInclusiveNamespaces());
-                }
+                inclusiveNamespaces = 
+                    InclusiveNamespaces.prefixStr2Set(in.getInclusiveNamespaces());
             }
 
             return nodes.getHTMLRepresentation(inclusiveNamespaces);

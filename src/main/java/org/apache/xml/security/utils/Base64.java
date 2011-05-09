@@ -762,8 +762,6 @@ public class Base64 {
             os.write((byte)(((b2 & 0xf) << 4) | ((b3 >> 2) & 0xf)));
             os.write((byte)(b3 << 6 | b4));
         }
-
-        return ;
     }
 
     /**

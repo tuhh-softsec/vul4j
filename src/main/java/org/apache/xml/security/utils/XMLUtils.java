@@ -56,6 +56,11 @@ public class XMLUtils {
     
     private static volatile String dsPrefix = "ds";
     private static volatile String xencPrefix = "xenc";
+    
+    /** {@link org.apache.commons.logging} logging facility */
+    private static final org.apache.commons.logging.Log log = 
+        org.apache.commons.logging.LogFactory.getLog(XMLUtils.class);
+
 
     /**
      * Constructor XMLUtils
@@ -141,7 +146,6 @@ public class XMLUtils {
         default:
             result.add(rootNode);
         }
-        return;
     }
 
 
@@ -173,10 +177,20 @@ public class XMLUtils {
             os.write(Canonicalizer.getInstance(
                 Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(contextNode)
             );
-        } catch (IOException ex) {}
+        } catch (IOException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
+        }
         catch (InvalidCanonicalizerException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             ex.printStackTrace();
         } catch (CanonicalizationException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             ex.printStackTrace();
         }
     }
@@ -200,10 +214,19 @@ public class XMLUtils {
                 Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(contextNode)
             );
         } catch (IOException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             // throw new RuntimeException(ex.getMessage());
         } catch (InvalidCanonicalizerException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             // throw new RuntimeException(ex.getMessage());
         } catch (CanonicalizationException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug(ex);
+            }
             // throw new RuntimeException(ex.getMessage());
         }
     }
@@ -506,7 +529,7 @@ public class XMLUtils {
             while ((sibling == null) && (parent != null)) {
                 sibling = parent.getNextSibling();
                 parent = parent.getParentNode();
-            };
+            }
             if (sibling == null) {
                 return;
             }
