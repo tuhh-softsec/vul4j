@@ -15,8 +15,8 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.xmlrules.DigesterLoader;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.xmlrules.DigesterLoader;
 import org.xml.sax.InputSource;
 import java.net.URL;
 

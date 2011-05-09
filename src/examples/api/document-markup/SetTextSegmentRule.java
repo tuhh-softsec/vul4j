@@ -16,7 +16,7 @@
  */ 
 
 import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.digester.Rule;
+import org.apache.commons.digester3.Rule;
 
 /**
  * When a text segment is discovered, it calls a specific method on the top

@@ -68,7 +68,7 @@
   <property name="component.name"          value="digester-rss"/>
 
   <!-- The primary package name of this component -->
-  <property name="component.package"       value="org.apache.commons.digester.rss"/>
+  <property name="component.package"       value="org.apache.commons.digester3.rss"/>
 
   <!-- The title of this component -->
   <property name="component.title"         value="Digester RSS Example"/>
@@ -273,7 +273,7 @@
     <condition property="logopt" value="${log.factoryopt}=${log.class}">
       <istrue value="${suppressLogOutputDuringTests}"/>
     </condition>
-    <java classname="org.apache.commons.digester.rss.RSSDigester"
+    <java classname="org.apache.commons.digester3.rss.RSSDigester"
                fork="yes">
       <jvmarg value="-D${logopt}"/>
       <classpath refid="test.classpath"/>

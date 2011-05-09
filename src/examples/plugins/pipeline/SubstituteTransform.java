@@ -15,7 +15,7 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 /**
  * An implementation of the Transform interface which replaces all occurrences

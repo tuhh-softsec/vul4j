@@ -16,7 +16,7 @@
  */ 
 
 
-package org.apache.commons.digester.rss;
+package org.apache.commons.digester3.rss;
 
 
 import java.io.File;
@@ -24,21 +24,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
 /**
- * <p>Implementation of <strong>org.apache.commons.digester.Digester</strong>
+ * <p>Implementation of <strong>org.apache.commons.digester3.Digester</strong>
  * designed to process input streams that conform to the <em>Rich Site
  * Summary</em> DTD, version 0.91.  For more information about this format,
  * see the <a href="http://my.netscape.com/publish/">My Netscape</a> site.</p>
  *
  * <p>The default implementation object returned by calling
  * <code>parse()</code> (an instance of
- * <code>org.apache.commons.digester.rss.Channel</code>)
+ * <code>org.apache.commons.digester3.rss.Channel</code>)
  * knows how to render itself in XML format via the <code>render()</code>
  * method.  See the test <code>main()</code> method below for an
  * example of using these classes.</p>
@@ -66,9 +66,9 @@ public class RSSDigester extends Digester {
      */
     protected static final String registrations[] = {
         "-//Netscape Communications//DTD RSS 0.9//EN",
-        "/org/apache/commons/digester/rss/rss-0.9.dtd",
+        "/org/apache/commons/digester3/rss/rss-0.9.dtd",
         "-//Netscape Communications//DTD RSS 0.91//EN",
-        "/org/apache/commons/digester/rss/rss-0.91.dtd",
+        "/org/apache/commons/digester3/rss/rss-0.91.dtd",
     };
 
 
@@ -79,7 +79,7 @@ public class RSSDigester extends Digester {
      * The fully qualified class name of the <code>Channel</code>
      * implementation class.
      */
-    protected String channelClass = "org.apache.commons.digester.rss.Channel";
+    protected String channelClass = "org.apache.commons.digester3.rss.Channel";
 
     public String getChannelClass() {
         return (this.channelClass);
@@ -94,7 +94,7 @@ public class RSSDigester extends Digester {
      * The fully qualified class name of the <code>Image</code>
      * implementation class.
      */
-    protected String imageClass = "org.apache.commons.digester.rss.Image";
+    protected String imageClass = "org.apache.commons.digester3.rss.Image";
 
     public String getImageClass() {
         return (this.imageClass);
@@ -109,7 +109,7 @@ public class RSSDigester extends Digester {
      * The fully qualified class name of the <code>Item</code>
      * implementation class.
      */
-    protected String itemClass = "org.apache.commons.digester.rss.Item";
+    protected String itemClass = "org.apache.commons.digester3.rss.Item";
 
     public String getItemClass() {
         return (this.itemClass);
@@ -125,7 +125,7 @@ public class RSSDigester extends Digester {
      * implementation class.
      */
     protected String textInputClass =
-            "org.apache.commons.digester.rss.TextInput";
+            "org.apache.commons.digester3.rss.TextInput";
 
     public String getTextInputClass() {
         return (this.textInputClass);
@@ -255,7 +255,7 @@ public class RSSDigester extends Digester {
         // Add the rules for the Image object
         addObjectCreate("rss/channel/image", imageClass);
         addSetNext("rss/channel/image", "setImage",
-                "org.apache.commons.digester.rss.Image");
+                "org.apache.commons.digester3.rss.Image");
         addCallMethod("rss/channel/image/description", "setDescription", 0);
         addCallMethod("rss/channel/image/height", "setHeight", 0,
                 new Class[]{ Integer.TYPE });
@@ -268,7 +268,7 @@ public class RSSDigester extends Digester {
         // Add the rules for the Item object
         addObjectCreate("rss/channel/item", itemClass);
         addSetNext("rss/channel/item", "addItem",
-                "org.apache.commons.digester.rss.Item");
+                "org.apache.commons.digester3.rss.Item");
         addCallMethod("rss/channel/item/description", "setDescription", 0);
         addCallMethod("rss/channel/item/link", "setLink", 0);
         addCallMethod("rss/channel/item/title", "setTitle", 0);
@@ -276,7 +276,7 @@ public class RSSDigester extends Digester {
         // Add the rules for the TextInput object
         addObjectCreate("rss/channel/textinput", textInputClass);
         addSetNext("rss/channel/textinput", "setTextInput",
-                "org.apache.commons.digester.rss.TextInput");
+                "org.apache.commons.digester3.rss.TextInput");
         addCallMethod("rss/channel/textinput/description",
                 "setDescription", 0);
         addCallMethod("rss/channel/textinput/link", "setLink", 0);
@@ -304,7 +304,7 @@ public class RSSDigester extends Digester {
             System.out.println("RSSDigester Test Program");
             System.out.println("Opening input stream ...");
             InputStream is = RSSDigester.class.getResourceAsStream
-                    ("/org/apache/commons/digester/rss/rss-example.xml");
+                    ("/org/apache/commons/digester3/rss/rss-example.xml");
             System.out.println("Creating new digester ...");
             RSSDigester digester = new RSSDigester();
             if ((args.length > 0) && (args[0].equals("-debug"))) {

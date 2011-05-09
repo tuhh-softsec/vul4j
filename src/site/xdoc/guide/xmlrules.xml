@@ -23,7 +23,7 @@ limitations under the License.
     <author email="dev@commons.apache.org">Commons Documentation Team</author>
   </properties>
   <body>
-    <section name="Documentation for org.apache.commons.digester.xmlrules">
+    <section name="Documentation for org.apache.commons.digester3.xmlrules">
       <p>The <code>xmlrules</code>  package provides for XML-based definition of
 rules for <code>Digester</code>. This improves maintainability of Java code,
 as rules are now defined in XML and read into <code>Digester</code> at run-time.
@@ -45,7 +45,7 @@ understanding of how the loader operates.
 </p>
 <p>
 The DTD is distributed in the <code>commons-digester.jar</code>. It can be found at
-<code>org/apache/commons/digester/xmlrules/digester-rules.dtd</code>. It is not available
+<code>org/apache/commons/digester3/xmlrules/digester-rules.dtd</code>. It is not available
 for download from the Apache website since users are best advised to use a copy stored 
 on their local system. 
 </p>
@@ -181,7 +181,7 @@ initialized with this pattern/rule:</p>
 programmatically can still be included within a digester-rules XML file. This
 is done by using an <code>&lt;include&gt;</code> element with a
 <code>class</code> attribute, containing the name of a class that implements
-<code>org.apache.commons.digester.xmlrules.DigesterRulesSource</code>.
+<code>org.apache.commons.digester3.xmlrules.DigesterRulesSource</code>.
 This interface defines one method, <code>getRules(Digester)</code>, which
 creates rules and adds them to the supplied Digester. The pattern concatenation
 works exactly as if the rules had been included from an XML file. Example:</p>

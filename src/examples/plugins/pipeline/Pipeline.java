@@ -15,9 +15,9 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.plugins.PluginRules;
-import org.apache.commons.digester.plugins.PluginCreateRule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.plugins.PluginRules;
+import org.apache.commons.digester3.plugins.PluginCreateRule;
 import java.io.*;
 
 /**

@@ -18,8 +18,8 @@
 import java.util.LinkedList;
 import java.util.Iterator;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.plugins.PluginCreateRule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.plugins.PluginCreateRule;
 
 /**
  * An implementation of the Transform interface which is configured with

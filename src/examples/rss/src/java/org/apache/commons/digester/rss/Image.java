@@ -16,7 +16,7 @@
  */ 
 
 
-package org.apache.commons.digester.rss;
+package org.apache.commons.digester3.rss;
 
 import java.io.PrintWriter;
 import java.io.Serializable;

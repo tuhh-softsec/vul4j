@@ -42,17 +42,17 @@ limitations under the License.
          <p>A digester rule on a POJO is expressed through one or more annotations.
         An annotation is considered a digester rule definition if its retention
         policy contains RUNTIME and if the annotation itself is annotated with
-        <code>org.apache.commons.digester.annotations.DigesterRule</code>.</p>
+        <code>org.apache.commons.digester3.annotations.DigesterRule</code>.</p>
 
         <p>The <code>DigesterRule</code> is defined by the combination of:</p>
         <ul>
-            <li>the reflected <code>Class&lt;? extends org.apache.commons.digester.Rule&gt;</code>
+            <li>the reflected <code>Class&lt;? extends org.apache.commons.digester3.Rule&gt;</code>
             by the annotation;</li>
-            <li>the <code>org.apache.commons.digester.annotations.DigesterLoaderHandler</code>
+            <li>the <code>org.apache.commons.digester3.annotations.DigesterLoaderHandler</code>
             class that has to be invoked during the target class traversal
             (if not specifyied, the annotation processor will supply the 
-            <code>org.apache.commons.digester.annotations.handlers.DefaultLoaderHandler</code>);</li>
-            <li>the <code>org.apache.commons.digester.annotations.AnnotationRuleProvider</code>
+            <code>org.apache.commons.digester3.annotations.handlers.DefaultLoaderHandler</code>);</li>
+            <li>the <code>org.apache.commons.digester3.annotations.AnnotationRuleProvider</code>
             provider that produces the <code>pattern, rule</code> pair.</li>
         </ul>
 
@@ -90,7 +90,7 @@ public @interface ObjectCreate {
          <p>It is often useful to declare the same annotation rule more than once
         to the same target, with different properties. To support this requirement,
         the Digester annotation processor treats annotations annotated by
-        <code>@org.apache.commons.digester.annotations.DigesterRuleList</code>
+        <code>@org.apache.commons.digester3.annotations.DigesterRuleList</code>
         whose <code>value</code> element has a return type of an array of rule
         annotations in a special way. Each element in the value array are processed
         by the Digester annotation processor as regular annotation rule annotations.
@@ -134,7 +134,7 @@ public @interface ObjectCreate {
         classes are specified by the <code>providedBy</code> element of the
         <code>@DigesterRule</code> annotation that decorates the rule annotation
         definition. The rule provider implementation implements the
-        <code>org.apache.commons.digester.annotations.AnnotationRuleProvider&lt;A extends Annotation, E extends AnnotatedElement, R extends Rule&gt;</code>
+        <code>org.apache.commons.digester3.annotations.AnnotationRuleProvider&lt;A extends Annotation, E extends AnnotatedElement, R extends Rule&gt;</code>
         interface.</p>
 
         <source>class ObjectCreateRuleProvider implements AnnotationRuleProvider&lt;ObjectCreate, Class&lt;?&gt;, ObjectCreateRule&gt; {
@@ -156,7 +156,7 @@ public @interface ObjectCreate {
         annotations processor will meet the relative rule that requests it.</p>
         <p>To supply the missing <code>AnnotatedElement</code> for methods
         <code>PARAMETER</code>s, the Digester annotation processor come with the
-        <code>org.apache.commons.digester.annotations.reflect.MethodArgument</code>
+        <code>org.apache.commons.digester3.annotations.reflect.MethodArgument</code>
         class.</p>
        </subsection>
 
@@ -168,8 +168,8 @@ public @interface ObjectCreate {
         <p>By default, the Digester annotations processor, when meeting a
         Digester annotation rule, extracts the rule pattern and the relative
         rule provider to store it in the
-        <code>org.apache.commons.digester.annotations.FromAnnotationsRuleSet</code>,
-        an <code>org.apache.commons.digester.RuleSet</code> implementation.</p>
+        <code>org.apache.commons.digester3.annotations.FromAnnotationsRuleSet</code>,
+        an <code>org.apache.commons.digester3.RuleSet</code> implementation.</p>
 
         <p>If designers have the need of a more elaborate annottaion processing,
         they can specify the <code>handledBy</code> element of the
@@ -196,7 +196,7 @@ public @interface ObjectCreate {
 
        <subsection name="Built-in Rules">
          <p>All built-in annotation rules are in the package
-        <code>org.apache.commons.digester.annotations.rules</code>.
+        <code>org.apache.commons.digester3.annotations.rules</code>.
         Here is the list of annotations and their usage.</p>
 
         <h4><code>TYPE</code> annotations</h4>
@@ -205,8 +205,8 @@ public @interface ObjectCreate {
                 <tr><th>Annotation</th><th>Reflect rule</th></tr>
             </thead>
             <tbody>
-                <tr><td>@ObjectCreate</td><td>org.apache.commons.digester.ObjectCreateRule</td></tr>
-                <tr><td>@FactoryCreate</td><td>org.apache.commons.digester.FactoryCreateRule</td></tr>
+                <tr><td>@ObjectCreate</td><td>org.apache.commons.digester3.ObjectCreateRule</td></tr>
+                <tr><td>@FactoryCreate</td><td>org.apache.commons.digester3.FactoryCreateRule</td></tr>
             </tbody>
         </table>
 
@@ -216,8 +216,8 @@ public @interface ObjectCreate {
                 <tr><th>Annotation</th><th>Reflect rule</th></tr>
             </thead>
             <tbody>
-                <tr><td>@BeanPropertySetter</td><td>org.apache.commons.digester.BeanPropertySetterRule</td></tr>
-                <tr><td>@SetProperty</td><td>org.apache.commons.digester.SetPropertiesRule</td></tr>
+                <tr><td>@BeanPropertySetter</td><td>org.apache.commons.digester3.BeanPropertySetterRule</td></tr>
+                <tr><td>@SetProperty</td><td>org.apache.commons.digester3.SetPropertiesRule</td></tr>
             </tbody>
         </table>
 
@@ -227,10 +227,10 @@ public @interface ObjectCreate {
                 <tr><th>Annotation</th><th>Reflect rule</th></tr>
             </thead>
             <tbody>
-                <tr><td>@CallMethod</td><td>org.apache.commons.digester.CallMethodRule</td></tr>
-                <tr><td>@SetNext</td><td>org.apache.commons.digester.SetNextRule</td></tr>
-                <tr><td>@SetRoot</td><td>org.apache.commons.digester.SetRootRule</td></tr>
-                <tr><td>@SetTop</td><td>org.apache.commons.digester.SetTopRule</td></tr>
+                <tr><td>@CallMethod</td><td>org.apache.commons.digester3.CallMethodRule</td></tr>
+                <tr><td>@SetNext</td><td>org.apache.commons.digester3.SetNextRule</td></tr>
+                <tr><td>@SetRoot</td><td>org.apache.commons.digester3.SetRootRule</td></tr>
+                <tr><td>@SetTop</td><td>org.apache.commons.digester3.SetTopRule</td></tr>
             </tbody>
         </table>
 
@@ -240,34 +240,34 @@ public @interface ObjectCreate {
                 <tr><th>Annotation</th><th>Reflect rule</th></tr>
             </thead>
             <tbody>
-                <tr><td>@AttributeCallParam</td><td>org.apache.commons.digester.Digester#addCallParam(String, int, String)</td></tr>
-                <tr><td>@CallParam</td><td>org.apache.commons.digester.Digester#addCallParam(String, int)</td></tr>
-                <tr><td>@PathCallParam</td><td>org.apache.commons.digester.Digester#addCallParamPath(String, int)</td></tr>
-                <tr><td>@StackCallParam</td><td>org.apache.commons.digester.Digester#addCallParam(String, int, int)</td></tr>
+                <tr><td>@AttributeCallParam</td><td>org.apache.commons.digester3.Digester#addCallParam(String, int, String)</td></tr>
+                <tr><td>@CallParam</td><td>org.apache.commons.digester3.Digester#addCallParam(String, int)</td></tr>
+                <tr><td>@PathCallParam</td><td>org.apache.commons.digester3.Digester#addCallParamPath(String, int)</td></tr>
+                <tr><td>@StackCallParam</td><td>org.apache.commons.digester3.Digester#addCallParam(String, int, int)</td></tr>
             </tbody>
         </table>
        </subsection>
 
        <subsection name="Bootstrapping">
          <p>The core of Digester annotations rules processor is the
-    <code>org.apache.commons.digester.annotations.DigesterLoader</code> class.</p>
+    <code>org.apache.commons.digester3.annotations.DigesterLoader</code> class.</p>
 
-    <p>A <code>org.apache.commons.digester.annotations.DigesterLoader</code>
+    <p>A <code>org.apache.commons.digester3.annotations.DigesterLoader</code>
     instance is able to analyze <code>Class&lt;?&gt;</code> graphs and builds
-    the relative <code>org.apache.commons.digester.RuleSet</code> to create
-    <code>org.apache.commons.digester.Digester</code> instances.</p>
+    the relative <code>org.apache.commons.digester3.RuleSet</code> to create
+    <code>org.apache.commons.digester3.Digester</code> instances.</p>
 
     <p>The bootstrap sequence has been designed to be as simple as possible,
     all that's needed is creating a new
-    <code>org.apache.commons.digester.annotations.DigesterLoaderBuilder</code>
+    <code>org.apache.commons.digester3.annotations.DigesterLoaderBuilder</code>
     instance, plugging the desired
-    <code>org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory</code> and
-    <code>org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory</code>.
+    <code>org.apache.commons.digester3.annotations.spi.AnnotationRuleProviderFactory</code> and
+    <code>org.apache.commons.digester3.annotations.spi.DigesterLoaderHandlerFactory</code>.
     using a chaining builders pattern.</p>
 
-    <p>An <code>org.apache.commons.digester.annotations.spi.AnnotationRuleProviderFactory</code>
+    <p>An <code>org.apache.commons.digester3.annotations.spi.AnnotationRuleProviderFactory</code>
     implementation performs the creation of
-    <code>org.apache.commons.digester.annotations.AnnotationRuleProvider&lt;A extends Annotation, E extends AnnotatedElement, R extends Rule&gt;</code>
+    <code>org.apache.commons.digester3.annotations.AnnotationRuleProvider&lt;A extends Annotation, E extends AnnotatedElement, R extends Rule&gt;</code>
     instances; the default implementation is limited to create the provider
     by invoking the default empty constructor of the required class, but
     users are free to give their implementation if they need a more complex
@@ -278,7 +278,7 @@ public @interface ObjectCreate {
     <p>It is strongly descouraged caching <code>AnnotationRuleProvider</code>
     instances!!!</p>
 
-    <p>Same thing for the <code>org.apache.commons.digester.annotations.spi.DigesterLoaderHandlerFactory</code>,
+    <p>Same thing for the <code>org.apache.commons.digester3.annotations.spi.DigesterLoaderHandlerFactory</code>,
     which implementation performs the creation of
     <code>DigesterLoaderHandler&lt;A extends Annotation, E extends AnnotatedElement&gt;</code>
     instances; the default implementation is limited to create the handler
@@ -288,7 +288,7 @@ public @interface ObjectCreate {
     context, etc. etc.</p>
 
     <p>Said that, to obtain a fresh new
-    <code>org.apache.commons.digester.annotations.DigesterLoader</code> instance
+    <code>org.apache.commons.digester3.annotations.DigesterLoader</code> instance
     with default factories, it is enough invoking the default empty constructor:</p>
 
     <source>DigesterLoader digesterLoader = new DigesterLoaderBuilder()

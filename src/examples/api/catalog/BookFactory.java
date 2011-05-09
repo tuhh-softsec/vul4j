@@ -15,7 +15,7 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.AbstractObjectCreationFactory;
+import org.apache.commons.digester3.AbstractObjectCreationFactory;
 
 /**
  * The Book class doesn't have a no-argument constructor, so the

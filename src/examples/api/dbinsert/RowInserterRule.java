@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * See Main.java.
  */
-public class RowInserterRule extends org.apache.commons.digester.Rule {
+public class RowInserterRule extends org.apache.commons.digester3.Rule {
 
     private java.sql.Connection conn;
     

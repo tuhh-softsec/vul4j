@@ -15,8 +15,8 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.Rule;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 
 import java.util.List;
 import javax.xml.parsers.SAXParser;

@@ -57,7 +57,7 @@ the developer to focus on the processing to be performed.</p>
 <p>In order to use a Digester, the following basic steps are required:</p>
 <ul>
 <li>Create a new instance of the
-    <code>org.apache.commons.digester.Digester</code> class. Previously
+    <code>org.apache.commons.digester3.Digester</code> class. Previously
     created Digester instances may be safely reused, as long as you have
     completed any previously requested parse, and you do not try to utilize
     a particular Digester instance from more than one thread at a time.</li>
@@ -85,7 +85,7 @@ the developer to focus on the processing to be performed.</p>
 <ul>
 <li>Create an instance of a sax parser (using the JAXP APIs or otherwise).</li>
 <li>Set any desired configuration properties on that parser object.</li> 
-<li>Create an instance of <code>org.apache.commons.digester.Digester</code>.</li>
+<li>Create an instance of <code>org.apache.commons.digester3.Digester</code>.</li>
 <li>Optionally, push any desired initial object(s) onto the Digester's
     <a href="#doc.Stack">object stack</a>.</li>
 <li>Register patterns and rules with the digester instance.</li>
@@ -97,7 +97,7 @@ examples</a>, and <a href="#doc.FAQ.Examples"> the FAQ </a>. </p>
     </section>
 
     <section name="Configuration Properties" id="doc.Properties">
-      <p>A <code>org.apache.commons.digester.Digester</code> instance contains several
+      <p>A <code>org.apache.commons.digester3.Digester</code> instance contains several
 configuration properties that can be used to customize its operation.  These
 properties <strong>must</strong> be configured before you call one of the
 <code>parse()</code> variants, in order for them to take effect on that
@@ -210,7 +210,7 @@ classes -- typically from the <code>struts.jar</code> file.</p>
     </section>
 
     <section name="The Object Stack" id="doc.Stack">
-      <p>One very common use of <code>org.apache.commons.digester.Digester</code>
+      <p>One very common use of <code>org.apache.commons.digester3.Digester</code>
 technology is to dynamically construct a tree of Java objects, whose internal
 organization, as well as the details of property settings on these objects,
 are configured based on the contents of the XML document.  In fact, the
@@ -271,7 +271,7 @@ features of the Digester functionality:</p>
     </section>
 
     <section name="Element Matching Patterns" id="doc.Patterns">
-      <p>A primary feature of the <code>org.apache.commons.digester.Digester</code>
+      <p>A primary feature of the <code>org.apache.commons.digester3.Digester</code>
 parser is that the Digester automatically navigates the element hierarchy of
 the XML document you are parsing for you, without requiring any developer
 attention to this process.  Instead, you focus on deciding what functions you
@@ -363,7 +363,7 @@ of processing rules is to define <strong>what</strong> should happen when the
 patterns are matched.</p>
 
 <p>Formally, a processing rule is a Java class that subclasses the
-<a href="apidocs/Rule.html">org.apache.commons.digester.Rule</a> interface.  Each Rule
+<a href="apidocs/Rule.html">org.apache.commons.digester3.Rule</a> interface.  Each Rule
 implements one or more of the following event methods that are called at
 well-defined times when the matching patterns corresponding to this rule
 trigger it:</p>
@@ -502,10 +502,10 @@ documentation for more information.</p>
 <p>Two main logs are used by Digester:</p>
 <ul>
 <li>SAX-related messages are logged to
-    <strong><code>org.apache.commons.digester.Digester.sax</code></strong>.
+    <strong><code>org.apache.commons.digester3.Digester.sax</code></strong>.
     This log gives information about the basic SAX events received by
     Digester.</li>
-<li><strong><code>org.apache.commons.digester.Digester</code></strong> is used
+<li><strong><code>org.apache.commons.digester3.Digester</code></strong> is used
     for everything else. You'll probably want to have this log turned up during
     debugging but turned down during production due to the high message
     volume.</li>
@@ -522,8 +522,8 @@ in your classpath (or setting corresponding system properties on the command
 line that starts your application) with the following contents:</p>
 <pre>
   org.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
-  org.apache.commons.logging.simplelog.log.org.apache.commons.digester.Digester=debug
-  org.apache.commons.logging.simplelog.log.org.apache.commons.digester.Digester.sax=info
+  org.apache.commons.logging.simplelog.log.org.apache.commons.digester3.Digester=debug
+  org.apache.commons.logging.simplelog.log.org.apache.commons.digester3.Digester.sax=info
 </pre>
     </section>
 
@@ -882,9 +882,9 @@ elements are ignored for matching purposes.</p>
 pattern of nested elements as described under
 <a href="#doc.Patterns">Element Matching Patterns</a>.  If you prefer to use
 different selection policies, however, you can create your own implementation
-of the <a href="apidocs/Rules.html">org.apache.commons.digester.Rules</a> interface,
+of the <a href="apidocs/Rules.html">org.apache.commons.digester3.Rules</a> interface,
 or subclass the corresponding convenience base class
-<a href="apidocs/RulesBase.html">org.apache.commons.digester.RulesBase</a>.
+<a href="apidocs/RulesBase.html">org.apache.commons.digester3.RulesBase</a>.
 Your implementation of the <code>match()</code> method will be called when the
 processing for a particular element is started or ended, and you must return
 a <code>List</code> of the rules that are relevant for the current nesting

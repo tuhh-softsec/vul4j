@@ -15,8 +15,8 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.AbstractObjectCreationFactory;
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.AbstractObjectCreationFactory;
 
 /**
  * A simple program to demonstrate some of the functionality of the

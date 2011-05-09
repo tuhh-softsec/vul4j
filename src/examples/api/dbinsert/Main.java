@@ -15,7 +15,7 @@
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester.Digester;
+import org.apache.commons.digester3.Digester;
 
 /**
  * A simple program to demonstrate that the Commons Digester module can be
