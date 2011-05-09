@@ -46,34 +46,23 @@ to your own applications.
 <p>
 Given the following digester rules in the main "parsing" application:</p>
 <source>
-    DigesterLoader digesterLoader = newLoader(new AbstractRulesModule() {
+        Digester digester = new Digester();
+        PluginRules rc = new PluginRules();
+        digester.setRules(rc);
 
-        @Override
-        protected void configure() {
-            forPattern("pipeline")
-                .createObject().ofType(Pipeline.class);
+        digester.addObjectCreate("pipeline", Pipeline.class);
 
-            forPattern("pipeline/source")
-                .callMethod("setSource").withParamCount(1)
-                .then()
-                .callParam().ofIndex(0).fromAttribute("file");
+        digester.addCallMethod("pipeline/source", "setSource", 1);
+        digester.addCallParam("pipeline/source", 0, "file");
 
-            forPattern("pipeline/transform")
-                .createPlugin().ofType(Transform.class)
-                .then()
-                .setNext("setTransform");
+        PluginCreateRule pcr = new PluginCreateRule(Transform.class);
+        digester.addRule("pipeline/transform", pcr);
+        digester.addSetNext("pipeline/transform", "setTransform");
 
-            forPattern("pipeline/destination")
-                .callMethod("setDest").withParamCount(1)
-                .then()
-                .callParam().ofIndex(0).fromAttribute("file");
-        }
+        digester.addCallMethod("pipeline/destination", "setDest", 1);
+        digester.addCallParam("pipeline/destination", 0, "file");
 
-    });
-
-    ...
-
-    digesterLoader.newDigester(new PluginRules()).parse(filename);
+        digester.parse(filename);
 </source>
 <p>
 the following input can be processed:
@@ -222,23 +211,9 @@ the rule info may have any name of your choice, but the original class +
 <p>
 Here is the addRules method on class SubstituteTransform, from the example:</p>
 <source>
-    public static void addRules(final Digester d, final String pathPrefix) {
-        newLoader(new AbstractRulesModule() {
-
-            @Override
-            protected void configure() {
-                // A Container object can have subtags called "widget" which
-                // define any object of type Widget. Because a Container is
-                // itself a widget, this allows us to build trees of objects.
-                forPattern(pattern + "/from")
-                    .callMethod("setFrom").usingElementBodyAsArgument();
-
-                // allow users to declare plugins under a container as well
-                forPattern(pattern + "/to")
-                    .callMethod("setTo").usingElementBodyAsArgument();
-            }
-
-        }).decorate(digester.getRules());
+    public static void addRules(Digester d, String pathPrefix) {
+        d.addCallMethod(pathPrefix+"/from", "setFrom", 0);
+        d.addCallMethod(pathPrefix+"/to", "setTo", 0);
     }
 </source>
 <p>A "rule info" class consists of nothing but a static method defined as above.</p>

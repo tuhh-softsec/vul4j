@@ -23,12 +23,12 @@ limitations under the License.
     <author email="dev@commons.apache.org">Commons Documentation Team</author>
   </properties>
   <body>
-    <section name="Package Documentation for org.apache.commons.digester3.substitution Package">
+    <section name="Package Documentation for org.apache.commons.digester.substitution Package">
       <p>Provides for manipulation of xml attributes and element body text before
 the data is processed by any Rule objects.</p>
 
 <p>
-The class <code>org.apache.commons.digester3.spi.Substitutor</code> defines an
+The class org.apache.commons.digester.Substitutor defines an abstract
 interface for mechanisms which manipulate xml attributes and body text.
 The Digester method setSubstitutor can be used to define a concrete
 substitutor that will be applied to the data before it is passed to the
@@ -54,9 +54,8 @@ using a syntax such as "${user.name}".
   // allow expansion in both xml attributes and element text
   Substitutor substitutor = new VariableSubstitutor(expander);
 
-  Digester digester = newLoader(...)
-      .setSubstitutor(substitutor)
-      .newDigester();
+  Digester digester = new Digester();
+  digester.setSubstitutor(substitutor);
 </source>
     </section>
   </body>

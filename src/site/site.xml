@@ -17,7 +17,7 @@
 -->
 <project name="Digester">
   <bannerRight>
-    <name>Commons Digester 3</name>
+    <name>Commons Digester</name>
     <src>/images/logo.png</src>
     <href>/index.html</href>
   </bannerRight>
@@ -26,19 +26,49 @@
 
     <menu name="Digester">
       <item name="Overview"             href="/index.html"/>
+      <item name="Mailing Lists"        href="/mail-lists.html"/>
+      <item name="Issue Tracking"       href="/issue-tracking.html"/>
       <item name="Source Repository"    href="/source-repository.html"/>
+      <item name="Download"             href="/download_digester.cgi"/>
       <item name="Javadoc (SVN latest)" href="/apidocs/index.html"/>
     </menu>
 
-    <menu name="Developers Guide">
-      <item name="Core APIs"                 href="/guide/core.html"/>
-      <item name="Plugins"                   href="/guide/plugins.html"/>
-      <item name="Substitution"              href="/guide/substitution.html"/>
-      <item name="XML Rules"                 href="/guide/xmlrules.html"/>
-      <item name="Annotations"               href="/guide/annotations.html"/>
-      <item name="Digester vs. Digester3"    href="/guide/dvsd3.html"/>
-      <item name="FAQ"                       href="/guide/faq.html"/>
+    <menu name="Developers Guide (SVN latest)">
+      <item name="Core APIs"            href="/guide/core.html"/>
+      <item name="Plugins"              href="/guide/plugins.html"/>
+      <item name="Substitution"         href="/guide/substitution.html"/>
+      <item name="XML Rules"            href="/guide/xmlrules.html"/>
+      <item name="Annotations"          href="/guide/annotations.html"/>
+      <item name="FAQ"                  href="/guide/faq.html"/>
     </menu>
+
+    <!--
+      - Note that the links in these menu options require manual installation of the
+      - appropriate dirs on the website; maven won't set this up.
+      -->
+    <menu name="Release 2.1 (Current)">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-2.1/core.html">
+        <item name="Core APIs"            href="http://commons.apache.org/digester/commons-digester-2.1/core.html"/>
+        <item name="Plugins"              href="http://commons.apache.org/digester/commons-digester-2.1/plugins.html"/>
+        <item name="Substitution"         href="http://commons.apache.org/digester/commons-digester-2.1/substitution.html"/>
+        <item name="XML Rules"            href="http://commons.apache.org/digester/commons-digester-2.1/xmlrules.html"/>
+        <item name="Annotations"          href="http://commons.apache.org/digester/commons-digester-2.1/annotations.html"/>
+        <item name="FAQ"                  href="http://commons.apache.org/digester/commons-digester-2.1/faq.html"/>
+      </item>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-2.1/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-2.1/RELEASE-NOTES.txt"/>
+    </menu>
+    <menu name="Release 2.0">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-2.0/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-2.0/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-2.0/RELEASE-NOTES.txt"/>
+    </menu>
+    <menu name="Release 1.8.1">
+      <item name="Guide" href="http://commons.apache.org/digester/commons-digester-1.8.1/docs/api/org/apache/commons/digester/package-summary.html#doc.Description"/>
+      <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-1.8.1/docs/api"/>
+      <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-1.8.1/RELEASE-NOTES.txt"/>
+    </menu>
+
   </body>
 
 </project>
