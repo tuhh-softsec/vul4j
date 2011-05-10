@@ -1701,17 +1701,16 @@ public class Digester extends DefaultHandler {
                 }
                 return (null);
                 
-            } else {
-                // try to resolve using system ID
-                if (log.isDebugEnabled()) {
-                    log.debug(" Trying to resolve using system ID '" + systemId + "'");
-                } 
-                try {
-                    entityURL = new URL(systemId);
-                } catch (MalformedURLException e) {
-                    throw new IllegalArgumentException("Malformed URL '" + systemId
-                        + "' : " + e.getMessage());
-                }
+            }
+            // try to resolve using system ID
+            if (log.isDebugEnabled()) {
+                log.debug(" Trying to resolve using system ID '" + systemId + "'");
+            } 
+            try {
+                entityURL = new URL(systemId);
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException("Malformed URL '" + systemId
+                    + "' : " + e.getMessage());
             }
         }
         
