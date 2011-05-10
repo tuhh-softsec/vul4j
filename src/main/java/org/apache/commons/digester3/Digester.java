@@ -144,13 +144,13 @@ public class Digester extends DefaultHandler {
     /**
      * The body text of the current element.
      */
-    private StringBuffer bodyText = new StringBuffer();
+    private StringBuilder bodyText = new StringBuilder();
 
 
     /**
      * The stack of body text string buffers for surrounding elements.
      */
-    protected Stack<StringBuffer> bodyTexts = new Stack<StringBuffer>();
+    protected Stack<StringBuilder> bodyTexts = new Stack<StringBuilder>();
 
 
     /**
@@ -1388,7 +1388,7 @@ public class Digester extends DefaultHandler {
         if (debug) {
             log.debug("  Pushing body text '" + bodyText.toString() + "'");
         }
-        bodyText = new StringBuffer();
+        bodyText = new StringBuilder();
 
         // the actual element name is either in localName or qName, depending 
         // on whether the parser is namespace aware
