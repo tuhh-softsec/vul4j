@@ -131,7 +131,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                 //if (e.rendered)
                 //break;
 
-            };
+            }
             //cur.nodes.clear();
             //cur.nodes.addAll(loa.values());
             cur.rendered = true;

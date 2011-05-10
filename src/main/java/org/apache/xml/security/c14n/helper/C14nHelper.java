@@ -99,16 +99,14 @@ public class C14nHelper {
         boolean definesDefaultNS = nodeAttrName.equals("xmlns");
         boolean definesNonDefaultNS = nodeAttrName.startsWith("xmlns:");
 
-        if (definesDefaultNS || definesNonDefaultNS) {
-            if (namespaceIsRelative(attr)) {
-                String parentName = attr.getOwnerElement().getTagName();
-                String attrValue = attr.getValue();
-                Object exArgs[] = { parentName, nodeAttrName, attrValue };
+        if ((definesDefaultNS || definesNonDefaultNS) && namespaceIsRelative(attr)) {
+            String parentName = attr.getOwnerElement().getTagName();
+            String attrValue = attr.getValue();
+            Object exArgs[] = { parentName, nodeAttrName, attrValue };
 
-                throw new CanonicalizationException(
-                    "c14n.Canonicalizer.RelativeNamespace", exArgs
-                );
-            }
+            throw new CanonicalizationException(
+                "c14n.Canonicalizer.RelativeNamespace", exArgs
+            );
         }
     }
 

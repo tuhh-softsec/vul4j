@@ -255,14 +255,10 @@ final class XMLDSigSecurity {
             }
         }
 
-        if (prop != null && attr != null) {
-            if (!prov.entrySet().contains(attr)) {
-                // if no attribute, assume DOM default if requested
-                if (!attr.getValue().equals("DOM") || 
-                    prov.get(attr.getKey()) != null) {
-                    prop = null;
-                }
-            }
+        if ((prop != null && attr != null) && !prov.entrySet().contains(attr)
+            && (!attr.getValue().equals("DOM") || prov.get(attr.getKey()) != null)) {
+            // if no attribute, assume DOM default if requested
+            prop = null;
         }
 
         return prop;

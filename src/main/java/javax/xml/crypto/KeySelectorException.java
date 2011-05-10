@@ -94,7 +94,7 @@ public class KeySelectorException extends Exception {
      *        indicates that the cause is nonexistent or unknown.)
      */
     public KeySelectorException(Throwable cause) {
-        super(cause==null ? null : cause.toString());
+        super(cause == null ? null : cause.toString());
         this.cause = cause;
     }
 
@@ -117,7 +117,7 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace() {
         super.printStackTrace();
-        //XXX print backtrace of cause
+        cause.printStackTrace();
     }
 
     /**
@@ -128,7 +128,7 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace(PrintStream s) {
         super.printStackTrace(s);
-        //XXX print backtrace of cause
+        cause.printStackTrace(s);
     }
 
     /**
@@ -139,6 +139,6 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace(PrintWriter s) {
         super.printStackTrace(s);
-        //XXX print backtrace of cause
+        cause.printStackTrace(s);
     }
 }

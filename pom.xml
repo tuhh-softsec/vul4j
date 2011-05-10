@@ -109,7 +109,9 @@
                     <verbose>true</verbose>
                     <targetJdk>1.5</targetJdk>
                     <excludes>
-                        <exclude>**/XMLX509SKI.java</exclude>
+                        <exclude>
+                            **/XMLX509SKI.java,**/KeyInfoFactory.java,**/XMLDSigSecurity.java
+                        </exclude>
                     </excludes>
                 </configuration>
                 <executions>

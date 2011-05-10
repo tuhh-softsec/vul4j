@@ -81,7 +81,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLCipher {
 
-    private static org.apache.commons.logging.Log logger = 
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLCipher.class);
 
     /** Triple DES EDE (192 bit key) in CBC mode */
@@ -242,8 +242,8 @@ public class XMLCipher {
      */
     private XMLCipher(String transformation, String provider, String canon)
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Constructing XMLCipher...");
+        if (log.isDebugEnabled()) {
+            log.debug("Constructing XMLCipher...");
         }
 
         factory = new Factory();
@@ -268,15 +268,15 @@ public class XMLCipher {
         if (transformation != null) {
             try {
                 String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("cipher.algorithm = " + jceAlgorithm);
+                if (log.isDebugEnabled()) {
+                    log.debug("cipher.algorithm = " + jceAlgorithm);
                 }
 
                 if (provider == null) {
                     contextCipher = Cipher.getInstance(jceAlgorithm);
                 } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("provider.name = " + provider);
+                    if (log.isDebugEnabled()) {
+                        log.debug("provider.name = " + provider);
                     }
                     contextCipher = Cipher.getInstance(jceAlgorithm, provider);
                 }
@@ -324,7 +324,7 @@ public class XMLCipher {
             throw new NullPointerException("Transformation unexpectedly null...");
         }
         if (!isValidEncryptionAlgorithm(transformation)) {
-            logger.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
+            log.warn("Algorithm non-standard, expected one of " + ENC_ALGORITHMS);
         }
     }
 
@@ -357,8 +357,8 @@ public class XMLCipher {
      * @see javax.crypto.Cipher#getInstance(java.lang.String)
      */
     public static XMLCipher getInstance(String transformation) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with transformation");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation");
         }
         validateTransformation(transformation);
         return new XMLCipher(transformation, null, null);
@@ -382,8 +382,8 @@ public class XMLCipher {
      */
     public static XMLCipher getInstance(String transformation, String canon)
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with transformation and c14n algorithm");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation and c14n algorithm");
         }
         validateTransformation(transformation);
         return new XMLCipher(transformation, null, canon);
@@ -402,8 +402,8 @@ public class XMLCipher {
      */
     public static XMLCipher getProviderInstance(String transformation, String provider)
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with transformation and provider");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation and provider");
         }
         if (null == provider) {
             throw new NullPointerException("Provider unexpectedly null..");
@@ -432,8 +432,8 @@ public class XMLCipher {
     public static XMLCipher getProviderInstance(
         String transformation, String provider, String canon
     ) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with transformation, provider and c14n algorithm");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation, provider and c14n algorithm");
         }
         if (null == provider) {
             throw new NullPointerException("Provider unexpectedly null..");
@@ -452,8 +452,8 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public static XMLCipher getInstance() throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with no arguments");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with no arguments");
         }
         return new XMLCipher(null, null, null);
     }
@@ -472,8 +472,8 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public static XMLCipher getProviderInstance(String provider) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting XMLCipher with provider");
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with provider");
         }
         return new XMLCipher(null, provider, null);
     }
@@ -500,8 +500,8 @@ public class XMLCipher {
      */
     public void init(int opmode, Key key) throws XMLEncryptionException {
         // sanity checks
-        if (logger.isDebugEnabled()) {
-            logger.debug("Initializing XMLCipher...");
+        if (log.isDebugEnabled()) {
+            log.debug("Initializing XMLCipher...");
         }
 
         ek = null;
@@ -510,29 +510,29 @@ public class XMLCipher {
         switch (opmode) {
 
         case ENCRYPT_MODE :
-            if (logger.isDebugEnabled()) {
-                logger.debug("opmode = ENCRYPT_MODE");
+            if (log.isDebugEnabled()) {
+                log.debug("opmode = ENCRYPT_MODE");
             }
             ed = createEncryptedData(CipherData.VALUE_TYPE, "NO VALUE YET");
             break;
         case DECRYPT_MODE :
-            if (logger.isDebugEnabled()) {
-                logger.debug("opmode = DECRYPT_MODE");
+            if (log.isDebugEnabled()) {
+                log.debug("opmode = DECRYPT_MODE");
             }
             break;
         case WRAP_MODE :
-            if (logger.isDebugEnabled()) {
-                logger.debug("opmode = WRAP_MODE");
+            if (log.isDebugEnabled()) {
+                log.debug("opmode = WRAP_MODE");
             }
             ek = createEncryptedKey(CipherData.VALUE_TYPE, "NO VALUE YET");
             break;
         case UNWRAP_MODE :
-            if (logger.isDebugEnabled()) {
-                logger.debug("opmode = UNWRAP_MODE");
+            if (log.isDebugEnabled()) {
+                log.debug("opmode = UNWRAP_MODE");
             }
             break;
         default :
-            logger.error("Mode unexpectedly invalid");
+            log.error("Mode unexpectedly invalid");
             throw new XMLEncryptionException("Invalid mode in init");
         }
 
@@ -551,8 +551,8 @@ public class XMLCipher {
      */
     public EncryptedData getEncryptedData() {
         // Sanity checks
-        if (logger.isDebugEnabled()) {
-            logger.debug("Returning EncryptedData");
+        if (log.isDebugEnabled()) {
+            log.debug("Returning EncryptedData");
         }
         return ed;
 
@@ -569,8 +569,8 @@ public class XMLCipher {
      */
     public EncryptedKey getEncryptedKey() {
         // Sanity checks
-        if (logger.isDebugEnabled()) {
-            logger.debug("Returning EncryptedKey");
+        if (log.isDebugEnabled()) {
+            log.debug("Returning EncryptedKey");
         }
         return ek;
     }
@@ -669,16 +669,14 @@ public class XMLCipher {
      *  @throws Exception
      */
     private Document encryptElement(Element element) throws Exception{
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypting element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypting element...");
         }
         if (null == element) { 
-            logger.error("Element unexpectedly null...");
+            log.error("Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
-            }
+        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
+            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (algorithm == null) {
@@ -709,16 +707,14 @@ public class XMLCipher {
      * @throws Exception
      */
     private Document encryptElementContent(Element element) throws /* XMLEncryption */Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypting element content...");
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypting element content...");
         }
         if (null == element) { 
-            logger.error("Element unexpectedly null...");
+            log.error("Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
-            }
+        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
+            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (algorithm == null) {
@@ -744,14 +740,14 @@ public class XMLCipher {
      * @throws Exception to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Document source) throws /* XMLEncryption */Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Processing source document...");
+        if (log.isDebugEnabled()) {
+            log.debug("Processing source document...");
         }
         if (null == context) {
-            logger.error("Context document unexpectedly null...");
+            log.error("Context document unexpectedly null...");
         }
         if (null == source) {
-            logger.error("Source document unexpectedly null...");
+            log.error("Source document unexpectedly null...");
         }
 
         contextDocument = context;
@@ -786,14 +782,14 @@ public class XMLCipher {
      * @throws Exception to indicate any exceptional conditions.
      */
     public Document doFinal(Document context, Element element) throws /* XMLEncryption */Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Processing source element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Processing source element...");
         }
         if (null == context) {
-            logger.error("Context document unexpectedly null...");
+            log.error("Context document unexpectedly null...");
         }
         if (null == element) {
-            logger.error("Source element unexpectedly null...");
+            log.error("Source element unexpectedly null...");
         }
 
         contextDocument = context;
@@ -832,14 +828,14 @@ public class XMLCipher {
      */
     public Document doFinal(Document context, Element element, boolean content)
         throws /* XMLEncryption*/ Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Processing source element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Processing source element...");
         }
         if (null == context) {
-            logger.error("Context document unexpectedly null...");
+            log.error("Context document unexpectedly null...");
         }
         if (null == element) {
-            logger.error("Source element unexpectedly null...");
+            log.error("Source element unexpectedly null...");
         }
 
         contextDocument = context;
@@ -906,19 +902,17 @@ public class XMLCipher {
     public EncryptedData encryptData(
         Document context, String type, InputStream serializedData
     ) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypting element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypting element...");
         }
         if (null == context) {
-            logger.error("Context document unexpectedly null...");
+            log.error("Context document unexpectedly null...");
         }
         if (null == serializedData) {
-            logger.error("Serialized data unexpectedly null...");
+            log.error("Serialized data unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
-            }
+        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
+            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         return encryptData(context, null, type, serializedData);
@@ -941,19 +935,17 @@ public class XMLCipher {
     public EncryptedData encryptData(
         Document context, Element element, boolean contentMode
     ) throws /* XMLEncryption */ Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypting element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypting element...");
         }
         if (null == context) {
-            logger.error("Context document unexpectedly null...");
+            log.error("Context document unexpectedly null...");
         }
         if (null == element) {
-            logger.error("Element unexpectedly null...");
+            log.error("Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
-            }
+        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
+            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (contentMode) {
@@ -985,8 +977,8 @@ public class XMLCipher {
             } else {
                 serializedOctets = serializer.serialize(element);
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Serialized octets:\n" + serializedOctets);
+            if (log.isDebugEnabled()) {
+                log.debug("Serialized octets:\n" + serializedOctets);
             }
         }
 
@@ -996,8 +988,8 @@ public class XMLCipher {
         Cipher c;
         if (contextCipher == null) {
             String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
-            if (logger.isDebugEnabled()) {
-                logger.debug("alg = " + jceAlgorithm);
+            if (log.isDebugEnabled()) {
+                log.debug("alg = " + jceAlgorithm);
             }
 
             try {
@@ -1039,13 +1031,13 @@ public class XMLCipher {
                 encryptedBytes = baos.toByteArray();
             } else {
                 encryptedBytes = c.doFinal(serializedOctets.getBytes("UTF-8"));
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Expected cipher.outputSize = " +
+                if (log.isDebugEnabled()) {
+                    log.debug("Expected cipher.outputSize = " +
                         Integer.toString(c.getOutputSize(serializedOctets.getBytes("UTF-8").length)));
                 }
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Actual cipher.outputSize = " 
+            if (log.isDebugEnabled()) {
+                log.debug("Actual cipher.outputSize = " 
                              + Integer.toString(encryptedBytes.length));
             }
         } catch (IllegalStateException ise) {
@@ -1066,9 +1058,9 @@ public class XMLCipher {
         System.arraycopy(encryptedBytes, 0, finalEncryptedBytes, iv.length, encryptedBytes.length);
         String base64EncodedEncryptedOctets = Base64.encode(finalEncryptedBytes);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
-            logger.debug("Encrypted octets length = " + base64EncodedEncryptedOctets.length());
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypted octets:\n" + base64EncodedEncryptedOctets);
+            log.debug("Encrypted octets length = " + base64EncodedEncryptedOctets.length());
         }
 
         try {
@@ -1101,8 +1093,8 @@ public class XMLCipher {
      */
     public EncryptedData loadEncryptedData(Document context, Element element) 
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loading encrypted element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Loading encrypted element...");
         }
         if (null == context) {
             throw new NullPointerException("Context document unexpectedly null...");
@@ -1132,8 +1124,8 @@ public class XMLCipher {
      */
     public EncryptedKey loadEncryptedKey(Document context, Element element) 
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loading encrypted key...");
+        if (log.isDebugEnabled()) {
+            log.debug("Loading encrypted key...");
         }
         if (null == context) {
             throw new NullPointerException("Context document unexpectedly null...");
@@ -1177,15 +1169,15 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public EncryptedKey encryptKey(Document doc, Key key) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypting key ...");
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypting key ...");
         }
 
         if (null == key) {
-            logger.error("Key unexpectedly null...");
+            log.error("Key unexpectedly null...");
         }
         if (cipherMode != WRAP_MODE) {
-            logger.debug("XMLCipher unexpectedly not in WRAP_MODE...");
+            log.debug("XMLCipher unexpectedly not in WRAP_MODE...");
         }
         if (algorithm == null) {
             throw new XMLEncryptionException("XMLCipher instance without transformation specified");
@@ -1200,8 +1192,8 @@ public class XMLCipher {
             // Now create the working cipher
 
             String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
-            if (logger.isDebugEnabled()) {
-                logger.debug("alg = " + jceAlgorithm);
+            if (log.isDebugEnabled()) {
+                log.debug("alg = " + jceAlgorithm);
             }
 
             try {
@@ -1234,9 +1226,9 @@ public class XMLCipher {
         }
 
         String base64EncodedEncryptedOctets = Base64.encode(encryptedBytes);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
-            logger.debug("Encrypted key octets length = " + base64EncodedEncryptedOctets.length());
+        if (log.isDebugEnabled()) {
+            log.debug("Encrypted key octets:\n" + base64EncodedEncryptedOctets);
+            log.debug("Encrypted key octets length = " + base64EncodedEncryptedOctets.length());
         }
 
         CipherValue cv = ek.getCipherData().getCipherValue();
@@ -1262,12 +1254,12 @@ public class XMLCipher {
      */
     public Key decryptKey(EncryptedKey encryptedKey, String algorithm) 
         throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Decrypting key from previously loaded EncryptedKey...");
+        if (log.isDebugEnabled()) {
+            log.debug("Decrypting key from previously loaded EncryptedKey...");
         }
 
-        if (cipherMode != UNWRAP_MODE && logger.isDebugEnabled()) {
-            logger.debug("XMLCipher unexpectedly not in UNWRAP_MODE...");
+        if (cipherMode != UNWRAP_MODE && log.isDebugEnabled()) {
+            log.debug("XMLCipher unexpectedly not in UNWRAP_MODE...");
         }
 
         if (algorithm == null) {
@@ -1275,8 +1267,8 @@ public class XMLCipher {
         }
 
         if (key == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Trying to find a KEK via key resolvers");
+            if (log.isDebugEnabled()) {
+                log.debug("Trying to find a KEK via key resolvers");
             }
 
             KeyInfo ki = encryptedKey.getKeyInfo();
@@ -1291,11 +1283,13 @@ public class XMLCipher {
                     }
                 }
                 catch (Exception e) {
-                    //
+                    if (log.isDebugEnabled()) {
+                        log.debug(e);
+                    }
                 }
             }
             if (key == null) {
-                logger.error("XMLCipher::decryptKey called without a KEK and cannot resolve");
+                log.error("XMLCipher::decryptKey called without a KEK and cannot resolve");
                 throw new XMLEncryptionException("Unable to decrypt without a KEK");
             }
         }
@@ -1305,8 +1299,8 @@ public class XMLCipher {
         byte [] encryptedBytes = cipherInput.getBytes();
 
         String jceKeyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
-        if (logger.isDebugEnabled()) {
-            logger.debug("JCE Key Algorithm: " + jceKeyAlgorithm);
+        if (log.isDebugEnabled()) {
+            log.debug("JCE Key Algorithm: " + jceKeyAlgorithm);
         }
 
         Cipher c;
@@ -1315,8 +1309,8 @@ public class XMLCipher {
 
             String jceAlgorithm =
                 JCEMapper.translateURItoJCEID(encryptedKey.getEncryptionMethod().getAlgorithm());
-            if (logger.isDebugEnabled()) {
-                logger.debug("JCE Algorithm = " + jceAlgorithm);
+            if (log.isDebugEnabled()) {
+                log.debug("JCE Algorithm = " + jceAlgorithm);
             }
 
             try {
@@ -1346,8 +1340,8 @@ public class XMLCipher {
         } catch (NoSuchAlgorithmException nsae) {
             throw new XMLEncryptionException("empty", nsae);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Decryption of key type " + algorithm + " OK");
+        if (log.isDebugEnabled()) {
+            log.debug("Decryption of key type " + algorithm + " OK");
         }
 
         return ret;
@@ -1387,12 +1381,12 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     private Document decryptElement(Element element) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Decrypting element...");
+        if (log.isDebugEnabled()) {
+            log.debug("Decrypting element...");
         }
 
         if (cipherMode != DECRYPT_MODE) {
-            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+            log.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
         String octets;
@@ -1402,8 +1396,8 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", uee);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Decrypted octets:\n" + octets);
+        if (log.isDebugEnabled()) {
+            log.debug("Decrypted octets:\n" + octets);
         }
 
         Node sourceParent = element.getParentNode();
@@ -1453,12 +1447,12 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public byte[] decryptToByteArray(Element element) throws XMLEncryptionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Decrypting to ByteArray...");
+        if (log.isDebugEnabled()) {
+            log.debug("Decrypting to ByteArray...");
         }
 
         if (cipherMode != DECRYPT_MODE) {
-            logger.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+            log.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
         EncryptedData encryptedData = factory.newEncryptedData(element);
@@ -1475,12 +1469,14 @@ public class XMLCipher {
                     );
                     key = ki.getSecretKey();
                 } catch (KeyResolverException kre) {
-                    // We will throw in a second...
+                    if (log.isDebugEnabled()) {
+                        log.debug(kre);
+                    }
                 }
             }
 
             if (key == null) {
-                logger.error(
+                log.error(
                     "XMLCipher::decryptElement called without a key and unable to resolve"
                 );
                 throw new XMLEncryptionException("encryption.nokey");
@@ -1494,8 +1490,8 @@ public class XMLCipher {
         // Now create the working cipher
         String jceAlgorithm = 
             JCEMapper.translateURItoJCEID(encryptedData.getEncryptionMethod().getAlgorithm());
-        if (logger.isDebugEnabled()) {
-            logger.debug("JCE Algorithm = " + jceAlgorithm);
+        if (log.isDebugEnabled()) {
+            log.debug("JCE Algorithm = " + jceAlgorithm);
         }
 
         Cipher c;
@@ -2078,8 +2074,8 @@ public class XMLCipher {
             Element transformsElement = (Element) transformsElements.item(0);
 
             if (transformsElement != null) {
-                if (logger.isDebugEnabled()) {    
-                    logger.debug("Creating a DSIG based Transforms element");
+                if (log.isDebugEnabled()) {    
+                    log.debug("Creating a DSIG based Transforms element");
                 }
                 try {
                     result.setTransforms(new TransformsImpl(transformsElement));
@@ -2332,8 +2328,6 @@ public class XMLCipher {
                 EncryptionConstants.EncryptionSpecNS,
                 EncryptionConstants._TAG_KEYREFERENCE).item(0)) {
                 type = ReferenceList.KEY_REFERENCE;
-            } else {
-                // complain
             }
 
             ReferenceList result = new ReferenceListImpl(type);
@@ -2516,8 +2510,6 @@ public class XMLCipher {
                     result.appendChild(((CipherValueImpl) cipherValue).toElement());
                 } else if (cipherType == REFERENCE_TYPE) {
                     result.appendChild(((CipherReferenceImpl) cipherReference).toElement());
-                } else {
-                    // complain
                 }
 
                 return result;

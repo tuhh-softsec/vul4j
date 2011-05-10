@@ -26,7 +26,6 @@ package javax.xml.crypto.dsig;
 
 import javax.xml.crypto.AlgorithmMethod;
 import javax.xml.crypto.XMLStructure;
-import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 import java.security.spec.AlgorithmParameterSpec;
 
 /**

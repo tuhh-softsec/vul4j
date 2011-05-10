@@ -708,11 +708,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 break;
 
             default :
-                if (c < 0x80 ) {
+                if (c < 0x80) {
                     writer.write(c);
                 } else {
                     UtfHelpper.writeCharToUtf8(c, writer);
-                };
+                }
                 continue;
             }
             writer.write(toWrite);
@@ -744,11 +744,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             if (c == 0x0D) {
                 writer.write(XD);
             } else {
-                if (c < 0x80)  {
+                if (c < 0x80) {
                     writer.write(c);
                 } else {
                     UtfHelpper.writeCharToUtf8(c, writer);
-                };           
+                }     
             }
         }
 
@@ -798,11 +798,11 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             if (c == 0x0D) {
                 writer.write(XD);
             } else {
-                if (c < 0x80)  {
+                if (c < 0x80) {
                     writer.write(c);
                 } else {
                     UtfHelpper.writeCharToUtf8(c, writer);
-                };               
+                }    
             }      
         }
 
@@ -850,7 +850,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                     writer.write(c);
                 } else {
                     UtfHelpper.writeCharToUtf8(c, writer);
-                };
+                }
                 continue;
             }
             writer.write(toWrite);

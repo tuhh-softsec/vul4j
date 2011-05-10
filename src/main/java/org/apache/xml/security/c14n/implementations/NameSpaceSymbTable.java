@@ -47,9 +47,6 @@ public class NameSpaceSymbTable {
     /**The map betwen prefix-> entry table. */
     private SymbMap symb;
     
-    /**The level of nameSpaces (for Inclusive visibility).*/
-    private int nameSpaces = 0;
-    
     /**The stacks for removing the definitions when doing pop.*/
     private List<SymbMap> level;
     private boolean cloned = true;
@@ -90,7 +87,6 @@ public class NameSpaceSymbTable {
      * For Inclusive rendering.
      **/
     public void outputNodePush() {
-        nameSpaces++;
         push();
     }
 
@@ -98,7 +94,6 @@ public class NameSpaceSymbTable {
      * Pop a frame for visible namespace.
      **/
     public void outputNodePop() {
-        nameSpaces--;
         pop();
     }
 
@@ -238,12 +233,10 @@ public class NameSpaceSymbTable {
         ne.lastrendered = uri;
         needsClone();
         symb.put(prefix, ne);
-        if (ob != null) {           
-            if ((ob.lastrendered != null) && (ob.lastrendered.equals(uri))) {
-                ne.rendered = true;
-                return null;
-            }
-        }       
+        if ((ob != null) && (ob.lastrendered != null) && (ob.lastrendered.equals(uri))) {
+            ne.rendered = true;
+            return null;
+        }
         return ne.n;
     }
 
@@ -331,12 +324,10 @@ class SymbMap implements Cloneable {
         Object oldKey = keys[index];
         keys[index] = key;
         entries[index] = value;
-        if (oldKey == null || !oldKey.equals(key)) {	        	        
-            if (--free == 0) {
-                free = entries.length;
-                int newCapacity = free << 2;				
-                rehash(newCapacity);			
-            }
+        if ((oldKey == null || !oldKey.equals(key)) && (--free == 0)) {	        	        
+            free = entries.length;
+            int newCapacity = free << 2;				
+            rehash(newCapacity);			
         }
     }
 

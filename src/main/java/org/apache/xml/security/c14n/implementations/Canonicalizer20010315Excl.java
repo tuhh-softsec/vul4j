@@ -177,13 +177,12 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                 continue;
             }
 
-            if (ns.addMapping(NName, NNodeValue, N)) {
+            if (ns.addMapping(NName, NNodeValue, N) 
+                && C14nHelper.namespaceIsRelative(NNodeValue)) {
                 // New definition check if it is relative.
-                if (C14nHelper.namespaceIsRelative(NNodeValue)) {
-                    Object exArgs[] = {E.getTagName(), NName, N.getNodeValue()};
-                    throw new CanonicalizationException(
-                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
-                }
+                Object exArgs[] = {E.getTagName(), NName, N.getNodeValue()};
+                throw new CanonicalizationException(
+                    "c14n.Canonicalizer.RelativeNamespace", exArgs);
             }
         }		
         String prefix;
@@ -295,14 +294,13 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                 }
             }
 
-            if (ns.addMapping(NName, NNodeValue, N)) {
+            if (ns.addMapping(NName, NNodeValue, N)
+                && C14nHelper.namespaceIsRelative(NNodeValue)) {
                 // New definition check if it is relative
-                if (C14nHelper.namespaceIsRelative(NNodeValue)) {
-                    Object exArgs[] = 
-                        { E.getTagName(), NName, N.getNodeValue() };
-                    throw new CanonicalizationException(
-                        "c14n.Canonicalizer.RelativeNamespace", exArgs);
-                }    
+                Object exArgs[] = 
+                    { E.getTagName(), NName, N.getNodeValue() };
+                throw new CanonicalizationException(
+                    "c14n.Canonicalizer.RelativeNamespace", exArgs);
             }
         }
 
