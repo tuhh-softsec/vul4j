@@ -33,7 +33,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Stack;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -765,31 +764,7 @@ public class Digester extends DefaultHandler {
 
         // Create a new parser
         try {
-            if (validating && (schemaLocation != null)) {
-                // There is no portable way to specify the location of
-                // an xml schema to be applied to the input document, so
-                // we have to use parser-specific code for this. That code
-                // is hidden behind the ParserFeatureSetterFactory class.
-
-                // The above has changed in JDK 1.5 and no longer true. The
-                // functionality used in this block has now been deprecated.
-                // We now use javax.xml.validation.Schema instead.
-
-                Properties properties = new Properties();
-                properties.put("SAXParserFactory", getFactory());
-                if (schemaLocation != null) {
-                    properties.put("schemaLocation", schemaLocation);
-                    properties.put("schemaLanguage", schemaLanguage);
-                }
-                parser = ParserFeatureSetterFactory.newSAXParser(properties);
-            } else {
-                // The user doesn't want to use any non-portable parsing features,
-                // so we can just use the portable API here. Note that method
-                // getFactory returns a factory already configured with the
-                // appropriate namespaceAware and validating properties.
-
-                parser = getFactory().newSAXParser();
-            }
+            parser = getFactory().newSAXParser();
         } catch (Exception e) {
             log.error("Digester.getParser: ", e);
             return (null);
