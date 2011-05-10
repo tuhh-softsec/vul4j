@@ -373,21 +373,21 @@ public class FactoryCreateRule extends Rule {
             try {
                 Object instance = getFactory(attributes).createObject(attributes);
                 
-                if (digester.log.isDebugEnabled()) {
-                    digester.log.debug("[FactoryCreateRule]{" + digester.match +
+                if (getDigester().log.isDebugEnabled()) {
+                    getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
                             "} New " + (instance == null ? "null object" :
                             instance.getClass().getName()));
                 }
-                digester.push(instance);
+                getDigester().push(instance);
                 exceptionIgnoredStack.push(Boolean.FALSE);
                 
             } catch (Exception e) {
                 // log message and error
-                if (digester.log.isInfoEnabled()) {
-                    digester.log.info("[FactoryCreateRule] Create exception ignored: " +
+                if (getDigester().log.isInfoEnabled()) {
+                    getDigester().log.info("[FactoryCreateRule] Create exception ignored: " +
                         ((e.getMessage() == null) ? e.getClass().getName() : e.getMessage()));
-                    if (digester.log.isDebugEnabled()) {
-                        digester.log.debug("[FactoryCreateRule] Ignored exception:", e);
+                    if (getDigester().log.isDebugEnabled()) {
+                        getDigester().log.debug("[FactoryCreateRule] Ignored exception:", e);
                     }
                 }
                 exceptionIgnoredStack.push(Boolean.TRUE);
@@ -396,12 +396,12 @@ public class FactoryCreateRule extends Rule {
         } else {
             Object instance = getFactory(attributes).createObject(attributes);
             
-            if (digester.log.isDebugEnabled()) {
-                digester.log.debug("[FactoryCreateRule]{" + digester.match +
+            if (getDigester().log.isDebugEnabled()) {
+                getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
                         "} New " + (instance == null ? "null object" :
                         instance.getClass().getName()));
             }
-            digester.push(instance);
+            getDigester().push(instance);
         }
     }
 
@@ -422,16 +422,16 @@ public class FactoryCreateRule extends Rule {
             if (exceptionIgnoredStack.pop().booleanValue()) {
                 // creation exception was ignored
                 // nothing was put onto the stack
-                if (digester.log.isTraceEnabled()) {
-                    digester.log.trace("[FactoryCreateRule] No creation so no push so no pop");
+                if (getDigester().log.isTraceEnabled()) {
+                    getDigester().log.trace("[FactoryCreateRule] No creation so no push so no pop");
                 }
                 return;
             }
         } 
 
-        Object top = digester.pop();
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[FactoryCreateRule]{" + digester.match +
+        Object top = getDigester().pop();
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
                     "} Pop " + top.getClass().getName());
         }
 
@@ -494,14 +494,14 @@ public class FactoryCreateRule extends Rule {
                     realClassName = value;
                 }
             }
-            if (digester.log.isDebugEnabled()) {
-                digester.log.debug("[FactoryCreateRule]{" + digester.match +
+            if (getDigester().log.isDebugEnabled()) {
+                getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
                         "} New factory " + realClassName);
             }
-            Class<?> clazz = digester.getClassLoader().loadClass(realClassName);
+            Class<?> clazz = getDigester().getClassLoader().loadClass(realClassName);
             creationFactory = (ObjectCreationFactory)
                     clazz.newInstance();
-            creationFactory.setDigester(digester);
+            creationFactory.setDigester(getDigester());
         }
         return (creationFactory);
 

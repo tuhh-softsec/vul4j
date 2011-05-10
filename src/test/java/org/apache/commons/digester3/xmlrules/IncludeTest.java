@@ -41,7 +41,7 @@ public class IncludeTest {
                 new Rule() {
                     @Override
                     public void body(String namespace, String name, String text) {
-                        ((ArrayList<String>) this.digester.peek()).add(text);
+                        ((ArrayList<String>) this.getDigester().peek()).add(text);
                     }
                 });
         }

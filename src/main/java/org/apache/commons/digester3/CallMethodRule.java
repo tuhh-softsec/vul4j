@@ -475,7 +475,7 @@ public class CallMethodRule extends Rule {
             for (int i = 0; i < parameters.length; i++) {
                 parameters[i] = null;
             }
-            digester.pushParams(parameters);
+            getDigester().pushParams(parameters);
         }
 
     }
@@ -506,11 +506,11 @@ public class CallMethodRule extends Rule {
         Object parameters[] = null;
         if (paramCount > 0) {
 
-            parameters = (Object[]) digester.popParams();
+            parameters = (Object[]) getDigester().popParams();
             
-            if (digester.log.isTraceEnabled()) {
+            if (getDigester().log.isTraceEnabled()) {
                 for (int i=0,size=parameters.length;i<size;i++) {
-                    digester.log.trace("[CallMethodRule](" + i + ")" + parameters[i]) ;
+                    getDigester().log.trace("[CallMethodRule](" + i + ")" + parameters[i]) ;
                 }
             }
             
@@ -574,28 +574,28 @@ public class CallMethodRule extends Rule {
         // Determine the target object for the method call
         Object target;
         if (targetOffset >= 0) {
-            target = digester.peek(targetOffset);
+            target = getDigester().peek(targetOffset);
         } else {
-            target = digester.peek( digester.getCount() + targetOffset );
+            target = getDigester().peek( getDigester().getCount() + targetOffset );
         }
         
         if (target == null) {
             StringBuffer sb = new StringBuffer();
             sb.append("[CallMethodRule]{");
-            sb.append(digester.match);
+            sb.append(getDigester().match);
             sb.append("} Call target is null (");
             sb.append("targetOffset=");
             sb.append(targetOffset);
             sb.append(",stackdepth=");
-            sb.append(digester.getCount());
+            sb.append(getDigester().getCount());
             sb.append(")");
             throw new org.xml.sax.SAXException(sb.toString());
         }
         
         // Invoke the required method on the top object
-        if (digester.log.isDebugEnabled()) {
+        if (getDigester().log.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer("[CallMethodRule]{");
-            sb.append(digester.match);
+            sb.append(getDigester().match);
             sb.append("} Call ");
             sb.append(target.getClass().getName());
             sb.append(".");
@@ -618,7 +618,7 @@ public class CallMethodRule extends Rule {
                 }
             }
             sb.append(")");
-            digester.log.debug(sb.toString());
+            getDigester().log.debug(sb.toString());
         }
         
         Object result = null;

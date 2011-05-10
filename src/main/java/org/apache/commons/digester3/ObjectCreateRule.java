@@ -201,15 +201,15 @@ public class ObjectCreateRule extends Rule {
                 realClassName = value;
             }
         }
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[ObjectCreateRule]{" + digester.match +
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[ObjectCreateRule]{" + getDigester().match +
                     "}New " + realClassName);
         }
 
         // Instantiate the new object and push it on the context stack
-        Class<?> clazz = digester.getClassLoader().loadClass(realClassName);
+        Class<?> clazz = getDigester().getClassLoader().loadClass(realClassName);
         Object instance = clazz.newInstance();
-        digester.push(instance);
+        getDigester().push(instance);
 
     }
 
@@ -220,9 +220,9 @@ public class ObjectCreateRule extends Rule {
     @Override
     public void end(String namespace, String name) throws Exception {
 
-        Object top = digester.pop();
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[ObjectCreateRule]{" + digester.match +
+        Object top = getDigester().pop();
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[ObjectCreateRule]{" + getDigester().match +
                     "} Pop " + top.getClass().getName());
         }
 

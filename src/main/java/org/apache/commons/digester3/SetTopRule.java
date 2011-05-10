@@ -178,16 +178,16 @@ public class SetTopRule extends Rule {
     public void end(String namespace, String name) throws Exception {
 
         // Identify the objects to be used
-        Object child = digester.peek(0);
-        Object parent = digester.peek(1);
+        Object child = getDigester().peek(0);
+        Object parent = getDigester().peek(1);
         
-        if (digester.log.isDebugEnabled()) {
+        if (getDigester().log.isDebugEnabled()) {
             if (child == null) {
-                digester.log.debug("[SetTopRule]{" + digester.match +
+                getDigester().log.debug("[SetTopRule]{" + getDigester().match +
                         "} Call [NULL CHILD]." +
                         methodName + "(" + parent + ")");
             } else {
-                digester.log.debug("[SetTopRule]{" + digester.match +
+                getDigester().log.debug("[SetTopRule]{" + getDigester().match +
                         "} Call " + child.getClass().getName() + "." +
                         methodName + "(" + parent + ")");
             }
@@ -197,7 +197,7 @@ public class SetTopRule extends Rule {
         Class<?> paramTypes[] = new Class<?>[1];
         if (paramType != null) {
             paramTypes[0] =
-                    digester.getClassLoader().loadClass(paramType);
+                    getDigester().getClassLoader().loadClass(paramType);
         } else {
             paramTypes[0] = parent.getClass();
         }

@@ -126,11 +126,11 @@ public class SetPropertyRule extends Rule {
         }
 
         // Get a reference to the top object
-        Object top = digester.peek();
+        Object top = getDigester().peek();
 
         // Log some debugging information
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[SetPropertyRule]{" + digester.match +
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[SetPropertyRule]{" + getDigester().match +
                     "} Set " + top.getClass().getName() + " property " +
                     actualName + " to " + actualValue);
         }

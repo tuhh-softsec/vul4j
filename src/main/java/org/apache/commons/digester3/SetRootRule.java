@@ -180,15 +180,15 @@ public class SetRootRule extends Rule {
     public void end(String namespace, String name) throws Exception {
 
         // Identify the objects to be used
-        Object child = digester.peek(0);
-        Object parent = digester.root;
-        if (digester.log.isDebugEnabled()) {
+        Object child = getDigester().peek(0);
+        Object parent = getDigester().root;
+        if (getDigester().log.isDebugEnabled()) {
             if (parent == null) {
-                digester.log.debug("[SetRootRule]{" + digester.match +
+                getDigester().log.debug("[SetRootRule]{" + getDigester().match +
                         "} Call [NULL ROOT]." +
                         methodName + "(" + child + ")");
             } else {
-                digester.log.debug("[SetRootRule]{" + digester.match +
+                getDigester().log.debug("[SetRootRule]{" + getDigester().match +
                         "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }
@@ -198,7 +198,7 @@ public class SetRootRule extends Rule {
         Class<?> paramTypes[] = new Class<?>[1];
         if (paramType != null) {
             paramTypes[0] =
-                    digester.getClassLoader().loadClass(paramType);
+                    getDigester().getClassLoader().loadClass(paramType);
         } else {
             paramTypes[0] = child.getClass();
         }

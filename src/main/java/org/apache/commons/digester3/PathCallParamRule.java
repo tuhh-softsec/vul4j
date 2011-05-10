@@ -74,7 +74,7 @@ public class PathCallParamRule extends Rule {
         String param = getDigester().getMatch();
         
         if(param != null) {
-            Object parameters[] = (Object[]) digester.peekParams();
+            Object parameters[] = (Object[]) getDigester().peekParams();
             parameters[paramIndex] = param;
         }
         

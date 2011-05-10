@@ -111,7 +111,7 @@ public class NodeCreateRule extends Rule {
             this.root = root;
             this.top = root;
             
-            oldContentHandler = digester.getCustomContentHandler();
+            oldContentHandler = getDigester().getCustomContentHandler();
 
         }
 
@@ -471,7 +471,7 @@ public class NodeCreateRule extends Rule {
     @Override
     public void end(String namespace, String name) throws Exception {
 
-        digester.pop();
+        getDigester().pop();
 
     }
 

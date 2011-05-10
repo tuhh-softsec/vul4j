@@ -837,7 +837,7 @@ public class DigesterRuleParser extends RuleSetBase {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
     
-            SetPropertiesRule rule = (SetPropertiesRule) digester.peek();
+            SetPropertiesRule rule = (SetPropertiesRule) getDigester().peek();
             rule.addAlias(attrName, propName);
         }
     }
@@ -864,7 +864,7 @@ public class DigesterRuleParser extends RuleSetBase {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
     
-            SetNestedPropertiesRule rule = (SetNestedPropertiesRule) digester.peek();
+            SetNestedPropertiesRule rule = (SetNestedPropertiesRule) getDigester().peek();
             rule.addAlias(attrName, propName);
         }
     }

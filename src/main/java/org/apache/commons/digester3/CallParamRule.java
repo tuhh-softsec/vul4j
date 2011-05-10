@@ -204,15 +204,15 @@ public class CallParamRule extends Rule {
             
         } else if(fromStack) {
         
-            param = digester.peek(stackIndex);
+            param = getDigester().peek(stackIndex);
             
-            if (digester.log.isDebugEnabled()) {
+            if (getDigester().log.isDebugEnabled()) {
             
                 StringBuffer sb = new StringBuffer("[CallParamRule]{");
-                sb.append(digester.match);
+                sb.append(getDigester().match);
                 sb.append("} Save from stack; from stack?").append(fromStack);
                 sb.append("; object=").append(param);
-                digester.log.debug(sb.toString());
+                getDigester().log.debug(sb.toString());
             }   
         }
         
@@ -223,7 +223,7 @@ public class CallParamRule extends Rule {
         // if this CallParamRule is reused in subsequent nesting.
         
         if(param != null) {
-            Object parameters[] = (Object[]) digester.peekParams();
+            Object parameters[] = (Object[]) getDigester().peekParams();
             parameters[paramIndex] = param;
         }
     }
@@ -256,7 +256,7 @@ public class CallParamRule extends Rule {
     public void end(String namespace, String name) {
         if (bodyTextStack != null && !bodyTextStack.empty()) {
             // what we do now is push one parameter onto the top set of parameters
-            Object parameters[] = (Object[]) digester.peekParams();
+            Object parameters[] = (Object[]) getDigester().peekParams();
             parameters[paramIndex] = bodyTextStack.pop();
         }
     }

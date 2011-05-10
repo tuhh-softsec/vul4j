@@ -78,10 +78,10 @@ public class PluginDeclarationRule extends Rule {
         }
         
         try {
-            declarePlugin(digester, props);
+            declarePlugin(getDigester(), props);
         } catch(PluginInvalidInputException ex) {
             throw new PluginInvalidInputException(
-                "Error on element [" + digester.getMatch() + 
+                "Error on element [" + getDigester().getMatch() + 
                 "]: " + ex.getMessage());
         }
     }

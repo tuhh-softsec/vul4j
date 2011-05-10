@@ -137,9 +137,9 @@ public class BeanPropertySetterRule extends Rule {
         throws Exception {
 
         // log some debugging information
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[BeanPropertySetterRule]{" +
-                    digester.match + "} Called with text '" + text + "'");
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[BeanPropertySetterRule]{" +
+                    getDigester().match + "} Called with text '" + text + "'");
         }
 
         bodyText = text.trim();
@@ -171,11 +171,11 @@ public class BeanPropertySetterRule extends Rule {
         }
 
         // Get a reference to the top object
-        Object top = digester.peek();
+        Object top = getDigester().peek();
 
         // log some debugging information
-        if (digester.log.isDebugEnabled()) {
-            digester.log.debug("[BeanPropertySetterRule]{" + digester.match +
+        if (getDigester().log.isDebugEnabled()) {
+            getDigester().log.debug("[BeanPropertySetterRule]{" + getDigester().match +
                     "} Set " + top.getClass().getName() + " property " +
                                property + " with text " + bodyText);
         }

@@ -247,12 +247,12 @@ public class SetNestedPropertiesRule extends Rule {
     @Override
     public void begin(String namespace, String name, Attributes attributes) 
                       throws Exception {
-        Rules oldRules = digester.getRules();
+        Rules oldRules = getDigester().getRules();
         AnyChildRule anyChildRule = new AnyChildRule();
-        anyChildRule.setDigester(digester);
+        anyChildRule.setDigester(getDigester());
         AnyChildRules newRules = new AnyChildRules(anyChildRule);
-        newRules.init(digester.getMatch()+"/", oldRules);
-        digester.setRules(newRules);
+        newRules.init(getDigester().getMatch()+"/", oldRules);
+        getDigester().setRules(newRules);
     }
     
     /**
@@ -262,8 +262,8 @@ public class SetNestedPropertiesRule extends Rule {
      */
     @Override
     public void body(String namespace, String name, String text) throws Exception {
-        AnyChildRules newRules = (AnyChildRules) digester.getRules();
-        digester.setRules(newRules.getOldRules());
+        AnyChildRules newRules = (AnyChildRules) getDigester().getRules();
+        getDigester().setRules(newRules.getOldRules());
     }
 
     /**
@@ -411,20 +411,20 @@ public class SetNestedPropertiesRule extends Rule {
             boolean debug = log.isDebugEnabled();
 
             if (debug) {
-                log.debug("[SetNestedPropertiesRule]{" + digester.match +
+                log.debug("[SetNestedPropertiesRule]{" + getDigester().match +
                         "} Setting property '" + propName + "' to '" +
                         text + "'");
             }
     
             // Populate the corresponding properties of the top object
-            Object top = digester.peek();
+            Object top = getDigester().peek();
             if (debug) {
                 if (top != null) {
-                    log.debug("[SetNestedPropertiesRule]{" + digester.match +
+                    log.debug("[SetNestedPropertiesRule]{" + getDigester().match +
                                        "} Set " + top.getClass().getName() +
                                        " properties");
                 } else {
-                    log.debug("[SetPropertiesRule]{" + digester.match +
+                    log.debug("[SetPropertiesRule]{" + getDigester().match +
                                        "} Set NULL properties");
                 }
             }

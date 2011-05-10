@@ -97,7 +97,7 @@ public class ObjectParamRule extends Rule {
     public void begin(String namespace, String name,
                       Attributes attributes) throws Exception {
         Object anAttribute = null;
-        Object parameters[] = (Object[]) digester.peekParams();
+        Object parameters[] = (Object[]) getDigester().peekParams();
 
         if (attributeName != null) {
             anAttribute = attributes.getValue(attributeName);

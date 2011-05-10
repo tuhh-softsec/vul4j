@@ -202,8 +202,8 @@ public class SetPropertiesRule extends Rule {
                 }
             } 
             
-            if (digester.log.isDebugEnabled()) {
-                digester.log.debug("[SetPropertiesRule]{" + digester.match +
+            if (getDigester().log.isDebugEnabled()) {
+                getDigester().log.debug("[SetPropertiesRule]{" + getDigester().match +
                         "} Setting property '" + attributeName + "' to '" +
                         value + "'");
             }
@@ -228,7 +228,7 @@ public class SetPropertiesRule extends Rule {
                 // compared and the PropertyUtils functionality does appear 
                 // compatible so we'll accept the risk here.
                 
-                Object top = digester.peek();
+                Object top = getDigester().peek();
                 boolean test =  PropertyUtils.isWriteable(top, attributeName);
                 if (!test)
                     throw new NoSuchMethodException("Property " + attributeName + " can't be set");
@@ -240,14 +240,14 @@ public class SetPropertiesRule extends Rule {
         }
 
         // Populate the corresponding properties of the top object
-        Object top = digester.peek();
-        if (digester.log.isDebugEnabled()) {
+        Object top = getDigester().peek();
+        if (getDigester().log.isDebugEnabled()) {
             if (top != null) {
-                digester.log.debug("[SetPropertiesRule]{" + digester.match +
+                getDigester().log.debug("[SetPropertiesRule]{" + getDigester().match +
                                    "} Set " + top.getClass().getName() +
                                    " properties");
             } else {
-                digester.log.debug("[SetPropertiesRule]{" + digester.match +
+                getDigester().log.debug("[SetPropertiesRule]{" + getDigester().match +
                                    "} Set NULL properties");
             }
         }

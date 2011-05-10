@@ -154,14 +154,14 @@ public class PluginCreateRule extends Rule implements InitializableRule {
      */
     public void postRegisterInit(String matchPattern)
                                  throws PluginConfigurationException {
-        Log log = LogUtils.getLogger(digester);
+        Log log = LogUtils.getLogger(getDigester());
         boolean debug = log.isDebugEnabled();
         if (debug) {
             log.debug("PluginCreateRule.postRegisterInit" + 
                       ": rule registered for pattern [" + matchPattern + "]");
         }
 
-        if (digester == null) {
+        if (getDigester() == null) {
             // We require setDigester to be called before this method.
             // Note that this means that PluginCreateRule cannot be added
             // to a Rules object which has not yet been added to a
@@ -210,7 +210,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             baseClass = Object.class;
         }
         
-        PluginRules rules = (PluginRules) digester.getRules();
+        PluginRules rules = (PluginRules) getDigester().getRules();
         PluginManager pm = rules.getPluginManager();
 
         // check default class is valid
@@ -225,7 +225,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             }
 
             try {
-                defaultPlugin.init(digester, pm);
+                defaultPlugin.init(getDigester(), pm);
                 
             } catch(PluginException pwe) {
             
@@ -302,11 +302,11 @@ public class PluginCreateRule extends Rule implements InitializableRule {
     public void begin(String namespace, String name,
                       org.xml.sax.Attributes attributes)
                       throws java.lang.Exception {
-        Log log = digester.getLogger();
+        Log log = getDigester().getLogger();
         boolean debug = log.isDebugEnabled();
         if (debug) {
             log.debug("PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
-                  " match=[" + digester.getMatch() + "]");
+                  " match=[" + getDigester().getMatch() + "]");
         }
 
         if (initException != null) {
@@ -316,7 +316,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         }
         
         // load any custom rules associated with the plugin
-        PluginRules oldRules = (PluginRules) digester.getRules();
+        PluginRules oldRules = (PluginRules) getDigester().getRules();
         PluginManager pluginManager = oldRules.getPluginManager();
         Declaration currDeclaration = null;
             
@@ -356,7 +356,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
             if (currDeclaration == null) {
                 currDeclaration = new Declaration(pluginClassName);
                 try {
-                    currDeclaration.init(digester, pluginManager);
+                    currDeclaration.init(getDigester(), pluginManager);
                 } catch(PluginException pwe) {
                     throw new PluginInvalidInputException(
                         pwe.getMessage(), pwe.getCause());
@@ -381,15 +381,15 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // get the class of the user plugged-in type
         Class<?> pluginClass = currDeclaration.getPluginClass();
         
-        String path = digester.getMatch();
+        String path = getDigester().getMatch();
 
         // create a new Rules object and effectively push it onto a stack of
         // rules objects. The stack is actually a linked list; using the
         // PluginRules constructor below causes the new instance to link
         // to the previous head-of-stack, then the Digester.setRules() makes
         // the new instance the new head-of-stack.
-        PluginRules newRules = new PluginRules(digester, path, oldRules, pluginClass);
-        digester.setRules(newRules);
+        PluginRules newRules = new PluginRules(getDigester(), path, oldRules, pluginClass);
+        getDigester().setRules(newRules);
         
         if (debug) {
             log.debug("PluginCreateRule.begin: installing new plugin: " +
@@ -398,7 +398,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         }
               
         // load up the custom rules
-        currDeclaration.configure(digester, pattern);
+        currDeclaration.configure(getDigester(), pattern);
 
         // create an instance of the plugin class
         Object instance = pluginClass.newInstance();
@@ -406,7 +406,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         if (debug) {
             log.debug(
                 "PluginCreateRule.begin" + ": pattern=[" + pattern + "]" + 
-                " match=[" + digester.getMatch() + "]" + 
+                " match=[" + getDigester().getMatch() + "]" + 
                 " pushed instance of plugin [" + pluginClass.getName() + "]");
         }
         
@@ -439,8 +439,8 @@ public class PluginCreateRule extends Rule implements InitializableRule {
         // Note that this applies only to rules matching exactly the path
         // which is also matched by this PluginCreateRule. 
 
-        String path = digester.getMatch();
-        PluginRules newRules = (PluginRules) digester.getRules();
+        String path = getDigester().getMatch();
+        PluginRules newRules = (PluginRules) getDigester().getRules();
         List<Rule> rules = newRules.getDecoratedRules().match(namespace, path);
         fireBodyMethods(rules, namespace, name, text);
     }
@@ -462,18 +462,18 @@ public class PluginCreateRule extends Rule implements InitializableRule {
 
 
         // see body method for more info
-        String path = digester.getMatch();
-        PluginRules newRules = (PluginRules) digester.getRules();
+        String path = getDigester().getMatch();
+        PluginRules newRules = (PluginRules) getDigester().getRules();
         List<Rule> rules = newRules.getDecoratedRules().match(namespace, path);
         fireEndMethods(rules, namespace, name);
         
         // pop the stack of PluginRules instances, which
         // discards all custom rules associated with this plugin
-        digester.setRules(newRules.getParent());
+        getDigester().setRules(newRules.getParent());
         
         // and get rid of the instance of the plugin class from the
         // digester object stack.
-        digester.pop();
+        getDigester().pop();
     }
 
     /**
@@ -504,7 +504,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                       throws java.lang.Exception {
         
         if ((rules != null) && (rules.size() > 0)) {
-            Log log = digester.getLogger();
+            Log log = getDigester().getLogger();
             boolean debug = log.isDebugEnabled();
             for (int i = 0; i < rules.size(); i++) {
                 try {
@@ -514,7 +514,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     }
                     rule.begin(namespace, name, list);
                 } catch (Exception e) {
-                    throw digester.createSAXException(e);
+                    throw getDigester().createSAXException(e);
                 } catch (Error e) {
                     throw e;
                 }
@@ -533,7 +533,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     String text) throws Exception {
 
         if ((rules != null) && (rules.size() > 0)) {
-            Log log = digester.getLogger();
+            Log log = getDigester().getLogger();
             boolean debug = log.isDebugEnabled();
             for (int i = 0; i < rules.size(); i++) {
                 try {
@@ -543,7 +543,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     }
                     rule.body(namespaceURI, name, text);
                 } catch (Exception e) {
-                    throw digester.createSAXException(e);
+                    throw getDigester().createSAXException(e);
                 } catch (Error e) {
                     throw e;
                 }
@@ -563,7 +563,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
 
         // Fire "end" events for all relevant rules in reverse order
         if (rules != null) {
-            Log log = digester.getLogger();
+            Log log = getDigester().getLogger();
             boolean debug = log.isDebugEnabled();
             for (int i = 0; i < rules.size(); i++) {
                 int j = (rules.size() - i) - 1;
@@ -574,7 +574,7 @@ public class PluginCreateRule extends Rule implements InitializableRule {
                     }
                     rule.end(namespaceURI, name);
                 } catch (Exception e) {
-                    throw digester.createSAXException(e);
+                    throw getDigester().createSAXException(e);
                 } catch (Error e) {
                     throw e;
                 }

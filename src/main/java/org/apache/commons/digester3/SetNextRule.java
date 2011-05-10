@@ -187,15 +187,15 @@ public class SetNextRule extends Rule {
     public void end(String namespace, String name) throws Exception {
 
         // Identify the objects to be used
-        Object child = digester.peek(0);
-        Object parent = digester.peek(1);
-        if (digester.log.isDebugEnabled()) {
+        Object child = getDigester().peek(0);
+        Object parent = getDigester().peek(1);
+        if (getDigester().log.isDebugEnabled()) {
             if (parent == null) {
-                digester.log.debug("[SetNextRule]{" + digester.match +
+                getDigester().log.debug("[SetNextRule]{" + getDigester().match +
                         "} Call [NULL PARENT]." +
                         methodName + "(" + child + ")");
             } else {
-                digester.log.debug("[SetNextRule]{" + digester.match +
+                getDigester().log.debug("[SetNextRule]{" + getDigester().match +
                         "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }
@@ -205,7 +205,7 @@ public class SetNextRule extends Rule {
         Class<?> paramTypes[] = new Class<?>[1];
         if (paramType != null) {
             paramTypes[0] =
-                    digester.getClassLoader().loadClass(paramType);
+                    getDigester().getClassLoader().loadClass(paramType);
         } else {
             paramTypes[0] = child.getClass();
         }
