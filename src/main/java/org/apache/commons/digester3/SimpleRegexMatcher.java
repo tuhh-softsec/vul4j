@@ -103,11 +103,10 @@ public class SimpleRegexMatcher extends RegexMatcher {
             // run out early
             return false;
             
-        } else {
-            if (baseAt >= basePattern.length()) {
-                // run out early
-                return false;
-            }
+        }
+        if (baseAt >= basePattern.length()) {
+            // run out early
+            return false;
         }
         
         // ok both within bounds
