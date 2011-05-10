@@ -338,21 +338,17 @@ public class SetNestedPropertiesRule extends Rule {
                     // constructor.
                     return rules;
                 }
-                else {
-                    // The "real" rules class has rules that match the current
-                    // node, so we return this list *plus* the rule passed to
-                    // this object's constructor.
-                    //
-                    // It might not be safe to modify the returned list,
-                    // so clone it first.
-                    LinkedList<Rule> newMatch = new LinkedList<Rule>(match);
-                    newMatch.addLast(rule);
-                    return newMatch;
-                }
-            }            
-            else {
-                return match;
+                // The "real" rules class has rules that match the current
+                // node, so we return this list *plus* the rule passed to
+                // this object's constructor.
+                //
+                // It might not be safe to modify the returned list,
+                // so clone it first.
+                LinkedList<Rule> newMatch = new LinkedList<Rule>(match);
+                newMatch.addLast(rule);
+                return newMatch;
             }
+            return match;
         }
         
         public List<Rule> rules() {
