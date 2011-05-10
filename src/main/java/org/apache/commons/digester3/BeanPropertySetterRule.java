@@ -46,41 +46,6 @@ public class BeanPropertySetterRule extends Rule {
 
     // ----------------------------------------------------------- Constructors
 
-
-    /**
-     * <p>Construct rule that sets the given property from the body text.</p>
-     *
-     * @param digester associated <code>Digester</code>
-     * @param propertyName name of property to set
-     *
-     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
-     * Use {@link #BeanPropertySetterRule(String propertyName)} instead.
-     */
-    @Deprecated
-    public BeanPropertySetterRule(Digester digester, String propertyName) {
-
-        this(propertyName);
-
-    }
-
-    /**
-     * <p>Construct rule that automatically sets a property from the body text.
-     *
-     * <p> This construct creates a rule that sets the property
-     * on the top object named the same as the current element.
-     *
-     * @param digester associated <code>Digester</code>
-     *     
-     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
-     * Use {@link #BeanPropertySetterRule()} instead.
-     */
-    @Deprecated
-    public BeanPropertySetterRule(Digester digester) {
-
-        this();
-
-    }
-
     /**
      * <p>Construct rule that sets the given property from the body text.</p>
      *

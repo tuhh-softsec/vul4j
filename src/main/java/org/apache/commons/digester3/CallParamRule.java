@@ -47,50 +47,6 @@ public class CallParamRule extends Rule {
 
     // ----------------------------------------------------------- Constructors
 
-
-    /**
-     * Construct a "call parameter" rule that will save the body text of this
-     * element as the parameter value.
-     *
-     * <p>Note that if the element is empty the an <i>empty string</i> is 
-     * passed to the target method, not null. And if automatic type conversion
-     * is being applied (ie if the target function takes something other than 
-     * a string as a parameter) then the conversion will fail if the converter
-     * class does not accept an empty string as valid input.</p>
-     *
-     * @param digester The associated Digester
-     * @param paramIndex The zero-relative parameter number
-     *
-     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
-     * Use {@link #CallParamRule(int paramIndex)} instead.
-     */
-    @Deprecated
-    public CallParamRule(Digester digester, int paramIndex) {
-
-        this(paramIndex);
-
-    }
-
-
-    /**
-     * Construct a "call parameter" rule that will save the value of the
-     * specified attribute as the parameter value.
-     *
-     * @param digester The associated Digester
-     * @param paramIndex The zero-relative parameter number
-     * @param attributeName The name of the attribute to save
-     *
-     * @deprecated The digester instance is now set in the {@link Digester#addRule} method. 
-     * Use {@link #CallParamRule(int paramIndex, String attributeName)} instead.
-     */
-    @Deprecated
-    public CallParamRule(Digester digester, int paramIndex,
-                         String attributeName) {
-
-        this(paramIndex, attributeName);
-
-    }
-
     /**
      * Construct a "call parameter" rule that will save the body text of this
      * element as the parameter value.
