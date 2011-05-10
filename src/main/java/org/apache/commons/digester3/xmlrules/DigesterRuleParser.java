@@ -310,7 +310,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * pattern stack.
          */
         @Override
-        public void begin(Attributes attributes) {
+        public void begin(String namespace, String name, Attributes attributes) throws Exception {
             pattern = attributes.getValue(attrName);
             if (pattern != null) {
                 patternStack.push(pattern);
@@ -322,7 +322,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * stack.
          */
         @Override
-        public void end() {
+        public void end(String namespace, String name) throws Exception {
             if (pattern != null) {
                 patternStack.pop();
             }
@@ -350,7 +350,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * tell the Digester to parse the file.
          */
         @Override
-        public void begin(Attributes attributes) throws Exception {
+        public void begin(String namespace, String name, Attributes attributes) throws Exception {
             // The path attribute gives the URI to another digester rules xml file
             String fileName = attributes.getValue("path");
             if (fileName != null && fileName.length() > 0) {
@@ -833,7 +833,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * enclosing <set-properties-rule> tag.
          */
         @Override
-        public void begin(Attributes attributes) {
+        public void begin(String namespace, String name, Attributes attributes) throws Exception {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
     
@@ -860,7 +860,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * enclosing <set-nested-properties-rule> tag.
          */
         @Override
-        public void begin(Attributes attributes) {
+        public void begin(String namespace, String name, Attributes attributes) throws Exception {
             String attrName = attributes.getValue("attr-name");
             String propName = attributes.getValue("prop-name");
     

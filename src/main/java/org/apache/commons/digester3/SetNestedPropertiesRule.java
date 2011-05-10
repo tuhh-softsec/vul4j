@@ -261,7 +261,7 @@ public class SetNestedPropertiesRule extends Rule {
      * child-element-matching.
      */
     @Override
-    public void body(String bodyText) throws Exception {
+    public void body(String namespace, String name, String text) throws Exception {
         AnyChildRules newRules = (AnyChildRules) digester.getRules();
         digester.setRules(newRules.getOldRules());
     }
@@ -397,7 +397,7 @@ public class SetNestedPropertiesRule extends Rule {
         }
         
         @Override
-        public void body(String value) throws Exception {
+        public void body(String namespace, String name, String text) throws Exception {
             String propName = currChildElementName;
             if (elementNames.containsKey(currChildElementName)) {
                 // overide propName
@@ -413,7 +413,7 @@ public class SetNestedPropertiesRule extends Rule {
             if (debug) {
                 log.debug("[SetNestedPropertiesRule]{" + digester.match +
                         "} Setting property '" + propName + "' to '" +
-                        value + "'");
+                        text + "'");
             }
     
             // Populate the corresponding properties of the top object
@@ -430,7 +430,7 @@ public class SetNestedPropertiesRule extends Rule {
             }
  
             if (trimData) {
-                value = value.trim();
+                text = text.trim();
             }
 
             if (!allowUnknownChildElements) {
@@ -455,11 +455,11 @@ public class SetNestedPropertiesRule extends Rule {
             
             try
             {
-            BeanUtils.setProperty(top, propName, value);
+            BeanUtils.setProperty(top, propName, text);
             }
             catch(NullPointerException e) {
                 log.error("NullPointerException: "
-                 + "top=" + top + ",propName=" + propName + ",value=" + value + "!");
+                 + "top=" + top + ",propName=" + propName + ",value=" + text + "!");
                  throw e;
             }
         }

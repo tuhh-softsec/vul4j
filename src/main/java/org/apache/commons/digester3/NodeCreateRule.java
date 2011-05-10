@@ -469,7 +469,7 @@ public class NodeCreateRule extends Rule {
      * Pop the Node off the top of the stack.
      */
     @Override
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
 
         digester.pop();
 

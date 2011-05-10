@@ -191,7 +191,7 @@ public class ObjectCreateRule extends Rule {
      * @param attributes The attribute list of this element
      */
     @Override
-    public void begin(Attributes attributes) throws Exception {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
         // Identify the name of the class to instantiate
         String realClassName = className;
@@ -218,7 +218,7 @@ public class ObjectCreateRule extends Rule {
      * Process the end of this element.
      */
     @Override
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
 
         Object top = digester.pop();
         if (digester.log.isDebugEnabled()) {

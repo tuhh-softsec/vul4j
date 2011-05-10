@@ -175,7 +175,7 @@ public class SetTopRule extends Rule {
      * Process the end of this element.
      */
     @Override
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
 
         // Identify the objects to be used
         Object child = digester.peek(0);

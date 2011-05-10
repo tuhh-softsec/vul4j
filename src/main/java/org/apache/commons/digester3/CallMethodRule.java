@@ -467,7 +467,7 @@ public class CallMethodRule extends Rule {
      * @param attributes The attribute list for this element
      */
     @Override
-    public void begin(Attributes attributes) throws Exception {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
         // Push an array to capture the parameter values if necessary
         if (paramCount > 0) {
@@ -487,10 +487,10 @@ public class CallMethodRule extends Rule {
      * @param bodyText The body text of this element
      */
     @Override
-    public void body(String bodyText) throws Exception {
+    public void body(String namespace, String name, String text) throws Exception {
 
         if (paramCount == 0) {
-            this.bodyText = bodyText.trim();
+            this.bodyText = text.trim();
         }
 
     }
@@ -500,7 +500,7 @@ public class CallMethodRule extends Rule {
      * Process the end of this element.
      */
     @Override
-    public void end() throws Exception {
+    public void end(String namespace, String name) throws Exception {
 
         // Retrieve or construct the parameter values array
         Object parameters[] = null;

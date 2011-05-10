@@ -83,7 +83,7 @@ public class TestRule extends Rule {
      * 'Begin' call.
      */
     @Override
-    public void begin(Attributes attributes) {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
         appendCall();
     }
 
@@ -92,7 +92,7 @@ public class TestRule extends Rule {
      * 'Body' call.
      */
     @Override
-    public void body(String text) {
+    public void body(String namespace, String name, String text) throws Exception {
         this.bodyText = text;
         appendCall();
     }
@@ -102,7 +102,7 @@ public class TestRule extends Rule {
      * 'End' call.
      */
     @Override
-    public void end() {
+    public void end(String namespace, String name) throws Exception {
         appendCall();
     }
 

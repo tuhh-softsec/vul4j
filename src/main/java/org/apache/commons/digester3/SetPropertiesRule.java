@@ -163,7 +163,7 @@ public class SetPropertiesRule extends Rule {
      * @param attributes The attribute list of this element
      */
     @Override
-    public void begin(Attributes attributes) throws Exception {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
         
         // Build a set of attribute names and corresponding values
         HashMap<String, String> values = new HashMap<String, String>();
@@ -180,23 +180,23 @@ public class SetPropertiesRule extends Rule {
         
         
         for (int i = 0; i < attributes.getLength(); i++) {
-            String name = attributes.getLocalName(i);
-            if ("".equals(name)) {
-                name = attributes.getQName(i);
+            String attributeName = attributes.getLocalName(i);
+            if ("".equals(attributeName)) {
+                attributeName = attributes.getQName(i);
             }
             String value = attributes.getValue(i);
             
             // we'll now check for custom mappings
             for (int n = 0; n<attNamesLength; n++) {
-                if (name.equals(attributeNames[n])) {
+                if (attributeName.equals(attributeNames[n])) {
                     if (n < propNamesLength) {
                         // set this to value from list
-                        name = propertyNames[n];
+                        attributeName = propertyNames[n];
                     
                     } else {
                         // set name to null
                         // we'll check for this later
-                        name = null;
+                        attributeName = null;
                     }
                     break;
                 }
@@ -204,11 +204,11 @@ public class SetPropertiesRule extends Rule {
             
             if (digester.log.isDebugEnabled()) {
                 digester.log.debug("[SetPropertiesRule]{" + digester.match +
-                        "} Setting property '" + name + "' to '" +
+                        "} Setting property '" + attributeName + "' to '" +
                         value + "'");
             }
             
-            if ((!ignoreMissingProperty) && (name != null)) {
+            if ((!ignoreMissingProperty) && (attributeName != null)) {
                 // The BeanUtils.populate method silently ignores items in
                 // the map (ie xml entities) which have no corresponding
                 // setter method, so here we check whether each xml attribute
@@ -229,13 +229,13 @@ public class SetPropertiesRule extends Rule {
                 // compatible so we'll accept the risk here.
                 
                 Object top = digester.peek();
-                boolean test =  PropertyUtils.isWriteable(top, name);
+                boolean test =  PropertyUtils.isWriteable(top, attributeName);
                 if (!test)
-                    throw new NoSuchMethodException("Property " + name + " can't be set");
+                    throw new NoSuchMethodException("Property " + attributeName + " can't be set");
             }
             
-            if (name != null) {
-                values.put(name, value);
+            if (attributeName != null) {
+                values.put(attributeName, value);
             } 
         }
 

@@ -103,7 +103,7 @@ public class SetPropertyRule extends Rule {
      *  have a writeable property of the specified name
      */
     @Override
-    public void begin(Attributes attributes) throws Exception {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
         if (attributes.getLength() == 0 ) {
             return;
@@ -113,14 +113,14 @@ public class SetPropertyRule extends Rule {
         String actualName = null;
         String actualValue = null;
         for (int i = 0; i < attributes.getLength(); i++) {
-            String name = attributes.getLocalName(i);
-            if ("".equals(name)) {
-                name = attributes.getQName(i);
+            String attributeName = attributes.getLocalName(i);
+            if ("".equals(attributeName)) {
+                attributeName = attributes.getQName(i);
             }
             String value = attributes.getValue(i);
-            if (name.equals(this.name)) {
+            if (attributeName.equals(this.name)) {
                 actualName = value;
-            } else if (name.equals(this.value)) {
+            } else if (attributeName.equals(this.value)) {
                 actualValue = value;
             }
         }

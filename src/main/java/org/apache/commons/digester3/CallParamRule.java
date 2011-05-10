@@ -194,7 +194,7 @@ public class CallParamRule extends Rule {
      * @param attributes The attribute list for this element
      */
     @Override
-    public void begin(Attributes attributes) throws Exception {
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
         Object param = null;
         
@@ -235,7 +235,7 @@ public class CallParamRule extends Rule {
      * @param bodyText The body text of this element
      */
     @Override
-    public void body(String bodyText) throws Exception {
+    public void body(String namespace, String name, String text) throws Exception {
 
         if (attributeName == null && !fromStack) {
             // We must wait to set the parameter until end
@@ -244,7 +244,7 @@ public class CallParamRule extends Rule {
             if (bodyTextStack == null) {
                 bodyTextStack = new Stack<String>();
             }
-            bodyTextStack.push(bodyText.trim());
+            bodyTextStack.push(text.trim());
         }
 
     }
