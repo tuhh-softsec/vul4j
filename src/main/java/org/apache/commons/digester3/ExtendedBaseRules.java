@@ -432,11 +432,8 @@ public class ExtendedBaseRules extends RulesBase {
 
                                 return 0;
 
-                            } else {
-
-                                return -1;
-
                             }
+                            return -1;
                         } else if (i2 == null) {
                             return 1;
                         }
