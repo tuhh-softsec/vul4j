@@ -144,7 +144,7 @@ public class Digester extends DefaultHandler {
     /**
      * The body text of the current element.
      */
-    protected StringBuffer bodyText = new StringBuffer();
+    private StringBuffer bodyText = new StringBuffer();
 
 
     /**
