@@ -205,14 +205,6 @@ public class Digester extends DefaultHandler {
     protected SAXParserFactory factory = null;
 
     /**
-     * @deprecated This is now managed by {@link ParserFeatureSetterFactory}
-     */
-    @Deprecated
-    protected String JAXP_SCHEMA_LANGUAGE =
-        "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-    
-    
-    /**
      * The Locator associated with our parser.
      */
     protected Locator locator = null;
@@ -290,25 +282,6 @@ public class Digester extends DefaultHandler {
      */
     protected Rules rules = null;
 
-   /**
-     * The XML schema language to use for validating an XML instance. By
-     * default this value is set to <code>W3C_XML_SCHEMA</code>
-     *
-     * @deprecated Use {@link Schema} support instead.
-     */
-    @Deprecated
-    protected String schemaLanguage = W3C_XML_SCHEMA;
-    
-        
-    /**
-     * The XML schema to use for validating an XML instance.
-     *
-     * @deprecated Use {@link Schema} support instead.
-     */
-    @Deprecated
-    protected String schemaLocation = null;
-    
-    
     /**
      * The XML schema to use for validating an XML instance.
      *
@@ -819,26 +792,6 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * By setting the reader in the constructor, you can bypass JAXP and
-     * be able to use digester in Weblogic 6.0.  
-     *
-     * @deprecated Use getXMLReader() instead, which can throw a
-     *  SAXException if the reader cannot be instantiated
-     */
-    @Deprecated
-    public XMLReader getReader() {
-
-        try {
-            return (getXMLReader());
-        } catch (SAXException e) {
-            log.error("Cannot get XMLReader", e);
-            return (null);
-        }
-
-    }
-
-
-    /**
      * Return the <code>Rules</code> implementation object containing our
      * rules collection and associated matching policy.  If none has been
      * established, a default implementation will be created and returned.
@@ -867,92 +820,6 @@ public class Digester extends DefaultHandler {
 
     }
 
-
-    /**
-     * Return the XML Schema URI used for validating an XML instance.
-     *
-     * @deprecated Use {@link Schema} for validation instead. 
-     * @see #getXMLSchema()
-     * @see #setXMLSchema(Schema)
-     */
-    @Deprecated
-    public String getSchema() {
-
-        return (this.schemaLocation);
-
-    }
-
-
-    /**
-     * Set the XML Schema URI used for validating the input XML.
-     * <p>
-     * It is often desirable to <i>force</i> the input document to be
-     * validated against a particular schema regardless of what type
-     * the input document declares itself to be. This method allows that
-     * to be done. 
-     * <p>
-     * Note, however, that there is no standard API for enabling this
-     * feature on the underlying SAX parser; this method therefore only works 
-     * for those parsers explicitly supported by Digester's
-     * ParserFeatureSetterFactory class. If the underlying parser does not
-     * support the feature, or is not one of the supported parsers, then
-     * an exception will be thrown when getParser is called (explicitly, 
-     * or implicitly via the parse method).
-     * <p>
-     * See also method setSchemaLanguage which allows the type of the schema
-     * specified here to be defined. By default, the schema is expected to
-     * be a W3C xml schema definition.
-     * <p>
-     * IMPORTANT NOTE: This functionality was never very reliable, and has
-     * been horribly broken since the 1.6 release of Digester. There are
-     * currently no plans to fix it, so you are strongly recommended to
-     * avoid using this method. Instead, create an XMLParser instance
-     * yourself, configure validation appropriately, and pass it as a
-     * parameter to the Digester constructor.
-     *
-     * @param schemaLocation a URI to the schema.
-     * @deprecated Use {@link Schema} for validation instead. 
-     * @see #getXMLSchema()
-     * @see #setXMLSchema(Schema)
-     */
-    @Deprecated
-    public void setSchema(String schemaLocation){
-
-        this.schemaLocation = schemaLocation;
-
-    }   
-    
-
-    /**
-     * Return the XML Schema language used when parsing.
-     *
-     * @deprecated Use {@link Schema} for validation instead. 
-     * @see #getXMLSchema()
-     * @see #setXMLSchema(Schema)
-     */
-    @Deprecated
-    public String getSchemaLanguage() {
-
-        return (this.schemaLanguage);
-
-    }
-
-
-    /**
-     * Set the XML Schema language used when parsing. By default, we use W3C.
-     *
-     * @param schemaLanguage a URI to the schema language.
-     * @deprecated Use {@link Schema} for validation instead. 
-     * @see #getXMLSchema()
-     * @see #setXMLSchema(Schema)
-     */
-    @Deprecated
-    public void setSchemaLanguage(String schemaLanguage){
-
-        this.schemaLanguage = schemaLanguage;
-
-    }   
-    
 
     /**
      * Return the XML Schema used when parsing.
@@ -1689,7 +1556,7 @@ public class Digester extends DefaultHandler {
         }
          
         // Redirect the schema location to a local destination
-        if (schemaLocation != null && entityURL == null && systemId != null){
+        if (entityURL == null && systemId != null){
             entityURL = entityValidator.get(systemId);
         } 
 
@@ -1794,34 +1661,6 @@ public class Digester extends DefaultHandler {
 
 
     // ------------------------------------------------------- Public Methods
-
-
-    /**
-     * Log a message to our associated logger.
-     *
-     * @param message The message to be logged
-     * @deprecated Call getLogger() and use it's logging methods
-     */
-    @Deprecated
-    public void log(String message) {
-
-        log.info(message);
-
-    }
-
-
-    /**
-     * Log a message and exception to our associated logger.
-     *
-     * @param message The message to be logged
-     * @deprecated Call getLogger() and use it's logging methods
-     */
-    @Deprecated
-    public void log(String message, Throwable exception) {
-
-        log.error(message, exception);
-
-    }
 
 
     /**
