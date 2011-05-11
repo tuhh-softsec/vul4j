@@ -140,7 +140,7 @@ public class SetRootRule extends Rule {
 
         // Identify the objects to be used
         Object child = getDigester().peek(0);
-        Object parent = getDigester().root;
+        Object parent = getDigester().getRoot();
         if (getDigester().getLogger().isDebugEnabled()) {
             if (parent == null) {
                 getDigester().getLogger().debug("[SetRootRule]{" + getDigester().getMatch() +

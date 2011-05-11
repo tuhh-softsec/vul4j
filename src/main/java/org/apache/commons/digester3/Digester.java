@@ -272,7 +272,7 @@ public class Digester extends DefaultHandler {
      * The "root" element of the stack (in other words, the last object
      * that was popped.
      */
-    protected Object root = null;
+    private Object root = null;
 
 
     /**
