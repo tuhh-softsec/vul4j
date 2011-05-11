@@ -29,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
@@ -189,7 +190,7 @@ public class Digester extends DefaultHandler {
      * The URLs of entityValidator that have been registered, keyed by the public
      * identifier that corresponds.
      */
-    protected HashMap<String, URL> entityValidator = new HashMap<String, URL>();
+    private final HashMap<String, URL> entityValidator = new HashMap<String, URL>();
 
 
     /**
@@ -3018,10 +3019,12 @@ public class Digester extends DefaultHandler {
 
     /**
      * Return the set of DTD URL registrations, keyed by public identifier.
+     *
+     * NOTE: the returned map is in read-only mode.
      */
     Map<String, URL> getRegistrations() {
 
-        return (entityValidator);
+        return Collections.unmodifiableMap(entityValidator);
 
     }
 
