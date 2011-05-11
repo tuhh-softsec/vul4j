@@ -183,7 +183,7 @@ public class Digester extends DefaultHandler {
     /**
      * The EntityResolver used by the SAX parser. By default it use this class
      */
-    protected EntityResolver entityResolver;
+    private EntityResolver entityResolver;
     
     /**
      * The URLs of entityValidator that have been registered, keyed by the public
