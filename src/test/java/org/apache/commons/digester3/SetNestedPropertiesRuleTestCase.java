@@ -110,7 +110,7 @@ public class SetNestedPropertiesRuleTestCase {
         // match all children of root with this rule
         digester.addRule("root", new SetNestedPropertiesRule());
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
+        SimpleTestBean bean = digester.parse(xmlTestReader());
 
         // check properties are set correctly
         assertEquals(
@@ -156,7 +156,7 @@ public class SetNestedPropertiesRuleTestCase {
         digester.addRule("root", new SetNestedPropertiesRule());
 
         try {
-            SimpleTestBean bean = (SimpleTestBean) digester.parse(
+            SimpleTestBean bean = digester.parse(
                 new StringReader(TEST_XML));
 
             // we should never get here...
@@ -205,7 +205,7 @@ public class SetNestedPropertiesRuleTestCase {
             
         digester.addRule("root", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+        SimpleTestBean bean = digester.parse(
             new StringReader(TEST_XML));
 
         // check properties are set correctly
@@ -260,7 +260,7 @@ public class SetNestedPropertiesRuleTestCase {
         Rule rule = new SetNestedPropertiesRule("alpha", null);
         digester.addRule("root", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+        SimpleTestBean bean = digester.parse(
             new StringReader(TEST_XML));
 
         // check properties are set correctly
@@ -316,7 +316,7 @@ public class SetNestedPropertiesRuleTestCase {
         Rule rule = new SetNestedPropertiesRule("alpha-alt", "alpha");
         digester.addRule("root", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(
+        SimpleTestBean bean = digester.parse(
             new StringReader(TEST_XML));
 
         // check properties are set correctly
@@ -381,7 +381,7 @@ public class SetNestedPropertiesRuleTestCase {
         digester.addSetProperties("root/testbean");
         digester.addSetProperty("root/testbean/gamma/prop", "name", "value");
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
 
         assertNotNull("No object created", bean);
         
@@ -438,7 +438,7 @@ public class SetNestedPropertiesRuleTestCase {
         digester.addRule("root", rule);
 
         try {
-            SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+            SimpleTestBean bean = digester.parse(reader);
             fail("Expected to generate an exception.");
             assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch(SAXException e) {
@@ -477,7 +477,7 @@ public class SetNestedPropertiesRuleTestCase {
         rule.setAllowUnknownChildElements(true);
         digester.addRule("root", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
         assertNotNull(bean);
     }
 
@@ -510,7 +510,7 @@ public class SetNestedPropertiesRuleTestCase {
         rule.setAllowUnknownChildElements(true);
         digester.addRule("*/testbean", rule);
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(reader);
+        SimpleTestBean bean = digester.parse(reader);
         assertNotNull(bean);
     }
 

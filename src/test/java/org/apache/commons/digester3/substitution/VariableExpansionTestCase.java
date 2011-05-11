@@ -107,13 +107,12 @@ public class VariableExpansionTestCase {
         digester.addSetProperties("root");
 
         // Parse our test input.
-        Object root = digester.parse(input);
+        SimpleTestBean root = digester.parse(input);
 
         assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
         
-        assertEquals("${attr1}", bean.getAlpha());
-        assertEquals("var{attr2}", bean.getBeta());
+        assertEquals("${attr1}", root.getAlpha());
+        assertEquals("var{attr2}", root.getBeta());
     }
 
     /**
@@ -133,13 +132,12 @@ public class VariableExpansionTestCase {
         digester.addSetProperties("root");
 
         // Parse our test input.
-        Object root = digester.parse(input);
+        SimpleTestBean root = digester.parse(input);
 
         assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
         
-        assertEquals("${attr1}", bean.getAlpha());
-        assertEquals("var{attr2}", bean.getBeta());
+        assertEquals("${attr1}", root.getAlpha());
+        assertEquals("var{attr2}", root.getBeta());
     }
 
     /**
@@ -232,15 +230,14 @@ public class VariableExpansionTestCase {
         digester.addCallMethod("root", "setAlpha", 0);
 
         // Parse our test input.
-        Object root = digester.parse(input);
+        SimpleTestBean root = digester.parse(input);
 
         assertNotNull("Digester returned no object", root);
-        SimpleTestBean bean = (SimpleTestBean) root;
         
         assertEquals(
             "Twas brillig and the slithy toves" +
             " did gyre and gimble in the wabe",
-            bean.getAlpha());
+            root.getAlpha());
     }
 
     /**

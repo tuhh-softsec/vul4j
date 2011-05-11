@@ -102,13 +102,9 @@ public class RuleTestCase {
         digester.addSetProperties("employee");
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test1.xml"));
+        Employee employee = digester.parse(getInputStream("Test1.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -137,13 +133,9 @@ public class RuleTestCase {
         digester.addSetProperties("employee/address");
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test1.xml"));
+        Employee employee = digester.parse(getInputStream("Test1.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -208,13 +200,9 @@ public class RuleTestCase {
 
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test1.xml"));
+        Employee employee = digester.parse(getInputStream("Test1.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -242,13 +230,9 @@ public class RuleTestCase {
 
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test5.xml"));
+        Employee employee = digester.parse(getInputStream("Test5.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -308,13 +292,9 @@ public class RuleTestCase {
         digester.addRuleSet(rs);
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test1.xml"));
+        Employee employee = digester.parse(getInputStream("Test1.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -342,13 +322,9 @@ public class RuleTestCase {
         digester.addRuleSet(rs);
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test2.xml"));
+        Employee employee = digester.parse(getInputStream("Test2.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -378,13 +354,9 @@ public class RuleTestCase {
         digester.addRuleSet(rs);
 
         // Parse our test input.
-        Object root = null;
-        root = digester.parse(getInputStream("Test3.xml"));
+        Employee employee = digester.parse(getInputStream("Test3.xml"));
 
-        assertNotNull("Digester returned an object", root);
-        assertTrue("Digester returned an Employee",
-                root instanceof Employee);
-        Employee employee = (Employee) root;
+        assertNotNull("Digester returned an object", employee);
         assertEquals("First name is correct",
                 "First Name",
                 employee.getFirstName());
@@ -483,8 +455,7 @@ public class RuleTestCase {
         digester.addSetNext("!*/b/?", "setChild");
         digester.addSetNext("!*/a/?", "setChild");
         digester.addSetNext("!root/?", "add");
-        ArrayList<?> root = 
-            (ArrayList<?>) digester.parse(getInputStream("Test4.xml"));
+        ArrayList<?> root = digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 2, root.size());
         AlphaBean one = (AlphaBean) root.get(0);
@@ -517,8 +488,7 @@ public class RuleTestCase {
         digester.addSetTop("!*/a/?", "setParent");
         digester.addSetRoot("!*/a", "add");
         digester.addSetRoot("!*/b", "add");
-        ArrayList<?> root = 
-            (ArrayList<?>) digester.parse(getInputStream("Test4.xml"));
+        ArrayList<?> root = digester.parse(getInputStream("Test4.xml"));
         
         assertEquals("Wrong array size", 5, root.size());
         
@@ -578,8 +548,7 @@ public class RuleTestCase {
         digester.addSetProperties("toplevel/four", "alt-city", "city");
         
 
-        ArrayList<?> root = 
-            (ArrayList<?>) digester.parse(getInputStream("Test7.xml"));
+        ArrayList<?> root = digester.parse(getInputStream("Test7.xml"));
         
         assertEquals("Wrong array size", 4, root.size());
         

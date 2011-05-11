@@ -109,8 +109,7 @@ public class SetPropertiesRuleTestCase {
         digester.addSetProperties("root");
 
         // Parse the input
-        SimpleTestBean bean =
-            (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_1));
+        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_1));
 
         // Check that the properties were set correctly
         assertEquals("alpha property set",
@@ -139,8 +138,7 @@ public class SetPropertiesRuleTestCase {
         digester.addSetProperties("root");
 
         // Parse the input
-        SimpleTestBean bean =
-            (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_2));
+        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_2));
 
         // Check that the properties were set correctly
         assertNull("alpha property not set",
@@ -171,8 +169,7 @@ public class SetPropertiesRuleTestCase {
 
         try {
             // Parse the input
-            SimpleTestBean bean =
-                (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_2));
+            SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_2));
             fail("Should have thrown NoSuchMethodException");
             assertNotNull(bean); // just to prevent compiler warning on unused var
         } catch (Exception e) {
@@ -210,8 +207,7 @@ public class SetPropertiesRuleTestCase {
         digester.addRule("root", rule);
 
         // Parse the input
-        SimpleTestBean bean =
-            (SimpleTestBean) digester.parse(xmlTestReader(TEST_XML_3));
+        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_3));
         
         // Check that the properties were set correctly
         assertEquals("alpha property set",

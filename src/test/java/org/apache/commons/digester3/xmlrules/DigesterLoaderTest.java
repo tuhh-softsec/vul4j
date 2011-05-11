@@ -321,11 +321,10 @@ public class DigesterLoaderTest {
         assertNotNull("The test could not locate test-node-create-rules-input.xml", input);
         Digester digester = DigesterLoader.createDigester(rules);
         digester.push(new ArrayList<Node>());
-        Object root = digester.parse(input.openStream());
+        List<Node> nlist = digester.parse(input.openStream());
 
-        assertNotNull("root was null", root);
-        @SuppressWarnings("unchecked") // if the assumption is incorrect, the test will fail
-        List<Node> nlist = (List<Node>) root;
+        assertNotNull("root was null", nlist);
+
         assertTrue("no nodes were captured.", nlist.size() > 0);
         Node[] nodeArray = nlist.toArray(new Node[0]);
         assertNotNull("resulting node array from array list was null", nodeArray);

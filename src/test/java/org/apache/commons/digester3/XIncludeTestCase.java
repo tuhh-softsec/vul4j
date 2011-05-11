@@ -100,8 +100,7 @@ public class XIncludeTestCase {
         digester.addSetNext("employee/address", "addAddress");
 
         // Parse our test input
-        Employee employee = (Employee)
-            digester.parse(getInputStream("Test12.xml"));
+        Employee employee = digester.parse(getInputStream("Test12.xml"));
         assertNotNull("failed to parsed an employee", employee);
 
         // Test basics

@@ -193,11 +193,9 @@ public class NodeCreateRuleTestCase {
         throws SAXException, ParserConfigurationException, IOException {
 
         digester.addRule("root/alpha", new NodeCreateRule());
-        Object result = digester.parse(new StringReader(TEST_XML));
+        Element element = digester.parse(new StringReader(TEST_XML));
 
-        assertNotNull(result);
-        assertTrue(result instanceof Element);
-        Element element = (Element)result;
+        assertNotNull(element);
         assertEquals("alpha", element.getNodeName());
         assertNull(element.getLocalName());
         assertNull(element.getNamespaceURI());
@@ -217,11 +215,9 @@ public class NodeCreateRuleTestCase {
 
         digester.addRule("root",
                          new NodeCreateRule(Node.DOCUMENT_FRAGMENT_NODE));
-        Object result = digester.parse(new StringReader(TEST_XML));
+        DocumentFragment fragment = digester.parse(new StringReader(TEST_XML));
 
-        assertNotNull(result);
-        assertTrue(result instanceof DocumentFragment);
-        DocumentFragment fragment = (DocumentFragment)result;
+        assertNotNull(fragment);
         assertEquals(4, fragment.getChildNodes().getLength());
 
         Node rootBody = fragment.getFirstChild();
@@ -269,11 +265,9 @@ public class NodeCreateRuleTestCase {
         digester.addSetRoot("root/a/b", "add");
         digester.addObjectCreate("root/b", String.class);
         digester.addSetRoot("root/b", "add");
-        Object result = digester.parse(getInputStream("Test4.xml"));
+        List<?> list = digester.parse(getInputStream("Test4.xml"));
 
-        assertNotNull(result);
-        assertTrue(result instanceof List<?>);
-        List<?> list = (List<?>)result;
+        assertNotNull(list);
         assertEquals(2, list.size());
 
         assertTrue(list.get(0) instanceof DocumentFragment);
@@ -301,11 +295,9 @@ public class NodeCreateRuleTestCase {
 
         digester.addRule("employee",
                          new NodeCreateRule(Node.DOCUMENT_FRAGMENT_NODE));
-        Object result = digester.parse(getInputStream("Test1.xml"));
+        DocumentFragment fragment = digester.parse(getInputStream("Test1.xml"));
 
-        assertNotNull(result);
-        assertTrue(result instanceof DocumentFragment);
-        DocumentFragment fragment = (DocumentFragment)result;
+        assertNotNull(fragment);
         assertEquals(2, fragment.getChildNodes().getLength());
 
         assertEquals(Node.ELEMENT_NODE, fragment.getFirstChild().getNodeType());
@@ -343,11 +335,9 @@ public class NodeCreateRuleTestCase {
         digester.setRuleNamespaceURI(null);
         digester.addRule("employee",
                          new NodeCreateRule(Node.DOCUMENT_FRAGMENT_NODE));
-        Object result = digester.parse(getInputStream("Test3.xml"));
+        DocumentFragment fragment = digester.parse(getInputStream("Test3.xml"));
 
-        assertNotNull(result);
-        assertTrue(result instanceof DocumentFragment);
-        DocumentFragment fragment = (DocumentFragment)result;
+        assertNotNull(fragment);
         assertEquals(2, fragment.getChildNodes().getLength());
 
         assertEquals(Node.ELEMENT_NODE, fragment.getFirstChild().getNodeType());
@@ -390,11 +380,9 @@ public class NodeCreateRuleTestCase {
         digester.setRuleNamespaceURI(null);
         digester.addRule("employee",
                          new NodeCreateRule(Node.ELEMENT_NODE));
-        Object result = digester.parse(getInputStream("Test10.xml"));
+        Element element = digester.parse(getInputStream("Test10.xml"));
 
-        assertNotNull(result);
-        assertTrue(result instanceof Element);
-        Element element = (Element)result;
+        assertNotNull(element);
         
         assertNotNull(element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test"));
         assertEquals("MyTestAttribute", element.getAttributeNodeNS("http://commons.apache.org/digester/Bar", "test").getNodeValue());
@@ -416,11 +404,9 @@ public class NodeCreateRuleTestCase {
         digester.setRuleNamespaceURI(null);
         digester.addRule("employee",
                          new NodeCreateRule(Node.ELEMENT_NODE));
-        Object result = digester.parse(getInputStream("Test10.xml"));
+        Element element = digester.parse(getInputStream("Test10.xml"));
 
-        assertNotNull(result);
-        assertTrue(result instanceof Element);
-        Element element = (Element)result;
+        assertNotNull(element);
         
         assertNotNull(element.getAttributeNode("firstName"));
         assertEquals("First Name", element.getAttributeNode("firstName").getNodeValue());
@@ -440,8 +426,7 @@ public class NodeCreateRuleTestCase {
 
         digester.addRule("root",
                          new NodeCreateRule(Node.DOCUMENT_FRAGMENT_NODE));
-        Object result = digester.parse(new StringReader(TEST_XML));
-        DocumentFragment fragment = (DocumentFragment)result;
+        DocumentFragment fragment = digester.parse(new StringReader(TEST_XML));
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -464,11 +449,9 @@ public class NodeCreateRuleTestCase {
             "<?xml version='1.0'?><root><alpha>&#65; &#65;</alpha></root>";
 
         digester.addRule("root/alpha", new NodeCreateRule());
-        Object result = digester.parse(new StringReader(TEST_XML2));
+        Element element = digester.parse(new StringReader(TEST_XML2));
 
-        assertNotNull(result);
-        assertTrue(result instanceof Element);
-        Element element = (Element)result;
+        assertNotNull(element);
         assertEquals("alpha", element.getNodeName());
         assertNull(element.getLocalName());
         assertNull(element.getNamespaceURI());

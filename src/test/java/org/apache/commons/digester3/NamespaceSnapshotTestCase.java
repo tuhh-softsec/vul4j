@@ -72,10 +72,8 @@ public class NamespaceSnapshotTestCase {
         digester.addRule("box/subBox", new NamespaceSnapshotRule());
         digester.addSetNext("box/subBox", "addChild");
 
-        Object result = digester.parse(getInputStream("Test11.xml"));
-        assertNotNull(result);
+        NamespacedBox root = digester.parse(getInputStream("Test11.xml"));
 
-        NamespacedBox root = (NamespacedBox) result;
         Map<String, String> nsmap = root.getNamespaces();
         assertEquals(3, nsmap.size());
         assertEquals("", nsmap.get(""));

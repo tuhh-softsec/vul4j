@@ -262,7 +262,7 @@ public class BeanPropertySetterRuleTestCase {
         // we'll set property delta (a write-only property) also
         digester.addRule("root/delta", new BeanPropertySetterRule("delta"));
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
+        SimpleTestBean bean = digester.parse(xmlTestReader());
 
         // check properties are set correctly
         assertEquals(
@@ -303,8 +303,7 @@ public class BeanPropertySetterRuleTestCase {
 
         // Attempt to parse the input
         try {
-            SimpleTestBean bean = (SimpleTestBean)
-                digester.parse(xmlTestReader());
+            SimpleTestBean bean = digester.parse(xmlTestReader());
             fail("Should have thrown NoSuchMethodException");
             assertNotNull(bean); // just to avoid compiler warning on unused variable
         } catch (Exception e) {
@@ -339,7 +338,7 @@ public class BeanPropertySetterRuleTestCase {
         // match all children of root with this rule
         digester.addRule("root/?", new BeanPropertySetterRule());
 
-        SimpleTestBean bean = (SimpleTestBean) digester.parse(xmlTestReader());
+        SimpleTestBean bean = digester.parse(xmlTestReader());
 
         // check properties are set correctly
         assertEquals(

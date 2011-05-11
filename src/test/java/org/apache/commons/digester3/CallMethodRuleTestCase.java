@@ -125,8 +125,7 @@ public class CallMethodRuleTestCase {
         digester.addCallMethod("employee/lastName", "setLastName", 0);
 
         // Parse our test input
-        Employee employee = (Employee)
-            digester.parse(getInputStream("Test9.xml"));
+        Employee employee = digester.parse(getInputStream("Test9.xml"));
         assertNotNull("parsed an employee", employee);
 
         // Validate that the property setters were called
@@ -151,11 +150,9 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/lastName", 0);
                 
         // Parse our test input
-        Object root1 = null;
-        
+
         // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        Employee employee = (Employee) root1;
+        Employee employee = digester.parse(getInputStream("Test5.xml"));
         assertEquals("Failed to call Employee.setLastName", 
                     "Last Name", employee.getLastName()); 
         
@@ -169,11 +166,8 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/age", 0);         
                 
         // Parse our test input
-        root1 = null;
-        
         // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
+        employee = digester.parse(getInputStream("Test5.xml"));
         assertEquals("Failed to call Employee.setAge", 21, employee.getAge()); 
         
         digester = new Digester();
@@ -184,11 +178,8 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/active", 0);    
                 
         // Parse our test input
-        root1 = null;
-
         // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
+        employee = digester.parse(getInputStream("Test5.xml"));
         assertEquals("Failed to call Employee.setActive", 
                         true, employee.isActive()); 
         
@@ -200,10 +191,8 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/salary", 0);    
                 
         // Parse our test input
-        root1 = null;
         // an exception will be thrown if the method can't be found
-        root1 = digester.parse(getInputStream("Test5.xml"));
-        employee = (Employee) root1;
+        employee = digester.parse(getInputStream("Test5.xml"));
         assertEquals("Failed to call Employee.setSalary", 
                         1000000.0f, employee.getSalary(), 0.1f); 
     }
@@ -232,7 +221,7 @@ public class CallMethodRuleTestCase {
         digester.addSetProperties("map/value");
         digester.addCallParam("map/value", 1, true);
 
-        HashMap<AlphaBean, BetaBean> map = (HashMap<AlphaBean, BetaBean>) digester.parse(new StringReader(xml.toString()));
+        HashMap<AlphaBean, BetaBean> map = digester.parse(new StringReader(xml.toString()));
 
         assertNotNull(map);
         assertEquals(1, map.size());
@@ -271,7 +260,7 @@ public class CallMethodRuleTestCase {
         NamedBean root1 = null;
         try {
             // an exception will be thrown if the method can't be found
-            root1 = (NamedBean) digester.parse(getInputStream("Test8.xml"));
+            root1 = digester.parse(getInputStream("Test8.xml"));
             
         } catch (Throwable t) {
             // this means that the method can't be found and so the test fails
@@ -635,7 +624,7 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/address/type", 0);
         digester.addCallParam("employee/address", 1, 0);
         
-        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = digester.parse(getInputStream("Test5.xml"));
         
         assertNotNull(map);
         Set<String> keys = map.keySet();
@@ -665,7 +654,7 @@ public class CallMethodRuleTestCase {
         digester.addCallParam("employee/address/type", 0);
         digester.addCallParam("employee/address", 1, 0);
         
-        HashMap<String, Address> map = (HashMap<String, Address>) digester.parse(getInputStream("Test5.xml"));
+        HashMap<String, Address> map = digester.parse(getInputStream("Test5.xml"));
         
         assertNotNull(map);
         Set<String> keys = map.keySet();

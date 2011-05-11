@@ -84,9 +84,8 @@ public class LocationTrackerTestCase {
         digester.addSetProperties("box/subBox");
         digester.addSetNext("box/subBox", "addChild");
 
-        Object result = digester.parse(new StringReader(TEST_XML));
-        assertNotNull(result);
-        Box root = (Box) result;
+        Box root = digester.parse(new StringReader(TEST_XML));
+        assertNotNull(root);
         List<Box> children = root.getChildren();
         assertEquals(3, children.size());
         Box box1 = children.get(0);
