@@ -237,7 +237,7 @@ public class Digester extends DefaultHandler {
     /**
      * Do we want a "XInclude aware" parser.
      */
-    protected boolean xincludeAware = false;
+    private boolean xincludeAware = false;
 
 
     /**
