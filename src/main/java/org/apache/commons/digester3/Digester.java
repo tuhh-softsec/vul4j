@@ -2844,14 +2844,14 @@ public class Digester extends DefaultHandler {
                 log.debug("Stack '" + stackName + "' is empty");
             }        
             throw new EmptyStackException();
-        
-        } else {
-            int index = (namedStack.size() - 1) - n;
-            if (index < 0) {
-                throw new EmptyStackException();
-            }
-            result = namedStack.get(index);
         }
+
+        int index = (namedStack.size() - 1) - n;
+        if (index < 0) {
+            throw new EmptyStackException();
+        }
+        result = namedStack.get(index);
+
         return result;
     }
 
