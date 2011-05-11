@@ -437,7 +437,7 @@ public class CallMethodRule extends Rule {
         Object parameters[] = null;
         if (paramCount > 0) {
 
-            parameters = (Object[]) getDigester().popParams();
+            parameters = getDigester().popParams();
             
             if (getDigester().getLogger().isTraceEnabled()) {
                 for (int i=0,size=parameters.length;i<size;i++) {

@@ -246,7 +246,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 2.0
      */
-    private final Stack<Object> params = new Stack<Object>();
+    private final Stack<Object[]> params = new Stack<Object[]>();
 
 
     /**
@@ -3035,7 +3035,7 @@ public class Digester extends DefaultHandler {
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    public Object peekParams() {
+    public Object[] peekParams() {
 
         try {
             return (params.peek());
@@ -3058,7 +3058,7 @@ public class Digester extends DefaultHandler {
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
-    public Object peekParams(int n) {
+    public Object[] peekParams(int n) {
 
         int index = (params.size() - 1) - n;
         if (index < 0) {
@@ -3082,7 +3082,7 @@ public class Digester extends DefaultHandler {
      * <p>The parameters stack is used to store <code>CallMethodRule</code> parameters. 
      * See {@link #params}.</p>
      */
-    public Object popParams() {
+    public Object[] popParams() {
 
         try {
             if (log.isTraceEnabled()) {
@@ -3105,7 +3105,7 @@ public class Digester extends DefaultHandler {
      *
      * @param object The new object
      */
-    public void pushParams(Object object) {
+    public void pushParams(Object...object) {
         if (log.isTraceEnabled()) {
             log.trace("Pushing params");
         }
