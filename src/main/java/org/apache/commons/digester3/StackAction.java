@@ -59,7 +59,7 @@ public interface StackAction {
      * but this method could return an alternate object to be pushed
      * instead (eg a proxy for the provided object).
      */
-    public Object onPush(Digester d, String stackName, Object o);
+    <T> T onPush(Digester d, String stackName, T o);
 
     /**
      * Invoked just after an object has been popped from a digester stack.
@@ -74,5 +74,5 @@ public interface StackAction {
      * @return the object to be returned to the called. Normally, parameter
      * o is returned but this method could return an alternate object.
      */
-    public Object onPop(Digester d, String stackName, Object o);
+    <T> T onPop(Digester d, String stackName, T o);
 }
