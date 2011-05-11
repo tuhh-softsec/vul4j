@@ -288,7 +288,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 2.0
      */
-    protected Schema schema = null;
+    private Schema schema = null;
 
 
     /**
