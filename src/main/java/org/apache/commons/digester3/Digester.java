@@ -220,7 +220,7 @@ public class Digester extends DefaultHandler {
     /**
      * Do we want a "namespace aware" parser.
      */
-    protected boolean namespaceAware = false;
+    private boolean namespaceAware = false;
 
 
     /**
