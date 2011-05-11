@@ -3120,16 +3120,14 @@ public class Digester extends DefaultHandler {
                     locator.getColumnNumber() + ": " + message;
             if (e != null) {
                 return new SAXParseException(error, locator, e);
-            } else {
-                return new SAXParseException(error, locator);
             }
+            return new SAXParseException(error, locator);
         }
         log.error("No Locator!");
         if (e != null) {
             return new SAXException(message, e);
-        } else {
-            return new SAXException(message);
         }
+        return new SAXException(message);
     }
 
     /**
