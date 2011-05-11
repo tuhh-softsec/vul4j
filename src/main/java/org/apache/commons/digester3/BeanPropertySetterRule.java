@@ -104,7 +104,7 @@ public class BeanPropertySetterRule extends Rule {
         // log some debugging information
         if (getDigester().getLogger().isDebugEnabled()) {
             getDigester().getLogger().debug("[BeanPropertySetterRule]{" +
-                    getDigester().match + "} Called with text '" + text + "'");
+                    getDigester().getMatch() + "} Called with text '" + text + "'");
         }
 
         bodyText = text.trim();
@@ -140,7 +140,7 @@ public class BeanPropertySetterRule extends Rule {
 
         // log some debugging information
         if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[BeanPropertySetterRule]{" + getDigester().match +
+            getDigester().getLogger().debug("[BeanPropertySetterRule]{" + getDigester().getMatch() +
                     "} Set " + top.getClass().getName() + " property " +
                                property + " with text " + bodyText);
         }

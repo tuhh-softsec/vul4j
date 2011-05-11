@@ -143,11 +143,11 @@ public class SetRootRule extends Rule {
         Object parent = getDigester().root;
         if (getDigester().getLogger().isDebugEnabled()) {
             if (parent == null) {
-                getDigester().getLogger().debug("[SetRootRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetRootRule]{" + getDigester().getMatch() +
                         "} Call [NULL ROOT]." +
                         methodName + "(" + child + ")");
             } else {
-                getDigester().getLogger().debug("[SetRootRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetRootRule]{" + getDigester().getMatch() +
                         "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }

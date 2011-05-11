@@ -407,7 +407,7 @@ public class SetNestedPropertiesRule extends Rule {
             boolean debug = log.isDebugEnabled();
 
             if (debug) {
-                log.debug("[SetNestedPropertiesRule]{" + getDigester().match +
+                log.debug("[SetNestedPropertiesRule]{" + getDigester().getMatch() +
                         "} Setting property '" + propName + "' to '" +
                         text + "'");
             }
@@ -416,11 +416,11 @@ public class SetNestedPropertiesRule extends Rule {
             Object top = getDigester().peek();
             if (debug) {
                 if (top != null) {
-                    log.debug("[SetNestedPropertiesRule]{" + getDigester().match +
+                    log.debug("[SetNestedPropertiesRule]{" + getDigester().getMatch() +
                                        "} Set " + top.getClass().getName() +
                                        " properties");
                 } else {
-                    log.debug("[SetPropertiesRule]{" + getDigester().match +
+                    log.debug("[SetPropertiesRule]{" + getDigester().getMatch() +
                                        "} Set NULL properties");
                 }
             }

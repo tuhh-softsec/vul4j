@@ -142,11 +142,11 @@ public class SetTopRule extends Rule {
         
         if (getDigester().getLogger().isDebugEnabled()) {
             if (child == null) {
-                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().getMatch() +
                         "} Call [NULL CHILD]." +
                         methodName + "(" + parent + ")");
             } else {
-                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().getMatch() +
                         "} Call " + child.getClass().getName() + "." +
                         methodName + "(" + parent + ")");
             }

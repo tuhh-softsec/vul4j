@@ -214,7 +214,7 @@ public class Digester extends DefaultHandler {
     /**
      * The current match pattern for nested element processing.
      */
-    protected String match = "";
+    private String match = "";
 
 
     /**
@@ -1281,7 +1281,6 @@ public class Digester extends DefaultHandler {
         this.locator = locator;
 
     }
-
 
     /**
      * Process notification of a skipped entity.

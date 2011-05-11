@@ -150,11 +150,11 @@ public class SetNextRule extends Rule {
         Object parent = getDigester().peek(1);
         if (getDigester().getLogger().isDebugEnabled()) {
             if (parent == null) {
-                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().getMatch() +
                         "} Call [NULL PARENT]." +
                         methodName + "(" + child + ")");
             } else {
-                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().getMatch() +
                         "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }

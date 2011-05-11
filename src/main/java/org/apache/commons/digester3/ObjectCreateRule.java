@@ -125,7 +125,7 @@ public class ObjectCreateRule extends Rule {
             }
         }
         if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().match +
+            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().getMatch() +
                     "}New " + realClassName);
         }
 
@@ -145,7 +145,7 @@ public class ObjectCreateRule extends Rule {
 
         Object top = getDigester().pop();
         if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().match +
+            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().getMatch() +
                     "} Pop " + top.getClass().getName());
         }
 

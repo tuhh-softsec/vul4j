@@ -186,7 +186,7 @@ public class SetPropertiesRule extends Rule {
             } 
             
             if (getDigester().getLogger().isDebugEnabled()) {
-                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().getMatch() +
                         "} Setting property '" + attributeName + "' to '" +
                         value + "'");
             }
@@ -226,11 +226,11 @@ public class SetPropertiesRule extends Rule {
         Object top = getDigester().peek();
         if (getDigester().getLogger().isDebugEnabled()) {
             if (top != null) {
-                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().getMatch() +
                                    "} Set " + top.getClass().getName() +
                                    " properties");
             } else {
-                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetPropertiesRule]{" + getDigester().getMatch() +
                                    "} Set NULL properties");
             }
         }

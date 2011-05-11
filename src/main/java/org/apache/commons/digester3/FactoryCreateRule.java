@@ -271,7 +271,7 @@ public class FactoryCreateRule extends Rule {
                 Object instance = getFactory(attributes).createObject(attributes);
                 
                 if (getDigester().getLogger().isDebugEnabled()) {
-                    getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
+                    getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().getMatch() +
                             "} New " + (instance == null ? "null object" :
                             instance.getClass().getName()));
                 }
@@ -294,7 +294,7 @@ public class FactoryCreateRule extends Rule {
             Object instance = getFactory(attributes).createObject(attributes);
             
             if (getDigester().getLogger().isDebugEnabled()) {
-                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().getMatch() +
                         "} New " + (instance == null ? "null object" :
                         instance.getClass().getName()));
             }
@@ -328,7 +328,7 @@ public class FactoryCreateRule extends Rule {
 
         Object top = getDigester().pop();
         if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
+            getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().getMatch() +
                     "} Pop " + top.getClass().getName());
         }
 
@@ -392,7 +392,7 @@ public class FactoryCreateRule extends Rule {
                 }
             }
             if (getDigester().getLogger().isDebugEnabled()) {
-                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().getMatch() +
                         "} New factory " + realClassName);
             }
             Class<?> clazz = getDigester().getClassLoader().loadClass(realClassName);

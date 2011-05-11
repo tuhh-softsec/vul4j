@@ -513,7 +513,7 @@ public class CallMethodRule extends Rule {
         if (target == null) {
             StringBuffer sb = new StringBuffer();
             sb.append("[CallMethodRule]{");
-            sb.append(getDigester().match);
+            sb.append(getDigester().getMatch());
             sb.append("} Call target is null (");
             sb.append("targetOffset=");
             sb.append(targetOffset);
@@ -526,7 +526,7 @@ public class CallMethodRule extends Rule {
         // Invoke the required method on the top object
         if (getDigester().getLogger().isDebugEnabled()) {
             StringBuffer sb = new StringBuffer("[CallMethodRule]{");
-            sb.append(getDigester().match);
+            sb.append(getDigester().getMatch());
             sb.append("} Call ");
             sb.append(target.getClass().getName());
             sb.append(".");
