@@ -197,7 +197,7 @@ public class Digester extends DefaultHandler {
      * The application-supplied error handler that is notified when parsing
      * warnings, errors, or fatal errors occur.
      */
-    protected ErrorHandler errorHandler = null;
+    private ErrorHandler errorHandler = null;
 
 
     /**
