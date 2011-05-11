@@ -301,7 +301,7 @@ public class Digester extends DefaultHandler {
      * Do we want to use the Context ClassLoader when loading classes
      * for instantiating new objects.  Default is <code>false</code>.
      */
-    protected boolean useContextClassLoader = false;
+    private boolean useContextClassLoader = false;
 
 
     /**
