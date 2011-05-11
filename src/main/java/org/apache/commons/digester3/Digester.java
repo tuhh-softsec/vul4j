@@ -171,7 +171,7 @@ public class Digester extends DefaultHandler {
      * used to load Digester itself, is used, based on the value of the
      * <code>useContextClassLoader</code> variable.
      */
-    protected ClassLoader classLoader = null;
+    private ClassLoader classLoader = null;
 
 
     /**
@@ -441,39 +441,6 @@ public class Digester extends DefaultHandler {
             elementName = elementName.substring(lastSlash + 1);
         }
         return (elementName);
-
-    }
-
-
-    /**
-     * Return the debugging detail level of our currently enabled logger.
-     *
-     * @deprecated This method now always returns 0. Digester uses the apache
-     * jakarta commons-logging library; see the documentation for that library
-     * for more information.
-     */
-    @Deprecated
-    public int getDebug() {
-
-        return (0);
-
-    }
-
-
-    /**
-     * Set the debugging detail level of our currently enabled logger.
-     *
-     * @param debug New debugging detail level (0=off, increasing integers
-     *  for more detail)
-     *
-     * @deprecated This method now has no effect at all. Digester uses
-     * the apache jakarta comons-logging library; see the documentation
-     * for that library for more information.
-     */
-    @Deprecated
-    public void setDebug(int debug) {
-
-        // No action is taken
 
     }
 
