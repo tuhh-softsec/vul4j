@@ -246,7 +246,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 2.0
      */
-    protected Stack<Object> params = new Stack<Object>();
+    private final Stack<Object> params = new Stack<Object>();
 
 
     /**
