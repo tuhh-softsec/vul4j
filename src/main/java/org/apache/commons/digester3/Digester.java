@@ -307,7 +307,7 @@ public class Digester extends DefaultHandler {
     /**
      * Do we want to use a validating parser.
      */
-    protected boolean validating = false;
+    private boolean validating = false;
 
 
     /**
