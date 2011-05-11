@@ -177,7 +177,7 @@ public class Digester extends DefaultHandler {
     /**
      * Has this Digester been configured yet.
      */
-    protected boolean configured = false;
+    private boolean configured = false;
 
 
     /**
@@ -2977,7 +2977,17 @@ public class Digester extends DefaultHandler {
         configured = true;
 
     }
-    
+
+    /**
+     * Checks the Digester instance has been configured.
+     *
+     * @return true, if the Digester instance has been configured, false otherwise
+     * @since 3.0
+     */
+    public boolean isConfigured() {
+        return configured;
+    }
+
     /**
      * <p>
      * Provides a hook for lazy initialization of this <code>Digester</code>
