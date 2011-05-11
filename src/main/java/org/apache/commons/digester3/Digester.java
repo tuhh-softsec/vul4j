@@ -259,7 +259,7 @@ public class Digester extends DefaultHandler {
      * The public identifier of the DTD we are currently parsing under
      * (if any).
      */
-    protected String publicId = null;
+    private String publicId = null;
 
 
     /**
