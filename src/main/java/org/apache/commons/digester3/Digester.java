@@ -3017,27 +3017,6 @@ public class Digester extends DefaultHandler {
 
 
     /**
-     * Return the set of rules that apply to the specified match position.
-     * The selected rules are those that match exactly, or those rules
-     * that specify a suffix match and the tail of the rule matches the
-     * current match position.  Exact matches have precedence over
-     * suffix matches, then (among suffix matches) the longest match
-     * is preferred.
-     *
-     * @param match The current match position
-     *
-     * @deprecated Call <code>match()</code> on the <code>Rules</code>
-     *  implementation returned by <code>getRules()</code>
-     */
-    @Deprecated
-    List<Rule> getRules(String match) {
-
-        return (getRules().match(match));
-
-    }
-
-
-    /**
      * <p>Return the top object on the parameters stack without removing it.  If there are
      * no objects on the stack, return <code>null</code>.</p>
      *
