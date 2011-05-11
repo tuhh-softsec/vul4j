@@ -203,7 +203,7 @@ public class Digester extends DefaultHandler {
     /**
      * The SAXParserFactory that is created the first time we need it.
      */
-    protected SAXParserFactory factory = null;
+    private SAXParserFactory factory = null;
 
     /**
      * The Locator associated with our parser.
