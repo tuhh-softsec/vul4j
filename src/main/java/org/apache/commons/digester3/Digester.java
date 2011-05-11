@@ -163,7 +163,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    protected Stack<List<Rule>> matches = new Stack<List<Rule>>();
+    private final Stack<List<Rule>> matches = new Stack<List<Rule>>();
     
     /**
      * The class loader to use for instantiating application objects.
