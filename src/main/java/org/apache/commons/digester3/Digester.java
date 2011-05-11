@@ -1639,7 +1639,7 @@ public class Digester extends DefaultHandler {
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    public Object parse(File file) throws IOException, SAXException {
+    public <T> T parse(File file) throws IOException, SAXException {
 
         if (file == null) {
             throw new IllegalArgumentException("File to parse is null");
@@ -1650,7 +1650,7 @@ public class Digester extends DefaultHandler {
         input.setSystemId(file.toURI().toURL().toString());
         getXMLReader().parse(input);
         cleanup();
-        return (root);
+        return (this.<T>getRoot());
 
     }   
     /**
@@ -1662,7 +1662,7 @@ public class Digester extends DefaultHandler {
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    public Object parse(InputSource input) throws IOException, SAXException {
+    public <T> T parse(InputSource input) throws IOException, SAXException {
  
         if (input == null) {
             throw new IllegalArgumentException("InputSource to parse is null");
@@ -1671,7 +1671,7 @@ public class Digester extends DefaultHandler {
         configure();
         getXMLReader().parse(input);
         cleanup();
-        return (root);
+        return this.<T>getRoot();
 
     }
 
@@ -1685,7 +1685,7 @@ public class Digester extends DefaultHandler {
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    public Object parse(InputStream input) throws IOException, SAXException {
+    public <T> T parse(InputStream input) throws IOException, SAXException {
 
         if (input == null) {
             throw new IllegalArgumentException("InputStream to parse is null");
@@ -1695,7 +1695,7 @@ public class Digester extends DefaultHandler {
         InputSource is = new InputSource(input);
         getXMLReader().parse(is);
         cleanup();
-        return (root);
+        return (this.<T>getRoot());
 
     }
 
@@ -1709,7 +1709,7 @@ public class Digester extends DefaultHandler {
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    public Object parse(Reader reader) throws IOException, SAXException {
+    public <T> T parse(Reader reader) throws IOException, SAXException {
 
         if (reader == null) {
             throw new IllegalArgumentException("Reader to parse is null");
@@ -1719,7 +1719,7 @@ public class Digester extends DefaultHandler {
         InputSource is = new InputSource(reader);
         getXMLReader().parse(is);
         cleanup();
-        return (root);
+        return (this.<T>getRoot());
 
     }
 
@@ -1733,7 +1733,7 @@ public class Digester extends DefaultHandler {
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
-    public Object parse(String uri) throws IOException, SAXException {
+    public <T> T parse(String uri) throws IOException, SAXException {
 
         if (uri == null) {
             throw new IllegalArgumentException("String URI to parse is null");
@@ -1743,7 +1743,7 @@ public class Digester extends DefaultHandler {
         InputSource is = createInputSourceFromURL(uri);
         getXMLReader().parse(is);
         cleanup();
-        return (root);
+        return (this.<T>getRoot());
 
     }
 
@@ -1759,7 +1759,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.8
      */
-    public Object parse(URL url) throws IOException, SAXException {
+    public <T> T parse(URL url) throws IOException, SAXException {
 
         if (url == null) {
             throw new IllegalArgumentException("URL to parse is null");
@@ -1769,7 +1769,7 @@ public class Digester extends DefaultHandler {
         InputSource is = createInputSourceFromURL(url);
         getXMLReader().parse(is);
         cleanup();
-        return (root);
+        return (this.<T>getRoot());
 
     }
 
@@ -2900,8 +2900,8 @@ public class Digester extends DefaultHandler {
      * @return the root object that has been created after parsing
      *  or null if the digester has not parsed any XML yet.
      */
-    public Object getRoot() {
-        return root;
+    public <T> T getRoot() {
+        return this.<T>npeSafeCast(root);
     }
     
     /**
@@ -3167,5 +3167,25 @@ public class Digester extends DefaultHandler {
     public SAXException createSAXException(String message) {
         return createSAXException(message, null);
     }
-    
+
+    /**
+     * Helps casting the input object to given type,
+     * avoiding NPEs.
+     *
+     * @since 3.0
+     * @param <T> the type th einput object has to be cast.
+     * @param obj the object has to be cast.
+     * @return the casted object, if input object is not null,
+     *         null otherwise.
+     */
+    private <T> T npeSafeCast(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        T result = (T) obj;
+        return result;
+    }
+
 }
