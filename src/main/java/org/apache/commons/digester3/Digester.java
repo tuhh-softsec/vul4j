@@ -208,7 +208,7 @@ public class Digester extends DefaultHandler {
     /**
      * The Locator associated with our parser.
      */
-    protected Locator locator = null;
+    private Locator locator = null;
 
 
     /**
