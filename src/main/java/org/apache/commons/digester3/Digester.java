@@ -2675,10 +2675,10 @@ public class Digester extends DefaultHandler {
      * Return the top object on the stack without removing it.  If there are
      * no objects on the stack, return <code>null</code>.
      */
-    public Object peek() {
+    public <T> T peek() {
 
         try {
-            return (stack.peek());
+            return this.<T>npeSafeCast(stack.peek());
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
             return (null);
@@ -2695,7 +2695,7 @@ public class Digester extends DefaultHandler {
      * @param n Index of the desired element, where 0 is the top of the stack,
      *  1 is the next element down, and so on.
      */
-    public Object peek(int n) {
+    public <T> T peek(int n) {
 
         int index = (stack.size() - 1) - n;
         if (index < 0) {
@@ -2703,7 +2703,7 @@ public class Digester extends DefaultHandler {
             return (null);
         }
         try {
-            return (stack.get(index));
+            return this.<T>npeSafeCast(stack.get(index));
         } catch (EmptyStackException e) {
             log.warn("Empty stack (returning null)");
             return (null);
@@ -2716,10 +2716,10 @@ public class Digester extends DefaultHandler {
      * Pop the top object off of the stack, and return it.  If there are
      * no objects on the stack, return <code>null</code>.
      */
-    public Object pop() {
+    public <T> T pop() {
 
         try {
-            Object popped = stack.pop();
+            T popped = this.<T>npeSafeCast(stack.pop());
             if (stackAction != null) {
                 popped = stackAction.onPop(this, null, popped);
             }
@@ -2737,7 +2737,7 @@ public class Digester extends DefaultHandler {
      *
      * @param object The new object
      */
-    public void push(Object object) {
+    public  <T>void push(T object) {
 
         if (stackAction != null) {
             object = stackAction.onPush(this, null, object);
@@ -2758,7 +2758,7 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    public void push(String stackName, Object value) {
+    public <T> void push(String stackName, T value) {
         if (stackAction != null) {
             value = stackAction.onPush(this, stackName, value);
         }
@@ -2784,8 +2784,8 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    public Object pop(String stackName) {
-        Object result = null;
+    public <T> T pop(String stackName) {
+        T result = null;
         Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null) {
             if (log.isDebugEnabled()) {
@@ -2794,7 +2794,7 @@ public class Digester extends DefaultHandler {
             throw new EmptyStackException();
         }
         
-        result = namedStack.pop();
+        result = this.<T>npeSafeCast(namedStack.pop());
         
         if (stackAction != null) {
             result = stackAction.onPop(this, stackName, result);
@@ -2817,8 +2817,8 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    public Object peek(String stackName) {
-        return peek(stackName, 0);
+    public <T> T peek(String stackName) {
+        return this.<T>npeSafeCast(peek(stackName, 0));
     }
 
     /**
@@ -2836,8 +2836,8 @@ public class Digester extends DefaultHandler {
      *
      * @since 1.6
      */
-    public Object peek(String stackName, int n) {
-        Object result = null;
+    public <T> T peek(String stackName, int n) {
+        T result = null;
         Stack<Object> namedStack = stacksByName.get(stackName);
         if (namedStack == null ) {
             if (log.isDebugEnabled()) {
@@ -2850,7 +2850,7 @@ public class Digester extends DefaultHandler {
         if (index < 0) {
             throw new EmptyStackException();
         }
-        result = namedStack.get(index);
+        result = this.<T>npeSafeCast(namedStack.get(index));
 
         return result;
     }
