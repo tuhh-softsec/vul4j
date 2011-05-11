@@ -270,8 +270,8 @@ public class FactoryCreateRule extends Rule {
             try {
                 Object instance = getFactory(attributes).createObject(attributes);
                 
-                if (getDigester().log.isDebugEnabled()) {
-                    getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
+                if (getDigester().getLogger().isDebugEnabled()) {
+                    getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
                             "} New " + (instance == null ? "null object" :
                             instance.getClass().getName()));
                 }
@@ -280,11 +280,11 @@ public class FactoryCreateRule extends Rule {
                 
             } catch (Exception e) {
                 // log message and error
-                if (getDigester().log.isInfoEnabled()) {
-                    getDigester().log.info("[FactoryCreateRule] Create exception ignored: " +
+                if (getDigester().getLogger().isInfoEnabled()) {
+                    getDigester().getLogger().info("[FactoryCreateRule] Create exception ignored: " +
                         ((e.getMessage() == null) ? e.getClass().getName() : e.getMessage()));
-                    if (getDigester().log.isDebugEnabled()) {
-                        getDigester().log.debug("[FactoryCreateRule] Ignored exception:", e);
+                    if (getDigester().getLogger().isDebugEnabled()) {
+                        getDigester().getLogger().debug("[FactoryCreateRule] Ignored exception:", e);
                     }
                 }
                 exceptionIgnoredStack.push(Boolean.TRUE);
@@ -293,8 +293,8 @@ public class FactoryCreateRule extends Rule {
         } else {
             Object instance = getFactory(attributes).createObject(attributes);
             
-            if (getDigester().log.isDebugEnabled()) {
-                getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
+            if (getDigester().getLogger().isDebugEnabled()) {
+                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
                         "} New " + (instance == null ? "null object" :
                         instance.getClass().getName()));
             }
@@ -319,16 +319,16 @@ public class FactoryCreateRule extends Rule {
             if (exceptionIgnoredStack.pop().booleanValue()) {
                 // creation exception was ignored
                 // nothing was put onto the stack
-                if (getDigester().log.isTraceEnabled()) {
-                    getDigester().log.trace("[FactoryCreateRule] No creation so no push so no pop");
+                if (getDigester().getLogger().isTraceEnabled()) {
+                    getDigester().getLogger().trace("[FactoryCreateRule] No creation so no push so no pop");
                 }
                 return;
             }
         } 
 
         Object top = getDigester().pop();
-        if (getDigester().log.isDebugEnabled()) {
-            getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
+        if (getDigester().getLogger().isDebugEnabled()) {
+            getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
                     "} Pop " + top.getClass().getName());
         }
 
@@ -391,8 +391,8 @@ public class FactoryCreateRule extends Rule {
                     realClassName = value;
                 }
             }
-            if (getDigester().log.isDebugEnabled()) {
-                getDigester().log.debug("[FactoryCreateRule]{" + getDigester().match +
+            if (getDigester().getLogger().isDebugEnabled()) {
+                getDigester().getLogger().debug("[FactoryCreateRule]{" + getDigester().match +
                         "} New factory " + realClassName);
             }
             Class<?> clazz = getDigester().getClassLoader().loadClass(realClassName);

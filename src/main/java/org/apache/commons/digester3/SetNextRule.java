@@ -148,13 +148,13 @@ public class SetNextRule extends Rule {
         // Identify the objects to be used
         Object child = getDigester().peek(0);
         Object parent = getDigester().peek(1);
-        if (getDigester().log.isDebugEnabled()) {
+        if (getDigester().getLogger().isDebugEnabled()) {
             if (parent == null) {
-                getDigester().log.debug("[SetNextRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().match +
                         "} Call [NULL PARENT]." +
                         methodName + "(" + child + ")");
             } else {
-                getDigester().log.debug("[SetNextRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetNextRule]{" + getDigester().match +
                         "} Call " + parent.getClass().getName() + "." +
                         methodName + "(" + child + ")");
             }

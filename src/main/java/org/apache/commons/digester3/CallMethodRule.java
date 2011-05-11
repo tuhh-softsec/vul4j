@@ -439,9 +439,9 @@ public class CallMethodRule extends Rule {
 
             parameters = (Object[]) getDigester().popParams();
             
-            if (getDigester().log.isTraceEnabled()) {
+            if (getDigester().getLogger().isTraceEnabled()) {
                 for (int i=0,size=parameters.length;i<size;i++) {
-                    getDigester().log.trace("[CallMethodRule](" + i + ")" + parameters[i]) ;
+                    getDigester().getLogger().trace("[CallMethodRule](" + i + ")" + parameters[i]) ;
                 }
             }
             
@@ -524,7 +524,7 @@ public class CallMethodRule extends Rule {
         }
         
         // Invoke the required method on the top object
-        if (getDigester().log.isDebugEnabled()) {
+        if (getDigester().getLogger().isDebugEnabled()) {
             StringBuffer sb = new StringBuffer("[CallMethodRule]{");
             sb.append(getDigester().match);
             sb.append("} Call ");
@@ -549,7 +549,7 @@ public class CallMethodRule extends Rule {
                 }
             }
             sb.append(")");
-            getDigester().log.debug(sb.toString());
+            getDigester().getLogger().debug(sb.toString());
         }
         
         Object result = null;

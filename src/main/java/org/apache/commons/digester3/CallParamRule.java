@@ -162,13 +162,13 @@ public class CallParamRule extends Rule {
         
             param = getDigester().peek(stackIndex);
             
-            if (getDigester().log.isDebugEnabled()) {
+            if (getDigester().getLogger().isDebugEnabled()) {
             
                 StringBuffer sb = new StringBuffer("[CallParamRule]{");
                 sb.append(getDigester().match);
                 sb.append("} Save from stack; from stack?").append(fromStack);
                 sb.append("; object=").append(param);
-                getDigester().log.debug(sb.toString());
+                getDigester().getLogger().debug(sb.toString());
             }   
         }
         

@@ -312,14 +312,14 @@ public class Digester extends DefaultHandler {
     /**
      * The Log to which most logging calls will be made.
      */
-    protected Log log =
+    private Log log =
         LogFactory.getLog("org.apache.commons.digester3.Digester");
 
 
     /**
      * The Log to which all SAX event related logging calls will be made.
      */
-    protected Log saxLog =
+    private Log saxLog =
         LogFactory.getLog("org.apache.commons.digester3.Digester.sax");
     
         

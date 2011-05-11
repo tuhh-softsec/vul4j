@@ -124,8 +124,8 @@ public class ObjectCreateRule extends Rule {
                 realClassName = value;
             }
         }
-        if (getDigester().log.isDebugEnabled()) {
-            getDigester().log.debug("[ObjectCreateRule]{" + getDigester().match +
+        if (getDigester().getLogger().isDebugEnabled()) {
+            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().match +
                     "}New " + realClassName);
         }
 
@@ -144,8 +144,8 @@ public class ObjectCreateRule extends Rule {
     public void end(String namespace, String name) throws Exception {
 
         Object top = getDigester().pop();
-        if (getDigester().log.isDebugEnabled()) {
-            getDigester().log.debug("[ObjectCreateRule]{" + getDigester().match +
+        if (getDigester().getLogger().isDebugEnabled()) {
+            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().match +
                     "} Pop " + top.getClass().getName());
         }
 

@@ -140,13 +140,13 @@ public class SetTopRule extends Rule {
         Object child = getDigester().peek(0);
         Object parent = getDigester().peek(1);
         
-        if (getDigester().log.isDebugEnabled()) {
+        if (getDigester().getLogger().isDebugEnabled()) {
             if (child == null) {
-                getDigester().log.debug("[SetTopRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().match +
                         "} Call [NULL CHILD]." +
                         methodName + "(" + parent + ")");
             } else {
-                getDigester().log.debug("[SetTopRule]{" + getDigester().match +
+                getDigester().getLogger().debug("[SetTopRule]{" + getDigester().match +
                         "} Call " + child.getClass().getName() + "." +
                         methodName + "(" + parent + ")");
             }
