@@ -337,7 +337,7 @@ public class Digester extends DefaultHandler {
     private Substitutor substitutor;
     
     /** Stacks used for interrule communication, indexed by name String */
-    private HashMap<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
+    private final HashMap<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
     
     /**
      * If not null, then calls by the parser to this object's characters, 
