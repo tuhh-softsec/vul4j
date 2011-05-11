@@ -252,7 +252,7 @@ public class Digester extends DefaultHandler {
     /**
      * The SAXParser we will use to parse the input stream.
      */
-    protected SAXParser parser = null;
+    private SAXParser parser = null;
 
 
     /**
