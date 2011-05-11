@@ -294,7 +294,7 @@ public class Digester extends DefaultHandler {
     /**
      * The object stack being constructed.
      */
-    protected Stack<Object> stack = new Stack<Object>();
+    private final Stack<Object> stack = new Stack<Object>();
 
 
     /**
