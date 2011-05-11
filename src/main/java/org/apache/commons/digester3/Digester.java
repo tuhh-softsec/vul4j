@@ -281,7 +281,7 @@ public class Digester extends DefaultHandler {
      * established before the first rule is added, a default implementation
      * will be provided.
      */
-    protected Rules rules = null;
+    private Rules rules = null;
 
     /**
      * The XML schema to use for validating an XML instance.
