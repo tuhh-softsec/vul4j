@@ -265,7 +265,7 @@ public class Digester extends DefaultHandler {
     /**
      * The XMLReader used to parse digester rules.
      */
-    protected XMLReader reader = null;
+    private XMLReader reader = null;
 
 
     /**
