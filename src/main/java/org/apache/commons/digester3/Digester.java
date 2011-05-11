@@ -150,7 +150,7 @@ public class Digester extends DefaultHandler {
     /**
      * The stack of body text string buffers for surrounding elements.
      */
-    protected Stack<StringBuilder> bodyTexts = new Stack<StringBuilder>();
+    private final Stack<StringBuilder> bodyTexts = new Stack<StringBuilder>();
 
 
     /**
