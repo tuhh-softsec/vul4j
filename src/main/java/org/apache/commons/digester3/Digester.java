@@ -334,7 +334,7 @@ public class Digester extends DefaultHandler {
      * An optional class that substitutes values in attributes and body text.
      * This may be null and so a null check is always required before use.
      */
-    protected Substitutor substitutor;
+    private Substitutor substitutor;
     
     /** Stacks used for interrule communication, indexed by name String */
     private HashMap<String, Stack<Object>> stacksByName = new HashMap<String, Stack<Object>>();
