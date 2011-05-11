@@ -48,7 +48,7 @@ public class XMLSignatureTest extends TestCase {
     private KeyInfoFactory kifac;
     private SignedInfo defSi;
     private KeyInfo defKi;
-    private List objs;
+    private List<XMLObject> objs;
     private String id = "id";
     private String sigValueId = "signatureValueId";
     private Key[] SIGN_KEYS;
@@ -245,7 +245,7 @@ public class XMLSignatureTest extends TestCase {
     public void testSignWithReferenceManifestDependencies() throws Exception {
         // create references
         DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
-        List refs = Collections.singletonList(fac.newReference("#object-1", dm));
+        List<Reference> refs = Collections.singletonList(fac.newReference("#object-1", dm));
 
         // create SignedInfo
         CanonicalizationMethod cm = fac.newCanonicalizationMethod
@@ -253,10 +253,10 @@ public class XMLSignatureTest extends TestCase {
         SignedInfo si = fac.newSignedInfo(cm, SIG_METHODS[1], refs);
 
         // create objects
-        List objs = new ArrayList();
+        List<XMLObject> objs = new ArrayList<XMLObject>();
 
         // Object 1
-        List manRefs = Collections.singletonList
+        List<Reference> manRefs = Collections.singletonList
             (fac.newReference("#object-2", dm));
         objs.add(fac.newXMLObject(Collections.singletonList
             (fac.newManifest(manRefs, "manifest-1")), "object-1", null, null));
@@ -303,12 +303,14 @@ public class XMLSignatureTest extends TestCase {
             (CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS, 
              (C14NMethodParameterSpec) null);
         DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
-        List refs = Collections.singletonList(fac.newReference
+        List<Reference> refs = Collections.singletonList(fac.newReference
             ("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64", dm));
         return fac.newSignedInfo(cm, sm, refs);
     }
 
     static class TestProvider extends Provider {
+        private static final long serialVersionUID = 1L;
+
         TestProvider() {
             super("TestProvider", 0, "TestProvider");
         }

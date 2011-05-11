@@ -141,7 +141,7 @@ public class X509KeySelector extends KeySelector {
             }
 
             // Iterate through KeyInfo types
-            Iterator i = keyInfo.getContent().iterator();
+            Iterator<?> i = keyInfo.getContent().iterator();
             while (i.hasNext()) {
                 XMLStructure kiType = (XMLStructure) i.next();
                 // check X509Data
@@ -303,9 +303,9 @@ public class X509KeySelector extends KeySelector {
         } catch (IOException ioe) {
             throw new KeySelectorException(ioe);
         }
-        Collection certs = new ArrayList();
+        Collection<X509Certificate> certs = new ArrayList<X509Certificate>();
 
-        Iterator xi = xd.getContent().iterator();
+        Iterator<?> xi = xd.getContent().iterator();
         while (xi.hasNext()) {
             Object o = xi.next();
             // check X509IssuerSerial
@@ -361,9 +361,9 @@ public class X509KeySelector extends KeySelector {
         }
         if (!certs.isEmpty() && !trusted) {
             // try to find public key in certs in X509Data
-            Iterator i = certs.iterator();
+            Iterator<X509Certificate> i = certs.iterator();
             while (i.hasNext()) {
-                X509Certificate cert = (X509Certificate) i.next();
+                X509Certificate cert = i.next();
                 if (subjectcs.match(cert)) {
                     return new SimpleKeySelectorResult(cert.getPublicKey());
                 }

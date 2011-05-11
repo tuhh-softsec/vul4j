@@ -54,6 +54,7 @@ public class XMLObjectTest extends TestCase {
     
     public void tearDown() {}
     
+    @SuppressWarnings("unchecked")
     public void testConstructor() {
         // test XMLSignatureFactory.newXMLObject(List, String, String, String) 
         XMLObject obj;
@@ -61,7 +62,7 @@ public class XMLObjectTest extends TestCase {
         obj = factory.newXMLObject(null, null, null, null); 
         assertNotNull(obj);
 
-        Vector list = new Vector();
+        List<Object> list = new Vector<Object>();
         obj = factory.newXMLObject(list, null, null, null); 
         assertNotNull(obj);
         
@@ -86,7 +87,7 @@ public class XMLObjectTest extends TestCase {
         assertEquals(obj.getMimeType(), mimeType);
         assertEquals(obj.getEncoding(), encoding);
 
-        List unmodifiable = obj.getContent();
+        List<Object> unmodifiable = obj.getContent();
         try {
             unmodifiable.add(new TestUtils.MyOwnXMLStructure());
             fail("Should return an unmodifiable List object");
@@ -95,7 +96,7 @@ public class XMLObjectTest extends TestCase {
     }
 
     public void testisFeatureSupported() {
-        List list = new Vector();
+        List<Object> list = new Vector<Object>();
         list.add(new TestUtils.MyOwnXMLStructure());
         XMLObject obj = factory.newXMLObject(list, id, mimeType, encoding);
         try {
