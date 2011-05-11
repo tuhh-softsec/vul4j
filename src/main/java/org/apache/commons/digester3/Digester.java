@@ -231,7 +231,7 @@ public class Digester extends DefaultHandler {
      * is required because documents can declare nested uses of the same
      * prefix for different Namespace URIs).
      */
-    protected HashMap<String, Stack<String>> namespaces = new HashMap<String, Stack<String>>();
+    private final HashMap<String, Stack<String>> namespaces = new HashMap<String, Stack<String>>();
 
 
     /**
