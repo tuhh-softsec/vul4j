@@ -239,15 +239,13 @@ public class XMLUtils {
      */
     public static String getFullTextChildrenFromElement(Element element) {
         StringBuilder sb = new StringBuilder();
-        NodeList children = element.getChildNodes();
-        int iMax = children.getLength();
-
-        for (int i = 0; i < iMax; i++) {
-            Node curr = children.item(i);
-
-            if (curr.getNodeType() == Node.TEXT_NODE) {
-                sb.append(((Text)curr).getData());
+        
+        Node child = element.getFirstChild();
+        while (child != null) {
+            if (child.getNodeType() == Node.TEXT_NODE) {
+                sb.append(((Text)child).getData());
             }
+            child = child.getNextSibling();
         }
 
         return sb.toString();
