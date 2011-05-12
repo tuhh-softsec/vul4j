@@ -43,7 +43,7 @@ public class TestXmlRuleInfo {
         //   separate class by explicitly declaring a file containing
         //   the rules, using a relative or absolute path name.
         
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 
@@ -83,7 +83,7 @@ public class TestXmlRuleInfo {
         //   and explicitly declaring a file which is somewhere in the 
         //   classpath.
 
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 
@@ -123,7 +123,7 @@ public class TestXmlRuleInfo {
         //   and explicitly declaring a file which is somewhere in the 
         //   classpath.
 
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <plugin");
         input.append("  id='testobject'"); 

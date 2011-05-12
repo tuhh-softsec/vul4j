@@ -354,7 +354,7 @@ public class FactoryCreateRule extends Rule {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("FactoryCreateRule[");
+        StringBuilder sb = new StringBuilder("FactoryCreateRule[");
         sb.append("className=");
         sb.append(className);
         sb.append(", attributeName=");

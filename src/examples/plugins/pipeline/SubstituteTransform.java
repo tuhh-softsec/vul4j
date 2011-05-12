@@ -41,13 +41,13 @@ public class SubstituteTransform implements Transform {
     }
     
     public String transform(String s) {
-        StringBuffer buf = new StringBuffer(s);
+        StringBuilder buf = new StringBuilder(s);
         while (true) {
             int idx = buf.indexOf(from);
             if (idx == -1)
                 break;
             
-            StringBuffer buf2 = buf.replace(idx, idx+from.length(), to);
+            StringBuilder buf2 = buf.replace(idx, idx+from.length(), to);
         }
         return buf.toString();
     }

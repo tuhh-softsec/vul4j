@@ -94,7 +94,7 @@ public class Address {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Address[");
+        StringBuilder sb = new StringBuilder("Address[");
         sb.append("street=");
         sb.append(street);
         sb.append(", city=");

@@ -81,7 +81,7 @@ public class ObjectParamRuleTestCase {
 
     // ------------------------------------------------ Individual Test Methods
 
-    private StringBuffer sb = new StringBuffer().
+    private StringBuilder sb = new StringBuilder().
         append("<arraylist><A/><B/><C/><D desc=\"the fourth\"/><E/></arraylist>");
 
 

@@ -65,8 +65,8 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
         // PreparedStatement.getParameterMetaData method to retrieve
         // retrieve parameter types, etc.
         
-        StringBuffer colnames = new StringBuffer();
-        StringBuffer colvalues = new StringBuffer();
+        StringBuilder colnames = new StringBuilder();
+        StringBuilder colvalues = new StringBuilder();
         
         for(Iterator i = row.getColumns().iterator(); i.hasNext();)
         {
@@ -87,7 +87,7 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
             colvalues.append("'");
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("insert into ");
         buf.append(table.getName());
         buf.append(" (");

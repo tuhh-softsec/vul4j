@@ -1365,7 +1365,7 @@ public class Digester extends DefaultHandler {
         }
 
         // Compute the current matching rule
-        StringBuffer sb = new StringBuffer(match);
+        StringBuilder sb = new StringBuilder(match);
         if (match.length() > 0) {
             sb.append('/');
         }

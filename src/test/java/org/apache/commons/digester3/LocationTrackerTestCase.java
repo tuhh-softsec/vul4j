@@ -51,7 +51,7 @@ public class LocationTrackerTestCase {
                 // note that a Locator object can also provide 
                 // publicId and systemId info.
                 Locator l = d.getDocumentLocator();
-                StringBuffer locn = new StringBuffer();
+                StringBuilder locn = new StringBuilder();
                 locn.append("line=");
                 locn.append(l.getLineNumber());
                 locations.put(o, locn.toString());

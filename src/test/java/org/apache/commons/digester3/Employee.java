@@ -113,7 +113,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Employee[");
+        StringBuilder sb = new StringBuilder("Employee[");
         sb.append("firstName=");
         sb.append(firstName);
         sb.append(", lastName=");

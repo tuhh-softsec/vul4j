@@ -181,7 +181,7 @@ public class SetTopRule extends Rule {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("SetTopRule[");
+        StringBuilder sb = new StringBuilder("SetTopRule[");
         sb.append("methodName=");
         sb.append(methodName);
         sb.append(", paramType=");

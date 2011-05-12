@@ -89,7 +89,7 @@ public class DigesterRuleParser extends RuleSetBase {
 
         @Override
         public String toString() {
-            StringBuffer str = new StringBuffer();
+            StringBuilder str = new StringBuilder();
             for (int i = 0; i < size(); i++) {
                 String elem = get(i).toString();
                 if (elem.length() > 0) {
@@ -453,7 +453,7 @@ public class DigesterRuleParser extends RuleSetBase {
          * by concatenating the pattern prefix with the given pattern.
          */
         public void add(String pattern, Rule rule) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append(prefix);
             if (!pattern.startsWith("/")) {
                 buffer.append('/'); 

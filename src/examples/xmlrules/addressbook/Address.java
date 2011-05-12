@@ -30,7 +30,7 @@ public class Address {
     private String country;
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append( " address (type "+ type + ")\n");
         sb.append( "       " + street + "\n");
         sb.append( "       " + city + " " + state + " " + zip + "\n");
@@ -39,7 +39,7 @@ public class Address {
     }
 
     public void print(java.io.PrintStream out, int indentAmount) {
-        StringBuffer indentStr = new StringBuffer(indentAmount);
+        StringBuilder indentStr = new StringBuilder(indentAmount);
         for(; indentAmount > 0; --indentAmount) {
             indentStr.append(' ');
         }

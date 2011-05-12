@@ -182,7 +182,7 @@ public class SetRootRule extends Rule {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("SetRootRule[");
+        StringBuilder sb = new StringBuilder("SetRootRule[");
         sb.append("methodName=");
         sb.append(methodName);
         sb.append(", paramType=");

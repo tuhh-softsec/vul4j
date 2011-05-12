@@ -51,7 +51,7 @@ public class Box {
     @Override
     public String toString()
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("[Box] id=");
         buf.append(id);
         buf.append(" nchildren=");
@@ -70,7 +70,7 @@ public class Box {
      * sequence. Each name is separated by a space from the preceding one.
      */
     public String getIds() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(this.id);
         for(Box child : children) {
             buf.append(" ");

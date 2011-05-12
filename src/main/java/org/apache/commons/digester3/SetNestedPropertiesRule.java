@@ -283,7 +283,7 @@ public class SetNestedPropertiesRule extends Rule {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("SetNestedPropertiesRule[");
+        StringBuilder sb = new StringBuilder("SetNestedPropertiesRule[");
         sb.append("allowUnknownChildElements=");
         sb.append(allowUnknownChildElements);
         sb.append(", trimData=");

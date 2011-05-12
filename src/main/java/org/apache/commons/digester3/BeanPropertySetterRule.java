@@ -186,7 +186,7 @@ public class BeanPropertySetterRule extends Rule {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("BeanPropertySetterRule[");
+        StringBuilder sb = new StringBuilder("BeanPropertySetterRule[");
         sb.append("propertyName=");
         sb.append(propertyName);
         sb.append("]");

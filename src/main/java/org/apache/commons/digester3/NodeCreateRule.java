@@ -153,7 +153,7 @@ public class NodeCreateRule extends Rule {
         /**
          * The text content of the current top DOM node.
          */
-        protected StringBuffer topText = new StringBuffer();
+        protected StringBuilder topText = new StringBuilder();
 
 
         // --------------------------------------------- Helper Methods

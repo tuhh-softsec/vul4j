@@ -205,7 +205,7 @@ public class CallMethodRuleTestCase {
     @Test
     public void testParamsFromStack() throws SAXException, IOException {
 
-        StringBuffer xml = new StringBuffer().
+        StringBuilder xml = new StringBuilder().
             append("<?xml version='1.0'?>").
             append("<map>").
             append("  <key name='The key'/>").
@@ -290,7 +290,7 @@ public class CallMethodRuleTestCase {
     public void testOrderNestedPartB() throws Exception {
         
         // Configure the digester as required
-        StringBuffer word = new StringBuffer();
+        StringBuilder word = new StringBuilder();
         digester.push(word);
         digester.addCallMethod("*/element", "append", 1);
         digester.addCallParam("*/element", 0, "name");

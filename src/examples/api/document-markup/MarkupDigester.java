@@ -54,7 +54,7 @@ public class MarkupDigester extends Digester {
     /**
      * The text found in the current element since the last child element.
      */
-    protected StringBuffer currTextSegment = new StringBuffer();
+    protected StringBuilder currTextSegment = new StringBuilder();
 
     /**
      * Process notification of character data received from the body of

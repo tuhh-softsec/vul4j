@@ -48,7 +48,7 @@ public class OverlappingCallMethodRuleTestCase {
 
     @Test
     public void testItem1() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <item id='1'>anitem</item>");
         input.append("</root>");
@@ -71,7 +71,7 @@ public class OverlappingCallMethodRuleTestCase {
 
     @Test
     public void testItem2() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <item id='1'>anitem</item>");
         input.append("</root>");
@@ -94,7 +94,7 @@ public class OverlappingCallMethodRuleTestCase {
 
     @Test
     public void testItem3() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <item>1</item>");
         input.append("</root>");
@@ -138,7 +138,7 @@ public class OverlappingCallMethodRuleTestCase {
      */
     @Test
     public void testItem4() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<root>");
         input.append(" <item>");
         input.append("  <id value='1'/>");
@@ -175,7 +175,7 @@ public class OverlappingCallMethodRuleTestCase {
      */
     @Test
     public void testWildcard1() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<box id='A1'>");
         input.append(" <box id='B1'>");
         input.append("  <box id='C1'/>");
@@ -208,7 +208,7 @@ public class OverlappingCallMethodRuleTestCase {
      */
     @Test
     public void testWildcard2() throws SAXException, IOException {
-        StringBuffer input = new StringBuffer();
+        StringBuilder input = new StringBuilder();
         input.append("<box>A1");
         input.append(" <box>B1");
         input.append("  <box>C1</box>");
