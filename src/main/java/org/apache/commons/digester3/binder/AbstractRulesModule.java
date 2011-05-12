@@ -79,6 +79,14 @@ public abstract class AbstractRulesModule
     }
 
     /**
+     * @see RulesBinder#forPattern(String)
+     */
+    protected LinkedRuleBuilder forPattern( String pattern )
+    {
+        return new LinkedRuleBuilder();
+    }
+
+    /**
      * Return the wrapped {@link RulesBinder}.
      *
      * @return The wrapped {@link RulesBinder}
