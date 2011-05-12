@@ -34,7 +34,28 @@ public abstract class RuleSetBase
     /**
      * The namespace URI that all Rule instances created by this RuleSet will be associated with.
      */
-    protected String namespaceURI = null;
+    private final String namespaceURI;
+
+    // ----------------------------------------------------------- Constructors
+
+    /**
+     * Build a new RuleSetBase with a null namespaceURI
+     */
+    public RuleSetBase()
+    {
+        this( null );
+    }
+
+    /**
+     * Build a new RuleSetBase with the given namespaceURI
+     *
+     * @param namespaceURI The namespace URI that all Rule instances will be associated with.
+     * @since 3.0
+     */
+    public RuleSetBase( String namespaceURI )
+    {
+        this.namespaceURI = namespaceURI;
+    }
 
     // ------------------------------------------------------------- Properties
 

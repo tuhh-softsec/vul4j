@@ -66,12 +66,11 @@ public class TestRuleSet
     public TestRuleSet( String prefix, String namespaceURI )
     {
 
-        super();
+        super(namespaceURI);
         if ( prefix == null )
             this.prefix = "";
         else
             this.prefix = prefix;
-        this.namespaceURI = namespaceURI;
 
     }
 
