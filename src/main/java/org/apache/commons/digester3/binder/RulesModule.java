@@ -19,6 +19,8 @@ package org.apache.commons.digester3.binder;
 
 /**
  * A module is the Digester rule bindings provider.
+ *
+ * @since 3.0
  */
 public interface RulesModule
 {

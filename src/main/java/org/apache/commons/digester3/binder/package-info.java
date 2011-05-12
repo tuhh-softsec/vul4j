@@ -18,5 +18,7 @@
 
 /**
  * The Digester EDSL allows configure Digester using fluent APIs.
+ *
+ * @since 3.0
  */
 package org.apache.commons.digester3.binder;
