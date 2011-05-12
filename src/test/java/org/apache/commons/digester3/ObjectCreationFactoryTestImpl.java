@@ -29,7 +29,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 
 public class ObjectCreationFactoryTestImpl
-    extends AbstractObjectCreationFactory
+    extends AbstractObjectCreationFactory<Object>
 {
     public boolean called = false;
 

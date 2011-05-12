@@ -18,6 +18,7 @@
 package org.apache.commons.digester3.annotations.providers;
 
 import org.apache.commons.digester3.FactoryCreateRule;
+import org.apache.commons.digester3.ObjectCreationFactory;
 import org.apache.commons.digester3.annotations.AnnotationRuleProvider;
 import org.apache.commons.digester3.annotations.rules.FactoryCreate;
 
@@ -30,7 +31,7 @@ public final class FactoryCreateRuleProvider
     implements AnnotationRuleProvider<FactoryCreate, Class<?>, FactoryCreateRule>
 {
 
-    private Class<?> factoryClass;
+    private Class<? extends ObjectCreationFactory<?>> factoryClass;
 
     private boolean ignoreCreateExceptions;
 

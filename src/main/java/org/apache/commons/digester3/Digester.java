@@ -2171,7 +2171,7 @@ public class Digester
      * @param clazz Java class of the object creation factory class
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, Class<?> clazz )
+    public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz )
     {
 
         addFactoryCreate( pattern, clazz, false );
@@ -2218,7 +2218,7 @@ public class Digester
      * @param creationFactory Previously instantiated ObjectCreationFactory to be utilized
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, ObjectCreationFactory creationFactory )
+    public void addFactoryCreate( String pattern, ObjectCreationFactory<?> creationFactory )
     {
 
         addFactoryCreate( pattern, creationFactory, false );
@@ -2250,7 +2250,8 @@ public class Digester
      *            ignored.
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, Class<?> clazz, boolean ignoreCreateExceptions )
+    public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz,
+                                  boolean ignoreCreateExceptions )
     {
 
         addRule( pattern, new FactoryCreateRule( clazz, ignoreCreateExceptions ) );
@@ -2300,7 +2301,7 @@ public class Digester
      *            ignored.
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, ObjectCreationFactory creationFactory, boolean ignoreCreateExceptions )
+    public void addFactoryCreate( String pattern, ObjectCreationFactory<?> creationFactory, boolean ignoreCreateExceptions )
     {
 
         creationFactory.setDigester( this );

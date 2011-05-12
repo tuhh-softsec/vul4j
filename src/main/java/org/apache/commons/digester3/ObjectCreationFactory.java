@@ -29,7 +29,7 @@ import org.xml.sax.Attributes;
  * {@link AbstractObjectCreationFactory} is an abstract implementation suitable for creating anonymous
  * <code>ObjectCreationFactory</code> implementations.
  */
-public interface ObjectCreationFactory
+public interface ObjectCreationFactory<T>
 {
 
     /**
@@ -39,7 +39,7 @@ public interface ObjectCreationFactory
      * @param attributes the element's attributes
      * @throws Exception any exception thrown will be propagated upwards
      */
-    Object createObject( Attributes attributes )
+    T createObject( Attributes attributes )
         throws Exception;
 
     /**

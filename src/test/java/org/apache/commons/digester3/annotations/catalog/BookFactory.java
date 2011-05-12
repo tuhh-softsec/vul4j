@@ -24,13 +24,13 @@ import org.xml.sax.Attributes;
  * @since 2.1
  */
 public final class BookFactory
-    extends AbstractObjectCreationFactory
+    extends AbstractObjectCreationFactory<Book>
 {
 
     private final static String ISBN = "isbn";
 
     @Override
-    public Object createObject( Attributes attributes )
+    public Book createObject( Attributes attributes )
         throws Exception
     {
         String isbn = attributes.getValue( ISBN );

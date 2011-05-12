@@ -24,8 +24,8 @@ import org.xml.sax.Attributes;
  * Abstract base class for <code>ObjectCreationFactory</code> implementations.
  * </p>
  */
-abstract public class AbstractObjectCreationFactory
-    implements ObjectCreationFactory
+abstract public class AbstractObjectCreationFactory<T>
+    implements ObjectCreationFactory<T>
 {
 
     // ----------------------------------------------------- Instance Variables
@@ -44,7 +44,7 @@ abstract public class AbstractObjectCreationFactory
      * @param attributes the element's attributes
      * @throws Exception any exception thrown will be propagated upwards
      */
-    public abstract Object createObject( Attributes attributes )
+    public abstract T createObject( Attributes attributes )
         throws Exception;
 
     /**

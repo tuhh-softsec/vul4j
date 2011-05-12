@@ -76,7 +76,7 @@ public class FactoryCreateRule
      * 
      * @param clazz Java class name of the object creation factory class
      */
-    public FactoryCreateRule( Class<?> clazz )
+    public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz )
     {
 
         this( clazz, false );
@@ -118,7 +118,7 @@ public class FactoryCreateRule
      * @param attributeName Attribute name which, if present, contains an override of the class name of the object
      *            creation factory to create.
      */
-    public FactoryCreateRule( Class<?> clazz, String attributeName )
+    public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, String attributeName )
     {
 
         this( clazz, attributeName, false );
@@ -135,7 +135,7 @@ public class FactoryCreateRule
      * 
      * @param creationFactory called on to create the object.
      */
-    public FactoryCreateRule( ObjectCreationFactory creationFactory )
+    public FactoryCreateRule( ObjectCreationFactory<?> creationFactory )
     {
 
         this( creationFactory, false );
@@ -163,7 +163,7 @@ public class FactoryCreateRule
      * @param clazz Java class name of the object creation factory class
      * @param ignoreCreateExceptions if true, exceptions thrown by the object creation factory will be ignored.
      */
-    public FactoryCreateRule( Class<?> clazz, boolean ignoreCreateExceptions )
+    public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, boolean ignoreCreateExceptions )
     {
 
         this( clazz, null, ignoreCreateExceptions );
@@ -212,7 +212,7 @@ public class FactoryCreateRule
      * @param creationFactory called on to create the object.
      * @param ignoreCreateExceptions if true, exceptions thrown by the object creation factory will be ignored.
      */
-    public FactoryCreateRule( ObjectCreationFactory creationFactory, boolean ignoreCreateExceptions )
+    public FactoryCreateRule( ObjectCreationFactory<?> creationFactory, boolean ignoreCreateExceptions )
     {
 
         this.creationFactory = creationFactory;
@@ -235,7 +235,7 @@ public class FactoryCreateRule
      * The object creation factory we will use to instantiate objects as required based on the attributes specified in
      * the matched XML element.
      */
-    protected ObjectCreationFactory creationFactory = null;
+    protected ObjectCreationFactory<?> creationFactory = null;
 
     // --------------------------------------------------------- Public Methods
 
@@ -385,7 +385,7 @@ public class FactoryCreateRule
      * @param attributes Attributes passed to our factory creation element
      * @exception Exception if any error occurs
      */
-    protected ObjectCreationFactory getFactory( Attributes attributes )
+    protected ObjectCreationFactory<?> getFactory( Attributes attributes )
         throws Exception
     {
 
@@ -406,7 +406,7 @@ public class FactoryCreateRule
                                                      + realClassName );
             }
             Class<?> clazz = getDigester().getClassLoader().loadClass( realClassName );
-            creationFactory = (ObjectCreationFactory) clazz.newInstance();
+            creationFactory = (ObjectCreationFactory<?>) clazz.newInstance();
             creationFactory.setDigester( getDigester() );
         }
         return ( creationFactory );
