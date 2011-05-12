@@ -33,7 +33,7 @@ abstract public class AbstractObjectCreationFactory
     /**
      * The associated <code>Digester</code> instance that was set up by {@link FactoryCreateRule} upon initialization.
      */
-    protected Digester digester = null;
+    private Digester digester = null;
 
     // --------------------------------------------------------- Public Methods
 
