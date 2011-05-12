@@ -16,61 +16,58 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.RuleSetBase;
 
-
 /**
- * RuleSet that mimics the rules set used for Employee and Address creation,
- * optionally associated with a particular namespace URI.
- *
+ * RuleSet that mimics the rules set used for Employee and Address creation, optionally associated with a particular
+ * namespace URI.
+ * 
  * @author Craig R. McClanahan
  * @version $Revision$ $Date$
  */
 
-public class TestRuleSet extends RuleSetBase {
-
+public class TestRuleSet
+    extends RuleSetBase
+{
 
     // ----------------------------------------------------------- Constructors
-
 
     /**
      * Construct an instance of this RuleSet with default values.
      */
-    public TestRuleSet() {
+    public TestRuleSet()
+    {
 
-        this(null, null);
+        this( null, null );
 
     }
 
-
     /**
-     * Construct an instance of this RuleSet associated with the specified
-     * prefix, associated with no namespace URI.
-     *
+     * Construct an instance of this RuleSet associated with the specified prefix, associated with no namespace URI.
+     * 
      * @param prefix Matching pattern prefix (must end with '/') or null.
      */
-    public TestRuleSet(String prefix) {
+    public TestRuleSet( String prefix )
+    {
 
-        this(prefix, null);
+        this( prefix, null );
 
     }
 
-
     /**
-     * Construct an instance of this RuleSet associated with the specified
-     * prefix and namespace URI.
-     *
+     * Construct an instance of this RuleSet associated with the specified prefix and namespace URI.
+     * 
      * @param prefix Matching pattern prefix (must end with '/') or null.
      * @param namespaceURI The namespace URI these rules belong to
      */
-    public TestRuleSet(String prefix, String namespaceURI) {
+    public TestRuleSet( String prefix, String namespaceURI )
+    {
 
         super();
-        if (prefix == null)
+        if ( prefix == null )
             this.prefix = "";
         else
             this.prefix = prefix;
@@ -78,41 +75,31 @@ public class TestRuleSet extends RuleSetBase {
 
     }
 
-
     // ----------------------------------------------------- Instance Variables
 
-
     /**
-     * The prefix for each matching pattern added to the Digester instance,
-     * or an empty String for no prefix.
+     * The prefix for each matching pattern added to the Digester instance, or an empty String for no prefix.
      */
     protected String prefix = null;
 
-
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * Add the set of Rule instances defined in this RuleSet to the
-     * specified <code>Digester</code> instance, associating them with
-     * our namespace URI (if any).  This method should only be called
-     * by a Digester instance.
-     *
-     * @param digester Digester instance to which the new Rule instances
-     *  should be added.
+     * Add the set of Rule instances defined in this RuleSet to the specified <code>Digester</code> instance,
+     * associating them with our namespace URI (if any). This method should only be called by a Digester instance.
+     * 
+     * @param digester Digester instance to which the new Rule instances should be added.
      */
     @Override
-    public void addRuleInstances(Digester digester) {
+    public void addRuleInstances( Digester digester )
+    {
 
-        digester.addObjectCreate(prefix + "employee", Employee.class);
-        digester.addSetProperties(prefix + "employee");
-        digester.addObjectCreate("employee/address",
-                "org.apache.commons.digester3.Address");
-        digester.addSetProperties(prefix + "employee/address");
-        digester.addSetNext(prefix + "employee/address",
-                "addAddress");
+        digester.addObjectCreate( prefix + "employee", Employee.class );
+        digester.addSetProperties( prefix + "employee" );
+        digester.addObjectCreate( "employee/address", "org.apache.commons.digester3.Address" );
+        digester.addSetProperties( prefix + "employee/address" );
+        digester.addSetNext( prefix + "employee/address", "addAddress" );
 
     }
-    
 
 }

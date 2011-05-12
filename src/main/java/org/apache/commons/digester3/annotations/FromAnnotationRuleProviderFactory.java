@@ -21,26 +21,25 @@ import org.apache.commons.digester3.annotations.spi.DigesterLoaderHandlerFactory
 
 /**
  * {@link DigesterLoader} builder implementation.
- *
+ * 
  * @since 2.1
  */
-public interface FromAnnotationRuleProviderFactory {
+public interface FromAnnotationRuleProviderFactory
+{
 
     /**
-     * Builds a new {@link DigesterLoader} using the default
-     * {@link DigesterLoaderHandlerFactory} implementation.
-     *
+     * Builds a new {@link DigesterLoader} using the default {@link DigesterLoaderHandlerFactory} implementation.
+     * 
      * @return the {@link DigesterLoader}.
      */
     DigesterLoader useDefaultDigesterLoaderHandlerFactory();
 
     /**
-     * Builds a new {@link DigesterLoader} using the user defined
-     * {@link DigesterLoaderHandlerFactory} implementation.
-     *
+     * Builds a new {@link DigesterLoader} using the user defined {@link DigesterLoaderHandlerFactory} implementation.
+     * 
      * @param digesterLoaderHandlerFactory
      * @return the {@link DigesterLoader}.
      */
-    DigesterLoader useDigesterLoaderHandlerFactory(DigesterLoaderHandlerFactory digesterLoaderHandlerFactory);
+    DigesterLoader useDigesterLoaderHandlerFactory( DigesterLoaderHandlerFactory digesterLoaderHandlerFactory );
 
 }

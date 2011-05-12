@@ -21,129 +21,140 @@ import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "rss/channel/image")
-public final class Image {
+@ObjectCreate( pattern = "rss/channel/image" )
+public final class Image
+{
 
-    @BeanPropertySetter(pattern = "rss/channel/image/description")
+    @BeanPropertySetter( pattern = "rss/channel/image/description" )
     private String description;
 
-    @BeanPropertySetter(pattern = "rss/channel/image/width")
+    @BeanPropertySetter( pattern = "rss/channel/image/width" )
     private int width;
 
-    @BeanPropertySetter(pattern = "rss/channel/image/height")
+    @BeanPropertySetter( pattern = "rss/channel/image/height" )
     private int height;
 
-    @BeanPropertySetter(pattern = "rss/channel/image/link")
+    @BeanPropertySetter( pattern = "rss/channel/image/link" )
     private String link;
 
-    @BeanPropertySetter(pattern = "rss/channel/image/title")
+    @BeanPropertySetter( pattern = "rss/channel/image/title" )
     private String title;
 
-    @BeanPropertySetter(pattern = "rss/channel/image/url")
+    @BeanPropertySetter( pattern = "rss/channel/image/url" )
     private String url;
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
 
-    public int getWidth() {
+    public int getWidth()
+    {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth( int width )
+    {
         this.width = width;
     }
 
-    public int getHeight() {
+    public int getHeight()
+    {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight( int height )
+    {
         this.height = height;
     }
 
-    public String getLink() {
+    public String getLink()
+    {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
-    public String getUrl() {
+    public String getUrl()
+    {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl( String url )
+    {
         this.url = url;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Image other = (Image) obj;
-        if (description == null) {
-            if (other.description != null)
+        if ( description == null )
+        {
+            if ( other.description != null )
                 return false;
-        } else if (!description.equals(other.description))
+        }
+        else if ( !description.equals( other.description ) )
             return false;
-        if (height != other.height)
+        if ( height != other.height )
             return false;
-        if (link == null) {
-            if (other.link != null)
+        if ( link == null )
+        {
+            if ( other.link != null )
                 return false;
-        } else if (!link.equals(other.link))
+        }
+        else if ( !link.equals( other.link ) )
             return false;
-        if (title == null) {
-            if (other.title != null)
+        if ( title == null )
+        {
+            if ( other.title != null )
                 return false;
-        } else if (!title.equals(other.title))
+        }
+        else if ( !title.equals( other.title ) )
             return false;
-        if (url == null) {
-            if (other.url != null)
+        if ( url == null )
+        {
+            if ( other.url != null )
                 return false;
-        } else if (!url.equals(other.url))
+        }
+        else if ( !url.equals( other.url ) )
             return false;
-        if (width != other.width)
+        if ( width != other.width )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Image [description="
-                + description
-                + ", height="
-                + height
-                + ", link="
-                + link
-                + ", title="
-                + title
-                + ", url="
-                + url
-                + ", width="
-                + width + "]";
+    public String toString()
+    {
+        return "Image [description=" + description + ", height=" + height + ", link=" + link + ", title=" + title
+            + ", url=" + url + ", width=" + width + "]";
     }
 
 }

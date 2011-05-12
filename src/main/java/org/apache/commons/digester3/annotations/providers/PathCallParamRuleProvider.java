@@ -24,26 +24,29 @@ import org.apache.commons.digester3.annotations.rules.PathCallParam;
 
 /**
  * Provides instances of {@link PathCallParamRule}.
- *
+ * 
  * @since 2.1
  */
 public final class PathCallParamRuleProvider
-        implements AnnotationRuleProvider<PathCallParam, MethodArgument, PathCallParamRule> {
+    implements AnnotationRuleProvider<PathCallParam, MethodArgument, PathCallParamRule>
+{
 
     private int index;
 
     /**
      * {@inheritDoc}
      */
-    public void init(PathCallParam annotation, MethodArgument element) {
+    public void init( PathCallParam annotation, MethodArgument element )
+    {
         this.index = element.getIndex();
     }
 
     /**
      * {@inheritDoc}
      */
-    public PathCallParamRule get() {
-        return new PathCallParamRule(this.index);
+    public PathCallParamRule get()
+    {
+        return new PathCallParamRule( this.index );
     }
 
 }

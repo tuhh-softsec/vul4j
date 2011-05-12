@@ -22,18 +22,22 @@ import java.security.PrivilegedAction;
 
 /**
  * Abstract {@link PrivilegedAction} to extract annotated elements from a type.
- *
+ * 
  * @since 2.2
  */
-abstract class AbstractAnnotatedElementPrivilegedAction<A extends AnnotatedElement> implements PrivilegedAction<A[]> {
+abstract class AbstractAnnotatedElementPrivilegedAction<A extends AnnotatedElement>
+    implements PrivilegedAction<A[]>
+{
 
     private final Class<?> type;
 
-    public AbstractAnnotatedElementPrivilegedAction(Class<?> type) {
+    public AbstractAnnotatedElementPrivilegedAction( Class<?> type )
+    {
         this.type = type;
     }
 
-    protected final Class<?> getType() {
+    protected final Class<?> getType()
+    {
         return this.type;
     }
 

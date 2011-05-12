@@ -20,46 +20,52 @@ package org.apache.commons.digester3.plugins;
 
 /**
  * Thrown when an error occurs due to bad data in the file being parsed.
- *
+ * 
  * @since 1.6
  */
-public class PluginInvalidInputException extends PluginException {
+public class PluginInvalidInputException
+    extends PluginException
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginInvalidInputException(Throwable cause) {
-        this(cause.getMessage());
+    public PluginInvalidInputException( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginInvalidInputException(String msg) {
-        super(msg);
+    public PluginInvalidInputException( String msg )
+    {
+        super( msg );
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginInvalidInputException(String msg, Throwable cause) {
-        this(msg);
+    public PluginInvalidInputException( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
-    
+
     /**
-     * Return the cause of this exception (if any) as specified in the
-     * exception constructor.
+     * Return the cause of this exception (if any) as specified in the exception constructor.
      * 
      * @since 1.8
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

@@ -20,3 +20,4 @@
  * Contains commons utilities classes for Java5 Annotations manipulation.
  */
 package org.apache.commons.digester3.annotations.utils;
+

@@ -28,10 +28,12 @@ import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
  * Provides instances of {@code SetPropertiesRule}.
- *
+ * 
  * @since 2.1
  */
-public final class SetPropertiesRuleProvider implements AnnotationRuleProvider<SetProperty, Field, SetPropertiesRule> {
+public final class SetPropertiesRuleProvider
+    implements AnnotationRuleProvider<SetProperty, Field, SetPropertiesRule>
+{
 
     /**
      * The data structure that stores the aliases.
@@ -41,42 +43,49 @@ public final class SetPropertiesRuleProvider implements AnnotationRuleProvider<S
     /**
      * {@inheritDoc}
      */
-    public void init(SetProperty annotation, Field element) {
-        this.addAlias(annotation, element);
+    public void init( SetProperty annotation, Field element )
+    {
+        this.addAlias( annotation, element );
     }
 
     /**
-     * Adds a new alias attribute/property name; if the attribute name is not
-     * specified, the alias will be considered as property name identity.
-     *
+     * Adds a new alias attribute/property name; if the attribute name is not specified, the alias will be considered as
+     * property name identity.
+     * 
      * @param annotation the {@link SetProperty} reference.
      * @param element the annotated element reference.
      */
-    public void addAlias(SetProperty annotation, Field element) {
+    public void addAlias( SetProperty annotation, Field element )
+    {
         String attributeName = annotation.attributeName();
         String propertyName = element.getName();
 
-        if (attributeName.length() > 0) {
-            this.aliases.put(attributeName, propertyName);
-        } else {
-            this.aliases.put(propertyName, propertyName);
+        if ( attributeName.length() > 0 )
+        {
+            this.aliases.put( attributeName, propertyName );
+        }
+        else
+        {
+            this.aliases.put( propertyName, propertyName );
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public SetPropertiesRule get() {
+    public SetPropertiesRule get()
+    {
         String[] attributeNames = new String[this.aliases.size()];
         String[] propertyNames = new String[this.aliases.size()];
 
         int i = 0;
-        for (Entry<String, String> alias : this.aliases.entrySet()) {
+        for ( Entry<String, String> alias : this.aliases.entrySet() )
+        {
             attributeNames[i] = alias.getKey();
             propertyNames[i++] = alias.getValue();
         }
 
-        return new SetPropertiesRule(attributeNames, propertyNames);
+        return new SetPropertiesRule( attributeNames, propertyNames );
     }
 
 }

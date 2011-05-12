@@ -22,33 +22,32 @@ import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A RuleLoader which creates a single SetPropertiesRule and adds it to the
- * digester when its addRules() method is invoked.
+ * A RuleLoader which creates a single SetPropertiesRule and adds it to the digester when its addRules() method is
+ * invoked.
  * <p>
- * This loader ensures that any xml attributes on the plugin tag get
- * mapped to equivalent properties on a javabean. This allows JavaBean
- * classes to be used as plugins without any requirement to create custom
- * plugin rules.
- *
+ * This loader ensures that any xml attributes on the plugin tag get mapped to equivalent properties on a javabean. This
+ * allows JavaBean classes to be used as plugins without any requirement to create custom plugin rules.
+ * 
  * @since 1.6
  */
 
-public class LoaderSetProperties extends RuleLoader {
-    
+public class LoaderSetProperties
+    extends RuleLoader
+{
+
     /**
      * Just add a SetPropertiesRule at the specified path.
      */
     @Override
-    public void addRules(Digester digester, String path) {
+    public void addRules( Digester digester, String path )
+    {
         Log log = digester.getLogger();
         boolean debug = log.isDebugEnabled();
-        if (debug) {
-            log.debug(
-                "LoaderSetProperties loading rules for plugin at path [" 
-                + path + "]");
+        if ( debug )
+        {
+            log.debug( "LoaderSetProperties loading rules for plugin at path [" + path + "]" );
         }
 
-        digester.addSetProperties(path);
+        digester.addSetProperties( path );
     }
 }
-

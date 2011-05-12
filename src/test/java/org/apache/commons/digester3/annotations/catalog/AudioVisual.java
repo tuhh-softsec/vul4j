@@ -21,19 +21,14 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate.List(
-        @ObjectCreate(pattern = "catalog/dvd")
-)
-public final class AudioVisual implements Item {
+@ObjectCreate.List( @ObjectCreate( pattern = "catalog/dvd" ) )
+public final class AudioVisual
+    implements Item
+{
 
-    @SetProperty(
-            pattern = "catalog/dvd",
-            attributeName = "year-made"
-    )
+    @SetProperty( pattern = "catalog/dvd", attributeName = "year-made" )
     private int yearMade;
 
     private String category;
@@ -44,79 +39,97 @@ public final class AudioVisual implements Item {
 
     private int runtime;
 
-    public int getYearMade() {
+    public int getYearMade()
+    {
         return yearMade;
     }
 
-    public void setYearMade(int yearMade) {
+    public void setYearMade( int yearMade )
+    {
         this.yearMade = yearMade;
     }
 
-    public String getCategory() {
+    public String getCategory()
+    {
         return this.category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory( String category )
+    {
         this.category = category;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName( String name )
+    {
         this.name = name;
     }
 
-    public String getDesc() {
+    public String getDesc()
+    {
         return this.desc;
     }
 
-    public void setDesc(String desc) {
+    public void setDesc( String desc )
+    {
         this.desc = desc;
     }
 
-    public int getRuntime() {
+    public int getRuntime()
+    {
         return this.runtime;
     }
 
-    public void setRuntime(int runtime) {
+    public void setRuntime( int runtime )
+    {
         this.runtime = runtime;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         AudioVisual other = (AudioVisual) obj;
-        if (this.category == null) {
-            if (other.getCategory() != null)
+        if ( this.category == null )
+        {
+            if ( other.getCategory() != null )
                 return false;
-        } else if (!this.category.equals(other.getCategory()))
+        }
+        else if ( !this.category.equals( other.getCategory() ) )
             return false;
-        if (this.desc == null) {
-            if (other.getDesc() != null)
+        if ( this.desc == null )
+        {
+            if ( other.getDesc() != null )
                 return false;
-        } else if (!this.desc.equals(other.getDesc()))
+        }
+        else if ( !this.desc.equals( other.getDesc() ) )
             return false;
-        if (this.name == null) {
-            if (other.getName() != null)
+        if ( this.name == null )
+        {
+            if ( other.getName() != null )
                 return false;
-        } else if (!this.name.equals(other.getName()))
+        }
+        else if ( !this.name.equals( other.getName() ) )
             return false;
-        if (this.runtime != other.getRuntime())
+        if ( this.runtime != other.getRuntime() )
             return false;
-        if (this.yearMade != other.getYearMade())
+        if ( this.yearMade != other.getYearMade() )
             return false;
         return true;
     }
 
-    public void print() {
-        System.out.println(this.toString());
+    public void print()
+    {
+        System.out.println( this.toString() );
     }
 
 }

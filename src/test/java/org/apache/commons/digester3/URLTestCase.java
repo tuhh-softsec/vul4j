@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
 
 import static org.junit.Assert.*;
@@ -29,100 +28,99 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <p>Unit tests that exercise the new (in 1.8) methods for passing in
- * <code>URL</code> arguments instead of strings.</p>
+ * <p>
+ * Unit tests that exercise the new (in 1.8) methods for passing in <code>URL</code> arguments instead of strings.
+ * </p>
  */
-public class URLTestCase {
-
+public class URLTestCase
+{
 
     // ----------------------------------------------------- Overall Test Methods
-
 
     /**
      * Set up instance variables required by this test case.
      */
     @Before
-    public void setUp() {
+    public void setUp()
+    {
 
         digester = new Digester();
 
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
 
         digester = null;
 
     }
 
-
     // ------------------------------------------------------ Manifest Constants
 
-
     /**
-     * <p>Public identifier of the Digester Rules DTD.</p>
+     * <p>
+     * Public identifier of the Digester Rules DTD.
+     * </p>
      */
-    private static final String DIGESTER_RULES_PUBLIC_ID =
-            "-//Jakarta Apache //DTD digester-rules XML V1.0//EN";
-
+    private static final String DIGESTER_RULES_PUBLIC_ID = "-//Jakarta Apache //DTD digester-rules XML V1.0//EN";
 
     /**
-     * <p>System identifier of the Digester Rules DTD.</p>
+     * <p>
+     * System identifier of the Digester Rules DTD.
+     * </p>
      */
-    private static final String DIGESTER_RULES_SYSTEM_ID =
-            "/org/apache/commons/digester3/xmlrules/digester-rules.dtd";
-
+    private static final String DIGESTER_RULES_SYSTEM_ID = "/org/apache/commons/digester3/xmlrules/digester-rules.dtd";
 
     /**
-     * <p>System identifier for the Digester Rules file that we will parse.</p>
+     * <p>
+     * System identifier for the Digester Rules file that we will parse.
+     * </p>
      */
     private static final String TEST_INPUT_SYSTEM_ID =
-            "/org/apache/commons/digester3/xmlrules/test-call-param-rules.xml";
-
+        "/org/apache/commons/digester3/xmlrules/test-call-param-rules.xml";
 
     // ------------------------------------------------------ Instance Variables
 
-
     /**
-     * <p>The <code>Digester</code> instance under test.</p>
+     * <p>
+     * The <code>Digester</code> instance under test.
+     * </p>
      */
     private Digester digester = null;
 
-
-
     // ------------------------------------------------------------ Test Methods
-
 
     // Test a pristine instance
     @Test
-    public void testPristine() {
+    public void testPristine()
+    {
 
-        assertNotNull(digester);
+        assertNotNull( digester );
 
     }
-
 
     // Test parsing a resource, using a registered DTD, both passed with URLs
     @Test
-    public void testResource() throws Exception {
+    public void testResource()
+        throws Exception
+    {
 
         // Register the Digester Rules DTD
-        URL dtd = URLTestCase.class.getResource(DIGESTER_RULES_SYSTEM_ID);
-        assertNotNull(dtd);
-        digester.register(DIGESTER_RULES_PUBLIC_ID, dtd);
+        URL dtd = URLTestCase.class.getResource( DIGESTER_RULES_SYSTEM_ID );
+        assertNotNull( dtd );
+        digester.register( DIGESTER_RULES_PUBLIC_ID, dtd );
 
         // Parse one of the existing test resources twice with
         // the same Digester instance
-        URL xml = URLTestCase.class.getResource(TEST_INPUT_SYSTEM_ID);
-        assertNotNull(xml);
-        digester.parse(xml);
-        digester.parse(xml);
+        URL xml = URLTestCase.class.getResource( TEST_INPUT_SYSTEM_ID );
+        assertNotNull( xml );
+        digester.parse( xml );
+        digester.parse( xml );
 
     }
-
 
 }

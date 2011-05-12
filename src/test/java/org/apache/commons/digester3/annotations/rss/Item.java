@@ -21,82 +21,89 @@ import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "rss/channel/item")
-public final class Item {
+@ObjectCreate( pattern = "rss/channel/item" )
+public final class Item
+{
 
-    @BeanPropertySetter(pattern = "rss/channel/item/description")
+    @BeanPropertySetter( pattern = "rss/channel/item/description" )
     private String description;
 
-    @BeanPropertySetter(pattern = "rss/channel/item/link")
+    @BeanPropertySetter( pattern = "rss/channel/item/link" )
     private String link;
 
-    @BeanPropertySetter(pattern = "rss/channel/item/title")
+    @BeanPropertySetter( pattern = "rss/channel/item/title" )
     private String title;
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
 
-    public String getLink() {
+    public String getLink()
+    {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Item other = (Item) obj;
-        if (description == null) {
-            if (other.description != null)
+        if ( description == null )
+        {
+            if ( other.description != null )
                 return false;
-        } else if (!description.equals(other.description))
+        }
+        else if ( !description.equals( other.description ) )
             return false;
-        if (link == null) {
-            if (other.link != null)
+        if ( link == null )
+        {
+            if ( other.link != null )
                 return false;
-        } else if (!link.equals(other.link))
+        }
+        else if ( !link.equals( other.link ) )
             return false;
-        if (title == null) {
-            if (other.title != null)
+        if ( title == null )
+        {
+            if ( other.title != null )
                 return false;
-        } else if (!title.equals(other.title))
+        }
+        else if ( !title.equals( other.title ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Item [description="
-                + description
-                + ", link="
-                + link
-                + ", title="
-                + title
-                + "]";
+    public String toString()
+    {
+        return "Item [description=" + description + ", link=" + link + ", title=" + title + "]";
     }
 
 }

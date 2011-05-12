@@ -21,35 +21,29 @@ import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rules;
 
 /**
- * Whenever the scope of a plugin tag is entered, the PluginRules class
- * creates a new Rules instance and configures it with the appropriate
- * parsing rules for the plugged-in class.
+ * Whenever the scope of a plugin tag is entered, the PluginRules class creates a new Rules instance and configures it
+ * with the appropriate parsing rules for the plugged-in class.
  * <p>
- * Users of the plugins module can specify a subclass of this one to
- * control the creation of that Rules object. In particular, it can
- * set up default rules within the returned instance which are applicable
- * to all plugged-in classes.
- *
+ * Users of the plugins module can specify a subclass of this one to control the creation of that Rules object. In
+ * particular, it can set up default rules within the returned instance which are applicable to all plugged-in classes.
+ * 
  * @since 1.6
  */
 
-public abstract class RulesFactory {
+public abstract class RulesFactory
+{
 
     /**
-     * Return an instance of some Rules implementation that the plugged-in
-     * class shall use to match its private parsing rules.
+     * Return an instance of some Rules implementation that the plugged-in class shall use to match its private parsing
+     * rules.
      * <p>
-     * @param d is the digester that the returned rules object will be 
-     * associated with.
-     *
-     * @param pluginClass is the class that is to be configured using rules
-     * added to the returnedobject.
      * 
-     * @throws PluginException if the algorithm finds a source
-     * of rules, but there is something invalid about that source.
+     * @param d is the digester that the returned rules object will be associated with.
+     * @param pluginClass is the class that is to be configured using rules added to the returnedobject.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid about that
+     *             source.
      */
 
-     public abstract Rules newRules(Digester d, Class<?> pluginClass) 
-                        throws PluginException;
+    public abstract Rules newRules( Digester d, Class<?> pluginClass )
+        throws PluginException;
 }
-

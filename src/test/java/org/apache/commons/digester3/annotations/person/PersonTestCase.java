@@ -21,21 +21,24 @@ import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
 import org.junit.Test;
 
 /**
- * 
  * @since 2.1
  */
-public final class PersonTestCase extends AbstractAnnotatedPojoTestCase {
+public final class PersonTestCase
+    extends AbstractAnnotatedPojoTestCase
+{
 
     @Test
-    public void testPerson() throws Exception {
+    public void testPerson()
+        throws Exception
+    {
         Person person = new Person();
-        person.setId(1);
-        person.setName("Gonzo");
-        person.setCategory("acquaintance");
-        person.addEmail("business", "gonzo@muppets.com");
-        person.addEmail("home", "gonzo@mymuppets.com");
+        person.setId( 1 );
+        person.setName( "Gonzo" );
+        person.setCategory( "acquaintance" );
+        person.addEmail( "business", "gonzo@muppets.com" );
+        person.addEmail( "home", "gonzo@mymuppets.com" );
 
-        this.verifyExpectedEqualsToParsed(person);
+        this.verifyExpectedEqualsToParsed( person );
     }
 
 }

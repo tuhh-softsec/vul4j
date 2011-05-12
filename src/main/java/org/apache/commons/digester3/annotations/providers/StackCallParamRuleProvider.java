@@ -24,12 +24,13 @@ import org.apache.commons.digester3.annotations.rules.StackCallParam;
 
 /**
  * Provides instances of {@link CallParamRule}.
- *
+ * 
  * @see CallParamRule#CallParamRule(int,int)
  * @since 2.1
  */
 public final class StackCallParamRuleProvider
-        implements AnnotationRuleProvider<StackCallParam, MethodArgument, CallParamRule> {
+    implements AnnotationRuleProvider<StackCallParam, MethodArgument, CallParamRule>
+{
 
     private int paramIndex;
 
@@ -38,7 +39,8 @@ public final class StackCallParamRuleProvider
     /**
      * {@inheritDoc}
      */
-    public void init(StackCallParam annotation, MethodArgument element) {
+    public void init( StackCallParam annotation, MethodArgument element )
+    {
         this.paramIndex = element.getIndex();
         this.stackIndex = annotation.stackIndex();
     }
@@ -46,8 +48,9 @@ public final class StackCallParamRuleProvider
     /**
      * {@inheritDoc}
      */
-    public CallParamRule get() {
-        return new CallParamRule(this.paramIndex, this.stackIndex);
+    public CallParamRule get()
+    {
+        return new CallParamRule( this.paramIndex, this.stackIndex );
     }
 
 }

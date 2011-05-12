@@ -25,10 +25,12 @@ import org.apache.commons.digester3.annotations.rules.SetNext;
 
 /**
  * Provides instances of {@link SetNextRule}.
- *
+ * 
  * @since 2.1
  */
-public final class SetNextRuleProvider implements AnnotationRuleProvider<SetNext, Method, SetNextRule> {
+public final class SetNextRuleProvider
+    implements AnnotationRuleProvider<SetNext, Method, SetNextRule>
+{
 
     private String methodName;
 
@@ -37,7 +39,8 @@ public final class SetNextRuleProvider implements AnnotationRuleProvider<SetNext
     /**
      * {@inheritDoc}
      */
-    public void init(SetNext annotation, Method element) {
+    public void init( SetNext annotation, Method element )
+    {
         this.methodName = element.getName();
         this.paramType = element.getParameterTypes()[0].getName();
     }
@@ -45,8 +48,9 @@ public final class SetNextRuleProvider implements AnnotationRuleProvider<SetNext
     /**
      * {@inheritDoc}
      */
-    public SetNextRule get() {
-        return new SetNextRule(this.methodName, this.paramType);
+    public SetNextRule get()
+    {
+        return new SetNextRule( this.methodName, this.paramType );
     }
 
 }

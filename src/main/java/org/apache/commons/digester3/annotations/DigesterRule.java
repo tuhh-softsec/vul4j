@@ -30,37 +30,35 @@ import org.apache.commons.digester3.annotations.handlers.DefaultLoaderHandler;
 
 /**
  * Meta-annotation that marks an annotation as part of commons-digester.
- *
+ * 
  * @since 2.1
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DigesterRule {
+@Target( ElementType.ANNOTATION_TYPE )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface DigesterRule
+{
 
     /**
      * The reflected commons-digester rule.
-     *
+     * 
      * @return the reflected commons-digester rule.
      */
     Class<? extends Rule> reflectsRule();
 
     /**
-     * The handler that takes care on converting this annotation in the related
-     * {@link AnnotationRuleProvider} and adds it o the {@link FromAnnotationsRuleSet}
-     *
+     * The handler that takes care on converting this annotation in the related {@link AnnotationRuleProvider} and adds
+     * it o the {@link FromAnnotationsRuleSet}
+     * 
      * @return the {@link DigesterLoaderHandler}
      */
-    Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>>
-        handledBy() default DefaultLoaderHandler.class;
+    Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy() default DefaultLoaderHandler.class;
 
     /**
-     * Define the {@link AnnotationRuleProvider} that builds the {@link Rule}
-     * related to the digester rule.
-     *
+     * Define the {@link AnnotationRuleProvider} that builds the {@link Rule} related to the digester rule.
+     * 
      * @return the {@link AnnotationRuleProvider}.
      */
-    Class<? extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>>
-        providedBy();
+    Class<? extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>> providedBy();
 
 }

@@ -18,12 +18,13 @@
 package org.apache.commons.digester3.annotations;
 
 /**
- * The exception thrown when an error occurs while analyzing targets and
- * building rule sets.
- *
+ * The exception thrown when an error occurs while analyzing targets and building rule sets.
+ * 
  * @since 2.1
  */
-public final class DigesterLoadingException extends RuntimeException {
+public final class DigesterLoadingException
+    extends RuntimeException
+{
 
     /**
      * The default serial version UID.
@@ -32,31 +33,33 @@ public final class DigesterLoadingException extends RuntimeException {
 
     /**
      * Constructs a new loading exception with the specified detail message.
-     *
+     * 
      * @param message the detail message.
      */
-    public DigesterLoadingException(String message) {
-        super(message);
+    public DigesterLoadingException( String message )
+    {
+        super( message );
     }
 
     /**
      * Constructs a new loading exception with the specified cause.
-     *
+     * 
      * @param cause the specified cause.
      */
-    public DigesterLoadingException(Throwable cause) {
-        super(cause);
+    public DigesterLoadingException( Throwable cause )
+    {
+        super( cause );
     }
 
     /**
-     * Constructs a new loading exception with the specified detail message
-     * and cause.
-     *
+     * Constructs a new loading exception with the specified detail message and cause.
+     * 
      * @param message the detail message.
      * @param cause the specified cause.
      */
-    public DigesterLoadingException(String message, Throwable cause) {
-        super(message, cause);
+    public DigesterLoadingException( String message, Throwable cause )
+    {
+        super( message, cause );
     }
 
 }

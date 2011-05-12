@@ -20,3 +20,4 @@
  * Contains annotations package SPI definition.
  */
 package org.apache.commons.digester3.annotations.spi;
+

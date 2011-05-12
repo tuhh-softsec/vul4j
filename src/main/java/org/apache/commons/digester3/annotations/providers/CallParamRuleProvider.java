@@ -24,26 +24,30 @@ import org.apache.commons.digester3.annotations.rules.CallParam;
 
 /**
  * Provides instances of {@link CallParamRule}.
- *
+ * 
  * @see CallParamRule#CallParamRule(int)
  * @since 2.1
  */
-public final class CallParamRuleProvider implements AnnotationRuleProvider<CallParam, MethodArgument, CallParamRule> {
+public final class CallParamRuleProvider
+    implements AnnotationRuleProvider<CallParam, MethodArgument, CallParamRule>
+{
 
     private int index;
 
     /**
      * {@inheritDoc}
      */
-    public void init(CallParam annotation, MethodArgument element) {
+    public void init( CallParam annotation, MethodArgument element )
+    {
         this.index = element.getIndex();
     }
 
     /**
      * {@inheritDoc}
      */
-    public CallParamRule get() {
-        return new CallParamRule(this.index);
+    public CallParamRule get()
+    {
+        return new CallParamRule( this.index );
     }
 
 }

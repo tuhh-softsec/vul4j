@@ -21,136 +21,150 @@ import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "address-book/person/address")
-public class Address {
+@ObjectCreate( pattern = "address-book/person/address" )
+public class Address
+{
 
-    @BeanPropertySetter(pattern = "address-book/person/address/type")
+    @BeanPropertySetter( pattern = "address-book/person/address/type" )
     private String type;
 
-    @BeanPropertySetter(pattern = "address-book/person/address/street")
+    @BeanPropertySetter( pattern = "address-book/person/address/street" )
     private String street;
 
-    @BeanPropertySetter(pattern = "address-book/person/address/city")
+    @BeanPropertySetter( pattern = "address-book/person/address/city" )
     private String city;
 
-    @BeanPropertySetter(pattern = "address-book/person/address/state")
+    @BeanPropertySetter( pattern = "address-book/person/address/state" )
     private String state;
 
-    @BeanPropertySetter(pattern = "address-book/person/address/zip")
+    @BeanPropertySetter( pattern = "address-book/person/address/zip" )
     private String zip;
 
-    @BeanPropertySetter(pattern = "address-book/person/address/country")
+    @BeanPropertySetter( pattern = "address-book/person/address/country" )
     private String country;
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType( String type )
+    {
         this.type = type;
     }
 
-    public String getStreet() {
+    public String getStreet()
+    {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet( String street )
+    {
         this.street = street;
     }
 
-    public String getCity() {
+    public String getCity()
+    {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity( String city )
+    {
         this.city = city;
     }
 
-    public String getState() {
+    public String getState()
+    {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState( String state )
+    {
         this.state = state;
     }
 
-    public String getZip() {
+    public String getZip()
+    {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip( String zip )
+    {
         this.zip = zip;
     }
 
-    public String getCountry() {
+    public String getCountry()
+    {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry( String country )
+    {
         this.country = country;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Address other = (Address) obj;
-        if (city == null) {
-            if (other.city != null)
+        if ( city == null )
+        {
+            if ( other.city != null )
                 return false;
-        } else if (!city.equals(other.city))
+        }
+        else if ( !city.equals( other.city ) )
             return false;
-        if (country == null) {
-            if (other.country != null)
+        if ( country == null )
+        {
+            if ( other.country != null )
                 return false;
-        } else if (!country.equals(other.country))
+        }
+        else if ( !country.equals( other.country ) )
             return false;
-        if (state == null) {
-            if (other.state != null)
+        if ( state == null )
+        {
+            if ( other.state != null )
                 return false;
-        } else if (!state.equals(other.state))
+        }
+        else if ( !state.equals( other.state ) )
             return false;
-        if (street == null) {
-            if (other.street != null)
+        if ( street == null )
+        {
+            if ( other.street != null )
                 return false;
-        } else if (!street.equals(other.street))
+        }
+        else if ( !street.equals( other.street ) )
             return false;
-        if (type == null) {
-            if (other.type != null)
+        if ( type == null )
+        {
+            if ( other.type != null )
                 return false;
-        } else if (!type.equals(other.type))
+        }
+        else if ( !type.equals( other.type ) )
             return false;
-        if (zip == null) {
-            if (other.zip != null)
+        if ( zip == null )
+        {
+            if ( other.zip != null )
                 return false;
-        } else if (!zip.equals(other.zip))
+        }
+        else if ( !zip.equals( other.zip ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Address [city="
-                + city
-                + ", country="
-                + country
-                + ", state="
-                + state
-                + ", street="
-                + street
-                + ", type="
-                + type
-                + ", zip="
-                + zip
-                + "]";
+    public String toString()
+    {
+        return "Address [city=" + city + ", country=" + country + ", state=" + state + ", street=" + street + ", type="
+            + type + ", zip=" + zip + "]";
     }
 
 }

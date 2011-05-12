@@ -24,24 +24,23 @@ import org.apache.commons.digester3.Rule;
 
 /**
  * An object capable of providing instances of {@link Rule}.
- *
+ * 
  * @since 2.1
  */
-public interface AnnotationRuleProvider<A extends Annotation, E extends AnnotatedElement, R extends Rule> {
+public interface AnnotationRuleProvider<A extends Annotation, E extends AnnotatedElement, R extends Rule>
+{
 
     /**
      * Initializes the provider.
-     *
+     * 
      * @param annotation the annotation instance.
      * @param element the annotated element reference.
      */
-    void init(A annotation, E element);
+    void init( A annotation, E element );
 
     /**
-     * Provides an instance of {@link Rule}.
-     *
-     * Must never return null.
-     *
+     * Provides an instance of {@link Rule}. Must never return null.
+     * 
      * @return an instance of {@link Rule}.
      */
     R get();

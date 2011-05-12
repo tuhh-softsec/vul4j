@@ -20,3 +20,4 @@
  * Classes contained in this package are annotations that reflect Digester rules.
  */
 package org.apache.commons.digester3.annotations.rules;
+

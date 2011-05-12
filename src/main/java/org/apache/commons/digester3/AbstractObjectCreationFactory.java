@@ -17,63 +17,59 @@
  */
 package org.apache.commons.digester3;
 
-
 import org.xml.sax.Attributes;
 
-
 /**
- * <p>Abstract base class for <code>ObjectCreationFactory</code>
- * implementations.</p>
+ * <p>
+ * Abstract base class for <code>ObjectCreationFactory</code> implementations.
+ * </p>
  */
-abstract public class AbstractObjectCreationFactory implements ObjectCreationFactory {
-
+abstract public class AbstractObjectCreationFactory
+    implements ObjectCreationFactory
+{
 
     // ----------------------------------------------------- Instance Variables
 
-
     /**
-     * The associated <code>Digester</code> instance that was set up by
-     * {@link FactoryCreateRule} upon initialization.
+     * The associated <code>Digester</code> instance that was set up by {@link FactoryCreateRule} upon initialization.
      */
     protected Digester digester = null;
 
-
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * <p>Factory method called by {@link FactoryCreateRule} to supply an
-     * object based on the element's attributes.
-     *
+     * <p>
+     * Factory method called by {@link FactoryCreateRule} to supply an object based on the element's attributes.
+     * 
      * @param attributes the element's attributes
-     *
      * @throws Exception any exception thrown will be propagated upwards
      */
-    public abstract Object createObject(Attributes attributes) throws Exception;
-
+    public abstract Object createObject( Attributes attributes )
+        throws Exception;
 
     /**
-     * <p>Returns the {@link Digester} that was set by the
-     * {@link FactoryCreateRule} upon initialization.
+     * <p>
+     * Returns the {@link Digester} that was set by the {@link FactoryCreateRule} upon initialization.
      */
-    public Digester getDigester() {
+    public Digester getDigester()
+    {
 
-        return (this.digester);
+        return ( this.digester );
 
     }
 
-
     /**
-     * <p>Set the {@link Digester} to allow the implementation to do logging,
-     * classloading based on the digester's classloader, etc.
-     *
+     * <p>
+     * Set the {@link Digester} to allow the implementation to do logging, classloading based on the digester's
+     * classloader, etc.
+     * 
      * @param digester parent Digester object
      */
-    public void setDigester(Digester digester) {
+    public void setDigester( Digester digester )
+    {
 
         this.digester = digester;
 
     }
-
 
 }

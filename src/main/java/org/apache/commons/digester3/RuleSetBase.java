@@ -16,56 +16,46 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
 
-
 /**
- * <p>Convenience base class that implements the {@link RuleSet} interface.
- * Concrete implementations should list all of their actual rule creation
- * logic in the <code>addRuleSet()</code> implementation.</p>
+ * <p>
+ * Convenience base class that implements the {@link RuleSet} interface. Concrete implementations should list all of
+ * their actual rule creation logic in the <code>addRuleSet()</code> implementation.
+ * </p>
  */
 
-public abstract class RuleSetBase implements RuleSet {
-
+public abstract class RuleSetBase
+    implements RuleSet
+{
 
     // ----------------------------------------------------- Instance Variables
 
-
     /**
-     * The namespace URI that all Rule instances created by this RuleSet
-     * will be associated with.
+     * The namespace URI that all Rule instances created by this RuleSet will be associated with.
      */
     protected String namespaceURI = null;
 
-
     // ------------------------------------------------------------- Properties
 
-
     /**
-     * Return the namespace URI that will be applied to all Rule instances
-     * created from this RuleSet.
+     * Return the namespace URI that will be applied to all Rule instances created from this RuleSet.
      */
-    public String getNamespaceURI() {
+    public String getNamespaceURI()
+    {
 
-        return (this.namespaceURI);
+        return ( this.namespaceURI );
 
     }
 
-
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * Add the set of Rule instances defined in this RuleSet to the
-     * specified <code>Digester</code> instance, associating them with
-     * our namespace URI (if any).  This method should only be called
-     * by a Digester instance.
-     *
-     * @param digester Digester instance to which the new Rule instances
-     *  should be added.
+     * Add the set of Rule instances defined in this RuleSet to the specified <code>Digester</code> instance,
+     * associating them with our namespace URI (if any). This method should only be called by a Digester instance.
+     * 
+     * @param digester Digester instance to which the new Rule instances should be added.
      */
-    public abstract void addRuleInstances(Digester digester);
-
+    public abstract void addRuleInstances( Digester digester );
 
 }

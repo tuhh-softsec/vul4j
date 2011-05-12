@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
 
-
 /**
- * <p> As it's name suggests just a simple bean used for testing.
+ * <p>
+ * As it's name suggests just a simple bean used for testing.
  */
-public class SimpleTestBean {
+public class SimpleTestBean
+{
 
     private String alpha;
 
@@ -33,54 +33,64 @@ public class SimpleTestBean {
 
     private String delta;
 
-    public String getAlpha() {
+    public String getAlpha()
+    {
         return alpha;
     }
 
-    public void setAlpha(String alpha) {
+    public void setAlpha( String alpha )
+    {
         this.alpha = alpha;
     }
 
-    public String getBeta() {
+    public String getBeta()
+    {
         return beta;
     }
 
-    public void setBeta(String beta) {
+    public void setBeta( String beta )
+    {
         this.beta = beta;
     }
 
-    public String getGamma() {
+    public String getGamma()
+    {
         return gamma;
     }
 
-    public void setGamma(String gamma) {
+    public void setGamma( String gamma )
+    {
         this.gamma = gamma;
     }
 
-    public String getDeltaValue() {      // Retrieves "write only" value
+    public String getDeltaValue()
+    { // Retrieves "write only" value
         return delta;
     }
 
-    public void setDelta(String delta) { // "delta" is a write-only property
+    public void setDelta( String delta )
+    { // "delta" is a write-only property
         this.delta = delta;
     }
-    
-    public void setAlphaBeta(String alpha, String beta) {
-        setAlpha(alpha);
-        setBeta(beta);
+
+    public void setAlphaBeta( String alpha, String beta )
+    {
+        setAlpha( alpha );
+        setBeta( beta );
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("[SimpleTestBean]");
-        sb.append(" alpha=");
-        sb.append(alpha);
-        sb.append(" beta=");
-        sb.append(beta);
-        sb.append(" gamma=");
-        sb.append(gamma);
-        sb.append(" delta=");
-        sb.append(delta);
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( "[SimpleTestBean]" );
+        sb.append( " alpha=" );
+        sb.append( alpha );
+        sb.append( " beta=" );
+        sb.append( beta );
+        sb.append( " gamma=" );
+        sb.append( gamma );
+        sb.append( " delta=" );
+        sb.append( delta );
 
         return sb.toString();
     }

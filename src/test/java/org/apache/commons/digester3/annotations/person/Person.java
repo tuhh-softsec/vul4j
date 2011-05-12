@@ -28,97 +28,105 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
- * 
  * @since 2.1
  */
-@ObjectCreate(pattern = "person")
-public class Person {
+@ObjectCreate( pattern = "person" )
+public class Person
+{
 
     private final Map<String, String> emails = new HashMap<String, String>();
 
-    @SetProperty(pattern = "person")
+    @SetProperty( pattern = "person" )
     private int id;
 
-    @SetProperty(pattern = "person")
+    @SetProperty( pattern = "person" )
     private String category;
 
-    @BeanPropertySetter(pattern = "person/name")
+    @BeanPropertySetter( pattern = "person/name" )
     private String name;
 
-    @CallMethod(pattern = "person/email")
-    public void addEmail(@AttributeCallParam(pattern = "person/email", attribute = "type") String type,
-            @CallParam(pattern = "person/email") String address) {
-        this.emails.put(type, address);
+    @CallMethod( pattern = "person/email" )
+    public void addEmail( @AttributeCallParam( pattern = "person/email", attribute = "type" ) String type,
+                          @CallParam( pattern = "person/email" ) String address )
+    {
+        this.emails.put( type, address );
     }
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId( int id )
+    {
         this.id = id;
     }
 
-    public String getCategory() {
+    public String getCategory()
+    {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory( String category )
+    {
         this.category = category;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName( String name )
+    {
         this.name = name;
     }
 
-    public Map<String, String> getEmails() {
+    public Map<String, String> getEmails()
+    {
         return emails;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Person other = (Person) obj;
-        if (category == null) {
-            if (other.category != null)
+        if ( category == null )
+        {
+            if ( other.category != null )
                 return false;
-        } else if (!category.equals(other.category))
+        }
+        else if ( !category.equals( other.category ) )
             return false;
-        if (emails == null) {
-            if (other.emails != null)
+        if ( emails == null )
+        {
+            if ( other.emails != null )
                 return false;
-        } else if (!emails.equals(other.emails))
+        }
+        else if ( !emails.equals( other.emails ) )
             return false;
-        if (id != other.id)
+        if ( id != other.id )
             return false;
-        if (name == null) {
-            if (other.name != null)
+        if ( name == null )
+        {
+            if ( other.name != null )
                 return false;
-        } else if (!name.equals(other.name))
+        }
+        else if ( !name.equals( other.name ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Person [category="
-            + category
-            + ", emails="
-            + emails
-            + ", id="
-            + id
-            + ", name="
-            + name
-            + "]";
+    public String toString()
+    {
+        return "Person [category=" + category + ", emails=" + emails + ", id=" + id + ", name=" + name + "]";
     }
 
 }

@@ -29,53 +29,63 @@ import org.junit.Before;
 
 /**
  * Abstract implementation of Class-&gt;Digester Rules-&gt;parse & confronting.
- *
+ * 
  * @since 2.1
  */
-public abstract class AbstractAnnotatedPojoTestCase {
+public abstract class AbstractAnnotatedPojoTestCase
+{
 
     private DigesterLoader digesterLoader;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+        throws Exception
+    {
         this.digesterLoader = DigesterLoaderBuilder.byDefaultFactories();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+        throws Exception
+    {
         this.digesterLoader = null;
     }
 
     /**
-     * Loads the digester rules parsing the expected object class, parses the
-     * XML and verify the digester produces the same result.
-     *
+     * Loads the digester rules parsing the expected object class, parses the XML and verify the digester produces the
+     * same result.
+     * 
      * @param expected the expected object
      * @throws Exception if any error occurs
      */
-    public final void verifyExpectedEqualsToParsed(Object expected) throws Exception {
+    public final void verifyExpectedEqualsToParsed( Object expected )
+        throws Exception
+    {
         Class<?> clazz = expected.getClass();
 
         String resource = clazz.getSimpleName() + ".xml";
-        InputStream input = clazz.getResourceAsStream(resource);
+        InputStream input = clazz.getResourceAsStream( resource );
 
-        Digester digester = this.digesterLoader.createDigester(clazz);
-        this.decorate(digester);
+        Digester digester = this.digesterLoader.createDigester( clazz );
+        this.decorate( digester );
 
-        Object actual = digester.parse(input);
+        Object actual = digester.parse( input );
 
-        if (input != null) {
+        if ( input != null )
+        {
             input.close();
         }
 
-        assertEquals(expected, actual);
-    } 
+        assertEquals( expected, actual );
+    }
 
-    protected DigesterLoader getDigesterLoader() {
+    protected DigesterLoader getDigesterLoader()
+    {
         return this.digesterLoader;
     }
 
-    protected void decorate(Digester digester) {
+    protected void decorate( Digester digester )
+    {
         // do nothing
     }
 

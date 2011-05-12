@@ -25,20 +25,19 @@ import java.io.InputStream;
  * 
  * @author Simon Kitching
  */
-public class Utils {
+public class Utils
+{
 
     /**
-     * Return an appropriate InputStream for the specified test file (which
-     * must be inside our current package.
-     *
+     * Return an appropriate InputStream for the specified test file (which must be inside our current package.
+     * 
      * @param caller is always "this" for the calling object.
      * @param name is the test file we want
-     *
      * @exception IOException if an input/output error occurs
      */
-    public static InputStream getInputStream(Object caller, String name) 
-    throws IOException {
-        return (caller.getClass().getResourceAsStream
-                ("/org/apache/commons/digester3/plugins/" + name));
+    public static InputStream getInputStream( Object caller, String name )
+        throws IOException
+    {
+        return ( caller.getClass().getResourceAsStream( "/org/apache/commons/digester3/plugins/" + name ) );
     }
 }

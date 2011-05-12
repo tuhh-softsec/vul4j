@@ -18,56 +18,66 @@
 
 package org.apache.commons.digester3.xmlrules;
 
-
-
 /**
  * Object for use with testing call param rules.
- *
+ * 
  * @author Robert Burrell Donkin
  */
-public class CallParamTestObject {
-    
+public class CallParamTestObject
+{
+
     private String left = "UNSET";
+
     private String right = "UNSET";
+
     private String middle = "UNSET";
-    
-    public void triple(String left, String middle, String right) {
+
+    public void triple( String left, String middle, String right )
+    {
         this.left = left;
         this.right = right;
         this.middle = middle;
     }
-   
-    public void duo(String left, String right) {
+
+    public void duo( String left, String right )
+    {
         this.left = left;
         this.right = right;
     }
-      
-    public String getLeft() {
+
+    public String getLeft()
+    {
         return left;
     }
-    
-    public String getRight() {
+
+    public String getRight()
+    {
         return right;
     }
-    
-    public String getMiddle() {
+
+    public String getMiddle()
+    {
         return middle;
     }
 
-    public void setLeft(String left) {
-        this.left=left;
+    public void setLeft( String left )
+    {
+        this.left = left;
     }
-    
-    public void setRight(String right) {
+
+    public void setRight( String right )
+    {
         this.right = right;
     }
-    
-    public void setMiddle(String middle) {
+
+    public void setMiddle( String middle )
+    {
         this.middle = middle;
     }
-    
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "LEFT: " + left + " MIDDLE:" + middle + " RIGHT:" + right;
     }
 }

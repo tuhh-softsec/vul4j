@@ -18,25 +18,34 @@
 
 package org.apache.commons.digester3.plugins;
 
-public class TextLabel2 implements Widget {
+public class TextLabel2
+    implements Widget
+{
     private String id = "anonymous";
+
     private String label = "nolabel";
 
-    public TextLabel2() {}
-    
-    public String getId() {
+    public TextLabel2()
+    {
+    }
+
+    public String getId()
+    {
         return id;
     }
-    
-    public void setId(String id) {
+
+    public void setId( String id )
+    {
         this.id = id;
     }
 
-    public String getLabel() {
+    public String getLabel()
+    {
         return label;
     }
-    
-    public void setLabel(String label) {
+
+    public void setLabel( String label )
+    {
         this.label = label;
     }
 }

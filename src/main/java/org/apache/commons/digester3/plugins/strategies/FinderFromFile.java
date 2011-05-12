@@ -28,79 +28,87 @@ import org.apache.commons.digester3.plugins.RuleFinder;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A rule-finding algorithm which expects the user to specify an absolute
- * or relative path in the plugin declaration.
+ * A rule-finding algorithm which expects the user to specify an absolute or relative path in the plugin declaration.
  * <p>
  * The file is expected to contain Digester rules in xmlrules format.
- *
+ * 
  * @since 1.6
  */
 
-public class FinderFromFile extends RuleFinder {
+public class FinderFromFile
+    extends RuleFinder
+{
     /**
-     * Xml attribute that needs to be present on a plugin declaration
-     * in order to specify the file to load rules from.
+     * Xml attribute that needs to be present on a plugin declaration in order to specify the file to load rules from.
      */
     public static String DFLT_FILENAME_ATTR = "file";
-    
+
     /** See {@link #findLoader}. */
     private String filenameAttr;
-    
+
     /** See {@link #findLoader}. */
-    public FinderFromFile() {
-        this(DFLT_FILENAME_ATTR);
+    public FinderFromFile()
+    {
+        this( DFLT_FILENAME_ATTR );
     }
 
     /** See {@link #findLoader}. */
-    public FinderFromFile(String filenameAttr) { 
+    public FinderFromFile( String filenameAttr )
+    {
         this.filenameAttr = filenameAttr;
     }
-    
+
     /**
-     * If there exists a property with the name specified in the constructor,
-     * then load that file, run it through the xmlrules module and return an 
-     * object encapsulating those rules.
+     * If there exists a property with the name specified in the constructor, then load that file, run it through the
+     * xmlrules module and return an object encapsulating those rules.
      * <p>
      * If there is no matching property provided, then just return null.
      * <p>
-     * The returned object (when non-null) will add the selected rules to
-     * the digester whenever its addRules method is invoked.
+     * The returned object (when non-null) will add the selected rules to the digester whenever its addRules method is
+     * invoked.
      */
     @Override
-    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
-                        throws PluginException {
+    public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
+        throws PluginException
+    {
 
-        String rulesFileName = p.getProperty(filenameAttr);
-        if (rulesFileName == null) {
+        String rulesFileName = p.getProperty( filenameAttr );
+        if ( rulesFileName == null )
+        {
             // nope, user hasn't requested dynamic rules to be loaded
             // from a specific file.
             return null;
         }
-        
+
         InputStream is = null;
-        try {
-            is = new FileInputStream(rulesFileName);
-        } catch(IOException ioe) {
-            throw new PluginException(
-                "Unable to process file [" + rulesFileName + "]", ioe);
+        try
+        {
+            is = new FileInputStream( rulesFileName );
         }
-        
-        try {
-            RuleLoader loader = new LoaderFromStream(is);
+        catch ( IOException ioe )
+        {
+            throw new PluginException( "Unable to process file [" + rulesFileName + "]", ioe );
+        }
+
+        try
+        {
+            RuleLoader loader = new LoaderFromStream( is );
             return loader;
-        } catch(Exception e) {
-            throw new PluginException(
-                "Unable to load xmlrules from file [" + 
-                rulesFileName + "]", e);
-        } finally {
-            try {
+        }
+        catch ( Exception e )
+        {
+            throw new PluginException( "Unable to load xmlrules from file [" + rulesFileName + "]", e );
+        }
+        finally
+        {
+            try
+            {
                 is.close();
-            } catch(java.io.IOException ioe) {
-                throw new PluginException(
-                    "Unable to close stream for file [" + 
-                    rulesFileName + "]", ioe);
+            }
+            catch ( java.io.IOException ioe )
+            {
+                throw new PluginException( "Unable to close stream for file [" + rulesFileName + "]", ioe );
             }
         }
     }
 }
-

@@ -18,38 +18,46 @@
 
 package org.apache.commons.digester3;
 
-
-/** 
- * This bean is used to replicate a reasonably complex use case 
- * whose behaviour has changed from Digester 1.3 to 1.4.
- *
+/**
+ * This bean is used to replicate a reasonably complex use case whose behaviour has changed from Digester 1.3 to 1.4.
+ * 
  * @author robert burrell donkin
  */
-public class ParamBean {
-    
+public class ParamBean
+{
+
     private boolean cool;
+
     private String that;
+
     private String _this;
-    
-    public ParamBean() {}
-    
-    public boolean isCool() {
+
+    public ParamBean()
+    {
+    }
+
+    public boolean isCool()
+    {
         return cool;
     }
-    
-    public void setCool(boolean cool) {
+
+    public void setCool( boolean cool )
+    {
         this.cool = cool;
     }
-    
-    public String getThis() {
+
+    public String getThis()
+    {
         return _this;
     }
-    
-    public String getThat() {
+
+    public String getThat()
+    {
         return that;
     }
-    
-    public String setThisAndThat(String _this, String that) {
+
+    public String setThisAndThat( String _this, String that )
+    {
         this._this = _this;
         this.that = that;
         return "The Other";

@@ -29,46 +29,44 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.StackCallParamRuleProvider;
 
 /**
- * Methods arguments annotated with {@code StackCallParam} will be bound
- * with {@code CallParamRule} digester rule.
- *
+ * Methods arguments annotated with {@code StackCallParam} will be bound with {@code CallParamRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addCallParam(String,int,int)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-@DigesterRule(
-        reflectsRule = CallParamRule.class,
-        providedBy = StackCallParamRuleProvider.class
-)
-public @interface StackCallParam {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.PARAMETER )
+@DigesterRule( reflectsRule = CallParamRule.class, providedBy = StackCallParamRuleProvider.class )
+public @interface StackCallParam
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
-     * The call parameter to the stackIndex'th object down the stack, where 0 is
-     * the top of the stack, 1 the next element down and so on.
-     *
+     * The call parameter to the stackIndex'th object down the stack, where 0 is the top of the stack, 1 the next
+     * element down and so on.
+     * 
      * @return the stackIndex'th object down the stack.
      */
     int stackIndex() default 0;
 
     /**
      * Defines several {@code StackCallParam} annotations on the same element.
-     *
+     * 
      * @see StackCallParam
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         StackCallParam[] value();
     }
 

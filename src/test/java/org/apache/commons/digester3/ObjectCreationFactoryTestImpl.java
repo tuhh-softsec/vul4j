@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
 
 import org.apache.commons.digester3.AbstractObjectCreationFactory;
@@ -25,21 +24,22 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Object creation factory used for testing.
- *
+ * 
  * @author Robert Burrell Donkin
  */
 
-public class ObjectCreationFactoryTestImpl extends AbstractObjectCreationFactory {
+public class ObjectCreationFactoryTestImpl
+    extends AbstractObjectCreationFactory
+{
     public boolean called = false;
+
     public Attributes attributes;
-    
+
     @Override
-    public Object createObject(Attributes attributes) {
-        this.attributes = new AttributesImpl(attributes);
+    public Object createObject( Attributes attributes )
+    {
+        this.attributes = new AttributesImpl( attributes );
         called = true;
         return this;
     }
 }
-
-
-

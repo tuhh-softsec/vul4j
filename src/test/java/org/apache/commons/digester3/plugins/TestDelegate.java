@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.plugins;
 
 import org.apache.commons.digester3.Digester;
@@ -27,31 +26,36 @@ import org.junit.Test;
  * Test cases for Delegate behaviour.
  */
 
-public class TestDelegate {
+public class TestDelegate
+{
     // --------------------------------------------------------------- Test cases
     @Test
-    public void testDummy() {
+    public void testDummy()
+    {
         // it is an error if a TestSuite doesn't have at least one test,
         // so here is one...
     }
-    
-    public void ignoretestDelegate() throws Exception {
+
+    public void ignoretestDelegate()
+        throws Exception
+    {
         // this method tests the Delegate functionality by capturing all
         // data below the specified pattern, and printing it to stdout.
         // I can't for the moment think how to turn this into a unit test,
         // so this test is disabled.
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         DumperRule dr = new DumperRule();
-        digester.addRule("root", dr);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test1.xml"));
+        digester.addRule( "root", dr );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test1.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
     }

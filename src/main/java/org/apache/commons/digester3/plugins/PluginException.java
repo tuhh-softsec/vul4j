@@ -19,46 +19,52 @@
 package org.apache.commons.digester3.plugins;
 
 /**
- * Thrown when some plugin-related error has occurred, and none of the
- * other exception types are appropriate.
- *
+ * Thrown when some plugin-related error has occurred, and none of the other exception types are appropriate.
+ * 
  * @since 1.6
  */
 
-public class PluginException extends Exception {
+public class PluginException
+    extends Exception
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginException(Throwable cause) {
-        this(cause.getMessage());
+    public PluginException( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginException(String msg) {
-        super(msg);
+    public PluginException( String msg )
+    {
+        super( msg );
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginException(String msg, Throwable cause) {
-        this(msg);
+    public PluginException( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
-    
+
     /**
      * @return the underlying exception that caused this to be thrown
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

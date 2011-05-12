@@ -29,45 +29,43 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.AttributeCallParamRuleProvider;
 
 /**
- * Methods arguments annotated with {@code AttributeCallParam} will be bound
- * with {@code CallParamRule} digester rule.
- *
+ * Methods arguments annotated with {@code AttributeCallParam} will be bound with {@code CallParamRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addCallParam(String,int,String)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-@DigesterRule(
-        reflectsRule = CallParamRule.class,
-        providedBy = AttributeCallParamRuleProvider.class
-)
-public @interface AttributeCallParam {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.PARAMETER )
+@DigesterRule( reflectsRule = CallParamRule.class, providedBy = AttributeCallParamRuleProvider.class )
+public @interface AttributeCallParam
+{
 
     /**
      * Attribute whose value is used as the parameter value.
-     *
+     * 
      * @return the attribute whose value is used as the parameter value.
      */
     String attribute();
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @AttributeCallParam} annotations on the same element.
-     *
+     * 
      * @see AttributeCallParam
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         AttributeCallParam[] value();
     }
 

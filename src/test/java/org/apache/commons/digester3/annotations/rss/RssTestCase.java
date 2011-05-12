@@ -21,55 +21,56 @@ import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
 import org.junit.Test;
 
 /**
- * 
- *
  * @since 2.1
  */
-public final class RssTestCase extends AbstractAnnotatedPojoTestCase {
+public final class RssTestCase
+    extends AbstractAnnotatedPojoTestCase
+{
 
     @Test
-    public void testRss() throws Exception {
+    public void testRss()
+        throws Exception
+    {
         Channel channel = new Channel();
-        channel.setTitle("Apache");
-        channel.setLink("http://www.apache.org");
-        channel.setDescription("The Apache Software Foundation");
-        channel.setLanguage("en-US");
+        channel.setTitle( "Apache" );
+        channel.setLink( "http://www.apache.org" );
+        channel.setDescription( "The Apache Software Foundation" );
+        channel.setLanguage( "en-US" );
 
         Image image = new Image();
-        image.setTitle("Apache");
-        image.setUrl("http://jakarta.apache.org/images/jakarta-logo.gif");
-        image.setLink("http://jakarta.apache.org");
-        image.setDescription(
-                "The Jakarta project. Open source, serverside java.");
-        image.setWidth(505);
-        image.setHeight(480);
-        channel.setImage(image);
+        image.setTitle( "Apache" );
+        image.setUrl( "http://jakarta.apache.org/images/jakarta-logo.gif" );
+        image.setLink( "http://jakarta.apache.org" );
+        image.setDescription( "The Jakarta project. Open source, serverside java." );
+        image.setWidth( 505 );
+        image.setHeight( 480 );
+        channel.setImage( image );
 
         Item item = new Item();
-        item.setTitle("Commons Attributes 2.1 Released");
-        item.setLink("http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040815.1");
-        item.setDescription("The Apache Commons team is happy to announce the release of Commons Attributes 2.1. This is the first release of the new Commons-Attributes code.");
-        channel.addItem(item);
+        item.setTitle( "Commons Attributes 2.1 Released" );
+        item.setLink( "http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040815.1" );
+        item.setDescription( "The Apache Commons team is happy to announce the release of Commons Attributes 2.1. This is the first release of the new Commons-Attributes code." );
+        channel.addItem( item );
 
         item = new Item();
-        item.setTitle("Cloudscape Becomes Apache Derby");
-        item.setLink("http://jakarta.apache.org/site/news/elsewhere-2004-2ndHalf.html#20040803.1");
-        item.setDescription("IBM has submitted a proposal to the Apache DB project for a Java-based package to be called 'Derby'.");
-        channel.addItem(item);
+        item.setTitle( "Cloudscape Becomes Apache Derby" );
+        item.setLink( "http://jakarta.apache.org/site/news/elsewhere-2004-2ndHalf.html#20040803.1" );
+        item.setDescription( "IBM has submitted a proposal to the Apache DB project for a Java-based package to be called 'Derby'." );
+        channel.addItem( item );
 
         item = new Item();
-        item.setTitle("Commons BeanUtils 1.7 Released");
-        item.setLink("http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040802.1");
-        item.setDescription("");
-        channel.addItem(item);
+        item.setTitle( "Commons BeanUtils 1.7 Released" );
+        item.setLink( "http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040802.1" );
+        item.setDescription( "" );
+        channel.addItem( item );
 
         item = new Item();
-        item.setTitle("Commons JXPath 1.2 Released");
-        item.setLink("http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040801.2");
-        item.setDescription("");
-        channel.addItem(item);
+        item.setTitle( "Commons JXPath 1.2 Released" );
+        item.setLink( "http://jakarta.apache.org/site/news/news-2004-2ndHalf.html#20040801.2" );
+        item.setDescription( "" );
+        channel.addItem( item );
 
-        this.verifyExpectedEqualsToParsed(channel);
+        this.verifyExpectedEqualsToParsed( channel );
     }
 
 }

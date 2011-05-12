@@ -25,10 +25,12 @@ import org.apache.commons.digester3.annotations.rules.CallMethod;
 
 /**
  * Provides instances of {@code CallMethodRule}
- *
+ * 
  * @since 2.1
  */
-public final class CallMethodRuleProvider implements AnnotationRuleProvider<CallMethod, Method, CallMethodRule> {
+public final class CallMethodRuleProvider
+    implements AnnotationRuleProvider<CallMethod, Method, CallMethodRule>
+{
 
     private String methodName;
 
@@ -37,7 +39,8 @@ public final class CallMethodRuleProvider implements AnnotationRuleProvider<Call
     /**
      * {@inheritDoc}
      */
-    public void init(CallMethod annotation, Method element) {
+    public void init( CallMethod annotation, Method element )
+    {
         this.methodName = element.getName();
         this.parameterTypes = element.getParameterTypes();
     }
@@ -45,10 +48,9 @@ public final class CallMethodRuleProvider implements AnnotationRuleProvider<Call
     /**
      * {@inheritDoc}
      */
-    public CallMethodRule get() {
-        return new CallMethodRule(this.methodName,
-                this.parameterTypes.length,
-                this.parameterTypes);
+    public CallMethodRule get()
+    {
+        return new CallMethodRule( this.methodName, this.parameterTypes.length, this.parameterTypes );
     }
 
 }

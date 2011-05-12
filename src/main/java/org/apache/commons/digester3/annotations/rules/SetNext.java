@@ -29,28 +29,22 @@ import org.apache.commons.digester3.annotations.handlers.MethodHandler;
 import org.apache.commons.digester3.annotations.providers.SetNextRuleProvider;
 
 /**
- * Methods annotated with {@code SetNext} will be bound
- * with {@code SetNextRule} digester rule.
- *
+ * Methods annotated with {@code SetNext} will be bound with {@code SetNextRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addSetNext(String,String,String)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DigesterRule(
-        reflectsRule = SetNextRule.class,
-        providedBy = SetNextRuleProvider.class,
-        handledBy = MethodHandler.class
-)
-public @interface SetNext {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@DigesterRule( reflectsRule = SetNextRule.class, providedBy = SetNextRuleProvider.class, handledBy = MethodHandler.class )
+public @interface SetNext
+{
 
     /**
-     * Defines the concrete implementation(s) of @SetNext annotated method
-     * argument.
-     *
-     * @return the concrete implementation(s) of @SetNext annotated method
-     *         argument.
+     * Defines the concrete implementation(s) of @SetNext annotated method argument.
+     * 
+     * @return the concrete implementation(s) of @SetNext annotated method argument.
      */
     Class<?>[] value() default {};
 

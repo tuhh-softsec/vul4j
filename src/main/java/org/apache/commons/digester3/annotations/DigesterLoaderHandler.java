@@ -21,23 +21,21 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * A {@code DigesterLoaderHandler} intercept a {@code Class} visit performed by
- * the {@link DigesterLoader} and performs the
- * {@link DigesterLoaderHandler#handle(Annotation, AnnotatedElement, FromAnnotationsRuleSet)}
- * method.
- *
+ * A {@code DigesterLoaderHandler} intercept a {@code Class} visit performed by the {@link DigesterLoader} and performs
+ * the {@link DigesterLoaderHandler#handle(Annotation, AnnotatedElement, FromAnnotationsRuleSet)} method.
+ * 
  * @since 2.1
  */
-public interface DigesterLoaderHandler<A extends Annotation, E extends AnnotatedElement> {
+public interface DigesterLoaderHandler<A extends Annotation, E extends AnnotatedElement>
+{
 
     /**
      * Handles the current visited element with the related current annotation.
-     *
+     * 
      * @param annotation the current visited annotation.
      * @param element the current visited element.
-     * @param ruleSet the annotations {@code RuleSet} where providers have to be
-     *        added.
+     * @param ruleSet the annotations {@code RuleSet} where providers have to be added.
      */
-    void handle(A annotation, E element, FromAnnotationsRuleSet ruleSet);
+    void handle( A annotation, E element, FromAnnotationsRuleSet ruleSet );
 
 }

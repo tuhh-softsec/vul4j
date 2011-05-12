@@ -16,31 +16,32 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
-
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.xmlrules.DigesterRulesSource;
 
-
 /**
- * A test class, for validating FromXmlRuleSet's ability to 'include'
- * programmatically-created rules from within an XML rules file.
- *
+ * A test class, for validating FromXmlRuleSet's ability to 'include' programmatically-created rules from within an XML
+ * rules file.
+ * 
  * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Scott Sanders - Added ASL, removed external dependencies
  */
-public class DigesterRulesSourceTestImpl implements DigesterRulesSource {
+public class DigesterRulesSourceTestImpl
+    implements DigesterRulesSource
+{
 
     /**
      * Creates and adds Digester Rules to a given Rules object
+     * 
      * @param digester the Digester to add the new Rule objects to
      */
-    public void getRules(Digester digester) {
-        digester.addObjectCreate("/baz", ObjectTestImpl.class.getName());
-        digester.addSetNext("/baz", "add", "java.lang.Object");
-        digester.addSetProperties("/baz");
+    public void getRules( Digester digester )
+    {
+        digester.addObjectCreate( "/baz", ObjectTestImpl.class.getName() );
+        digester.addSetNext( "/baz", "add", "java.lang.Object" );
+        digester.addSetProperties( "/baz" );
     }
 
 }

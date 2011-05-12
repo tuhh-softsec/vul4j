@@ -25,10 +25,12 @@ import org.apache.commons.digester3.annotations.rules.SetRoot;
 
 /**
  * Provides instances of {@link SetRootRule}.
- *
+ * 
  * @since 2.1
  */
-public final class SetRootRuleProvider implements AnnotationRuleProvider<SetRoot, Method, SetRootRule>{
+public final class SetRootRuleProvider
+    implements AnnotationRuleProvider<SetRoot, Method, SetRootRule>
+{
 
     private String methodName;
 
@@ -37,7 +39,8 @@ public final class SetRootRuleProvider implements AnnotationRuleProvider<SetRoot
     /**
      * {@inheritDoc}
      */
-    public void init(SetRoot annotation, Method element) {
+    public void init( SetRoot annotation, Method element )
+    {
         this.methodName = element.getName();
         this.paramType = element.getParameterTypes()[0].getName();
     }
@@ -45,8 +48,9 @@ public final class SetRootRuleProvider implements AnnotationRuleProvider<SetRoot
     /**
      * {@inheritDoc}
      */
-    public SetRootRule get() {
-        return new SetRootRule(this.methodName, this.paramType);
+    public SetRootRule get()
+    {
+        return new SetRootRule( this.methodName, this.paramType );
     }
 
 }

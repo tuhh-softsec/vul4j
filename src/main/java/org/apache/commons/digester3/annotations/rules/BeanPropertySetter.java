@@ -29,38 +29,36 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.BeanPropertySetterRuleProvider;
 
 /**
- * Fields annotated with {@code BeanPropertySetter} will be bound with
- * {@code BeanPropertySetterRule} digester rule.
- *
+ * Fields annotated with {@code BeanPropertySetter} will be bound with {@code BeanPropertySetterRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addBeanPropertySetter(String,String)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@DigesterRule(
-        reflectsRule = BeanPropertySetterRule.class,
-        providedBy = BeanPropertySetterRuleProvider.class
-)
-public @interface BeanPropertySetter {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.FIELD )
+@DigesterRule( reflectsRule = BeanPropertySetterRule.class, providedBy = BeanPropertySetterRuleProvider.class )
+public @interface BeanPropertySetter
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @BeanPropertySetter} annotations on the same element.
-     *
+     * 
      * @see BeanPropertySetter
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         BeanPropertySetter[] value();
     }
 

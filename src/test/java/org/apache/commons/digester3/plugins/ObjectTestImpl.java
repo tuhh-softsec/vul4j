@@ -22,18 +22,22 @@ package org.apache.commons.digester3.plugins;
  * Test harness object for holding results of digestion.
  */
 
-public class ObjectTestImpl {
+public class ObjectTestImpl
+{
 
     private String value;
 
-    public ObjectTestImpl() {
+    public ObjectTestImpl()
+    {
     }
 
-    public void setValue(String val) {
+    public void setValue( String val )
+    {
         value = val;
     }
 
-    public String getValue() {
+    public String getValue()
+    {
         return value;
     }
 }

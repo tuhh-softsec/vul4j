@@ -17,8 +17,6 @@
  */
 package org.apache.commons.digester3;
 
-
-
 import java.io.File;
 
 import javax.xml.parsers.SAXParser;
@@ -30,28 +28,32 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Tests for entity resolution.
+ * 
  * @author <a href='http://commons.apache.org/'>Apache Commons Team</a>
  * @version $Revision$
  */
-public class TestEntityResolution {
+public class TestEntityResolution
+{
 
     @Test
-    public void testParserResolveRelative() throws Exception {
+    public void testParserResolveRelative()
+        throws Exception
+    {
         SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(true);
-        factory.setNamespaceAware(true);
+        factory.setValidating( true );
+        factory.setNamespaceAware( true );
         SAXParser parser = factory.newSAXParser();
-        
-        parser.parse(
-                    new File("src/test/resources/org/apache/commons/digester3/document-with-relative-dtd.xml"), 
-                    new DefaultHandler());
+
+        parser.parse( new File( "src/test/resources/org/apache/commons/digester3/document-with-relative-dtd.xml" ),
+                      new DefaultHandler() );
     }
 
     @Test
-    public void testDigesterResolveRelative() throws Exception {
+    public void testDigesterResolveRelative()
+        throws Exception
+    {
         Digester digester = new Digester();
-        digester.setValidating(true);
-        digester.parse(
-                    new File("src/test/resources/org/apache/commons/digester3/document-with-relative-dtd.xml"));
+        digester.setValidating( true );
+        digester.parse( new File( "src/test/resources/org/apache/commons/digester3/document-with-relative-dtd.xml" ) );
     }
 }

@@ -21,3 +21,4 @@
  * manipulate entities as {@link java.lang.reflect.AnnotatedElement}.
  */
 package org.apache.commons.digester3.annotations.reflect;
+

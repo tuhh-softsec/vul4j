@@ -26,82 +26,91 @@ import org.apache.commons.digester3.annotations.rules.CallParam;
 import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
 /**
- * 
  * @since 2.1
  */
-@ObjectCreate(pattern = "web-app/servlet")
-public final class ServletBean {
+@ObjectCreate( pattern = "web-app/servlet" )
+public final class ServletBean
+{
 
     private final Map<String, String> initParams = new HashMap<String, String>();
 
-    @BeanPropertySetter(pattern = "web-app/servlet/servlet-name")
+    @BeanPropertySetter( pattern = "web-app/servlet/servlet-name" )
     private String servletName;
 
-    @BeanPropertySetter(pattern = "web-app/servlet/servlet-class")
+    @BeanPropertySetter( pattern = "web-app/servlet/servlet-class" )
     private String servletClass;
 
-    @CallMethod(pattern = "web-app/servlet/init-param")
-    public void addInitParam(@CallParam(pattern = "web-app/servlet/init-param/param-name") String name,
-            @CallParam(pattern = "web-app/servlet/init-param/param-value") String value) {
-        this.initParams.put(name, value);
+    @CallMethod( pattern = "web-app/servlet/init-param" )
+    public void addInitParam( @CallParam( pattern = "web-app/servlet/init-param/param-name" ) String name,
+                              @CallParam( pattern = "web-app/servlet/init-param/param-value" ) String value )
+    {
+        this.initParams.put( name, value );
     }
 
-    public String getServletName() {
+    public String getServletName()
+    {
         return servletName;
     }
 
-    public void setServletName(String servletName) {
+    public void setServletName( String servletName )
+    {
         this.servletName = servletName;
     }
 
-    public String getServletClass() {
+    public String getServletClass()
+    {
         return servletClass;
     }
 
-    public void setServletClass(String servletClass) {
+    public void setServletClass( String servletClass )
+    {
         this.servletClass = servletClass;
     }
 
-    public Map<String, String> getInitParams() {
+    public Map<String, String> getInitParams()
+    {
         return initParams;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         ServletBean other = (ServletBean) obj;
-        if (initParams == null) {
-            if (other.initParams != null)
+        if ( initParams == null )
+        {
+            if ( other.initParams != null )
                 return false;
-        } else if (!initParams.equals(other.initParams))
+        }
+        else if ( !initParams.equals( other.initParams ) )
             return false;
-        if (servletClass == null) {
-            if (other.servletClass != null)
+        if ( servletClass == null )
+        {
+            if ( other.servletClass != null )
                 return false;
-        } else if (!servletClass.equals(other.servletClass))
+        }
+        else if ( !servletClass.equals( other.servletClass ) )
             return false;
-        if (servletName == null) {
-            if (other.servletName != null)
+        if ( servletName == null )
+        {
+            if ( other.servletName != null )
                 return false;
-        } else if (!servletName.equals(other.servletName))
+        }
+        else if ( !servletName.equals( other.servletName ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "ServletBean [initParams="
-                + initParams
-                + ", servletClass="
-                + servletClass
-                + ", servletName="
-                + servletName
-                + "]";
+    public String toString()
+    {
+        return "ServletBean [initParams=" + initParams + ", servletClass=" + servletClass + ", servletName="
+            + servletName + "]";
     }
 
 }

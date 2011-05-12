@@ -16,43 +16,47 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
-
 
 /**
  * Thrown when an error occurs while parsing XML into Digester rules.
- *
+ * 
  * @since 1.2
  */
-public class XmlLoadException extends RuntimeException {
+public class XmlLoadException
+    extends RuntimeException
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public XmlLoadException(Throwable cause) {
-        this(cause.getMessage());
+    public XmlLoadException( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
-    public XmlLoadException(String msg) {
-        super(msg);
+    public XmlLoadException( String msg )
+    {
+        super( msg );
     }
 
-    public XmlLoadException(String msg, Throwable cause) {
-        this(msg);
+    public XmlLoadException( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
-    
-    /** 
-     * Returns the cause of this throwable or null if the cause is 
-     * nonexistent or unknown. 
+
+    /**
+     * Returns the cause of this throwable or null if the cause is nonexistent or unknown.
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

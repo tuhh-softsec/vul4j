@@ -16,27 +16,24 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
-
 
 import org.apache.commons.digester3.Digester;
 
-
 /**
- * Interface for classes that initialize a Digester Rules object with
- * Digester Rules.
- *
+ * Interface for classes that initialize a Digester Rules object with Digester Rules.
+ * 
  * @since 1.2
  */
 
-public interface DigesterRulesSource {
+public interface DigesterRulesSource
+{
 
     /**
      * Creates and adds Digester Rules to a given Rules object
+     * 
      * @param digester the Digester to add the new Rule objects to
      */
-    void getRules(Digester digester);
+    void getRules( Digester digester );
 
 }
-

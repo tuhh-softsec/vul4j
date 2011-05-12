@@ -23,26 +23,29 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 
 /**
  * Provides instances of {@link ObjectCreateRule}.
- *
+ * 
  * @since 2.1
  */
 public final class ObjectCreateRuleProvider
-        implements AnnotationRuleProvider<ObjectCreate, Class<?>, ObjectCreateRule> {
+    implements AnnotationRuleProvider<ObjectCreate, Class<?>, ObjectCreateRule>
+{
 
     private Class<?> clazz;
 
     /**
      * {@inheritDoc}
      */
-    public void init(ObjectCreate annotation, Class<?> element) {
+    public void init( ObjectCreate annotation, Class<?> element )
+    {
         this.clazz = element;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ObjectCreateRule get() {
-        return new ObjectCreateRule(this.clazz);
+    public ObjectCreateRule get()
+    {
+        return new ObjectCreateRule( this.clazz );
     }
 
 }

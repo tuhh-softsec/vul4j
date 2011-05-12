@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.plugins;
 
 import static org.junit.Assert.*;
@@ -33,48 +32,52 @@ import org.junit.Test;
  * Test cases for basic PluginDeclarationRule behaviour.
  */
 
-public class TestDeclaration {
+public class TestDeclaration
+{
 
     // --------------------------------------------------------------- Test cases
     @Test
-    public void testPredeclaration() throws Exception {
+    public void testPredeclaration()
+        throws Exception
+    {
         // * tests that rules can be declared via a PluginDeclarationRule
 
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test3.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test3.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
-        
+
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(2, children.size());
-        
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(TextLabel.class, child.getClass());
-        assertEquals("label1", ((TextLabel)child).getLabel());
-        
-        child = children.get(1);
-        assertNotNull(child);
-        assertEquals(TextLabel.class, child.getClass());
-        assertEquals("label2", ((TextLabel)child).getLabel());
+        assertNotNull( children );
+        assertEquals( 2, children.size() );
+
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( TextLabel.class, child.getClass() );
+        assertEquals( "label1", ( (TextLabel) child ).getLabel() );
+
+        child = children.get( 1 );
+        assertNotNull( child );
+        assertEquals( TextLabel.class, child.getClass() );
+        assertEquals( "label2", ( (TextLabel) child ).getLabel() );
     }
 }

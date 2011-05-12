@@ -16,183 +16,159 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import org.xml.sax.Attributes;
 
-
 /**
- * Concrete implementations of this class implement actions to be taken when
- * a corresponding nested pattern of XML elements has been matched.
+ * Concrete implementations of this class implement actions to be taken when a corresponding nested pattern of XML
+ * elements has been matched.
  * <p>
- * Writing a custom Rule is considered perfectly normal when using Digester,
- * and is encouraged whenever the default set of Rule classes don't meet your
- * requirements; the digester framework can help process xml even when the
- * built-in rules aren't quite what is needed. Creating a custom Rule is
- * just as easy as subclassing javax.servlet.http.HttpServlet for webapps,
- * or javax.swing.Action for GUI applications.
+ * Writing a custom Rule is considered perfectly normal when using Digester, and is encouraged whenever the default set
+ * of Rule classes don't meet your requirements; the digester framework can help process xml even when the built-in
+ * rules aren't quite what is needed. Creating a custom Rule is just as easy as subclassing
+ * javax.servlet.http.HttpServlet for webapps, or javax.swing.Action for GUI applications.
  * <p>
- * If a rule wishes to manipulate a digester stack (the default object stack,
- * a named stack, or the parameter stack) then it should only ever push
- * objects in the rule's begin method and always pop exactly the same
- * number of objects off the stack during the rule's end method. Of course
- * peeking at the objects on the stacks can be done from anywhere.
+ * If a rule wishes to manipulate a digester stack (the default object stack, a named stack, or the parameter stack)
+ * then it should only ever push objects in the rule's begin method and always pop exactly the same number of objects
+ * off the stack during the rule's end method. Of course peeking at the objects on the stacks can be done from anywhere.
  * <p>
- * Rule objects should be stateless, ie they should not update any instance
- * member during the parsing process. A rule instance that changes state
- * will encounter problems if invoked in a "nested" manner; this can happen
- * if the same instance is added to digester multiple times or if a 
- * wildcard pattern is used which can match both an element and a child of the
- * same element. The digester object stack and named stacks should be used to
- * store any state that a rule requires, making the rule class safe under all
- * possible uses.
+ * Rule objects should be stateless, ie they should not update any instance member during the parsing process. A rule
+ * instance that changes state will encounter problems if invoked in a "nested" manner; this can happen if the same
+ * instance is added to digester multiple times or if a wildcard pattern is used which can match both an element and a
+ * child of the same element. The digester object stack and named stacks should be used to store any state that a rule
+ * requires, making the rule class safe under all possible uses.
  */
 
-public abstract class Rule {
+public abstract class Rule
+{
 
     // ----------------------------------------------------- Instance Variables
-
 
     /**
      * The Digester with which this Rule is associated.
      */
     private Digester digester = null;
 
-
     /**
      * The namespace URI for which this Rule is relevant, if any.
      */
     private String namespaceURI = null;
 
-
     // ------------------------------------------------------------- Properties
-
 
     /**
      * Return the Digester with which this Rule is associated.
      */
-    public Digester getDigester() {
+    public Digester getDigester()
+    {
 
-        return (this.digester);
+        return ( this.digester );
 
     }
-    
+
     /**
      * Set the <code>Digester</code> with which this <code>Rule</code> is associated.
      */
-    public void setDigester(Digester digester) {
-        
+    public void setDigester( Digester digester )
+    {
+
         this.digester = digester;
-        
+
     }
 
     /**
      * Return the namespace URI for which this Rule is relevant, if any.
      */
-    public String getNamespaceURI() {
+    public String getNamespaceURI()
+    {
 
-        return (this.namespaceURI);
+        return ( this.namespaceURI );
 
     }
 
-
     /**
      * Set the namespace URI for which this Rule is relevant, if any.
-     *
-     * @param namespaceURI Namespace URI for which this Rule is relevant,
-     *  or <code>null</code> to match independent of namespace.
+     * 
+     * @param namespaceURI Namespace URI for which this Rule is relevant, or <code>null</code> to match independent of
+     *            namespace.
      */
-    public void setNamespaceURI(String namespaceURI) {
+    public void setNamespaceURI( String namespaceURI )
+    {
 
         this.namespaceURI = namespaceURI;
 
     }
 
-
     // --------------------------------------------------------- Public Methods
 
-
     /**
-     * This method is called when the beginning of a matching XML element
-     * is encountered. The default implementation delegates to the deprecated
-     * method {@link #begin(Attributes) begin} without the 
-     * <code>namespace</code> and <code>name</code> parameters, to retain 
-     * backwards compatibility.
-     *
-     * @param namespace the namespace URI of the matching element, or an 
-     *   empty string if the parser is not namespace aware or the element has
-     *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
-     *   the element name otherwise
+     * This method is called when the beginning of a matching XML element is encountered. The default implementation
+     * delegates to the deprecated method {@link #begin(Attributes) begin} without the <code>namespace</code> and
+     * <code>name</code> parameters, to retain backwards compatibility.
+     * 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param attributes The attribute list of this element
      * @since Digester 1.4
      */
-    public void begin(String namespace, String name, Attributes attributes)
-        throws Exception {
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
 
         // The default implementation does nothing
 
     }
 
-
     /**
-     * This method is called when the body of a matching XML element is 
-     * encountered.  If the element has no body, this method is 
-     * called with an empty string as the body text.
+     * This method is called when the body of a matching XML element is encountered. If the element has no body, this
+     * method is called with an empty string as the body text.
      * <p>
-     * The default implementation delegates to the deprecated method 
-     * {@link #body(String) body} without the <code>namespace</code> and
-     * <code>name</code> parameters, to retain backwards compatibility.
-     *
-     * @param namespace the namespace URI of the matching element, or an 
-     *   empty string if the parser is not namespace aware or the element has
-     *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
-     *   the element name otherwise
+     * The default implementation delegates to the deprecated method {@link #body(String) body} without the
+     * <code>namespace</code> and <code>name</code> parameters, to retain backwards compatibility.
+     * 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param text The text of the body of this element
      * @since Digester 1.4
      */
-    public void body(String namespace, String name, String text)
-        throws Exception {
+    public void body( String namespace, String name, String text )
+        throws Exception
+    {
 
         // The default implementation does nothing
 
     }
 
-
     /**
-     * This method is called when the end of a matching XML element
-     * is encountered. The default implementation delegates to the deprecated
-     * method {@link #end end} without the 
-     * <code>namespace</code> and <code>name</code> parameters, to retain 
-     * backwards compatibility.
-     *
-     * @param namespace the namespace URI of the matching element, or an 
-     *   empty string if the parser is not namespace aware or the element has
-     *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
-     *   the element name otherwise
+     * This method is called when the end of a matching XML element is encountered. The default implementation delegates
+     * to the deprecated method {@link #end end} without the <code>namespace</code> and <code>name</code> parameters, to
+     * retain backwards compatibility.
+     * 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @since Digester 1.4
      */
-    public void end(String namespace, String name)
-        throws Exception {
+    public void end( String namespace, String name )
+        throws Exception
+    {
 
         // The default implementation does nothing
 
     }
-
 
     /**
-     * This method is called after all parsing methods have been
-     * called, to allow Rules to remove temporary data.
+     * This method is called after all parsing methods have been called, to allow Rules to remove temporary data.
      */
-    public void finish() throws Exception {
+    public void finish()
+        throws Exception
+    {
 
         // The default implementation does nothing
 
     }
-
 
 }

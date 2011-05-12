@@ -24,12 +24,13 @@ import org.apache.commons.digester3.annotations.rules.AttributeCallParam;
 
 /**
  * Provides instances of {@link CallParamRule}.
- *
+ * 
  * @see CallParamRule#CallParamRule(int,String)
  * @since 2.1
  */
 public final class AttributeCallParamRuleProvider
-        implements AnnotationRuleProvider<AttributeCallParam, MethodArgument, CallParamRule> {
+    implements AnnotationRuleProvider<AttributeCallParam, MethodArgument, CallParamRule>
+{
 
     private String attribute;
 
@@ -38,7 +39,8 @@ public final class AttributeCallParamRuleProvider
     /**
      * {@inheritDoc}
      */
-    public void init(AttributeCallParam annotation, MethodArgument element) {
+    public void init( AttributeCallParam annotation, MethodArgument element )
+    {
         this.attribute = annotation.attribute();
         this.index = element.getIndex();
     }
@@ -46,8 +48,9 @@ public final class AttributeCallParamRuleProvider
     /**
      * {@inheritDoc}
      */
-    public CallParamRule get() {
-        return new CallParamRule(this.index, this.attribute);
+    public CallParamRule get()
+    {
+        return new CallParamRule( this.index, this.attribute );
     }
 
 }

@@ -16,152 +16,145 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import java.util.List;
 
-
 /**
- * <p><code>AbstractRuleImpl</code> provides basic services for <code>Rules</code> implementations.
- * Extending this class should make it easier to create a <code>Rules</code> implementation.</p>
+ * <p>
+ * <code>AbstractRuleImpl</code> provides basic services for <code>Rules</code> implementations. Extending this class
+ * should make it easier to create a <code>Rules</code> implementation.
+ * </p>
+ * <p>
+ * <code>AbstractRuleImpl</code> manages the <code>Digester</code> and <code>namespaceUri</code> properties. If the
+ * subclass overrides {@link #registerRule} (rather than {@link #add}), then the <code>Digester</code> and
+ * <code>namespaceURI</code> of the <code>Rule</code> will be set correctly before it is passed to
+ * <code>registerRule</code>. The subclass can then perform whatever it needs to do to register the rule.
+ * </p>
  * 
- * <p><code>AbstractRuleImpl</code> manages the <code>Digester</code> 
- * and <code>namespaceUri</code> properties.
- * If the subclass overrides {@link #registerRule} (rather than {@link #add}),
- * then the <code>Digester</code> and <code>namespaceURI</code> of the <code>Rule</code>
- * will be set correctly before it is passed to <code>registerRule</code>.
- * The subclass can then perform whatever it needs to do to register the rule.</p>
- *
  * @since 1.5
  */
 
-abstract public class AbstractRulesImpl implements Rules {
+abstract public class AbstractRulesImpl
+    implements Rules
+{
 
     // ------------------------------------------------------------- Fields
-    
+
     /** Digester using this <code>Rules</code> implementation */
     private Digester digester;
+
     /** Namespace uri to assoicate with subsequent <code>Rule</code>'s */
     private String namespaceURI;
-    
+
     // ------------------------------------------------------------- Properties
 
     /**
-     * Return the Digester instance with which this Rules instance is
-     * associated.
+     * Return the Digester instance with which this Rules instance is associated.
      */
-    public Digester getDigester() {
+    public Digester getDigester()
+    {
         return digester;
     }
 
     /**
      * Set the Digester instance with which this Rules instance is associated.
-     *
+     * 
      * @param digester The newly associated Digester instance
      */
-    public void setDigester(Digester digester) {
+    public void setDigester( Digester digester )
+    {
         this.digester = digester;
     }
 
     /**
-     * Return the namespace URI that will be applied to all subsequently
-     * added <code>Rule</code> objects.
+     * Return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
      */
-    public String getNamespaceURI() {
+    public String getNamespaceURI()
+    {
         return namespaceURI;
     }
 
     /**
-     * Set the namespace URI that will be applied to all subsequently
-     * added <code>Rule</code> objects.
-     *
-     * @param namespaceURI Namespace URI that must match on all
-     *  subsequently added rules, or <code>null</code> for matching
-     *  regardless of the current namespace URI
+     * Set the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
+     * 
+     * @param namespaceURI Namespace URI that must match on all subsequently added rules, or <code>null</code> for
+     *            matching regardless of the current namespace URI
      */
-    public void setNamespaceURI(String namespaceURI) {
+    public void setNamespaceURI( String namespaceURI )
+    {
         this.namespaceURI = namespaceURI;
     }
 
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Registers a new Rule instance matching the specified pattern.
-     * This implementation sets the <code>Digester</code> and the
-     * <code>namespaceURI</code> on the <code>Rule</code> before calling {@link #registerRule}.
-     *
+     * Registers a new Rule instance matching the specified pattern. This implementation sets the <code>Digester</code>
+     * and the <code>namespaceURI</code> on the <code>Rule</code> before calling {@link #registerRule}.
+     * 
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
      */
-    public void add(String pattern, Rule rule) {
+    public void add( String pattern, Rule rule )
+    {
         // set up rule
-        if (this.digester != null) {
-            rule.setDigester(this.digester);
+        if ( this.digester != null )
+        {
+            rule.setDigester( this.digester );
         }
-        
-        if (this.namespaceURI != null) {
-            rule.setNamespaceURI(this.namespaceURI);
+
+        if ( this.namespaceURI != null )
+        {
+            rule.setNamespaceURI( this.namespaceURI );
         }
-        
-        registerRule(pattern, rule);
-        
+
+        registerRule( pattern, rule );
+
     }
-    
-    /** 
-     * Register rule at given pattern.
-     * The the Digester and namespaceURI properties of the given <code>Rule</code>
-     * can be assumed to have been set properly before this method is called.
-     *
+
+    /**
+     * Register rule at given pattern. The the Digester and namespaceURI properties of the given <code>Rule</code> can
+     * be assumed to have been set properly before this method is called.
+     * 
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
-     */ 
-    abstract protected void registerRule(String pattern, Rule rule);
+     */
+    abstract protected void registerRule( String pattern, Rule rule );
 
     /**
      * Clear all existing Rule instance registrations.
      */
     abstract public void clear();
 
-
     /**
-     * Return a List of all registered Rule instances that match the specified
-     * nesting pattern, or a zero-length List if there are no matches.  If more
-     * than one Rule instance matches, they <strong>must</strong> be returned
-     * in the order originally registered through the <code>add()</code>
-     * method.
-     *
+     * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
+     * there are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
+     * originally registered through the <code>add()</code> method.
+     * 
      * @param pattern Nesting pattern to be matched
-     *
      * @deprecated Call match(namespaceURI,pattern) instead.
      */
     @Deprecated
-    public List<Rule> match(String pattern) {
-        return match(namespaceURI, pattern);
+    public List<Rule> match( String pattern )
+    {
+        return match( namespaceURI, pattern );
     }
 
-
     /**
-     * Return a List of all registered Rule instances that match the specified
-     * nesting pattern, or a zero-length List if there are no matches.  If more
-     * than one Rule instance matches, they <strong>must</strong> be returned
-     * in the order originally registered through the <code>add()</code>
-     * method.
-     *
-     * @param namespaceURI Namespace URI for which to select matching rules,
-     *  or <code>null</code> to match regardless of namespace URI
+     * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
+     * there are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
+     * originally registered through the <code>add()</code> method.
+     * 
+     * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
+     *            namespace URI
      * @param pattern Nesting pattern to be matched
      */
-    abstract public List<Rule> match(String namespaceURI, String pattern);
-
+    abstract public List<Rule> match( String namespaceURI, String pattern );
 
     /**
-     * Return a List of all registered Rule instances, or a zero-length List
-     * if there are no registered Rule instances.  If more than one Rule
-     * instance has been registered, they <strong>must</strong> be returned
-     * in the order originally registered through the <code>add()</code>
-     * method.
+     * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
+     * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
+     * originally registered through the <code>add()</code> method.
      */
     abstract public List<Rule> rules();
 

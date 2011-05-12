@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,95 +28,109 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 /**
- * <p>Tests for situations where CallMethodRule instances and their
- * parameters overlap each other.</p>
+ * <p>
+ * Tests for situations where CallMethodRule instances and their parameters overlap each other.
+ * </p>
  */
-public class OverlappingCallMethodRuleTestCase {
-
+public class OverlappingCallMethodRuleTestCase
+{
 
     // --------------------------------------------------- Overall Test Methods
 
     String itemId;
+
     String itemName;
-    
-    public void setItemId(String id) { itemId = id; }
-    public void setItemName(String name) { itemName = name; }
-    
+
+    public void setItemId( String id )
+    {
+        itemId = id;
+    }
+
+    public void setItemName( String name )
+    {
+        itemName = name;
+    }
+
     // ------------------------------------------------ Individual Test Methods
 
     @Test
-    public void testItem1() throws SAXException, IOException {
+    public void testItem1()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<root>");
-        input.append(" <item id='1'>anitem</item>");
-        input.append("</root>");
+        input.append( "<root>" );
+        input.append( " <item id='1'>anitem</item>" );
+        input.append( "</root>" );
 
         Digester digester = new Digester();
-        
-        digester.addCallMethod("root/item", "setItemId", 1);
-        digester.addCallParam("root/item", 0, "id");
-        digester.addCallMethod("root/item", "setItemName", 1);
-        digester.addCallParam("root/item", 0);
+
+        digester.addCallMethod( "root/item", "setItemId", 1 );
+        digester.addCallParam( "root/item", 0, "id" );
+        digester.addCallMethod( "root/item", "setItemName", 1 );
+        digester.addCallParam( "root/item", 0 );
 
         this.itemId = null;
         this.itemName = null;
-        digester.push(this);
-        digester.parse(new StringReader(input.toString()));
+        digester.push( this );
+        digester.parse( new StringReader( input.toString() ) );
 
-        assertEquals("1", this.itemId);
-        assertEquals("anitem", this.itemName);
+        assertEquals( "1", this.itemId );
+        assertEquals( "anitem", this.itemName );
     }
 
     @Test
-    public void testItem2() throws SAXException, IOException {
+    public void testItem2()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<root>");
-        input.append(" <item id='1'>anitem</item>");
-        input.append("</root>");
+        input.append( "<root>" );
+        input.append( " <item id='1'>anitem</item>" );
+        input.append( "</root>" );
 
         Digester digester = new Digester();
 
-        digester.addCallMethod("root/item", "setItemName", 1);
-        digester.addCallParam("root/item", 0);
-        digester.addCallMethod("root/item", "setItemId", 1);
-        digester.addCallParam("root/item", 0, "id");
+        digester.addCallMethod( "root/item", "setItemName", 1 );
+        digester.addCallParam( "root/item", 0 );
+        digester.addCallMethod( "root/item", "setItemId", 1 );
+        digester.addCallParam( "root/item", 0, "id" );
 
         this.itemId = null;
         this.itemName = null;
-        digester.push(this);
-        digester.parse(new StringReader(input.toString()));
+        digester.push( this );
+        digester.parse( new StringReader( input.toString() ) );
 
-        assertEquals("1", this.itemId);
-        assertEquals("anitem", this.itemName);
+        assertEquals( "1", this.itemId );
+        assertEquals( "anitem", this.itemName );
     }
 
     @Test
-    public void testItem3() throws SAXException, IOException {
+    public void testItem3()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<root>");
-        input.append(" <item>1</item>");
-        input.append("</root>");
+        input.append( "<root>" );
+        input.append( " <item>1</item>" );
+        input.append( "</root>" );
 
         Digester digester = new Digester();
 
-        digester.addCallMethod("root/item", "setItemId", 1);
-        digester.addCallParam("root/item", 0);
-        digester.addCallMethod("root/item", "setItemName", 1);
-        digester.addCallParam("root/item", 0);
+        digester.addCallMethod( "root/item", "setItemId", 1 );
+        digester.addCallParam( "root/item", 0 );
+        digester.addCallMethod( "root/item", "setItemName", 1 );
+        digester.addCallParam( "root/item", 0 );
 
         this.itemId = null;
         this.itemName = null;
-        digester.push(this);
-        digester.parse(new StringReader(input.toString()));
+        digester.push( this );
+        digester.parse( new StringReader( input.toString() ) );
 
-        assertEquals("1", this.itemId);
-        assertEquals("1", this.itemName);
+        assertEquals( "1", this.itemId );
+        assertEquals( "1", this.itemName );
     }
 
     /**
-     * This is an "anti-test" that demonstrates how digester can <i>fails</i> 
-     * to produce the correct results, due to a design flaw (or at least
-     * limitation) in the way that CallMethodRule and CallParamRule work. 
+     * This is an "anti-test" that demonstrates how digester can <i>fails</i> to produce the correct results, due to a
+     * design flaw (or at least limitation) in the way that CallMethodRule and CallParamRule work.
      * <p>
      * The following sequence always fails:
      * <ul>
@@ -127,110 +139,111 @@ public class OverlappingCallMethodRuleTestCase {
      * <li>params rule for A fires --> writes to params of method B!</li>
      * <li>params rule for B fires --> overwrites params for method B</li>
      * </ul>
-     * The result is that method "b" appears to work ok, but method "a"
-     * loses its input parameters.
+     * The result is that method "b" appears to work ok, but method "a" loses its input parameters.
      * <p>
-     * One solution is for CallParamRule objects to know which CallMethodRule
-     * they are associated with. Even this might fail in corner cases where
-     * the same rule is associated with multiple patterns, or with wildcard
-     * patterns which cause a rule to fire in a "recursive" manner. However
-     * implementing this is not possible with the current digester design.
+     * One solution is for CallParamRule objects to know which CallMethodRule they are associated with. Even this might
+     * fail in corner cases where the same rule is associated with multiple patterns, or with wildcard patterns which
+     * cause a rule to fire in a "recursive" manner. However implementing this is not possible with the current digester
+     * design.
      */
     @Test
-    public void testItem4() throws SAXException, IOException {
+    public void testItem4()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<root>");
-        input.append(" <item>");
-        input.append("  <id value='1'/>");
-        input.append("  <name value='name'/>");
-        input.append(" </item>");
-        input.append("</root>");
+        input.append( "<root>" );
+        input.append( " <item>" );
+        input.append( "  <id value='1'/>" );
+        input.append( "  <name value='name'/>" );
+        input.append( " </item>" );
+        input.append( "</root>" );
 
         Digester digester = new Digester();
 
-        digester.addCallMethod("root/item", "setItemId", 1);
-        digester.addCallParam("root/item/id", 0, "value");
-        digester.addCallMethod("root/item", "setItemName", 1);
-        digester.addCallParam("root/item/name", 0, "value");
+        digester.addCallMethod( "root/item", "setItemId", 1 );
+        digester.addCallParam( "root/item/id", 0, "value" );
+        digester.addCallMethod( "root/item", "setItemName", 1 );
+        digester.addCallParam( "root/item/name", 0, "value" );
 
         this.itemId = null;
         this.itemName = null;
-        digester.push(this);
-        digester.parse(new StringReader(input.toString()));
+        digester.push( this );
+        digester.parse( new StringReader( input.toString() ) );
 
         // These are the "correct" results
-        //assertEquals("1", this.itemId);
-        //assertEquals("name", this.itemName);
+        // assertEquals("1", this.itemId);
+        // assertEquals("name", this.itemName);
 
         // These are what actually happens
-        assertEquals(null, this.itemId);
-        assertEquals("name", this.itemName);
+        assertEquals( null, this.itemId );
+        assertEquals( "name", this.itemName );
     }
 
     /**
-     * This test checks that CallParamRule instances which fetch data
-     * from xml attributes work ok when invoked "recursively",
-     * ie a rule instances' methods gets called in the order
+     * This test checks that CallParamRule instances which fetch data from xml attributes work ok when invoked
+     * "recursively", ie a rule instances' methods gets called in the order
      * begin[1]/begin[2]/body[2]/end[2]/body[1]/end[1]
      */
     @Test
-    public void testWildcard1() throws SAXException, IOException {
+    public void testWildcard1()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<box id='A1'>");
-        input.append(" <box id='B1'>");
-        input.append("  <box id='C1'/>");
-        input.append("  <box id='C2'/>");
-        input.append(" </box>");
-        input.append("</box>");
+        input.append( "<box id='A1'>" );
+        input.append( " <box id='B1'>" );
+        input.append( "  <box id='C1'/>" );
+        input.append( "  <box id='C2'/>" );
+        input.append( " </box>" );
+        input.append( "</box>" );
 
         Digester digester = new Digester();
 
-        digester.addObjectCreate("*/box", Box.class);
-        digester.addCallMethod("*/box", "setId", 1);
-        digester.addCallParam("*/box", 0, "id");
-        digester.addSetNext("*/box", "addChild");
+        digester.addObjectCreate( "*/box", Box.class );
+        digester.addCallMethod( "*/box", "setId", 1 );
+        digester.addCallParam( "*/box", 0, "id" );
+        digester.addSetNext( "*/box", "addChild" );
 
         Box root = new Box();
-        root.setId("root");
-        digester.push(root);
-        digester.parse(new StringReader(input.toString()));
+        root.setId( "root" );
+        digester.push( root );
+        digester.parse( new StringReader( input.toString() ) );
 
         // walk the object tree, concatenating the id strings
         String ids = root.getIds();
-        assertEquals("root A1 B1 C1 C2", ids);
+        assertEquals( "root A1 B1 C1 C2", ids );
     }
 
     /**
-     * This test checks that CallParamRule instances which fetch data
-     * from the xml element body work ok when invoked "recursively",
-     * ie a rule instances' methods gets called in the order
+     * This test checks that CallParamRule instances which fetch data from the xml element body work ok when invoked
+     * "recursively", ie a rule instances' methods gets called in the order
      * begin[1]/begin[2]/body[2]/end[2]/body[1]/end[1]
      */
     @Test
-    public void testWildcard2() throws SAXException, IOException {
+    public void testWildcard2()
+        throws SAXException, IOException
+    {
         StringBuilder input = new StringBuilder();
-        input.append("<box>A1");
-        input.append(" <box>B1");
-        input.append("  <box>C1</box>");
-        input.append("  <box>C2</box>");
-        input.append(" </box>");
-        input.append("</box>");
+        input.append( "<box>A1" );
+        input.append( " <box>B1" );
+        input.append( "  <box>C1</box>" );
+        input.append( "  <box>C2</box>" );
+        input.append( " </box>" );
+        input.append( "</box>" );
 
         Digester digester = new Digester();
 
-        digester.addObjectCreate("*/box", Box.class);
-        digester.addCallMethod("*/box", "setId", 1);
-        digester.addCallParam("*/box", 0);
-        digester.addSetNext("*/box", "addChild");
+        digester.addObjectCreate( "*/box", Box.class );
+        digester.addCallMethod( "*/box", "setId", 1 );
+        digester.addCallParam( "*/box", 0 );
+        digester.addSetNext( "*/box", "addChild" );
 
         Box root = new Box();
-        root.setId("root");
-        digester.push(root);
-        digester.parse(new StringReader(input.toString()));
+        root.setId( "root" );
+        digester.push( root );
+        digester.parse( new StringReader( input.toString() ) );
 
         // walk the object tree, concatenating the id strings
         String ids = root.getIds();
-        assertEquals("root A1 B1 C1 C2", ids);
+        assertEquals( "root A1 B1 C1 C2", ids );
     }
 }
-

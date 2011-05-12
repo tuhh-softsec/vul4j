@@ -27,22 +27,26 @@ import org.apache.commons.digester3.annotations.spi.AnnotationRuleProviderFactor
 
 /**
  * Default {@link AnnotationRuleProviderFactory} implementation.
- *
+ * 
  * @since 2.1
  */
-public final class DefaultAnnotationRuleProviderFactory implements AnnotationRuleProviderFactory {
+public final class DefaultAnnotationRuleProviderFactory
+    implements AnnotationRuleProviderFactory
+{
 
     /**
      * {@inheritDoc}
      */
-    public <T extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>>
-            T newInstance(Class<T> type) throws DigesterLoadingException {
-        try {
+    public <T extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>> T newInstance( Class<T> type )
+        throws DigesterLoadingException
+    {
+        try
+        {
             return type.newInstance();
-        } catch (Exception e) {
-            throw new DigesterLoadingException("An error occurred while creating '"
-                    + type
-                    + "' instance", e);
+        }
+        catch ( Exception e )
+        {
+            throw new DigesterLoadingException( "An error occurred while creating '" + type + "' instance", e );
         }
     }
 

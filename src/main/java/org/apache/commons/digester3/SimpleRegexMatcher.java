@@ -22,133 +22,153 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <p>Simple regex pattern matching algorithm.</p>
- * 
- * <p>This uses just two wildcards:
+ * <p>
+ * Simple regex pattern matching algorithm.
+ * </p>
+ * <p>
+ * This uses just two wildcards:
  * <ul>
- *  <li><code>*</code> matches any sequence of none, one or more characters
- *  <li><code>?</code> matches any one character 
+ * <li><code>*</code> matches any sequence of none, one or more characters
+ * <li><code>?</code> matches any one character
  * </ul>
- * Escaping these wildcards is not supported .</p>
- *
+ * Escaping these wildcards is not supported .
+ * </p>
+ * 
  * @since 1.5
  */
 
-public class SimpleRegexMatcher extends RegexMatcher {
-    
+public class SimpleRegexMatcher
+    extends RegexMatcher
+{
+
     // --------------------------------------------------------- Fields
-    
+
     /** Default log (class wide) */
-    private static final Log baseLog = LogFactory.getLog(SimpleRegexMatcher.class);
-    
+    private static final Log baseLog = LogFactory.getLog( SimpleRegexMatcher.class );
+
     /** Custom log (can be set per object) */
     private Log log = baseLog;
-    
+
     // --------------------------------------------------------- Properties
-    
-    /** 
+
+    /**
      * Gets the <code>Log</code> implementation.
      */
-    public Log getLog() {
+    public Log getLog()
+    {
         return log;
     }
-    
+
     /**
      * Sets the current <code>Log</code> implementation used by this class.
      */
-    public void setLog(Log log) {
+    public void setLog( Log log )
+    {
         this.log = log;
     }
-    
+
     // --------------------------------------------------------- Public Methods
-    
-    /** 
+
+    /**
      * Matches using simple regex algorithm.
      * 
-     *
      * @param basePattern the standard digester path representing the element
      * @param regexPattern the regex pattern the path will be tested against
      * @return true if the given pattern matches the given path
      */
     @Override
-    public boolean match(String basePattern, String regexPattern) {
+    public boolean match( String basePattern, String regexPattern )
+    {
         // check for nulls
-        if (basePattern == null || regexPattern == null) {
+        if ( basePattern == null || regexPattern == null )
+        {
             return false;
         }
-        return match(basePattern, regexPattern, 0, 0);
+        return match( basePattern, regexPattern, 0, 0 );
     }
-    
+
     // --------------------------------------------------------- Implementations Methods
-    
+
     /**
-     * Implementation of regex matching algorithm.
-     * This calls itself recursively.
+     * Implementation of regex matching algorithm. This calls itself recursively.
      */
-    private boolean match(String basePattern, String regexPattern, int baseAt, int regexAt) {
-        if (log.isTraceEnabled()) {
-            log.trace("Base: " + basePattern);
-            log.trace("Regex: " + regexPattern);
-            log.trace("Base@" + baseAt);
-            log.trace("Regex@" + regexAt);
+    private boolean match( String basePattern, String regexPattern, int baseAt, int regexAt )
+    {
+        if ( log.isTraceEnabled() )
+        {
+            log.trace( "Base: " + basePattern );
+            log.trace( "Regex: " + regexPattern );
+            log.trace( "Base@" + baseAt );
+            log.trace( "Regex@" + regexAt );
         }
-        
+
         // check bounds
-        if (regexAt >= regexPattern.length()) {
+        if ( regexAt >= regexPattern.length() )
+        {
             // maybe we've got a match
-            if (baseAt >= basePattern.length()) {
+            if ( baseAt >= basePattern.length() )
+            {
                 // ok!
                 return true;
             }
             // run out early
             return false;
-            
+
         }
-        if (baseAt >= basePattern.length()) {
+        if ( baseAt >= basePattern.length() )
+        {
             // run out early
             return false;
         }
-        
+
         // ok both within bounds
-        char regexCurrent = regexPattern.charAt(regexAt);
-        switch (regexCurrent) {
+        char regexCurrent = regexPattern.charAt( regexAt );
+        switch ( regexCurrent )
+        {
             case '*':
                 // this is the tricky case
-                // check for terminal 
-                if (++regexAt >= regexPattern.length()) {
+                // check for terminal
+                if ( ++regexAt >= regexPattern.length() )
+                {
                     // this matches anything let - so return true
                     return true;
                 }
                 // go through every subsequent apperance of the next character
                 // and so if the rest of the regex matches
-                char nextRegex = regexPattern.charAt(regexAt);
-                if (log.isTraceEnabled()) {
-                    log.trace("Searching for next '" + nextRegex + "' char");
+                char nextRegex = regexPattern.charAt( regexAt );
+                if ( log.isTraceEnabled() )
+                {
+                    log.trace( "Searching for next '" + nextRegex + "' char" );
                 }
-                int nextMatch = basePattern.indexOf(nextRegex, baseAt);
-                while (nextMatch != -1) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Trying '*' match@" + nextMatch);
+                int nextMatch = basePattern.indexOf( nextRegex, baseAt );
+                while ( nextMatch != -1 )
+                {
+                    if ( log.isTraceEnabled() )
+                    {
+                        log.trace( "Trying '*' match@" + nextMatch );
                     }
-                    if (match(basePattern, regexPattern, nextMatch, regexAt)) {
+                    if ( match( basePattern, regexPattern, nextMatch, regexAt ) )
+                    {
                         return true;
                     }
-                    nextMatch = basePattern.indexOf(nextRegex, nextMatch + 1);
+                    nextMatch = basePattern.indexOf( nextRegex, nextMatch + 1 );
                 }
-                log.trace("No matches found.");
+                log.trace( "No matches found." );
                 return false;
-                
+
             case '?':
                 // this matches anything
-                return match(basePattern, regexPattern, ++baseAt, ++regexAt);
-            
+                return match( basePattern, regexPattern, ++baseAt, ++regexAt );
+
             default:
-                if (log.isTraceEnabled()) {
-                    log.trace("Camparing " + regexCurrent + " to " + basePattern.charAt(baseAt));
+                if ( log.isTraceEnabled() )
+                {
+                    log.trace( "Camparing " + regexCurrent + " to " + basePattern.charAt( baseAt ) );
                 }
-                if (regexCurrent == basePattern.charAt(baseAt)) {
+                if ( regexCurrent == basePattern.charAt( baseAt ) )
+                {
                     // still got more to go
-                    return match(basePattern, regexPattern, ++baseAt, ++regexAt);
+                    return match( basePattern, regexPattern, ++baseAt, ++regexAt );
                 }
                 return false;
         }

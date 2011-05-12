@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.plugins;
 
 import static org.junit.Assert.*;
@@ -33,128 +32,135 @@ import org.junit.Test;
  * Test cases for defining custom rules on the plugin class itself.
  */
 
-public class TestLocalRules {
+public class TestLocalRules
+{
 
     // --------------------------------------------------------------- Test cases
     @Test
-    public void testLocalRules() throws Exception {
+    public void testLocalRules()
+        throws Exception
+    {
         // * tests that the plugin class can define an addRules method,
-        //   which gets detected and executed.
+        // which gets detected and executed.
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr2 = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr2);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr2 = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr2 );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test4a.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test4a.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
-        
+
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(3, children.size());
-        
+        assertNotNull( children );
+        assertEquals( 3, children.size() );
+
         // min/max rules should be in effect
         // setproperties should be in effect
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(Slider.class, child.getClass());
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( Slider.class, child.getClass() );
         Slider slider1 = (Slider) child;
-        assertEquals("slider1", slider1.getLabel());
-        assertEquals(1, slider1.getMin());
-        assertEquals(2, slider1.getMax());
-        
+        assertEquals( "slider1", slider1.getLabel() );
+        assertEquals( 1, slider1.getMin() );
+        assertEquals( 2, slider1.getMax() );
+
         // range rules should not be in effect
         // setproperties should be in effect
-        child = children.get(1);
-        assertNotNull(child);
-        assertEquals(Slider.class, child.getClass());
+        child = children.get( 1 );
+        assertNotNull( child );
+        assertEquals( Slider.class, child.getClass() );
         Slider slider2 = (Slider) child;
-        assertEquals("slider2", slider2.getLabel());
-        assertEquals(0, slider2.getMin());
-        assertEquals(0, slider2.getMax());
-        
+        assertEquals( "slider2", slider2.getLabel() );
+        assertEquals( 0, slider2.getMin() );
+        assertEquals( 0, slider2.getMax() );
+
         // setproperties should be working on text label
-        child = children.get(2);
-        assertNotNull(child);
-        assertEquals(TextLabel.class, child.getClass());
-        assertEquals("text1", ((TextLabel)child).getLabel());
+        child = children.get( 2 );
+        assertNotNull( child );
+        assertEquals( TextLabel.class, child.getClass() );
+        assertEquals( "text1", ( (TextLabel) child ).getLabel() );
     }
 
     @Test
-    public void testNonStandardLocalRules() throws Exception {
+    public void testNonStandardLocalRules()
+        throws Exception
+    {
         // * tests that using PluginDeclarationRule to declare an alternate
-        //   rule method name invokes that alternate method instead (the
-        //   input xml specifies that a method other than addRules is to
-        //   be used)
+        // rule method name invokes that alternate method instead (the
+        // input xml specifies that a method other than addRules is to
+        // be used)
         // * tests that if a rule method is defined, then a SetProperties
-        //   rule is not automatically added.
+        // rule is not automatically added.
         // * tests that a SetProperties rule applying to one class doesn't
-        //   apply to different plugin classes mounted at the same rule.
+        // apply to different plugin classes mounted at the same rule.
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr2 = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr2);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr2 = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr2 );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test4b.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test4b.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
-        
+
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(3, children.size());
-        
-        // min/max rules should not  be in effect
+        assertNotNull( children );
+        assertEquals( 3, children.size() );
+
+        // min/max rules should not be in effect
         // setproperties should not be in effect
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(Slider.class, child.getClass());
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( Slider.class, child.getClass() );
         Slider slider1 = (Slider) child;
-        assertEquals("nolabel", slider1.getLabel());
-        assertEquals(0, slider1.getMin());
-        assertEquals(0, slider1.getMax());
-        
+        assertEquals( "nolabel", slider1.getLabel() );
+        assertEquals( 0, slider1.getMin() );
+        assertEquals( 0, slider1.getMax() );
+
         // range rules should be in effect
         // setproperties should not be in effect
-        child = children.get(1);
-        assertNotNull(child);
-        assertEquals(Slider.class, child.getClass());
+        child = children.get( 1 );
+        assertNotNull( child );
+        assertEquals( Slider.class, child.getClass() );
         Slider slider2 = (Slider) child;
-        assertEquals("nolabel", slider2.getLabel());
-        assertEquals(10, slider2.getMin());
-        assertEquals(20, slider2.getMax());
-        
+        assertEquals( "nolabel", slider2.getLabel() );
+        assertEquals( 10, slider2.getMin() );
+        assertEquals( 20, slider2.getMax() );
+
         // setproperties should be working on text label
-        child = children.get(2);
-        assertNotNull(child);
-        assertEquals(TextLabel.class, child.getClass());
-        assertEquals("text1", ((TextLabel)child).getLabel());
+        child = children.get( 2 );
+        assertNotNull( child );
+        assertEquals( TextLabel.class, child.getClass() );
+        assertEquals( "text1", ( (TextLabel) child ).getLabel() );
     }
 }

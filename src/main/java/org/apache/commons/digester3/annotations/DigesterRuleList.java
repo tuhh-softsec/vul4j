@@ -24,14 +24,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Meta-annotation that marks an annotation as a list of commons-digester
- * annotations.
- *
+ * Meta-annotation that marks an annotation as a list of commons-digester annotations.
+ * 
  * @since 2.1
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DigesterRuleList {
+@Target( ElementType.ANNOTATION_TYPE )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface DigesterRuleList
+{
 
 }

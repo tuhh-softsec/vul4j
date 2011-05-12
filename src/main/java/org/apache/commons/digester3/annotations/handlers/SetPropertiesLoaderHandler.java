@@ -26,24 +26,28 @@ import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
  * Handler that takes care to create the {@link SetPropertiesRuleProvider}.
- *
+ * 
  * @since 2.1
  */
-public final class SetPropertiesLoaderHandler implements DigesterLoaderHandler<SetProperty, Field> {
+public final class SetPropertiesLoaderHandler
+    implements DigesterLoaderHandler<SetProperty, Field>
+{
 
     /**
      * {@inheritDoc}
      */
-    public void handle(SetProperty annotation, Field element, FromAnnotationsRuleSet ruleSet) {
+    public void handle( SetProperty annotation, Field element, FromAnnotationsRuleSet ruleSet )
+    {
         SetPropertiesRuleProvider ruleProvider =
-            ruleSet.getProvider(annotation.pattern(), SetPropertiesRuleProvider.class);
+            ruleSet.getProvider( annotation.pattern(), SetPropertiesRuleProvider.class );
 
-        if (ruleProvider == null) {
+        if ( ruleProvider == null )
+        {
             ruleProvider = new SetPropertiesRuleProvider();
-            ruleSet.addRuleProvider(annotation.pattern(), ruleProvider);
+            ruleSet.addRuleProvider( annotation.pattern(), ruleProvider );
         }
 
-        ruleProvider.addAlias(annotation, element);
+        ruleProvider.addAlias( annotation, element );
     }
 
 }

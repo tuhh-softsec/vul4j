@@ -25,136 +25,150 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetNext;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "rss/channel")
-public final class Channel {
+@ObjectCreate( pattern = "rss/channel" )
+public final class Channel
+{
 
     private final List<Item> items = new ArrayList<Item>();
 
-    @BeanPropertySetter(pattern = "rss/channel/title")
+    @BeanPropertySetter( pattern = "rss/channel/title" )
     private String title;
 
-    @BeanPropertySetter(pattern = "rss/channel/link")
+    @BeanPropertySetter( pattern = "rss/channel/link" )
     private String link;
 
-    @BeanPropertySetter(pattern = "rss/channel/description")
+    @BeanPropertySetter( pattern = "rss/channel/description" )
     private String description;
 
-    @BeanPropertySetter(pattern = "rss/channel/language")
+    @BeanPropertySetter( pattern = "rss/channel/language" )
     private String language;
 
     private Image image;
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
-    public String getLink() {
+    public String getLink()
+    {
         return link;
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
 
-    public String getLanguage() {
+    public String getLanguage()
+    {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage( String language )
+    {
         this.language = language;
     }
 
-    public List<Item> getItems() {
+    public List<Item> getItems()
+    {
         return items;
     }
 
-    public Image getImage() {
+    public Image getImage()
+    {
         return image;
     }
 
     @SetNext
-    public void setImage(Image image) {
+    public void setImage( Image image )
+    {
         this.image = image;
     }
 
     @SetNext
-    public void addItem(Item item) {
-        this.items.add(item);
+    public void addItem( Item item )
+    {
+        this.items.add( item );
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Channel other = (Channel) obj;
-        if (description == null) {
-            if (other.description != null)
+        if ( description == null )
+        {
+            if ( other.description != null )
                 return false;
-        } else if (!description.equals(other.description))
+        }
+        else if ( !description.equals( other.description ) )
             return false;
-        if (image == null) {
-            if (other.image != null)
+        if ( image == null )
+        {
+            if ( other.image != null )
                 return false;
-        } else if (!image.equals(other.image))
+        }
+        else if ( !image.equals( other.image ) )
             return false;
-        if (items == null) {
-            if (other.items != null)
+        if ( items == null )
+        {
+            if ( other.items != null )
                 return false;
-        } else if (!items.equals(other.items))
+        }
+        else if ( !items.equals( other.items ) )
             return false;
-        if (language == null) {
-            if (other.language != null)
+        if ( language == null )
+        {
+            if ( other.language != null )
                 return false;
-        } else if (!language.equals(other.language))
+        }
+        else if ( !language.equals( other.language ) )
             return false;
-        if (link == null) {
-            if (other.link != null)
+        if ( link == null )
+        {
+            if ( other.link != null )
                 return false;
-        } else if (!link.equals(other.link))
+        }
+        else if ( !link.equals( other.link ) )
             return false;
-        if (title == null) {
-            if (other.title != null)
+        if ( title == null )
+        {
+            if ( other.title != null )
                 return false;
-        } else if (!title.equals(other.title))
+        }
+        else if ( !title.equals( other.title ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Channel [description="
-                + description
-                + ", image="
-                + image
-                + ", items="
-                + items
-                + ", language="
-                + language
-                + ", link="
-                + link
-                + ", title="
-                + title
-                + "]";
+    public String toString()
+    {
+        return "Channel [description=" + description + ", image=" + image + ", items=" + items + ", language="
+            + language + ", link=" + link + ", title=" + title + "]";
     }
 
 }

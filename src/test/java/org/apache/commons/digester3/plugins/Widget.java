@@ -18,6 +18,6 @@
 
 package org.apache.commons.digester3.plugins;
 
-public interface Widget {
+public interface Widget
+{
 }
-

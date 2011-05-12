@@ -21,20 +21,24 @@ import java.lang.reflect.Field;
 
 /**
  * Privileged action to extract declared fields of a class.
- *
+ * 
  * @version $Id$
  */
-public final class GetDeclaredFieldsPrivilegedAction extends AbstractAnnotatedElementPrivilegedAction<Field> {
+public final class GetDeclaredFieldsPrivilegedAction
+    extends AbstractAnnotatedElementPrivilegedAction<Field>
+{
 
-    public GetDeclaredFieldsPrivilegedAction(Class<?> type) {
-        super(type);
+    public GetDeclaredFieldsPrivilegedAction( Class<?> type )
+    {
+        super( type );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field[] run() {
+    public Field[] run()
+    {
         return this.getType().getDeclaredFields();
     }
 

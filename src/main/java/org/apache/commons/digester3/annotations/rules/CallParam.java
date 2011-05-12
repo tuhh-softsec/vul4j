@@ -29,38 +29,36 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.CallParamRuleProvider;
 
 /**
- * Methods arguments annotated with {@code CallParam} will be bound with
- * {@code CallParamRule} digester rule.
- *
+ * Methods arguments annotated with {@code CallParam} will be bound with {@code CallParamRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addCallParam(String,int)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-@DigesterRule(
-        reflectsRule = CallParamRule.class,
-        providedBy = CallParamRuleProvider.class
-)
-public @interface CallParam {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.PARAMETER )
+@DigesterRule( reflectsRule = CallParamRule.class, providedBy = CallParamRuleProvider.class )
+public @interface CallParam
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @CallParam} annotations on the same element.
-     *
+     * 
      * @see CallParam
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         CallParam[] value();
     }
 

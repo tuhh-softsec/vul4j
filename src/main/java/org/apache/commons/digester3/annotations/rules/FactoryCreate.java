@@ -31,54 +31,51 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.FactoryCreateRuleProvider;
 
 /**
- * Classes annotated with {@code FactoryCreate} will be bound with
- * {@code FactoryCreateRule} digester rule.
- *
+ * Classes annotated with {@code FactoryCreate} will be bound with {@code FactoryCreateRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addFactoryCreate(String,org.apache.commons.digester3.ObjectCreationFactory,boolean)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.TYPE )
 @CreationRule
-@DigesterRule(
-        reflectsRule = FactoryCreateRule.class,
-        providedBy = FactoryCreateRuleProvider.class
-)
-public @interface FactoryCreate {
+@DigesterRule( reflectsRule = FactoryCreateRule.class, providedBy = FactoryCreateRuleProvider.class )
+public @interface FactoryCreate
+{
 
     /**
      * The Java class of the object creation factory class
-     *
+     * 
      * @return the Java class of the object creation factory class.
      */
     Class<? extends AbstractObjectCreationFactory> factoryClass();
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * When true any exceptions thrown during object creation will be ignored.
-     *
-     * @return when true any exceptions thrown during object creation will be
-     *         ignored.
+     * 
+     * @return when true any exceptions thrown during object creation will be ignored.
      */
     boolean ignoreCreateExceptions() default false;
 
     /**
      * Defines several {@code @FactoryCreate} annotations on the same element.
-     *
+     * 
      * @see FactoryCreate
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         FactoryCreate[] value();
     }
 

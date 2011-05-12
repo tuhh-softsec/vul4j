@@ -25,21 +25,21 @@ import org.apache.commons.digester3.annotations.DigesterLoadingException;
 
 /**
  * An object capable of providing instances of {@link DigesterLoaderHandler}.
- *
+ * 
  * @since 2.1
  */
-public interface DigesterLoaderHandlerFactory {
+public interface DigesterLoaderHandlerFactory
+{
 
     /**
      * Return an instance of the specified type.
-     *
+     * 
      * @param <L>
      * @param type the class of the object to be returned.
      * @return an instance of the specified class.
-     * @throws DigesterLoadingException if any error occurs while creating the
-     *         {@code type} instance.
+     * @throws DigesterLoadingException if any error occurs while creating the {@code type} instance.
      */
-    <L extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> L newInstance(
-            Class<L> type) throws DigesterLoadingException;
+    <L extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> L newInstance( Class<L> type )
+        throws DigesterLoadingException;
 
 }

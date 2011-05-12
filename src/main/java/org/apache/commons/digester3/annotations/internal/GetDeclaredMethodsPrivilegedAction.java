@@ -21,20 +21,24 @@ import java.lang.reflect.Method;
 
 /**
  * Privileged action to extract declared methods of a class.
- *
+ * 
  * @since 2.2
  */
-public final class GetDeclaredMethodsPrivilegedAction extends AbstractAnnotatedElementPrivilegedAction<Method> {
+public final class GetDeclaredMethodsPrivilegedAction
+    extends AbstractAnnotatedElementPrivilegedAction<Method>
+{
 
-    public GetDeclaredMethodsPrivilegedAction(Class<?> type) {
-        super(type);
+    public GetDeclaredMethodsPrivilegedAction( Class<?> type )
+    {
+        super( type );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Method[] run() {
+    public Method[] run()
+    {
         return this.getType().getDeclaredMethods();
     }
 

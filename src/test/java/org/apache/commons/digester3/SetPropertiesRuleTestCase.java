@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,12 +33,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-
 /**
- * <p> Test case for <code>SetPropertiesRule</code>.</p>
+ * <p>
+ * Test case for <code>SetPropertiesRule</code>.
+ * </p>
  */
-public class SetPropertiesRuleTestCase {
-
+public class SetPropertiesRuleTestCase
+{
 
     // ----------------------------------------------------- Instance Variables
 
@@ -67,62 +66,52 @@ public class SetPropertiesRuleTestCase {
      */
     protected Digester digester = null;
 
-
     // --------------------------------------------------- Overall Test Methods
-
 
     /**
      * Set up instance variables required by this test case.
      */
     @Before
-    public void setUp() {
+    public void setUp()
+    {
 
         digester = new Digester();
 
     }
 
-
     /**
      * Tear down instance variables required by this test case.
      */
     @After
-    public void tearDown() {
+    public void tearDown()
+    {
 
         digester = null;
 
     }
 
-
-
     // ------------------------------------------------ Individual Test Methods
-
 
     /**
      * Positive test for SetPropertiesRule.
      */
     @Test
-    public void testPositive() throws Exception {
+    public void testPositive()
+        throws Exception
+    {
 
         // Set up the rules we need
-        digester.addObjectCreate("root",
-                                 "org.apache.commons.digester3.SimpleTestBean");
-        digester.addSetProperties("root");
+        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+        digester.addSetProperties( "root" );
 
         // Parse the input
-        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_1));
+        SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_1 ) );
 
         // Check that the properties were set correctly
-        assertEquals("alpha property set",
-                     "ALPHA VALUE",
-                     bean.getAlpha());
-        assertEquals("beta property set",
-                     "BETA VALUE",
-                     bean.getBeta());
-        assertNull("gamma property not set",
-                   bean.getGamma());
-        assertEquals("delta property set",
-                     "DELTA VALUE",
-                     bean.getDeltaValue());
+        assertEquals( "alpha property set", "ALPHA VALUE", bean.getAlpha() );
+        assertEquals( "beta property set", "BETA VALUE", bean.getBeta() );
+        assertNull( "gamma property not set", bean.getGamma() );
+        assertEquals( "delta property set", "DELTA VALUE", bean.getDeltaValue() );
 
     }
 
@@ -130,27 +119,22 @@ public class SetPropertiesRuleTestCase {
      * Positive test for SetPropertyRule ignoring missing properties.
      */
     @Test
-    public void testIgnoreMissing() throws Exception {
+    public void testIgnoreMissing()
+        throws Exception
+    {
 
         // Set up the rules we need
-        digester.addObjectCreate("root",
-                                 "org.apache.commons.digester3.SimpleTestBean");
-        digester.addSetProperties("root");
+        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+        digester.addSetProperties( "root" );
 
         // Parse the input
-        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_2));
+        SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_2 ) );
 
         // Check that the properties were set correctly
-        assertNull("alpha property not set",
-                     bean.getAlpha());
-        assertEquals("beta property set",
-                     "BETA VALUE",
-                     bean.getBeta());
-        assertNull("gamma property not set",
-                   bean.getGamma());
-        assertEquals("delta property set",
-                     "DELTA VALUE",
-                     bean.getDeltaValue());
+        assertNull( "alpha property not set", bean.getAlpha() );
+        assertEquals( "beta property set", "BETA VALUE", bean.getBeta() );
+        assertNull( "gamma property not set", bean.getGamma() );
+        assertEquals( "delta property set", "DELTA VALUE", bean.getDeltaValue() );
 
     }
 
@@ -158,37 +142,51 @@ public class SetPropertiesRuleTestCase {
      * Negative test for SetPropertyRule ignoring missing properties.
      */
     @Test
-    public void testNegativeNotIgnoreMissing() throws Exception {
+    public void testNegativeNotIgnoreMissing()
+        throws Exception
+    {
 
         // Set up the rules we need
-        digester.addObjectCreate("root",
-                                 "org.apache.commons.digester3.SimpleTestBean");
+        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
         SetPropertiesRule rule = new SetPropertiesRule();
-        rule.setIgnoreMissingProperty(false);
-        digester.addRule("root", rule);
+        rule.setIgnoreMissingProperty( false );
+        digester.addRule( "root", rule );
 
-        try {
+        try
+        {
             // Parse the input
-            SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_2));
-            fail("Should have thrown NoSuchMethodException");
-            assertNotNull(bean); // just to prevent compiler warning on unused var
-        } catch (Exception e) {
-            if (e instanceof NoSuchMethodException) {
+            SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_2 ) );
+            fail( "Should have thrown NoSuchMethodException" );
+            assertNotNull( bean ); // just to prevent compiler warning on unused var
+        }
+        catch ( Exception e )
+        {
+            if ( e instanceof NoSuchMethodException )
+            {
                 // Expected;
-            } else if (e instanceof SAXException) {
-                Exception ee = ((SAXException) e).getException();
-                if (ee != null) {
-                    if (ee instanceof NoSuchMethodException) {
+            }
+            else if ( e instanceof SAXException )
+            {
+                Exception ee = ( (SAXException) e ).getException();
+                if ( ee != null )
+                {
+                    if ( ee instanceof NoSuchMethodException )
+                    {
                         // Expected result
-                    } else {
-                        fail("Should have thrown SE->NoSuchMethodException, threw " + ee);
                     }
-                } else {
-                    fail("Should have thrown NoSuchMethodException, threw " +
-                         e.getClass().getName());
+                    else
+                    {
+                        fail( "Should have thrown SE->NoSuchMethodException, threw " + ee );
+                    }
                 }
-            } else {
-                fail("Should have thrown NoSuchMethodException, threw " + e);
+                else
+                {
+                    fail( "Should have thrown NoSuchMethodException, threw " + e.getClass().getName() );
+                }
+            }
+            else
+            {
+                fail( "Should have thrown NoSuchMethodException, threw " + e );
             }
         }
     }
@@ -197,40 +195,32 @@ public class SetPropertiesRuleTestCase {
      * Negative test for SetPropertyRule ignoring missing properties.
      */
     @Test
-    public void testPositiveNotIgnoreMissingWithIgnoreAttributes() throws Exception {
+    public void testPositiveNotIgnoreMissingWithIgnoreAttributes()
+        throws Exception
+    {
 
         // Set up the rules we need
-        digester.addObjectCreate("root",
-                                 "org.apache.commons.digester3.SimpleTestBean");
-        SetPropertiesRule rule = new SetPropertiesRule(new String[] {"ignore"}, new String[] {});
-        rule.setIgnoreMissingProperty(false);
-        digester.addRule("root", rule);
+        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+        SetPropertiesRule rule = new SetPropertiesRule( new String[] { "ignore" }, new String[] {} );
+        rule.setIgnoreMissingProperty( false );
+        digester.addRule( "root", rule );
 
         // Parse the input
-        SimpleTestBean bean = digester.parse(xmlTestReader(TEST_XML_3));
-        
-        // Check that the properties were set correctly
-        assertEquals("alpha property set",
-                     "ALPHA VALUE",
-                     bean.getAlpha());
-        assertEquals("beta property set",
-                     "BETA VALUE",
-                     bean.getBeta());
-        assertNull("gamma property not set",
-                   bean.getGamma());
-        assertEquals("delta property set",
-                     "DELTA VALUE",
-                     bean.getDeltaValue());
-    }
+        SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_3 ) );
 
+        // Check that the properties were set correctly
+        assertEquals( "alpha property set", "ALPHA VALUE", bean.getAlpha() );
+        assertEquals( "beta property set", "BETA VALUE", bean.getBeta() );
+        assertNull( "gamma property not set", bean.getGamma() );
+        assertEquals( "delta property set", "DELTA VALUE", bean.getDeltaValue() );
+    }
 
     /**
      * Get input stream from specified String containing XML data.
      */
-    private Reader xmlTestReader(String xml) {
-        return new StringReader(xml);
+    private Reader xmlTestReader( String xml )
+    {
+        return new StringReader( xml );
     }
 
 }
-
-

@@ -21,16 +21,22 @@ package org.apache.commons.digester3.plugins;
 import java.util.List;
 import java.util.LinkedList;
 
-public class Container implements Widget {
+public class Container
+    implements Widget
+{
     private LinkedList<Widget> children = new LinkedList<Widget>();
 
-    public Container() {}
-    
-    public void addChild(Widget child) {
-        children.add(child);
+    public Container()
+    {
     }
 
-    public List<Widget> getChildren() {
+    public void addChild( Widget child )
+    {
+        children.add( child );
+    }
+
+    public List<Widget> getChildren()
+    {
         return children;
     }
 }

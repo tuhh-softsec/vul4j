@@ -29,38 +29,36 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.PathCallParamRuleProvider;
 
 /**
- * Methods arguments annotated with {@code PathCallParam} will be bound
- * with {@code PathCallParamRule} digester rule.
- *
+ * Methods arguments annotated with {@code PathCallParam} will be bound with {@code PathCallParamRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addCallParamPath(String,int)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-@DigesterRule(
-        reflectsRule = PathCallParamRule.class,
-        providedBy = PathCallParamRuleProvider.class
-)
-public @interface PathCallParam {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.PARAMETER )
+@DigesterRule( reflectsRule = PathCallParamRule.class, providedBy = PathCallParamRuleProvider.class )
+public @interface PathCallParam
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @PathCallParam} annotations on the same element.
-     *
+     * 
      * @see PathCallParam
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         PathCallParam[] value();
     }
 

@@ -24,39 +24,43 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetNext;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "address-book")
-public class AddressBook {
+@ObjectCreate( pattern = "address-book" )
+public class AddressBook
+{
 
     private final List<Person> people = new ArrayList<Person>();
 
     @SetNext
-    public void addPerson(Person p) {
-        this.people.add(p);
+    public void addPerson( Person p )
+    {
+        this.people.add( p );
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         AddressBook other = (AddressBook) obj;
-        if (people == null) {
-            if (other.people != null)
+        if ( people == null )
+        {
+            if ( other.people != null )
                 return false;
-        } else if (!people.equals(other.people))
+        }
+        else if ( !people.equals( other.people ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "AddressBook [people=" + people + "]";
     }
 

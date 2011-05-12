@@ -24,14 +24,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a Digester rule as a creation rule, that's crucial for the
- * {@code setNext} rule.
- *
+ * Marks a Digester rule as a creation rule, that's crucial for the {@code setNext} rule.
+ * 
  * @since 2.1
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface CreationRule {
+@Target( ElementType.ANNOTATION_TYPE )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface CreationRule
+{
 
 }

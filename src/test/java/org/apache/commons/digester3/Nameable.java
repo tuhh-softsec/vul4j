@@ -21,7 +21,9 @@ package org.apache.commons.digester3;
 /**
  * Interface used for testing.
  */
-public interface Nameable  {
-    String getName();    
-    void setName(String name);
+public interface Nameable
+{
+    String getName();
+
+    void setName( String name );
 }

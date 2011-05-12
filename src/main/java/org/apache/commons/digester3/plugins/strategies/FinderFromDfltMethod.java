@@ -26,55 +26,56 @@ import org.apache.commons.digester3.plugins.RuleFinder;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A rule-finding algorithm which looks for a method with a specific name
- * on the plugin class.
- *
+ * A rule-finding algorithm which looks for a method with a specific name on the plugin class.
+ * 
  * @since 1.6
  */
 
-public class FinderFromDfltMethod extends RuleFinder {
+public class FinderFromDfltMethod
+    extends RuleFinder
+{
     public static String DFLT_METHOD_NAME = "addRules";
 
     private String methodName;
-    
+
     /** See {@link #findLoader}. */
-    public FinderFromDfltMethod() { 
-        this(DFLT_METHOD_NAME);
+    public FinderFromDfltMethod()
+    {
+        this( DFLT_METHOD_NAME );
     }
 
     /**
-     * Create a rule-finder which invokes a specific method on the plugin
-     * class whenever dynamic rules for a plugin need to be loaded. See the 
-     * findRules method for more info.
-     *
+     * Create a rule-finder which invokes a specific method on the plugin class whenever dynamic rules for a plugin need
+     * to be loaded. See the findRules method for more info.
+     * 
      * @param methodName must be non-null.
      */
-    public FinderFromDfltMethod(String methodName) { 
+    public FinderFromDfltMethod( String methodName )
+    {
         this.methodName = methodName;
     }
-    
+
     /**
-     * If there exists on the plugin class a method with name matching the 
-     * constructor's methodName value then locate the appropriate Method on 
-     * the plugin class and return an object encapsulating that info.
+     * If there exists on the plugin class a method with name matching the constructor's methodName value then locate
+     * the appropriate Method on the plugin class and return an object encapsulating that info.
      * <p>
      * If there is no matching method then just return null.
      * <p>
-     * The returned object (when non-null) will invoke the target method
-     * on the plugin class whenever its addRules method is invoked. The
-     * target method is expected to have the following prototype:
+     * The returned object (when non-null) will invoke the target method on the plugin class whenever its addRules
+     * method is invoked. The target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
      */
     @Override
-    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
-                        throws PluginException {
+    public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
+        throws PluginException
+    {
 
-        Method rulesMethod = LoaderFromClass.locateMethod(pluginClass, methodName);
-        if (rulesMethod == null) {
+        Method rulesMethod = LoaderFromClass.locateMethod( pluginClass, methodName );
+        if ( rulesMethod == null )
+        {
             return null;
         }
-        
-        return new LoaderFromClass(pluginClass, rulesMethod);
+
+        return new LoaderFromClass( pluginClass, rulesMethod );
     }
 }
-

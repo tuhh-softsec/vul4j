@@ -29,38 +29,36 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.SetTopRuleProvider;
 
 /**
- * Methods annotated with {@code SetTop} will be bound
- * with {@code SetTopRule} digester rule.
- *
+ * Methods annotated with {@code SetTop} will be bound with {@code SetTopRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addSetTop(String,String,String)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DigesterRule(
-        reflectsRule = SetTopRule.class,
-        providedBy = SetTopRuleProvider.class
-)
-public @interface SetTop {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@DigesterRule( reflectsRule = SetTopRule.class, providedBy = SetTopRuleProvider.class )
+public @interface SetTop
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
-     * Defines several {@code @SetTop} annotations on the same element 
-     *
+     * Defines several {@code @SetTop} annotations on the same element
+     * 
      * @see SetTop
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         SetTop[] value();
     }
 

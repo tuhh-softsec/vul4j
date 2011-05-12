@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.plugins;
 
 import static org.junit.Assert.*;
@@ -30,138 +29,147 @@ import org.apache.commons.digester3.plugins.PluginRules;
 import org.junit.Test;
 
 /**
- * Test cases for the declaration of custom rules for a plugin using
- * a separate class to define the rules.
+ * Test cases for the declaration of custom rules for a plugin using a separate class to define the rules.
  */
 
-public class TestRuleInfo {
+public class TestRuleInfo
+{
 
     // --------------------------------------------------------------- Test cases
     @Test
-    public void testRuleInfoExplicitClass() throws Exception {
-        // * tests that custom rules can be declared on a 
-        //   separate class by explicitly declaring the rule class.
+    public void testRuleInfoExplicitClass()
+        throws Exception
+    {
+        // * tests that custom rules can be declared on a
+        // separate class by explicitly declaring the rule class.
 
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test5a.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test5a.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(1, children.size());
-        
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(TextLabel2.class, child.getClass());
+        assertNotNull( children );
+        assertEquals( 1, children.size() );
+
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( TextLabel2.class, child.getClass() );
         TextLabel2 label = (TextLabel2) child;
-        
+
         // id should not be mapped, label should
-        assertEquals("anonymous", label.getId());
-        assertEquals("std label", label.getLabel());
+        assertEquals( "anonymous", label.getId() );
+        assertEquals( "std label", label.getLabel() );
     }
 
     @Test
-    public void testRuleInfoExplicitMethod() throws Exception {
-        // * tests that custom rules can be declared on a 
-        //   separate class by explicitly declaring the rule class.
-        //   and explicitly declaring the rule method name.
+    public void testRuleInfoExplicitMethod()
+        throws Exception
+    {
+        // * tests that custom rules can be declared on a
+        // separate class by explicitly declaring the rule class.
+        // and explicitly declaring the rule method name.
 
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test5b.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test5b.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(1, children.size());
-        
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(TextLabel2.class, child.getClass());
+        assertNotNull( children );
+        assertEquals( 1, children.size() );
+
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( TextLabel2.class, child.getClass() );
         TextLabel2 label = (TextLabel2) child;
-        
+
         // id should not be mapped, altlabel should
-        assertEquals("anonymous", label.getId());
-        assertEquals("alt label", label.getLabel());
+        assertEquals( "anonymous", label.getId() );
+        assertEquals( "alt label", label.getLabel() );
     }
 
     @Test
-    public void testRuleInfoAutoDetect() throws Exception {
-        // * tests that custom rules can be declared on a 
-        //   separate class with name {plugin-class}RuleInfo,
-        //   and they are automatically detected and loaded.
+    public void testRuleInfoAutoDetect()
+        throws Exception
+    {
+        // * tests that custom rules can be declared on a
+        // separate class with name {plugin-class}RuleInfo,
+        // and they are automatically detected and loaded.
 
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("root/plugin", pdr);
-        
-        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "root/plugin", pdr );
+
+        PluginCreateRule pcr = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test5c.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test5c.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
 
         Object child;
         List<Widget> children = root.getChildren();
-        assertNotNull(children);
-        assertEquals(1, children.size());
-        
-        child = children.get(0);
-        assertNotNull(child);
-        assertEquals(TextLabel2.class, child.getClass());
+        assertNotNull( children );
+        assertEquals( 1, children.size() );
+
+        child = children.get( 0 );
+        assertNotNull( child );
+        assertEquals( TextLabel2.class, child.getClass() );
         TextLabel2 label = (TextLabel2) child;
-        
+
         // id should not be mapped, label should
-        assertEquals("anonymous", label.getId());
-        assertEquals("std label", label.getLabel());
+        assertEquals( "anonymous", label.getId() );
+        assertEquals( "std label", label.getLabel() );
     }
 }

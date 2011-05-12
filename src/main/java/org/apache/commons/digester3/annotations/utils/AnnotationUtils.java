@@ -23,10 +23,11 @@ import org.apache.commons.beanutils.MethodUtils;
 
 /**
  * Simple utility class to introspect annotations.
- *
+ * 
  * @since 2.1
  */
-public class AnnotationUtils {
+public class AnnotationUtils
+{
 
     /**
      * The {@code value} string constant.
@@ -41,46 +42,50 @@ public class AnnotationUtils {
     /**
      * This class can't be instantiated.
      */
-    private AnnotationUtils() {
+    private AnnotationUtils()
+    {
         // this class can' be instantiated
     }
 
     /**
      * Extract the {@code value()} from annotation.
-     *
+     * 
      * @param annotation the annotation has to be introspected.
      * @return the annotation {@code value()}.
      */
-    public static Object getAnnotationValue(Annotation annotation) {
-        return invokeAnnotationMethod(annotation, VALUE);
+    public static Object getAnnotationValue( Annotation annotation )
+    {
+        return invokeAnnotationMethod( annotation, VALUE );
     }
 
     /**
      * Extract the {@code pattern()} from annotation.
-     *
+     * 
      * @param annotation the annotation has to be introspected.
      * @return the annotation {@code pattern()}.
      */
-    public static String getAnnotationPattern(Annotation annotation) {
-        Object ret = invokeAnnotationMethod(annotation, PATTERN);
-        if (ret != null) {
+    public static String getAnnotationPattern( Annotation annotation )
+    {
+        Object ret = invokeAnnotationMethod( annotation, PATTERN );
+        if ( ret != null )
+        {
             return (String) ret;
         }
         return null;
     }
 
     /**
-     * Extract the Annotations array {@code value()} from annotation if present,
-     * nul otherwise.
-     *
+     * Extract the Annotations array {@code value()} from annotation if present, nul otherwise.
+     * 
      * @param annotation the annotation has to be introspected.
      * @return the annotation {@code value()} as Annotations array.
      */
-    public static Annotation[] getAnnotationsArrayValue(Annotation annotation) {
-        Object value = getAnnotationValue(annotation);
-        if (value != null
-                && value.getClass().isArray()
-                && Annotation.class.isAssignableFrom(value.getClass().getComponentType())) {
+    public static Annotation[] getAnnotationsArrayValue( Annotation annotation )
+    {
+        Object value = getAnnotationValue( annotation );
+        if ( value != null && value.getClass().isArray()
+            && Annotation.class.isAssignableFrom( value.getClass().getComponentType() ) )
+        {
             return (Annotation[]) value;
         }
         return null;
@@ -88,15 +93,19 @@ public class AnnotationUtils {
 
     /**
      * Invokes an annotation method.
-     *
+     * 
      * @param annotationn the annotation has to be introspected.
      * @param method the method name to execute.
      * @return the annotation method value, null if any error occurs.
      */
-    private static Object invokeAnnotationMethod(Annotation annotation, String method) {
-        try {
-            return MethodUtils.invokeExactMethod(annotation, method, null);
-        } catch (Throwable t) {
+    private static Object invokeAnnotationMethod( Annotation annotation, String method )
+    {
+        try
+        {
+            return MethodUtils.invokeExactMethod( annotation, method, null );
+        }
+        catch ( Throwable t )
+        {
             return null;
         }
     }

@@ -19,52 +19,56 @@
 package org.apache.commons.digester3.plugins;
 
 /**
- * Thrown when an error occurs due to the way the calling application uses
- * the plugins module. Because the pre-existing Digester API doesn't provide
- * any option for throwing checked exceptions at some points where Plugins
- * can potentially fail, this exception extends RuntimeException so that it
- * can "tunnel" through these points.
- *
+ * Thrown when an error occurs due to the way the calling application uses the plugins module. Because the pre-existing
+ * Digester API doesn't provide any option for throwing checked exceptions at some points where Plugins can potentially
+ * fail, this exception extends RuntimeException so that it can "tunnel" through these points.
+ * 
  * @since 1.6
  */
 
-public class PluginConfigurationException extends RuntimeException {
+public class PluginConfigurationException
+    extends RuntimeException
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginConfigurationException(Throwable cause) {
-        this(cause.getMessage());
+    public PluginConfigurationException( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginConfigurationException(String msg) {
-        super(msg);
+    public PluginConfigurationException( String msg )
+    {
+        super( msg );
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginConfigurationException(String msg, Throwable cause) {
-        this(msg);
+    public PluginConfigurationException( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
 
     /**
-     * Return the cause of this exception (if any) as specified in the
-     * exception constructor.
+     * Return the cause of this exception (if any) as specified in the exception constructor.
      * 
      * @since 1.8
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

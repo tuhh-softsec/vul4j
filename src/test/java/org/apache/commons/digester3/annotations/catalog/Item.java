@@ -18,11 +18,10 @@
 package org.apache.commons.digester3.annotations.catalog;
 
 /**
- * 
- *
  * @since 2.1
  */
-public interface Item {
+public interface Item
+{
 
     void print();
 

@@ -30,39 +30,37 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.ObjectCreateRuleProvider;
 
 /**
- * Classes annotated with {@code ObjectCreate} will be bound with
- * {@code ObjectCreateRule} digester rule.
- *
+ * Classes annotated with {@code ObjectCreate} will be bound with {@code ObjectCreateRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addObjectCreate(String,Class)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.TYPE )
 @CreationRule
-@DigesterRule(
-        reflectsRule = ObjectCreateRule.class,
-        providedBy = ObjectCreateRuleProvider.class
-)
-public @interface ObjectCreate {
+@DigesterRule( reflectsRule = ObjectCreateRule.class, providedBy = ObjectCreateRuleProvider.class )
+public @interface ObjectCreate
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @ObjectCreate} annotations on the same element.
-     *
+     * 
      * @see ObjectCreate
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         ObjectCreate[] value();
     }
 

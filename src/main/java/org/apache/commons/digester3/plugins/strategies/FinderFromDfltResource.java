@@ -26,65 +26,63 @@ import org.apache.commons.digester3.plugins.RuleFinder;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A rule-finding algorithm which looks for a resource file in the classpath
- * whose name is derived from the plugin class name plus a specified suffix.
+ * A rule-finding algorithm which looks for a resource file in the classpath whose name is derived from the plugin class
+ * name plus a specified suffix.
  * <p>
- * If the resource-file is found, then it is expected to define a set of
- * Digester rules in xmlrules format.
- *
+ * If the resource-file is found, then it is expected to define a set of Digester rules in xmlrules format.
+ * 
  * @since 1.6
  */
 
-public class FinderFromDfltResource extends RuleFinder {
+public class FinderFromDfltResource
+    extends RuleFinder
+{
     public static String DFLT_RESOURCE_SUFFIX = "RuleInfo.xml";
 
     private String resourceSuffix;
-    
+
     /** See {@link #findLoader}. */
-    public FinderFromDfltResource() { 
-        this(DFLT_RESOURCE_SUFFIX);
+    public FinderFromDfltResource()
+    {
+        this( DFLT_RESOURCE_SUFFIX );
     }
 
     /**
-     * Create a rule-finder which can load an xmlrules file, cache
-     * the rules away, and later add them as a plugin's custom rules
-     * when that plugin is referenced.
-     *
+     * Create a rule-finder which can load an xmlrules file, cache the rules away, and later add them as a plugin's
+     * custom rules when that plugin is referenced.
+     * 
      * @param resourceSuffix must be non-null.
      */
-    public FinderFromDfltResource(String resourceSuffix) { 
+    public FinderFromDfltResource( String resourceSuffix )
+    {
         this.resourceSuffix = resourceSuffix;
     }
-    
+
     /**
-     * If there exists a resource file whose name is equal to the plugin
-     * class name + the suffix specified in the constructor, then
-     * load that file, run it through the xmlrules module and return an object 
-     * encapsulating those rules.
+     * If there exists a resource file whose name is equal to the plugin class name + the suffix specified in the
+     * constructor, then load that file, run it through the xmlrules module and return an object encapsulating those
+     * rules.
      * <p>
      * If there is no such resource file, then just return null.
      * <p>
-     * The returned object (when non-null) will add the selected rules to
-     * the digester whenever its addRules method is invoked.
+     * The returned object (when non-null) will add the selected rules to the digester whenever its addRules method is
+     * invoked.
      */
     @Override
-    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
-                        throws PluginException {
+    public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
+        throws PluginException
+    {
 
-        String resourceName = 
-            pluginClass.getName().replace('.', '/') 
-                    + resourceSuffix;
-            
-        InputStream is = 
-            pluginClass.getClassLoader().getResourceAsStream(
-                resourceName);
+        String resourceName = pluginClass.getName().replace( '.', '/' ) + resourceSuffix;
 
-        if (is == null) {
+        InputStream is = pluginClass.getClassLoader().getResourceAsStream( resourceName );
+
+        if ( is == null )
+        {
             // ok, no such resource
             return null;
         }
 
-        return FinderFromResource.loadRules(d, pluginClass, is, resourceName);
+        return FinderFromResource.loadRules( d, pluginClass, is, resourceName );
     }
 }
-

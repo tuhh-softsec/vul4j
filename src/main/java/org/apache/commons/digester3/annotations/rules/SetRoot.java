@@ -29,28 +29,22 @@ import org.apache.commons.digester3.annotations.handlers.MethodHandler;
 import org.apache.commons.digester3.annotations.providers.SetRootRuleProvider;
 
 /**
- * Methods annotated with {@code SetRoot} will be bound
- * with {@code SetRootRule} digester rule.
- *
+ * Methods annotated with {@code SetRoot} will be bound with {@code SetRootRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addSetRoot(String,String,String)
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DigesterRule(
-        reflectsRule = SetRootRule.class,
-        providedBy = SetRootRuleProvider.class,
-        handledBy = MethodHandler.class
-)
-public @interface SetRoot {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@DigesterRule( reflectsRule = SetRootRule.class, providedBy = SetRootRuleProvider.class, handledBy = MethodHandler.class )
+public @interface SetRoot
+{
 
     /**
-     * Defines the concrete implementation(s) of @SetRoot annotated method
-     * argument.
-     *
-     * @return the concrete implementation(s) of @SetRoot annotated method
-     *         argument.
+     * Defines the concrete implementation(s) of @SetRoot annotated method argument.
+     * 
+     * @return the concrete implementation(s) of @SetRoot annotated method argument.
      */
     Class<?>[] value() default {};
 

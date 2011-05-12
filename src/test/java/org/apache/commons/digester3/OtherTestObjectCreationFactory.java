@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 /**
  * Another Object creation factory used for testing.
- *
+ * 
  * @author Robert Burrell Donkin
  */
 
-public class OtherTestObjectCreationFactory extends ObjectCreationFactoryTestImpl {}
-
-
-
+public class OtherTestObjectCreationFactory
+    extends ObjectCreationFactoryTestImpl
+{
+}

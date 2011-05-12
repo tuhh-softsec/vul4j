@@ -16,157 +16,151 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import org.xml.sax.Attributes;
 
-
 /**
- * Rule implementation that creates a new object and pushes it
- * onto the object stack.  When the element is complete, the
+ * Rule implementation that creates a new object and pushes it onto the object stack. When the element is complete, the
  * object will be popped
  */
 
-public class ObjectCreateRule extends Rule {
-
+public class ObjectCreateRule
+    extends Rule
+{
 
     // ----------------------------------------------------------- Constructors
 
     /**
      * Construct an object create rule with the specified class name.
-     *
+     * 
      * @param className Java class name of the object to be created
      */
-    public ObjectCreateRule(String className) {
+    public ObjectCreateRule( String className )
+    {
 
-        this(className, (String) null);
+        this( className, (String) null );
 
     }
-
 
     /**
      * Construct an object create rule with the specified class.
-     *
+     * 
      * @param clazz Java class name of the object to be created
      */
-    public ObjectCreateRule(Class<?> clazz) {
+    public ObjectCreateRule( Class<?> clazz )
+    {
 
-        this(clazz.getName(), (String) null);
+        this( clazz.getName(), (String) null );
 
     }
 
-
     /**
-     * Construct an object create rule with the specified class name and an
-     * optional attribute name containing an override.
-     *
+     * Construct an object create rule with the specified class name and an optional attribute name containing an
+     * override.
+     * 
      * @param className Java class name of the object to be created
-     * @param attributeName Attribute name which, if present, contains an
-     *  override of the class name to create
+     * @param attributeName Attribute name which, if present, contains an override of the class name to create
      */
-    public ObjectCreateRule(String className,
-                            String attributeName) {
+    public ObjectCreateRule( String className, String attributeName )
+    {
 
         this.className = className;
         this.attributeName = attributeName;
 
     }
 
-
     /**
-     * Construct an object create rule with the specified class and an
-     * optional attribute name containing an override.
-     *
+     * Construct an object create rule with the specified class and an optional attribute name containing an override.
+     * 
      * @param attributeName Attribute name which, if present, contains an
-     * @param clazz Java class name of the object to be created
-     *  override of the class name to create
+     * @param clazz Java class name of the object to be created override of the class name to create
      */
-    public ObjectCreateRule(String attributeName,
-                            Class<?> clazz) {
+    public ObjectCreateRule( String attributeName, Class<?> clazz )
+    {
 
-        this(clazz.getName(), attributeName);
+        this( clazz.getName(), attributeName );
 
     }
 
     // ----------------------------------------------------- Instance Variables
-
 
     /**
      * The attribute containing an override class name if it is present.
      */
     protected String attributeName = null;
 
-
     /**
      * The Java class name of the object to be created.
      */
     protected String className = null;
 
-
     // --------------------------------------------------------- Public Methods
-
 
     /**
      * Process the beginning of this element.
-     *
+     * 
      * @param attributes The attribute list of this element
      */
     @Override
-    public void begin(String namespace, String name, Attributes attributes) throws Exception {
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
 
         // Identify the name of the class to instantiate
         String realClassName = className;
-        if (attributeName != null) {
-            String value = attributes.getValue(attributeName);
-            if (value != null) {
+        if ( attributeName != null )
+        {
+            String value = attributes.getValue( attributeName );
+            if ( value != null )
+            {
                 realClassName = value;
             }
         }
-        if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().getMatch() +
-                    "}New " + realClassName);
+        if ( getDigester().getLogger().isDebugEnabled() )
+        {
+            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New " + realClassName );
         }
 
         // Instantiate the new object and push it on the context stack
-        Class<?> clazz = getDigester().getClassLoader().loadClass(realClassName);
+        Class<?> clazz = getDigester().getClassLoader().loadClass( realClassName );
         Object instance = clazz.newInstance();
-        getDigester().push(instance);
+        getDigester().push( instance );
 
     }
-
 
     /**
      * Process the end of this element.
      */
     @Override
-    public void end(String namespace, String name) throws Exception {
+    public void end( String namespace, String name )
+        throws Exception
+    {
 
         Object top = getDigester().pop();
-        if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[ObjectCreateRule]{" + getDigester().getMatch() +
-                    "} Pop " + top.getClass().getName());
+        if ( getDigester().getLogger().isDebugEnabled() )
+        {
+            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "} Pop "
+                                                 + top.getClass().getName() );
         }
 
     }
-
 
     /**
      * Render a printable version of this Rule.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
 
-        StringBuilder sb = new StringBuilder("ObjectCreateRule[");
-        sb.append("className=");
-        sb.append(className);
-        sb.append(", attributeName=");
-        sb.append(attributeName);
-        sb.append("]");
-        return (sb.toString());
+        StringBuilder sb = new StringBuilder( "ObjectCreateRule[" );
+        sb.append( "className=" );
+        sb.append( className );
+        sb.append( ", attributeName=" );
+        sb.append( attributeName );
+        sb.append( "]" );
+        return ( sb.toString() );
 
     }
-
 
 }

@@ -21,26 +21,28 @@ package org.apache.commons.digester3;
 import java.util.Map;
 
 /**
- * Simple class for use in unit tests. A box with a namespaces property
- * to store the current namespaces as a Map.
- *
- * Used by NamespaceSnapshotTestCase.
+ * Simple class for use in unit tests. A box with a namespaces property to store the current namespaces as a Map. Used
+ * by NamespaceSnapshotTestCase.
  */
-public class NamespacedBox extends Box {
+public class NamespacedBox
+    extends Box
+{
 
     private Map<String, String> namespaces;
 
-    public NamespacedBox() {
+    public NamespacedBox()
+    {
         super();
     }
 
-    public Map<String, String> getNamespaces() {
+    public Map<String, String> getNamespaces()
+    {
         return namespaces;
     }
 
-    public void setNamespaces(Map<String, String> namespaces) {
+    public void setNamespaces( Map<String, String> namespaces )
+    {
         this.namespaces = namespaces;
     }
 
 }
-

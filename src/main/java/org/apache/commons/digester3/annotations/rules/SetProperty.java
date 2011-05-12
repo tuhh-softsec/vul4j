@@ -30,46 +30,43 @@ import org.apache.commons.digester3.annotations.handlers.SetPropertiesLoaderHand
 import org.apache.commons.digester3.annotations.providers.SetPropertiesRuleProvider;
 
 /**
- * Fields annotated with {@code SetProperty} will be bound
- * with {@code SetPropertiesRule} digester rule.
- *
+ * Fields annotated with {@code SetProperty} will be bound with {@code SetPropertiesRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addSetProperties(String,String[],String[])
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@DigesterRule(
-        reflectsRule = SetPropertiesRule.class,
-        providedBy = SetPropertiesRuleProvider.class,
-        handledBy = SetPropertiesLoaderHandler.class
-)
-public @interface SetProperty {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.FIELD )
+@DigesterRule( reflectsRule = SetPropertiesRule.class, providedBy = SetPropertiesRuleProvider.class, handledBy = SetPropertiesLoaderHandler.class )
+public @interface SetProperty
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * The overridden parameter.
-     *
+     * 
      * @return the overridden parameter.
      */
     String attributeName() default "";
 
     /**
      * Defines several {@code @SetProperty} annotations on the same element.
-     *
+     * 
      * @see SetProperty
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         SetProperty[] value();
     }
 

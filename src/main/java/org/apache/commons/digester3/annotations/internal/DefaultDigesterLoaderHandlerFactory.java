@@ -26,22 +26,26 @@ import org.apache.commons.digester3.annotations.spi.DigesterLoaderHandlerFactory
 
 /**
  * Default {@link DigesterLoaderHandlerFactory} implementation.
- *
+ * 
  * @since 2.1
  */
-public final class DefaultDigesterLoaderHandlerFactory implements DigesterLoaderHandlerFactory {
+public final class DefaultDigesterLoaderHandlerFactory
+    implements DigesterLoaderHandlerFactory
+{
 
     /**
      * {@inheritDoc}
      */
-    public <L extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> L newInstance(
-            Class<L> type) throws DigesterLoadingException {
-        try {
+    public <L extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> L newInstance( Class<L> type )
+        throws DigesterLoadingException
+    {
+        try
+        {
             return type.newInstance();
-        } catch (Exception e) {
-            throw new DigesterLoadingException("An error occurred while creating '"
-                    + type
-                    + "' instance", e);
+        }
+        catch ( Exception e )
+        {
+            throw new DigesterLoadingException( "An error occurred while creating '" + type + "' instance", e );
         }
     }
 

@@ -20,3 +20,4 @@
  * This package contains internal use only classes, users can ignore it.
  */
 package org.apache.commons.digester3.annotations.internal;
+

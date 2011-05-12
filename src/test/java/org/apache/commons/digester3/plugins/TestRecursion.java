@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.plugins;
 
 import static org.junit.Assert.*;
@@ -30,52 +29,59 @@ import org.apache.commons.digester3.plugins.PluginRules;
 import org.junit.Test;
 
 /**
- * Test cases for plugins with custom rules which include PluginCreateRule
- * instances, allowing recursive datastructures to be processed.
+ * Test cases for plugins with custom rules which include PluginCreateRule instances, allowing recursive datastructures
+ * to be processed.
  */
 
-public class TestRecursion {
+public class TestRecursion
+{
 
     // --------------------------------------------------------------- Test cases
     @Test
-    public void testRecursiveRules() throws Exception {
+    public void testRecursiveRules()
+        throws Exception
+    {
         // * tests that a rule can declare custom PluginCreateRules
-        //   that allow it to plug in instances of itself below
-        //   itself.
+        // that allow it to plug in instances of itself below
+        // itself.
 
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
-        
+        digester.setRules( rc );
+
         PluginDeclarationRule pdr = new PluginDeclarationRule();
-        digester.addRule("*/plugin", pdr);
-        
-        PluginCreateRule pcr = new PluginCreateRule(Widget.class);
-        digester.addRule("root/widget", pcr);
-        digester.addSetNext("root/widget", "addChild");
+        digester.addRule( "*/plugin", pdr );
+
+        PluginCreateRule pcr = new PluginCreateRule( Widget.class );
+        digester.addRule( "root/widget", pcr );
+        digester.addSetNext( "root/widget", "addChild" );
 
         Container root = new Container();
-        digester.push(root);
-        
-        try {
-            digester.parse(
-                Utils.getInputStream(this, "test6.xml"));
+        digester.push( root );
+
+        try
+        {
+            digester.parse( Utils.getInputStream( this, "test6.xml" ) );
         }
-        catch(Exception e) {
+        catch ( Exception e )
+        {
             throw e;
         }
-        
-        int nDescendants = countWidgets(root);
-        assertEquals(10, nDescendants);
+
+        int nDescendants = countWidgets( root );
+        assertEquals( 10, nDescendants );
     }
 
-    private int countWidgets(Container c) {
+    private int countWidgets( Container c )
+    {
         List<Widget> l = c.getChildren();
         int sum = 0;
-        for(Widget w : l) {
-            ++sum; 
-            if (w instanceof Container) {
-                sum += countWidgets((Container) w);
+        for ( Widget w : l )
+        {
+            ++sum;
+            if ( w instanceof Container )
+            {
+                sum += countWidgets( (Container) w );
             }
         }
         return sum;

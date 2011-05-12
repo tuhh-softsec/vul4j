@@ -24,52 +24,57 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetNext;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate.List(
-        @ObjectCreate(pattern = "catalog")
-)
-public final class Catalog {
+@ObjectCreate.List( @ObjectCreate( pattern = "catalog" ) )
+public final class Catalog
+{
 
     private final List<Item> items = new ArrayList<Item>();
 
-    @SetNext({ AudioVisual.class, Book.class })
-    public void addItem(Item item) {
-        this.items.add(item);
+    @SetNext( { AudioVisual.class, Book.class } )
+    public void addItem( Item item )
+    {
+        this.items.add( item );
     }
 
-    public List<Item> getItems() {
+    public List<Item> getItems()
+    {
         return this.items;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Catalog other = (Catalog) obj;
-        if (this.items == null) {
-            if (other.getItems() != null)
+        if ( this.items == null )
+        {
+            if ( other.getItems() != null )
                 return false;
-        } else if (!this.items.equals(other.getItems()))
+        }
+        else if ( !this.items.equals( other.getItems() ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Catalog [items=" + items + "]";
     }
 
-    public void print() {
-        System.out.println("This catalog has " + this.items.size() + " items");
+    public void print()
+    {
+        System.out.println( "This catalog has " + this.items.size() + " items" );
 
-        for (Item item : this.items) {
+        for ( Item item : this.items )
+        {
             item.print();
         }
     }

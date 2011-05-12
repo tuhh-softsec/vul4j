@@ -21,61 +21,63 @@ import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
 import org.junit.Test;
 
 /**
- * 
- *
  * @since 2.1
  */
-public final class AddressBookTestCase extends AbstractAnnotatedPojoTestCase {
+public final class AddressBookTestCase
+    extends AbstractAnnotatedPojoTestCase
+{
 
     @Test
-    public void testAddressBook() throws Exception {
+    public void testAddressBook()
+        throws Exception
+    {
         AddressBook addressBook = new AddressBook();
 
         Person person = new Person();
-        person.setId(1);
-        person.setCategory("acquaintance");
-        person.setName("Gonzo");
-        person.addEmail("business", "gonzo@muppets.com");
+        person.setId( 1 );
+        person.setCategory( "acquaintance" );
+        person.setName( "Gonzo" );
+        person.addEmail( "business", "gonzo@muppets.com" );
 
         Address address = new Address();
-        address.setType("home");
-        address.setStreet("123 Maine Ave.");
-        address.setCity("Las Vegas");
-        address.setState("NV");
-        address.setZip("01234");
-        address.setCountry("USA");
-        person.addAddress(address);
+        address.setType( "home" );
+        address.setStreet( "123 Maine Ave." );
+        address.setCity( "Las Vegas" );
+        address.setState( "NV" );
+        address.setZip( "01234" );
+        address.setCountry( "USA" );
+        person.addAddress( address );
 
         address = new Address();
-        address.setType("business");
-        address.setStreet("234 Maple Dr.");
-        address.setCity("Los Angeles");
-        address.setState("CA");
-        address.setZip("98765");
-        address.setCountry("USA");
-        person.addAddress(address);
+        address.setType( "business" );
+        address.setStreet( "234 Maple Dr." );
+        address.setCity( "Los Angeles" );
+        address.setState( "CA" );
+        address.setZip( "98765" );
+        address.setCountry( "USA" );
+        person.addAddress( address );
 
-        addressBook.addPerson(person);
+        addressBook.addPerson( person );
 
         person = new Person();
-        person.setId(2);
-        person.setCategory("rolemodel");
-        person.setName("Kermit");
-        person.addEmail("business", "kermit@muppets.com");
-        person.addEmail("home", "kermie@acme.com");
+        person.setId( 2 );
+        person.setCategory( "rolemodel" );
+        person.setName( "Kermit" );
+        person.addEmail( "business", "kermit@muppets.com" );
+        person.addEmail( "home", "kermie@acme.com" );
 
         address = new Address();
-        address.setType("business");
-        address.setStreet("987 Brown Rd");
-        address.setCity("Las Cruces");
-        address.setState("NM");
-        address.setZip("75321");
-        address.setCountry("USA");
-        person.addAddress(address);
+        address.setType( "business" );
+        address.setStreet( "987 Brown Rd" );
+        address.setCity( "Las Cruces" );
+        address.setState( "NM" );
+        address.setZip( "75321" );
+        address.setCountry( "USA" );
+        person.addAddress( address );
 
-        addressBook.addPerson(person);
+        addressBook.addPerson( person );
 
-        this.verifyExpectedEqualsToParsed(addressBook);
+        this.verifyExpectedEqualsToParsed( addressBook );
     }
 
 }

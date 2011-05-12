@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import java.beans.PropertyDescriptor;
 
@@ -27,109 +25,111 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 
-
 /**
- * <p> Rule implements sets a bean property on the top object
- * to the body text.</p>
- *
- * <p> The property set:</p>
- * <ul><li>can be specified when the rule is created</li>
- * <li>or can match the current element when the rule is called.</li></ul>
- *
- * <p> Using the second method and the {@link ExtendedBaseRules} child match
- * pattern, all the child elements can be automatically mapped to properties
- * on the parent object.</p>
+ * <p>
+ * Rule implements sets a bean property on the top object to the body text.
+ * </p>
+ * <p>
+ * The property set:
+ * </p>
+ * <ul>
+ * <li>can be specified when the rule is created</li>
+ * <li>or can match the current element when the rule is called.</li>
+ * </ul>
+ * <p>
+ * Using the second method and the {@link ExtendedBaseRules} child match pattern, all the child elements can be
+ * automatically mapped to properties on the parent object.
+ * </p>
  */
 
-public class BeanPropertySetterRule extends Rule {
-
+public class BeanPropertySetterRule
+    extends Rule
+{
 
     // ----------------------------------------------------------- Constructors
 
     /**
-     * <p>Construct rule that sets the given property from the body text.</p>
-     *
+     * <p>
+     * Construct rule that sets the given property from the body text.
+     * </p>
+     * 
      * @param propertyName name of property to set
      */
-    public BeanPropertySetterRule(String propertyName) {
+    public BeanPropertySetterRule( String propertyName )
+    {
 
         this.propertyName = propertyName;
 
     }
 
     /**
-     * <p>Construct rule that automatically sets a property from the body text.
-     *
-     * <p> This construct creates a rule that sets the property
-     * on the top object named the same as the current element.
+     * <p>
+     * Construct rule that automatically sets a property from the body text.
+     * <p>
+     * This construct creates a rule that sets the property on the top object named the same as the current element.
      */
-    public BeanPropertySetterRule() {
+    public BeanPropertySetterRule()
+    {
 
-        this((String)null);
+        this( (String) null );
 
     }
-    
-    // ----------------------------------------------------- Instance Variables
 
+    // ----------------------------------------------------- Instance Variables
 
     /**
      * Set this property on the top object.
      */
     protected String propertyName = null;
 
-
     /**
      * The body text used to set the property.
      */
     protected String bodyText = null;
 
-
     // --------------------------------------------------------- Public Methods
-
 
     /**
      * Process the body text of this element.
-     *
-     * @param namespace the namespace URI of the matching element, or an 
-     *   empty string if the parser is not namespace aware or the element has
-     *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
-     *   the element name otherwise
+     * 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param text The text of the body of this element
      */
     @Override
-    public void body(String namespace, String name, String text)
-        throws Exception {
+    public void body( String namespace, String name, String text )
+        throws Exception
+    {
 
         // log some debugging information
-        if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[BeanPropertySetterRule]{" +
-                    getDigester().getMatch() + "} Called with text '" + text + "'");
+        if ( getDigester().getLogger().isDebugEnabled() )
+        {
+            getDigester().getLogger().debug( "[BeanPropertySetterRule]{" + getDigester().getMatch()
+                                                 + "} Called with text '" + text + "'" );
         }
 
         bodyText = text.trim();
 
     }
 
-
     /**
      * Process the end of this element.
-     *
-     * @param namespace the namespace URI of the matching element, or an 
-     *   empty string if the parser is not namespace aware or the element has
-     *   no namespace
-     * @param name the local name if the parser is namespace aware, or just 
-     *   the element name otherwise
-     *
-     * @exception NoSuchMethodException if the bean does not
-     *  have a writeable property of the specified name
+     * 
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @exception NoSuchMethodException if the bean does not have a writeable property of the specified name
      */
     @Override
-    public void end(String namespace, String name) throws Exception {
+    public void end( String namespace, String name )
+        throws Exception
+    {
 
         String property = propertyName;
 
-        if (property == null) {
+        if ( property == null )
+        {
             // If we don't have a specific property name,
             // use the element name.
             property = name;
@@ -139,58 +139,61 @@ public class BeanPropertySetterRule extends Rule {
         Object top = getDigester().peek();
 
         // log some debugging information
-        if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[BeanPropertySetterRule]{" + getDigester().getMatch() +
-                    "} Set " + top.getClass().getName() + " property " +
-                               property + " with text " + bodyText);
+        if ( getDigester().getLogger().isDebugEnabled() )
+        {
+            getDigester().getLogger().debug( "[BeanPropertySetterRule]{" + getDigester().getMatch() + "} Set "
+                                                 + top.getClass().getName() + " property " + property + " with text "
+                                                 + bodyText );
         }
 
         // Force an exception if the property does not exist
         // (BeanUtils.setProperty() silently returns in this case)
-        if (top instanceof DynaBean) {
-            DynaProperty desc =
-                ((DynaBean) top).getDynaClass().getDynaProperty(property);
-            if (desc == null) {
-                throw new NoSuchMethodException
-                    ("Bean has no property named " + property);
+        if ( top instanceof DynaBean )
+        {
+            DynaProperty desc = ( (DynaBean) top ).getDynaClass().getDynaProperty( property );
+            if ( desc == null )
+            {
+                throw new NoSuchMethodException( "Bean has no property named " + property );
             }
-        } else /* this is a standard JavaBean */ {
-            PropertyDescriptor desc =
-                PropertyUtils.getPropertyDescriptor(top, property);
-            if (desc == null) {
-                throw new NoSuchMethodException
-                    ("Bean has no property named " + property);
+        }
+        else
+        /* this is a standard JavaBean */{
+            PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, property );
+            if ( desc == null )
+            {
+                throw new NoSuchMethodException( "Bean has no property named " + property );
             }
         }
 
         // Set the property (with conversion as necessary)
-        BeanUtils.setProperty(top, property, bodyText);
+        BeanUtils.setProperty( top, property, bodyText );
 
     }
-
 
     /**
      * Clean up after parsing is complete.
      */
     @Override
-    public void finish() throws Exception {
+    public void finish()
+        throws Exception
+    {
 
         bodyText = null;
 
     }
 
-
     /**
      * Render a printable version of this Rule.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
 
-        StringBuilder sb = new StringBuilder("BeanPropertySetterRule[");
-        sb.append("propertyName=");
-        sb.append(propertyName);
-        sb.append("]");
-        return (sb.toString());
+        StringBuilder sb = new StringBuilder( "BeanPropertySetterRule[" );
+        sb.append( "propertyName=" );
+        sb.append( propertyName );
+        sb.append( "]" );
+        return ( sb.toString() );
 
     }
 

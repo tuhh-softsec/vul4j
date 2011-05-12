@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import java.beans.PropertyDescriptor;
 
@@ -28,27 +26,25 @@ import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
 
-
 /**
- * Rule implementation that sets an individual property on the object at the
- * top of the stack, based on attributes with specified names.
+ * Rule implementation that sets an individual property on the object at the top of the stack, based on attributes with
+ * specified names.
  */
 
-public class SetPropertyRule extends Rule {
-
+public class SetPropertyRule
+    extends Rule
+{
 
     // ----------------------------------------------------------- Constructors
 
     /**
-     * Construct a "set property" rule with the specified name and value
-     * attributes.
-     *
-     * @param name Name of the attribute that will contain the name of the
-     *  property to be set
-     * @param value Name of the attribute that will contain the value to which
-     *  the property should be set
+     * Construct a "set property" rule with the specified name and value attributes.
+     * 
+     * @param name Name of the attribute that will contain the name of the property to be set
+     * @param value Name of the attribute that will contain the value to which the property should be set
      */
-    public SetPropertyRule(String name, String value) {
+    public SetPropertyRule( String name, String value )
+    {
 
         this.name = name;
         this.value = value;
@@ -57,49 +53,51 @@ public class SetPropertyRule extends Rule {
 
     // ----------------------------------------------------- Instance Variables
 
-
     /**
      * The attribute that will contain the property name.
      */
     protected String name = null;
-
 
     /**
      * The attribute that will contain the property value.
      */
     protected String value = null;
 
-
     // --------------------------------------------------------- Public Methods
-
 
     /**
      * Process the beginning of this element.
-     *
+     * 
      * @param attributes The attribute list of this element
-     *
-     * @exception NoSuchMethodException if the bean does not
-     *  have a writeable property of the specified name
+     * @exception NoSuchMethodException if the bean does not have a writeable property of the specified name
      */
     @Override
-    public void begin(String namespace, String name, Attributes attributes) throws Exception {
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
 
-        if (attributes.getLength() == 0 ) {
+        if ( attributes.getLength() == 0 )
+        {
             return;
         }
 
         // Identify the actual property name and value to be used
         String actualName = null;
         String actualValue = null;
-        for (int i = 0; i < attributes.getLength(); i++) {
-            String attributeName = attributes.getLocalName(i);
-            if ("".equals(attributeName)) {
-                attributeName = attributes.getQName(i);
+        for ( int i = 0; i < attributes.getLength(); i++ )
+        {
+            String attributeName = attributes.getLocalName( i );
+            if ( "".equals( attributeName ) )
+            {
+                attributeName = attributes.getQName( i );
             }
-            String value = attributes.getValue(i);
-            if (attributeName.equals(this.name)) {
+            String value = attributes.getValue( i );
+            if ( attributeName.equals( this.name ) )
+            {
                 actualName = value;
-            } else if (attributeName.equals(this.value)) {
+            }
+            else if ( attributeName.equals( this.value ) )
+            {
                 actualValue = value;
             }
         }
@@ -108,54 +106,55 @@ public class SetPropertyRule extends Rule {
         Object top = getDigester().peek();
 
         // Log some debugging information
-        if (getDigester().getLogger().isDebugEnabled()) {
-            getDigester().getLogger().debug("[SetPropertyRule]{" + getDigester().getMatch() +
-                    "} Set " + top.getClass().getName() + " property " +
-                    actualName + " to " + actualValue);
+        if ( getDigester().getLogger().isDebugEnabled() )
+        {
+            getDigester().getLogger().debug( "[SetPropertyRule]{" + getDigester().getMatch() + "} Set "
+                                                 + top.getClass().getName() + " property " + actualName + " to "
+                                                 + actualValue );
         }
 
         // Force an exception if the property does not exist
         // (BeanUtils.setProperty() silently returns in this case)
         //
-        // This code should probably use PropertyUtils.isWriteable(), 
+        // This code should probably use PropertyUtils.isWriteable(),
         // like SetPropertiesRule does.
-        if (top instanceof DynaBean) {
-            DynaProperty desc =
-                ((DynaBean) top).getDynaClass().getDynaProperty(actualName);
-            if (desc == null) {
-                throw new NoSuchMethodException
-                    ("Bean has no property named " + actualName);
+        if ( top instanceof DynaBean )
+        {
+            DynaProperty desc = ( (DynaBean) top ).getDynaClass().getDynaProperty( actualName );
+            if ( desc == null )
+            {
+                throw new NoSuchMethodException( "Bean has no property named " + actualName );
             }
-        } else /* this is a standard JavaBean */ {
-            PropertyDescriptor desc =
-                PropertyUtils.getPropertyDescriptor(top, actualName);
-            if (desc == null) {
-                throw new NoSuchMethodException
-                    ("Bean has no property named " + actualName);
+        }
+        else
+        /* this is a standard JavaBean */{
+            PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, actualName );
+            if ( desc == null )
+            {
+                throw new NoSuchMethodException( "Bean has no property named " + actualName );
             }
         }
 
         // Set the property (with conversion as necessary)
-        BeanUtils.setProperty(top, actualName, actualValue);
+        BeanUtils.setProperty( top, actualName, actualValue );
 
     }
-
 
     /**
      * Render a printable version of this Rule.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
 
-        StringBuilder sb = new StringBuilder("SetPropertyRule[");
-        sb.append("name=");
-        sb.append(name);
-        sb.append(", value=");
-        sb.append(value);
-        sb.append("]");
-        return (sb.toString());
+        StringBuilder sb = new StringBuilder( "SetPropertyRule[" );
+        sb.append( "name=" );
+        sb.append( name );
+        sb.append( ", value=" );
+        sb.append( value );
+        sb.append( "]" );
+        return ( sb.toString() );
 
     }
-
 
 }

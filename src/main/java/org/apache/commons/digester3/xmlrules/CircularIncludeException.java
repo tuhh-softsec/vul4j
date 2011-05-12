@@ -16,27 +16,26 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
 
-
 /**
- * Thrown when parsing XML into Digester rules, if a circular inclusion occurred
- * in the xml digester rules files.
- *
+ * Thrown when parsing XML into Digester rules, if a circular inclusion occurred in the xml digester rules files.
+ * 
  * @since 1.2
  */
 
-public class CircularIncludeException extends XmlLoadException {
+public class CircularIncludeException
+    extends XmlLoadException
+{
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param fileName the name of the XML file suspected of causing the
-     * circular inclusion
+     * @param fileName the name of the XML file suspected of causing the circular inclusion
      */
-    public CircularIncludeException(String fileName) {
-        super("Circular file inclusion detected for file: " + fileName);
+    public CircularIncludeException( String fileName )
+    {
+        super( "Circular file inclusion detected for file: " + fileName );
     }
 
 }

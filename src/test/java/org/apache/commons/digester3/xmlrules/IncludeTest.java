@@ -33,37 +33,42 @@ import org.xml.sax.InputSource;
 /**
  * Test for the include class functionality
  */
-public class IncludeTest {
+public class IncludeTest
+{
 
-    public static class TestDigesterRuleSource implements DigesterRulesSource {
-        public void getRules(Digester digester) {
-            digester.addRule("bar", 
-                new Rule() {
-                    @Override
-                    public void body(String namespace, String name, String text) {
-                        ((ArrayList<String>) this.getDigester().peek()).add(text);
-                    }
-                });
+    public static class TestDigesterRuleSource
+        implements DigesterRulesSource
+    {
+        public void getRules( Digester digester )
+        {
+            digester.addRule( "bar", new Rule()
+            {
+                @Override
+                public void body( String namespace, String name, String text )
+                {
+                    ( (ArrayList<String>) this.getDigester().peek() ).add( text );
+                }
+            } );
         }
     }
 
     @Test
-    public void testBasicInclude() throws Exception {
-        String rulesXml = "<?xml version='1.0'?>"
-                + "<digester-rules>"
-                + " <pattern value='root/foo'>"
+    public void testBasicInclude()
+        throws Exception
+    {
+        String rulesXml =
+            "<?xml version='1.0'?>" + "<digester-rules>" + " <pattern value='root/foo'>"
                 + "   <include class='org.apache.commons.digester3.xmlrules.IncludeTest$TestDigesterRuleSource'/>"
-                + " </pattern>"
-                + "</digester-rules>";
-                
+                + " </pattern>" + "</digester-rules>";
+
         String xml = "<?xml version='1.0' ?><root><foo><bar>short</bar></foo></root>";
-        
+
         ArrayList<String> list = new ArrayList<String>();
-        Digester digester = DigesterLoader.createDigester(new InputSource(new StringReader(rulesXml)));
-        digester.push(list);
-        digester.parse(new StringReader(xml));        
-                                                                        
-        assertEquals("Number of entries", 1, list.size());
-        assertEquals("Entry value", "short", list.get(0));
+        Digester digester = DigesterLoader.createDigester( new InputSource( new StringReader( rulesXml ) ) );
+        digester.push( list );
+        digester.parse( new StringReader( xml ) );
+
+        assertEquals( "Number of entries", 1, list.size() );
+        assertEquals( "Entry value", "short", list.get( 0 ) );
     }
 }

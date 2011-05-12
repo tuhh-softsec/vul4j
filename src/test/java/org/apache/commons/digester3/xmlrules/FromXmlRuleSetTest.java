@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
-
 
 import static org.junit.Assert.*;
 
@@ -33,59 +31,49 @@ import org.xml.sax.InputSource;
  * Tests loading Digester rules from an XML file.
  */
 
-public class FromXmlRuleSetTest {
+public class FromXmlRuleSetTest
+{
 
-    /** 
-     * Test the FromXmlRules.addRuleInstances(digester, path) method, ie
-     * test loading rules at a base position other than the root.
+    /**
+     * Test the FromXmlRules.addRuleInstances(digester, path) method, ie test loading rules at a base position other
+     * than the root.
      */
     @Test
-    public void testBasePath() throws Exception {
-        String xmlRules = 
-            "<?xml version='1.0'?>" +
-            "<digester-rules>" + 
-            "   <pattern value='foo'>" +
-            "      <call-method-rule " +
-            "              methodname='setProperty' " +
-            "              paramcount='0' />" +
-            "   </pattern>" +
-            "</digester-rules>";
-        
-        String xml = 
-            "<?xml version='1.0'?>" + 
-            "<root>" +
-            "  <foo>success</foo>" +
-            "</root>";
-            
+    public void testBasePath()
+        throws Exception
+    {
+        String xmlRules =
+            "<?xml version='1.0'?>" + "<digester-rules>" + "   <pattern value='foo'>" + "      <call-method-rule "
+                + "              methodname='setProperty' " + "              paramcount='0' />" + "   </pattern>"
+                + "</digester-rules>";
+
+        String xml = "<?xml version='1.0'?>" + "<root>" + "  <foo>success</foo>" + "</root>";
+
         // First try with no base path. The rule shouldn't match, because
         // foo is not the root element.
         {
-        ObjectTestImpl testObject = new ObjectTestImpl();
-        FromXmlRuleSet ruleset = 
-            new FromXmlRuleSet(
-                new InputSource(new StringReader(xmlRules)));
-        Digester digester = new Digester();
-        ruleset.addRuleInstances(digester);
-        
-        digester.push(testObject);    
-        digester.parse(new InputSource(new StringReader(xml)));
-        
-        assertEquals("", testObject.getProperty());
+            ObjectTestImpl testObject = new ObjectTestImpl();
+            FromXmlRuleSet ruleset = new FromXmlRuleSet( new InputSource( new StringReader( xmlRules ) ) );
+            Digester digester = new Digester();
+            ruleset.addRuleInstances( digester );
+
+            digester.push( testObject );
+            digester.parse( new InputSource( new StringReader( xml ) ) );
+
+            assertEquals( "", testObject.getProperty() );
         }
-        
+
         // Now try with a base path. The rule should now match.
         {
-        ObjectTestImpl testObject = new ObjectTestImpl();
-        FromXmlRuleSet ruleset = 
-            new FromXmlRuleSet(
-                new InputSource(new StringReader(xmlRules)));
-        Digester digester = new Digester();
-        ruleset.addRuleInstances(digester, "root");
+            ObjectTestImpl testObject = new ObjectTestImpl();
+            FromXmlRuleSet ruleset = new FromXmlRuleSet( new InputSource( new StringReader( xmlRules ) ) );
+            Digester digester = new Digester();
+            ruleset.addRuleInstances( digester, "root" );
 
-        digester.push(testObject);    
-        digester.parse(new InputSource(new StringReader(xml)));
-        
-        assertEquals("success", testObject.getProperty());
+            digester.push( testObject );
+            digester.parse( new InputSource( new StringReader( xml ) ) );
+
+            assertEquals( "success", testObject.getProperty() );
         }
     }
 }

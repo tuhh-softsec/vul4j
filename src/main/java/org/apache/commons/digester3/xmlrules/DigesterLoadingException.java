@@ -16,33 +16,36 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.xmlrules;
-
 
 /**
  * Thrown when an error occurs while parsing XML into Digester rules.
- *
+ * 
  * @since 1.2
  */
 
-public class DigesterLoadingException extends Exception {
+public class DigesterLoadingException
+    extends Exception
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param msg a String detailing the reason for the exception
      */
-    public DigesterLoadingException(String msg) {
-        super(msg);
+    public DigesterLoadingException( String msg )
+    {
+        super( msg );
     }
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public DigesterLoadingException(Throwable cause) {
-        this(cause.getMessage());
+    public DigesterLoadingException( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
@@ -50,19 +53,20 @@ public class DigesterLoadingException extends Exception {
      * @param msg a String detailing the reason for the exception
      * @param cause underlying exception that caused this to be thrown
      */
-    public DigesterLoadingException(String msg, Throwable cause) {
-        this(msg);
+    public DigesterLoadingException( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
 
     /**
-     * Return the cause of this exception (if any) as specified in the
-     * exception constructor.
+     * Return the cause of this exception (if any) as specified in the exception constructor.
      * 
      * @since 1.8
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

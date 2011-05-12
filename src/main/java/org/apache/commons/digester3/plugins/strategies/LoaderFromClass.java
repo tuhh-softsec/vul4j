@@ -26,78 +26,84 @@ import org.apache.commons.digester3.plugins.PluginException;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A RuleLoader which invokes a static method on a target class, leaving that
- * method to actually instantiate and add new rules to a Digester instance.
- *
+ * A RuleLoader which invokes a static method on a target class, leaving that method to actually instantiate and add new
+ * rules to a Digester instance.
+ * 
  * @since 1.6
  */
 
-public class LoaderFromClass extends RuleLoader {
-    
+public class LoaderFromClass
+    extends RuleLoader
+{
+
     private Class<?> rulesClass;
+
     private Method rulesMethod;
-    
+
     /** Constructor. */
-    public LoaderFromClass(Class<?> rulesClass, Method rulesMethod) {
+    public LoaderFromClass( Class<?> rulesClass, Method rulesMethod )
+    {
         this.rulesClass = rulesClass;
         this.rulesMethod = rulesMethod;
     }
-    
+
     /** Constructor. */
-    public LoaderFromClass(Class<?> rulesClass, String methodName)
-                throws PluginException {
+    public LoaderFromClass( Class<?> rulesClass, String methodName )
+        throws PluginException
+    {
 
-        Method method = locateMethod(rulesClass, methodName);
+        Method method = locateMethod( rulesClass, methodName );
 
-        if (method == null) {
-            throw new PluginException(
-                "rule class " + rulesClass.getName()
-                + " does not have method " + methodName
-                + " or that method has an invalid signature.");
+        if ( method == null )
+        {
+            throw new PluginException( "rule class " + rulesClass.getName() + " does not have method " + methodName
+                + " or that method has an invalid signature." );
         }
-        
+
         this.rulesClass = rulesClass;
-        this.rulesMethod = method;        
+        this.rulesMethod = method;
     }
-    
+
     /**
      * Just invoke the target method.
      */
     @Override
-    public void addRules(Digester d, String path) throws PluginException {
+    public void addRules( Digester d, String path )
+        throws PluginException
+    {
         Log log = d.getLogger();
         boolean debug = log.isDebugEnabled();
-        if (debug) {
-            log.debug(
-                "LoaderFromClass loading rules for plugin at path [" 
-                + path + "]");
+        if ( debug )
+        {
+            log.debug( "LoaderFromClass loading rules for plugin at path [" + path + "]" );
         }
 
-        try {
-            Object[] params = {d, path};
-            rulesMethod.invoke(null, params);
-        } catch (Exception e) {
+        try
+        {
+            Object[] params = { d, path };
+            rulesMethod.invoke( null, params );
+        }
+        catch ( Exception e )
+        {
             throw new PluginException(
-                "Unable to invoke rules method " + rulesMethod
-                + " on rules class " + rulesClass, e);
-        } 
+                                       "Unable to invoke rules method " + rulesMethod + " on rules class " + rulesClass,
+                                       e );
+        }
     }
-    
+
     /**
-     * Find a method on the specified class whose name matches methodName,
-     * and whose signature is:
+     * Find a method on the specified class whose name matches methodName, and whose signature is:
      * <code> public static void foo(Digester d, String patternPrefix);</code>.
-     *
+     * 
      * @return null if no such method exists.
      */
-    public static Method locateMethod(Class<?> rulesClass, String methodName) 
-                            throws PluginException {
+    public static Method locateMethod( Class<?> rulesClass, String methodName )
+        throws PluginException
+    {
 
         Class<?>[] paramSpec = { Digester.class, String.class };
-        Method rulesMethod = MethodUtils.getAccessibleMethod(
-            rulesClass, methodName, paramSpec);
-            
+        Method rulesMethod = MethodUtils.getAccessibleMethod( rulesClass, methodName, paramSpec );
+
         return rulesMethod;
     }
 }
-

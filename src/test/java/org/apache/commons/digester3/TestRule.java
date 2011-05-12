@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import java.util.List;
 
 import org.apache.commons.digester3.Rule;
 import org.xml.sax.Attributes;
 
-
 /**
- * <p>This rule implementation is intended to help test digester.
- * The idea is that you can test which rule matches by looking
- * at the identifier.</p>
- *
+ * <p>
+ * This rule implementation is intended to help test digester. The idea is that you can test which rule matches by
+ * looking at the identifier.
+ * </p>
+ * 
  * @author Robert Burrell Donkin
  */
 
-public class TestRule extends Rule {
+public class TestRule
+    extends Rule
+{
 
     // ----------------------------------------------------- Instance Variables
-
 
     /** String identifing this particular <code>TestRule</code> */
     private String identifier;
@@ -52,112 +51,112 @@ public class TestRule extends Rule {
 
     /**
      * Base constructor.
-     *
+     * 
      * @param identifier Used to tell which TestRule is which
      */
-    public TestRule(String identifier) {
-        
+    public TestRule( String identifier )
+    {
+
         this.identifier = identifier;
     }
 
     /**
      * Constructor sets namespace URI.
-     *
+     * 
      * @param identifier Used to tell which TestRule is which
      * @param namespaceURI Set rule namespace
      */
-    public TestRule(
-                    String identifier,
-                    String namespaceURI) {
+    public TestRule( String identifier, String namespaceURI )
+    {
 
         this.identifier = identifier;
-        setNamespaceURI(namespaceURI);
+        setNamespaceURI( namespaceURI );
 
     }
 
-
     // ------------------------------------------------ Rule Implementation
-
 
     /**
      * 'Begin' call.
      */
     @Override
-    public void begin(String namespace, String name, Attributes attributes) throws Exception {
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
         appendCall();
     }
-
 
     /**
      * 'Body' call.
      */
     @Override
-    public void body(String namespace, String name, String text) throws Exception {
+    public void body( String namespace, String name, String text )
+        throws Exception
+    {
         this.bodyText = text;
         appendCall();
     }
-
 
     /**
      * 'End' call.
      */
     @Override
-    public void end(String namespace, String name) throws Exception {
+    public void end( String namespace, String name )
+        throws Exception
+    {
         appendCall();
     }
 
-
     // ------------------------------------------------ Methods
-
 
     /**
      * If a list has been set, append this to the list.
      */
-    protected void appendCall() {
-        if (order != null)
-            order.add(this);
+    protected void appendCall()
+    {
+        if ( order != null )
+            order.add( this );
     }
-
 
     /**
      * Get the body text that was set.
      */
-    public String getBodyText() {
+    public String getBodyText()
+    {
         return bodyText;
     }
-
 
     /**
      * Get the identifier associated with this test.
      */
-    public String getIdentifier() {
+    public String getIdentifier()
+    {
         return identifier;
     }
-
 
     /**
      * Get call order list.
      */
-    public List<Rule> getOrder() {
+    public List<Rule> getOrder()
+    {
         return order;
     }
-
 
     /**
      * Set call order list
      */
-    public void setOrder(List<Rule> order) {
+    public void setOrder( List<Rule> order )
+    {
         this.order = order;
     }
-
 
     /**
      * Return the identifier.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return identifier;
     }
-
 
 }

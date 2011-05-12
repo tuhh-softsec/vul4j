@@ -21,24 +21,26 @@ import org.apache.commons.digester3.AbstractObjectCreationFactory;
 import org.xml.sax.Attributes;
 
 /**
- * 
- *
  * @since 2.1
  */
-public final class BookFactory extends AbstractObjectCreationFactory {
+public final class BookFactory
+    extends AbstractObjectCreationFactory
+{
 
     private final static String ISBN = "isbn";
 
     @Override
-    public Object createObject(Attributes attributes) throws Exception {
-        String isbn = attributes.getValue(ISBN);
+    public Object createObject( Attributes attributes )
+        throws Exception
+    {
+        String isbn = attributes.getValue( ISBN );
 
-        if (isbn == null) {
-            throw new Exception(
-                    "Mandatory isbn attribute not present on book tag.");
+        if ( isbn == null )
+        {
+            throw new Exception( "Mandatory isbn attribute not present on book tag." );
         }
 
-        return new Book(isbn);
+        return new Book( isbn );
     }
 
 }

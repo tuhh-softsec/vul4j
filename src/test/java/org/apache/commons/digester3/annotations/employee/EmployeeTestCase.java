@@ -22,39 +22,43 @@ import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
 import org.junit.Test;
 
 /**
- * 
  * @since 2.1
  */
-public final class EmployeeTestCase extends AbstractAnnotatedPojoTestCase {
+public final class EmployeeTestCase
+    extends AbstractAnnotatedPojoTestCase
+{
 
     @Test
-    public void testEmployee() throws Exception {
+    public void testEmployee()
+        throws Exception
+    {
         Employee employee = new Employee();
-        employee.setFirstName("First Name");
-        employee.setLastName("Last Name");
+        employee.setFirstName( "First Name" );
+        employee.setLastName( "Last Name" );
 
         Address address = new Address();
-        address.setCity("Home City");
-        address.setState("HS");
-        address.setStreet("Home Street");
-        address.setType("home");
-        address.setZipCode("HmZip");
-        address.setEmployee(employee);
+        address.setCity( "Home City" );
+        address.setState( "HS" );
+        address.setStreet( "Home Street" );
+        address.setType( "home" );
+        address.setZipCode( "HmZip" );
+        address.setEmployee( employee );
 
         address = new Address();
-        address.setCity("Office City");
-        address.setState("OS");
-        address.setStreet("Office Street");
-        address.setType("office");
-        address.setZipCode("OfZip");
-        address.setEmployee(employee);
+        address.setCity( "Office City" );
+        address.setState( "OS" );
+        address.setStreet( "Office Street" );
+        address.setType( "office" );
+        address.setZipCode( "OfZip" );
+        address.setEmployee( employee );
 
-        this.verifyExpectedEqualsToParsed(employee);
+        this.verifyExpectedEqualsToParsed( employee );
     }
 
     @Override
-    protected void decorate(Digester digester) {
-        this.getDigesterLoader().addRules(Address.class, digester);
+    protected void decorate( Digester digester )
+    {
+        this.getDigesterLoader().addRules( Address.class, digester );
     }
 
 }

@@ -25,26 +25,29 @@ import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 
 /**
  * Provides instances of {@code BeanPropertySetterRule}.
- *
+ * 
  * @since 2.1
  */
 public final class BeanPropertySetterRuleProvider
-        implements AnnotationRuleProvider<BeanPropertySetter, Field, BeanPropertySetterRule> {
+    implements AnnotationRuleProvider<BeanPropertySetter, Field, BeanPropertySetterRule>
+{
 
     private String name;
 
     /**
      * {@inheritDoc}
      */
-    public void init(BeanPropertySetter annotation, Field element) {
+    public void init( BeanPropertySetter annotation, Field element )
+    {
         this.name = element.getName();
     }
 
     /**
      * {@inheritDoc}
      */
-    public BeanPropertySetterRule get() {
-        return new BeanPropertySetterRule(this.name);
+    public BeanPropertySetterRule get()
+    {
+        return new BeanPropertySetterRule( this.name );
     }
 
 }

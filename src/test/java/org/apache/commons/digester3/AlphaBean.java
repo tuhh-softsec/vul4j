@@ -18,42 +18,54 @@
 
 package org.apache.commons.digester3;
 
-public class AlphaBean implements Nameable {
+public class AlphaBean
+    implements Nameable
+{
     private String name = "ALPHA";
-    
+
     private Nameable child;
+
     private Nameable parent;
 
-    public AlphaBean() {}
-    
-    public AlphaBean(String name) {
-        setName(name);
+    public AlphaBean()
+    {
     }
-    
-    public String getName() {
+
+    public AlphaBean( String name )
+    {
+        setName( name );
+    }
+
+    public String getName()
+    {
         return name;
     }
-    
-    public void setName(String name) {
+
+    public void setName( String name )
+    {
         this.name = name;
     }
 
-    public void setParent(Nameable parent) {
+    public void setParent( Nameable parent )
+    {
         this.parent = parent;
     }
-    
-    public Nameable getParent() {
+
+    public Nameable getParent()
+    {
         return parent;
     }
-    
-    public void setChild(Nameable child) {
+
+    public void setChild( Nameable child )
+    {
         this.child = child;
     }
 
-    public Nameable getChild() {
+    public Nameable getChild()
+    {
         return child;
     }
-    
+
     @Override
     public String toString()
     {

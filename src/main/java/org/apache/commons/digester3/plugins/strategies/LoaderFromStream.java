@@ -33,50 +33,55 @@ import org.apache.commons.logging.Log;
  * A rule-finding algorithm which loads an xmlplugins-format file.
  * <p>
  * Note that the "include" feature of xmlrules is not supported.
- *
+ * 
  * @since 1.6
  */
 
-public class LoaderFromStream extends RuleLoader {
+public class LoaderFromStream
+    extends RuleLoader
+{
 
     private byte[] input;
-    
+
     /** See {@link #load}. */
-    public LoaderFromStream(InputStream s) throws Exception {
-        load(s);
+    public LoaderFromStream( InputStream s )
+        throws Exception
+    {
+        load( s );
     }
 
     /**
-     * The contents of the input stream are loaded into memory, and
-     * cached for later use.
+     * The contents of the input stream are loaded into memory, and cached for later use.
      * <p>
-     * The caller is responsible for closing the input stream after this
-     * method has returned.
+     * The caller is responsible for closing the input stream after this method has returned.
      */
-    private void load(InputStream s) throws IOException {
+    private void load( InputStream s )
+        throws IOException
+    {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[256];
-        for(;;) {
-            int i = s.read(buf);
-            if (i == -1)
+        for ( ;; )
+        {
+            int i = s.read( buf );
+            if ( i == -1 )
                 break;
-            baos.write(buf, 0, i);
+            baos.write( buf, 0, i );
         }
         input = baos.toByteArray();
     }
-    
+
     /**
-     * Add the rules previously loaded from the input stream into the
-     * specified digester.
+     * Add the rules previously loaded from the input stream into the specified digester.
      */
     @Override
-    public void addRules(Digester d, String path) throws PluginException {
+    public void addRules( Digester d, String path )
+        throws PluginException
+    {
         Log log = d.getLogger();
         boolean debug = log.isDebugEnabled();
-        if (debug) {
-            log.debug(
-                "LoaderFromStream: loading rules for plugin at path [" 
-                + path + "]");
+        if ( debug )
+        {
+            log.debug( "LoaderFromStream: loading rules for plugin at path [" + path + "]" );
         }
 
         // Note that this input-source doesn't have any idea of its
@@ -85,9 +90,8 @@ public class LoaderFromStream extends RuleLoader {
         // because that doesn't work well with our approach of
         // caching the input data in memory anyway.
 
-        InputSource source = new InputSource(new ByteArrayInputStream(input));
-        FromXmlRuleSet ruleSet = new FromXmlRuleSet(source);
-        ruleSet.addRuleInstances(d, path);
+        InputSource source = new InputSource( new ByteArrayInputStream( input ) );
+        FromXmlRuleSet ruleSet = new FromXmlRuleSet( source );
+        ruleSet.addRuleInstances( d, path );
     }
 }
-

@@ -21,12 +21,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * Class to supply the missing Java {@code AnnotatedElement} for method
- * arguments.
- *
+ * Class to supply the missing Java {@code AnnotatedElement} for method arguments.
+ * 
  * @since 2.1
  */
-public final class MethodArgument implements AnnotatedElement {
+public final class MethodArgument
+    implements AnnotatedElement
+{
 
     /**
      * The method argument index.
@@ -45,12 +46,13 @@ public final class MethodArgument implements AnnotatedElement {
 
     /**
      * Creates a new method argument as {@code AnnotatedElement}.
-     *
+     * 
      * @param index the method argument index.
      * @param parameterType the method argument type.
      * @param annotations the method argument annotations.
      */
-    public MethodArgument(int index, Class<?> parameterType, Annotation[] annotations) {
+    public MethodArgument( int index, Class<?> parameterType, Annotation[] annotations )
+    {
         this.index = index;
         this.parameterType = parameterType;
         this.annotations = annotations;
@@ -58,29 +60,34 @@ public final class MethodArgument implements AnnotatedElement {
 
     /**
      * Returns the method argument index.
-     *
+     * 
      * @return the method argument index.
      */
-    public int getIndex() {
+    public int getIndex()
+    {
         return this.index;
     }
 
     /**
      * Returns the method argument type.
-     *
+     * 
      * @return the method argument type.
      */
-    public Class<?> getParameterType() {
+    public Class<?> getParameterType()
+    {
         return this.parameterType;
     }
 
     /**
      * {@inheritDoc}
      */
-    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-        for (Annotation annotation : this.annotations) {
-            if (annotationType == annotation.annotationType()) {
-                return annotationType.cast(annotation);
+    public <T extends Annotation> T getAnnotation( Class<T> annotationType )
+    {
+        for ( Annotation annotation : this.annotations )
+        {
+            if ( annotationType == annotation.annotationType() )
+            {
+                return annotationType.cast( annotation );
             }
         }
         return null;
@@ -89,36 +96,40 @@ public final class MethodArgument implements AnnotatedElement {
     /**
      * {@inheritDoc}
      */
-    public Annotation[] getAnnotations() {
+    public Annotation[] getAnnotations()
+    {
         return this.getAnnotationsArrayCopy();
     }
 
     /**
      * {@inheritDoc}
      */
-    public Annotation[] getDeclaredAnnotations() {
+    public Annotation[] getDeclaredAnnotations()
+    {
         return this.getAnnotationsArrayCopy();
     }
 
     /**
-     * Returns an annotations array, copy of the declared annotations in this
-     * method argument.
-     *
-     * @return an annotations array, copy of the declared annotations in this
-     *         method argument.
+     * Returns an annotations array, copy of the declared annotations in this method argument.
+     * 
+     * @return an annotations array, copy of the declared annotations in this method argument.
      */
-    private Annotation[] getAnnotationsArrayCopy() {
+    private Annotation[] getAnnotationsArrayCopy()
+    {
         Annotation[] annotations = new Annotation[this.annotations.length];
-        System.arraycopy(this.annotations, 0, annotations, 0, annotations.length);
+        System.arraycopy( this.annotations, 0, annotations, 0, annotations.length );
         return annotations;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-        for (Annotation annotation : this.annotations) {
-            if (annotationType == annotation.annotationType()) {
+    public boolean isAnnotationPresent( Class<? extends Annotation> annotationType )
+    {
+        for ( Annotation annotation : this.annotations )
+        {
+            if ( annotationType == annotation.annotationType() )
+            {
                 return true;
             }
         }

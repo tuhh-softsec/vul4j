@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,26 +31,28 @@ import org.apache.commons.digester3.Rule;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
-
 /**
  * Tests namespace snapshotting.
  */
 
-public class NamespaceSnapshotTestCase {
+public class NamespaceSnapshotTestCase
+{
 
     /**
      * A test case specific helper rule.
      */
-    static class NamespaceSnapshotRule extends Rule {
+    static class NamespaceSnapshotRule
+        extends Rule
+    {
         /**
          * @see Rule#begin(String, String, Attributes)
          */
         @Override
-        public final void begin(final String namespace, final String name,
-                final Attributes attributes) {
+        public final void begin( final String namespace, final String name, final Attributes attributes )
+        {
             Digester d = getDigester();
             Map<String, String> namespaces = d.getCurrentNamespaces();
-            ((NamespacedBox) d.peek()).setNamespaces(namespaces);
+            ( (NamespacedBox) d.peek() ).setNamespaces( namespaces );
         }
     }
 
@@ -60,72 +60,71 @@ public class NamespaceSnapshotTestCase {
      * Namespace snapshot test case.
      */
     @Test
-    public void testNamespaceSnapshots() throws Exception {
+    public void testNamespaceSnapshots()
+        throws Exception
+    {
 
         Digester digester = new Digester();
-        digester.setNamespaceAware(true);
-        digester.addObjectCreate("box", NamespacedBox.class);
-        digester.addSetProperties("box");
-        digester.addRule("box", new NamespaceSnapshotRule());
-        digester.addObjectCreate("box/subBox", NamespacedBox.class);
-        digester.addSetProperties("box/subBox");
-        digester.addRule("box/subBox", new NamespaceSnapshotRule());
-        digester.addSetNext("box/subBox", "addChild");
+        digester.setNamespaceAware( true );
+        digester.addObjectCreate( "box", NamespacedBox.class );
+        digester.addSetProperties( "box" );
+        digester.addRule( "box", new NamespaceSnapshotRule() );
+        digester.addObjectCreate( "box/subBox", NamespacedBox.class );
+        digester.addSetProperties( "box/subBox" );
+        digester.addRule( "box/subBox", new NamespaceSnapshotRule() );
+        digester.addSetNext( "box/subBox", "addChild" );
 
-        NamespacedBox root = digester.parse(getInputStream("Test11.xml"));
+        NamespacedBox root = digester.parse( getInputStream( "Test11.xml" ) );
 
         Map<String, String> nsmap = root.getNamespaces();
-        assertEquals(3, nsmap.size());
-        assertEquals("", nsmap.get(""));
-        assertEquals("http://commons.apache.org/digester/Foo", nsmap.get("foo"));
-        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
+        assertEquals( 3, nsmap.size() );
+        assertEquals( "", nsmap.get( "" ) );
+        assertEquals( "http://commons.apache.org/digester/Foo", nsmap.get( "foo" ) );
+        assertEquals( "http://commons.apache.org/digester/Bar", nsmap.get( "bar" ) );
 
         List<Box> children = root.getChildren();
-        assertEquals(3, children.size());
+        assertEquals( 3, children.size() );
 
-        NamespacedBox child1 = (NamespacedBox) children.get(0);
+        NamespacedBox child1 = (NamespacedBox) children.get( 0 );
         nsmap = child1.getNamespaces();
-        assertEquals(3, nsmap.size());
-        assertEquals("", nsmap.get(""));
-        assertEquals("http://commons.apache.org/digester/Foo1", nsmap.get("foo"));
-        assertEquals("http://commons.apache.org/digester/Bar1", nsmap.get("bar"));
+        assertEquals( 3, nsmap.size() );
+        assertEquals( "", nsmap.get( "" ) );
+        assertEquals( "http://commons.apache.org/digester/Foo1", nsmap.get( "foo" ) );
+        assertEquals( "http://commons.apache.org/digester/Bar1", nsmap.get( "bar" ) );
 
-        NamespacedBox child2 = (NamespacedBox) children.get(1);
+        NamespacedBox child2 = (NamespacedBox) children.get( 1 );
         nsmap = child2.getNamespaces();
-        assertEquals(5, nsmap.size());
-        assertEquals("", nsmap.get(""));
-        assertEquals("http://commons.apache.org/digester/Foo", nsmap.get("foo"));
-        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
-        assertEquals("http://commons.apache.org/digester/Alpha", nsmap.get("alpha"));
-        assertEquals("http://commons.apache.org/digester/Beta", nsmap.get("beta"));
+        assertEquals( 5, nsmap.size() );
+        assertEquals( "", nsmap.get( "" ) );
+        assertEquals( "http://commons.apache.org/digester/Foo", nsmap.get( "foo" ) );
+        assertEquals( "http://commons.apache.org/digester/Bar", nsmap.get( "bar" ) );
+        assertEquals( "http://commons.apache.org/digester/Alpha", nsmap.get( "alpha" ) );
+        assertEquals( "http://commons.apache.org/digester/Beta", nsmap.get( "beta" ) );
 
-        NamespacedBox child3 = (NamespacedBox) children.get(2);
+        NamespacedBox child3 = (NamespacedBox) children.get( 2 );
         nsmap = child3.getNamespaces();
-        assertEquals(4, nsmap.size());
-        assertEquals("", nsmap.get(""));
-        assertEquals("http://commons.apache.org/digester/Foo3", nsmap.get("foo"));
-        assertEquals("http://commons.apache.org/digester/Alpha", nsmap.get("alpha"));
-        assertEquals("http://commons.apache.org/digester/Bar", nsmap.get("bar"));
+        assertEquals( 4, nsmap.size() );
+        assertEquals( "", nsmap.get( "" ) );
+        assertEquals( "http://commons.apache.org/digester/Foo3", nsmap.get( "foo" ) );
+        assertEquals( "http://commons.apache.org/digester/Alpha", nsmap.get( "alpha" ) );
+        assertEquals( "http://commons.apache.org/digester/Bar", nsmap.get( "bar" ) );
 
     }
 
     // ------------------------------------------------ Utility Support Methods
 
-
     /**
-     * Return an appropriate InputStream for the specified test file (which
-     * must be inside our current package.
-     *
+     * Return an appropriate InputStream for the specified test file (which must be inside our current package.
+     * 
      * @param name Name of the test file we want
-     *
      * @exception IOException if an input/output error occurs
      */
-    protected InputStream getInputStream(String name) throws IOException {
+    protected InputStream getInputStream( String name )
+        throws IOException
+    {
 
-        return (this.getClass().getResourceAsStream
-                ("/org/apache/commons/digester3/" + name));
+        return ( this.getClass().getResourceAsStream( "/org/apache/commons/digester3/" + name ) );
 
     }
 
 }
-

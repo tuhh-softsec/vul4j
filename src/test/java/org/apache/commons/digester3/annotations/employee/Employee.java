@@ -24,86 +24,88 @@ import org.apache.commons.digester3.annotations.rules.ObjectCreate;
 import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
- * 
  * @since 2.1
  */
-@ObjectCreate(pattern = "employee")
-public class Employee {
+@ObjectCreate( pattern = "employee" )
+public class Employee
+{
 
     private final List<Address> addresses = new ArrayList<Address>();
 
-    @SetProperty(
-            pattern = "employee",
-            attributeName = "name"
-    )
+    @SetProperty( pattern = "employee", attributeName = "name" )
     private String firstName;
 
-    @SetProperty(
-            pattern = "employee",
-            attributeName = "surname"
-    )
+    @SetProperty( pattern = "employee", attributeName = "surname" )
     private String lastName;
 
-    public void addAddress(Address address) {
-        this.addresses.add(address);
+    public void addAddress( Address address )
+    {
+        this.addresses.add( address );
     }
 
-    public String getFirstName() {
+    public String getFirstName()
+    {
         return this.firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName( String firstName )
+    {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public String getLastName()
+    {
         return this.lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName( String lastName )
+    {
         this.lastName = lastName;
     }
 
-    public List<Address> getAddresses() {
+    public List<Address> getAddresses()
+    {
         return this.addresses;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Employee other = (Employee) obj;
-        if (this.addresses == null) {
-            if (other.getAddresses() != null)
+        if ( this.addresses == null )
+        {
+            if ( other.getAddresses() != null )
                 return false;
-        } else if (!this.addresses.equals(other.getAddresses()))
+        }
+        else if ( !this.addresses.equals( other.getAddresses() ) )
             return false;
-        if (this.firstName == null) {
-            if (other.getFirstName() != null)
+        if ( this.firstName == null )
+        {
+            if ( other.getFirstName() != null )
                 return false;
-        } else if (!this.firstName.equals(other.getFirstName()))
+        }
+        else if ( !this.firstName.equals( other.getFirstName() ) )
             return false;
-        if (this.lastName == null) {
-            if (other.getLastName() != null)
+        if ( this.lastName == null )
+        {
+            if ( other.getLastName() != null )
                 return false;
-        } else if (!this.lastName.equals(other.getLastName()))
+        }
+        else if ( !this.lastName.equals( other.getLastName() ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Employee [addresses="
-                + addresses
-                + ", firstName="
-                + firstName
-                + ", lastName="
-                + lastName
-                + "]";
+    public String toString()
+    {
+        return "Employee [addresses=" + addresses + ", firstName=" + firstName + ", lastName=" + lastName + "]";
     }
 
 }

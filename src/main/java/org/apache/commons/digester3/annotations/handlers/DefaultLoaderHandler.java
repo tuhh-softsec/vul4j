@@ -23,11 +23,12 @@ import java.lang.reflect.AnnotatedElement;
 import org.apache.commons.digester3.annotations.DigesterLoaderHandler;
 
 /**
- * The DefaultLoaderHandler marks rules that have to be processed by the built-in
- * Digester annotation rules engine.
- *
+ * The DefaultLoaderHandler marks rules that have to be processed by the built-in Digester annotation rules engine.
+ * 
  * @since 2.1
  */
-public interface DefaultLoaderHandler extends DigesterLoaderHandler<Annotation, AnnotatedElement> {
+public interface DefaultLoaderHandler
+    extends DigesterLoaderHandler<Annotation, AnnotatedElement>
+{
 
 }

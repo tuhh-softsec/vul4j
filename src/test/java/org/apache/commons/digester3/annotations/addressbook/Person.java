@@ -31,116 +31,126 @@ import org.apache.commons.digester3.annotations.rules.SetNext;
 import org.apache.commons.digester3.annotations.rules.SetProperty;
 
 /**
- * 
- *
  * @since 2.1
  */
-@ObjectCreate(pattern = "address-book/person")
-public class Person {
+@ObjectCreate( pattern = "address-book/person" )
+public class Person
+{
 
     private final Map<String, String> emails = new HashMap<String, String>();
 
     private final List<Address> addresses = new ArrayList<Address>();
 
-    @SetProperty(pattern = "address-book/person")
+    @SetProperty( pattern = "address-book/person" )
     private int id;
 
-    @SetProperty(pattern = "address-book/person")
+    @SetProperty( pattern = "address-book/person" )
     private String category;
 
-    @BeanPropertySetter(pattern = "address-book/person/name")
+    @BeanPropertySetter( pattern = "address-book/person/name" )
     private String name;
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId( int id )
+    {
         this.id = id;
     }
 
-    public String getCategory() {
+    public String getCategory()
+    {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory( String category )
+    {
         this.category = category;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName( String name )
+    {
         this.name = name;
     }
 
-    public Map<String, String> getEmails() {
+    public Map<String, String> getEmails()
+    {
         return emails;
     }
 
-    public List<Address> getAddresses() {
+    public List<Address> getAddresses()
+    {
         return addresses;
     }
 
-    @CallMethod(pattern = "address-book/person/email")
-    public void addEmail(@AttributeCallParam(pattern = "address-book/person/email", attribute = "type") String type,
-            @CallParam(pattern = "address-book/person/email") String address) {
-        this.emails.put(type, address);
+    @CallMethod( pattern = "address-book/person/email" )
+    public void addEmail( @AttributeCallParam( pattern = "address-book/person/email", attribute = "type" ) String type,
+                          @CallParam( pattern = "address-book/person/email" ) String address )
+    {
+        this.emails.put( type, address );
     }
 
     @SetNext
-    public void addAddress(Address addr) {
-        this.addresses.add(addr);
+    public void addAddress( Address addr )
+    {
+        this.addresses.add( addr );
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Person other = (Person) obj;
-        if (addresses == null) {
-            if (other.addresses != null)
+        if ( addresses == null )
+        {
+            if ( other.addresses != null )
                 return false;
-        } else if (!addresses.equals(other.addresses))
+        }
+        else if ( !addresses.equals( other.addresses ) )
             return false;
-        if (category == null) {
-            if (other.category != null)
+        if ( category == null )
+        {
+            if ( other.category != null )
                 return false;
-        } else if (!category.equals(other.category))
+        }
+        else if ( !category.equals( other.category ) )
             return false;
-        if (emails == null) {
-            if (other.emails != null)
+        if ( emails == null )
+        {
+            if ( other.emails != null )
                 return false;
-        } else if (!emails.equals(other.emails))
+        }
+        else if ( !emails.equals( other.emails ) )
             return false;
-        if (id != other.id)
+        if ( id != other.id )
             return false;
-        if (name == null) {
-            if (other.name != null)
+        if ( name == null )
+        {
+            if ( other.name != null )
                 return false;
-        } else if (!name.equals(other.name))
+        }
+        else if ( !name.equals( other.name ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Person [addresses="
-                + addresses
-                + ", category="
-                + category
-                + ", emails="
-                + emails
-                + ", id="
-                + id
-                + ", name="
-                + name
-                + "]";
+    public String toString()
+    {
+        return "Person [addresses=" + addresses + ", category=" + category + ", emails=" + emails + ", id=" + id
+            + ", name=" + name + "]";
     }
 
 }

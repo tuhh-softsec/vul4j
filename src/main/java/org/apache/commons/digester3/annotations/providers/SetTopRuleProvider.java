@@ -25,10 +25,12 @@ import org.apache.commons.digester3.annotations.rules.SetTop;
 
 /**
  * Provides instances of {@link SetTopRule}.
- *
+ * 
  * @since 2.1
  */
-public final class SetTopRuleProvider implements AnnotationRuleProvider<SetTop, Method, SetTopRule>{
+public final class SetTopRuleProvider
+    implements AnnotationRuleProvider<SetTop, Method, SetTopRule>
+{
 
     private String methodName;
 
@@ -37,7 +39,8 @@ public final class SetTopRuleProvider implements AnnotationRuleProvider<SetTop, 
     /**
      * {@inheritDoc}
      */
-    public void init(SetTop annotation, Method element) {
+    public void init( SetTop annotation, Method element )
+    {
         this.methodName = element.getName();
         this.paramType = element.getParameterTypes()[0].getName();
     }
@@ -45,8 +48,9 @@ public final class SetTopRuleProvider implements AnnotationRuleProvider<SetTop, 
     /**
      * {@inheritDoc}
      */
-    public SetTopRule get() {
-        return new SetTopRule(this.methodName, this.paramType);
+    public SetTopRule get()
+    {
+        return new SetTopRule( this.methodName, this.paramType );
     }
 
 }

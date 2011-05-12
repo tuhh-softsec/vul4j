@@ -21,106 +21,114 @@ import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.FactoryCreate;
 
 /**
- * 
- *
  * @since 2.1
  */
-@FactoryCreate(
-    pattern = "catalog/book",
-    factoryClass = BookFactory.class
-)
-public final class Book implements Item {
+@FactoryCreate( pattern = "catalog/book", factoryClass = BookFactory.class )
+public final class Book
+    implements Item
+{
 
     private final String isbn;
 
-    @BeanPropertySetter(pattern = "catalog/book/title")
+    @BeanPropertySetter( pattern = "catalog/book/title" )
     private String title;
 
-    @BeanPropertySetter(pattern = "catalog/book/author")
+    @BeanPropertySetter( pattern = "catalog/book/author" )
     private String author;
 
-    @BeanPropertySetter(pattern = "catalog/book/desc")
+    @BeanPropertySetter( pattern = "catalog/book/desc" )
     private String desc;
 
-    public Book(String isbn) {
+    public Book( String isbn )
+    {
         this.isbn = isbn;
     }
 
-    public String getTitle() {
+    public String getTitle()
+    {
         return this.title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public String getAuthor()
+    {
         return this.author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor( String author )
+    {
         this.author = author;
     }
 
-    public String getDesc() {
+    public String getDesc()
+    {
         return this.desc;
     }
 
-    public void setDesc(String desc) {
+    public void setDesc( String desc )
+    {
         this.desc = desc;
     }
 
-    public String getIsbn() {
+    public String getIsbn()
+    {
         return this.isbn;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
             return true;
-        if (obj == null)
+        if ( obj == null )
             return false;
-        if (getClass() != obj.getClass())
+        if ( getClass() != obj.getClass() )
             return false;
         Book other = (Book) obj;
-        if (this.author == null) {
-            if (other.getAuthor() != null)
+        if ( this.author == null )
+        {
+            if ( other.getAuthor() != null )
                 return false;
-        } else if (!this.author.equals(other.getAuthor()))
+        }
+        else if ( !this.author.equals( other.getAuthor() ) )
             return false;
-        if (this.desc == null) {
-            if (other.getDesc() != null)
+        if ( this.desc == null )
+        {
+            if ( other.getDesc() != null )
                 return false;
-        } else if (!this.desc.equals(other.getDesc()))
+        }
+        else if ( !this.desc.equals( other.getDesc() ) )
             return false;
-        if (this.isbn == null) {
-            if (other.getIsbn() != null)
+        if ( this.isbn == null )
+        {
+            if ( other.getIsbn() != null )
                 return false;
-        } else if (!this.isbn.equals(other.getIsbn()))
+        }
+        else if ( !this.isbn.equals( other.getIsbn() ) )
             return false;
-        if (this.title == null) {
-            if (other.getTitle() != null)
+        if ( this.title == null )
+        {
+            if ( other.getTitle() != null )
                 return false;
-        } else if (!this.title.equals(other.getTitle()))
+        }
+        else if ( !this.title.equals( other.getTitle() ) )
             return false;
         return true;
     }
 
     @Override
-    public String toString() {
-        return "Book [author="
-                + author
-                + ", desc="
-                + desc
-                + ", isbn="
-                + isbn
-                + ", title="
-                + title
-                + "]";
+    public String toString()
+    {
+        return "Book [author=" + author + ", desc=" + desc + ", isbn=" + isbn + ", title=" + title + "]";
     }
 
-    public void print() {
-        System.out.println(this.toString());
+    public void print()
+    {
+        System.out.println( this.toString() );
     }
 
 }

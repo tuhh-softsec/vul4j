@@ -23,38 +23,44 @@ import org.apache.commons.digester3.Rule;
 /**
  * Demonstrates the behaviour of the Delegate interface.
  */
-public class DumperRule extends Rule {
+public class DumperRule
+    extends Rule
+{
     @Override
-    public void begin(String namespace, String name, Attributes attributes)
-    throws Exception {
-        System.out.print("<");
-        System.out.print(name);
-        
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
+        System.out.print( "<" );
+        System.out.print( name );
+
         int nAttributes = attributes.getLength();
-        for(int i=0; i<nAttributes; ++i) {
-            String key = attributes.getQName(i);
-            String value = attributes.getValue(i);
-            System.out.print(" ");
-            System.out.print(key);
-            System.out.print("=");
-            System.out.print("'");
-            System.out.print(value);
-            System.out.print("'");
+        for ( int i = 0; i < nAttributes; ++i )
+        {
+            String key = attributes.getQName( i );
+            String value = attributes.getValue( i );
+            System.out.print( " " );
+            System.out.print( key );
+            System.out.print( "=" );
+            System.out.print( "'" );
+            System.out.print( value );
+            System.out.print( "'" );
         }
-        System.out.println(">");
+        System.out.println( ">" );
     }
-    
+
     @Override
-    public void body(String namespace, String name, String text)
-    throws Exception {
-        System.out.print(text);
+    public void body( String namespace, String name, String text )
+        throws Exception
+    {
+        System.out.print( text );
     }
-    
+
     @Override
-    public void end(String namespace, String name)
-    throws Exception {
-        System.out.print("</");
-        System.out.print(name);
-        System.out.println(">");
+    public void end( String namespace, String name )
+        throws Exception
+    {
+        System.out.print( "</" );
+        System.out.print( name );
+        System.out.println( ">" );
     }
 }

@@ -26,97 +26,99 @@ import org.apache.commons.digester3.plugins.RuleFinder;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
 /**
- * A rule-finding algorithm which expects the user to specify a resource
- * name (ie a file in the classpath). The file is expected to contain Digester
- * rules in xmlrules format.
- *
+ * A rule-finding algorithm which expects the user to specify a resource name (ie a file in the classpath). The file is
+ * expected to contain Digester rules in xmlrules format.
+ * 
  * @since 1.6
  */
 
-public class FinderFromResource extends RuleFinder {
-    /** 
-     * Name of xml attribute on the plugin declaration which is used
-     * to configure rule-loading for that declaration. 
+public class FinderFromResource
+    extends RuleFinder
+{
+    /**
+     * Name of xml attribute on the plugin declaration which is used to configure rule-loading for that declaration.
      */
     public static String DFLT_RESOURCE_ATTR = "resource";
-    
+
     /** See {@link #findLoader}. */
     private String resourceAttr;
-    
+
     /** Constructor. */
-    public FinderFromResource() {
-        this(DFLT_RESOURCE_ATTR);
+    public FinderFromResource()
+    {
+        this( DFLT_RESOURCE_ATTR );
     }
 
     /** See {@link #findLoader}. */
-    public FinderFromResource(String resourceAttr) { 
+    public FinderFromResource( String resourceAttr )
+    {
         this.resourceAttr = resourceAttr;
     }
-    
+
     /**
-     * If there exists a property with the name matching constructor param
-     * resourceAttr, then load that file, run it through the xmlrules
-     * module and return an object encapsulating those rules.
+     * If there exists a property with the name matching constructor param resourceAttr, then load that file, run it
+     * through the xmlrules module and return an object encapsulating those rules.
      * <p>
      * If there is no matching property provided, then just return null.
      * <p>
-     * The returned object (when non-null) will add the selected rules to
-     * the digester whenever its addRules method is invoked.
+     * The returned object (when non-null) will add the selected rules to the digester whenever its addRules method is
+     * invoked.
      */
     @Override
-    public RuleLoader findLoader(Digester d, Class<?> pluginClass, Properties p)
-                        throws PluginException {
+    public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
+        throws PluginException
+    {
 
-        String resourceName = p.getProperty(resourceAttr);
-        if (resourceName == null) {
+        String resourceName = p.getProperty( resourceAttr );
+        if ( resourceName == null )
+        {
             // nope, user hasn't requested dynamic rules to be loaded
             // from a specific file.
             return null;
         }
-        
-        InputStream is = 
-            pluginClass.getClassLoader().getResourceAsStream(
-                resourceName);
 
-        if (is == null) {
-            throw new PluginException(
-                "Resource " + resourceName + " not found.");
+        InputStream is = pluginClass.getClassLoader().getResourceAsStream( resourceName );
+
+        if ( is == null )
+        {
+            throw new PluginException( "Resource " + resourceName + " not found." );
         }
-        
-         return loadRules(d, pluginClass, is, resourceName);
+
+        return loadRules( d, pluginClass, is, resourceName );
     }
-    
+
     /**
-     * Open the specified resource file (ie a file in the classpath, 
-     * including being within a jar in the classpath), run it through
-     * the xmlrules module and return an object encapsulating those rules.
+     * Open the specified resource file (ie a file in the classpath, including being within a jar in the classpath), run
+     * it through the xmlrules module and return an object encapsulating those rules.
      * 
      * @param d is the digester into which rules will eventually be loaded.
      * @param pluginClass is the class whose xml params the rules are parsing.
      * @param is is where the xmlrules will be read from, and must be non-null.
-     * @param resourceName is a string describing the source of the xmlrules,
-     *  for use in generating error messages.
+     * @param resourceName is a string describing the source of the xmlrules, for use in generating error messages.
      */
-    public static RuleLoader loadRules(Digester d, Class<?> pluginClass, 
-                        InputStream is, String resourceName)
-                        throws PluginException {
+    public static RuleLoader loadRules( Digester d, Class<?> pluginClass, InputStream is, String resourceName )
+        throws PluginException
+    {
 
-        try {
-            RuleLoader loader = new LoaderFromStream(is);
+        try
+        {
+            RuleLoader loader = new LoaderFromStream( is );
             return loader;
-        } catch(Exception e) {
-            throw new PluginException(
-                "Unable to load xmlrules from resource [" + 
-                resourceName + "]", e);
-        } finally {
-            try {
+        }
+        catch ( Exception e )
+        {
+            throw new PluginException( "Unable to load xmlrules from resource [" + resourceName + "]", e );
+        }
+        finally
+        {
+            try
+            {
                 is.close();
-            } catch(java.io.IOException ioe) {
-                throw new PluginException(
-                    "Unable to close stream for resource [" + 
-                    resourceName + "]", ioe);
+            }
+            catch ( java.io.IOException ioe )
+            {
+                throw new PluginException( "Unable to close stream for resource [" + resourceName + "]", ioe );
             }
         }
     }
 }
-

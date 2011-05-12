@@ -22,95 +22,96 @@ import java.util.Map;
 import java.util.ArrayList;
 
 /**
- * <p>Expands variable references from multiple sources.</p>
- *
+ * <p>
+ * Expands variable references from multiple sources.
+ * </p>
+ * 
  * @since 1.6
  */
 
-public class MultiVariableExpander implements VariableExpander {
+public class MultiVariableExpander
+    implements VariableExpander
+{
     private int nEntries = 0;
-    private ArrayList<String> markers = new ArrayList<String>(2);
-    private ArrayList<Map<String, Object>> sources = new ArrayList<Map<String, Object>>(2);
-    
-    public MultiVariableExpander() {
-    }
-    
-    public void addSource(String marker, Map<String, Object> source) {
-        ++nEntries;
-        markers.add(marker);
-        sources.add(source);
+
+    private ArrayList<String> markers = new ArrayList<String>( 2 );
+
+    private ArrayList<Map<String, Object>> sources = new ArrayList<Map<String, Object>>( 2 );
+
+    public MultiVariableExpander()
+    {
     }
 
-    /*    
-     * Expands any variable declarations using any of the known
-     * variable marker strings.
-     * 
-     * @throws IllegalArgumentException if the input param references
-     * a variable which is not known to the specified source.
+    public void addSource( String marker, Map<String, Object> source )
+    {
+        ++nEntries;
+        markers.add( marker );
+        sources.add( source );
+    }
+
+    /*
+     * Expands any variable declarations using any of the known variable marker strings.
+     * @throws IllegalArgumentException if the input param references a variable which is not known to the specified
+     * source.
      */
-    public String expand(String param) {
-        for(int i=0; i<nEntries; ++i) {
-            param = expand(
-                param, 
-                markers.get(i), 
-                sources.get(i));
+    public String expand( String param )
+    {
+        for ( int i = 0; i < nEntries; ++i )
+        {
+            param = expand( param, markers.get( i ), sources.get( i ) );
         }
         return param;
     }
-    
+
     /**
-     * Replace any occurrences within the string of the form
-     * "marker{key}" with the value from source[key].
+     * Replace any occurrences within the string of the form "marker{key}" with the value from source[key].
      * <p>
-     * Commonly, the variable marker is "$", in which case variables
-     * are indicated by ${key} in the string.
+     * Commonly, the variable marker is "$", in which case variables are indicated by ${key} in the string.
      * <p>
      * Returns the string after performing all substitutions.
      * <p>
-     * If no substitutions were made, the input string object is
-     * returned (not a copy).
-     *
-     * @throws IllegalArgumentException if the input param references
-     * a variable which is not known to the specified source.
+     * If no substitutions were made, the input string object is returned (not a copy).
+     * 
+     * @throws IllegalArgumentException if the input param references a variable which is not known to the specified
+     *             source.
      */
-    public String expand(String str, String marker, Map<String, Object> source) {
+    public String expand( String str, String marker, Map<String, Object> source )
+    {
         String startMark = marker + "{";
         int markLen = startMark.length();
-        
+
         int index = 0;
-        for(;;)
+        for ( ;; )
         {
-            index = str.indexOf(startMark, index);
-            if (index == -1)
+            index = str.indexOf( startMark, index );
+            if ( index == -1 )
             {
                 return str;
             }
-            
+
             int startIndex = index + markLen;
-            if (startIndex > str.length())
+            if ( startIndex > str.length() )
             {
-                throw new IllegalArgumentException(
-                    "var expression starts at end of string");
+                throw new IllegalArgumentException( "var expression starts at end of string" );
             }
-            
-            int endIndex = str.indexOf("}", index + markLen);
-            if (endIndex == -1)
+
+            int endIndex = str.indexOf( "}", index + markLen );
+            if ( endIndex == -1 )
             {
-                throw new IllegalArgumentException(
-                    "var expression starts but does not end");
+                throw new IllegalArgumentException( "var expression starts but does not end" );
             }
-            
-            String key = str.substring(index+markLen, endIndex);
-            Object value =  source.get(key);
-            if (value == null) {
-                throw new IllegalArgumentException(
-                    "parameter [" + key + "] is not defined.");
+
+            String key = str.substring( index + markLen, endIndex );
+            Object value = source.get( key );
+            if ( value == null )
+            {
+                throw new IllegalArgumentException( "parameter [" + key + "] is not defined." );
             }
             String varValue = value.toString();
-            
-            str = str.substring(0, index) + varValue + str.substring(endIndex+1);
+
+            str = str.substring( 0, index ) + varValue + str.substring( endIndex + 1 );
             index += varValue.length();
         }
     }
-        
+
 }

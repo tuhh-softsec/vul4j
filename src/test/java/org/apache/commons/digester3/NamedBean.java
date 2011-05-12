@@ -16,39 +16,46 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3;
-
 
 /**
  * Very simple test bean
- *
+ * 
  * @author Robert Burrell Donkin
  * @version $Revision$ $Date$
  */
 
-public class NamedBean {
-    
+public class NamedBean
+{
+
     private String name = "**UNSET**";
-    
-    public NamedBean() {}
-    
-    public NamedBean(String name) {}
-    
-    public String getName() {
+
+    public NamedBean()
+    {
+    }
+
+    public NamedBean( String name )
+    {
+    }
+
+    public String getName()
+    {
         return name;
     }
-    
-    public void setName(String name) {
+
+    public void setName( String name )
+    {
         this.name = name;
     }
-    
-    public void test(String name, String ignored) {
-        setName(name);
+
+    public void test( String name, String ignored )
+    {
+        setName( name );
     }
-    
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "NamedBean[" + getName() + "]";
     }
 }

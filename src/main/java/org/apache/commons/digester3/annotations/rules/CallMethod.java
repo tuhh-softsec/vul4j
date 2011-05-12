@@ -29,38 +29,36 @@ import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.CallMethodRuleProvider;
 
 /**
- * Methods annotated with {@code CallMethod} will be bound with
- * {@code CallMethodRule} digester rule.
- *
+ * Methods annotated with {@code CallMethod} will be bound with {@code CallMethodRule} digester rule.
+ * 
  * @see org.apache.commons.digester3.Digester#addCallMethod(String,String,int,Class[])
  * @since 2.1
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@DigesterRule(
-        reflectsRule = CallMethodRule.class,
-        providedBy = CallMethodRuleProvider.class
-)
-public @interface CallMethod {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.METHOD )
+@DigesterRule( reflectsRule = CallMethodRule.class, providedBy = CallMethodRuleProvider.class )
+public @interface CallMethod
+{
 
     /**
      * The element matching pattern.
-     *
+     * 
      * @return the element matching pattern.
      */
     String pattern();
 
     /**
      * Defines several {@code @CallMethod} annotations on the same element.
-     *
+     * 
      * @see CallMethod
      */
     @Documented
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @Target( ElementType.TYPE )
     @DigesterRuleList
-    @interface List {
+    @interface List
+    {
         CallMethod[] value();
     }
 

@@ -18,82 +18,97 @@
 
 package org.apache.commons.digester3.xmlrules;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  * Test harness object for holding results of digestion.
- *
+ * 
  * @author David H. Martin - Initial Contribution
- * @author Scott Sanders   - Added ASL, removed external dependencies
+ * @author Scott Sanders - Added ASL, removed external dependencies
  * @author Tim O'Brien - Added bean property to test bean property setter rule
  */
-public class ObjectTestImpl {
+public class ObjectTestImpl
+{
 
     private ArrayList<Object> children = new ArrayList<Object>();
+
     private String value = "";
-    private Long longValue = new Long(-1L);
+
+    private Long longValue = new Long( -1L );
 
     private String property = "";
 
     private HashMap<String, String> mapValue = new HashMap<String, String>();
 
     private boolean pushed = false;
-    
-    public ObjectTestImpl() {
+
+    public ObjectTestImpl()
+    {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         String str = value;
-        for (Object o : children) {
+        for ( Object o : children )
+        {
             str += " " + o;
         }
         return str;
     }
 
-    public void add(Object o) {
-        children.add(o);
+    public void add( Object o )
+    {
+        children.add( o );
     }
 
-    public void setValue(String val) {
+    public void setValue( String val )
+    {
         value = val;
     }
 
-    public void setLongValue(Long val) {
+    public void setLongValue( Long val )
+    {
         longValue = val;
     }
 
-    public Long getLongValue() {
+    public Long getLongValue()
+    {
         return longValue;
     }
 
-    public void setStringValue(String val) {
+    public void setStringValue( String val )
+    {
     }
 
-    public boolean isPushed() {
+    public boolean isPushed()
+    {
         return pushed;
     }
-    
-    public void push() {
+
+    public void push()
+    {
         pushed = true;
     }
 
-    public void setMapValue( String name, String value ) {
+    public void setMapValue( String name, String value )
+    {
         this.mapValue.put( name, value );
     }
 
-    public String getMapValue( String name ) {
+    public String getMapValue( String name )
+    {
         return this.mapValue.get( name );
     }
 
-    public String getProperty() {
+    public String getProperty()
+    {
         return property;
     }
 
-    public void setProperty(String pProperty) {
+    public void setProperty( String pProperty )
+    {
         property = pProperty;
     }
 }

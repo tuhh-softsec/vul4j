@@ -21,21 +21,23 @@ import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
 import org.junit.Test;
 
 /**
- * 
  * @since 2.1
  */
-public final class ServletBeanTestCase extends AbstractAnnotatedPojoTestCase {
+public final class ServletBeanTestCase
+    extends AbstractAnnotatedPojoTestCase
+{
 
     @Test
-    public void testServletBean() throws Exception {
+    public void testServletBean()
+        throws Exception
+    {
         ServletBean servletBean = new ServletBean();
-        servletBean.setServletName("action");
-        servletBean.setServletClass("org.apache.struts.action.ActionServlet");
-        servletBean.addInitParam("application",
-                "org.apache.struts.example.ApplicationResources");
-        servletBean.addInitParam("config", "/WEB-INF/struts-config.xml");
+        servletBean.setServletName( "action" );
+        servletBean.setServletClass( "org.apache.struts.action.ActionServlet" );
+        servletBean.addInitParam( "application", "org.apache.struts.example.ApplicationResources" );
+        servletBean.addInitParam( "config", "/WEB-INF/struts-config.xml" );
 
-        this.verifyExpectedEqualsToParsed(servletBean);
+        this.verifyExpectedEqualsToParsed( servletBean );
     }
 
 }

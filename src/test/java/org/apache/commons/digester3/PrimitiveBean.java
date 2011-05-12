@@ -18,35 +18,40 @@
 
 package org.apache.commons.digester3;
 
-
-/** 
- * A simple bean with primitive properties.
- * At the moment only need a boolean property.
- * Feel free to add others later.
- *
+/**
+ * A simple bean with primitive properties. At the moment only need a boolean property. Feel free to add others later.
+ * 
  * @author robert burrell donkin
  */
-public class PrimitiveBean {
-    
+public class PrimitiveBean
+{
+
     private boolean booleanValue;
+
     private boolean setBooleanCalled;
-    
-    public PrimitiveBean() {}
-    
-    public boolean getBoolean() {
+
+    public PrimitiveBean()
+    {
+    }
+
+    public boolean getBoolean()
+    {
         return booleanValue;
     }
-    
-    public boolean getSetBooleanCalled() {
+
+    public boolean getSetBooleanCalled()
+    {
         return setBooleanCalled;
     }
 
-    public void setBoolean(boolean booleanValue) {
+    public void setBoolean( boolean booleanValue )
+    {
         this.booleanValue = booleanValue;
         setBooleanCalled = true;
     }
-    
-    public void testSetBoolean(String ignored, boolean booleanValue) {
-        setBoolean(booleanValue);
+
+    public void testSetBoolean( String ignored, boolean booleanValue )
+    {
+        setBoolean( booleanValue );
     }
 }

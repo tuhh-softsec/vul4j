@@ -23,17 +23,18 @@ import org.xml.sax.Attributes;
 
 /**
  * Object creation factory used for testing exception propagation.
- *
+ * 
  * @author Robert Burrell Donkin
  */
 
-public class ThrowExceptionCreationFactory extends AbstractObjectCreationFactory {
-    
+public class ThrowExceptionCreationFactory
+    extends AbstractObjectCreationFactory
+{
+
     @Override
-    public Object createObject(Attributes attributes) throws Exception {
+    public Object createObject( Attributes attributes )
+        throws Exception
+    {
         throw new RuntimeException();
     }
 }
-
-
-

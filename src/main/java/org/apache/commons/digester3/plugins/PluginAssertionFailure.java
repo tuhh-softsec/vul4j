@@ -21,67 +21,70 @@ package org.apache.commons.digester3.plugins;
 /**
  * Thrown when a bug is detected in the plugins code.
  * <p>
- * This class is intended to be used in assertion statements, similar to
- * the way that java 1.4's native assertion mechanism is used. However there
- * is a difference: when a java 1.4 assertion fails, an AssertionError
- * is thrown, which is a subclass of Error; here, the PluginAssertionFailure
- * class extends RuntimeException rather than Error.
+ * This class is intended to be used in assertion statements, similar to the way that java 1.4's native assertion
+ * mechanism is used. However there is a difference: when a java 1.4 assertion fails, an AssertionError is thrown, which
+ * is a subclass of Error; here, the PluginAssertionFailure class extends RuntimeException rather than Error.
  * <p>
- * This difference in design is because throwing Error objects is not
- * good in a container-based architecture.
+ * This difference in design is because throwing Error objects is not good in a container-based architecture.
  * <p>
  * Example:
+ * 
  * <pre>
- *   if (impossibleCondition) {
- *     throw new PluginAssertionFailure(
- *       "internal error: impossible condition is true");
- *   }
- * </pre> 
+ * if ( impossibleCondition )
+ * {
+ *     throw new PluginAssertionFailure( &quot;internal error: impossible condition is true&quot; );
+ * }
+ * </pre>
  * <p>
- * Note that PluginAssertionFailure should <i>not</i> be thrown when user 
- * input is bad, or when code external to the Digester module passes invalid 
- * parameters to a plugins method. It should be used only in checks for 
- * problems which indicate internal bugs within the plugins module.
- *
+ * Note that PluginAssertionFailure should <i>not</i> be thrown when user input is bad, or when code external to the
+ * Digester module passes invalid parameters to a plugins method. It should be used only in checks for problems which
+ * indicate internal bugs within the plugins module.
+ * 
  * @since 1.6
  */
-public class PluginAssertionFailure extends RuntimeException {
+public class PluginAssertionFailure
+    extends RuntimeException
+{
 
     private static final long serialVersionUID = 1L;
+
     private Throwable cause = null;
 
     /**
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginAssertionFailure(Throwable cause) {
-        this(cause.getMessage());
+    public PluginAssertionFailure( Throwable cause )
+    {
+        this( cause.getMessage() );
         this.cause = cause;
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      */
-    public PluginAssertionFailure(String msg) {
-        super(msg);
+    public PluginAssertionFailure( String msg )
+    {
+        super( msg );
     }
 
     /**
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
-    public PluginAssertionFailure(String msg, Throwable cause) {
-        this(msg);
+    public PluginAssertionFailure( String msg, Throwable cause )
+    {
+        this( msg );
         this.cause = cause;
     }
-    
+
     /**
-     * Return the cause of this exception (if any) as specified in the
-     * exception constructor.
+     * Return the cause of this exception (if any) as specified in the exception constructor.
      * 
      * @since 1.8
      */
     @Override
-    public Throwable getCause() {
+    public Throwable getCause()
+    {
         return cause;
     }
 }

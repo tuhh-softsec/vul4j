@@ -25,10 +25,12 @@ import org.apache.commons.digester3.annotations.FromAnnotationsRuleSet;
 
 /**
  * Simple in-memory LRU cache implementation.
- *
+ * 
  * @since 2.1
  */
-public final class RuleSetCache implements Serializable {
+public final class RuleSetCache
+    implements Serializable
+{
 
     /**
      * This class serialVersionUID.
@@ -48,77 +50,78 @@ public final class RuleSetCache implements Serializable {
     /**
      * The fixed cache capacity.
      */
-    private final int capacity = (int) Math.ceil(this.cacheSize / this.loadFactor) + 1;
+    private final int capacity = (int) Math.ceil( this.cacheSize / this.loadFactor ) + 1;
 
     /**
      * The map that implements the LRU cache.
      */
     private final Map<Class<?>, FromAnnotationsRuleSet> data =
-        new LinkedHashMap<Class<?>, FromAnnotationsRuleSet>(capacity, loadFactor) {
+        new LinkedHashMap<Class<?>, FromAnnotationsRuleSet>( capacity, loadFactor )
+        {
 
-        /**
-         * This class serialVersionUID.
-         */
-        private static final long serialVersionUID = 1L;
+            /**
+             * This class serialVersionUID.
+             */
+            private static final long serialVersionUID = 1L;
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<Class<?>, FromAnnotationsRuleSet> eldest) {
-            return size() > cacheSize;
-        }
-    };
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            protected boolean removeEldestEntry( Map.Entry<Class<?>, FromAnnotationsRuleSet> eldest )
+            {
+                return size() > cacheSize;
+            }
+        };
 
     /**
      * Returns true if this cache contains a mapping for the specified key.
-     *
+     * 
      * @param key key whose presence in this map is to be tested.
-     * @return true if this map contains a mapping for the specified key, false
-     *         otherwise.
+     * @return true if this map contains a mapping for the specified key, false otherwise.
      */
-    public boolean containsKey(Class<?> key) {
-        checkKey(key);
-        return this.data.containsKey(key);
+    public boolean containsKey( Class<?> key )
+    {
+        checkKey( key );
+        return this.data.containsKey( key );
     }
 
     /**
-     * Returns the value to which the specified key is cached, or null if this
-     * cache contains no mapping for the key.
-     *
+     * Returns the value to which the specified key is cached, or null if this cache contains no mapping for the key.
      * Key parameter must not be null.
-     *
+     * 
      * @param key the key has to be checked it is present, it must not be null.
-     * @return the value to which the specified key is cached, null if this
-     *         cache contains no mapping for the key.
+     * @return the value to which the specified key is cached, null if this cache contains no mapping for the key.
      */
-    public FromAnnotationsRuleSet get(Class<?> key) {
-        checkKey(key);
-        return this.data.get(key);
+    public FromAnnotationsRuleSet get( Class<?> key )
+    {
+        checkKey( key );
+        return this.data.get( key );
     }
 
     /**
-     * Associates the specified value with the specified key in this cache.
-     *
-     * Key parameter must not be null.
-     *
+     * Associates the specified value with the specified key in this cache. Key parameter must not be null.
+     * 
      * @param key key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
      */
-    public void put(Class<?> key, FromAnnotationsRuleSet value) {
-        checkKey(key);
-        this.data.put(key, value);
+    public void put( Class<?> key, FromAnnotationsRuleSet value )
+    {
+        checkKey( key );
+        this.data.put( key, value );
     }
 
     /**
      * Verify that a key is not null.
-     *
+     * 
      * @param <T> the generic key type.
      * @param key the key object.
      */
-    private static void checkKey(Class<?> key) {
-        if (key == null) {
-            throw new IllegalArgumentException("null keys not supported");
+    private static void checkKey( Class<?> key )
+    {
+        if ( key == null )
+        {
+            throw new IllegalArgumentException( "null keys not supported" );
         }
     }
 

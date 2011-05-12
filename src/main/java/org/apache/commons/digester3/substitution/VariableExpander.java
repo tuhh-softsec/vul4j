@@ -16,23 +16,22 @@
  * limitations under the License.
  */
 
-
 package org.apache.commons.digester3.substitution;
 
 /**
- * <p>An Interface describing a class capable of expanding strings which
- * may contain variable references. The exact syntax of the "reference",
- * and the mechanism for determining the corresponding value to be used
- * is up to the concrete implementation.</p>
- *
+ * <p>
+ * An Interface describing a class capable of expanding strings which may contain variable references. The exact syntax
+ * of the "reference", and the mechanism for determining the corresponding value to be used is up to the concrete
+ * implementation.
+ * </p>
+ * 
  * @since 1.6
  */
-public interface VariableExpander {
+public interface VariableExpander
+{
     /**
-     * Return the input string with any variables replaced by their
-     * corresponding value. If there are no variables in the string,
-     * then the input parameter is returned unaltered.
+     * Return the input string with any variables replaced by their corresponding value. If there are no variables in
+     * the string, then the input parameter is returned unaltered.
      */
-    public String expand(String param);
+    public String expand( String param );
 }
-

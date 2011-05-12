@@ -23,11 +23,12 @@ import org.apache.commons.digester3.annotations.rules.FactoryCreate;
 
 /**
  * Provides instances of {@link FactoryCreateRule}.
- *
+ * 
  * @since 2.1
  */
 public final class FactoryCreateRuleProvider
-        implements AnnotationRuleProvider<FactoryCreate, Class<?>, FactoryCreateRule> {
+    implements AnnotationRuleProvider<FactoryCreate, Class<?>, FactoryCreateRule>
+{
 
     private Class<?> factoryClass;
 
@@ -36,7 +37,8 @@ public final class FactoryCreateRuleProvider
     /**
      * {@inheritDoc}
      */
-    public void init(FactoryCreate annotation, Class<?> element) {
+    public void init( FactoryCreate annotation, Class<?> element )
+    {
         this.factoryClass = annotation.factoryClass();
         this.ignoreCreateExceptions = annotation.ignoreCreateExceptions();
     }
@@ -44,9 +46,9 @@ public final class FactoryCreateRuleProvider
     /**
      * {@inheritDoc}
      */
-    public FactoryCreateRule get() {
-        return new FactoryCreateRule(this.factoryClass,
-                this.ignoreCreateExceptions);
+    public FactoryCreateRule get()
+    {
+        return new FactoryCreateRule( this.factoryClass, this.ignoreCreateExceptions );
     }
 
 }
