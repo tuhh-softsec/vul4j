@@ -83,7 +83,7 @@ public abstract class AbstractRulesModule
      */
     protected LinkedRuleBuilder forPattern( String pattern )
     {
-        return new LinkedRuleBuilder();
+        return this.rulesBinder.forPattern( pattern );
     }
 
     /**
