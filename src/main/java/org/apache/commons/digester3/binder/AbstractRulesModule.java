@@ -33,7 +33,7 @@ public abstract class AbstractRulesModule
      */
     public final void configure( RulesBinder rulesBinder )
     {
-        if ( this.rulesBinder == null )
+        if ( this.rulesBinder != null )
         {
             throw new IllegalStateException( "Re-entry is not allowed." );
         }
