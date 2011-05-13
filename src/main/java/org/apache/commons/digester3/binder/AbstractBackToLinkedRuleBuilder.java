@@ -82,11 +82,9 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
     }
 
     /**
-     * Returns the rule pattern associated to this builder.
-     *
-     * @return The rule pattern associated to this builder
+     * {@inheritDoc}
      */
-    protected final String getKeyPattern()
+    public final String getPattern()
     {
         return keyPattern;
     }

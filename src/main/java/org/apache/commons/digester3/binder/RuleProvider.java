@@ -35,6 +35,13 @@ public interface RuleProvider<R extends Rule>
     String getNamespaceURI();
 
     /**
+     * Returns the rule pattern associated to this builder.
+     *
+     * @return The rule pattern associated to this builder
+     */
+    String getPattern();
+
+    /**
      * Provides an instance of {@link Rule}. Must never return null.
      *
      * @return an instance of {@link Rule}.
