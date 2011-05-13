@@ -71,7 +71,12 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
         super(doc);
 
         StringBuilder sb = new StringBuilder();
-        SortedSet<String> prefixList = new TreeSet<String>(prefixes);
+        SortedSet<String> prefixList = null;
+        if (prefixes instanceof SortedSet<?>) {
+            prefixList = (SortedSet<String>)prefixes;
+        } else {
+            prefixList = new TreeSet<String>(prefixes);
+        }
 
         for (String prefix : prefixList) {
             if (prefix.equals("xmlns")) {

@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -59,7 +61,6 @@ import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -1075,8 +1076,8 @@ public class XMLCipher {
             EncryptionMethod method =
                 factory.newEncryptionMethod(new URI(algorithm).toString());
             ed.setEncryptionMethod(method);
-        } catch (URI.MalformedURIException mfue) {
-            throw new XMLEncryptionException("empty", mfue);
+        } catch (URISyntaxException ex) {
+            throw new XMLEncryptionException("empty", ex);
         }
         return ed;
     }
@@ -1237,8 +1238,8 @@ public class XMLCipher {
         try {
             EncryptionMethod method = factory.newEncryptionMethod(new URI(algorithm).toString());
             ek.setEncryptionMethod(method);
-        } catch (URI.MalformedURIException mfue) {
-            throw new XMLEncryptionException("empty", mfue);
+        } catch (URISyntaxException ex) {
+            throw new XMLEncryptionException("empty", ex);
         }
         return ek;
     }
@@ -2388,9 +2389,9 @@ public class XMLCipher {
                 URI tmpAlgorithm = null;
                 try {
                     tmpAlgorithm = new URI(algorithm);
-                } catch (URI.MalformedURIException fmue) {
+                } catch (URISyntaxException ex) {
                     throw (IllegalArgumentException) 
-                    new IllegalArgumentException().initCause(fmue);
+                    new IllegalArgumentException().initCause(ex);
                 }
                 algorithmURI = tmpAlgorithm.toString();
             }
@@ -2584,7 +2585,7 @@ public class XMLCipher {
 
             /** @inheritDoc */
             public String getValue() {
-                return (cipherValue);
+                return cipherValue;
             }
 
             /** @inheritDoc */
@@ -2806,9 +2807,9 @@ public class XMLCipher {
                     URI tmpType = null;
                     try {
                         tmpType = new URI(type);
-                    } catch (URI.MalformedURIException mfue) {
+                    } catch (URISyntaxException ex) {
                         throw (IllegalArgumentException) 
-                        new IllegalArgumentException().initCause(mfue);
+                        new IllegalArgumentException().initCause(ex);
                     }
                     this.type = tmpType.toString();
                 }
@@ -2848,9 +2849,9 @@ public class XMLCipher {
                     URI tmpEncoding = null;
                     try {
                         tmpEncoding = new URI(encoding);
-                    } catch (URI.MalformedURIException mfue) {
+                    } catch (URISyntaxException ex) {
                         throw (IllegalArgumentException) 
-                        new IllegalArgumentException().initCause(mfue);
+                        new IllegalArgumentException().initCause(ex);
                     }
                     this.encoding = tmpEncoding.toString();
                 }
@@ -2927,9 +2928,9 @@ public class XMLCipher {
                 URI tmpAlgorithm = null;
                 try {
                     tmpAlgorithm = new URI(algorithm);
-                } catch (URI.MalformedURIException mfue) {
+                } catch (URISyntaxException ex) {
                     throw (IllegalArgumentException)
-                    new IllegalArgumentException().initCause(mfue);
+                    new IllegalArgumentException().initCause(ex);
                 }
                 this.algorithm = tmpAlgorithm.toString();
                 encryptionMethodInformation = new LinkedList<Element>();
@@ -3094,9 +3095,9 @@ public class XMLCipher {
                     URI tmpTarget = null;
                     try {
                         tmpTarget = new URI(target);
-                    } catch (URI.MalformedURIException mfue) {
+                    } catch (URISyntaxException ex) {
                         throw (IllegalArgumentException)
-                        new IllegalArgumentException().initCause(mfue);
+                        new IllegalArgumentException().initCause(ex);
                     }
                     this.target = tmpTarget.toString();
                 }
