@@ -56,6 +56,24 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Calls a method on an object on the stack (normally the top/parent object), passing arguments collected from
+     * subsequent {@link #callParam(int)} rule or from the body of this element.
+     *
+     * @param methodName Method name of the parent object to call
+     */
+    public CallMethodBuilder callMethod( String methodName )
+    {
+        if ( methodName == null || methodName.length() == 0 )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).callMethod( String ) } empty 'methodName' not allowed",
+                                 keyPattern );
+        }
+
+        return this.addProvider( new CallMethodBuilder( keyPattern, namespaceURI, mainBinder, this, methodName,
+                                                        classLoader ) );
+    }
+
+    /**
      * Sets the namespace URI for the current rule pattern.
      *
      * @param namespaceURI the namespace URI associated to the rule pattern.
