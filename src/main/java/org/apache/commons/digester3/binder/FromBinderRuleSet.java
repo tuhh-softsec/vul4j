@@ -104,6 +104,15 @@ final class FromBinderRuleSet
     }
 
     /**
+     * Clean the provider index.
+     */
+    public void clear()
+    {
+        providers.clear();
+        providersIndex.clear();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void addRuleInstances( Digester digester )
