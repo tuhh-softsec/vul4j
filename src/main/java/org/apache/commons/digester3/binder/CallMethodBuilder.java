@@ -42,8 +42,8 @@ public final class CallMethodBuilder
 
     private boolean useExactMatch = false;
 
-    public CallMethodBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder,
-                              LinkedRuleBuilder mainBuilder, String methodName, ClassLoader classLoader )
+    CallMethodBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder, LinkedRuleBuilder mainBuilder,
+                       String methodName, ClassLoader classLoader )
     {
         super( keyPattern, namespaceURI, mainBinder, mainBuilder );
         this.methodName = methodName;
