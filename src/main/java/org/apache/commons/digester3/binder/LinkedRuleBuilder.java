@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.binder;
 
+import org.apache.commons.digester3.Rule;
+
 /**
  * Builder invoked to bind one or more rules to a pattern.
  *
@@ -25,7 +27,32 @@ package org.apache.commons.digester3.binder;
 public final class LinkedRuleBuilder
 {
 
+    private final RulesBinder mainBinder;
+
+    private final FromBinderRuleSet fromBinderRuleSet;
+
+    private final ClassLoader classLoader;
+
+    private final String keyPattern;
+
     private String namespaceURI;
+
+    LinkedRuleBuilder( final RulesBinder mainBinder, final FromBinderRuleSet fromBinderRuleSet,
+                       final ClassLoader classLoader, final String keyPattern )
+    {
+        this.mainBinder = mainBinder;
+        this.fromBinderRuleSet = fromBinderRuleSet;
+        this.classLoader = classLoader;
+        this.keyPattern = keyPattern;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BeanPropertySetterBuilder setBeanProperty()
+    {
+        return addProvider( new BeanPropertySetterBuilder( this.keyPattern, this.namespaceURI, this.mainBinder, this ) );
+    }
 
     /**
      * Sets the namespace URI for the current rule pattern.
@@ -46,6 +73,19 @@ public final class LinkedRuleBuilder
         }
 
         return this;
+    }
+
+    /**
+     * Add a provider in the data structure where storing the providers binding.
+     *
+     * @param <R> The rule will be created by the given provider
+     * @param provider The provider has to be stored in the data structure
+     * @return The provider itself has to be stored in the data structure
+     */
+    private <R extends Rule, RP extends RuleProvider<R>> RP addProvider( RP provider )
+    {
+        fromBinderRuleSet.registerProvider( provider );
+        return provider;
     }
 
 }
