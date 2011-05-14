@@ -23,6 +23,8 @@ import org.apache.commons.digester3.CallMethodRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#callMethod(String)}.
+ *
+ * @since 3.0
  */
 public final class CallMethodBuilder
     extends AbstractBackToLinkedRuleBuilder<CallMethodRule>
