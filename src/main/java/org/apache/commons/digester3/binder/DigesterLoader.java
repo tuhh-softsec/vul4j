@@ -391,6 +391,7 @@ public final class DigesterLoader
         Digester digester = new Digester(reader);
         digester.setRules( rules );
         digester.setSubstitutor( substitutor );
+        digester.registerAll( entityValidator );
 
         addRules( digester );
 
