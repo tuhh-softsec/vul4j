@@ -19,10 +19,7 @@ package org.apache.commons.digester3.binder;
 
 import static java.lang.String.format;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 import org.apache.commons.digester3.RuleSet;
@@ -34,11 +31,6 @@ import org.apache.commons.digester3.RuleSet;
  */
 public final class RulesBinder
 {
-
-    /**
-     * The default head when reporting an errors list.
-     */
-    private static final String HEADING = "Digester creation errors:%n%n";
 
     /**
      * Errors that can occur during binding time or rules creation.
@@ -197,42 +189,41 @@ public final class RulesBinder
 
     /**
      * 
+     *
      * @return
      */
-    RuleSet buildRuleSet()
+    boolean hasError()
     {
-        if ( !this.errors.isEmpty() )
-        {
-            Formatter fmt = new Formatter().format( HEADING );
-            int index = 1;
+        return !errors.isEmpty();
+    }
 
-            for ( ErrorMessage errorMessage : this.errors )
-            {
-                fmt.format( "%s) %s%n", index++, errorMessage.getMessage() );
+    /**
+     * 
+     *
+     * @return
+     */
+    int errorsSize()
+    {
+        return errors.size();
+    }
 
-                Throwable cause = errorMessage.getCause();
-                if ( cause != null )
-                {
-                    StringWriter writer = new StringWriter();
-                    cause.printStackTrace( new PrintWriter( writer ) );
-                    fmt.format( "Caused by: %s", writer.getBuffer() );
-                }
+    /**
+     * 
+     *
+     * @return
+     */
+    Iterable<ErrorMessage> getErrors()
+    {
+        return errors;
+    }
 
-                fmt.format( "%n" );
-            }
-
-            if ( this.errors.size() == 1 )
-            {
-                fmt.format( "1 error" );
-            }
-            else
-            {
-                fmt.format( "%s errors", this.errors.size() );
-            }
-
-            throw new DigesterLoadingException( fmt.toString() );
-        }
-
+    /**
+     * 
+     *
+     * @return
+     */
+    RuleSet getFromBinderRuleSet()
+    {
         return fromBinderRuleSet;
     }
 
