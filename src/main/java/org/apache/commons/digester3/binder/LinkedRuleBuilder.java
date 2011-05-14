@@ -47,7 +47,8 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * {@inheritDoc}
+     * Construct rule that automatically sets a property from the body text, taking the property
+     * name the same as the current element.
      */
     public BeanPropertySetterBuilder setBeanProperty()
     {
