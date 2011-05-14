@@ -1844,6 +1844,18 @@ public class Digester
     }
 
     /**
+     * Convenience method that registers DTD URLs for the specified public identifiers.
+     *
+     * @param entityValidator The URLs of entityValidator that have been registered, keyed by the public
+     *                        identifier that corresponds.
+     * @since 3.0
+     */
+    public void registerAll( Map<String, URL> entityValidator )
+    {
+        entityValidator.putAll( entityValidator );
+    }
+
+    /**
      * <p>
      * <code>List</code> of <code>InputSource</code> instances created by a <code>createInputSourceFromURL()</code>
      * method call. These represent open input streams that need to be closed to avoid resource leaks, as well as
