@@ -64,8 +64,8 @@ final class FromBinderRuleSet
         Collection<RuleProvider<? extends Rule>> indexedProviders = this.providersIndex.get( key ); // O(1)
         if ( indexedProviders == null )
         {
-            indexedProviders = new ArrayList<RuleProvider<? extends Rule>>(); // O(1)
-            this.providersIndex.put( key, indexedProviders );
+            indexedProviders = new ArrayList<RuleProvider<? extends Rule>>();
+            this.providersIndex.put( key, indexedProviders ); // O(1)
         }
         indexedProviders.add( provider );
     }
