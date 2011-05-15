@@ -108,6 +108,16 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
+     *
+     * @param <T> The parameter type to pass along
+     * @param paramObj The parameter to pass along
+     */
+    public <T> ObjectParamBuilder<T> objectParam(/* @Nullable */T paramObj) {
+        return addProvider( new ObjectParamBuilder<T>( keyPattern, namespaceURI, mainBinder, this, paramObj ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
