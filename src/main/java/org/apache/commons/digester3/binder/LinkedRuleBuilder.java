@@ -92,6 +92,23 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Add a custom user rule in the specified pattern built by the given provider.
+     *
+     * @param <R>
+     * @param provider
+     * @return
+     */
+    public <R extends Rule> ByRuleProviderBuilder<R> addRuleCreatedBy(RuleProvider<R> provider)
+    {
+        if ( provider == null )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).addRuleCreatedBy() } null rule provider not valid", keyPattern );
+        }
+
+        return addProvider( new ByRuleProviderBuilder<R>( keyPattern, namespaceURI, mainBinder, this, provider ) );
+    }
+
+    /**
      * Sets the namespace URI for the current rule pattern.
      *
      * @param namespaceURI the namespace URI associated to the rule pattern.
