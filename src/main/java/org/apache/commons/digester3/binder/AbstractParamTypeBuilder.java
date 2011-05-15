@@ -107,17 +107,17 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
         return this;
     }
 
-    protected final String getMethodName()
+    final String getMethodName()
     {
         return methodName;
     }
 
-    protected final Class<?> getParamType()
+    final Class<?> getParamType()
     {
         return paramType;
     }
 
-    protected final boolean isUseExactMatch()
+    final boolean isUseExactMatch()
     {
         return useExactMatch;
     }
