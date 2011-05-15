@@ -119,6 +119,20 @@ public class SetPropertiesRule
         }
     }
 
+    /**
+     * Constructor allows attribute->property mapping to be overriden.
+     *
+     * @param aliases attribute->property mapping
+     * @since 3.0
+     */
+    public SetPropertiesRule( Map<String, String> aliases )
+    {
+        if ( aliases != null && !aliases.isEmpty() )
+        {
+            this.aliases.putAll( aliases );
+        }
+    }
+
     // ----------------------------------------------------- Instance Variables
 
     private final Map<String, String> aliases = new HashMap<String, String>();
