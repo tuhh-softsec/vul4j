@@ -84,8 +84,9 @@ public final class LinkedRuleBuilder
     /**
      * Construct a "call parameter" rule that will save the body text of this element as the parameter value.
      */
-    public PathCallParamBuilder callParamPath() {
-        return this.addProvider(new PathCallParamBuilder(this.keyPattern, this.namespaceURI, this.mainBinder, this));
+    public PathCallParamBuilder callParamPath()
+    {
+        return addProvider( new PathCallParamBuilder( keyPattern, namespaceURI, mainBinder, this ) );
     }
 
     /**
