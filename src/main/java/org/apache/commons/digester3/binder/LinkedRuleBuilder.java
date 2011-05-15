@@ -74,6 +74,14 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
+     */
+    public CallParamBuilder callParam()
+    {
+        return this.addProvider( new CallParamBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Sets the namespace URI for the current rule pattern.
      *
      * @param namespaceURI the namespace URI associated to the rule pattern.
