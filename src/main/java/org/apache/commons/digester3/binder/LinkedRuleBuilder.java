@@ -136,6 +136,21 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Sets properties on the object at the top of the stack,
+     * based on child elements with names matching properties on that  object.
+     */
+    public SetNextBuilder setNext( String methodName )
+    {
+        if ( methodName == null || methodName.length() == 0 )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).setNext( String ) } empty 'methodName' not allowed",
+                                 keyPattern );
+        }
+        return this.addProvider( new SetNextBuilder( keyPattern, namespaceURI, mainBinder, this, methodName,
+                                                     classLoader ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
