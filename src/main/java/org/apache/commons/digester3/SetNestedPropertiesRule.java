@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.beans.PropertyDescriptor;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -188,6 +189,20 @@ public class SetNestedPropertiesRule
             }
 
             this.elementNames.put( elementNames[i], propName );
+        }
+    }
+
+    /**
+     * Constructor which allows element->property mapping to be overridden.
+     *
+     * @param elementNames names of elements->properties to map
+     * @since 3.0
+     */
+    public SetNestedPropertiesRule( Map<String, String> elementNames )
+    {
+        if ( elementNames != null && !elementNames.isEmpty() )
+        {
+            this.elementNames.putAll( elementNames );
         }
     }
 
