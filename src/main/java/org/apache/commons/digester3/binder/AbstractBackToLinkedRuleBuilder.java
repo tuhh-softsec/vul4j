@@ -56,7 +56,9 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the namespace URI for which this Rule is relevant, if any.
+     *
+     * @return The namespace URI for which this Rule is relevant, if any
      */
     public final String getNamespaceURI()
     {
@@ -82,7 +84,9 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the rule pattern associated to this builder.
+     *
+     * @return The rule pattern associated to this builder
      */
     public final String getPattern()
     {

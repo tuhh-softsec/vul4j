@@ -28,20 +28,6 @@ public interface RuleProvider<R extends Rule>
 {
 
     /**
-     * Returns the namespace URI for which this Rule is relevant, if any.
-     *
-     * @return The namespace URI for which this Rule is relevant, if any
-     */
-    String getNamespaceURI();
-
-    /**
-     * Returns the rule pattern associated to this builder.
-     *
-     * @return The rule pattern associated to this builder
-     */
-    String getPattern();
-
-    /**
      * Provides an instance of {@link Rule}. Must never return null.
      *
      * @return an instance of {@link Rule}.

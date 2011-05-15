@@ -40,59 +40,63 @@ final class FromBinderRuleSet
     /**
      * The data structure where storing the providers binding.
      */
-    private final Collection<RuleProvider<? extends Rule>> providers = new LinkedList<RuleProvider<? extends Rule>>();
+    private final Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>> providers =
+        new LinkedList<AbstractBackToLinkedRuleBuilder<? extends Rule>>();
 
     /**
      * Index for quick-retrieve provider.
      */
-    private final Map<Key, Collection<RuleProvider<? extends Rule>>> providersIndex =
-        new HashMap<Key, Collection<RuleProvider<? extends Rule>>>();
+    private final Map<Key, Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>>> providersIndex =
+        new HashMap<Key, Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>>>();
 
     /**
      * 
      *
      * @param <R>
-     * @param <RP>
-     * @param provider
+     * @param <RB>
+     * @param ruleBuilder
      */
-    public <R extends Rule, RP extends RuleProvider<R>> void registerProvider( RP provider )
+    public <R extends Rule, RB extends AbstractBackToLinkedRuleBuilder<R>> void registerProvider( RB ruleBuilder )
     {
-        this.providers.add( provider );
+        this.providers.add( ruleBuilder );
 
-        Key key = new Key( provider.getPattern(), provider.getNamespaceURI() );
+        Key key = new Key( ruleBuilder.getPattern(), ruleBuilder.getNamespaceURI() );
 
-        Collection<RuleProvider<? extends Rule>> indexedProviders = this.providersIndex.get( key ); // O(1)
+        // O(1)
+        Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>> indexedProviders = this.providersIndex.get( key );
         if ( indexedProviders == null )
         {
-            indexedProviders = new ArrayList<RuleProvider<? extends Rule>>();
+            indexedProviders = new ArrayList<AbstractBackToLinkedRuleBuilder<? extends Rule>>();
             this.providersIndex.put( key, indexedProviders ); // O(1)
         }
-        indexedProviders.add( provider );
+        indexedProviders.add( ruleBuilder );
     }
 
     /**
      * 
      *
      * @param <R>
-     * @param <RP>
+     * @param <RB>
      * @param keyPattern
      * @param namespaceURI
      * @param type
      * @return
      */
-    public <R extends Rule, RP extends RuleProvider<R>> RP getProvider( String keyPattern,
-    /* @Nullable */String namespaceURI, Class<RP> type )
+    public <R extends Rule, RB extends AbstractBackToLinkedRuleBuilder<R>> RB getProvider( String keyPattern,
+    /* @Nullable */String namespaceURI, Class<RB> type )
     {
         Key key = new Key( keyPattern, namespaceURI );
 
-        Collection<RuleProvider<? extends Rule>> indexedProviders = this.providersIndex.get( key ); // O(1)
+        // O(1)
+        Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>> indexedProviders = this.providersIndex.get( key );
 
         if ( indexedProviders == null || indexedProviders.isEmpty() )
         {
             return null;
         }
 
-        for ( RuleProvider<? extends Rule> ruleProvider : indexedProviders ) // FIXME O(n) not so good
+        // FIXME O(n) not so good
+        for ( AbstractBackToLinkedRuleBuilder<? extends Rule> ruleProvider : indexedProviders )
         {
             if ( type.isInstance( ruleProvider ) )
             {
@@ -117,7 +121,7 @@ final class FromBinderRuleSet
      */
     public void addRuleInstances( Digester digester )
     {
-        for ( RuleProvider<? extends Rule> provider : providers ) {
+        for ( AbstractBackToLinkedRuleBuilder<? extends Rule> provider : providers ) {
             digester.addRule( provider.getPattern(), provider.get() );
         }
     }

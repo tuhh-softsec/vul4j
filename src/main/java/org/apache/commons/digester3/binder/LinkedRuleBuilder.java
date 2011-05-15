@@ -109,7 +109,7 @@ public final class LinkedRuleBuilder
      * @param provider The provider has to be stored in the data structure
      * @return The provider itself has to be stored in the data structure
      */
-    private <R extends Rule, RP extends RuleProvider<R>> RP addProvider( RP provider )
+    private <R extends Rule, RB extends AbstractBackToLinkedRuleBuilder<R>> RB addProvider( RB provider )
     {
         fromBinderRuleSet.registerProvider( provider );
         return provider;
