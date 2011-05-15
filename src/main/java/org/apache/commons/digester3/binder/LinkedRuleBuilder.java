@@ -201,6 +201,21 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Calls a "set top" method on the top (child) object, passing the (top-1) (parent) object as an argument.
+     *
+     * @param methodName Method name of the "set parent" method to call
+     */
+    public SetTopBuilder setTop( String methodName )
+    {
+        if ( methodName == null || methodName.length() == 0 )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).setTop( String ) } empty 'methodName' not allowed", keyPattern );
+        }
+
+        return addProvider( new SetTopBuilder( keyPattern, namespaceURI, mainBinder, this, methodName, classLoader ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
