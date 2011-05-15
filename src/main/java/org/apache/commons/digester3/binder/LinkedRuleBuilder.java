@@ -82,6 +82,16 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
+     *
+     * When the element is complete, the object will be popped.
+     */
+    public FactoryCreateBuilder factoryCreate()
+    {
+        return this.addProvider( new FactoryCreateBuilder( keyPattern, namespaceURI, mainBinder, this, classLoader ) );
+    }
+
+    /**
      * Sets the namespace URI for the current rule pattern.
      *
      * @param namespaceURI the namespace URI associated to the rule pattern.
