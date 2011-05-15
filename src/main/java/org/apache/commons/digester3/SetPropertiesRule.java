@@ -19,6 +19,7 @@
 package org.apache.commons.digester3;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -66,11 +67,7 @@ public class SetPropertiesRule
      */
     public SetPropertiesRule( String attributeName, String propertyName )
     {
-
-        attributeNames = new String[1];
-        attributeNames[0] = attributeName;
-        propertyNames = new String[1];
-        propertyNames[0] = propertyName;
+        aliases.put( attributeName, propertyName );
     }
 
     /**
@@ -110,31 +107,21 @@ public class SetPropertiesRule
      */
     public SetPropertiesRule( String[] attributeNames, String[] propertyNames )
     {
-        // create local copies
-        this.attributeNames = new String[attributeNames.length];
         for ( int i = 0, size = attributeNames.length; i < size; i++ )
         {
-            this.attributeNames[i] = attributeNames[i];
-        }
+            String propName = null;
+            if ( i < propertyNames.length )
+            {
+                propName = propertyNames[i];
+            }
 
-        this.propertyNames = new String[propertyNames.length];
-        for ( int i = 0, size = propertyNames.length; i < size; i++ )
-        {
-            this.propertyNames[i] = propertyNames[i];
+            aliases.put( attributeNames[i], propName );
         }
     }
 
     // ----------------------------------------------------- Instance Variables
 
-    /**
-     * Attribute names used to override natural attribute->property mapping
-     */
-    private String[] attributeNames;
-
-    /**
-     * Property names used to override natural attribute->property mapping
-     */
-    private String[] propertyNames;
+    private final Map<String, String> aliases = new HashMap<String, String>();
 
     /**
      * Used to determine whether the parsing should fail if an property specified in the XML is missing from the bean.
@@ -153,21 +140,8 @@ public class SetPropertiesRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         // Build a set of attribute names and corresponding values
-        HashMap<String, String> values = new HashMap<String, String>();
-
-        // set up variables for custom names mappings
-        int attNamesLength = 0;
-        if ( attributeNames != null )
-        {
-            attNamesLength = attributeNames.length;
-        }
-        int propNamesLength = 0;
-        if ( propertyNames != null )
-        {
-            propNamesLength = propertyNames.length;
-        }
+        Map<String, String> values = new HashMap<String, String>();
 
         for ( int i = 0; i < attributes.getLength(); i++ )
         {
@@ -178,25 +152,10 @@ public class SetPropertiesRule
             }
             String value = attributes.getValue( i );
 
-            // we'll now check for custom mappings
-            for ( int n = 0; n < attNamesLength; n++ )
+            // alias lookup has complexity O(1)
+            if ( aliases.containsKey( attributeName ) )
             {
-                if ( attributeName.equals( attributeNames[n] ) )
-                {
-                    if ( n < propNamesLength )
-                    {
-                        // set this to value from list
-                        attributeName = propertyNames[n];
-
-                    }
-                    else
-                    {
-                        // set name to null
-                        // we'll check for this later
-                        attributeName = null;
-                    }
-                    break;
-                }
+                attributeName = aliases.get( attributeName );
             }
 
             if ( getDigester().getLogger().isDebugEnabled() )
@@ -263,39 +222,7 @@ public class SetPropertiesRule
      */
     public void addAlias( String attributeName, String propertyName )
     {
-
-        // this is a bit tricky.
-        // we'll need to resize the array.
-        // probably should be synchronized but digester's not thread safe anyway
-        if ( attributeNames == null )
-        {
-
-            attributeNames = new String[1];
-            attributeNames[0] = attributeName;
-            propertyNames = new String[1];
-            propertyNames[0] = propertyName;
-
-        }
-        else
-        {
-            int length = attributeNames.length;
-            String[] tempAttributes = new String[length + 1];
-            for ( int i = 0; i < length; i++ )
-            {
-                tempAttributes[i] = attributeNames[i];
-            }
-            tempAttributes[length] = attributeName;
-
-            String[] tempProperties = new String[length + 1];
-            for ( int i = 0; i < length && i < propertyNames.length; i++ )
-            {
-                tempProperties[i] = propertyNames[i];
-            }
-            tempProperties[length] = propertyName;
-
-            propertyNames = tempProperties;
-            attributeNames = tempAttributes;
-        }
+        aliases.put( attributeName, propertyName );
     }
 
     /**
