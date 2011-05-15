@@ -100,6 +100,15 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Construct an object.
+     */
+    public ObjectCreateBuilder createObject()
+    {
+        return this.addProvider(
+                                new ObjectCreateBuilder(keyPattern, namespaceURI, mainBinder, this, classLoader));
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
