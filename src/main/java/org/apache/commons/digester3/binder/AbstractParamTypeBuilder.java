@@ -24,6 +24,8 @@ import org.apache.commons.digester3.Rule;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilderImpl#setNext(String)},
  * {@link LinkedRuleBuilderImpl#setRoot(String)} or {@link LinkedRuleBuilderImpl#setTop(String)}.
+ *
+ * @since 3.0
  */
 abstract class AbstractParamTypeBuilder<R extends Rule>
     extends AbstractBackToLinkedRuleBuilder<R>
