@@ -2215,7 +2215,7 @@ public class Digester
      * @param attributeName Attribute name which, if present, overrides the value specified by <code>className</code>
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, Class<?> clazz, String attributeName )
+    public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz, String attributeName )
     {
 
         addFactoryCreate( pattern, clazz, attributeName, false );
@@ -2297,7 +2297,8 @@ public class Digester
      *            ignored.
      * @see FactoryCreateRule
      */
-    public void addFactoryCreate( String pattern, Class<?> clazz, String attributeName, boolean ignoreCreateExceptions )
+    public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz,
+                                  String attributeName, boolean ignoreCreateExceptions )
     {
 
         addRule( pattern, new FactoryCreateRule( clazz, attributeName, ignoreCreateExceptions ) );
