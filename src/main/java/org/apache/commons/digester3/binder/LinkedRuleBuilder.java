@@ -136,8 +136,10 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * Sets properties on the object at the top of the stack,
-     * based on child elements with names matching properties on that  object.
+     * Calls a method on the (top-1) (parent) object, passing the top object (child) as an argument,
+     * commonly used to establish parent-child relationships.
+     *
+     * @param methodName Method name of the parent method to call
      */
     public SetNextBuilder setNext( String methodName )
     {
