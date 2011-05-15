@@ -18,7 +18,11 @@
 
 package org.apache.commons.digester3;
 
-import static org.junit.Assert.*;
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,13 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.digester3.BeanPropertySetterRule;
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.ExtendedBaseRules;
-import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.RulesBase;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -53,35 +51,6 @@ public class BeanPropertySetterRuleTestCase
     protected final static String TEST_XML = "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<alpha>ALPHA BODY</alpha>"
         + "<beta>BETA BODY</beta>" + "<gamma>GAMMA BODY</gamma>" + "<delta>DELTA BODY</delta>" + "</root>";
 
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
-
     // ------------------------------------------------ Individual Test Methods
 
     /**
@@ -93,25 +62,23 @@ public class BeanPropertySetterRuleTestCase
         throws SAXException, IOException
     {
 
-        List<Rule> callOrder = new ArrayList<Rule>();
+        final List<Rule> callOrder = new ArrayList<Rule>();
 
-        // use the standard rules
-        digester.setRules( new RulesBase() );
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // add first test rule
-        TestRule firstRule = new TestRule( "first" );
-        firstRule.setOrder( callOrder );
-        digester.addRule( "root/alpha", firstRule );
+            @Override
+            protected void configure()
+            {
+                // add first test rule
+                forPattern( "root/alpha" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "first", callOrder ) );
+                // add second test rule
+                forPattern( "root/alpha" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "second", callOrder ) );
+                // add third test rule
+                forPattern( "root/alpha" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "third", callOrder ) );
+            }
 
-        // add second test rule
-        TestRule secondRule = new TestRule( "second" );
-        secondRule.setOrder( callOrder );
-        digester.addRule( "root/alpha", secondRule );
-
-        // add third test rule
-        TestRule thirdRule = new TestRule( "third" );
-        thirdRule.setOrder( callOrder );
-        digester.addRule( "root/alpha", thirdRule );
+        }).newDigester();
 
         digester.parse( xmlTestReader() );
 
@@ -154,35 +121,31 @@ public class BeanPropertySetterRuleTestCase
     public void testDigesterBodyTextStack()
         throws SAXException, IOException
     {
+        final List<Rule> callOrder = new ArrayList<Rule>();
 
-        // use the standard rules
-        digester.setRules( new RulesBase() );
+        Digester digester = newLoader(new AbstractRulesModule()
+        {
 
-        // add test rule to catch body text
-        TestRule rootRule = new TestRule( "root" );
-        digester.addRule( "root", rootRule );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "root", callOrder ) );
+                forPattern( "root/alpha" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "root/alpha", callOrder ) );
+                forPattern( "root/beta" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "root/beta", callOrder ) );
+                forPattern( "root/gamma" ).addRuleCreatedBy( new TestRule.TestRuleProvider( "root/gamma", callOrder ) );
+            }
 
-        // add test rule to catch body text
-        TestRule alphaRule = new TestRule( "root/alpha" );
-        digester.addRule( "root/alpha", alphaRule );
-
-        // add test rule to catch body text
-        TestRule betaRule = new TestRule( "root/beta" );
-        digester.addRule( "root/beta", betaRule );
-
-        // add test rule to catch body text
-        TestRule gammaRule = new TestRule( "root/gamma" );
-        digester.addRule( "root/gamma", gammaRule );
+        }).newDigester();
 
         digester.parse( xmlTestReader() );
 
-        assertEquals( "Root body text not set correct.", "ROOT BODY", rootRule.getBodyText() );
+        assertEquals( "Root body text not set correct.", "ROOT BODY", ( (TestRule) callOrder.get( 0 ) ).getBodyText() );
 
-        assertEquals( "Alpha body text not set correct.", "ALPHA BODY", alphaRule.getBodyText() );
+        assertEquals( "Alpha body text not set correct.", "ALPHA BODY", ( (TestRule) callOrder.get( 1 ) ).getBodyText() );
 
-        assertEquals( "Beta body text not set correct.", "BETA BODY", betaRule.getBodyText() );
+        assertEquals( "Beta body text not set correct.", "BETA BODY", ( (TestRule) callOrder.get( 4 ) ).getBodyText() );
 
-        assertEquals( "Gamma body text not set correct.", "GAMMA BODY", gammaRule.getBodyText() );
+        assertEquals( "Gamma body text not set correct.", "GAMMA BODY", ( (TestRule) callOrder.get( 7 ) ).getBodyText() );
 
     }
 
@@ -193,23 +156,24 @@ public class BeanPropertySetterRuleTestCase
     public void testSetGivenProperty()
         throws SAXException, IOException
     {
+        Digester digester = newLoader(new AbstractRulesModule()
+        {
 
-        // use the standard rules
-        digester.setRules( new RulesBase() );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( SimpleTestBean.class );
+                forPattern( "root" ).setBeanProperty().withName( "alpha" );
 
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+                // we'll set property beta with the body text of child element alpha
+                forPattern( "root/alpha" ).setBeanProperty().withName( "beta" );
+                // we'll leave property gamma alone
 
-        // we'll set property alpha with the body text of root
-        digester.addRule( "root", new BeanPropertySetterRule( "alpha" ) );
+                // we'll set property delta (a write-only property) also
+                forPattern( "root/delta" ).setBeanProperty().withName( "delta" );
+            }
 
-        // we'll set property beta with the body text of child element alpha
-        digester.addRule( "root/alpha", new BeanPropertySetterRule( "beta" ) );
-
-        // we'll leave property gamma alone
-
-        // we'll set property delta (a write-only property) also
-        digester.addRule( "root/delta", new BeanPropertySetterRule( "delta" ) );
+        }).newDigester();
 
         SimpleTestBean bean = digester.parse( xmlTestReader() );
 
@@ -230,12 +194,20 @@ public class BeanPropertySetterRuleTestCase
     @Test
     public void testSetUnknownProperty()
     {
+        Digester digester = newLoader(new AbstractRulesModule()
+        {
 
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" );
+                forPattern( "root" ).setBeanProperty().withName( "alpha" );
 
-        // attempt to set an unknown property name
-        digester.addRule( "root/alpha", new BeanPropertySetterRule( "unknown" ) );
+                // attempt to set an unknown property name
+                forPattern( "root/alpha" ).setBeanProperty().withName( "unknown" );
+            }
+
+        }).newDigester();
 
         // Attempt to parse the input
         try
@@ -269,15 +241,17 @@ public class BeanPropertySetterRuleTestCase
     public void testAutomaticallySetProperties()
         throws SAXException, IOException
     {
+        Digester digester = newLoader(new AbstractRulesModule()
+        {
 
-        // need the extended rules
-        digester.setRules( new ExtendedBaseRules() );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" );
+                forPattern( "root/?" ).setBeanProperty();
+            }
 
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        // match all children of root with this rule
-        digester.addRule( "root/?", new BeanPropertySetterRule() );
+        }).newDigester( new ExtendedBaseRules() );
 
         SimpleTestBean bean = digester.parse( xmlTestReader() );
 
