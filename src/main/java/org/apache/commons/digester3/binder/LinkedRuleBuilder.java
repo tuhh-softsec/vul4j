@@ -153,7 +153,7 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * {@inheritDoc}
+     * Sets properties on the object at the top of the stack, based on attributes with corresponding names.
      */
     public SetPropertiesBuilder setProperties()
     {
