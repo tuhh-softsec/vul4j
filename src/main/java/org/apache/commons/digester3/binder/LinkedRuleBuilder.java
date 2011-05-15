@@ -228,6 +228,17 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * 
+     *
+     * NOTE: when using this rule, make sure {@link org.apache.commons.digester3.Digester} instances
+     * will be created using {@link org.apache.commons.digester3.plugins.PluginRules} rules strategy.
+     */
+    public PluginCreateRuleBuilder createPlugin()
+    {
+        return addProvider( new PluginCreateRuleBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
