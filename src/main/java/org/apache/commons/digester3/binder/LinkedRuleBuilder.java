@@ -216,6 +216,18 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * A Digester rule which allows the user to pre-declare a class which is to
+     * be referenced later at a plugin point by a PluginCreateRule.
+     *
+     * NOTE: when using this rule, make sure {@link org.apache.commons.digester3.Digester} instances
+     * will be created using {@link org.apache.commons.digester3.plugins.PluginRules} rules strategy.
+     */
+    public PluginDeclarationRuleBuilder declarePlugin()
+    {
+        return addProvider( new PluginDeclarationRuleBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
