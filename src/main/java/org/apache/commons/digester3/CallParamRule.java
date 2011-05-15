@@ -134,6 +134,17 @@ public class CallParamRule
     // --------------------------------------------------------- Public Methods
 
     /**
+     * Set the attribute from which to save the parameter value.
+     *
+     * @param The attribute from which to save the parameter value
+     * @since 3.0
+     */
+    public void setAttributeName( String attributeName )
+    {
+        this.attributeName = attributeName;
+    }
+
+    /**
      * Process the start of this element.
      * 
      * @param attributes The attribute list for this element
