@@ -119,6 +119,23 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Sets properties on the object at the top of the stack,
+     * based on child elements with names matching properties on that  object.
+     */
+    public NestedPropertiesBuilder setNestedProperties()
+    {
+        // that would be useful when adding rules via automatically generated rules binding (such annotations)
+        NestedPropertiesBuilder nestedPropertiesBuilder =
+            fromBinderRuleSet.getProvider( keyPattern, namespaceURI, NestedPropertiesBuilder.class );
+        if ( nestedPropertiesBuilder != null )
+        {
+            return nestedPropertiesBuilder;
+        }
+
+        return addProvider( new NestedPropertiesBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
