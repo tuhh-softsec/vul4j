@@ -185,6 +185,22 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Calls a method on the root object on the stack, passing the top object (child) as an argument.
+     *
+     * @param methodName Method name of the parent method to call
+     */
+    public SetRootBuilder setRoot( String methodName )
+    {
+        if ( methodName == null || methodName.length() == 0 )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).setRoot( String ) } empty 'methodName' not allowed",
+                                 keyPattern );
+        }
+
+        return addProvider( new SetRootBuilder( keyPattern, namespaceURI, mainBinder, this, methodName, classLoader ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
