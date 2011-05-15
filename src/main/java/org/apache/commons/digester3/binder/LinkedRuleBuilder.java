@@ -169,6 +169,22 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Sets an individual property on the object at the top of the stack, based on attributes with specified names.
+     *
+     * @param attributePropertyName Name of the attribute that will contain the name of the property to be set
+     */
+    public SetPropertyBuilder setProperty( String attributePropertyName )
+    {
+        if ( attributePropertyName == null || attributePropertyName.length() == 0 )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).setProperty( String )} empty 'attributePropertyName' not allowed",
+                                 keyPattern );
+        }
+
+        return addProvider( new SetPropertyBuilder( keyPattern, namespaceURI, mainBinder, this, attributePropertyName ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
