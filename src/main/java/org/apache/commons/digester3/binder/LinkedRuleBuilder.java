@@ -153,6 +153,22 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public SetPropertiesBuilder setProperties()
+    {
+        // that would be useful when adding rules via automatically generated rules binding (such annotations)
+        SetPropertiesBuilder setPropertiesBuilder =
+            fromBinderRuleSet.getProvider( this.keyPattern, this.namespaceURI, SetPropertiesBuilder.class );
+        if ( setPropertiesBuilder != null )
+        {
+            return setPropertiesBuilder;
+        }
+
+        return this.addProvider( new SetPropertiesBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
