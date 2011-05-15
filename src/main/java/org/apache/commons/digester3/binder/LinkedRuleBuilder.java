@@ -159,13 +159,13 @@ public final class LinkedRuleBuilder
     {
         // that would be useful when adding rules via automatically generated rules binding (such annotations)
         SetPropertiesBuilder setPropertiesBuilder =
-            fromBinderRuleSet.getProvider( this.keyPattern, this.namespaceURI, SetPropertiesBuilder.class );
+            fromBinderRuleSet.getProvider( keyPattern, namespaceURI, SetPropertiesBuilder.class );
         if ( setPropertiesBuilder != null )
         {
             return setPropertiesBuilder;
         }
 
-        return this.addProvider( new SetPropertiesBuilder( keyPattern, namespaceURI, mainBinder, this ) );
+        return addProvider( new SetPropertiesBuilder( keyPattern, namespaceURI, mainBinder, this ) );
     }
 
     /**
