@@ -113,7 +113,8 @@ public final class LinkedRuleBuilder
      * @param <T> The parameter type to pass along
      * @param paramObj The parameter to pass along
      */
-    public <T> ObjectParamBuilder<T> objectParam(/* @Nullable */T paramObj) {
+    public <T> ObjectParamBuilder<T> objectParam( /* @Nullable */T paramObj )
+    {
         return addProvider( new ObjectParamBuilder<T>( keyPattern, namespaceURI, mainBinder, this, paramObj ) );
     }
 
