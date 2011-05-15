@@ -96,7 +96,7 @@ public final class LinkedRuleBuilder
      */
     public FactoryCreateBuilder factoryCreate()
     {
-        return this.addProvider( new FactoryCreateBuilder( keyPattern, namespaceURI, mainBinder, this, classLoader ) );
+        return addProvider( new FactoryCreateBuilder( keyPattern, namespaceURI, mainBinder, this, classLoader ) );
     }
 
     /**
@@ -104,8 +104,7 @@ public final class LinkedRuleBuilder
      */
     public ObjectCreateBuilder createObject()
     {
-        return this.addProvider(
-                                new ObjectCreateBuilder(keyPattern, namespaceURI, mainBinder, this, classLoader));
+        return addProvider( new ObjectCreateBuilder( keyPattern, namespaceURI, mainBinder, this, classLoader ) );
     }
 
     /**
