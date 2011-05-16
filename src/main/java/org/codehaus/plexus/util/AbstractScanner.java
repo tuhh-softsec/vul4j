@@ -30,6 +30,7 @@ public abstract class AbstractScanner
      * <li>RCS: &#42;&#42;/RCS, &#42;&#42;/RCS/&#42;&#42;</li>
      * <li>SCCS: &#42;&#42;/SCCS, &#42;&#42;/SCCS/&#42;&#42;</li>
      * <li>VSSercer: &#42;&#42;/vssver.scc</li>
+     * <li>MKS: &#42;&#42;/project.pj</li>
      * <li>SVN: &#42;&#42;/.svn, &#42;&#42;/.svn/&#42;&#42;</li>
      * <li>GNU: &#42;&#42;/.arch-ids, &#42;&#42;/.arch-ids/&#42;&#42;</li>
      * <li>Bazaar: &#42;&#42;/.bzr, &#42;&#42;/.bzr/&#42;&#42;</li>
@@ -68,6 +69,9 @@ public abstract class AbstractScanner
         // Visual SourceSafe
         "**/vssver.scc",
   
+        // MKS
+        "**/project.pj",
+
         // Subversion
         "**/.svn",
         "**/.svn/**",
