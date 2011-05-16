@@ -95,6 +95,10 @@ public final class CallMethodBuilder
                 }
             }
         }
+        else
+        {
+            this.paramTypes = null;
+        }
 
         return this;
     }
