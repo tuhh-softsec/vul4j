@@ -21,6 +21,7 @@ package org.apache.commons.digester3;
 import java.util.List;
 
 import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.binder.RuleProvider;
 import org.xml.sax.Attributes;
 
 /**
@@ -157,6 +158,33 @@ public class TestRule
     public String toString()
     {
         return identifier;
+    }
+
+    public static class TestRuleProvider implements RuleProvider<TestRule>
+    {
+
+        private final String identifier;
+
+        private final List<Rule> callOrder;
+
+        public TestRuleProvider( String identifier )
+        {
+            this( identifier, null );
+        }
+
+        public TestRuleProvider( String identifier, List<Rule> callOrder )
+        {
+            this.identifier = identifier;
+            this.callOrder = callOrder;
+        }
+
+        public TestRule get()
+        {
+            TestRule testRule = new TestRule( identifier );
+            testRule.setOrder( callOrder );
+            return testRule;
+        }
+
     }
 
 }
