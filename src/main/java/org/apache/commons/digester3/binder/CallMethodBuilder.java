@@ -78,14 +78,15 @@ public final class CallMethodBuilder
      */
     public CallMethodBuilder withParamTypes( String... paramTypeNames )
     {
+        Class<?>[] paramTypes = null;
         if ( paramTypeNames != null )
         {
-            this.paramTypes = new Class[paramTypeNames.length];
+            paramTypes = new Class<?>[paramTypeNames.length];
             for ( int i = 0; i < paramTypeNames.length; i++ )
             {
                 try
                 {
-                    this.paramTypes[i] = classLoader.loadClass( paramTypeNames[i] );
+                    paramTypes[i] = classLoader.loadClass( paramTypeNames[i] );
                 }
                 catch ( ClassNotFoundException e )
                 {
@@ -95,12 +96,8 @@ public final class CallMethodBuilder
                 }
             }
         }
-        else
-        {
-            this.paramTypes = null;
-        }
 
-        return this;
+        return withParamTypes( paramTypes );
     }
 
     /**
@@ -119,6 +116,10 @@ public final class CallMethodBuilder
         if ( paramTypes != null )
         {
             this.paramCount = paramTypes.length;
+        }
+        else
+        {
+            paramCount = 0;
         }
 
         return this;
