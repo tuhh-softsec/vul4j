@@ -18,6 +18,7 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,11 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.commons.digester3.CallMethodRule;
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.ExtendedBaseRules;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -49,39 +46,6 @@ import org.xml.sax.SAXException;
 public class CallMethodRuleTestCase
 {
 
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
-
-    // ------------------------------------------------ Individual Test Methods
-
     /**
      * Test method calls with the CallMethodRule rule. It should be possible to call a method with no arguments using
      * several rule syntaxes.
@@ -90,19 +54,30 @@ public class CallMethodRuleTestCase
     public void testBasic()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        // try all syntax permutations
-        digester.addCallMethod( "employee", "toString", 0, (Class[]) null );
-        digester.addCallMethod( "employee", "toString", 0, (String[]) null );
-        digester.addCallMethod( "employee", "toString", 0, new Class[] {} );
-        digester.addCallMethod( "employee", "toString", 0, new String[] {} );
-        digester.addCallMethod( "employee", "toString" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class );
+                // try all syntax permutations
+                forPattern( "employee" ).callMethod( "toString" ).withParamCount( 0 ).withParamTypes( (Class[]) null )
+                    .then()
+                    .callMethod( "toString" ).withParamCount( 0 ).withParamTypes( (String[]) null )
+                    .then()
+                    .callMethod( "toString" ).withParamCount( 0 ).withParamTypes( new Class[] {} )
+                    .then()
+                    .callMethod( "toString" ).withParamCount( 0 ).withParamTypes( new String[] {} )
+                    .then()
+                    .callMethod( "toString" );
+            }
+
+        }).newDigester();
 
         // Parse our test input.
         // An exception will be thrown if the method can't be found
-        Object root1 = digester.parse( getInputStream( "Test5.xml" ) );
+        Employee root1 = digester.parse( getInputStream( "Test5.xml" ) );
         assertNotNull( root1 );
     }
 
@@ -113,11 +88,18 @@ public class CallMethodRuleTestCase
     public void testCallMethodOnly()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        digester.addCallMethod( "employee/firstName", "setFirstName", 0 );
-        digester.addCallMethod( "employee/lastName", "setLastName", 0 );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class );
+                forPattern( "employee/firstName" ).callMethod( "setFirstName" ).usingElementBodyAsArgument();
+                forPattern( "employee/lastName" ).callMethod( "setLastName" ).usingElementBodyAsArgument();
+            }
+
+        }).newDigester();
 
         // Parse our test input
         Employee employee = digester.parse( getInputStream( "Test9.xml" ) );
@@ -136,12 +118,19 @@ public class CallMethodRuleTestCase
     public void testSettingProperties()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        // try all syntax permutations
-        digester.addCallMethod( "employee", "setLastName", 1, new String[] { "java.lang.String" } );
-        digester.addCallParam( "employee/lastName", 0 );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class )
+                    .then()
+                    .callMethod( "setLastName" ).withParamTypes( "java.lang.String" );
+                forPattern( "employee/lastName" ).callParam().ofIndex( 0 );
+            }
+
+        }).newDigester();
 
         // Parse our test input
 
@@ -149,34 +138,57 @@ public class CallMethodRuleTestCase
         Employee employee = digester.parse( getInputStream( "Test5.xml" ) );
         assertEquals( "Failed to call Employee.setLastName", "Last Name", employee.getLastName() );
 
-        digester = new Digester();
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        // try out primitive convertion
-        digester.addCallMethod( "employee", "setAge", 1, new Class[] { int.class } );
-        digester.addCallParam( "employee/age", 0 );
+        digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class )
+                    .then()
+                    .callMethod( "setAge" ).withParamTypes( int.class );
+                forPattern( "employee/age" ).callParam();
+            }
+
+        }).newDigester();
 
         // Parse our test input
         // an exception will be thrown if the method can't be found
         employee = digester.parse( getInputStream( "Test5.xml" ) );
         assertEquals( "Failed to call Employee.setAge", 21, employee.getAge() );
 
-        digester = new Digester();
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        digester.addCallMethod( "employee", "setActive", 1, new Class[] { boolean.class } );
-        digester.addCallParam( "employee/active", 0 );
+        digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class )
+                    .then()
+                    .callMethod( "setActive" ).withParamTypes( boolean.class );
+                forPattern( "employee/active" ).callParam();
+            }
+
+        }).newDigester();
 
         // Parse our test input
         // an exception will be thrown if the method can't be found
         employee = digester.parse( getInputStream( "Test5.xml" ) );
         assertEquals( "Failed to call Employee.setActive", true, employee.isActive() );
 
-        digester = new Digester();
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        digester.addCallMethod( "employee", "setSalary", 1, new Class[] { float.class } );
-        digester.addCallParam( "employee/salary", 0 );
+        digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class )
+                    .then()
+                    .callMethod( "setSalary" ).withParamTypes( float.class );
+                forPattern( "employee/salary" ).callParam();
+            }
+
+        }).newDigester();
 
         // Parse our test input
         // an exception will be thrown if the method can't be found
@@ -191,18 +203,31 @@ public class CallMethodRuleTestCase
     public void testParamsFromStack()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "map" ).createObject().ofType( HashMap.class )
+                    .then()
+                    .callMethod( "put" ).withParamCount( 2 );
+                forPattern( "map/key" ).createObject().ofType( AlphaBean.class )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .callParam().fromStack( true );
+                forPattern( "map/value" ).createObject().ofType( BetaBean.class )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .callParam().ofIndex( 1 ).fromStack( true );
+            }
+
+        }).newDigester();
 
         StringBuilder xml =
             new StringBuilder().append( "<?xml version='1.0'?>" ).append( "<map>" ).append( "  <key name='The key'/>" ).append( "  <value name='The value'/>" ).append( "</map>" );
-
-        digester.addObjectCreate( "map", HashMap.class );
-        digester.addCallMethod( "map", "put", 2 );
-        digester.addObjectCreate( "map/key", AlphaBean.class );
-        digester.addSetProperties( "map/key" );
-        digester.addCallParam( "map/key", 0, true );
-        digester.addObjectCreate( "map/value", BetaBean.class );
-        digester.addSetProperties( "map/value" );
-        digester.addCallParam( "map/value", 1, true );
 
         HashMap<AlphaBean, BetaBean> map = digester.parse( new StringReader( xml.toString() ) );
 
@@ -223,19 +248,25 @@ public class CallMethodRuleTestCase
     public void testOrderNestedPartA()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Configure the digester as required
+            @Override
+            protected void configure()
+            {
+                // Here, we use the "grandchild element name" as a parameter to
+                // the created element, to ensure that all the params aren't
+                // avaiable to the CallMethodRule until some other rules have fired,
+                // in particular an ObjectCreateRule. The CallMethodRule should still
+                // function correctly in this scenario.
+                forPattern( "toplevel/element" ).createObject().ofType( NamedBean.class )
+                    .then()
+                    .callMethod( "setName" ).withParamCount( 1 );
+                forPattern( "toplevel/element/element/element" ).callParam().ofIndex( 0 ).fromAttribute( "name" );
+                forPattern( "toplevel/element/element" ).createObject().ofType( NamedBean.class );
+            }
 
-        // Here, we use the "grandchild element name" as a parameter to
-        // the created element, to ensure that all the params aren't
-        // avaiable to the CallMethodRule until some other rules have fired,
-        // in particular an ObjectCreateRule. The CallMethodRule should still
-        // function correctly in this scenario.
-        digester.addObjectCreate( "toplevel/element", NamedBean.class );
-        digester.addCallMethod( "toplevel/element", "setName", 1 );
-        digester.addCallParam( "toplevel/element/element/element", 0, "name" );
-
-        digester.addObjectCreate( "toplevel/element/element", NamedBean.class );
+        }).newDigester();
 
         // Parse our test input
         NamedBean root1 = null;
@@ -272,12 +303,22 @@ public class CallMethodRuleTestCase
     public void testOrderNestedPartB()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "*/element" ).callMethod( "append" ).withParamCount( 1 )
+                    .then()
+                    .callParam().ofIndex( 0 ).fromAttribute( "name" );
+            }
+
+        }).newDigester();
 
         // Configure the digester as required
         StringBuilder word = new StringBuilder();
         digester.push( word );
-        digester.addCallMethod( "*/element", "append", 1 );
-        digester.addCallParam( "*/element", 0, "name" );
 
         // Parse our test input
         Object root1 = null;
