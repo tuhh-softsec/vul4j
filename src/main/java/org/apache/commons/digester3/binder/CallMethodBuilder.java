@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.binder;
 
+import static java.lang.String.format;
+
 import java.util.Arrays;
 
 import org.apache.commons.digester3.CallMethodRule;
@@ -87,9 +89,9 @@ public final class CallMethodBuilder
                 }
                 catch ( ClassNotFoundException e )
                 {
-                    this.reportError( String.format( "callMethod(\"%s\").withParamTypes(%s)", this.methodName,
+                    this.reportError( format( "callMethod( \"%s\" ).withParamTypes( %s )", this.methodName,
                                                      Arrays.toString( paramTypeNames ) ),
-                                      String.format( "class '%s' cannot be load", paramTypeNames[i] ) );
+                                      format( "class '%s' cannot be load", paramTypeNames[i] ) );
                 }
             }
         }
@@ -141,7 +143,7 @@ public final class CallMethodBuilder
     {
         if ( paramCount < 0 )
         {
-            this.reportError( String.format( "callMethod(\"%s\").withParamCount(int)", this.methodName ),
+            this.reportError( format( "callMethod(\"%s\").withParamCount(int)", this.methodName ),
                               "negative parameters counter not allowed" );
         }
 
