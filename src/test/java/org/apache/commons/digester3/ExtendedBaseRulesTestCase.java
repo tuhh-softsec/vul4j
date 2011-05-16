@@ -36,7 +36,7 @@ import org.junit.Test;
  * @version $Revision$ $Date$
  */
 
-public class EBRTestCase
+public class ExtendedBaseRulesTestCase
     extends RulesBaseTestCase
 {
 
