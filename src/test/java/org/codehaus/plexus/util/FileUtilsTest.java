@@ -29,6 +29,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
 
+import sun.awt.windows.ThemeReader;
+
 /**
  * This is used to test FileUtils for correctness.
  *
@@ -127,12 +129,12 @@ public final class FileUtilsTest
     public void testToURLs()
         throws Exception
     {
-        File[] files = new File[]{new File( "file1" ), new File( "file2" ),};
+        File[] files = new File[]{ new File( "file1" ), new File( "file2" ), };
 
         URL[] urls = FileUtils.toURLs( files );
 
-        assertEquals( "The length of the generated URL's is not equals to the length of files. " + "Was " + files
-            .length + ", expected " + urls.length, files.length, urls.length );
+        assertEquals( "The length of the generated URL's is not equals to the length of files. " + "Was " + files.length
+                          + ", expected " + urls.length, files.length, urls.length );
 
         for ( int i = 0; i < urls.length; i++ )
         {
@@ -147,7 +149,7 @@ public final class FileUtilsTest
 
         // Non-existent files
         final String[] emptyFileNames =
-            FileUtils.getFilesFromExtension( getTestDirectory().getAbsolutePath(), new String[]{"java"} );
+            FileUtils.getFilesFromExtension( getTestDirectory().getAbsolutePath(), new String[]{ "java" } );
         assertTrue( emptyFileNames.length == 0 );
 
         // Existing files
@@ -178,7 +180,7 @@ public final class FileUtilsTest
                 FileUtils.mkdir( winFile.getAbsolutePath() );
                 assertTrue( false );
             }
-            catch ( IllegalArgumentException e)
+            catch ( IllegalArgumentException e )
             {
                 assertTrue( true );
             }
@@ -307,7 +309,7 @@ public final class FileUtilsTest
                 FileUtils.forceMkdir( winFile );
                 assertTrue( false );
             }
-            catch ( IllegalArgumentException e)
+            catch ( IllegalArgumentException e )
             {
                 assertTrue( true );
             }
@@ -391,7 +393,7 @@ public final class FileUtilsTest
         FileUtils.copyFile( testFile1, destination );
 
         // Make sure source is newer
-        Thread.sleep( 1000 );
+        reallySleep( 1000 );
 
         // Place source
         File source = new File( getTestDirectory(), "copy1.txt" );
@@ -412,7 +414,7 @@ public final class FileUtilsTest
         FileUtils.copyFile( testFile1, source );
 
         // Make sure desintation is newer
-        Thread.sleep( 1000 );
+        reallySleep( 1000 );
 
         // Place destination
         File desintation = new File( getTestDirectory(), "/temp/copy1.txt" );
@@ -556,12 +558,14 @@ public final class FileUtilsTest
     public void testNormalize()
         throws Exception
     {
-        final String[] src = {"", "/", "///", "/foo", "/foo//", "/./", "/foo/./", "/foo/./bar", "/foo/../bar",
-            "/foo/../bar/../baz", "/foo/bar/../../baz", "/././", "/foo/./../bar", "/foo/.././bar/", "//foo//./bar",
-            "/../", "/foo/../../"};
+        final String[] src =
+            { "", "/", "///", "/foo", "/foo//", "/./", "/foo/./", "/foo/./bar", "/foo/../bar", "/foo/../bar/../baz",
+                "/foo/bar/../../baz", "/././", "/foo/./../bar", "/foo/.././bar/", "//foo//./bar", "/../",
+                "/foo/../../" };
 
-        final String[] dest = {"", "/", "/", "/foo", "/foo/", "/", "/foo/", "/foo/bar", "/bar", "/baz", "/baz", "/",
-            "/bar", "/bar/", "/foo/bar", null, null};
+        final String[] dest =
+            { "", "/", "/", "/foo", "/foo/", "/", "/foo/", "/foo/bar", "/bar", "/baz", "/baz", "/", "/bar", "/bar/",
+                "/foo/bar", null, null };
 
         assertEquals( "Oops, test writer goofed", src.length, dest.length );
 
@@ -631,12 +635,8 @@ public final class FileUtilsTest
     public void testGetExtension()
     {
         final String[][] tests =
-            {{"filename.ext", "ext"}
-            , {"README", ""}
-            , {"domain.dot.com", "com"}
-            , {"image.jpeg", "jpeg"}
-            , {"folder" + File.separator + "image.jpeg", "jpeg"}
-            , {"folder" + File.separator + "README", ""}};
+            { { "filename.ext", "ext" }, { "README", "" }, { "domain.dot.com", "com" }, { "image.jpeg", "jpeg" },
+                { "folder" + File.separator + "image.jpeg", "jpeg" }, { "folder" + File.separator + "README", "" } };
 
         for ( int i = 0; i < tests.length; i++ )
         {
@@ -650,14 +650,13 @@ public final class FileUtilsTest
         // Since the utilities are based on the separator for the platform
         // running the test, ensure we are using the right separator
         final String sep = File.separator;
-        final String[][] testsWithPaths = {
-                { sep + "tmp" + sep + "foo" + sep + "filename.ext", "ext"}
-                , {"C:" + sep + "temp" + sep + "foo" + sep + "filename.ext", "ext"}
-                , {"" + sep + "tmp" + sep + "foo.bar" + sep + "filename.ext", "ext"}
-                , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext", "ext"}
-                , {"" + sep + "tmp" + sep + "foo.bar" + sep + "README", ""}
-                , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "README", ""}
-                , {".." + sep + "filename.ext", "ext"}, {"blabla", ""}};
+        final String[][] testsWithPaths = { { sep + "tmp" + sep + "foo" + sep + "filename.ext", "ext" },
+            { "C:" + sep + "temp" + sep + "foo" + sep + "filename.ext", "ext" },
+            { "" + sep + "tmp" + sep + "foo.bar" + sep + "filename.ext", "ext" },
+            { "C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext", "ext" },
+            { "" + sep + "tmp" + sep + "foo.bar" + sep + "README", "" },
+            { "C:" + sep + "temp" + sep + "foo.bar" + sep + "README", "" }, { ".." + sep + "filename.ext", "ext" },
+            { "blabla", "" } };
         for ( int i = 0; i < testsWithPaths.length; i++ )
         {
             assertEquals( testsWithPaths[i][1], FileUtils.getExtension( testsWithPaths[i][0] ) );
@@ -667,8 +666,8 @@ public final class FileUtilsTest
 
     public void testRemoveExtension()
     {
-        final String[][] tests = {{"filename.ext", "filename"}, {"first.second.third.ext", "first.second.third"},
-            {"README", "README"}, {"domain.dot.com", "domain.dot"}, {"image.jpeg", "image"}};
+        final String[][] tests = { { "filename.ext", "filename" }, { "first.second.third.ext", "first.second.third" },
+            { "README", "README" }, { "domain.dot.com", "domain.dot" }, { "image.jpeg", "image" } };
 
         for ( int i = 0; i < tests.length; i++ )
         {
@@ -684,20 +683,17 @@ public final class FileUtilsTest
         // running the test, ensure we are using the right separator
         final String sep = File.separator;
         final String[][] testsWithPaths =
-        {{sep + "tmp" + sep + "foo" + sep + "filename.ext"
-            , sep + "tmp" + sep + "foo" + sep + "filename"}
-        , {"C:" + sep + "temp" + sep + "foo" + sep + "filename.ext"
-            , "C:" + sep + "temp" + sep + "foo" + sep + "filename"}
-        , {sep + "tmp" + sep + "foo.bar" + sep + "filename.ext"
-            , sep + "tmp" + sep + "foo.bar" + sep + "filename"}
-        , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext"
-            , "C:" + sep + "temp" + sep + "foo.bar" + sep + "filename"}
-        , {sep + "tmp" + sep + "foo.bar" + sep + "README"
-            , sep + "tmp" + sep + "foo.bar" + sep + "README"}
-        , {"C:" + sep + "temp" + sep + "foo.bar" + sep + "README"
-            , "C:" + sep + "temp" + sep + "foo.bar" + sep + "README"}
-        , {".." + sep + "filename.ext"
-            , ".." + sep + "filename"}};
+            { { sep + "tmp" + sep + "foo" + sep + "filename.ext", sep + "tmp" + sep + "foo" + sep + "filename" },
+                { "C:" + sep + "temp" + sep + "foo" + sep + "filename.ext",
+                    "C:" + sep + "temp" + sep + "foo" + sep + "filename" },
+                { sep + "tmp" + sep + "foo.bar" + sep + "filename.ext",
+                    sep + "tmp" + sep + "foo.bar" + sep + "filename" },
+                { "C:" + sep + "temp" + sep + "foo.bar" + sep + "filename.ext",
+                    "C:" + sep + "temp" + sep + "foo.bar" + sep + "filename" },
+                { sep + "tmp" + sep + "foo.bar" + sep + "README", sep + "tmp" + sep + "foo.bar" + sep + "README" },
+                { "C:" + sep + "temp" + sep + "foo.bar" + sep + "README",
+                    "C:" + sep + "temp" + sep + "foo.bar" + sep + "README" },
+                { ".." + sep + "filename.ext", ".." + sep + "filename" } };
 
         for ( int i = 0; i < testsWithPaths.length; i++ )
         {
@@ -825,9 +821,9 @@ public final class FileUtilsTest
 
         FileUtils.copyDirectoryStructureIfModified( from, to );
 
-        File files[] = {new File( to, "root.txt" ), new File( to, "2/2.txt" ), new File( to, "2/2_1/2_1.txt" )};
+        File files[] = { new File( to, "root.txt" ), new File( to, "2/2.txt" ), new File( to, "2/2_1/2_1.txt" ) };
 
-        long timestamps[] = {files[0].lastModified(), files[1].lastModified(), files[2].lastModified()};
+        long timestamps[] = { files[0].lastModified(), files[1].lastModified(), files[2].lastModified() };
 
         checkFile( fRoot, files[0] );
 
@@ -913,13 +909,13 @@ public final class FileUtilsTest
         filterProperties.setProperty( "s", "sample text" );
 
         // test ${token}
-        FileUtils.FilterWrapper[] wrappers1 = new FileUtils.FilterWrapper[]{new FileUtils.FilterWrapper()
+        FileUtils.FilterWrapper[] wrappers1 = new FileUtils.FilterWrapper[]{ new FileUtils.FilterWrapper()
         {
             public Reader getReader( Reader reader )
             {
                 return new InterpolationFilterReader( reader, filterProperties, "${", "}" );
             }
-        }};
+        } };
 
         File srcFile = new File( getTestDirectory(), "root.txt" );
         FileUtils.fileWrite( srcFile.getAbsolutePath(), "UTF-8", "This is a test.  Test ${s}\n" );
@@ -991,7 +987,8 @@ public final class FileUtilsTest
 
     }
 
-    public void testFileRead() throws IOException
+    public void testFileRead()
+        throws IOException
     {
         File testFile = new File( getTestDirectory(), "testFileRead.txt" );
         String testFileName = testFile.getAbsolutePath();
@@ -1018,7 +1015,8 @@ public final class FileUtilsTest
         testFile.delete();
     }
 
-    public void testFileReadWithEncoding() throws IOException
+    public void testFileReadWithEncoding()
+        throws IOException
     {
         String encoding = "UTF-8";
         File testFile = new File( getTestDirectory(), "testFileRead.txt" );
@@ -1041,7 +1039,8 @@ public final class FileUtilsTest
         testFile.delete();
     }
 
-    public void testFileAppend() throws IOException
+    public void testFileAppend()
+        throws IOException
     {
         String baseString = "abc";
         File testFile = new File( getTestDirectory(), "testFileAppend.txt" );
@@ -1064,7 +1063,8 @@ public final class FileUtilsTest
         testFile.delete();
     }
 
-    public void testFileAppendWithEncoding() throws IOException
+    public void testFileAppendWithEncoding()
+        throws IOException
     {
         String baseString = "abc";
         String encoding = "UTF-8";
@@ -1088,7 +1088,8 @@ public final class FileUtilsTest
         testFile.delete();
     }
 
-    public void testFileWrite() throws IOException
+    public void testFileWrite()
+        throws IOException
     {
         File testFile = new File( getTestDirectory(), "testFileWrite.txt" );
         String testFileName = testFile.getAbsolutePath();
@@ -1099,7 +1100,8 @@ public final class FileUtilsTest
         testFile.delete();
     }
 
-    public void testFileWriteWithEncoding() throws IOException
+    public void testFileWriteWithEncoding()
+        throws IOException
     {
         String encoding = "UTF-8";
         File testFile = new File( getTestDirectory(), "testFileWrite.txt" );
@@ -1114,11 +1116,10 @@ public final class FileUtilsTest
     /**
      * Workaround for the following Sun bugs. They are fixed in JDK 6u1 and JDK 5u11.
      *
+     * @throws Exception
      * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4403166">Sun bug id=4403166</a>
      * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6182812">Sun bug id=6182812</a>
      * @see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6481955">Sun bug id=6481955</a>
-     *
-     * @throws Exception
      */
     public void testDeleteLongPathOnWindows()
         throws Exception
@@ -1177,17 +1178,11 @@ public final class FileUtilsTest
         throws Exception
     {
 
-        String[][] values = {
-            { "fry.frozen", "frozen" },
-            { "fry", "" },
-            { "fry.", "" },
-            { "/turanga/leela/meets.fry", "fry" },
-            { "/3000/turanga.leela.fry/zoidberg.helps", "helps" },
-            { "/3000/turanga.leela.fry/zoidberg.", "" },
-            { "/3000/turanga.leela.fry/zoidberg", "" },
-            { "/3000/leela.fry.bender/", "" },
-            { "/3000/leela.fry.bdner/.", "" },
-            { "/3000/leela.fry.bdner/foo.bar.txt", "txt" } };
+        String[][] values =
+            { { "fry.frozen", "frozen" }, { "fry", "" }, { "fry.", "" }, { "/turanga/leela/meets.fry", "fry" },
+                { "/3000/turanga.leela.fry/zoidberg.helps", "helps" }, { "/3000/turanga.leela.fry/zoidberg.", "" },
+                { "/3000/turanga.leela.fry/zoidberg", "" }, { "/3000/leela.fry.bender/", "" },
+                { "/3000/leela.fry.bdner/.", "" }, { "/3000/leela.fry.bdner/foo.bar.txt", "txt" } };
 
         for ( int i = 0; i < values.length; i++ )
         {
@@ -1324,18 +1319,36 @@ public final class FileUtilsTest
 
     /**
      * Be sure that {@link FileUtils#createTempFile(String, String, File)} is always unique.
+     *
      * @throws Exception if any
      */
     public void testCreateTempFile()
         throws Exception
     {
         File last = FileUtils.createTempFile( "unique", ".tmp", null );
-        for (int i = 0; i < 10; i ++ )
+        for ( int i = 0; i < 10; i++ )
         {
             File current = FileUtils.createTempFile( "unique", ".tmp", null );
-            assertTrue( "No unique name: " + current.getName(),
-                        !current.getName().equals( last.getName() ) );
+            assertTrue( "No unique name: " + current.getName(), !current.getName().equals( last.getName() ) );
             last = current;
+        }
+    }
+
+    /**
+     * Because windows(tm) quite frequently sleeps less than the advertised time
+     *
+     * @param time The amount of time to sleep
+     * @throws InterruptedException
+     */
+    private void reallySleep( int time )
+        throws InterruptedException
+    {
+        long until = System.currentTimeMillis() + time;
+        Thread.sleep( time );
+        while ( System.currentTimeMillis() < until )
+        {
+            Thread.sleep( time / 10 );
+            Thread.yield();
         }
     }
 }
