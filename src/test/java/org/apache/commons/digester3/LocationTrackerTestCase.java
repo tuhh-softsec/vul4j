@@ -18,6 +18,8 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.StackAction;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.Locator;
 
@@ -76,13 +79,25 @@ public class LocationTrackerTestCase
 
         LocationTracker locnTracker = new LocationTracker();
 
-        Digester digester = new Digester();
-        digester.setStackAction( locnTracker );
-        digester.addObjectCreate( "box", Box.class );
-        digester.addSetProperties( "box" );
-        digester.addObjectCreate( "box/subBox", Box.class );
-        digester.addSetProperties( "box/subBox" );
-        digester.addSetNext( "box/subBox", "addChild" );
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "box" ).createObject().ofType( Box.class )
+                    .then()
+                    .setProperties();
+                forPattern( "box/subBox" ).createObject().ofType( Box.class )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .setNext( "addChild" );
+            }
+
+        })
+        .setStackAction( locnTracker )
+        .newDigester();
 
         Box root = digester.parse( new StringReader( TEST_XML ) );
         assertNotNull( root );
