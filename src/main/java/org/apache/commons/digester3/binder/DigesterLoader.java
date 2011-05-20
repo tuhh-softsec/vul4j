@@ -37,6 +37,7 @@ import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.RuleSet;
 import org.apache.commons.digester3.Rules;
 import org.apache.commons.digester3.RulesBase;
+import org.apache.commons.digester3.StackAction;
 import org.apache.commons.digester3.Substitutor;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -112,6 +113,11 @@ public final class DigesterLoader
     private ClassLoader classLoader;
 
     private Substitutor substitutor;
+
+    /**
+     * Object which will receive callbacks for every pop/push action on the default stack or named stacks.
+     */
+    private StackAction stackAction;
 
     /**
      * Creates a new {@link DigesterLoader} instance given a collection of {@link RulesModule} instance.
@@ -292,6 +298,17 @@ public final class DigesterLoader
     }
 
     /**
+     * Sets the Object which will receive callbacks for every pop/push action on the default stack or named stacks.
+     *
+     * @param stackAction the Object which will receive callbacks for every pop/push action on the default stack
+     *        or named stacks.
+     */
+    public void setStackAction( StackAction stackAction )
+    {
+        this.stackAction = stackAction;
+    }
+
+    /**
      * Creates a new {@link Digester} instance that relies on the default {@link Rules} implementation.
      *
      * @return a new {@link Digester} instance
@@ -392,6 +409,7 @@ public final class DigesterLoader
         digester.setRules( rules );
         digester.setSubstitutor( substitutor );
         digester.registerAll( entityValidator );
+        digester.setStackAction( stackAction );
 
         addRules( digester );
 
