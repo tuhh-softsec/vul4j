@@ -18,16 +18,16 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
+import org.apache.commons.digester3.binder.RuleProvider;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
@@ -54,6 +54,20 @@ public class NamespaceSnapshotTestCase
             Map<String, String> namespaces = d.getCurrentNamespaces();
             ( (NamespacedBox) d.peek() ).setNamespaces( namespaces );
         }
+
+        public static class Provider implements RuleProvider<NamespaceSnapshotRule>
+        {
+
+            /**
+             * {@inheritDoc}
+             */
+            public NamespaceSnapshotRule get()
+            {
+                return new NamespaceSnapshotRule();
+            }
+
+        }
+
     }
 
     /**
@@ -64,15 +78,27 @@ public class NamespaceSnapshotTestCase
         throws Exception
     {
 
-        Digester digester = new Digester();
-        digester.setNamespaceAware( true );
-        digester.addObjectCreate( "box", NamespacedBox.class );
-        digester.addSetProperties( "box" );
-        digester.addRule( "box", new NamespaceSnapshotRule() );
-        digester.addObjectCreate( "box/subBox", NamespacedBox.class );
-        digester.addSetProperties( "box/subBox" );
-        digester.addRule( "box/subBox", new NamespaceSnapshotRule() );
-        digester.addSetNext( "box/subBox", "addChild" );
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "box" ).createObject().ofType( NamespacedBox.class )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .addRuleCreatedBy( new NamespaceSnapshotRule.Provider() );
+                forPattern( "box/subBox" ).createObject().ofType( NamespacedBox.class )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .addRuleCreatedBy( new NamespaceSnapshotRule.Provider() )
+                    .then()
+                    .setNext( "addChild" );
+            }
+
+        }).setNamespaceAware( true ).newDigester();
 
         NamespacedBox root = digester.parse( getInputStream( "Test11.xml" ) );
 
