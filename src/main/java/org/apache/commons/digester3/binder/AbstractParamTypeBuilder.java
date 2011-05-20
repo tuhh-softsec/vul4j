@@ -57,12 +57,14 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
      * @param paramType The Java class of the method's argument
      * @return this builder instance
      */
-    public final AbstractParamTypeBuilder<R> withParameterType(Class<?> paramType) {
-        if (paramType == null) {
+    public final AbstractParamTypeBuilder<R> withParameterType(Class<?> paramType)
+    {
+        if ( paramType == null )
+        {
             reportError( format( ".%s.withParameterType( Class<?> )", methodName ), "NULL Java type not allowed" );
             return this;
         }
-        return withParameterType(paramType.getName());
+        return withParameterType( paramType.getName() );
     }
 
     /**
