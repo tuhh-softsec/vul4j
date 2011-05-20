@@ -80,7 +80,7 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
 
     protected final void reportError( String methodChain, String message )
     {
-        this.mainBinder.addError( "{forPattern(\"%s\").%s} %s", this.keyPattern, methodChain, message );
+        this.mainBinder.addError( "{ forPattern( \"%s\" ).%s } %s", this.keyPattern, methodChain, message );
     }
 
     /**
