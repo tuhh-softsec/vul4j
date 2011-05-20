@@ -40,7 +40,17 @@ public final class SetTopBuilder
     @Override
     protected SetTopRule createRule()
     {
-        SetTopRule rule = new SetTopRule( getMethodName(), getParamType().getName() );
+        SetTopRule rule;
+
+        if ( getParamType() != null )
+        {
+            rule = new SetTopRule( getMethodName(), getParamType().getName() );
+        }
+        else
+        {
+            rule = new SetTopRule( getMethodName() );
+        }
+
         rule.setExactMatch( isUseExactMatch() );
         return rule;
     }

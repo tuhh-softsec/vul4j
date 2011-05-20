@@ -40,7 +40,17 @@ public final class SetRootBuilder
     @Override
     protected SetRootRule createRule()
     {
-        SetRootRule rule = new SetRootRule( getMethodName(), getParamType().getName() );
+        SetRootRule rule;
+
+        if ( getParamType() != null )
+        {
+            rule = new SetRootRule( getMethodName(), getParamType().getName() );
+        }
+        else
+        {
+            rule = new SetRootRule( getMethodName() );
+        }
+
         rule.setExactMatch( isUseExactMatch() );
         return rule;
     }

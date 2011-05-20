@@ -40,7 +40,17 @@ public final class SetNextBuilder
     @Override
     protected SetNextRule createRule()
     {
-        SetNextRule rule = new SetNextRule( getMethodName(), getParamType().getName() );
+        SetNextRule rule;
+
+        if ( getParamType() != null )
+        {
+            rule = new SetNextRule( getMethodName(), getParamType().getName() );
+        }
+        else
+        {
+            rule = new SetNextRule( getMethodName() );
+        }
+
         rule.setExactMatch( isUseExactMatch() );
         return rule;
     }
