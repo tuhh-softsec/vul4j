@@ -43,7 +43,7 @@ public class LocationTrackerTestCase
     {
         public Map<Object, String> locations = new HashMap<Object, String>();
 
-        public Object onPush( Digester d, String stackName, Object o )
+        public <T> T onPush( Digester d, String stackName, T o )
         {
             if ( stackName == null )
             {
@@ -60,7 +60,7 @@ public class LocationTrackerTestCase
             return o;
         }
 
-        public Object onPop( Digester d, String stackName, Object o )
+        public <T> T onPop( Digester d, String stackName, T o )
         {
             return o;
         }
