@@ -239,6 +239,14 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * TODO: fill javadoc
+     */
+    public NodeCreateRuleProvider createNode()
+    {
+        return addProvider( new NodeCreateRuleProvider( keyPattern, namespaceURI, mainBinder, this ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
