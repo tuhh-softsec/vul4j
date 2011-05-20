@@ -303,9 +303,10 @@ public final class DigesterLoader
      * @param stackAction the Object which will receive callbacks for every pop/push action on the default stack
      *        or named stacks.
      */
-    public void setStackAction( StackAction stackAction )
+    public DigesterLoader setStackAction( StackAction stackAction )
     {
         this.stackAction = stackAction;
+        return this;
     }
 
     /**
