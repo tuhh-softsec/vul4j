@@ -18,7 +18,12 @@
 
 package org.apache.commons.digester3;
 
-import static org.junit.Assert.*;
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,11 +35,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.NodeCreateRule;
-import org.apache.commons.digester3.Rule;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
+import org.apache.commons.digester3.binder.NodeCreateRuleProvider.NodeType;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -60,35 +62,6 @@ public class NodeCreateRuleTestCase
      */
     protected final static String TEST_XML = "<?xml version='1.0'?><root>ROOT BODY<alpha>ALPHA BODY</alpha>"
         + "<beta>BETA BODY</beta><gamma>GAMMA BODY</gamma></root>";
-
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
 
     // ------------------------------------------------ Individual Test Methods
 
@@ -210,8 +183,17 @@ public class NodeCreateRuleTestCase
     public void testElement()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addRule( "root/alpha", new NodeCreateRule() );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/alpha" ).createNode();
+            }
+
+        }).newDigester();
+
         Element element = digester.parse( new StringReader( TEST_XML ) );
 
         assertNotNull( element );
@@ -230,8 +212,17 @@ public class NodeCreateRuleTestCase
     public void testDocumentFragment()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addRule( "root", new NodeCreateRule( Node.DOCUMENT_FRAGMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createNode().ofType( NodeType.DOCUMENT_FRAGMENT );
+            }
+
+        }).newDigester();
+
         DocumentFragment fragment = digester.parse( new StringReader( TEST_XML ) );
 
         assertNotNull( fragment );
@@ -274,12 +265,23 @@ public class NodeCreateRuleTestCase
     public void testNested()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addObjectCreate( "root", ArrayList.class );
-        digester.addRule( "root/a/b", new NodeCreateRule( Node.DOCUMENT_FRAGMENT_NODE ) );
-        digester.addSetRoot( "root/a/b", "add" );
-        digester.addObjectCreate( "root/b", String.class );
-        digester.addSetRoot( "root/b", "add" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( ArrayList.class );
+                forPattern( "root/a/b" ).createNode().ofType( NodeType.DOCUMENT_FRAGMENT )
+                    .then()
+                    .setRoot( "add" );
+                forPattern( "root/b" ).createObject().ofType( String.class )
+                    .then()
+                    .setRoot( "add" );
+            }
+
+        }).newDigester();
+
         List<?> list = digester.parse( getInputStream( "Test4.xml" ) );
 
         assertNotNull( list );
@@ -305,8 +307,17 @@ public class NodeCreateRuleTestCase
     public void testAttributes()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addRule( "employee", new NodeCreateRule( Node.DOCUMENT_FRAGMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createNode().ofType( NodeType.DOCUMENT_FRAGMENT );
+            }
+
+        }).newDigester();
+
         DocumentFragment fragment = digester.parse( getInputStream( "Test1.xml" ) );
 
         assertNotNull( fragment );
@@ -341,10 +352,19 @@ public class NodeCreateRuleTestCase
     public void testNamespaces()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.setNamespaceAware( true );
-        digester.setRuleNamespaceURI( null );
-        digester.addRule( "employee", new NodeCreateRule( Node.DOCUMENT_FRAGMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createNode().ofType( NodeType.DOCUMENT_FRAGMENT );
+            }
+
+        })
+        .setNamespaceAware( true )
+        .newDigester();
+
         DocumentFragment fragment = digester.parse( getInputStream( "Test3.xml" ) );
 
         assertNotNull( fragment );
@@ -383,10 +403,19 @@ public class NodeCreateRuleTestCase
     public void testNamespacedAttribute()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.setNamespaceAware( true );
-        digester.setRuleNamespaceURI( null );
-        digester.addRule( "employee", new NodeCreateRule( Node.ELEMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createNode().ofType( NodeType.ELEMENT );
+            }
+
+        })
+        .setNamespaceAware( true )
+        .newDigester();
+
         Element element = digester.parse( getInputStream( "Test10.xml" ) );
 
         assertNotNull( element );
@@ -409,10 +438,19 @@ public class NodeCreateRuleTestCase
     public void testNonNamespacedAttribute()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.setNamespaceAware( true );
-        digester.setRuleNamespaceURI( null );
-        digester.addRule( "employee", new NodeCreateRule( Node.ELEMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createNode().ofType( NodeType.ELEMENT );
+            }
+
+        })
+        .setNamespaceAware( true )
+        .newDigester();
+
         Element element = digester.parse( getInputStream( "Test10.xml" ) );
 
         assertNotNull( element );
@@ -432,8 +470,18 @@ public class NodeCreateRuleTestCase
     public void testImport()
         throws SAXException, ParserConfigurationException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addRule( "root", new NodeCreateRule( Node.DOCUMENT_FRAGMENT_NODE ) );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createNode().ofType( NodeType.DOCUMENT_FRAGMENT );
+            }
+
+        })
+        .newDigester();
+
         DocumentFragment fragment = digester.parse( new StringReader( TEST_XML ) );
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -456,7 +504,18 @@ public class NodeCreateRuleTestCase
     {
         String TEST_XML2 = "<?xml version='1.0'?><root><alpha>&#65; &#65;</alpha></root>";
 
-        digester.addRule( "root/alpha", new NodeCreateRule() );
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/alpha" ).createNode();
+            }
+
+        })
+        .newDigester();
+
         Element element = digester.parse( new StringReader( TEST_XML2 ) );
 
         assertNotNull( element );
