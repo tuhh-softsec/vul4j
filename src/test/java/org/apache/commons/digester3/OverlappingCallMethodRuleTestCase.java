@@ -18,12 +18,13 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -62,12 +63,22 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " <item id='1'>anitem</item>" );
         input.append( "</root>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addCallMethod( "root/item", "setItemId", 1 );
-        digester.addCallParam( "root/item", 0, "id" );
-        digester.addCallMethod( "root/item", "setItemName", 1 );
-        digester.addCallParam( "root/item", 0 );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/item" ).callMethod( "setItemId" ).withParamCount( 1 )
+                    .then()
+                    .callParam().fromAttribute( "id" )
+                    .then()
+                    .callMethod( "setItemName" ).withParamCount( 1 )
+                    .then()
+                    .callParam();
+            }
+
+        }).newDigester();
 
         this.itemId = null;
         this.itemName = null;
@@ -87,12 +98,22 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " <item id='1'>anitem</item>" );
         input.append( "</root>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addCallMethod( "root/item", "setItemName", 1 );
-        digester.addCallParam( "root/item", 0 );
-        digester.addCallMethod( "root/item", "setItemId", 1 );
-        digester.addCallParam( "root/item", 0, "id" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/item" ).callMethod( "setItemId" ).withParamCount( 1 )
+                    .then()
+                    .callParam().fromAttribute( "id" )
+                    .then()
+                    .callMethod( "setItemName" ).withParamCount( 1 )
+                    .then()
+                    .callParam();
+            }
+
+        }).newDigester();
 
         this.itemId = null;
         this.itemName = null;
@@ -112,7 +133,22 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " <item>1</item>" );
         input.append( "</root>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/item" ).callMethod( "setItemId" ).withParamCount( 1 )
+                    .then()
+                    .callParam().fromAttribute( "id" )
+                    .then()
+                    .callMethod( "setItemName" ).withParamCount( 1 )
+                    .then()
+                    .callParam();
+            }
+
+        }).newDigester();
 
         digester.addCallMethod( "root/item", "setItemId", 1 );
         digester.addCallParam( "root/item", 0 );
@@ -158,12 +194,20 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " </item>" );
         input.append( "</root>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addCallMethod( "root/item", "setItemId", 1 );
-        digester.addCallParam( "root/item/id", 0, "value" );
-        digester.addCallMethod( "root/item", "setItemName", 1 );
-        digester.addCallParam( "root/item/name", 0, "value" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/item" ).callMethod( "setItemId" ).withParamCount( 1 )
+                    .then()
+                    .callMethod( "setItemName" ).withParamCount( 1 );
+                forPattern( "root/item/id" ).callParam().fromAttribute( "value" );
+                forPattern( "root/item/name" ).callParam().fromAttribute( "value" );
+            }
+
+        }).newDigester();
 
         this.itemId = null;
         this.itemName = null;
@@ -196,12 +240,22 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " </box>" );
         input.append( "</box>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addObjectCreate( "*/box", Box.class );
-        digester.addCallMethod( "*/box", "setId", 1 );
-        digester.addCallParam( "*/box", 0, "id" );
-        digester.addSetNext( "*/box", "addChild" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "*/box" ).createObject().ofType( Box.class )
+                    .then()
+                    .callMethod( "setId" ).withParamCount( 1 )
+                    .then()
+                    .callParam().fromAttribute( "id" )
+                    .then()
+                    .setNext( "addChild" );
+            }
+
+        }).newDigester();
 
         Box root = new Box();
         root.setId( "root" );
@@ -230,12 +284,22 @@ public class OverlappingCallMethodRuleTestCase
         input.append( " </box>" );
         input.append( "</box>" );
 
-        Digester digester = new Digester();
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        digester.addObjectCreate( "*/box", Box.class );
-        digester.addCallMethod( "*/box", "setId", 1 );
-        digester.addCallParam( "*/box", 0 );
-        digester.addSetNext( "*/box", "addChild" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "*/box" ).createObject().ofType( Box.class )
+                    .then()
+                    .callMethod( "setId" ).withParamCount( 1 )
+                    .then()
+                    .callParam()
+                    .then()
+                    .setNext( "addChild" );
+            }
+
+        }).newDigester();
 
         Box root = new Box();
         root.setId( "root" );
