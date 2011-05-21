@@ -118,7 +118,7 @@ public final class NodeCreateRuleProvider
             this.documentType = documentType;
         }
 
-        int getDocumentType()
+        private int getDocumentType()
         {
             return documentType;
         }
