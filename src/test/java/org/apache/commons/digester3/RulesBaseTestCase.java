@@ -101,7 +101,7 @@ public class RulesBaseTestCase
 
         // perform tests
 
-        assertEquals( "Initial rules list is empty", 0, digester.getRules().match( "a" ).size() );
+        assertEquals( "Initial rules list is empty", 0, digester.getRules().match( null, "a" ).size() );
         digester.addSetProperties( "a" );
         assertEquals( "Add a matching rule", 1, digester.getRules().match( null, "a" ).size() );
         digester.addSetProperties( "b" );

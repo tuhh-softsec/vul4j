@@ -507,15 +507,6 @@ public class DigesterRuleParser
         }
 
         /**
-         * @deprecated Call match(namespaceURI,pattern) instead.
-         */
-        @Deprecated
-        public List<Rule> match( String pattern )
-        {
-            return delegate.match( pattern );
-        }
-
-        /**
          * This method passes through to the underlying Rules object.
          */
         public List<Rule> match( String namespaceURI, String pattern )

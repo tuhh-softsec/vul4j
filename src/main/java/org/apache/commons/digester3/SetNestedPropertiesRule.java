@@ -359,11 +359,6 @@ public class SetNestedPropertiesRule
         {
         }
 
-        public List<Rule> match( String matchPath )
-        {
-            return match( null, matchPath );
-        }
-
         public List<Rule> match( String namespaceURI, String matchPath )
         {
             List<Rule> match = decoratedRules.match( namespaceURI, matchPath );

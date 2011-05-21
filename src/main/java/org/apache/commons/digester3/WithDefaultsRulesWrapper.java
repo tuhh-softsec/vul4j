@@ -123,11 +123,6 @@ public class WithDefaultsRulesWrapper
 
     // --------------------------------------------------------- Public Methods
 
-    public List<Rule> match( String pattern )
-    {
-        return match( "", pattern );
-    }
-
     /**
      * Return list of rules matching given pattern. If wrapped implementation returns any matches return those.
      * Otherwise, return default matches.
