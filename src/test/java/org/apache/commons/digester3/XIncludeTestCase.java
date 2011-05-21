@@ -18,15 +18,14 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.digester3.Digester;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -38,37 +37,6 @@ import org.xml.sax.SAXException;
 public class XIncludeTestCase
 {
 
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
-
     // ------------------------------------------------ Individual Test Methods
 
     /**
@@ -78,21 +46,28 @@ public class XIncludeTestCase
     public void testXInclude()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Turn on XInclude processing
-        digester.setNamespaceAware( true );
-        digester.setXIncludeAware( true );
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class );
+                forPattern( "employee/firstName" ).callMethod( "setFirstName" ).usingElementBodyAsArgument();
+                forPattern( "employee/lastName" ).callMethod( "setLastName" ).usingElementBodyAsArgument();
 
-        // Configure the digester as required
-        digester.addObjectCreate( "employee", Employee.class );
-        digester.addCallMethod( "employee/firstName", "setFirstName", 0 );
-        digester.addCallMethod( "employee/lastName", "setLastName", 0 );
+                forPattern( "employee/address" ).createObject().ofType( Address.class )
+                    .then()
+                    .setNext( "addAddress" );
+                forPattern( "employee/address/type" ).callMethod( "setType" ).usingElementBodyAsArgument();
+                forPattern( "employee/address/city" ).callMethod( "setCity" ).usingElementBodyAsArgument();
+                forPattern( "employee/address/state" ).callMethod( "setState" ).usingElementBodyAsArgument();
+            }
 
-        digester.addObjectCreate( "employee/address", Address.class );
-        digester.addCallMethod( "employee/address/type", "setType", 0 );
-        digester.addCallMethod( "employee/address/city", "setCity", 0 );
-        digester.addCallMethod( "employee/address/state", "setState", 0 );
-        digester.addSetNext( "employee/address", "addAddress" );
+        })
+        .setNamespaceAware( true )
+        .setXIncludeAware( true )
+        .newDigester();
 
         // Parse our test input
         Employee employee = digester.parse( getInputStream( "Test12.xml" ) );
