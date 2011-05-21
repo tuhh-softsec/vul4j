@@ -18,6 +18,7 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -26,10 +27,7 @@ import static org.junit.Assert.fail;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.SetPropertiesRule;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -61,35 +59,6 @@ public class SetPropertiesRuleTestCase
     protected final static String TEST_XML_3 =
         "<?xml version='1.0'?><root alpha='ALPHA VALUE' beta='BETA VALUE' delta='DELTA VALUE' ignore='ignore value'/>";
 
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
-
     // ------------------------------------------------ Individual Test Methods
 
     /**
@@ -99,10 +68,18 @@ public class SetPropertiesRuleTestCase
     public void testPositive()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        digester.addSetProperties( "root" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setProperties();
+            }
+
+        }).newDigester();
 
         // Parse the input
         SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_1 ) );
@@ -122,10 +99,18 @@ public class SetPropertiesRuleTestCase
     public void testIgnoreMissing()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        digester.addSetProperties( "root" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setProperties();
+            }
+
+        }).newDigester();
 
         // Parse the input
         SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_2 ) );
@@ -145,12 +130,18 @@ public class SetPropertiesRuleTestCase
     public void testNegativeNotIgnoreMissing()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        SetPropertiesRule rule = new SetPropertiesRule();
-        rule.setIgnoreMissingProperty( false );
-        digester.addRule( "root", rule );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setProperties().ignoreMissingProperty( false );
+            }
+
+        }).newDigester();
 
         try
         {
@@ -198,12 +189,20 @@ public class SetPropertiesRuleTestCase
     public void testPositiveNotIgnoreMissingWithIgnoreAttributes()
         throws Exception
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        SetPropertiesRule rule = new SetPropertiesRule( new String[] { "ignore" }, new String[] {} );
-        rule.setIgnoreMissingProperty( false );
-        digester.addRule( "root", rule );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setProperties()
+                        .addAlias( "ignore", null )
+                        .ignoreMissingProperty( false );
+            }
+
+        }).newDigester();
 
         // Parse the input
         SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_3 ) );
