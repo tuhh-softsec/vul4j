@@ -77,14 +77,7 @@ public final class NestedPropertiesBuilder
         }
         else
         {
-            if ( propertyName == null )
-            {
-                reportError( "setNestedProperties().addAlias( String,String )", "empty 'propertyName' not allowed" );
-            }
-            else
-            {
-                elementNames.put( elementName, propertyName );
-            }
+            elementNames.put( elementName, propertyName );
         }
         return this;
     }
