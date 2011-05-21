@@ -18,6 +18,7 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,10 +27,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.ObjectParamRule;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -41,37 +39,6 @@ import org.xml.sax.SAXException;
  */
 public class ObjectParamRuleTestCase
 {
-
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
 
     // ------------------------------------------------ Individual Test Methods
 
@@ -86,28 +53,31 @@ public class ObjectParamRuleTestCase
     public void testBasic()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // Configure the digester as required
-        digester.addObjectCreate( "arraylist", ArrayList.class );
+            @Override
+            protected void configure()
+            {
+                forPattern( "arraylist" ).createObject().ofType( ArrayList.class );
+                forPattern( "arraylist/A" ).callMethod( "add" ).withParamCount( 1 )
+                    .then()
+                    .objectParam( new Integer( -9 ) );
+                forPattern( "arraylist/B" ).callMethod( "add" ).withParamCount( 1 )
+                    .then()
+                    .objectParam( new Float( 3.14159 ) );
+                forPattern( "arraylist/C" ).callMethod( "add" ).withParamCount( 1 )
+                    .then()
+                    .objectParam( new Long( 999999999 ) );
+                forPattern( "arraylist/D" ).callMethod( "add" ).withParamCount( 1 )
+                    .then()
+                    .objectParam( new String( "foobarbazbing" ) ).matchingAttribute( "desc" );
+                forPattern( "arraylist/E" ).callMethod( "add" ).withParamCount( 1 )
+                    .then()
+                    .objectParam( new String( "ignore" ) ).matchingAttribute( "nonexistentattribute" );
+            }
 
-        // Test adding a variety of objects
-        digester.addCallMethod( "arraylist/A", "add", 1 );
-        ObjectParamRule opr = new ObjectParamRule( 0, new Integer( -9 ) );
-        digester.addRule( "arraylist/A", opr );
-        digester.addCallMethod( "arraylist/B", "add", 1 );
-        opr = new ObjectParamRule( 0, new Float( 3.14159 ) );
-        digester.addRule( "arraylist/B", opr );
-        digester.addCallMethod( "arraylist/C", "add", 1 );
-        opr = new ObjectParamRule( 0, new Long( 999999999 ) );
-        digester.addRule( "arraylist/C", opr );
-        digester.addCallMethod( "arraylist/D", "add", 1 );
-        opr = new ObjectParamRule( 0, "desc", new String( "foobarbazbing" ) );
-        digester.addRule( "arraylist/D", opr );
-        // note that this will add a null parameter to the method call and will
-        // not be added to the arraylist.
-        digester.addCallMethod( "arraylist/E", "add", 1 );
-        opr = new ObjectParamRule( 0, "nonexistentattribute", new String( "ignore" ) );
-        digester.addRule( "arraylist/E", opr );
+        }).newDigester();
 
         // Parse it and obtain the ArrayList
         ArrayList<?> al = digester.parse( new StringReader( sb.toString() ) );
