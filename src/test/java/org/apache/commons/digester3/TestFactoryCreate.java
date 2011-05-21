@@ -48,7 +48,7 @@ public class TestFactoryCreate
 
         // only used with this method
         class ThrowExceptionCreateRule
-            extends AbstractObjectCreationFactory
+            extends AbstractObjectCreationFactory<Object>
         {
             @Override
             public Object createObject( Attributes attributes )
