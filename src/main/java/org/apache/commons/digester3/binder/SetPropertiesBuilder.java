@@ -49,18 +49,11 @@ public final class SetPropertiesBuilder
     {
         if ( attributeName == null )
         {
-            reportError( "setProperties().addAlias( String,String ) }", "empty 'attributeName' not allowed" );
+            reportError( "setProperties().addAlias( String,String )", "empty 'attributeName' not allowed" );
         }
         else
         {
-            if ( propertyName == null )
-            {
-                reportError( "setProperties().addAlias( String,String ) }", "empty 'propertyName' not allowed" );
-            }
-            else
-            {
-                aliases.put( attributeName, propertyName );
-            }
+            aliases.put( attributeName, propertyName );
         }
         return this;
     }
