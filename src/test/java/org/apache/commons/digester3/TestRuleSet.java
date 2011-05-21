@@ -68,9 +68,13 @@ public class TestRuleSet
 
         super(namespaceURI);
         if ( prefix == null )
+        {
             this.prefix = "";
+        }
         else
+        {
             this.prefix = prefix;
+        }
 
     }
 
