@@ -411,6 +411,7 @@ public final class DigesterLoader
         digester.setSubstitutor( substitutor );
         digester.registerAll( entityValidator );
         digester.setStackAction( stackAction );
+        digester.setNamespaceAware( isNamespaceAware() );
 
         addRules( digester );
 
