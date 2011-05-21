@@ -18,6 +18,7 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -26,12 +27,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.RulesBase;
-import org.apache.commons.digester3.SetNestedPropertiesRule;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -51,35 +47,6 @@ public class SetNestedPropertiesRuleTestCase
     protected final static String TEST_XML = "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<alpha>ALPHA BODY</alpha>"
         + "<beta>BETA BODY</beta>" + "<gamma>GAMMA BODY</gamma>" + "<delta>DELTA BODY</delta>" + "</root>";
 
-    /**
-     * The digester instance we will be processing.
-     */
-    protected Digester digester = null;
-
-    // --------------------------------------------------- Overall Test Methods
-
-    /**
-     * Set up instance variables required by this test case.
-     */
-    @Before
-    public void setUp()
-    {
-
-        digester = new Digester();
-
-    }
-
-    /**
-     * Tear down instance variables required by this test case.
-     */
-    @After
-    public void tearDown()
-    {
-
-        digester = null;
-
-    }
-
     // ------------------------------------------------ Individual Test Methods
 
     /**
@@ -89,12 +56,18 @@ public class SetNestedPropertiesRuleTestCase
     public void testAutomaticallySetProperties()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
 
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties();
+            }
 
-        // match all children of root with this rule
-        digester.addRule( "root", new SetNestedPropertiesRule() );
+        }).newDigester();
 
         SimpleTestBean bean = digester.parse( xmlTestReader() );
 
@@ -115,14 +88,20 @@ public class SetNestedPropertiesRuleTestCase
     public void testMandatoryProperties()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties();
+            }
+
+        }).newDigester();
 
         String TEST_XML = "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<badprop>ALPHA BODY</badprop>" + "</root>";
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        // match all children of root with this rule
-        digester.addRule( "root", new SetNestedPropertiesRule() );
 
         try
         {
@@ -154,23 +133,25 @@ public class SetNestedPropertiesRuleTestCase
     public void testCustomisedProperties1()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties()
+                        .addAlias( "alpha", null )
+                        .addAlias( "gamma-alt", "gamma" )
+                        .addAlias( "delta", null );
+            }
+
+        }).newDigester();
 
         String TEST_XML =
             "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<alpha>ALPHA BODY</alpha>" + "<beta>BETA BODY</beta>"
                 + "<gamma-alt>GAMMA BODY</gamma-alt>" + "<delta>DELTA BODY</delta>" + "</root>";
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        // ignore the "alpha" element (target=null)
-        // don't remap the "beta" element
-        // map the gamma-alt element into the gamma property
-        // ignore the delta element (no matching element in array)
-
-        Rule rule =
-            new SetNestedPropertiesRule( new String[] { "alpha", "gamma-alt", "delta" }, new String[] { null, "gamma" } );
-
-        digester.addRule( "root", rule );
 
         SimpleTestBean bean = digester.parse( new StringReader( TEST_XML ) );
 
@@ -194,17 +175,23 @@ public class SetNestedPropertiesRuleTestCase
     public void testCustomisedProperties2a()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties()
+                        .addAlias( "alpha", null );
+            }
+
+        }).newDigester();
 
         String TEST_XML =
             "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<alpha>ALPHA BODY</alpha>" + "<beta>BETA BODY</beta>"
                 + "<gamma>GAMMA BODY</gamma>" + "<delta>DELTA BODY</delta>" + "</root>";
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        // ignore the "alpha" element (target=null)
-        Rule rule = new SetNestedPropertiesRule( "alpha", null );
-        digester.addRule( "root", rule );
 
         SimpleTestBean bean = digester.parse( new StringReader( TEST_XML ) );
 
@@ -228,18 +215,23 @@ public class SetNestedPropertiesRuleTestCase
     public void testCustomisedProperties2b()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties()
+                        .addAlias( "alpha-alt", "alpha" );
+            }
+
+        }).newDigester();
 
         String TEST_XML =
             "<?xml version='1.0'?>" + "<root>ROOT BODY" + "<alpha-alt>ALPHA BODY</alpha-alt>"
                 + "<beta>BETA BODY</beta>" + "<gamma>GAMMA BODY</gamma>" + "<delta>DELTA BODY</delta>" + "</root>";
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        // map the contents of the alpha-alt xml child into the
-        // "alpha" java property.
-        Rule rule = new SetNestedPropertiesRule( "alpha-alt", "alpha" );
-        digester.addRule( "root", rule );
 
         SimpleTestBean bean = digester.parse( new StringReader( TEST_XML ) );
 
@@ -268,6 +260,21 @@ public class SetNestedPropertiesRuleTestCase
     public void testMultiRuleMatch()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root/testbean" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setProperties()
+                    .then()
+                    .setNestedProperties();
+                forPattern( "root/testbean/gamma/prop" ).setProperty( "name" ).extractingValueFromAttribute( "value" );
+            }
+
+        }).newDigester();
 
         String testXml =
             "<?xml version='1.0'?>" + "<root>" + "<testbean alpha='alpha-attr'>ROOT BODY" + "<beta>BETA BODY</beta>"
@@ -275,13 +282,6 @@ public class SetNestedPropertiesRuleTestCase
                 + "</root>";
 
         Reader reader = new StringReader( testXml );
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root/testbean", "org.apache.commons.digester3.SimpleTestBean" );
-
-        digester.addRule( "root/testbean", new SetNestedPropertiesRule() );
-        digester.addSetProperties( "root/testbean" );
-        digester.addSetProperty( "root/testbean/gamma/prop", "name", "value" );
 
         SimpleTestBean bean = digester.parse( reader );
 
@@ -307,18 +307,24 @@ public class SetNestedPropertiesRuleTestCase
     public void testUnknownChildrenCausesException()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties();
+            }
+
+        }).newDigester();
 
         String testXml =
             "<?xml version='1.0'?>" + "<root>" + "<testbean>" + "<beta>BETA BODY</beta>" + "<foo>GAMMA</foo>"
                 + "</testbean>" + "</root>";
 
         Reader reader = new StringReader( testXml );
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        Rule rule = new SetNestedPropertiesRule();
-        digester.addRule( "root", rule );
 
         try
         {
@@ -344,19 +350,24 @@ public class SetNestedPropertiesRuleTestCase
     public void testUnknownChildrenExceptionOverride()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties().allowUnknownChildElements( true );
+            }
+
+        }).newDigester();
 
         String testXml =
             "<?xml version='1.0'?>" + "<root>" + "<testbean>" + "<beta>BETA BODY</beta>" + "<foo>GAMMA</foo>"
                 + "</testbean>" + "</root>";
 
         Reader reader = new StringReader( testXml );
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-
-        SetNestedPropertiesRule rule = new SetNestedPropertiesRule();
-        rule.setAllowUnknownChildElements( true );
-        digester.addRule( "root", rule );
 
         SimpleTestBean bean = digester.parse( reader );
         assertNotNull( bean );
@@ -372,19 +383,24 @@ public class SetNestedPropertiesRuleTestCase
     public void testRecursiveNestedProperties()
         throws SAXException, IOException
     {
+        Digester digester = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "*/testbean" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" )
+                    .then()
+                    .setNestedProperties().allowUnknownChildElements( true );
+            }
+
+        }).newDigester();
 
         String testXml =
             "<?xml version='1.0'?>" + "<testbean>" + "<beta>BETA BODY</beta>" + "<testbean>" + "<beta>BETA BODY</beta>"
                 + "</testbean>" + "</testbean>";
 
         Reader reader = new StringReader( testXml );
-
-        // going to be setting properties on a SimpleTestBean
-        digester.addObjectCreate( "*/testbean", "org.apache.commons.digester3.SimpleTestBean" );
-
-        SetNestedPropertiesRule rule = new SetNestedPropertiesRule();
-        rule.setAllowUnknownChildElements( true );
-        digester.addRule( "*/testbean", rule );
 
         SimpleTestBean bean = digester.parse( reader );
         assertNotNull( bean );
