@@ -23,11 +23,15 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.digester3.AbstractObjectCreationFactory;
 import org.apache.commons.digester3.Digester;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.xml.sax.Attributes;
 
 /**
@@ -35,9 +39,27 @@ import org.xml.sax.Attributes;
  * 
  * @author Robert Burrell Donkin
  */
-
+@RunWith(value = Parameterized.class)
 public class TestFactoryCreate
 {
+
+    private final boolean propagateExceptions;
+
+    public TestFactoryCreate( boolean propagateExceptions )
+    {
+        this.propagateExceptions = propagateExceptions;
+    }
+
+    @Parameters
+    public static Collection<Object[]> data()
+    {
+        Collection<Object[]> data = new ArrayList<Object[]>(2);
+
+        data.add( new Object[] { true } );
+        data.add( new Object[] { false } );
+
+        return data;
+    }
 
     // --------------------------------------------------------------- Test cases
 
@@ -109,13 +131,6 @@ public class TestFactoryCreate
 
     @Test
     public void testFactoryCreateRule()
-        throws Exception
-    {
-        tryVariations( true );
-        tryVariations( false );
-    }
-
-    private void tryVariations( boolean propagateExceptions )
         throws Exception
     {
 
