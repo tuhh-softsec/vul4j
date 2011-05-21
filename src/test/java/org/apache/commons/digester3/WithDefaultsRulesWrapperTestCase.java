@@ -35,7 +35,7 @@ import org.junit.Test;
  * @version $Revision$ $Date$
  */
 
-public class WDRulesWrapperTestCase
+public class WithDefaultsRulesWrapperTestCase
 {
 
     @Test
