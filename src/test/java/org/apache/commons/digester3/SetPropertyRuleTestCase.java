@@ -18,6 +18,7 @@
 
 package org.apache.commons.digester3;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,7 +28,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
+import org.apache.commons.digester3.binder.DigesterLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +58,18 @@ public class SetPropertyRuleTestCase
     protected final static String TEST_XML_2 = "<?xml version='1.0'?><root>"
         + "<set name='unknown' value='UNKNOWN VALUE'/>" + "</root>";
 
+    private final DigesterLoader loader = newLoader( new AbstractRulesModule()
+    {
+
+        @Override
+        protected void configure()
+        {
+            forPattern( "root" ).createObject().ofType( "org.apache.commons.digester3.SimpleTestBean" );
+            forPattern( "root/set" ).setProperty( "name" ).extractingValueFromAttribute( "value" );
+        }
+
+    });
+
     /**
      * The digester instance we will be processing.
      */
@@ -70,7 +84,7 @@ public class SetPropertyRuleTestCase
     public void setUp()
     {
 
-        digester = new Digester();
+        digester = loader.newDigester();
 
     }
 
@@ -94,11 +108,6 @@ public class SetPropertyRuleTestCase
     public void testPositive()
         throws Exception
     {
-
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        digester.addSetProperty( "root/set", "name", "value" );
-
         // Parse the input
         SimpleTestBean bean = digester.parse( xmlTestReader( TEST_XML_1 ) );
 
@@ -116,11 +125,6 @@ public class SetPropertyRuleTestCase
     @Test
     public void testNegative()
     {
-
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        digester.addSetProperty( "root/set", "name", "value" );
-
         // Parse the input (should fail)
         try
         {
@@ -189,10 +193,6 @@ public class SetPropertyRuleTestCase
         throws Exception
     {
         String TEST_XML_3 = "<?xml version='1.0'?><root><set/></root>";
-
-        // Set up the rules we need
-        digester.addObjectCreate( "root", "org.apache.commons.digester3.SimpleTestBean" );
-        digester.addSetProperty( "root/set", "name", "value" );
 
         // Parse the input - should not throw an exception
         @SuppressWarnings( "unused" )
