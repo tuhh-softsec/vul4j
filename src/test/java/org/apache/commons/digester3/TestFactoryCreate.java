@@ -43,11 +43,11 @@ import org.xml.sax.Attributes;
 public class TestFactoryCreate
 {
 
-    private final boolean propagateExceptions;
+    private final boolean ignoreCreateExceptions;
 
-    public TestFactoryCreate( boolean propagateExceptions )
+    public TestFactoryCreate( boolean ignoreCreateExceptions )
     {
-        this.propagateExceptions = propagateExceptions;
+        this.ignoreCreateExceptions = ignoreCreateExceptions;
     }
 
     @Parameters
@@ -85,47 +85,23 @@ public class TestFactoryCreate
 
         // test default - which is to propagate the exception
         Digester digester = new Digester();
-        digester.addFactoryCreate( "root", new ThrowExceptionCreateRule() );
+        digester.addFactoryCreate( "root", new ThrowExceptionCreateRule(), ignoreCreateExceptions );
         try
         {
 
             digester.parse( new StringReader( xml ) );
-            fail( "Exception not propagated from create rule (1)" );
+            if ( !ignoreCreateExceptions )
+            {
+                fail( "Exception should be propagated from create rule" );
+            }
 
         }
         catch ( Exception e )
         {
-            /* This is what's expected */
-        }
-
-        // test propagate exception
-        digester = new Digester();
-        digester.addFactoryCreate( "root", new ThrowExceptionCreateRule(), false );
-        try
-        {
-
-            digester.parse( new StringReader( xml ) );
-            fail( "Exception not propagated from create rule (1)" );
-
-        }
-        catch ( Exception e )
-        {
-            /* This is what's expected */
-        }
-
-        // test don't propagate exception
-        digester = new Digester();
-        digester.addFactoryCreate( "root", new ThrowExceptionCreateRule(), true );
-        try
-        {
-
-            digester.parse( new StringReader( xml ) );
-
-        }
-        catch ( Exception e )
-        {
-            // this shouldn't happen
-            fail( "Exception should not be propagated" );
+            if ( ignoreCreateExceptions )
+            {
+                fail( "Exception should not be propagated" );
+            }
         }
     }
 
@@ -137,21 +113,21 @@ public class TestFactoryCreate
         // test passing object create
         Digester digester = new Digester();
         ObjectCreationFactoryTestImpl factory = new ObjectCreationFactoryTestImpl();
-        digester.addFactoryCreate( "root", factory, propagateExceptions );
+        digester.addFactoryCreate( "root", factory, ignoreCreateExceptions );
         String xml = new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>" );
         digester.parse( new StringReader( xml ) );
 
-        assertEquals( "Object create not called(1)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (1)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(1)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (1)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (2)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (2)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (3)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (3)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
 
         digester = new Digester();
         digester.addFactoryCreate( "root", "org.apache.commons.digester3.ObjectCreationFactoryTestImpl",
-                                   propagateExceptions );
+                                   ignoreCreateExceptions );
         digester.addSetNext( "root", "add" );
         xml = new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>" );
         List<ObjectCreationFactoryTestImpl> list = new ArrayList<ObjectCreationFactoryTestImpl>();
@@ -160,17 +136,17 @@ public class TestFactoryCreate
 
         assertEquals( "List should contain only the factory object", list.size(), 1 );
         factory = list.get( 0 );
-        assertEquals( "Object create not called(2)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (4)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(2)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (4)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (5)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (5)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (6)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (6)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
 
         digester = new Digester();
         digester.addFactoryCreate( "root", "org.apache.commons.digester3.ObjectCreationFactoryTestImpl", "override",
-                                   propagateExceptions );
+                                   ignoreCreateExceptions );
         digester.addSetNext( "root", "add" );
         xml = new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>" );
         list = new ArrayList<ObjectCreationFactoryTestImpl>();
@@ -179,17 +155,17 @@ public class TestFactoryCreate
 
         assertEquals( "List should contain only the factory object", list.size(), 1 );
         factory = list.get( 0 );
-        assertEquals( "Object create not called(3)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (7)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(3)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (7)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (8)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (8)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (8)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (8)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
 
         digester = new Digester();
         digester.addFactoryCreate( "root", "org.apache.commons.digester3.ObjectCreationFactoryTestImpl", "override",
-                                   propagateExceptions );
+                                   ignoreCreateExceptions );
         digester.addSetNext( "root", "add" );
         xml =
             new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
@@ -202,16 +178,16 @@ public class TestFactoryCreate
         factory = list.get( 0 );
         assertEquals( "Attribute Override Failed (1)", factory.getClass().getName(),
                       "org.apache.commons.digester3.OtherTestObjectCreationFactory" );
-        assertEquals( "Object create not called(4)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (10)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(4)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (10)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (11)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (11)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (12)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (12)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
 
         digester = new Digester();
-        digester.addFactoryCreate( "root", ObjectCreationFactoryTestImpl.class, "override", propagateExceptions );
+        digester.addFactoryCreate( "root", ObjectCreationFactoryTestImpl.class, "override", ignoreCreateExceptions );
         digester.addSetNext( "root", "add" );
         xml = new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly'><element/></root>" );
         list = new ArrayList<ObjectCreationFactoryTestImpl>();
@@ -220,16 +196,16 @@ public class TestFactoryCreate
 
         assertEquals( "List should contain only the factory object", list.size(), 1 );
         factory = list.get( 0 );
-        assertEquals( "Object create not called(5)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (13)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(5)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (13)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (14)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (14)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (15)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (15)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
 
         digester = new Digester();
-        digester.addFactoryCreate( "root", ObjectCreationFactoryTestImpl.class, "override", propagateExceptions );
+        digester.addFactoryCreate( "root", ObjectCreationFactoryTestImpl.class, "override", ignoreCreateExceptions );
         digester.addSetNext( "root", "add" );
         xml =
             new String( "<?xml version='1.0' ?><root one='good' two='bad' three='ugly' "
@@ -242,12 +218,12 @@ public class TestFactoryCreate
         factory = list.get( 0 );
         assertEquals( "Attribute Override Failed (2)", factory.getClass().getName(),
                       "org.apache.commons.digester3.OtherTestObjectCreationFactory" );
-        assertEquals( "Object create not called(6)[" + propagateExceptions + "]", factory.called, true );
-        assertEquals( "Attribute not passed (16)[" + propagateExceptions + "]", factory.attributes.getValue( "one" ),
+        assertEquals( "Object create not called(6)[" + ignoreCreateExceptions + "]", factory.called, true );
+        assertEquals( "Attribute not passed (16)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "one" ),
                       "good" );
-        assertEquals( "Attribute not passed (17)[" + propagateExceptions + "]", factory.attributes.getValue( "two" ),
+        assertEquals( "Attribute not passed (17)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "two" ),
                       "bad" );
-        assertEquals( "Attribute not passed (18)[" + propagateExceptions + "]", factory.attributes.getValue( "three" ),
+        assertEquals( "Attribute not passed (18)[" + ignoreCreateExceptions + "]", factory.attributes.getValue( "three" ),
                       "ugly" );
     }
 }
