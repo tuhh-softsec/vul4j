@@ -17,57 +17,20 @@
  */
 package org.apache.commons.digester3.binder;
 
-import static java.lang.String.format;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.digester3.RuleSet;
-
 /**
  * The Digester EDSL.
  *
  * @since 3.0
  */
-public final class RulesBinder
+public interface RulesBinder
 {
 
     /**
-     * Errors that can occur during binding time or rules creation.
-     */
-    private final List<ErrorMessage> errors = new ArrayList<ErrorMessage>();
-
-    /**
-     * 
-     */
-    private final FromBinderRuleSet fromBinderRuleSet = new FromBinderRuleSet();
-
-    /**
-     * 
-     */
-    private ClassLoader classLoader;
-
-    /**
-     * 
+     * Returns the context {@code ClassLoader}.
      *
-     * @param classLoader
+     * @return The context {@code ClassLoader}
      */
-    void initialize( ClassLoader classLoader )
-    {
-        this.classLoader = classLoader;
-        fromBinderRuleSet.clear();
-        errors.clear();
-    }
-
-    /**
-     * 
-     *
-     * @return
-     */
-    public ClassLoader getContextClassLoader()
-    {
-        return this.classLoader;
-    }
+    ClassLoader getContextClassLoader();
 
     /**
      * Records an error message which will be presented to the user at a later time. Unlike throwing an exception, this
@@ -77,52 +40,7 @@ public final class RulesBinder
      * @param messagePattern The message string pattern
      * @param arguments Arguments referenced by the format specifiers in the format string
      */
-    public void addError( String messagePattern, Object... arguments )
-    {
-        StackTraceElement[] stackTrace = new Exception().getStackTrace();
-        StackTraceElement element = null;
-
-        int stackIndex = stackTrace.length - 1;
-        while ( element == null && stackIndex > 0 ) // O(n) there's no better way
-        {
-            Class<?> moduleClass = null;
-            try
-            {
-                // check if the set ClassLoader resolves the Class in the StackTrace
-                moduleClass = Class.forName( stackTrace[stackIndex].getClassName(), false, this.classLoader );
-            }
-            catch ( ClassNotFoundException e )
-            {
-                try
-                {
-                    // try otherwise with current ClassLoader
-                    moduleClass =
-                        Class.forName( stackTrace[stackIndex].getClassName(), false, this.getClass().getClassLoader() );
-                }
-                catch ( ClassNotFoundException e1 )
-                {
-                    // Class in the StackTrace can't be found, don't write the file name:line number detail in the
-                    // message
-                }
-            }
-
-            if ( moduleClass != null )
-            {
-                if ( RulesModule.class.isAssignableFrom( moduleClass ) )
-                {
-                    element = stackTrace[stackIndex];
-                }
-            }
-
-            stackIndex--;
-        }
-
-        if ( element != null )
-        {
-            messagePattern = format( "%s (%s:%s)", messagePattern, element.getFileName(), element.getLineNumber() );
-        }
-        addError( new ErrorMessage( messagePattern, arguments ) );
-    }
+    void addError( String messagePattern, Object... arguments );
 
     /**
      * Records an exception, the full details of which will be logged, and the message of which will be presented to the
@@ -131,30 +49,14 @@ public final class RulesBinder
      *
      * @param t The exception has to be recorded.
      */
-    public void addError( Throwable t )
-    {
-        String message = "An exception was caught and reported. Message: " + t.getMessage();
-        addError( new ErrorMessage( message, t ) );
-    }
-
-    /**
-     * 
-     *
-     * @param errorMessage
-     */
-    private void addError(ErrorMessage errorMessage) {
-        this.errors.add(errorMessage);
-    }
+    void addError( Throwable t );
 
     /**
      * Allows sub-modules inclusion while binding rules.
      *
      * @param rulesModule the sub-module has to be included.
      */
-    public void install( RulesModule rulesModule )
-    {
-        rulesModule.configure( this );
-    }
+    void install( RulesModule rulesModule );
 
     /**
      * Allows to associate the given pattern to one or more Digester rules.
@@ -162,69 +64,6 @@ public final class RulesBinder
      * @param pattern The pattern that this rule should match
      * @return The Digester rules builder
      */
-    public LinkedRuleBuilder forPattern( String pattern )
-    {
-        final String keyPattern;
-
-        if ( pattern == null || pattern.length() == 0 )
-        {
-            addError( "Null or empty pattern is not valid" );
-            keyPattern = null;
-        }
-        else
-        {
-            if ( pattern.endsWith( "/" ) )
-            {
-                // to help users who accidently add '/' to the end of their patterns
-                keyPattern = pattern.substring( 0, pattern.length() - 1 );
-            }
-            else
-            {
-                keyPattern = pattern;
-            }
-        }
-
-        return new LinkedRuleBuilder( this, fromBinderRuleSet, classLoader, keyPattern );
-    }
-
-    /**
-     * 
-     *
-     * @return
-     */
-    boolean hasError()
-    {
-        return !errors.isEmpty();
-    }
-
-    /**
-     * 
-     *
-     * @return
-     */
-    int errorsSize()
-    {
-        return errors.size();
-    }
-
-    /**
-     * 
-     *
-     * @return
-     */
-    Iterable<ErrorMessage> getErrors()
-    {
-        return errors;
-    }
-
-    /**
-     * 
-     *
-     * @return
-     */
-    RuleSet getFromBinderRuleSet()
-    {
-        return fromBinderRuleSet;
-    }
+    LinkedRuleBuilder forPattern( String pattern );
 
 }

@@ -87,7 +87,7 @@ public final class DigesterLoader
     /**
      * The concrete {@link RulesBinder} implementation.
      */
-    private final RulesBinder rulesBinder = new RulesBinder();
+    private final DefaultRulesBinder rulesBinder = new DefaultRulesBinder();
 
     /**
      * The URLs of entityValidator that have been registered, keyed by the public
