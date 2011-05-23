@@ -23,12 +23,12 @@ import java.lang.reflect.Modifier;
 
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.annotations.AnnotationRuleProvider;
-import org.apache.commons.digester3.annotations.CreationRule;
 import org.apache.commons.digester3.annotations.DigesterLoaderHandler;
 import org.apache.commons.digester3.annotations.DigesterLoadingException;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.FromAnnotationsRuleSet;
+import org.apache.commons.digester3.annotations.rules.CreationRule;
 import org.apache.commons.digester3.annotations.utils.AnnotationUtils;
 
 /**

@@ -24,7 +24,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.commons.digester3.ObjectCreateRule;
-import org.apache.commons.digester3.annotations.CreationRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.ObjectCreateRuleProvider;
