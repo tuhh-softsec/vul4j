@@ -56,7 +56,7 @@ final class IncludeRule
         throws Exception
     {
         // The path attribute gives the URI to another digester rules xml file
-        String fileName = attributes.getValue( "url" );
+        final String fileName = attributes.getValue( "url" );
         if ( fileName != null && fileName.length() > 0 )
         {
             FromXmlRulesModule fromXmlRulesModule = null;
@@ -68,40 +68,58 @@ final class IncludeRule
                 {
                     path = path.substring( 1 );
                 }
-                URL classPathResource = this.targetRulesBinder.getContextClassLoader().getResource( path );
+                final URL classPathResource = this.targetRulesBinder.getContextClassLoader().getResource( path );
                 if ( classPathResource == null )
                 {
-                    this.targetRulesBinder.addError( "Resource '%s' not found, please make sure it is in the classpath",
+                    targetRulesBinder.addError( "Resource '%s' not found, please make sure it is in the classpath",
                                                      path );
                 }
                 else
                 {
-                    fromXmlRulesModule = new FromXmlRulesModule( classPathResource );
+                    fromXmlRulesModule = new FromXmlRulesModule()
+                    {
+
+                        @Override
+                        protected void loadRules()
+                        {
+                            loadXMLRules( classPathResource );
+                        }
+
+                    };
                 }
             }
             else
             {
                 try
                 {
-                    fromXmlRulesModule = new FromXmlRulesModule( new URL( fileName ) );
+                    fromXmlRulesModule = new FromXmlRulesModule()
+                    {
+
+                        @Override
+                        protected void loadRules()
+                        {
+                            loadXMLRules( fileName );
+                        }
+
+                    };
                 }
                 catch ( Exception e )
                 {
-                    this.targetRulesBinder.addError( "An error occurred while inculing file from '%s': %s", fileName,
-                                                     e.getMessage() );
+                    targetRulesBinder.addError( "An error occurred while inculing file from '%s': %s", fileName,
+                                                e.getMessage() );
                 }
             }
 
             if ( fromXmlRulesModule != null )
             {
-                if ( !this.memoryRulesBinder.getIncludedFiles().add( fromXmlRulesModule.getSystemId() ) )
+                if ( !memoryRulesBinder.getIncludedFiles().add( fromXmlRulesModule.getSystemId() ) )
                 {
-                    this.targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s",
-                                                     fromXmlRulesModule.getSystemId() );
+                    targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s",
+                                                fromXmlRulesModule.getSystemId() );
                 }
                 else
                 {
-                    this.install( fromXmlRulesModule );
+                    install( fromXmlRulesModule );
                 }
             }
         }
@@ -116,19 +134,19 @@ final class IncludeRule
                 Class<?> cls = Class.forName( className );
                 if ( !RulesModule.class.isAssignableFrom( cls ) )
                 {
-                    this.targetRulesBinder.addError( "Class '%s' if not a '%s' implementation", className,
-                                                     RulesModule.class.getName() );
+                    targetRulesBinder.addError( "Class '%s' if not a '%s' implementation", className,
+                                                RulesModule.class.getName() );
                     return;
                 }
 
                 RulesModule rulesSource = (RulesModule) cls.newInstance();
 
-                this.install( rulesSource );
+                install( rulesSource );
             }
             catch ( Exception e )
             {
-                this.targetRulesBinder.addError( "Impossible to include programmatic rules from class '%s': %s",
-                                                 className, e.getMessage() );
+                targetRulesBinder.addError( "Impossible to include programmatic rules from class '%s': %s", className,
+                                            e.getMessage() );
             }
         }
     }
@@ -136,8 +154,8 @@ final class IncludeRule
     private void install( RulesModule rulesModule )
     {
         // that's an hack, shall not be taken in consideration!!! :)
-        rulesModule.configure( new PrefixedRulesBinder( this.targetRulesBinder,
-                                                        this.memoryRulesBinder.getPatternStack().toString() ) );
+        rulesModule.configure( new PrefixedRulesBinder( targetRulesBinder,
+                                                        memoryRulesBinder.getPatternStack().toString() ) );
     }
 
 }
