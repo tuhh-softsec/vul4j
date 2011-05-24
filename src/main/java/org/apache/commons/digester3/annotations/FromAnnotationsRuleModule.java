@@ -119,12 +119,12 @@ public abstract class FromAnnotationsRuleModule
         }
 
         // TYPE
-        this.visitElements( type );
+        visitElements( type );
 
         if ( !type.isInterface() )
         {
             // CONSTRUCTOR
-            this.visitElements( new PrivilegedAction<Constructor<?>[]>()
+            visitElements( new PrivilegedAction<Constructor<?>[]>()
             {
                 public Constructor<?>[] run()
                 {
@@ -133,7 +133,7 @@ public abstract class FromAnnotationsRuleModule
             } );
 
             // FIELD
-            this.visitElements( new PrivilegedAction<Field[]>()
+            visitElements( new PrivilegedAction<Field[]>()
             {
                 public Field[] run()
                 {
@@ -143,7 +143,7 @@ public abstract class FromAnnotationsRuleModule
         }
 
         // METHOD
-        this.visitElements( new PrivilegedAction<Method[]>()
+        visitElements( new PrivilegedAction<Method[]>()
         {
             public Method[] run()
             {
