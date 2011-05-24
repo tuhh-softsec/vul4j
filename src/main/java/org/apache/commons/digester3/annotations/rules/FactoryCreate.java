@@ -28,6 +28,7 @@ import org.apache.commons.digester3.FactoryCreateRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.providers.FactoryCreateRuleProvider;
+import org.xml.sax.Attributes;
 
 /**
  * Classes annotated with {@code FactoryCreate} will be bound with {@code FactoryCreateRule} digester rule.
@@ -91,6 +92,26 @@ public @interface FactoryCreate
     @interface List
     {
         FactoryCreate[] value();
+    }
+
+    /**
+     * Dummy ObjectCreationFactory type - only for annotation value type purposes.
+     */
+    public static final class DefaultObjectCreationFactory
+        extends AbstractObjectCreationFactory<Object>
+    {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Object createObject( Attributes attributes )
+            throws Exception
+        {
+            // do nothing
+            return null;
+        }
+
     }
 
 }
