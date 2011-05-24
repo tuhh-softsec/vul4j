@@ -40,6 +40,11 @@ public class AnnotationUtils
     private static final String PATTERN = "pattern";
 
     /**
+     * The {@code namespaceURI} string constant.
+     */
+    private static final String NAMESPACE_URI = "namespaceURI";
+
+    /**
      * This class can't be instantiated.
      */
     private AnnotationUtils()
@@ -67,6 +72,22 @@ public class AnnotationUtils
     public static String getAnnotationPattern( Annotation annotation )
     {
         Object ret = invokeAnnotationMethod( annotation, PATTERN );
+        if ( ret != null )
+        {
+            return (String) ret;
+        }
+        return null;
+    }
+
+    /**
+     * Extract the {@code namespaceURI()} from annotation.
+     *
+     * @param annotation The annotation has to be introspected
+     * @return The annotation {@code namespaceURI()}
+     */
+    public static String getAnnotationNamespaceURI( Annotation annotation )
+    {
+        Object ret = invokeAnnotationMethod( annotation, NAMESPACE_URI );
         if ( ret != null )
         {
             return (String) ret;
