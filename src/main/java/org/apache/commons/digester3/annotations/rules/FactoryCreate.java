@@ -49,7 +49,7 @@ public @interface FactoryCreate
      * 
      * @return the Java class of the object creation factory class.
      */
-    Class<? extends AbstractObjectCreationFactory<?>> factoryClass();
+    Class<? extends AbstractObjectCreationFactory<?>> factoryClass() default DefaultObjectCreationFactory.class;
 
     /**
      * Allows specify the attribute containing an override class name if it is present.
