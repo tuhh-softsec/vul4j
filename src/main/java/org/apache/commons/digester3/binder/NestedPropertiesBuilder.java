@@ -57,7 +57,7 @@ public final class NestedPropertiesBuilder
         }
         else
         {
-            elementNames.put( elementName, null );
+            addAlias( elementName, null );
         }
         return this;
     }
