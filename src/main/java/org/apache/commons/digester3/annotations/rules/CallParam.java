@@ -56,6 +56,27 @@ public @interface CallParam
     String namespaceURI() default "";
 
     /**
+     * The attribute from which to save the parameter value.
+     *
+     * @return the attribute from which to save the parameter value
+     */
+    String attributeName() default "";
+
+    /**
+     * Flags the parameter to be set from the stack.
+     * 
+     * @return true if the parameter has to be set from the stack, false otherwise
+     */
+    boolean fromStack() default false;
+
+    /**
+     * Sets the position of the object from the top of the stack.
+     *
+     * @return The position of the object from the top of the stack
+     */
+    int stackIndex() default 0;
+
+    /**
      * Defines several {@code @CallParam} annotations on the same element.
      * 
      * @see CallParam
