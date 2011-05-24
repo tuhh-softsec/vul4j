@@ -49,6 +49,13 @@ public @interface SetTop
     String pattern();
 
     /**
+     * The namespace URI for which this Rule is relevant, if any.
+     *
+     * @since 3.0
+     */
+    String namespaceURI() default "";
+
+    /**
      * Defines several {@code @SetTop} annotations on the same element
      * 
      * @see SetTop

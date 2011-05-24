@@ -58,6 +58,13 @@ public @interface FactoryCreate
     String pattern();
 
     /**
+     * The namespace URI for which this Rule is relevant, if any.
+     *
+     * @since 3.0
+     */
+    String namespaceURI() default "";
+
+    /**
      * When true any exceptions thrown during object creation will be ignored.
      * 
      * @return when true any exceptions thrown during object creation will be ignored.
