@@ -206,4 +206,14 @@ public abstract class FromXmlRulesModule
         loadXMLRules( new StringReader( xmlText ) );
     }
 
+    /**
+     * Set the root path (will be used when composing modules).
+     *
+     * @param rootPath The root path
+     */
+    protected final void useRootPath( String rootPath )
+    {
+        this.rootPath = rootPath;
+    }
+
 }
