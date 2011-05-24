@@ -216,4 +216,14 @@ public abstract class FromXmlRulesModule
         this.rootPath = rootPath;
     }
 
+    /**
+     * Returns the XML source SystemId load by this module.
+     *
+     * @return The XML source SystemId load by this module
+     */
+    public final String getSystemId()
+    {
+        return inputSource.getSystemId();
+    }
+
 }
