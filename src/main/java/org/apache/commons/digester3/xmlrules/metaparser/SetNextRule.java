@@ -24,23 +24,26 @@ import org.apache.commons.digester3.binder.RulesBinder;
 /**
  * 
  */
-final class SetNextRule extends AbstractXmlMethodRule {
+final class SetNextRule
+    extends AbstractXmlMethodRule
+{
 
     /**
-     * 
      * @param targetRulesBinder
      * @param patternStack
      */
-    public SetNextRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public SetNextRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected ParamTypeBuilder<? extends Rule> createBuilder(LinkedRuleBuilder linkedRuleBuilder, String methodName) {
-        return linkedRuleBuilder.setNext(methodName);
+    protected ParamTypeBuilder<? extends Rule> createBuilder( LinkedRuleBuilder linkedRuleBuilder, String methodName )
+    {
+        return linkedRuleBuilder.setNext( methodName );
     }
 
 }

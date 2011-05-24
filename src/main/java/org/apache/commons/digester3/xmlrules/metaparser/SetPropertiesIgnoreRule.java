@@ -24,20 +24,25 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertiesIgnoreRule extends AbstractXmlRule {
+final class SetPropertiesIgnoreRule
+    extends AbstractXmlRule
+{
 
-    public SetPropertiesIgnoreRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public SetPropertiesIgnoreRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        String attributeName = attributes.getValue("attr-name");
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        String attributeName = attributes.getValue( "attr-name" );
 
-        linkedRuleBuilder.setProperties().ignoreAttribute(attributeName);
+        linkedRuleBuilder.setProperties().ignoreAttribute( attributeName );
     }
 
 }

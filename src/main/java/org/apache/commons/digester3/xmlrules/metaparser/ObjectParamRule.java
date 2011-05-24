@@ -26,41 +26,51 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class ObjectParamRule extends AbstractXmlRule {
+final class ObjectParamRule
+    extends AbstractXmlRule
+{
 
-    public ObjectParamRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public ObjectParamRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
         // create callparamrule
-        int paramIndex = Integer.parseInt(attributes.getValue("paramnumber"));
+        int paramIndex = Integer.parseInt( attributes.getValue( "paramnumber" ) );
 
-        String attributeName = attributes.getValue("attrname");
-        String type = attributes.getValue("type");
-        String value = attributes.getValue("value");
+        String attributeName = attributes.getValue( "attrname" );
+        String type = attributes.getValue( "type" );
+        String value = attributes.getValue( "value" );
 
         // type name is requried
-        if (type == null) {
-            throw new RuntimeException("Attribute 'type' is required.");
+        if ( type == null )
+        {
+            throw new RuntimeException( "Attribute 'type' is required." );
         }
 
         // create object instance
         Object param = null;
-        Class<?> clazz = Class.forName(type);
-        if (value == null) {
+        Class<?> clazz = Class.forName( type );
+        if ( value == null )
+        {
             param = clazz.newInstance();
-        } else {
-            param = ConvertUtils.convert(value, clazz);
+        }
+        else
+        {
+            param = ConvertUtils.convert( value, clazz );
         }
 
-        ObjectParamBuilder<?> builder = linkedRuleBuilder.objectParam(param).ofIndex(paramIndex);
-        if (attributeName != null) {
-            builder.matchingAttribute(attributeName);
+        ObjectParamBuilder<?> builder = linkedRuleBuilder.objectParam( param ).ofIndex( paramIndex );
+        if ( attributeName != null )
+        {
+            builder.matchingAttribute( attributeName );
         }
     }
 

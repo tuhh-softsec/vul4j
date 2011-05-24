@@ -24,20 +24,25 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertyRule extends AbstractXmlRule {
+final class SetPropertyRule
+    extends AbstractXmlRule
+{
 
-    public SetPropertyRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public SetPropertyRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        String name = attributes.getValue("name");
-        String value = attributes.getValue("value");
-        linkedRuleBuilder.setProperty(name).extractingValueFromAttribute(value);
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        String name = attributes.getValue( "name" );
+        String value = attributes.getValue( "value" );
+        linkedRuleBuilder.setProperty( name ).extractingValueFromAttribute( value );
     }
 
 }

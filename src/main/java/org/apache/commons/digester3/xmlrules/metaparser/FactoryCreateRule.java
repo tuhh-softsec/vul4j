@@ -24,21 +24,23 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class FactoryCreateRule extends AbstractXmlRule {
+final class FactoryCreateRule
+    extends AbstractXmlRule
+{
 
-    public FactoryCreateRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public FactoryCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        linkedRuleBuilder.factoryCreate()
-            .ofType(attributes.getValue("classname"))
-            .overriddenByAttribute(attributes.getValue("attrname"))
-            .ignoreCreateExceptions("true".equalsIgnoreCase(attributes.getValue("ignore-exceptions")));
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        linkedRuleBuilder.factoryCreate().ofType( attributes.getValue( "classname" ) ).overriddenByAttribute( attributes.getValue( "attrname" ) ).ignoreCreateExceptions( "true".equalsIgnoreCase( attributes.getValue( "ignore-exceptions" ) ) );
     }
 
 }

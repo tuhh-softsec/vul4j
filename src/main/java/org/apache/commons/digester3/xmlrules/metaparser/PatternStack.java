@@ -20,24 +20,28 @@ package org.apache.commons.digester3.xmlrules.metaparser;
 import java.util.Stack;
 
 /**
- * 
- *
  * @param <E>
  */
-final class PatternStack extends Stack<String> {
+final class PatternStack
+    extends Stack<String>
+{
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder str = new StringBuilder();
-        for (int i = 0; i < size(); i++) {
-            String elem = get(i);
-            if (elem.length() > 0) {
-                if (str.length() > 0) {
-                    str.append('/');
+        for ( int i = 0; i < size(); i++ )
+        {
+            String elem = get( i );
+            if ( elem.length() > 0 )
+            {
+                if ( str.length() > 0 )
+                {
+                    str.append( '/' );
                 }
-                str.append(elem);
+                str.append( elem );
             }
         }
         return str.toString();

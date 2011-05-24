@@ -24,19 +24,24 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertiesRule extends AbstractXmlRule {
+final class SetPropertiesRule
+    extends AbstractXmlRule
+{
 
-    public SetPropertiesRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public SetPropertiesRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        boolean ignoreMissingProperty = "true".equalsIgnoreCase(attributes.getValue("ignore-missing-property"));
-        linkedRuleBuilder.setProperties().ignoreMissingProperty(ignoreMissingProperty);
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        boolean ignoreMissingProperty = "true".equalsIgnoreCase( attributes.getValue( "ignore-missing-property" ) );
+        linkedRuleBuilder.setProperties().ignoreMissingProperty( ignoreMissingProperty );
     }
 
 }

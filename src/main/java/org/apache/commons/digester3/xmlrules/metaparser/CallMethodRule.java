@@ -27,49 +27,59 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class CallMethodRule extends AbstractXmlRule {
+final class CallMethodRule
+    extends AbstractXmlRule
+{
 
-    public CallMethodRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public CallMethodRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        CallMethodBuilder builder = linkedRuleBuilder.callMethod(attributes.getValue("methodname"));
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        CallMethodBuilder builder = linkedRuleBuilder.callMethod( attributes.getValue( "methodname" ) );
 
         // Select which element is to be the target. Default to zero,
         // ie the top object on the stack.
         int targetOffset = 0;
-        String targetOffsetStr = attributes.getValue("targetoffset");
-        if (targetOffsetStr != null) {
-            targetOffset = Integer.parseInt(targetOffsetStr);
-            builder.withTargetOffset(targetOffset);
+        String targetOffsetStr = attributes.getValue( "targetoffset" );
+        if ( targetOffsetStr != null )
+        {
+            targetOffset = Integer.parseInt( targetOffsetStr );
+            builder.withTargetOffset( targetOffset );
         }
 
-        builder.useExactMatch("true".equalsIgnoreCase(attributes.getValue("useExactMatch")));
+        builder.useExactMatch( "true".equalsIgnoreCase( attributes.getValue( "useExactMatch" ) ) );
 
-        String paramCountStr = attributes.getValue("paramcount");
-        if (paramCountStr != null) {
-            int paramCount = Integer.parseInt(attributes.getValue("paramcount"));
+        String paramCountStr = attributes.getValue( "paramcount" );
+        if ( paramCountStr != null )
+        {
+            int paramCount = Integer.parseInt( attributes.getValue( "paramcount" ) );
 
-            builder.withParamCount(paramCount);
+            builder.withParamCount( paramCount );
         }
 
-        String paramTypesStr = attributes.getValue("paramtypes");
-        if (paramTypesStr != null && paramTypesStr.length() > 0) {
-            StringTokenizer tokens = new StringTokenizer(paramTypesStr, " \t\n\r,");
+        String paramTypesStr = attributes.getValue( "paramtypes" );
+        if ( paramTypesStr != null && paramTypesStr.length() > 0 )
+        {
+            StringTokenizer tokens = new StringTokenizer( paramTypesStr, " \t\n\r," );
             String[] paramTypeNames = new String[tokens.countTokens()];
             int counter = 0;
-            while (tokens.hasMoreTokens()) {
+            while ( tokens.hasMoreTokens() )
+            {
                 paramTypeNames[counter++] = tokens.nextToken();
             }
-            builder.withParamTypes(paramTypeNames);
+            builder.withParamTypes( paramTypeNames );
         }
 
-        if ("true".equalsIgnoreCase(attributes.getValue("usingElementBodyAsArgument"))) {
+        if ( "true".equalsIgnoreCase( attributes.getValue( "usingElementBodyAsArgument" ) ) )
+        {
             builder.usingElementBodyAsArgument();
         }
     }

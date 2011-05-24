@@ -24,21 +24,26 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertiesAliasRule extends AbstractXmlRule {
+final class SetPropertiesAliasRule
+    extends AbstractXmlRule
+{
 
-    public SetPropertiesAliasRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public SetPropertiesAliasRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        String attributeName = attributes.getValue("attr-name");
-        String propertyName = attributes.getValue("prop-name");
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        String attributeName = attributes.getValue( "attr-name" );
+        String propertyName = attributes.getValue( "prop-name" );
 
-        linkedRuleBuilder.setProperties().addAlias(attributeName, propertyName);
+        linkedRuleBuilder.setProperties().addAlias( attributeName, propertyName );
     }
 
 }

@@ -21,13 +21,16 @@ import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.apache.commons.digester3.binder.RulesModule;
 
-final class PrefixedRulesBinder implements RulesBinder {
+final class PrefixedRulesBinder
+    implements RulesBinder
+{
 
     private final RulesBinder wrappedRulesBinder;
 
     private final String prefix;
 
-    public PrefixedRulesBinder(RulesBinder wrappedRulesBinder, String prefix) {
+    public PrefixedRulesBinder( RulesBinder wrappedRulesBinder, String prefix )
+    {
         this.wrappedRulesBinder = wrappedRulesBinder;
         this.prefix = prefix;
     }
@@ -35,39 +38,45 @@ final class PrefixedRulesBinder implements RulesBinder {
     /**
      * {@inheritDoc}
      */
-    public ClassLoader getContextClassLoader() {
+    public ClassLoader getContextClassLoader()
+    {
         return this.wrappedRulesBinder.getContextClassLoader();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addError(String messagePattern, Object... arguments) {
-        this.wrappedRulesBinder.addError(messagePattern, arguments);
+    public void addError( String messagePattern, Object... arguments )
+    {
+        this.wrappedRulesBinder.addError( messagePattern, arguments );
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addError(Throwable t) {
-        this.wrappedRulesBinder.addError(t);
+    public void addError( Throwable t )
+    {
+        this.wrappedRulesBinder.addError( t );
     }
 
     /**
      * {@inheritDoc}
      */
-    public void install(RulesModule rulesModule) {
-        this.wrappedRulesBinder.install(rulesModule);
+    public void install( RulesModule rulesModule )
+    {
+        this.wrappedRulesBinder.install( rulesModule );
     }
 
     /**
      * {@inheritDoc}
      */
-    public LinkedRuleBuilder forPattern(String pattern) {
-        if (this.prefix != null && this.prefix.length() > 0) {
+    public LinkedRuleBuilder forPattern( String pattern )
+    {
+        if ( this.prefix != null && this.prefix.length() > 0 )
+        {
             pattern = this.prefix + '/' + pattern;
         }
-        return this.wrappedRulesBinder.forPattern(pattern);
+        return this.wrappedRulesBinder.forPattern( pattern );
     }
 
 }

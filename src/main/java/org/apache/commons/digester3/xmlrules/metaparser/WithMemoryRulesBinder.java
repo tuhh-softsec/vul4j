@@ -27,13 +27,14 @@ import org.apache.commons.digester3.binder.RulesModule;
 /**
  * 
  */
-class WithMemoryRulesBinder implements RulesBinder {
+class WithMemoryRulesBinder
+    implements RulesBinder
+{
 
     /**
-     * A stack used to maintain the current pattern. The Rules XML document
-     * type allows nesting of patterns. If an element defines a matching
-     * pattern, the resulting pattern is a concatenation of that pattern with
-     * all the ancestor elements' patterns. Hence the need for a stack.
+     * A stack used to maintain the current pattern. The Rules XML document type allows nesting of patterns. If an
+     * element defines a matching pattern, the resulting pattern is a concatenation of that pattern with all the
+     * ancestor elements' patterns. Hence the need for a stack.
      */
     private final PatternStack patternStack = new PatternStack();
 
@@ -44,60 +45,64 @@ class WithMemoryRulesBinder implements RulesBinder {
 
     private final RulesBinder wrappedRulesBinder;
 
-    public WithMemoryRulesBinder(RulesBinder wrappedRulesBinder) {
+    public WithMemoryRulesBinder( RulesBinder wrappedRulesBinder )
+    {
         this.wrappedRulesBinder = wrappedRulesBinder;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClassLoader getContextClassLoader() {
+    public ClassLoader getContextClassLoader()
+    {
         return this.wrappedRulesBinder.getContextClassLoader();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addError(String messagePattern, Object... arguments) {
-        this.wrappedRulesBinder.addError(messagePattern, arguments);
+    public void addError( String messagePattern, Object... arguments )
+    {
+        this.wrappedRulesBinder.addError( messagePattern, arguments );
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addError(Throwable t) {
-        this.wrappedRulesBinder.addError(t);
+    public void addError( Throwable t )
+    {
+        this.wrappedRulesBinder.addError( t );
     }
 
     /**
      * {@inheritDoc}
      */
-    public void install(RulesModule rulesModule) {
-        this.wrappedRulesBinder.install(rulesModule);
+    public void install( RulesModule rulesModule )
+    {
+        this.wrappedRulesBinder.install( rulesModule );
     }
 
     /**
      * {@inheritDoc}
      */
-    public LinkedRuleBuilder forPattern(String pattern) {
-        return this.wrappedRulesBinder.forPattern(pattern);
+    public LinkedRuleBuilder forPattern( String pattern )
+    {
+        return this.wrappedRulesBinder.forPattern( pattern );
     }
 
     /**
-     * 
-     *
      * @return
      */
-    public PatternStack getPatternStack() {
+    public PatternStack getPatternStack()
+    {
         return this.patternStack;
     }
 
     /**
-     * 
-     *
      * @return
      */
-    public Set<String> getIncludedFiles() {
+    public Set<String> getIncludedFiles()
+    {
         return this.includedFiles;
     }
 

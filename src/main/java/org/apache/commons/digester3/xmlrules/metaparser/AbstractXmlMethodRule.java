@@ -25,31 +25,37 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-abstract class AbstractXmlMethodRule extends AbstractXmlRule {
+abstract class AbstractXmlMethodRule
+    extends AbstractXmlRule
+{
 
-    public AbstractXmlMethodRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public AbstractXmlMethodRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected final void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        String methodName = attributes.getValue("methodname");
-        String paramType = attributes.getValue("paramtype");
+    protected final void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        String methodName = attributes.getValue( "methodname" );
+        String paramType = attributes.getValue( "paramtype" );
 
-        ParamTypeBuilder<? extends Rule> builder = this.createBuilder(linkedRuleBuilder, methodName);
-        if (paramType != null && paramType.length() > 0) {
-            builder.withParameterType(paramType);
+        ParamTypeBuilder<? extends Rule> builder = this.createBuilder( linkedRuleBuilder, methodName );
+        if ( paramType != null && paramType.length() > 0 )
+        {
+            builder.withParameterType( paramType );
         }
     }
 
     /**
-     * 
      * @param methodName
      * @return
      */
-    protected abstract ParamTypeBuilder<? extends Rule> createBuilder(LinkedRuleBuilder linkedRuleBuilder, String methodName);
+    protected abstract ParamTypeBuilder<? extends Rule> createBuilder( LinkedRuleBuilder linkedRuleBuilder,
+                                                                       String methodName );
 
 }

@@ -24,20 +24,23 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class ObjectCreateRule extends AbstractXmlRule {
+final class ObjectCreateRule
+    extends AbstractXmlRule
+{
 
-    public ObjectCreateRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public ObjectCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        linkedRuleBuilder.createObject()
-            .ofType(attributes.getValue("classname"))
-            .ofTypeSpecifiedByAttribute(attributes.getValue("attrname"));
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        linkedRuleBuilder.createObject().ofType( attributes.getValue( "classname" ) ).ofTypeSpecifiedByAttribute( attributes.getValue( "attrname" ) );
     }
 
 }

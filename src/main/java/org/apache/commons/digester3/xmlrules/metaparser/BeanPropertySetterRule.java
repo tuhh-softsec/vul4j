@@ -24,18 +24,23 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class BeanPropertySetterRule extends AbstractXmlRule {
+final class BeanPropertySetterRule
+    extends AbstractXmlRule
+{
 
-    public BeanPropertySetterRule(RulesBinder targetRulesBinder, PatternStack patternStack) {
-        super(targetRulesBinder, patternStack);
+    public BeanPropertySetterRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    {
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule(LinkedRuleBuilder linkedRuleBuilder, Attributes attributes) throws Exception {
-        linkedRuleBuilder.setBeanProperty().withName(attributes.getValue("propertyname"));
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        linkedRuleBuilder.setBeanProperty().withName( attributes.getValue( "propertyname" ) );
     }
 
 }

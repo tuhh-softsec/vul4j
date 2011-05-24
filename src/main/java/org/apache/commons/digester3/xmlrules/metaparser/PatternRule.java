@@ -23,7 +23,9 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-class PatternRule extends Rule {
+class PatternRule
+    extends Rule
+{
 
     private final String attributeName;
 
@@ -31,11 +33,13 @@ class PatternRule extends Rule {
 
     private String pattern;
 
-    public PatternRule(PatternStack patternStack) {
-        this("value", patternStack);
+    public PatternRule( PatternStack patternStack )
+    {
+        this( "value", patternStack );
     }
 
-    public PatternRule(String attributeName, PatternStack patternStack) {
+    public PatternRule( String attributeName, PatternStack patternStack )
+    {
         this.attributeName = attributeName;
         this.patternStack = patternStack;
     }
@@ -44,10 +48,13 @@ class PatternRule extends Rule {
      * {@inheritDoc}
      */
     @Override
-    public void begin(String namespace, String name, Attributes attributes) throws Exception {
-        this.pattern = attributes.getValue(this.attributeName);
-        if (this.pattern != null) {
-            this.patternStack.push(pattern);
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
+        this.pattern = attributes.getValue( this.attributeName );
+        if ( this.pattern != null )
+        {
+            this.patternStack.push( pattern );
         }
     }
 
@@ -55,17 +62,20 @@ class PatternRule extends Rule {
      * {@inheritDoc}
      */
     @Override
-    public void end(String namespace, String name) throws Exception {
-        if (this.pattern != null) {
+    public void end( String namespace, String name )
+        throws Exception
+    {
+        if ( this.pattern != null )
+        {
             this.patternStack.pop();
         }
     }
 
     /**
-     * 
      * @return
      */
-    protected String getMatchingPattern() {
+    protected String getMatchingPattern()
+    {
         return this.patternStack.toString();
     }
 
