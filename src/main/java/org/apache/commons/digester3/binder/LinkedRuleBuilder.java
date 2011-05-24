@@ -247,6 +247,26 @@ public final class LinkedRuleBuilder
     }
 
     /**
+     * Add a custom user rule in the specified pattern.
+     *
+     * <b>WARNING</b> keep away from this method as much as you can, since there's the risk
+     * same input {@link Rule} instance is plugged to more than one Digester.
+     *
+     * @param <R>
+     * @param rule
+     * @return
+     */
+    public <R extends Rule> ByRuleBuilder<R> addRule( R rule )
+    {
+        if ( rule == null )
+        {
+            mainBinder.addError( "{ forPattern( \"%s\" ).addRule( R ) } NULL rule not valid", keyPattern );
+        }
+
+        return this.addProvider( new ByRuleBuilder<R>( keyPattern, namespaceURI, mainBinder, this, rule ) );
+    }
+
+    /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
      * @param <R>
