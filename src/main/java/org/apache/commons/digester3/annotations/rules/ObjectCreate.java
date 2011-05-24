@@ -57,6 +57,14 @@ public @interface ObjectCreate
     String namespaceURI() default "";
 
     /**
+     * Allows specify the attribute containing an override class name if it is present.
+     *
+     * @return The attribute containing an override class name if it is present
+     * @since 3.0
+     */
+    String attributeName() default "";
+
+    /**
      * Defines several {@code @ObjectCreate} annotations on the same element.
      * 
      * @see ObjectCreate
