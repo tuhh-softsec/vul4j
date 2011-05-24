@@ -223,6 +223,11 @@ public abstract class FromXmlRulesModule
      */
     public final String getSystemId()
     {
+        if ( inputSource == null )
+        {
+            return null;
+        }
+
         return inputSource.getSystemId();
     }
 
