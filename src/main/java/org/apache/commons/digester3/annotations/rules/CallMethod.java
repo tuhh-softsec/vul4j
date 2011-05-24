@@ -56,6 +56,13 @@ public @interface CallMethod
     String namespaceURI() default "";
 
     /**
+     * Marks the {@link CallMethodRule} to be invoked using the matching element body as argument.
+     *
+     * @return the {@link CallMethodRule} to be invoked using the matching element body as argument flag
+     */
+    boolean usingElementBodyAsArgument() default false;
+
+    /**
      * Defines several {@code @CallMethod} annotations on the same element.
      * 
      * @see CallMethod
