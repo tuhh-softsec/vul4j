@@ -51,63 +51,63 @@ public final class XmlRulesModule
     {
         if ( rulesBinder instanceof WithMemoryRulesBinder )
         {
-            this.memoryRulesBinder = (WithMemoryRulesBinder) rulesBinder;
+            memoryRulesBinder = (WithMemoryRulesBinder) rulesBinder;
         }
         else
         {
-            this.memoryRulesBinder = new WithMemoryRulesBinder( rulesBinder );
-            if ( this.rootSystemId != null )
+            memoryRulesBinder = new WithMemoryRulesBinder( rulesBinder );
+            if ( rootSystemId != null )
             {
-                this.memoryRulesBinder.getIncludedFiles().add( this.rootSystemId );
+                memoryRulesBinder.getIncludedFiles().add( rootSystemId );
             }
         }
 
-        PatternStack patternStack = this.memoryRulesBinder.getPatternStack();
+        PatternStack patternStack = memoryRulesBinder.getPatternStack();
 
-        if ( this.rootPath != null )
+        if ( rootPath != null )
         {
-            patternStack.push( this.rootPath );
+            patternStack.push( rootPath );
         }
 
         try
         {
             forPattern( "*/pattern" ).addRule( new PatternRule( patternStack ) );
-            forPattern( "*/include" ).addRule( new IncludeRule( this.memoryRulesBinder, this.targetRulesBinder ) );
+            forPattern( "*/include" ).addRule( new IncludeRule( memoryRulesBinder, targetRulesBinder ) );
 
-            forPattern( "*/bean-property-setter-rule" ).addRule( new BeanPropertySetterRule( this.targetRulesBinder,
+            forPattern( "*/bean-property-setter-rule" ).addRule( new BeanPropertySetterRule( targetRulesBinder,
                                                                                              patternStack ) );
 
-            forPattern( "*/call-method-rule" ).addRule( new CallMethodRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/call-param-rule" ).addRule( new CallParamRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/object-param-rule" ).addRule( new ObjectParamRule( this.targetRulesBinder, patternStack ) );
+            forPattern( "*/call-method-rule" ).addRule( new CallMethodRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/call-param-rule" ).addRule( new CallParamRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/object-param-rule" ).addRule( new ObjectParamRule( targetRulesBinder, patternStack ) );
 
-            forPattern( "*/factory-create-rule" ).addRule( new FactoryCreateRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/object-create-rule" ).addRule( new ObjectCreateRule( this.targetRulesBinder, patternStack ) );
+            forPattern( "*/factory-create-rule" ).addRule( new FactoryCreateRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/object-create-rule" ).addRule( new ObjectCreateRule( targetRulesBinder, patternStack ) );
 
-            forPattern( "*/set-properties-rule" ).addRule( new SetPropertiesRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/set-properties-rule/alias" ).addRule( new SetPropertiesAliasRule( this.targetRulesBinder,
+            forPattern( "*/set-properties-rule" ).addRule( new SetPropertiesRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/set-properties-rule/alias" ).addRule( new SetPropertiesAliasRule( targetRulesBinder,
                                                                                              patternStack ) );
-            forPattern( "*/set-properties-rule/ignore" ).addRule( new SetPropertiesIgnoreRule( this.targetRulesBinder,
+            forPattern( "*/set-properties-rule/ignore" ).addRule( new SetPropertiesIgnoreRule( targetRulesBinder,
                                                                                                patternStack ) );
 
-            forPattern( "*/set-property-rule" ).addRule( new SetPropertyRule( this.targetRulesBinder, patternStack ) );
+            forPattern( "*/set-property-rule" ).addRule( new SetPropertyRule( targetRulesBinder, patternStack ) );
 
-            forPattern( "*/set-nested-properties-rule" ).addRule( new SetNestedPropertiesRule( this.targetRulesBinder,
+            forPattern( "*/set-nested-properties-rule" ).addRule( new SetNestedPropertiesRule( targetRulesBinder,
                                                                                                patternStack ) );
             forPattern( "*/set-nested-properties-rule/alias" ).addRule( new SetNestedPropertiesAliasRule(
-                                                                                                          this.targetRulesBinder,
+                                                                                                          targetRulesBinder,
                                                                                                           patternStack ) );
             forPattern( "*/set-nested-properties-rule/ignore" ).addRule( new SetPropertiesIgnoreRule(
-                                                                                                      this.targetRulesBinder,
+                                                                                                      targetRulesBinder,
                                                                                                       patternStack ) );
 
-            forPattern( "*/set-top-rule" ).addRule( new SetTopRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/set-next-rule" ).addRule( new SetNextRule( this.targetRulesBinder, patternStack ) );
-            forPattern( "*/set-root-rule" ).addRule( new SetRootRule( this.targetRulesBinder, patternStack ) );
+            forPattern( "*/set-top-rule" ).addRule( new SetTopRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/set-next-rule" ).addRule( new SetNextRule( targetRulesBinder, patternStack ) );
+            forPattern( "*/set-root-rule" ).addRule( new SetRootRule( targetRulesBinder, patternStack ) );
         }
         finally
         {
-            this.memoryRulesBinder = null;
+            memoryRulesBinder = null;
         }
     }
 
@@ -117,7 +117,7 @@ public final class XmlRulesModule
      */
     protected LinkedRuleBuilder forPattern( String pattern )
     {
-        return this.memoryRulesBinder.forPattern( pattern );
+        return memoryRulesBinder.forPattern( pattern );
     }
 
 }
