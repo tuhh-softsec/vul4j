@@ -18,9 +18,9 @@
 package org.apache.commons.digester3.xmlrules.metaparser;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.digester3.RulesBinder;
-import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
-import org.apache.commons.digester3.rulesbinder.ObjectParamBuilder;
+import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.ObjectParamBuilder;
+import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
 
 /**

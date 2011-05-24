@@ -20,9 +20,9 @@ package org.apache.commons.digester3.xmlrules.metaparser;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.digester3.RulesBinder;
-import org.apache.commons.digester3.RulesModule;
-import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.RulesBinder;
+import org.apache.commons.digester3.binder.RulesModule;
 
 /**
  * 

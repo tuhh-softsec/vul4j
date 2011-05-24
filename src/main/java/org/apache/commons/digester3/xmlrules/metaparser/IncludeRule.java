@@ -20,8 +20,8 @@ package org.apache.commons.digester3.xmlrules.metaparser;
 import java.net.URL;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.RulesBinder;
-import org.apache.commons.digester3.RulesModule;
+import org.apache.commons.digester3.binder.RulesBinder;
+import org.apache.commons.digester3.binder.RulesModule;
 import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
 import org.xml.sax.Attributes;
 

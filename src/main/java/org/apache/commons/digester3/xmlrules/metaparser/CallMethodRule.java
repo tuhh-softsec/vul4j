@@ -19,9 +19,9 @@ package org.apache.commons.digester3.xmlrules.metaparser;
 
 import java.util.StringTokenizer;
 
-import org.apache.commons.digester3.RulesBinder;
-import org.apache.commons.digester3.rulesbinder.CallMethodBuilder;
-import org.apache.commons.digester3.rulesbinder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.CallMethodBuilder;
+import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
 
 /**
