@@ -27,7 +27,7 @@ import org.apache.commons.digester3.AbstractObjectCreationFactory;
 import org.apache.commons.digester3.FactoryCreateRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.FactoryCreateRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.FactoryCreateHandler;
 import org.xml.sax.Attributes;
 
 /**
@@ -40,7 +40,7 @@ import org.xml.sax.Attributes;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )
 @CreationRule
-@DigesterRule( reflectsRule = FactoryCreateRule.class, providedBy = FactoryCreateRuleProvider.class )
+@DigesterRule( reflectsRule = FactoryCreateRule.class, handledBy = FactoryCreateHandler.class )
 public @interface FactoryCreate
 {
 

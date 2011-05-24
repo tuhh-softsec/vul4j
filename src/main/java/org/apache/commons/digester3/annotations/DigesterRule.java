@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
 
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.annotations.handlers.DefaultLoaderHandler;
 
 /**
  * Meta-annotation that marks an annotation as part of commons-digester.
@@ -47,18 +46,11 @@ public @interface DigesterRule
     Class<? extends Rule> reflectsRule();
 
     /**
-     * The handler that takes care on converting this annotation in the related {@link AnnotationRuleProvider} and adds
-     * it o the {@link FromAnnotationsRuleSet}
-     * 
-     * @return the {@link DigesterLoaderHandler}
+     * The handler that takes care on converting this annotation in the related
+     * {@link AnnotationRuleProvider} and adds it o the {@link FromAnnotationsRuleSet}
+     *
+     * @return the {@link AnnotationHandler}
      */
-    Class<? extends DigesterLoaderHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy() default DefaultLoaderHandler.class;
-
-    /**
-     * Define the {@link AnnotationRuleProvider} that builds the {@link Rule} related to the digester rule.
-     * 
-     * @return the {@link AnnotationRuleProvider}.
-     */
-    Class<? extends AnnotationRuleProvider<? extends Annotation, ? extends AnnotatedElement, ? extends Rule>> providedBy();
+    Class<? extends AnnotationHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy();
 
 }

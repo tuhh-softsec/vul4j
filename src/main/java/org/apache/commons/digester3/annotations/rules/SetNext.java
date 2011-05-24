@@ -25,8 +25,7 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.digester3.SetNextRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
-import org.apache.commons.digester3.annotations.handlers.MethodHandler;
-import org.apache.commons.digester3.annotations.providers.SetNextRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.SetNextHandler;
 
 /**
  * Methods annotated with {@code SetNext} will be bound with {@code SetNextRule} digester rule.
@@ -37,7 +36,7 @@ import org.apache.commons.digester3.annotations.providers.SetNextRuleProvider;
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )
-@DigesterRule( reflectsRule = SetNextRule.class, providedBy = SetNextRuleProvider.class, handledBy = MethodHandler.class )
+@DigesterRule( reflectsRule = SetNextRule.class, handledBy = SetNextHandler.class )
 public @interface SetNext
 {
 

@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.ObjectCreateRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.ObjectCreateRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.ObjectCreateHandler;
 
 /**
  * Classes annotated with {@code ObjectCreate} will be bound with {@code ObjectCreateRule} digester rule.
@@ -38,7 +38,7 @@ import org.apache.commons.digester3.annotations.providers.ObjectCreateRuleProvid
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.TYPE )
 @CreationRule
-@DigesterRule( reflectsRule = ObjectCreateRule.class, providedBy = ObjectCreateRuleProvider.class )
+@DigesterRule( reflectsRule = ObjectCreateRule.class, handledBy = ObjectCreateHandler.class )
 public @interface ObjectCreate
 {
 

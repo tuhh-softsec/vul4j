@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.PathCallParamRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.PathCallParamRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.PathCallParamHandler;
 
 /**
  * Methods arguments annotated with {@code PathCallParam} will be bound with {@code PathCallParamRule} digester rule.
@@ -37,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.PathCallParamRuleProvi
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.PARAMETER )
-@DigesterRule( reflectsRule = PathCallParamRule.class, providedBy = PathCallParamRuleProvider.class )
+@DigesterRule( reflectsRule = PathCallParamRule.class, handledBy = PathCallParamHandler.class )
 public @interface PathCallParam
 {
 

@@ -25,8 +25,7 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.digester3.SetRootRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
-import org.apache.commons.digester3.annotations.handlers.MethodHandler;
-import org.apache.commons.digester3.annotations.providers.SetRootRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.SetRootHandler;
 
 /**
  * Methods annotated with {@code SetRoot} will be bound with {@code SetRootRule} digester rule.
@@ -37,7 +36,7 @@ import org.apache.commons.digester3.annotations.providers.SetRootRuleProvider;
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )
-@DigesterRule( reflectsRule = SetRootRule.class, providedBy = SetRootRuleProvider.class, handledBy = MethodHandler.class )
+@DigesterRule( reflectsRule = SetRootRule.class, handledBy = SetRootHandler.class )
 public @interface SetRoot
 {
 

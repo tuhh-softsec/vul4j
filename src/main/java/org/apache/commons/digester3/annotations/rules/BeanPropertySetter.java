@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.BeanPropertySetterRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.BeanPropertySetterRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.BeanPropertySetterHandler;
 
 /**
  * Fields annotated with {@code BeanPropertySetter} will be bound with {@code BeanPropertySetterRule} digester rule.
@@ -37,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.BeanPropertySetterRule
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )
-@DigesterRule( reflectsRule = BeanPropertySetterRule.class, providedBy = BeanPropertySetterRuleProvider.class )
+@DigesterRule( reflectsRule = BeanPropertySetterRule.class, handledBy = BeanPropertySetterHandler.class )
 public @interface BeanPropertySetter
 {
 

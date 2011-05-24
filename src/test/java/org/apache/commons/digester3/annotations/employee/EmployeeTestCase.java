@@ -17,8 +17,12 @@
  */
 package org.apache.commons.digester3.annotations.employee;
 
-import org.apache.commons.digester3.Digester;
+import java.util.Collection;
+import java.util.Stack;
+
 import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
+import org.apache.commons.digester3.annotations.FromAnnotationsRuleModule;
+import org.apache.commons.digester3.binder.RulesModule;
 import org.junit.Test;
 
 /**
@@ -56,9 +60,20 @@ public final class EmployeeTestCase
     }
 
     @Override
-    protected void decorate( Digester digester )
+    protected Collection<RulesModule> getAuxModules()
     {
-        this.getDigesterLoader().addRules( Address.class, digester );
+        Collection<RulesModule> modules = new Stack<RulesModule>();
+        modules.add( new FromAnnotationsRuleModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                bindRulesFrom( Address.class );
+            }
+
+        });
+        return modules;
     }
 
 }

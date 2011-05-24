@@ -17,15 +17,15 @@
  */
 package org.apache.commons.digester3.annotations;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.annotations.DigesterLoader;
-import org.apache.commons.digester3.annotations.DigesterLoaderBuilder;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.commons.digester3.binder.RulesModule;
 
 /**
  * Abstract implementation of Class-&gt;Digester Rules-&gt;parse & confronting.
@@ -35,58 +35,43 @@ import org.junit.Before;
 public abstract class AbstractAnnotatedPojoTestCase
 {
 
-    private DigesterLoader digesterLoader;
-
-    @Before
-    public void setUp()
-        throws Exception
-    {
-        this.digesterLoader = DigesterLoaderBuilder.byDefaultFactories();
-    }
-
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        this.digesterLoader = null;
-    }
-
     /**
-     * Loads the digester rules parsing the expected object class, parses the XML and verify the digester produces the
-     * same result.
-     * 
+     * Loads the digester rules parsing the expected object class, parses the
+     * XML and verify the digester produces the same result.
+     *
      * @param expected the expected object
      * @throws Exception if any error occurs
      */
-    public final void verifyExpectedEqualsToParsed( Object expected )
-        throws Exception
-    {
-        Class<?> clazz = expected.getClass();
+    public final void verifyExpectedEqualsToParsed(Object expected) throws Exception {
+        final Class<?> clazz = expected.getClass();
 
         String resource = clazz.getSimpleName() + ".xml";
-        InputStream input = clazz.getResourceAsStream( resource );
+        InputStream input = clazz.getResourceAsStream(resource);
 
-        Digester digester = this.digesterLoader.createDigester( clazz );
-        this.decorate( digester );
-
-        Object actual = digester.parse( input );
-
-        if ( input != null )
+        Collection<RulesModule> modules = this.getAuxModules();
+        modules.add(new FromAnnotationsRuleModule()
         {
+
+            @Override
+            protected void configure()
+            {
+                bindRulesFrom( clazz );
+            }
+
+        });
+
+        Digester digester = newLoader(modules).newDigester();
+        Object actual = digester.parse(input);
+
+        if (input != null) {
             input.close();
         }
 
-        assertEquals( expected, actual );
+        assertEquals(expected, actual);
     }
 
-    protected DigesterLoader getDigesterLoader()
-    {
-        return this.digesterLoader;
-    }
-
-    protected void decorate( Digester digester )
-    {
-        // do nothing
+    protected Collection<RulesModule> getAuxModules() {
+        return new ArrayList<RulesModule>();
     }
 
 }

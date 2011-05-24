@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.CallParamRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.CallParamRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.CallParamHandler;
 
 /**
  * Methods arguments annotated with {@code CallParam} will be bound with {@code CallParamRule} digester rule.
@@ -37,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.CallParamRuleProvider;
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.PARAMETER )
-@DigesterRule( reflectsRule = CallParamRule.class, providedBy = CallParamRuleProvider.class )
+@DigesterRule( reflectsRule = CallParamRule.class, handledBy = CallParamHandler.class )
 public @interface CallParam
 {
 

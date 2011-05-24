@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.SetTopRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.SetTopRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.SetTopHandler;
 
 /**
  * Methods annotated with {@code SetTop} will be bound with {@code SetTopRule} digester rule.
@@ -37,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.SetTopRuleProvider;
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )
-@DigesterRule( reflectsRule = SetTopRule.class, providedBy = SetTopRuleProvider.class )
+@DigesterRule( reflectsRule = SetTopRule.class, handledBy = SetTopHandler.class )
 public @interface SetTop
 {
 

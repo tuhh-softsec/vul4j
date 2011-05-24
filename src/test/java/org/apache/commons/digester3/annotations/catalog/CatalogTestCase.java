@@ -17,8 +17,12 @@
  */
 package org.apache.commons.digester3.annotations.catalog;
 
-import org.apache.commons.digester3.Digester;
+import java.util.Collection;
+import java.util.Stack;
+
 import org.apache.commons.digester3.annotations.AbstractAnnotatedPojoTestCase;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
+import org.apache.commons.digester3.binder.RulesModule;
 import org.junit.Test;
 
 /**
@@ -66,9 +70,20 @@ public final class CatalogTestCase
     }
 
     @Override
-    protected void decorate( Digester digester )
+    protected Collection<RulesModule> getAuxModules()
     {
-        digester.addSetProperty( "catalog/dvd/attr", "id", "value" );
+        Collection<RulesModule> modules = new Stack<RulesModule>();
+        modules.add( new AbstractRulesModule()
+        {
+
+            @Override
+            public void configure()
+            {
+                forPattern( "catalog/dvd/attr" ).setProperty( "id" ).extractingValueFromAttribute( "value" );
+            }
+
+        } );
+        return modules;
     }
 
 }

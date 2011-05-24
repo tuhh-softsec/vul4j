@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.CallMethodRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.providers.CallMethodRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.CallMethodHandler;
 
 /**
  * Methods annotated with {@code CallMethod} will be bound with {@code CallMethodRule} digester rule.
@@ -37,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.CallMethodRuleProvider
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.METHOD )
-@DigesterRule( reflectsRule = CallMethodRule.class, providedBy = CallMethodRuleProvider.class )
+@DigesterRule( reflectsRule = CallMethodRule.class, handledBy = CallMethodHandler.class )
 public @interface CallMethod
 {
 

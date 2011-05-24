@@ -26,8 +26,7 @@ import java.lang.annotation.Target;
 import org.apache.commons.digester3.SetPropertiesRule;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
-import org.apache.commons.digester3.annotations.handlers.SetPropertiesLoaderHandler;
-import org.apache.commons.digester3.annotations.providers.SetPropertiesRuleProvider;
+import org.apache.commons.digester3.annotations.handlers.SetPropertiesHandler;
 
 /**
  * Fields annotated with {@code SetProperty} will be bound with {@code SetPropertiesRule} digester rule.
@@ -38,7 +37,7 @@ import org.apache.commons.digester3.annotations.providers.SetPropertiesRuleProvi
 @Documented
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )
-@DigesterRule( reflectsRule = SetPropertiesRule.class, providedBy = SetPropertiesRuleProvider.class, handledBy = SetPropertiesLoaderHandler.class )
+@DigesterRule( reflectsRule = SetPropertiesRule.class, handledBy = SetPropertiesHandler.class )
 public @interface SetProperty
 {
 

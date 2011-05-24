@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.digester3.annotations.rules.AttributeCallParam;
 import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.CallMethod;
 import org.apache.commons.digester3.annotations.rules.CallParam;
@@ -91,7 +90,7 @@ public class Person
     }
 
     @CallMethod( pattern = "address-book/person/email" )
-    public void addEmail( @AttributeCallParam( pattern = "address-book/person/email", attribute = "type" ) String type,
+    public void addEmail( @CallParam( pattern = "address-book/person/email", attributeName = "type" ) String type,
                           @CallParam( pattern = "address-book/person/email" ) String address )
     {
         this.emails.put( type, address );

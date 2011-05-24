@@ -20,7 +20,6 @@ package org.apache.commons.digester3.annotations.person;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.digester3.annotations.rules.AttributeCallParam;
 import org.apache.commons.digester3.annotations.rules.BeanPropertySetter;
 import org.apache.commons.digester3.annotations.rules.CallMethod;
 import org.apache.commons.digester3.annotations.rules.CallParam;
@@ -46,7 +45,7 @@ public class Person
     private String name;
 
     @CallMethod( pattern = "person/email" )
-    public void addEmail( @AttributeCallParam( pattern = "person/email", attribute = "type" ) String type,
+    public void addEmail( @CallParam( pattern = "person/email", attributeName = "type" ) String type,
                           @CallParam( pattern = "person/email" ) String address )
     {
         this.emails.put( type, address );
