@@ -43,7 +43,7 @@ public abstract class FromXmlRulesModule
 
     private static final String DIGESTER_DTD_PATH = "digester-rules.dtd";
 
-    private URL xmlRulesDtdUrl = this.getClass().getResource(DIGESTER_DTD_PATH);
+    private final URL xmlRulesDtdUrl = this.getClass().getResource(DIGESTER_DTD_PATH);
 
     private InputSource inputSource;
 
