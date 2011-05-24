@@ -59,6 +59,25 @@ public final class SetPropertiesBuilder
     }
 
     /**
+     * Add an attribute name to the ignore list.
+     *
+     * @param attributeName The attribute to match has to be ignored
+     * @return this builder instance
+     */
+    public SetPropertiesBuilder ignoreAttribute( String attributeName )
+    {
+        if ( attributeName == null )
+        {
+            reportError( "setProperties().ignoreAttribute( String )", "empty 'attributeName' not allowed" );
+        }
+        else
+        {
+            addAlias( attributeName, null );
+        }
+        return this;
+    }
+
+    /**
      * Sets whether attributes found in the XML without matching properties should be ignored.
      * 
      * If set to false, the parsing will throw an {@code NoSuchMethodException}
