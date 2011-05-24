@@ -51,6 +51,14 @@ public @interface FactoryCreate
     Class<? extends AbstractObjectCreationFactory<?>> factoryClass();
 
     /**
+     * Allows specify the attribute containing an override class name if it is present.
+     *
+     * @return The attribute containing an override class name if it is present
+     * @since 3.0
+     */
+    String attributeName() default "";
+
+    /**
      * The element matching pattern.
      * 
      * @return the element matching pattern.
