@@ -250,8 +250,11 @@ public final class LinkedRuleBuilder
      * Add a custom user rule in the specified pattern.
      *
      * <b>WARNING</b> keep away from this method as much as you can, since there's the risk
-     * same input {@link Rule} instance is plugged to more than one Digester.
+     * same input {@link Rule} instance is plugged to more than one Digester;
+     * use {@link #addRuleCreatedBy(RuleProvider)} instead!!!
      *
+     * @see #addRuleCreatedBy(RuleProvider)
+     * @see Rule#setDigester(org.apache.commons.digester3.Digester)
      * @param <R>
      * @param rule
      * @return
