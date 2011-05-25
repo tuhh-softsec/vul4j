@@ -72,7 +72,7 @@ final class IncludeRule
                 if ( classPathResource == null )
                 {
                     targetRulesBinder.addError( "Resource '%s' not found, please make sure it is in the classpath",
-                                                     path );
+                                                path );
                 }
                 else
                 {
