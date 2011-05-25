@@ -17,7 +17,7 @@
    limitations under the License.
 -->
 <root>
-	<foo1>
-		<bar1>bar1-value</bar1>
-	</foo1>
+  <foo1>
+    <bar1>bar1-value</bar1>
+  </foo1>
 </root>

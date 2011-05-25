@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
-
 <!-- Input data to test the DigesterLoader -->
-
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -18,27 +16,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <root>
   <foo value="foo1">
-    <baz  value="baz1"/>
+    <baz value="baz1" />
     <bar>
-      <foo value="foo2"/>
+      <foo value="foo2" />
     </bar>
     <call-method-rule-tests value="cmr1">
       <longValue>555</longValue>
       <defaultParamType>somestringvalue</defaultParamType>
-      <pushIt/>
+      <pushIt />
       <mapValue name="test1">foo</mapValue>
       <mapValue name="test2">bar</mapValue>
     </call-method-rule-tests>
     <property>I am a property!</property>
   </foo>
-  <baz value="baz2"/>
+  <baz value="baz2" />
   <foo value="foo3">
     <bar>
-      <baz value="baz3"/>
-      <foo value="foo4"/>
+      <baz value="baz3" />
+      <foo value="foo4" />
     </bar>
     <property>I am a property!</property>
   </foo>

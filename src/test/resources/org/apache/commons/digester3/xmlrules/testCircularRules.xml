@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -20,12 +19,12 @@
 <!-- Rules to test the DigesterLoader's circular include detection. 
      Attempting to create a digester with these rules should result
      in an exception. -->
-     
+
 <digester-rules>
   <pattern value="root/foo">
-    <object-create-rule classname="org.apache.commons.digester3.xmlrules.ObjectTestImpl"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
-    <set-properties-rule/>
-    <include path="classpath:org/apache/commons/digester3/xmlrules/testCircularRules.xml"/>
+    <object-create-rule classname="org.apache.commons.digester3.xmlrules.ObjectTestImpl" />
+    <set-next-rule methodname="add" paramtype="java.lang.Object" />
+    <set-properties-rule />
+    <include path="classpath:org/apache/commons/digester3/xmlrules/testCircularRules.xml" />
   </pattern>
 </digester-rules>

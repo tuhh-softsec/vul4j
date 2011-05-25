@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -16,12 +16,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-<!DOCTYPE digester-rules PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
 <digester-rules>
-    <pattern value="root">
-        <factory-create-rule 
-            classname="org.apache.commons.digester3.xmlrules.ThrowExceptionCreationFactory" 
-            ignore-exceptions='true'/>
-    </pattern>
+  <pattern value="root">
+    <factory-create-rule classname="org.apache.commons.digester3.xmlrules.ThrowExceptionCreationFactory"
+      ignore-exceptions="true" />
+  </pattern>
 </digester-rules>

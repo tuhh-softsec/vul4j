@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -16,35 +15,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <digester-rules>
   <pattern value="toplevel/one">
-    <object-create-rule classname="org.apache.commons.digester3.Address"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
-    <set-properties-rule/>
-  </pattern>    
+    <object-create-rule classname="org.apache.commons.digester3.Address" />
+    <set-next-rule methodname="add" paramtype="java.lang.Object" />
+    <set-properties-rule />
+  </pattern>
   <pattern value="toplevel/two">
-    <object-create-rule classname="org.apache.commons.digester3.Address"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
+    <object-create-rule classname="org.apache.commons.digester3.Address" />
+    <set-next-rule methodname="add" paramtype="java.lang.Object" />
     <set-properties-rule>
-        <alias attr-name="alt-street" prop-name="street"/>
-        <alias attr-name="alt-city" prop-name="city"/>
-        <alias attr-name="alt-state" prop-name="state"/>
+      <alias attr-name="alt-street" prop-name="street" />
+      <alias attr-name="alt-city" prop-name="city" />
+      <alias attr-name="alt-state" prop-name="state" />
     </set-properties-rule>
-  </pattern>       
+  </pattern>
   <pattern value="toplevel/three">
-    <object-create-rule classname="org.apache.commons.digester3.Address"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
+    <object-create-rule classname="org.apache.commons.digester3.Address" />
+    <set-next-rule methodname="add" paramtype="java.lang.Object" />
     <set-properties-rule>
-        <alias attr-name="aCity" prop-name="city"/>
-        <alias attr-name="state" />
+      <alias attr-name="aCity" prop-name="city" />
+      <alias attr-name="state" />
     </set-properties-rule>
-  </pattern>        
+  </pattern>
   <pattern value="toplevel/four">
-    <object-create-rule classname="org.apache.commons.digester3.Address"/>
-    <set-next-rule methodname="add" paramtype="java.lang.Object"/>
+    <object-create-rule classname="org.apache.commons.digester3.Address" />
+    <set-next-rule methodname="add" paramtype="java.lang.Object" />
     <set-properties-rule>
-        <alias attr-name="alt-city" prop-name="city"/>
+      <alias attr-name="alt-city" prop-name="city" />
     </set-properties-rule>
-  </pattern>   
+  </pattern>
 </digester-rules>
