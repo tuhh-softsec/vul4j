@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.xmlrules.metaparser;
 
+import java.util.Set;
+
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.apache.commons.digester3.binder.RulesModule;
@@ -30,17 +32,17 @@ public final class XmlRulesModule
 
     private final RulesBinder targetRulesBinder;
 
-    private final String rootSystemId;
+    private final Set<String> rootSystemIds;
 
     private final String rootPath;
 
     private WithMemoryRulesBinder memoryRulesBinder;
 
-    public XmlRulesModule( final RulesBinder targetRulesBinder, String rootSystemId,
+    public XmlRulesModule( final RulesBinder targetRulesBinder, Set<String> rootSystemIds,
     /* @Nullable */String rootPath )
     {
         this.targetRulesBinder = targetRulesBinder;
-        this.rootSystemId = rootSystemId;
+        this.rootSystemIds = rootSystemIds;
         this.rootPath = rootPath;
     }
 
@@ -56,9 +58,9 @@ public final class XmlRulesModule
         else
         {
             memoryRulesBinder = new WithMemoryRulesBinder( rulesBinder );
-            if ( rootSystemId != null )
+            if ( !rootSystemIds.isEmpty() )
             {
-                memoryRulesBinder.getIncludedFiles().add( rootSystemId );
+                memoryRulesBinder.getIncludedFiles().addAll( rootSystemIds );
             }
         }
 

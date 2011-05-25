@@ -17,6 +17,7 @@
  */
 package org.apache.commons.digester3.xmlrules;
 
+import static java.util.Collections.unmodifiableSet;
 import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 
 import java.io.File;
@@ -26,7 +27,12 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.apache.commons.digester3.binder.RulesModule;
 import org.apache.commons.digester3.xmlrules.metaparser.XmlRulesModule;
@@ -48,7 +54,9 @@ public abstract class FromXmlRulesModule
 
     private final URL xmlRulesDtdUrl = this.getClass().getResource(DIGESTER_DTD_PATH);
 
-    private InputSource inputSource;
+    private final List<InputSource> inputSource = new ArrayList<InputSource>();
+
+    private final Set<String> systemIds = new HashSet<String>();
 
     private String rootPath;
 
@@ -58,7 +66,7 @@ public abstract class FromXmlRulesModule
     @Override
     protected void configure()
     {
-        if ( inputSource != null )
+        if ( !inputSource.isEmpty() )
         {
             throw new IllegalStateException( "Re-entry is not allowed." );
         }
@@ -67,24 +75,27 @@ public abstract class FromXmlRulesModule
         {
             loadRules();
 
-            XmlRulesModule xmlRulesModule = new XmlRulesModule( rulesBinder(), getSystemId(), rootPath );
-
-            try
-            {
-                newLoader( xmlRulesModule )
+            XmlRulesModule xmlRulesModule = new XmlRulesModule( rulesBinder(), getSystemIds(), rootPath );
+            Digester digester = newLoader( xmlRulesModule )
                     .register( DIGESTER_PUBLIC_ID, xmlRulesDtdUrl.toString() )
                     .setXIncludeAware( true )
-                    .newDigester()
-                    .parse( inputSource );
-            }
-            catch ( Exception e )
+                    .newDigester();
+
+            for ( InputSource source : inputSource )
             {
-                addError( "Impossible to load XML defined in the URL '%s': %s", getSystemId(), e.getMessage() );
+                try
+                {
+                    digester.parse( source );
+                }
+                catch ( Exception e )
+                {
+                    addError( "Impossible to load XML defined in the InputSource '%s': %s", inputSource, e.getMessage() );
+                }
             }
         }
         finally
         {
-            inputSource = null;
+            inputSource.clear();
         }
     }
 
@@ -105,7 +116,16 @@ public abstract class FromXmlRulesModule
             throw new IllegalArgumentException( "Argument 'inputSource' must be not null" );
         }
 
-        this.inputSource = inputSource;
+        this.inputSource.add( inputSource );
+
+        String systemId = inputSource.getSystemId();
+        if ( systemId != null )
+        {
+            if ( !systemIds.add( systemId ) )
+            {
+                addError( "XML rules file '%s' already bound", systemId );
+            }
+        }
     }
 
     /**
@@ -235,18 +255,13 @@ public abstract class FromXmlRulesModule
     }
 
     /**
-     * Returns the XML source SystemId load by this module.
+     * Returns the XML source SystemIds load by this module.
      *
-     * @return The XML source SystemId load by this module
+     * @return The XML source SystemIds load by this module
      */
-    public final String getSystemId()
+    public final Set<String> getSystemIds()
     {
-        if ( inputSource == null )
-        {
-            return null;
-        }
-
-        return inputSource.getSystemId();
+        return unmodifiableSet( systemIds );
     }
 
 }

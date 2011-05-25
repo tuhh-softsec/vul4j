@@ -112,12 +112,17 @@ final class IncludeRule
 
             if ( fromXmlRulesModule != null )
             {
-                if ( !memoryRulesBinder.getIncludedFiles().add( fromXmlRulesModule.getSystemId() ) )
+                boolean circularFileInclusionDetected = false;
+                for ( String systemId : fromXmlRulesModule.getSystemIds() )
                 {
-                    targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s",
-                                                fromXmlRulesModule.getSystemId() );
+                    if ( !memoryRulesBinder.getIncludedFiles().add( systemId ) )
+                    {
+                        targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s", systemId );
+                        circularFileInclusionDetected = true;
+                    }
                 }
-                else
+
+                if ( !circularFileInclusionDetected )
                 {
                     install( fromXmlRulesModule );
                 }
