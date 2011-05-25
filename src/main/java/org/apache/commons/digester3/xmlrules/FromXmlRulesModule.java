@@ -17,6 +17,8 @@
  */
 package org.apache.commons.digester3.xmlrules;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -27,6 +29,7 @@ import java.net.URLConnection;
 
 import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.apache.commons.digester3.binder.RulesModule;
+import org.apache.commons.digester3.xmlrules.metaparser.XmlRulesModule;
 import org.xml.sax.InputSource;
 
 /**
@@ -63,6 +66,21 @@ public abstract class FromXmlRulesModule
         try
         {
             loadRules();
+
+            XmlRulesModule xmlRulesModule = new XmlRulesModule( rulesBinder(), getSystemId(), rootPath );
+
+            try
+            {
+                newLoader( xmlRulesModule )
+                    .register( DIGESTER_PUBLIC_ID, xmlRulesDtdUrl.toString() )
+                    .setXIncludeAware( true )
+                    .newDigester()
+                    .parse( inputSource );
+            }
+            catch ( Exception e )
+            {
+                addError( "Impossible to load XML defined in the URL '%s': %s", getSystemId(), e.getMessage() );
+            }
         }
         finally
         {
