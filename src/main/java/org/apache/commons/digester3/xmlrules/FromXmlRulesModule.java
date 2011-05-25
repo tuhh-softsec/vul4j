@@ -89,7 +89,8 @@ public abstract class FromXmlRulesModule
                 }
                 catch ( Exception e )
                 {
-                    addError( "Impossible to load XML defined in the InputSource '%s': %s", inputSource, e.getMessage() );
+                    addError( "Impossible to load XML defined in the InputSource '%s': %s", source.getSystemId(),
+                              e.getMessage() );
                 }
             }
         }
