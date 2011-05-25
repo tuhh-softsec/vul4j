@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
-import org.apache.commons.digester3.binder.SetNextBuilder;
+import org.apache.commons.digester3.binder.SetTopBuilder;
 
 /**
  * 
  */
-final class SetNextRule
+final class SetTopRule
     extends AbstractXmlMethodRule
 {
 
@@ -32,7 +32,7 @@ final class SetNextRule
      * @param targetRulesBinder
      * @param patternStack
      */
-    public SetNextRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public SetTopRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -43,7 +43,7 @@ final class SetNextRule
     @Override
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
     {
-        SetNextBuilder builder = linkedRuleBuilder.setNext( methodName );
+        SetTopBuilder builder = linkedRuleBuilder.setTop( methodName );
 
         if ( paramType != null && paramType.length() > 0 )
         {

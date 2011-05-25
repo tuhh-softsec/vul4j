@@ -15,36 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
-import java.util.Stack;
+import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.RulesBinder;
+import org.xml.sax.Attributes;
 
 /**
- * @param <E>
+ * 
  */
-final class PatternStack
-    extends Stack<String>
+final class SetPropertyRule
+    extends AbstractXmlRule
 {
 
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public String toString()
+    public SetPropertyRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
-        StringBuilder str = new StringBuilder();
-        for ( int i = 0; i < size(); i++ )
-        {
-            String elem = get( i );
-            if ( elem.length() > 0 )
-            {
-                if ( str.length() > 0 )
-                {
-                    str.append( '/' );
-                }
-                str.append( elem );
-            }
-        }
-        return str.toString();
+        super( targetRulesBinder, patternStack );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
+    {
+        String name = attributes.getValue( "name" );
+        String value = attributes.getValue( "value" );
+        linkedRuleBuilder.setProperty( name ).extractingValueFromAttribute( value );
     }
 
 }

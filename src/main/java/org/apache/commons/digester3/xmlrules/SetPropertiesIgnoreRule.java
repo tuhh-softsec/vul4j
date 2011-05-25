@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
@@ -24,11 +24,11 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertiesAliasRule
+final class SetPropertiesIgnoreRule
     extends AbstractXmlRule
 {
 
-    public SetPropertiesAliasRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public SetPropertiesIgnoreRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -41,9 +41,8 @@ final class SetPropertiesAliasRule
         throws Exception
     {
         String attributeName = attributes.getValue( "attr-name" );
-        String propertyName = attributes.getValue( "prop-name" );
 
-        linkedRuleBuilder.setProperties().addAlias( attributeName, propertyName );
+        linkedRuleBuilder.setProperties().ignoreAttribute( attributeName );
     }
 
 }

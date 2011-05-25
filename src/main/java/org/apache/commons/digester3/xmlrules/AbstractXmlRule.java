@@ -15,33 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
-import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
 
 /**
  * 
  */
-class PatternRule
-    extends Rule
+abstract class AbstractXmlRule
+    extends PatternRule
 {
 
-    private final String attributeName;
+    private final RulesBinder targetRulesBinder;
 
-    private final PatternStack patternStack;
-
-    private String pattern;
-
-    public PatternRule( PatternStack patternStack )
+    public AbstractXmlRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
-        this( "value", patternStack );
-    }
-
-    public PatternRule( String attributeName, PatternStack patternStack )
-    {
-        this.attributeName = attributeName;
-        this.patternStack = patternStack;
+        super( "pattern", patternStack );
+        this.targetRulesBinder = targetRulesBinder;
     }
 
     /**
@@ -51,32 +43,15 @@ class PatternRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-        this.pattern = attributes.getValue( this.attributeName );
-        if ( this.pattern != null )
-        {
-            this.patternStack.push( pattern );
-        }
+        super.begin( namespace, name, attributes );
+        this.bindRule( this.targetRulesBinder.forPattern( this.getMatchingPattern() ), attributes );
     }
 
     /**
-     * {@inheritDoc}
+     * @param linkedRuleBuilder
+     * @param attributes
      */
-    @Override
-    public void end( String namespace, String name )
-        throws Exception
-    {
-        if ( this.pattern != null )
-        {
-            this.patternStack.pop();
-        }
-    }
-
-    /**
-     * @return
-     */
-    protected String getMatchingPattern()
-    {
-        return this.patternStack.toString();
-    }
+    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception;
 
 }

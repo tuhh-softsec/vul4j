@@ -15,24 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
-import org.apache.commons.digester3.binder.SetRootBuilder;
+import org.xml.sax.Attributes;
 
 /**
  * 
  */
-final class SetRootRule
-    extends AbstractXmlMethodRule
+final class SetNestedPropertiesIgnoreRule
+    extends AbstractXmlRule
 {
 
-    /**
-     * @param targetRulesBinder
-     * @param patternStack
-     */
-    public SetRootRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public SetNestedPropertiesIgnoreRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -41,14 +37,12 @@ final class SetRootRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
     {
-        SetRootBuilder builder = linkedRuleBuilder.setRoot( methodName );
+        String elementName = attributes.getValue( "elem-name" );
 
-        if ( paramType != null && paramType.length() > 0 )
-        {
-            builder.withParameterType( paramType );
-        }
+        linkedRuleBuilder.setNestedProperties().ignoreElement( elementName );
     }
 
 }

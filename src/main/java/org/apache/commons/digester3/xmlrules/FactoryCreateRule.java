@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
@@ -24,34 +24,23 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-abstract class AbstractXmlRule
-    extends PatternRule
+final class FactoryCreateRule
+    extends AbstractXmlRule
 {
 
-    private final RulesBinder targetRulesBinder;
-
-    public AbstractXmlRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public FactoryCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
-        super( "pattern", patternStack );
-        this.targetRulesBinder = targetRulesBinder;
+        super( targetRulesBinder, patternStack );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void begin( String namespace, String name, Attributes attributes )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        super.begin( namespace, name, attributes );
-        this.bindRule( this.targetRulesBinder.forPattern( this.getMatchingPattern() ), attributes );
+        linkedRuleBuilder.factoryCreate().ofType( attributes.getValue( "classname" ) ).overriddenByAttribute( attributes.getValue( "attrname" ) ).ignoreCreateExceptions( "true".equalsIgnoreCase( attributes.getValue( "ignore-exceptions" ) ) );
     }
-
-    /**
-     * @param linkedRuleBuilder
-     * @param attributes
-     */
-    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
-        throws Exception;
 
 }

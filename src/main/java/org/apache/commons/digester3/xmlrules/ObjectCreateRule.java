@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
@@ -24,11 +24,11 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class SetPropertyRule
+final class ObjectCreateRule
     extends AbstractXmlRule
 {
 
-    public SetPropertyRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public ObjectCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -40,9 +40,7 @@ final class SetPropertyRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        String name = attributes.getValue( "name" );
-        String value = attributes.getValue( "value" );
-        linkedRuleBuilder.setProperty( name ).extractingValueFromAttribute( value );
+        linkedRuleBuilder.createObject().ofType( attributes.getValue( "classname" ) ).ofTypeSpecifiedByAttribute( attributes.getValue( "attrname" ) );
     }
 
 }

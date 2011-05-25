@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
@@ -24,11 +24,11 @@ import org.xml.sax.Attributes;
 /**
  * 
  */
-final class FactoryCreateRule
+abstract class AbstractXmlMethodRule
     extends AbstractXmlRule
 {
 
-    public FactoryCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public AbstractXmlMethodRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -37,10 +37,19 @@ final class FactoryCreateRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+    protected final void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        linkedRuleBuilder.factoryCreate().ofType( attributes.getValue( "classname" ) ).overriddenByAttribute( attributes.getValue( "attrname" ) ).ignoreCreateExceptions( "true".equalsIgnoreCase( attributes.getValue( "ignore-exceptions" ) ) );
+        String methodName = attributes.getValue( "methodname" );
+        String paramType = attributes.getValue( "paramtype" );
+
+        bindRule( linkedRuleBuilder, methodName, paramType );
     }
+
+    /**
+     * @param methodName
+     * @return
+     */
+    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType );
 
 }

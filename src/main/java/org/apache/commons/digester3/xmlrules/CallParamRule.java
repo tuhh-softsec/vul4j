@@ -15,22 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
-import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.digester3.binder.CallParamBuilder;
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
-import org.apache.commons.digester3.binder.ObjectParamBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
 
 /**
  * 
  */
-final class ObjectParamRule
+final class CallParamRule
     extends AbstractXmlRule
 {
 
-    public ObjectParamRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public CallParamRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -42,35 +41,35 @@ final class ObjectParamRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        // create callparamrule
         int paramIndex = Integer.parseInt( attributes.getValue( "paramnumber" ) );
+        CallParamBuilder builder = linkedRuleBuilder.callParam().ofIndex( paramIndex );
 
         String attributeName = attributes.getValue( "attrname" );
-        String type = attributes.getValue( "type" );
-        String value = attributes.getValue( "value" );
+        String fromStack = attributes.getValue( "from-stack" );
+        String stackIndex = attributes.getValue( "stack-index" );
 
-        // type name is requried
-        if ( type == null )
+        if ( attributeName == null )
         {
-            throw new RuntimeException( "Attribute 'type' is required." );
-        }
-
-        // create object instance
-        Object param = null;
-        Class<?> clazz = Class.forName( type );
-        if ( value == null )
-        {
-            param = clazz.newInstance();
+            if ( stackIndex != null )
+            {
+                builder.withStackIndex( Integer.parseInt( stackIndex ) );
+            }
+            else if ( fromStack != null )
+            {
+                builder.fromStack( Boolean.valueOf( fromStack ).booleanValue() );
+            }
         }
         else
         {
-            param = ConvertUtils.convert( value, clazz );
-        }
-
-        ObjectParamBuilder<?> builder = linkedRuleBuilder.objectParam( param ).ofIndex( paramIndex );
-        if ( attributeName != null )
-        {
-            builder.matchingAttribute( attributeName );
+            if ( fromStack == null )
+            {
+                builder.fromAttribute( attributeName );
+            }
+            else
+            {
+                // specifying both from-stack and attribute name is not allowed
+                throw new RuntimeException( "Attributes from-stack and attrname cannot both be present." );
+            }
         }
     }
 

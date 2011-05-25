@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import java.util.Set;
 
@@ -26,7 +26,7 @@ import org.apache.commons.digester3.binder.RulesModule;
 /**
  * 
  */
-public final class XmlRulesModule
+final class XmlRulesModule
     implements RulesModule
 {
 

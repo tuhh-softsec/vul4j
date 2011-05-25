@@ -15,20 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
-import org.xml.sax.Attributes;
+import org.apache.commons.digester3.binder.SetRootBuilder;
 
 /**
  * 
  */
-final class SetPropertiesRule
-    extends AbstractXmlRule
+final class SetRootRule
+    extends AbstractXmlMethodRule
 {
 
-    public SetPropertiesRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    /**
+     * @param targetRulesBinder
+     * @param patternStack
+     */
+    public SetRootRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -37,11 +41,14 @@ final class SetPropertiesRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
-        throws Exception
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
     {
-        boolean ignoreMissingProperty = "true".equalsIgnoreCase( attributes.getValue( "ignore-missing-property" ) );
-        linkedRuleBuilder.setProperties().ignoreMissingProperty( ignoreMissingProperty );
+        SetRootBuilder builder = linkedRuleBuilder.setRoot( methodName );
+
+        if ( paramType != null && paramType.length() > 0 )
+        {
+            builder.withParameterType( paramType );
+        }
     }
 
 }

@@ -15,14 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import java.net.URL;
 
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.apache.commons.digester3.binder.RulesModule;
-import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
 import org.xml.sax.Attributes;
 
 /**

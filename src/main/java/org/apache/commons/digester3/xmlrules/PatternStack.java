@@ -15,34 +15,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
-import org.apache.commons.digester3.binder.LinkedRuleBuilder;
-import org.apache.commons.digester3.binder.RulesBinder;
-import org.xml.sax.Attributes;
+import java.util.Stack;
 
 /**
- * 
+ * @param <E>
  */
-final class SetNestedPropertiesRule
-    extends AbstractXmlRule
+final class PatternStack
+    extends Stack<String>
 {
 
-    public SetNestedPropertiesRule( RulesBinder targetRulesBinder, PatternStack patternStack )
-    {
-        super( targetRulesBinder, patternStack );
-    }
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
-        throws Exception
+    public String toString()
     {
-        boolean allowUnknownChildElements =
-            "true".equalsIgnoreCase( attributes.getValue( "allow-unknown-child-elements" ) );
-        linkedRuleBuilder.setNestedProperties().allowUnknownChildElements( allowUnknownChildElements );
+        StringBuilder str = new StringBuilder();
+        for ( int i = 0; i < size(); i++ )
+        {
+            String elem = get( i );
+            if ( elem.length() > 0 )
+            {
+                if ( str.length() > 0 )
+                {
+                    str.append( '/' );
+                }
+                str.append( elem );
+            }
+        }
+        return str.toString();
     }
 
 }

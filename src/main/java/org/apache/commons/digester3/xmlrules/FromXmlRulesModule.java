@@ -35,7 +35,6 @@ import java.util.Set;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.apache.commons.digester3.binder.RulesModule;
-import org.apache.commons.digester3.xmlrules.metaparser.XmlRulesModule;
 import org.xml.sax.InputSource;
 
 /**

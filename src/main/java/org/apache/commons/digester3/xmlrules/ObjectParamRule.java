@@ -15,20 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
+import org.apache.commons.digester3.binder.ObjectParamBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
 
 /**
  * 
  */
-final class ObjectCreateRule
+final class ObjectParamRule
     extends AbstractXmlRule
 {
 
-    public ObjectCreateRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public ObjectParamRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -40,7 +42,36 @@ final class ObjectCreateRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        linkedRuleBuilder.createObject().ofType( attributes.getValue( "classname" ) ).ofTypeSpecifiedByAttribute( attributes.getValue( "attrname" ) );
+        // create callparamrule
+        int paramIndex = Integer.parseInt( attributes.getValue( "paramnumber" ) );
+
+        String attributeName = attributes.getValue( "attrname" );
+        String type = attributes.getValue( "type" );
+        String value = attributes.getValue( "value" );
+
+        // type name is requried
+        if ( type == null )
+        {
+            throw new RuntimeException( "Attribute 'type' is required." );
+        }
+
+        // create object instance
+        Object param = null;
+        Class<?> clazz = Class.forName( type );
+        if ( value == null )
+        {
+            param = clazz.newInstance();
+        }
+        else
+        {
+            param = ConvertUtils.convert( value, clazz );
+        }
+
+        ObjectParamBuilder<?> builder = linkedRuleBuilder.objectParam( param ).ofIndex( paramIndex );
+        if ( attributeName != null )
+        {
+            builder.matchingAttribute( attributeName );
+        }
     }
 
 }

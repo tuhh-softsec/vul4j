@@ -15,20 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
-import org.xml.sax.Attributes;
+import org.apache.commons.digester3.binder.SetNextBuilder;
 
 /**
  * 
  */
-final class SetNestedPropertiesAliasRule
-    extends AbstractXmlRule
+final class SetNextRule
+    extends AbstractXmlMethodRule
 {
 
-    public SetNestedPropertiesAliasRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    /**
+     * @param targetRulesBinder
+     * @param patternStack
+     */
+    public SetNextRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -37,13 +41,14 @@ final class SetNestedPropertiesAliasRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
-        throws Exception
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
     {
-        String elementName = attributes.getValue( "attr-name" );
-        String propertyName = attributes.getValue( "prop-name" );
+        SetNextBuilder builder = linkedRuleBuilder.setNext( methodName );
 
-        linkedRuleBuilder.setNestedProperties().addAlias( elementName, propertyName );
+        if ( paramType != null && paramType.length() > 0 )
+        {
+            builder.withParameterType( paramType );
+        }
     }
 
 }

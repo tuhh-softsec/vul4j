@@ -15,24 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.digester3.xmlrules.metaparser;
+package org.apache.commons.digester3.xmlrules;
 
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
-import org.apache.commons.digester3.binder.SetTopBuilder;
+import org.xml.sax.Attributes;
 
 /**
  * 
  */
-final class SetTopRule
-    extends AbstractXmlMethodRule
+final class SetPropertiesAliasRule
+    extends AbstractXmlRule
 {
 
-    /**
-     * @param targetRulesBinder
-     * @param patternStack
-     */
-    public SetTopRule( RulesBinder targetRulesBinder, PatternStack patternStack )
+    public SetPropertiesAliasRule( RulesBinder targetRulesBinder, PatternStack patternStack )
     {
         super( targetRulesBinder, patternStack );
     }
@@ -41,14 +37,13 @@ final class SetTopRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
+        throws Exception
     {
-        SetTopBuilder builder = linkedRuleBuilder.setTop( methodName );
+        String attributeName = attributes.getValue( "attr-name" );
+        String propertyName = attributes.getValue( "prop-name" );
 
-        if ( paramType != null && paramType.length() > 0 )
-        {
-            builder.withParameterType( paramType );
-        }
+        linkedRuleBuilder.setProperties().addAlias( attributeName, propertyName );
     }
 
 }
