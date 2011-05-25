@@ -17,7 +17,6 @@
  */
 package org.apache.commons.digester3.xmlrules.metaparser;
 
-import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
@@ -44,18 +43,13 @@ abstract class AbstractXmlMethodRule
         String methodName = attributes.getValue( "methodname" );
         String paramType = attributes.getValue( "paramtype" );
 
-        ParamTypeBuilder<? extends Rule> builder = this.createBuilder( linkedRuleBuilder, methodName );
-        if ( paramType != null && paramType.length() > 0 )
-        {
-            builder.withParameterType( paramType );
-        }
+        bindRule( linkedRuleBuilder, methodName, paramType );
     }
 
     /**
      * @param methodName
      * @return
      */
-    protected abstract ParamTypeBuilder<? extends Rule> createBuilder( LinkedRuleBuilder linkedRuleBuilder,
-                                                                       String methodName );
+    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType );
 
 }

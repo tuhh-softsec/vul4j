@@ -17,9 +17,9 @@
  */
 package org.apache.commons.digester3.xmlrules.metaparser;
 
-import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
+import org.apache.commons.digester3.binder.SetNextBuilder;
 
 /**
  * 
@@ -41,9 +41,14 @@ final class SetNextRule
      * {@inheritDoc}
      */
     @Override
-    protected ParamTypeBuilder<? extends Rule> createBuilder( LinkedRuleBuilder linkedRuleBuilder, String methodName )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
     {
-        return linkedRuleBuilder.setNext( methodName );
+        SetNextBuilder builder = linkedRuleBuilder.setNext( methodName );
+
+        if ( paramType != null && paramType.length() > 0 )
+        {
+            builder.withParameterType( paramType );
+        }
     }
 
 }
