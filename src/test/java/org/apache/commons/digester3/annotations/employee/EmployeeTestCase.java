@@ -67,7 +67,7 @@ public final class EmployeeTestCase
         {
 
             @Override
-            protected void configure()
+            protected void configureRules()
             {
                 bindRulesFrom( Address.class );
             }

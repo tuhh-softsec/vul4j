@@ -17,18 +17,21 @@
  */
 package org.apache.commons.digester3.annotations.handlers;
 
-import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.*;
+import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationNamespaceURI;
+import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationPattern;
+import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationValue;
+import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationsArrayValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.apache.commons.digester3.binder.RulesBinder;
 import org.apache.commons.digester3.annotations.AnnotationHandler;
 import org.apache.commons.digester3.annotations.DigesterRule;
 import org.apache.commons.digester3.annotations.DigesterRuleList;
 import org.apache.commons.digester3.annotations.FromAnnotationsRuleModule;
 import org.apache.commons.digester3.annotations.rules.CreationRule;
+import org.apache.commons.digester3.binder.RulesBinder;
 
 /**
  * Handler that takes care to create the
@@ -117,7 +120,7 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
             {
 
                 @Override
-                protected void configure()
+                protected void configureRules()
                 {
                     bindRulesFrom( type );
                 }

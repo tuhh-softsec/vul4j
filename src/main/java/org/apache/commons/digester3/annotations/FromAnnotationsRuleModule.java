@@ -29,7 +29,7 @@ import java.security.PrivilegedAction;
 
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.annotations.reflect.MethodArgument;
-import org.apache.commons.digester3.binder.RulesBinder;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.apache.commons.digester3.binder.RulesModule;
 
 /**
@@ -39,7 +39,7 @@ import org.apache.commons.digester3.binder.RulesModule;
  * @since 3.0
  */
 public abstract class FromAnnotationsRuleModule
-    implements RulesModule
+    extends AbstractRulesModule
 {
 
     private static final String JAVA_PACKAGE = "java";
@@ -53,36 +53,28 @@ public abstract class FromAnnotationsRuleModule
     /**
      * {@inheritDoc}
      */
-    public final void configure( RulesBinder rulesBinder )
+    @Override
+    protected final void configure()
     {
-        if ( this.rulesBinder != null )
+        if ( rulesBinder == null )
         {
-            throw new IllegalStateException( "Re-entry is not allowed." );
-        }
-
-        if ( rulesBinder instanceof WithMemoryRulesBinder )
-        {
-            this.rulesBinder = (WithMemoryRulesBinder) rulesBinder;
-        }
-        else
-        {
-            this.rulesBinder = new WithMemoryRulesBinder( rulesBinder );
+            rulesBinder = new WithMemoryRulesBinder( rulesBinder() );
         }
 
         try
         {
-            configure();
+            configureRules();
         }
         finally
         {
-            this.rulesBinder = null;
+            rulesBinder = null;
         }
     }
 
     /**
      * Configures a {@link Binder} via the exposed methods.
      */
-    protected abstract void configure();
+    protected abstract void configureRules();
 
     /**
      * 

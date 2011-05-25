@@ -36,7 +36,7 @@ public final class FailingTestCase
         {
 
             @Override
-            protected void configure()
+            protected void configureRules()
             {
                 useAnnotationHandlerFactory( new FailingDigesterLoaderHandlerFactory() );
                 bindRulesFrom( BeanWithFakeHandler.class );

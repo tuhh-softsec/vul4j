@@ -53,7 +53,7 @@ public abstract class AbstractAnnotatedPojoTestCase
         {
 
             @Override
-            protected void configure()
+            protected void configureRules()
             {
                 bindRulesFrom( clazz );
             }
