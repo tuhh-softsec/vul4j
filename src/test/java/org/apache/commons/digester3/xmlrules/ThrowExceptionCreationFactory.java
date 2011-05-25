@@ -28,7 +28,7 @@ import org.xml.sax.Attributes;
  */
 
 public class ThrowExceptionCreationFactory
-    extends AbstractObjectCreationFactory
+    extends AbstractObjectCreationFactory<Object>
 {
 
     @Override
