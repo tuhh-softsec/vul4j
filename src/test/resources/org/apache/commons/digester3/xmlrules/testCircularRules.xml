@@ -26,6 +26,6 @@
     <object-create-rule classname="org.apache.commons.digester3.xmlrules.ObjectTestImpl"/>
     <set-next-rule methodname="add" paramtype="java.lang.Object"/>
     <set-properties-rule/>
-    <include path="org/apache/commons/digester3/xmlrules/testCircularRules.xml"/>
+    <include path="classpath:org/apache/commons/digester3/xmlrules/testCircularRules.xml"/>
   </pattern>
 </digester-rules>

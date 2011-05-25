@@ -18,17 +18,19 @@
 
 package org.apache.commons.digester3.xmlrules;
 
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
-import org.apache.commons.digester3.xmlrules.DigesterLoader;
-import org.apache.commons.digester3.xmlrules.DigesterRulesSource;
+import org.apache.commons.digester3.binder.AbstractRulesModule;
 import org.junit.Test;
-import org.xml.sax.InputSource;
 
 /**
  * Test for the include class functionality
@@ -36,39 +38,78 @@ import org.xml.sax.InputSource;
 public class IncludeTest
 {
 
-    public static class TestDigesterRuleSource
-        implements DigesterRulesSource
+    public static class TestDigesterRulesModule
+        extends AbstractRulesModule
     {
-        public void getRules( Digester digester )
+
+        @Override
+        protected void configure()
         {
-            digester.addRule( "bar", new Rule()
+            forPattern( "bar" ).addRule( new Rule()
             {
+
                 @Override
                 public void body( String namespace, String name, String text )
+                    throws Exception
                 {
-                    ( (ArrayList<String>) this.getDigester().peek() ).add( text );
+                    ArrayList<String> stringList = getDigester().peek();
+                    stringList.add( text );
                 }
+
             } );
         }
+
     }
 
     @Test
     public void testBasicInclude()
         throws Exception
     {
-        String rulesXml =
-            "<?xml version='1.0'?>" + "<digester-rules>" + " <pattern value='root/foo'>"
-                + "   <include class='org.apache.commons.digester3.xmlrules.IncludeTest$TestDigesterRuleSource'/>"
-                + " </pattern>" + "</digester-rules>";
+        final String rulesXml = "<?xml version='1.0'?>"
+                + "<digester-rules>"
+                + " <pattern value='root/foo'>"
+                + "   <include class='org.apache.commons.digester3.xmlrules.IncludeTest$TestDigesterRulesModule' />"
+                + " </pattern>"
+                + "</digester-rules>";
 
         String xml = "<?xml version='1.0' ?><root><foo><bar>short</bar></foo></root>";
 
-        ArrayList<String> list = new ArrayList<String>();
-        Digester digester = DigesterLoader.createDigester( new InputSource( new StringReader( rulesXml ) ) );
+        List<String> list = new ArrayList<String>();
+        Digester digester = newLoader( new FromXmlRulesModule()
+        {
+
+            @Override
+            protected void loadRules()
+            {
+                loadXMLRulesFromText( rulesXml );
+            }
+
+        }).newDigester();
         digester.push( list );
         digester.parse( new StringReader( xml ) );
 
         assertEquals( "Number of entries", 1, list.size() );
         assertEquals( "Entry value", "short", list.get( 0 ) );
     }
+
+    /**
+     * Validates that circular includes are detected and result in an exception
+     */
+    @Test( expected = org.apache.commons.digester3.binder.DigesterLoadingException.class )
+    public void testCircularInclude()
+        throws Exception
+    {
+        final URL url = ClassLoader.getSystemResource( "org/apache/commons/digester3/xmlrules/testCircularRules.xml" );
+        newLoader( new FromXmlRulesModule()
+        {
+
+            @Override
+            protected void loadRules()
+            {
+                loadXMLRules( url );
+            }
+
+        }).newDigester();
+    }
+
 }

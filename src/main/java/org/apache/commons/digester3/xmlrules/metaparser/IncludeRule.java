@@ -56,7 +56,7 @@ final class IncludeRule
         throws Exception
     {
         // The path attribute gives the URI to another digester rules xml file
-        final String fileName = attributes.getValue( "url" );
+        final String fileName = attributes.getValue( "path" );
         if ( fileName != null && fileName.length() > 0 )
         {
             FromXmlRulesModule fromXmlRulesModule = null;
