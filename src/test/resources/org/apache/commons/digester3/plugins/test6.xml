@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -14,35 +15,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <root>
-  <plugin id="container" 
-    class="org.apache.commons.digester3.plugins.Container"
-    ruleclass="org.apache.commons.digester3.plugins.ContainerCustomRules"/>
-    
-  
+  <plugin id="container" class="org.apache.commons.digester3.plugins.Container"
+    ruleclass="org.apache.commons.digester3.plugins.ContainerCustomRules" />
+
   <widget plugin-id="container" id="1">
-
     <widget plugin-id="container" id="1.1">
-    
       <widget plugin-id="container" id="1.1.1">
-        <widget plugin-id="container" id ="1.1.1.1">
-          <plugin id="textlabel" class="org.apache.commons.digester3.plugins.TextLabel"/>
-          <widget plugin-id="textlabel"/>
-          <widget plugin-id="textlabel"/>
-        </widget>
-      </widget>
 
-      <widget plugin-id="container" id="1.1,2">
+        <widget plugin-id="container" id="1.1.1.1">
+          <plugin id="textlabel" class="org.apache.commons.digester3.plugins.TextLabel" />
+          <widget plugin-id="textlabel" />
+          <widget plugin-id="textlabel" />
+        </widget>
+
       </widget>
-      
+      <widget plugin-id="container" id="1.1,2"></widget>
     </widget>
 
     <widget plugin-id="container" id="1.2">
-      <plugin id="textlabel" class="org.apache.commons.digester3.plugins.TextLabel"/>
-      <widget plugin-id="textlabel"/>
-      <widget plugin-id="textlabel"/>
+      <plugin id="textlabel" class="org.apache.commons.digester3.plugins.TextLabel" />
+      <widget plugin-id="textlabel" />
+      <widget plugin-id="textlabel" />
     </widget>
 
-    </widget>
+  </widget>
 </root>

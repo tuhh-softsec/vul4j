@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -14,10 +15,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <root>
-  <widget label="label1"/>
-  <widget plugin-class="org.apache.commons.digester3.plugins.TextLabel" label="label2"/>
-  <widget plugin-class="org.apache.commons.digester3.plugins.Slider" label="slider1"/>
+  <widget label="label1" />
+  <widget plugin-class="org.apache.commons.digester3.plugins.TextLabel" label="label2" />
+  <widget plugin-class="org.apache.commons.digester3.plugins.Slider" label="slider1" />
 </root>
-
