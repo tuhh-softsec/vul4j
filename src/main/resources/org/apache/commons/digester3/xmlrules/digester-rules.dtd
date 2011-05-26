@@ -112,14 +112,14 @@
     useExactMatch              CDATA #IMPLIED>
 
 <!-- 
-    CallParamRule 
-    attrname 
+    CallParamRule
+    attrname
         - set param from attribute value (cannot be combined with from-stack or
           stack-index)
-    from-stack 
+    from-stack
         - select an object from the current digester stack to pass as the 
           parameter value.
-    stack-index 
+    stack-index
         - select an object from the current digester stack to pass as a
           parameter value. If this is defined then from-stack is implicitly
           true. If from-stack is defined but this is not defined then this
@@ -133,17 +133,17 @@
     attrname CDATA #IMPLIED
     from-stack CDATA #IMPLIED
     stack-index CDATA #IMPLIED>
-    
+
 <!--
     ObjectParamRule
-    attrname  
+    attrname
         - Optional. This attribute is not normally specified. If it is provided,
           then this rule is executed *only* if the matched element has an attribute
           with this name.
-    type 
+    type
         - The type of the object to be passed to the target method.
           Mandatory.
-    value 
+    value
         - Initial value for the object. The BeanUtils converter module will
           be used to convert this to the type specified by the type attribute.
           Optional; if no value is provided then the converter will be invoked
@@ -168,13 +168,12 @@
     -->
 <!ELEMENT node-create-rule EMPTY>
 <!ATTLIST object-param-rule
-	pattern CDATA #IMPLIED
-	type CDATA #IMPLIED
->
+    pattern CDATA #IMPLIED
+    type CDATA #IMPLIED>
 
 <!-- 
-    FactoryCreateRule 
-    
+    FactoryCreateRule
+
     ignore-exceptions - if this attribute is (ignore case) 'true' then any exceptions
                         thrown by the object create rule will be ignore.
                         This will allow processing to continue.
@@ -184,7 +183,7 @@
     pattern   CDATA #IMPLIED
     classname CDATA #REQUIRED
     attrname  CDATA #IMPLIED
-    ignore-exceptions  CDATA #IMPLIED> 
+    ignore-exceptions  CDATA #IMPLIED>
 
 <!-- ObjectCreateRule -->
 <!ELEMENT object-create-rule EMPTY>
@@ -237,4 +236,3 @@
     pattern    CDATA #IMPLIED
     methodname CDATA #REQUIRED
     paramtype  CDATA #IMPLIED>
-
