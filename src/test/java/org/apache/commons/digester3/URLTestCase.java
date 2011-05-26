@@ -66,7 +66,7 @@ public class URLTestCase
      * Public identifier of the Digester Rules DTD.
      * </p>
      */
-    private static final String DIGESTER_RULES_PUBLIC_ID = "-//Jakarta Apache //DTD digester-rules XML V1.0//EN";
+    private static final String DIGESTER_RULES_PUBLIC_ID = "-//Apache Commons //DTD digester-rules XML V1.0//EN";
 
     /**
      * <p>
