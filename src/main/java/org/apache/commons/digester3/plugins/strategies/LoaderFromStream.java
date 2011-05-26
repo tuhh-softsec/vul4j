@@ -17,17 +17,20 @@
  */
 package org.apache.commons.digester3.plugins.strategies;
 
-import java.io.InputStream;
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.xml.sax.InputSource;
+import java.io.InputStream;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.RuleSet;
 import org.apache.commons.digester3.plugins.PluginException;
 import org.apache.commons.digester3.plugins.RuleLoader;
-import org.apache.commons.digester3.xmlrules.FromXmlRuleSet;
+import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
 import org.apache.commons.logging.Log;
+import org.xml.sax.InputSource;
 
 /**
  * A rule-finding algorithm which loads an xmlplugins-format file.
@@ -74,7 +77,7 @@ public class LoaderFromStream
      * Add the rules previously loaded from the input stream into the specified digester.
      */
     @Override
-    public void addRules( Digester d, String path )
+    public void addRules( final Digester d, final String path )
         throws PluginException
     {
         Log log = d.getLogger();
@@ -90,8 +93,18 @@ public class LoaderFromStream
         // because that doesn't work well with our approach of
         // caching the input data in memory anyway.
 
-        InputSource source = new InputSource( new ByteArrayInputStream( input ) );
-        FromXmlRuleSet ruleSet = new FromXmlRuleSet( source );
-        ruleSet.addRuleInstances( d, path );
+        final InputSource source = new InputSource( new ByteArrayInputStream( input ) );
+        RuleSet ruleSet = newLoader( new FromXmlRulesModule()
+        {
+
+            @Override
+            protected void loadRules()
+            {
+                useRootPath( path );
+                loadXMLRules( source );
+            }
+
+        }).createRuleSet();
+        ruleSet.addRuleInstances( d );
     }
 }
