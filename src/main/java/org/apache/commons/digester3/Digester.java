@@ -1852,7 +1852,7 @@ public class Digester
      */
     public void registerAll( Map<String, URL> entityValidator )
     {
-        entityValidator.putAll( entityValidator );
+        this.entityValidator.putAll( entityValidator );
     }
 
     /**
