@@ -196,10 +196,10 @@ are not connected to the Internet, and speeds up processing even at Internet
 connected sites (because it avoids the need to go across the network).</p>
 
 <source>
-    URL url = new URL("/org/apache/struts/resources/struts-config_1_0.dtd");
+    URL url = new URL( "/org/apache/struts/resources/struts-config_1_0.dtd" );
     digester.register
-      ("-//Apache Software Foundation//DTD Struts Configuration 1.0//EN",
-       url.toString());
+      ( "-//Apache Software Foundation//DTD Struts Configuration 1.0//EN",
+       url.toString() );
 </source>
 
 <p>As a side note, the system identifier used in this example is the path
@@ -225,13 +225,13 @@ manipulated by processing rules that are fired when element matching patterns
 are satisfied.  The usual stack-related operations are made available,
 including the following:</p>
 <ul>
-<li><a href="apidocs/Digester.html#clear()">clear()</a> - Clear the current contents
+<li><a href="apidocs/org/apache/commons/digester3/Digester.html#clear()">clear()</a> - Clear the current contents
     of the object stack.</li>
-<li><a href="apidocs/Digester.html#peek()">peek()</a> - Return a reference to the top
+<li><a href="apidocs/org/apache/commons/digester3/Digester.html#peek()">peek()</a> - Return a reference to the top
     object on the stack, without removing it.</li>
 <li><a href="apidocs/Digester.html#pop()">pop()</a> - Remove the top object from the
     stack and return it.</li>
-<li><a href="apidocs/Digester.html#push(java.lang.Object)">push()</a> - Push a new
+<li><a href="apidocs/org/apache/commons/digester3/Digester.html#push(T)">push()</a> - Push a new
     object onto the top of the stack.</li>
 </ul>
 
@@ -363,25 +363,25 @@ of processing rules is to define <strong>what</strong> should happen when the
 patterns are matched.</p>
 
 <p>Formally, a processing rule is a Java class that subclasses the
-<a href="apidocs/Rule.html">org.apache.commons.digester3.Rule</a> interface.  Each Rule
+<a href="apidocs/org/apache/commons/digester3/Rule.html">org.apache.commons.digester3.Rule</a> interface.  Each Rule
 implements one or more of the following event methods that are called at
 well-defined times when the matching patterns corresponding to this rule
 trigger it:</p>
 <ul>
-<li><a href="apidocs/Rule.html#begin(org.xml.sax.AttributeList)">begin()</a> -
-    Called when the beginning of the matched XML element is encountered.  A
+<li><a href="apidocs/org/apache/commons/digester3/Rule.html#begin(java.lang.String, java.lang.String, org.xml.sax.Attributes)">
+    begin()</a> - Called when the beginning of the matched XML element is encountered.  A
     data structure containing all of the attributes corresponding to this
     element are passed as well.</li>
-<li><a href="apidocs/Rule.html#body(java.lang.String)">body()</a> -
-    Called when nested content (that is not itself XML elements) of the
+<li><a href="apidocs/org/apache/commons/digester3/Rule.html#body(java.lang.String, java.lang.String, java.lang.String)">
+    body()</a> - Called when nested content (that is not itself XML elements) of the
     matched element is encountered.  Any leading or trailing whitespace will
     have been removed as part of the parsing process.</li>
-<li><a href="apidocs/Rule.html#end()">end()</a> - Called when the ending of the matched
-    XML element is encountered.  If nested XML elements that matched other
+<li><a href="apidocs/org/apache/commons/digester3/Rule.html#end(java.lang.String, java.lang.String)">end()</a> - Called
+    when the ending of the matched XML element is encountered.  If nested XML elements that matched other
     processing rules was included in the body of this element, the appropriate
     processing rules for the matched rules will have already been completed
     before this method is called.</li>
-<li><a href="apidocs/Rule.html#finish()">finish()</a> - Called when the parse has
+<li><a href="apidocs/org/apache/commons/digester3/Rule.html#finish()">finish()</a> - Called when the parse has
     been completed, to give each rule a chance to clean up any temporary data
     they might have created and cached.</li>
 </ul>
@@ -397,7 +397,7 @@ dynamically, to implement any desired application specific functionality.</p>
 which deal with many common programming scenarios.  These classes include the
 following:</p>
 <ul>
-<li><a href="apidocs/ObjectCreateRule.html">ObjectCreateRule</a> - When the
+<li><a href="apidocs/org/apache/commons/digester3/ObjectCreateRule.html">ObjectCreateRule</a> - When the
     <code>begin()</code> method is called, this rule instantiates a new
     instance of a specified Java class, and pushes it on the stack.  The
     class name to be used is defaulted according to a parameter passed to
@@ -407,12 +407,12 @@ following:</p>
     (presumably, the one we added in the <code>begin()</code> method) will
     be popped, and any reference to it (within the Digester) will be
     discarded.</li>
-<li><a href="apidocs/FactoryCreateRule.html">FactoryCreateRule</a> - A variation of
+<li><a href="apidocs/org/apache/commons/digester3/FactoryCreateRule.html">FactoryCreateRule</a> - A variation of
     <code>ObjectCreateRule</code> that is useful when the Java class with
     which you wish to create an object instance does not have a no-arguments
     constructor, or where you wish to perform other setup processing before
     the object is handed over to the Digester.</li>
-<li><a href="apidocs/SetPropertiesRule.html">SetPropertiesRule</a> - When the
+<li><a href="apidocs/org/apache/commons/digester3/SetPropertiesRule.html">SetPropertiesRule</a> - When the
     <code>begin()</code> method is called, the digester uses the standard
     Java Reflection API to identify any JavaBeans property setter methods
     (on the object at the top of the digester's stack)
@@ -427,7 +427,7 @@ following:</p>
     pattern.  This causes the creation of a new Java object, followed by
     "configuration" of that object's properties based on the attributes
     of the same XML element that created this object.</li>
-<li><a href="apidocs/SetPropertyRule.html">SetPropertyRule</a> - When the
+<li><a href="apidocs/org/apache/commons/digester3/SetPropertyRule.html">SetPropertyRule</a> - When the
     <code>begin()</code> method is called, the digester calls a specified
     property setter (where the property itself is named by an attribute)
     with a specified value (where the value is named by another attribute),
@@ -435,21 +435,21 @@ following:</p>
     This is useful when your XML file conforms to a particular DTD, and
     you wish to configure a particular property that does not have a
     corresponding attribute in the DTD.</li>
-<li><a href="apidocs/SetNextRule.html">SetNextRule</a> - When the
+<li><a href="apidocs/org/apache/commons/digester3/SetNextRule.html">SetNextRule</a> - When the
     <code>end()</code> method is called, the digester analyzes the
     next-to-top element on the stack, looking for a property setter method
     for a specified property.  It then calls this method, passing the object
     at the top of the stack as an argument.  This rule is commonly used to
     establish one-to-many relationships between the two objects, with the
     method name commonly being something like "addChild".</li>
-<li><a href="apidocs/SetTopRule.html">SetTopRule</a> - When the
+<li><a href="apidocs/org/apache/commons/digester3/SetTopRule.html">SetTopRule</a> - When the
     <code>end()</code> method is called, the digester analyzes the
     top element on the stack, looking for a property setter method for a
     specified property.  It then calls this method, passing the next-to-top
     object on the stack as an argument.  This rule would be used as an
     alternative to a SetNextRule, with a typical method name "setParent",
     if the API supported by your object classes prefers this approach.</li>
-<li><a href="apidocs/CallMethodRule.html">CallMethodRule</a> - This rule sets up a
+<li><a href="apidocs/org/apache/commons/digester3/CallMethodRule.html">CallMethodRule</a> - This rule sets up a
     method call to a named method of the top object on the digester's stack,
     which will actually take place when the <code>end()</code> method is
     called.  You configure this rule by specifying the name of the method
@@ -458,12 +458,12 @@ following:</p>
     The actual parameter values, if any, will typically be accumulated from
     the body content of nested elements within the element that triggered
     this rule, using the CallParamRule discussed next.</li>
-<li><a href="apidocs/CallParamRule.html">CallParamRule</a> - This rule identifies
+<li><a href="apidocs/org/apache/commons/digester3/CallParamRule.html">CallParamRule</a> - This rule identifies
     the source of a particular numbered (zero-relative) parameter for a
     CallMethodRule within which we are nested.  You can specify that the
     parameter value be taken from a particular named attribute, or from the
     nested body content of this element.</li>
-<li><a href="apidocs/NodeCreateRule.html">NodeCreateRule</a> - A specialized rule
+<li><a href="apidocs/org/apache/commons/digester3/NodeCreateRule.html">NodeCreateRule</a> - A specialized rule
     that converts part of the tree into a <code>DOM Node</code> and then
     pushes it onto the stack.</li>
 </ul>
@@ -474,14 +474,14 @@ However, because their usage is so common, shorthand registration methods are
 defined for each of the standard rules, directly on the <code>Digester</code>
 class.  For example, the following code sequence:</p>
 <source>
-    Rule rule = new SetNextRule(digester, "addChild",
-                                "com.mycompany.mypackage.MyChildClass");
-    digester.addRule("a/b/c", rule);
+    Rule rule = new SetNextRule( digester, "addChild",
+                                 "com.mycompany.mypackage.MyChildClass" );
+    digester.addRule( "a/b/c", rule );
 </source>
 <p>can be replaced by:</p>
 <source>
-    digester.addSetNext("a/b/c", "addChild",
-                        "com.mycompany.mypackage.MyChildClass");
+    digester.addSetNext( "a/b/c", "addChild",
+                         "com.mycompany.mypackage.MyChildClass" );
 </source>
     </section>
 
@@ -533,20 +533,36 @@ line that starts your application) with the following contents:</p>
 <code>Bar</code>, with the following method signatures:</p>
 <source>
   package mypackage;
-  public class Foo {
-    public void addBar(Bar bar);
-    public Bar findBar(int id);
+
+  public class Foo
+  {
+
+    public void addBar( Bar bar );
+
+    public Bar findBar( int id );
+
     public Iterator getBars();
+
     public String getName();
-    public void setName(String name);
+
+    public void setName( String name );
+
   }
 
+
   package mypackage;
-  public class Bar {
+
+  public class Bar
+  {
+
     public int getId();
-    public void setId(int id);
+
+    public void setId( int id );
+
     public String getTitle();
-    public void setTitle(String title);
+
+    public void setTitle( String title );
+
   }
 </source>
 
@@ -554,8 +570,8 @@ line that starts your application) with the following contents:</p>
 
 <source>
   &lt;foo name="The Parent"&gt;
-    &lt;bar id="123" title="The First Child"/&gt;
-    &lt;bar id="456" title="The Second Child"/&gt;
+    &lt;bar id="123" title="The First Child" /&gt;
+    &lt;bar id="456" title="The Second Child" /&gt;
   &lt;/foo&gt;
 </source>
 
@@ -565,13 +581,13 @@ document:</p>
 
 <source>
   Digester digester = new Digester();
-  digester.setValidating(false);
-  digester.addObjectCreate("foo", "mypackage.Foo");
-  digester.addSetProperties("foo");
-  digester.addObjectCreate("foo/bar", "mypackage.Bar");
-  digester.addSetProperties("foo/bar");
-  digester.addSetNext("foo/bar", "addBar", "mypackage.Bar");
-  Foo foo = (Foo) digester.parse();
+  digester.setValidating( false );
+  digester.addObjectCreate( "foo", "mypackage.Foo" );
+  digester.addSetProperties( "foo" );
+  digester.addObjectCreate( "foo/bar", "mypackage.Bar" );
+  digester.addSetProperties( "foo/bar" );
+  digester.addSetNext( "foo/bar", "addBar", "mypackage.Bar" );
+  Foo foo = digester.parse();
 </source>
 
 <p>In order, these rules do the following tasks:</p>
@@ -629,8 +645,8 @@ Digester features.  First, let's look at how the Digester instance is
 created and initialized:</p>
 <source>
     Digester digester = new Digester();
-    digester.push(this); // Push controller servlet onto the stack
-    digester.setValidating(true);
+    digester.push( this ); // Push controller servlet onto the stack
+    digester.setValidating( true );
 </source>
 
 <p>We see that a new Digester instance is created, and is configured to use
@@ -640,15 +656,14 @@ a means of tracking the configured objects, the controller servlet instance
 itself will be added to the digester's stack.</p>
 
 <source>
-    digester.addObjectCreate("struts-config/global-forwards/forward",
-                             forwardClass, "className");
-    digester.addSetProperties("struts-config/global-forwards/forward");
-    digester.addSetNext("struts-config/global-forwards/forward",
-                        "addForward",
-                        "org.apache.struts.action.ActionForward");
-    digester.addSetProperty
-      ("struts-config/global-forwards/forward/set-property",
-       "property", "value");
+    digester.addObjectCreate( "struts-config/global-forwards/forward",
+                              forwardClass, "className" );
+    digester.addSetProperties( "struts-config/global-forwards/forward" );
+    digester.addSetNext( "struts-config/global-forwards/forward",
+                         "addForward",
+                         "org.apache.struts.action.ActionForward" );
+    digester.addSetProperty( "struts-config/global-forwards/forward/set-property",
+                             "property", "value");
 </source>
 
 <p>The rules created by these lines are used to process the global forward
@@ -684,12 +699,15 @@ the following actions take place:</p>
 <p>Later on, the digester is actually executed as follows:</p>
 <source>
     InputStream input =
-      getServletContext().getResourceAsStream(config);
+      getServletContext().getResourceAsStream( config );
     ...
-    try {
-        digester.parse(input);
+    try
+    {
+        digester.parse( input );
         input.close();
-    } catch (SAXException e) {
+    }
+    catch ( SAXException e )
+    {
         ... deal with the problem ...
     }
 </source>
@@ -710,10 +728,16 @@ servlet.  To record this information, assume the existence of a bean class
 with the following method signatures (among others):</p>
 <source>
   package com.mycompany;
-  public class ServletBean {
-    public void setServletName(String servletName);
-    public void setServletClass(String servletClass);
-    public void addInitParam(String name, String value);
+
+  public class ServletBean
+  {
+
+    public void setServletName( String servletName );
+
+    public void setServletClass( String servletClass );
+
+    public void addInitParam( String name, String value );
+
   }
 </source>
 
@@ -741,15 +765,15 @@ brevity in this example):</p>
 
 <p>Next, lets define some Digester processing rules for this input file:</p>
 <source>
-  digester.addObjectCreate("web-app/servlet",
-                           "com.mycompany.ServletBean");
-  digester.addCallMethod("web-app/servlet/servlet-name", "setServletName", 0);
-  digester.addCallMethod("web-app/servlet/servlet-class",
-                         "setServletClass", 0);
-  digester.addCallMethod("web-app/servlet/init-param",
-                         "addInitParam", 2);
-  digester.addCallParam("web-app/servlet/init-param/param-name", 0);
-  digester.addCallParam("web-app/servlet/init-param/param-value", 1);
+  digester.addObjectCreate( "web-app/servlet",
+                            "com.mycompany.ServletBean" );
+  digester.addCallMethod( "web-app/servlet/servlet-name", "setServletName", 0 );
+  digester.addCallMethod( "web-app/servlet/servlet-class",
+                          "setServletClass", 0 );
+  digester.addCallMethod( "web-app/servlet/init-param",
+                          "addInitParam", 2 );
+  digester.addCallParam( "web-app/servlet/init-param/param-name", 0 );
+  digester.addCallParam( "web-app/servlet/init-param/param-value", 1 );
 </source>
 
 <p>Now, as elements are parsed, the following processing occurs:</p>
@@ -803,14 +827,14 @@ is done by following these steps:</p>
     aware parsing, by adding this statement in your initalization
     of the Digester's properties:
     <source>
-    digester.setNamespaceAware(true);
+    digester.setNamespaceAware( true );
     </source></li>
 <li>Declare the public namespace URI of the namespace with which
     following rules will be associated.  Note that you do <em>not</em>
     make any assumptions about the prefix - the XML document author
     is free to pick whatever prefix they want:
     <source>
-    digester.setRuleNamespaceURI("http://www.mycompany.com/MyNamespace");
+    digester.setRuleNamespaceURI( "http://www.mycompany.com/MyNamespace" );
     </source></li>
 <li>Add the rules that correspond to this namespace, in the usual way,
     by calling methods like <code>addObjectCreate()</code> or
@@ -818,8 +842,8 @@ is done by following these steps:</p>
     use only the <em>local name</em> portion of the elements (i.e. the
     part after the prefix and associated colon (":") character:
     <source>
-    digester.addObjectCreate("foo/bar", "com.mycompany.MyFoo");
-    digester.addSetProperties("foo/bar");
+    digester.addObjectCreate( "foo/bar", "com.mycompany.MyFoo" );
+    digester.addSetProperties( "foo/bar");
     </source></li>
 <li>Repeat the previous two steps for each additional public namespace URI
     that should be recognized on this <code>Digester</code> run.</li>
@@ -913,7 +937,7 @@ following as part of your Digester initialization:</p>
 <source>
   Digester digester = ...
   ...
-  digester.setRules(new ExtendedBaseRules());
+  digester.setRules( new ExtendedBaseRules() );
   ...
 </source>
       </subsection>
@@ -933,7 +957,7 @@ Example usage:
 <source>
   Digester digester = ...
   ...
-  digester.setRules(new RegexRules(new SimpleRegexMatcher()));
+  digester.setRules( new RegexRules( new SimpleRegexMatcher() ) );
   ...
 </source>
       </subsection>
@@ -981,10 +1005,10 @@ For example,</p>
 <source>
     Rule alpha;
     ...
-    WithDefaultsRulesWrapper rules = new WithDefaultsRulesWrapper(new BaseRules());
-    rules.addDefault(alpha);
+    WithDefaultsRulesWrapper rules = new WithDefaultsRulesWrapper( new BaseRules() );
+    rules.addDefault( alpha );
     ...
-    digester.setRules(rules);
+    digester.setRules( rules );
     ...
 </source>
 <p>when a pattern does not match any other rule, then rule alpha will be called.
@@ -1013,13 +1037,16 @@ as described under <a href="#doc.Namespace">Namespace Aware Processing</a>.</p>
 <p>An example of creating a <code>RuleSet</code> might be something like this:
 </p>
 <source>
-public class MyRuleSet extends RuleSetBase {
+public class MyRuleSet
+  extends RuleSetBase {
 
-  public MyRuleSet() {
+  public MyRuleSet()
+  {
     this("");
   }
 
-  public MyRuleSet(String prefix) {
+  public MyRuleSet(String prefix)
+  {
     super();
     this.prefix = prefix;
     this.namespaceURI = "http://www.mycompany.com/MyNamespace";
@@ -1027,10 +1054,11 @@ public class MyRuleSet extends RuleSetBase {
 
   protected String prefix = null;
 
-  public void addRuleInstances(Digester digester) {
-    digester.addObjectCreate(prefix + "foo/bar",
-      "com.mycompany.MyFoo");
-    digester.addSetProperties(prefix + "foo/bar");
+  public void addRuleInstances(Digester digester)
+  {
+    digester.addObjectCreate( prefix + "foo/bar",
+      "com.mycompany.MyFoo" );
+    digester.addSetProperties( prefix + "foo/bar" );
   }
 
 }
@@ -1041,7 +1069,7 @@ public class MyRuleSet extends RuleSetBase {
 <source>
   Digester digester = new Digester();
   ... configure Digester properties ...
-  digester.addRuleSet(new MyRuleSet("baz/"));
+  digester.addRuleSet( new MyRuleSet( "baz/" ) );
 </source>
 
 <p>A couple of interesting notes about this approach:</p>
@@ -1090,11 +1118,11 @@ the term <em>named stack</em> comes from.) These stacks are
 accessed through calls to:
 </p>
 <ul>
-    <li><a href="apidocs/Digester.html#push(java.lang.String, java.lang.Object)">
+    <li><a href="apidocs/org/apache/commons/digester3/Digester.html#push(java.lang.String, T)">
         void push(String stackName, Object value)</a></li>
-    <li><a href="apidocs/Digester.html#pop(java.lang.String)">
+    <li><a href="apidocs/org/apache/commons/digester3/Digester.html#pop(java.lang.String)">
         Object pop(String stackName)</a></li>
-    <li><a href="apidocs/Digester.html#peek(java.lang.String)">
+    <li><a href="apidocs/org/apache/commons/digester3/Digester.html#peek(java.lang.String)">
         Object peek(String stackName)</a></li>
 </ul>
 <p>
@@ -1168,7 +1196,7 @@ to be easily associated with <code><em>public-identifiers</em></code>.
 </p>
 <p>For example:</p>
 <source>
-    digester.register("-//Example Dot Com //DTD Sample Example//EN", "assets/sample.dtd");
+    digester.register( "-//Example Dot Com //DTD Sample Example//EN", "assets/sample.dtd" );
 </source>
 <p>
 will make digester return the relative file path <code>assets/sample.dtd</code> 
@@ -1231,20 +1259,20 @@ Detailed descriptions are contained within their own package documentation.
 </p>
 <ul>
     <li>
-<a href="apidocs/plugins/package-summary.html">plugins</a> provides a framework for the easy
+<a href="apidocs/org/apache/commons/digester3/plugins/package-summary.html">plugins</a> provides a framework for the easy
 dynamic addition of rules during a Digestion. Rules can trigger the dynamic addition 
 of other rules in an intuitive fashion.
     </li>
     <li>
-<a href="apidocs/substitution/package-summary.html">substitution</a> provides for 
+<a href="apidocs/org/apache/commons/digester3/substitution/package-summary.html">substitution</a> provides for 
 manipulation of attributes and element body text before it is processed by the rules.
     </li>
     <li>
-<a href="apidocs/xmlrules/package-summary.html">xmlrules</a> package contains a
+<a href="apidocs/org/apache/commons/digester3/xmlrules/package-summary.html">xmlrules</a> package contains a
 system allowing digester rule configurations to be specifed through an xml file.
     </li>
     <li>
-<a href="apidocs/annotations/package-summary.html">annotations</a> package contains a
+<a href="apidocs/org/apache/commons/digester3/annotations/package-summary.html">annotations</a> package contains a
 system allowing digester rule configurations to be specifed through Java5 Annotations.
     </li>
 </ul>
