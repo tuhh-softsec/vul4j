@@ -18,9 +18,8 @@
 
 package org.apache.commons.digester3.xmlrules;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.commons.digester3.xmlrules.DigesterRuleParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,64 +31,64 @@ import org.junit.Test;
 public class DigesterPatternStackTest
 {
 
-    private DigesterRuleParser parser;
+    private PatternStack patternStack = new PatternStack();
 
     @Before
     public void setUp()
     {
-        parser = new DigesterRuleParser();
+        patternStack.clear();
     }
 
     @Test
     public void test1()
         throws Exception
     {
-        assertEquals( "", parser.patternStack.toString() );
+        assertEquals( "", patternStack.toString() );
     }
 
     @Test
     public void test2()
         throws Exception
     {
-        parser.patternStack.push( "A" );
-        assertEquals( "A", parser.patternStack.toString() );
-        parser.patternStack.pop();
-        assertEquals( "", parser.patternStack.toString() );
+        patternStack.push( "A" );
+        assertEquals( "A", patternStack.toString() );
+        patternStack.pop();
+        assertEquals( "", patternStack.toString() );
     }
 
     @Test
     public void test3()
         throws Exception
     {
-        parser.patternStack.push( "A" );
-        parser.patternStack.push( "B" );
-        assertEquals( "A/B", parser.patternStack.toString() );
+        patternStack.push( "A" );
+        patternStack.push( "B" );
+        assertEquals( "A/B", patternStack.toString() );
 
-        parser.patternStack.pop();
-        assertEquals( "A", parser.patternStack.toString() );
+        patternStack.pop();
+        assertEquals( "A", patternStack.toString() );
     }
 
     @Test
     public void test4()
         throws Exception
     {
-        parser.patternStack.push( "" );
-        assertEquals( "", parser.patternStack.toString() );
+        patternStack.push( "" );
+        assertEquals( "", patternStack.toString() );
 
-        parser.patternStack.push( "" );
-        assertEquals( "", parser.patternStack.toString() );
+        patternStack.push( "" );
+        assertEquals( "", patternStack.toString() );
     }
 
     @Test
     public void test5()
         throws Exception
     {
-        parser.patternStack.push( "A" );
-        assertEquals( "A", parser.patternStack.toString() );
+        patternStack.push( "A" );
+        assertEquals( "A", patternStack.toString() );
 
-        parser.patternStack.push( "" );
-        parser.patternStack.push( "" );
-        assertEquals( "A", parser.patternStack.toString() );
+        patternStack.push( "" );
+        patternStack.push( "" );
+        assertEquals( "A", patternStack.toString() );
 
     }
 
@@ -97,27 +96,27 @@ public class DigesterPatternStackTest
     public void test6()
         throws Exception
     {
-        parser.patternStack.push( "A" );
-        parser.patternStack.push( "B" );
-        parser.patternStack.clear();
-        assertEquals( "", parser.patternStack.toString() );
+        patternStack.push( "A" );
+        patternStack.push( "B" );
+        patternStack.clear();
+        assertEquals( "", patternStack.toString() );
     }
 
     @Test
     public void test7()
         throws Exception
     {
-        parser.patternStack.push( "///" );
-        assertEquals( "///", parser.patternStack.toString() );
+        patternStack.push( "///" );
+        assertEquals( "///", patternStack.toString() );
 
-        parser.patternStack.push( "/" );
-        assertEquals( "/////", parser.patternStack.toString() );
+        patternStack.push( "/" );
+        assertEquals( "/////", patternStack.toString() );
 
-        parser.patternStack.pop();
-        assertEquals( "///", parser.patternStack.toString() );
+        patternStack.pop();
+        assertEquals( "///", patternStack.toString() );
 
-        parser.patternStack.pop();
-        assertEquals( "", parser.patternStack.toString() );
+        patternStack.pop();
+        assertEquals( "", patternStack.toString() );
     }
 
 }
