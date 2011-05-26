@@ -16,6 +16,7 @@
    limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.commons</groupId>
@@ -23,31 +24,19 @@
     <version>20</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <name>Commons Digester</name>
   <groupId>org.apache.commmons</groupId>
   <artifactId>commons-digester3</artifactId>
   <version>3.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-  <inceptionYear>2001</inceptionYear>
+  <name>Commons Digester</name>
   <description>
     The Digester package lets you configure an XML to Java object mapping module
     which triggers certain actions called rules whenever a particular 
     pattern of nested XML elements is recognized.
   </description>
-
   <url>http://commons.apache.org/digester/</url>
-
-  <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/DIGESTER</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk</url>
-  </scm>
+  <inceptionYear>2001</inceptionYear>
 
   <developers>
     <developer>
@@ -101,7 +90,6 @@
       <email>simonetripodi AT apache DOT org</email>
     </developer>
   </developers>
-
   <contributors>
     <contributor>
       <name>Bradley M. Handy</name>
@@ -147,6 +135,15 @@
     </contributor>
   </contributors>
 
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/DIGESTER</url>
+  </issueManagement>
   <distributionManagement>
     <!-- Cannot define in parent ATM, see COMMONSSITE-26 -->
     <site>
@@ -167,7 +164,26 @@
     <commons.rc.version>RC1</commons.rc.version>
     <commons.jira.id>DIGESTER</commons.jira.id>
     <commons.jira.pid>12310471</commons.jira.pid>
-  </properties> 
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.8.3</version>
+    </dependency>
+    <dependency> 
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <resources>
@@ -235,25 +251,6 @@
     </plugins>
   </build>
 
-  <dependencies>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.8.3</version>
-    </dependency>
-    <dependency> 
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
   <reporting>
     <plugins>
       <plugin>
@@ -315,5 +312,4 @@
       </distributionManagement>
     </profile>
   </profiles>
-
 </project>
