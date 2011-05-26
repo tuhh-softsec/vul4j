@@ -43,19 +43,19 @@ using a syntax such as "${user.name}".
 <p>Here's an example of setting up the VariableSubstitutor:</p>
 <source>
   // set up the variables the input xml can reference
-  Map vars = new HashMap();
-  vars.put("user.name", "me");
-  vars.put("os", "Linux");
+  Map&lt;String, Object&gt; vars = new HashMap&lt;String, Object&gt;();
+  vars.put( "user.name", "me" );
+  vars.put( "os", "Linux" );
 
   // map ${varname} to the entries in the var map
   MultiVariableExpander expander = new MultiVariableExpander();
-  expander.addSource("$", vars);
+  expander.addSource( "$", vars );
 
   // allow expansion in both xml attributes and element text
-  Substitutor substitutor = new VariableSubstitutor(expander);
+  Substitutor substitutor = new VariableSubstitutor( expander );
 
   Digester digester = new Digester();
-  digester.setSubstitutor(substitutor);
+  digester.setSubstitutor( substitutor );
 </source>
     </section>
   </body>
