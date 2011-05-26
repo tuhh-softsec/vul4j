@@ -49,6 +49,7 @@
     <menu name="Release 3.0 (Current)">
       <item name="Guide" href="http://commons.apache.org/digester/commons-digester-3.0/core.html">
         <item name="Core APIs"            href="http://commons.apache.org/digester/commons-digester-3.0/core.html"/>
+        <item name="Rules Binder (new)"   href="http://commons.apache.org/digester/commons-digester-3.0/binder.html"/>
         <item name="Plugins"              href="http://commons.apache.org/digester/commons-digester-3.0/plugins.html"/>
         <item name="Substitution"         href="http://commons.apache.org/digester/commons-digester-3.0/substitution.html"/>
         <item name="XML Rules"            href="http://commons.apache.org/digester/commons-digester-3.0/xmlrules.html"/>
