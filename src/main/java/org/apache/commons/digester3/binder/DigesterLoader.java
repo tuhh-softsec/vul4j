@@ -280,8 +280,7 @@ public final class DigesterLoader
     {
         try
         {
-            this.register( publicId, new URL( entityURL ) );
-            return this;
+            return register( publicId, new URL( entityURL ) );
         }
         catch ( MalformedURLException e )
         {
