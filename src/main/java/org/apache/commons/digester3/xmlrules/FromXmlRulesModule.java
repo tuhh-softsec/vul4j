@@ -78,6 +78,7 @@ public abstract class FromXmlRulesModule
             Digester digester = newLoader( xmlRulesModule )
                     .register( DIGESTER_PUBLIC_ID, xmlRulesDtdUrl.toString() )
                     .setXIncludeAware( true )
+                    .setValidating( true )
                     .newDigester();
 
             for ( InputSource source : inputSource )
