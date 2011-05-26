@@ -17,6 +17,7 @@
  */
 package org.apache.commons.digester3.xmlrules;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.digester3.Rule;
@@ -55,10 +56,10 @@ final class IncludeRule
         throws Exception
     {
         // The path attribute gives the URI to another digester rules xml file
-        final String fileName = attributes.getValue( "path" );
+        String fileName = attributes.getValue( "path" );
         if ( fileName != null && fileName.length() > 0 )
         {
-            FromXmlRulesModule fromXmlRulesModule = null;
+            final URL xmlRulesResource;
 
             if ( fileName.startsWith( CLASSPATH_URL_PREFIX ) )
             {
@@ -67,64 +68,44 @@ final class IncludeRule
                 {
                     path = path.substring( 1 );
                 }
-                final URL classPathResource = this.targetRulesBinder.getContextClassLoader().getResource( path );
-                if ( classPathResource == null )
+                xmlRulesResource = this.targetRulesBinder.getContextClassLoader().getResource( path );
+                if ( xmlRulesResource == null )
                 {
                     targetRulesBinder.addError( "Resource '%s' not found, please make sure it is in the classpath",
                                                 path );
-                }
-                else
-                {
-                    fromXmlRulesModule = new FromXmlRulesModule()
-                    {
-
-                        @Override
-                        protected void loadRules()
-                        {
-                            loadXMLRules( classPathResource );
-                        }
-
-                    };
+                    return;
                 }
             }
             else
             {
                 try
                 {
-                    fromXmlRulesModule = new FromXmlRulesModule()
-                    {
-
-                        @Override
-                        protected void loadRules()
-                        {
-                            loadXMLRules( fileName );
-                        }
-
-                    };
+                    xmlRulesResource = new URL( fileName );
                 }
-                catch ( Exception e )
+                catch ( MalformedURLException e )
                 {
                     targetRulesBinder.addError( "An error occurred while inculing file from '%s': %s", fileName,
                                                 e.getMessage() );
+                    return;
                 }
             }
 
-            if ( fromXmlRulesModule != null )
+            if ( memoryRulesBinder.getIncludedFiles().add( xmlRulesResource.toString() ) )
             {
-                boolean circularFileInclusionDetected = false;
-                for ( String systemId : fromXmlRulesModule.getSystemIds() )
+                install( new FromXmlRulesModule()
                 {
-                    if ( !memoryRulesBinder.getIncludedFiles().add( systemId ) )
-                    {
-                        targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s", systemId );
-                        circularFileInclusionDetected = true;
-                    }
-                }
 
-                if ( !circularFileInclusionDetected )
-                {
-                    install( fromXmlRulesModule );
-                }
+                    @Override
+                    protected void loadRules()
+                    {
+                        loadXMLRules( xmlRulesResource );
+                    }
+
+                });
+            }
+            else
+            {
+                targetRulesBinder.addError( "Circular file inclusion detected for XML rules: %s", xmlRulesResource );
             }
         }
 
