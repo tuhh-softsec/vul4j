@@ -22,7 +22,7 @@ package org.apache.commons.digester3.binder;
 import org.apache.commons.digester3.ObjectParamRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#objectParam(Object)}.
  *
  * @since 3.0
  */
