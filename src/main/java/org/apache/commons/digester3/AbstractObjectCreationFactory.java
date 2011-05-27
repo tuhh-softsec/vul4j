@@ -40,18 +40,17 @@ public abstract class AbstractObjectCreationFactory<T>
     // --------------------------------------------------------- Public Methods
 
     /**
-     * <p>
      * Factory method called by {@link FactoryCreateRule} to supply an object based on the element's attributes.
-     * 
+     *
      * @param attributes the element's attributes
+     * @return creates a new T instance
      * @throws Exception any exception thrown will be propagated upwards
      */
     public abstract T createObject( Attributes attributes )
         throws Exception;
 
     /**
-     * <p>
-     * Returns the {@link Digester} that was set by the {@link FactoryCreateRule} upon initialization.
+     * {@inheritDoc}
      */
     public Digester getDigester()
     {
@@ -59,11 +58,7 @@ public abstract class AbstractObjectCreationFactory<T>
     }
 
     /**
-     * <p>
-     * Set the {@link Digester} to allow the implementation to do logging, classloading based on the digester's
-     * classloader, etc.
-     * 
-     * @param digester parent Digester object
+     * {@inheritDoc}
      */
     public void setDigester( Digester digester )
     {
