@@ -50,7 +50,7 @@ public abstract class AbstractRulesImpl
     // ------------------------------------------------------------- Properties
 
     /**
-     * Return the Digester instance with which this Rules instance is associated.
+     * {@inheritDoc}
      */
     public Digester getDigester()
     {
@@ -58,9 +58,7 @@ public abstract class AbstractRulesImpl
     }
 
     /**
-     * Set the Digester instance with which this Rules instance is associated.
-     * 
-     * @param digester The newly associated Digester instance
+     * {@inheritDoc}
      */
     public void setDigester( Digester digester )
     {
@@ -68,7 +66,7 @@ public abstract class AbstractRulesImpl
     }
 
     /**
-     * Return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
+     * {@inheritDoc}
      */
     public String getNamespaceURI()
     {
@@ -76,10 +74,7 @@ public abstract class AbstractRulesImpl
     }
 
     /**
-     * Set the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
-     * 
-     * @param namespaceURI Namespace URI that must match on all subsequently added rules, or <code>null</code> for
-     *            matching regardless of the current namespace URI
+     * {@inheritDoc}
      */
     public void setNamespaceURI( String namespaceURI )
     {
