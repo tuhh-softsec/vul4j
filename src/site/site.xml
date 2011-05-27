@@ -35,6 +35,7 @@
 
     <menu name="Developers Guide (SVN latest)">
       <item name="Core APIs"            href="/guide/core.html"/>
+      <item name="Rules Binder (new)"   href="/guide/binder.html"/>
       <item name="Plugins"              href="/guide/plugins.html"/>
       <item name="Substitution"         href="/guide/substitution.html"/>
       <item name="XML Rules"            href="/guide/xmlrules.html"/>
