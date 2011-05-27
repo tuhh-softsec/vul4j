@@ -249,21 +249,20 @@ class EmployeeModule
     <section name="One single configuration point, one single universal loader">
       <p>As shown above, basic Digester2.X usage would be creating a Digester then setting the rules:</p>
       <source>Digester digester = new Digester();
-    digester.addObjectCreate( "root", "org.apache.commons.digester.SimpleTestBean" );
-    digester.addBeanPropertySetter( "root", "alpha" );
-    digester.addBeanPropertySetter( "root/alpha", "beta" );
-    digester.addBeanPropertySetter( "root/delta", "delta" );</source>
+  digester.addObjectCreate( "root", "org.apache.commons.digester.SimpleTestBean" );
+  digester.addBeanPropertySetter( "root", "alpha" );
+  digester.addBeanPropertySetter( "root/alpha", "beta" );
+  digester.addBeanPropertySetter( "root/delta", "delta" );</source>
 
       <p>Alternatively, users can create the <code>Rules</code> instance, set the rules and pass it to the Digester:</p>
       <source>ExtendedBaseRules rules = new ExtendedBaseRules();
-    rules.addRule( "root", new ObjectCreateRule( "org.apache.commons.digester.SimpleTestBean" ) );
-    rules.addRule( "root", new BeanPropertySetterRule( "alpha" ) );
-    rules.addRule( "root/alpha", new BeanPropertySetterRule( "beta" ) );
-    rules.addRule( "root/delta", new BeanPropertySetterRule( "delta" ) );
+  rules.addRule( "root", new ObjectCreateRule( "org.apache.commons.digester.SimpleTestBean" ) );
+  rules.addRule( "root", new BeanPropertySetterRule( "alpha" ) );
+  rules.addRule( "root/alpha", new BeanPropertySetterRule( "beta" ) );
+  rules.addRule( "root/delta", new BeanPropertySetterRule( "delta" ) );
 
-    Digester digester = new Digester();
-    digester.setRules( rules );
-    </source>
+  Digester digester = new Digester();
+  digester.setRules( rules );</source>
 
       <p>Last, but not least, special loader classes have been created to gain more benefits from <code>RuleSet</code>:
 like the <code>annotations</code> package <code>DigesterLoader</code>, to avoid scanning class elements each time
@@ -271,8 +270,8 @@ users want to create a new Digester instance to parse <code>Channel</code> type:
       <source>import org.apache.commons.digester.annotations.*;
 
 DigesterLoader digesterLoader = new DigesterLoaderBuilder()
-    .useDefaultAnnotationRuleProviderFactory()
-    .useDefaultDigesterLoaderHandlerFactory();
+  .useDefaultAnnotationRuleProviderFactory()
+  .useDefaultDigesterLoaderHandlerFactory();
 Digester digester = digesterLoader.createDigester( Channel.class );</source>
 
       <p>In Digester3 there is just one universal loader that aggregates all the power of the components described above,
@@ -295,38 +294,56 @@ configurations are expressed via <code>(Abstract)RulesModule</code></p>
 }</source>
       <p>Users can simply create new Digester instances:</p>
       <source>DigesterLoader loader = newLoader(new SimpleTestBeanModule());
-    ...
-    Digester digester = loader.newDigester();</source>
+...
+Digester digester = loader.newDigester();</source>
 
       <p>Users can create new Digester instances on top of different <code>Rules</code> types:</p>
       <code>Digester digester = loader.newDigester(new ExtendedBaseRules());</code>
 
       <p>An, by the nature of the universal loader, auxiliary optimizations are not needed:</p>
-      <source>DigesterLoader loader = newLoader(new FromAnnotationsRuleModule(Channel.class))
-    ...
-    Digester digester = loader.newDigester();
-    ...
-    digester = loader.newDigester(); // Channel.class won't be analyzed again!</source>
+      <source>DigesterLoader loader = newLoader( new FromAnnotationsRuleModule()
+{
+
+  @Override
+  protected void configureRules()
+  {
+      bindRulesFrom( Channel.class );
+  }
+
+} );
+...
+Digester digester = loader.newDigester();
+...
+digester = loader.newDigester(); // Channel.class won't be analyzed again!</source>
     </section>
 
     <section name="Extensions optimization">
       <p>As shown above, the universal DigesterLoader introduces a set of optimizations not or partially
       introduced in the previous Digester releases: the <code>FromXmlRuleSet</code>, for example,
       parses the XML Digester rules each time the Digester creation is performed:</p>
-      <source>FromXmlRuleSet ruleSet = new FromXmlRuleSet(getClass().getResource("myrule.xml"));
-    Digester digester = new Digester();
-    ruleSet.addRuleInstances(digester); // myrule.xml will be parsed
-    ...
-    Digester newDigester = new Digester();
-    ruleSet.addRuleInstances(newDigester); // myrule.xml will be parsed again!</source>
+      <source>FromXmlRuleSet ruleSet = new FromXmlRuleSet( MyClass.class.getResource( "myrule.xml" ) );
+Digester digester = new Digester();
+ruleSet.addRuleInstances( digester ); // myrule.xml will be parsed
+...
+Digester newDigester = new Digester();
+ruleSet.addRuleInstances( newDigester ); // myrule.xml will be parsed again!</source>
 
       <p>In Digester3 there's only one <code>RulesModule</code>s loading, so in the case of
       <code>FromXmlRulesModule</code>, the XML rules will be parsed only once:</p>
-      <source>DigesterLoader loader = newLoader(new FromXmlRulesModule(getClass().getResource("myrule.xml")))
-    ...
-    Digester digester = loader.newDigester(); // myrule.xml already parsed
-    ...
-    Digester newDigester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
+      <source>DigesterLoader loader = newLoader( new FromXmlRulesModule()
+  {
+
+    @Override
+    protected void loadRules()
+    {
+        loadXMLRulesFromText( MyClass.class.getResource( "myrule.xml" ) );
+    }
+
+  } );
+...
+Digester digester = loader.newDigester(); // myrule.xml already parsed
+...
+Digester newDigester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
     </section>
 
     <section name="Startup checks and improved error reporting">
@@ -334,10 +351,10 @@ configurations are expressed via <code>(Abstract)RulesModule</code></p>
       <code>DigesterLoader</code> bootstrap, avoiding exceptions during the parsing operations.</p>
       <p>Let's suppose for example the following Digester</p>
       <source>Digester digester = new Digester();
-    digester.addObjectCreate( "root", "com.acme.InOtherClassLoader" );
-    ....
-    digester.addObjectCreate( "root/child", "foo.bar.DoesNotExist" );
-    ...</source>
+  digester.addObjectCreate( "root", "com.acme.InOtherClassLoader" );
+  ....
+  digester.addObjectCreate( "root/child", "foo.bar.DoesNotExist" );
+  ...</source>
 
       <p>is using a wrong <code>ClassLoader</code> to resolve types, or declared types are in the wrong
       package; a runtime error will be thrown as soon as the <i>root</i> pattern will match.</p>
