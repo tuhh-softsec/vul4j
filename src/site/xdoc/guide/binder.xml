@@ -24,6 +24,102 @@ limitations under the License.
   </properties>
   <body>
     <section name="Rules Binder (new)">
+      <p>The Digester 3 design aims to eliminate all the Digester boilerplate without sacrificing maintainability.</p>
+
+<p>With Digester 3, you implement modules, the
+<a href="../apidocs/org/apache/commons/digester3/binder/DigesterLoader.html">DigesterLoader</a>
+passes a <a href="../apidocs/org/apache/commons/digester3/binder/RulesBinder.html">RulesBinder</a> to your module, and your
+module uses the binder to map patterns to <a href="../apidocs/org/apache/commons/digester3/binder/Rule.html">Rule</a>s.
+We can break Digester's 3 architecture down into two distinct stages: startup and runtime.
+You build a <code>DigesterLoader</code> during startup and use it to obtain <code>Digester</code> instances at
+runtime.</p>
+
+<subsection name="Startup">
+<p>You configure the Digester by implementing <a href="../apidocs/org/apache/commons/digester3/binder/RulesModule.html">RulesModule</a>.
+You pass <a href="../apidocs/org/apache/commons/digester3/binder/DigesterLoader.html">DigesterLoader</a> a module, the
+<code>DigesterLoader</code> passes your module a <a href="../apidocs/org/apache/commons/digester3/binder/RulesBinder.html">RulesBinder</a>,
+and your module uses the binder to configure <i>patterns/rules</i> bindings. A binding most commonly consist of a mapping
+between a pattern and one or more <a href="../apidocs/org/apache/commons/digester3/binder/Rule.html">Rule</a>. For example:</p>
+</subsection>
+
+<source>
+class EmployeeModule
+    implements RulesModule
+{
+
+    protected void configure( RulesBinder rulesBinder )
+    {
+        rulesBinder.forPattern( "employee" ).createObject().ofType( Employee.class );
+        rulesBinder.forPattern( "employee/firstName" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/lastName" ).setBeanProperty();
+
+        rulesBinder.forPattern( "employee/address" )
+            .createObject().ofType( Address.class )
+            .then()
+            .setNext( "addAddress" );
+        rulesBinder.forPattern( "employee/address/type" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/address/city" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/address/state" ).setBeanProperty();
+    }
+
+}
+</source>
+
+<p>DRY (Don't Repeat Yourself): Repeating "rulesBinder" over and over for each binding can get a little tedious.
+The Digester package provides a module support class named
+<a href="../apidocs/org/apache/commons/digester3/binder/AbstractRulesModule.html">AbstractRulesModule</a> which
+implicitly gives you access to <code>RulesBinder</code>'s methods. For example, we could extend
+<code>AbstractRulesModule</code> and rewrite the above binding as:</p>
+
+<source>
+class EmployeeModule
+    extends AbstractRulesModule
+{
+
+    @Override
+    protected void configure()
+    {
+        forPattern( "employee" ).createObject().ofType( Employee.class );
+        forPattern( "employee/firstName" ).setBeanProperty();
+        forPattern( "employee/lastName" ).setBeanProperty();
+
+        forPattern( "employee/address" )
+            .createObject().ofType( Address.class )
+            .then()
+            .setNext( "addAddress" );
+        forPattern( "employee/address/type" ).setBeanProperty();
+        forPattern( "employee/address/city" ).setBeanProperty();
+        forPattern( "employee/address/state" ).setBeanProperty();
+    }
+
+}
+</source>
+
+<p>We'll use this syntax throughout the rest of the guide.</p>
+
+<p>Creating a Digester entails the following steps:</p>
+<ol>
+<li>First, create an instance of your module and pass it to <code>DigesterLoader.newLoader()</code>.</li>
+<li>The <code>DigesterLoader</code> creates a <code>RulesBinder</code> and passes it to your module.</li>
+<li>Your module uses the binder to define bindings.</li>
+<li>Set any desired <a href="./core.html#doc.Properties">configuration properties</a>
+    that will customize the operation of the Digester when you next initiate
+    a parse operation.</li>
+<li>Based on the bindings you specified, <code>DigesterLoader</code> creates a <code>Digester</code> by invoking
+<code>DigesterLoader.newDigester()</code> and returns it to you.</li>
+<li>Optionally, push any desired initial object(s) onto the Digester's <a href="core.html#doc.Stack">object stack</a>.</li>
+<li>Call the <code>digester.parse()</code> method, passing a reference to the
+    XML document to be parsed in one of a variety of forms.  See the
+    <a href="../apidocs/org/apache/commons/digester3/Digester.html#parse(java.io.File)">Digester.parse()</a>
+    documentation for details.  Note that you will need to be prepared to
+    catch any <code>IOException</code> or <code>SAXException</code> that is
+    thrown by the parser, or any runtime expression that is thrown by one of
+    the processing rules.</li>
+<li>Please remember that previously
+    created Digester instances may be safely reused, as long as you have
+    completed any previously requested parse, and you do not try to utilize
+    a particular Digester instance from more than one thread at a time.</li>
+</ol>
     </section>
   </body>
 </document>
