@@ -39,10 +39,6 @@ public class MultiVariableExpander
 
     private ArrayList<Map<String, Object>> sources = new ArrayList<Map<String, Object>>( 2 );
 
-    public MultiVariableExpander()
-    {
-    }
-
     public void addSource( String marker, Map<String, Object> source )
     {
         ++nEntries;
