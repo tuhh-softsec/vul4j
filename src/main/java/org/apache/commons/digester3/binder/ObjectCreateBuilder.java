@@ -21,6 +21,11 @@ package org.apache.commons.digester3.binder;
 
 import org.apache.commons.digester3.ObjectCreateRule;
 
+/**
+ * Builder chained when invoking {@link LinkedRuleBuilder#objectCreate(String)}.
+ *
+ * @since 3.0
+ */
 public final class ObjectCreateBuilder
     extends AbstractBackToLinkedRuleBuilder<ObjectCreateRule>
 {
