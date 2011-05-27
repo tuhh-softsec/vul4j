@@ -35,7 +35,7 @@ import java.util.List;
  * 
  * @since 1.5
  */
-abstract public class AbstractRulesImpl
+public abstract class AbstractRulesImpl
     implements Rules
 {
 
