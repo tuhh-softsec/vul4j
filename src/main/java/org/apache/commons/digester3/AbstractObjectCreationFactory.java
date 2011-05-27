@@ -26,7 +26,7 @@ import org.xml.sax.Attributes;
  *
  * @param <T> The object type will be instantiate by this factory.
  */
-abstract public class AbstractObjectCreationFactory<T>
+public abstract class AbstractObjectCreationFactory<T>
     implements ObjectCreationFactory<T>
 {
 
