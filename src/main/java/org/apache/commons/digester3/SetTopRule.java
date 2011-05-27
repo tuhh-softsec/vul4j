@@ -31,7 +31,6 @@ import org.apache.commons.beanutils.MethodUtils;
  * written against release 1.1.1 or earlier. See {@link #isExactMatch()} for more details.
  * </p>
  */
-
 public class SetTopRule
     extends Rule
 {
@@ -46,9 +45,7 @@ public class SetTopRule
      */
     public SetTopRule( String methodName )
     {
-
         this( methodName, null );
-
     }
 
     /**
@@ -61,10 +58,8 @@ public class SetTopRule
      */
     public SetTopRule( String methodName, String paramType )
     {
-
         this.methodName = methodName;
         this.paramType = paramType;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -110,7 +105,6 @@ public class SetTopRule
      */
     public boolean isExactMatch()
     {
-
         return useExactMatch;
     }
 
@@ -127,7 +121,6 @@ public class SetTopRule
      */
     public void setExactMatch( boolean useExactMatch )
     {
-
         this.useExactMatch = useExactMatch;
     }
 
@@ -138,7 +131,6 @@ public class SetTopRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // Identify the objects to be used
         Object child = getDigester().peek( 0 );
         Object parent = getDigester().peek( 1 );
@@ -171,15 +163,11 @@ public class SetTopRule
 
         if ( useExactMatch )
         {
-
             MethodUtils.invokeExactMethod( child, methodName, new Object[] { parent }, paramTypes );
-
         }
         else
         {
-
             MethodUtils.invokeMethod( child, methodName, new Object[] { parent }, paramTypes );
-
         }
     }
 
@@ -189,7 +177,6 @@ public class SetTopRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "SetTopRule[" );
         sb.append( "methodName=" );
         sb.append( methodName );
@@ -197,7 +184,6 @@ public class SetTopRule
         sb.append( paramType );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

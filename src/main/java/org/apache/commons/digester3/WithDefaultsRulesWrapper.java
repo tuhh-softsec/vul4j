@@ -53,7 +53,6 @@ import java.util.List;
  * 
  * @since 1.6
  */
-
 public class WithDefaultsRulesWrapper
     implements Rules
 {
@@ -180,4 +179,5 @@ public class WithDefaultsRulesWrapper
         wrappedRules.add( pattern, rule );
         allRules.add( rule );
     }
+
 }

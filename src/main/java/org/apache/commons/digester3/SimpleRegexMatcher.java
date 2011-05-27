@@ -37,7 +37,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @since 1.5
  */
-
 public class SimpleRegexMatcher
     extends RegexMatcher
 {
@@ -174,4 +173,5 @@ public class SimpleRegexMatcher
                 return false;
         }
     }
+
 }

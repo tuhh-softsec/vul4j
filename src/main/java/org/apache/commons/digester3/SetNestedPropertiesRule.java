@@ -498,7 +498,8 @@ public class SetNestedPropertiesRule
                     }
                 }
                 else
-                /* this is a standard JavaBean */{
+                /* this is a standard JavaBean */
+                {
                     PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, propName );
                     if ( desc == null )
                     {
@@ -525,4 +526,5 @@ public class SetNestedPropertiesRule
             currChildElementName = null;
         }
     }
+
 }

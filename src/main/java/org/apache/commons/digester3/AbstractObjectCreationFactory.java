@@ -55,9 +55,7 @@ abstract public class AbstractObjectCreationFactory<T>
      */
     public Digester getDigester()
     {
-
         return ( this.digester );
-
     }
 
     /**
@@ -69,9 +67,7 @@ abstract public class AbstractObjectCreationFactory<T>
      */
     public void setDigester( Digester digester )
     {
-
         this.digester = digester;
-
     }
 
 }

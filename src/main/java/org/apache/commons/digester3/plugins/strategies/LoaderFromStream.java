@@ -41,7 +41,6 @@ import org.xml.sax.InputSource;
  * 
  * @since 1.6
  */
-
 public class LoaderFromStream
     extends RuleLoader
 {
@@ -109,4 +108,5 @@ public class LoaderFromStream
         }).createRuleSet();
         ruleSet.addRuleInstances( d );
     }
+
 }

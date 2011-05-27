@@ -87,4 +87,5 @@ public class PluginAssertionFailure
     {
         return cause;
     }
+
 }

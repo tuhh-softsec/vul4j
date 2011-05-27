@@ -31,7 +31,6 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromClass
     extends RuleFinder
 {
@@ -94,7 +93,6 @@ public class FinderFromClass
     public RuleLoader findLoader( Digester digester, Class<?> pluginClass, Properties p )
         throws PluginException
     {
-
         String ruleClassName = p.getProperty( ruleClassAttr );
         if ( ruleClassName == null )
         {
@@ -131,4 +129,5 @@ public class FinderFromClass
 
         return new LoaderFromClass( ruleClass, methodName );
     }
+
 }

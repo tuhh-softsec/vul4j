@@ -30,7 +30,6 @@ import org.xml.sax.Attributes;
  * 
  * @since 1.6
  */
-
 public class PathCallParamRule
     extends Rule
 {
@@ -44,9 +43,7 @@ public class PathCallParamRule
      */
     public PathCallParamRule( int paramIndex )
     {
-
         this.paramIndex = paramIndex;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -70,7 +67,6 @@ public class PathCallParamRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         String param = getDigester().getMatch();
 
         if ( param != null )
@@ -78,7 +74,6 @@ public class PathCallParamRule
             Object parameters[] = getDigester().peekParams();
             parameters[paramIndex] = param;
         }
-
     }
 
     /**
@@ -87,12 +82,11 @@ public class PathCallParamRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "PathCallParamRule[" );
         sb.append( "paramIndex=" );
         sb.append( paramIndex );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
+
 }

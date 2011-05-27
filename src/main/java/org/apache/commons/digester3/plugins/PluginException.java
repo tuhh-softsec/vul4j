@@ -23,7 +23,6 @@ package org.apache.commons.digester3.plugins;
  * 
  * @since 1.6
  */
-
 public class PluginException
     extends Exception
 {
@@ -67,4 +66,5 @@ public class PluginException
     {
         return cause;
     }
+
 }

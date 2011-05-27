@@ -30,7 +30,6 @@ import org.apache.commons.digester3.Digester;
  * 
  * @since 1.6
  */
-
 public abstract class RuleLoader
 {
 
@@ -42,4 +41,5 @@ public abstract class RuleLoader
      */
     public abstract void addRules( Digester d, String path )
         throws PluginException;
+
 }

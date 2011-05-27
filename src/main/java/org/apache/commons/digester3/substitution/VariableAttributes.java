@@ -32,7 +32,6 @@ import java.util.ArrayList;
  * 
  * @since 1.6
  */
-
 public class VariableAttributes
     implements Attributes
 {

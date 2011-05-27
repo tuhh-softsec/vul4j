@@ -37,7 +37,6 @@ import org.apache.commons.beanutils.MethodUtils;
  * need this then instead of using this rule, create a CallMethodRule specifying targetOffset of 1 in the constructor.
  * </p>
  */
-
 public class SetNextRule
     extends Rule
 {
@@ -52,9 +51,7 @@ public class SetNextRule
      */
     public SetNextRule( String methodName )
     {
-
         this( methodName, null );
-
     }
 
     /**
@@ -67,10 +64,8 @@ public class SetNextRule
      */
     public SetNextRule( String methodName, String paramType )
     {
-
         this.methodName = methodName;
         this.paramType = paramType;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -116,7 +111,6 @@ public class SetNextRule
      */
     public boolean isExactMatch()
     {
-
         return useExactMatch;
     }
 
@@ -133,7 +127,6 @@ public class SetNextRule
      */
     public void setExactMatch( boolean useExactMatch )
     {
-
         this.useExactMatch = useExactMatch;
     }
 
@@ -144,7 +137,6 @@ public class SetNextRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // Identify the objects to be used
         Object child = getDigester().peek( 0 );
         Object parent = getDigester().peek( 1 );
@@ -176,15 +168,11 @@ public class SetNextRule
 
         if ( useExactMatch )
         {
-
             MethodUtils.invokeExactMethod( parent, methodName, new Object[] { child }, paramTypes );
-
         }
         else
         {
-
             MethodUtils.invokeMethod( parent, methodName, new Object[] { child }, paramTypes );
-
         }
     }
 
@@ -194,7 +182,6 @@ public class SetNextRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "SetNextRule[" );
         sb.append( "methodName=" );
         sb.append( methodName );
@@ -202,7 +189,6 @@ public class SetNextRule
         sb.append( paramType );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

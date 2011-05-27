@@ -32,7 +32,6 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class LoaderSetProperties
     extends RuleLoader
 {
@@ -52,4 +51,5 @@ public class LoaderSetProperties
 
         digester.addSetProperties( path );
     }
+
 }

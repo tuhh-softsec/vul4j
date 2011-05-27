@@ -25,7 +25,6 @@ import org.xml.sax.Attributes;
  * Rule implementation that creates a new object and pushes it onto the object stack. When the element is complete, the
  * object will be popped
  */
-
 public class ObjectCreateRule
     extends Rule
 {
@@ -39,9 +38,7 @@ public class ObjectCreateRule
      */
     public ObjectCreateRule( String className )
     {
-
         this( className, (String) null );
-
     }
 
     /**
@@ -51,9 +48,7 @@ public class ObjectCreateRule
      */
     public ObjectCreateRule( Class<?> clazz )
     {
-
         this( clazz.getName(), (String) null );
-
     }
 
     /**
@@ -65,10 +60,8 @@ public class ObjectCreateRule
      */
     public ObjectCreateRule( String className, String attributeName )
     {
-
         this.className = className;
         this.attributeName = attributeName;
-
     }
 
     /**
@@ -79,9 +72,7 @@ public class ObjectCreateRule
      */
     public ObjectCreateRule( String attributeName, Class<?> clazz )
     {
-
         this( clazz.getName(), attributeName );
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -107,7 +98,6 @@ public class ObjectCreateRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         // Identify the name of the class to instantiate
         String realClassName = className;
         if ( attributeName != null )
@@ -127,7 +117,6 @@ public class ObjectCreateRule
         Class<?> clazz = getDigester().getClassLoader().loadClass( realClassName );
         Object instance = clazz.newInstance();
         getDigester().push( instance );
-
     }
 
     /**
@@ -137,14 +126,12 @@ public class ObjectCreateRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         Object top = getDigester().pop();
         if ( getDigester().getLogger().isDebugEnabled() )
         {
             getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "} Pop "
                                                  + top.getClass().getName() );
         }
-
     }
 
     /**
@@ -153,7 +140,6 @@ public class ObjectCreateRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "ObjectCreateRule[" );
         sb.append( "className=" );
         sb.append( className );
@@ -161,7 +147,6 @@ public class ObjectCreateRule
         sb.append( attributeName );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

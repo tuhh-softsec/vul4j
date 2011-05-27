@@ -43,7 +43,6 @@ import org.apache.commons.digester3.plugins.strategies.FinderSetProperties;
  * 
  * @since 1.6
  */
-
 public class PluginContext
 {
 
@@ -249,4 +248,5 @@ public class PluginContext
     {
         return pluginIdAttr;
     }
+
 }

@@ -35,7 +35,6 @@ import org.apache.commons.logging.Log;
  * 
  * @since 1.6
  */
-
 public class PluginManager
 {
 
@@ -181,4 +180,5 @@ public class PluginManager
 
         return ruleLoader;
     }
+
 }

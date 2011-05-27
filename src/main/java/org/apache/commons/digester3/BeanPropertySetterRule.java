@@ -42,7 +42,6 @@ import org.apache.commons.beanutils.PropertyUtils;
  * automatically mapped to properties on the parent object.
  * </p>
  */
-
 public class BeanPropertySetterRule
     extends Rule
 {
@@ -58,9 +57,7 @@ public class BeanPropertySetterRule
      */
     public BeanPropertySetterRule( String propertyName )
     {
-
         this.propertyName = propertyName;
-
     }
 
     /**
@@ -71,9 +68,7 @@ public class BeanPropertySetterRule
      */
     public BeanPropertySetterRule()
     {
-
         this( (String) null );
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -102,7 +97,6 @@ public class BeanPropertySetterRule
     public void body( String namespace, String name, String text )
         throws Exception
     {
-
         // log some debugging information
         if ( getDigester().getLogger().isDebugEnabled() )
         {
@@ -111,7 +105,6 @@ public class BeanPropertySetterRule
         }
 
         bodyText = text.trim();
-
     }
 
     /**
@@ -126,7 +119,6 @@ public class BeanPropertySetterRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         String property = propertyName;
 
         if ( property == null )
@@ -158,7 +150,8 @@ public class BeanPropertySetterRule
             }
         }
         else
-        /* this is a standard JavaBean */{
+        /* this is a standard JavaBean */
+        {
             PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, property );
             if ( desc == null )
             {
@@ -168,7 +161,6 @@ public class BeanPropertySetterRule
 
         // Set the property (with conversion as necessary)
         BeanUtils.setProperty( top, property, bodyText );
-
     }
 
     /**
@@ -178,9 +170,7 @@ public class BeanPropertySetterRule
     public void finish()
         throws Exception
     {
-
         bodyText = null;
-
     }
 
     /**
@@ -189,13 +179,11 @@ public class BeanPropertySetterRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "BeanPropertySetterRule[" );
         sb.append( "propertyName=" );
         sb.append( propertyName );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

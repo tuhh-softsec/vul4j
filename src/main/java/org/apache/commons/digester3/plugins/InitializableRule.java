@@ -23,7 +23,6 @@ package org.apache.commons.digester3.plugins;
  * 
  * @since 1.6
  */
-
 public interface InitializableRule
 {
 
@@ -37,4 +36,5 @@ public interface InitializableRule
      */
     public void postRegisterInit( String pattern )
         throws PluginConfigurationException;
+
 }

@@ -32,7 +32,6 @@ import org.apache.commons.digester3.Rule;
  * 
  * @since 1.6
  */
-
 public class PluginDeclarationRule
     extends Rule
 {
@@ -64,7 +63,6 @@ public class PluginDeclarationRule
     public void begin( String namespace, String name, org.xml.sax.Attributes attributes )
         throws java.lang.Exception
     {
-
         int nAttrs = attributes.getLength();
         Properties props = new Properties();
         for ( int i = 0; i < nAttrs; ++i )
@@ -92,7 +90,6 @@ public class PluginDeclarationRule
     public static void declarePlugin( Digester digester, Properties props )
         throws PluginException
     {
-
         String id = props.getProperty( "id" );
         String pluginClassName = props.getProperty( "class" );
 
@@ -121,4 +118,5 @@ public class PluginDeclarationRule
         // is create a RuleLoader instance whch is *capable* of adding the
         // rules to the digester.
     }
+
 }

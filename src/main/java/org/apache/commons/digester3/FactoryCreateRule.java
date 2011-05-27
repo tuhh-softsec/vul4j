@@ -33,7 +33,6 @@ import org.xml.sax.Attributes;
  * common senario is for the ObjectCreationFactory implementation to use the attributes as parameters in a call to
  * either a factory method or to a non-empty constructor.
  */
-
 public class FactoryCreateRule
     extends Rule
 {
@@ -61,9 +60,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( String className )
     {
-
         this( className, false );
-
     }
 
     /**
@@ -79,9 +76,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz )
     {
-
         this( clazz, false );
-
     }
 
     /**
@@ -100,9 +95,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( String className, String attributeName )
     {
-
         this( className, attributeName, false );
-
     }
 
     /**
@@ -121,9 +114,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, String attributeName )
     {
-
         this( clazz, attributeName, false );
-
     }
 
     /**
@@ -138,9 +129,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( ObjectCreationFactory<?> creationFactory )
     {
-
         this( creationFactory, false );
-
     }
 
     /**
@@ -152,9 +141,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( String className, boolean ignoreCreateExceptions )
     {
-
         this( className, null, ignoreCreateExceptions );
-
     }
 
     /**
@@ -166,9 +153,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, boolean ignoreCreateExceptions )
     {
-
         this( clazz, null, ignoreCreateExceptions );
-
     }
 
     /**
@@ -183,11 +168,9 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( String className, String attributeName, boolean ignoreCreateExceptions )
     {
-
         this.className = className;
         this.attributeName = attributeName;
         this.ignoreCreateExceptions = ignoreCreateExceptions;
-
     }
 
     /**
@@ -202,9 +185,7 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, String attributeName, boolean ignoreCreateExceptions )
     {
-
         this( clazz.getName(), attributeName, ignoreCreateExceptions );
-
     }
 
     /**
@@ -215,7 +196,6 @@ public class FactoryCreateRule
      */
     public FactoryCreateRule( ObjectCreationFactory<?> creationFactory, boolean ignoreCreateExceptions )
     {
-
         this.creationFactory = creationFactory;
         this.ignoreCreateExceptions = ignoreCreateExceptions;
     }
@@ -249,10 +229,8 @@ public class FactoryCreateRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         if ( ignoreCreateExceptions )
         {
-
             if ( exceptionIgnoredStack == null )
             {
                 exceptionIgnoredStack = new Stack<Boolean>();
@@ -314,7 +292,6 @@ public class FactoryCreateRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // check if object was created
         // this only happens if an exception was thrown and we're ignoring them
         if ( ignoreCreateExceptions && exceptionIgnoredStack != null && !( exceptionIgnoredStack.empty() ) )
@@ -338,7 +315,6 @@ public class FactoryCreateRule
             getDigester().getLogger().debug( "[FactoryCreateRule]{" + getDigester().getMatch() + "} Pop "
                                                  + top.getClass().getName() );
         }
-
     }
 
     /**
@@ -348,12 +324,10 @@ public class FactoryCreateRule
     public void finish()
         throws Exception
     {
-
         if ( attributeName != null )
         {
             creationFactory = null;
         }
-
     }
 
     /**
@@ -362,7 +336,6 @@ public class FactoryCreateRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "FactoryCreateRule[" );
         sb.append( "className=" );
         sb.append( className );
@@ -375,7 +348,6 @@ public class FactoryCreateRule
         }
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
     // ------------------------------------------------------ Protected Methods
@@ -389,7 +361,6 @@ public class FactoryCreateRule
     protected ObjectCreationFactory<?> getFactory( Attributes attributes )
         throws Exception
     {
-
         if ( creationFactory == null )
         {
             String realClassName = className;
@@ -411,6 +382,6 @@ public class FactoryCreateRule
             creationFactory.setDigester( getDigester() );
         }
         return ( creationFactory );
-
     }
+
 }

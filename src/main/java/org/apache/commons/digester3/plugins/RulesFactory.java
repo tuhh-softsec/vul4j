@@ -29,7 +29,6 @@ import org.apache.commons.digester3.Rules;
  * 
  * @since 1.6
  */
-
 public abstract class RulesFactory
 {
 
@@ -43,7 +42,7 @@ public abstract class RulesFactory
      * @throws PluginException if the algorithm finds a source of rules, but there is something invalid about that
      *             source.
      */
-
     public abstract Rules newRules( Digester d, Class<?> pluginClass )
         throws PluginException;
+
 }

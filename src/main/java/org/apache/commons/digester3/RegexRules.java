@@ -34,7 +34,6 @@ import java.util.List;
  * 
  * @since 1.5
  */
-
 public class RegexRules
     extends AbstractRulesImpl
 {
@@ -168,4 +167,5 @@ public class RegexRules
             this.rule = rule;
         }
     }
+
 }

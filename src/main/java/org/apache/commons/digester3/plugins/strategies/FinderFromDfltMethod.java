@@ -32,7 +32,6 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromDfltMethod
     extends RuleFinder
 {
@@ -80,4 +79,5 @@ public class FinderFromDfltMethod
 
         return new LoaderFromClass( pluginClass, rulesMethod );
     }
+
 }

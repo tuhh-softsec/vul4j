@@ -63,4 +63,5 @@ class LogUtils
 
         return digester.getLogger();
     }
+
 }

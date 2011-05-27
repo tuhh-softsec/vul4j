@@ -31,7 +31,6 @@ import org.xml.sax.Attributes;
  * Rule implementation that sets an individual property on the object at the top of the stack, based on attributes with
  * specified names.
  */
-
 public class SetPropertyRule
     extends Rule
 {
@@ -46,10 +45,8 @@ public class SetPropertyRule
      */
     public SetPropertyRule( String name, String value )
     {
-
         this.name = name;
         this.value = value;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -76,7 +73,6 @@ public class SetPropertyRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         if ( attributes.getLength() == 0 )
         {
             return;
@@ -128,7 +124,8 @@ public class SetPropertyRule
             }
         }
         else
-        /* this is a standard JavaBean */{
+        /* this is a standard JavaBean */
+        {
             PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, actualName );
             if ( desc == null )
             {
@@ -138,7 +135,6 @@ public class SetPropertyRule
 
         // Set the property (with conversion as necessary)
         BeanUtils.setProperty( top, actualName, actualValue );
-
     }
 
     /**
@@ -147,7 +143,6 @@ public class SetPropertyRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "SetPropertyRule[" );
         sb.append( "name=" );
         sb.append( name );
@@ -155,7 +150,6 @@ public class SetPropertyRule
         sb.append( value );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

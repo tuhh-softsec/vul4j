@@ -31,7 +31,6 @@ import org.apache.commons.beanutils.MethodUtils;
  * written against release 1.1.1 or earlier. See {@link #isExactMatch()} for more details.
  * </p>
  */
-
 public class SetRootRule
     extends Rule
 {
@@ -46,9 +45,7 @@ public class SetRootRule
      */
     public SetRootRule( String methodName )
     {
-
         this( methodName, null );
-
     }
 
     /**
@@ -61,10 +58,8 @@ public class SetRootRule
      */
     public SetRootRule( String methodName, String paramType )
     {
-
         this.methodName = methodName;
         this.paramType = paramType;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -110,7 +105,6 @@ public class SetRootRule
      */
     public boolean isExactMatch()
     {
-
         return useExactMatch;
     }
 
@@ -127,7 +121,6 @@ public class SetRootRule
      */
     public void setExactMatch( boolean useExactMatch )
     {
-
         this.useExactMatch = useExactMatch;
     }
 
@@ -138,7 +131,6 @@ public class SetRootRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // Identify the objects to be used
         Object child = getDigester().peek( 0 );
         Object parent = getDigester().getRoot();
@@ -170,15 +162,11 @@ public class SetRootRule
 
         if ( useExactMatch )
         {
-
             MethodUtils.invokeExactMethod( parent, methodName, new Object[] { child }, paramTypes );
-
         }
         else
         {
-
             MethodUtils.invokeMethod( parent, methodName, new Object[] { child }, paramTypes );
-
         }
     }
 
@@ -188,7 +176,6 @@ public class SetRootRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "SetRootRule[" );
         sb.append( "methodName=" );
         sb.append( methodName );
@@ -196,7 +183,6 @@ public class SetRootRule
         sb.append( paramType );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

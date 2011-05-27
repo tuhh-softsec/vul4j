@@ -65,4 +65,5 @@ public abstract class Substitutor
      * @return the body text to be passed to the <code>Rule</code> implementations
      */
     public abstract String substitute( String bodyText );
+
 }

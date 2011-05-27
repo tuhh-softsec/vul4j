@@ -41,6 +41,7 @@ package org.apache.commons.digester3;
  */
 public interface StackAction
 {
+
     /**
      * Invoked just before an object is to be pushed onto a digester stack.
      * 
@@ -64,4 +65,5 @@ public interface StackAction
      *         alternate object.
      */
     <T> T onPop( Digester d, String stackName, T o );
+
 }

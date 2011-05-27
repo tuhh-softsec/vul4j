@@ -35,7 +35,6 @@ import org.apache.commons.digester3.Digester;
  * 
  * @since 1.6
  */
-
 public abstract class RuleFinder
 {
 
@@ -59,7 +58,7 @@ public abstract class RuleFinder
      * @throws PluginConfigurationException if the algorithm finds a source of rules, but there is something invalid
      *             about that source.
      */
-
     public abstract RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
         throws PluginException;
+
 }

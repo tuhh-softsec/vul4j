@@ -24,7 +24,6 @@ package org.apache.commons.digester3;
  * 
  * @since 1.5
  */
-
 abstract public class RegexMatcher
 {
 

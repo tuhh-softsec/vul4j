@@ -38,10 +38,10 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderSetProperties
     extends RuleFinder
 {
+
     public static String DFLT_PROPS_ATTR = "setprops";
 
     public static String DFLT_FALSEVAL = "false";
@@ -95,4 +95,5 @@ public class FinderSetProperties
 
         return new LoaderSetProperties();
     }
+
 }

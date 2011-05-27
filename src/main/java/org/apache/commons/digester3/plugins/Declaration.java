@@ -223,4 +223,5 @@ public class Declaration
             ruleLoader.addRules( digester, pattern );
         }
     }
+
 }

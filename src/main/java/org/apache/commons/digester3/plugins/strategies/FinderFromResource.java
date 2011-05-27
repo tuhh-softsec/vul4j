@@ -33,10 +33,10 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromResource
     extends RuleFinder
 {
+
     /**
      * Name of xml attribute on the plugin declaration which is used to configure rule-loading for that declaration.
      */
@@ -70,7 +70,6 @@ public class FinderFromResource
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
         throws PluginException
     {
-
         String resourceName = p.getProperty( resourceAttr );
         if ( resourceName == null )
         {
@@ -101,7 +100,6 @@ public class FinderFromResource
     public static RuleLoader loadRules( Digester d, Class<?> pluginClass, InputStream is, String resourceName )
         throws PluginException
     {
-
         try
         {
             RuleLoader loader = new LoaderFromStream( is );
@@ -123,4 +121,5 @@ public class FinderFromResource
             }
         }
     }
+
 }

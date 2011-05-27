@@ -37,7 +37,6 @@ import org.xml.sax.Attributes;
  * attributes to be mapped to properties with different names. Certain attributes can also be marked to be ignored.
  * </p>
  */
-
 public class SetPropertiesRule
     extends Rule
 {
@@ -49,9 +48,7 @@ public class SetPropertiesRule
      */
     public SetPropertiesRule()
     {
-
         // nothing to set up
-
     }
 
     /**
@@ -228,7 +225,6 @@ public class SetPropertiesRule
             }
         }
         BeanUtils.populate( top, values );
-
     }
 
     /**
@@ -246,11 +242,9 @@ public class SetPropertiesRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "SetPropertiesRule[" );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
     /**
@@ -266,7 +260,6 @@ public class SetPropertiesRule
      */
     public boolean isIgnoreMissingProperty()
     {
-
         return this.ignoreMissingProperty;
     }
 
@@ -279,7 +272,6 @@ public class SetPropertiesRule
      */
     public void setIgnoreMissingProperty( boolean ignoreMissingProperty )
     {
-
         this.ignoreMissingProperty = ignoreMissingProperty;
     }
 

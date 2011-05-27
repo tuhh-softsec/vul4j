@@ -37,7 +37,6 @@ import org.xml.sax.Attributes;
  * </ul>
  * </p>
  */
-
 public class CallParamRule
     extends Rule
 {
@@ -56,9 +55,7 @@ public class CallParamRule
      */
     public CallParamRule( int paramIndex )
     {
-
         this( paramIndex, null );
-
     }
 
     /**
@@ -69,10 +66,8 @@ public class CallParamRule
      */
     public CallParamRule( int paramIndex, String attributeName )
     {
-
         this.paramIndex = paramIndex;
         this.attributeName = attributeName;
-
     }
 
     /**
@@ -83,10 +78,8 @@ public class CallParamRule
      */
     public CallParamRule( int paramIndex, boolean fromStack )
     {
-
         this.paramIndex = paramIndex;
         this.fromStack = fromStack;
-
     }
 
     /**
@@ -99,7 +92,6 @@ public class CallParamRule
      */
     public CallParamRule( int paramIndex, int stackIndex )
     {
-
         this.paramIndex = paramIndex;
         this.fromStack = true;
         this.stackIndex = stackIndex;
@@ -154,7 +146,6 @@ public class CallParamRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         Object param = null;
 
         if ( attributeName != null )
@@ -201,7 +192,6 @@ public class CallParamRule
     public void body( String namespace, String name, String text )
         throws Exception
     {
-
         if ( attributeName == null && !fromStack )
         {
             // We must wait to set the parameter until end
@@ -213,7 +203,6 @@ public class CallParamRule
             }
             bodyTextStack.push( text.trim() );
         }
-
     }
 
     /**
@@ -236,7 +225,6 @@ public class CallParamRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "CallParamRule[" );
         sb.append( "paramIndex=" );
         sb.append( paramIndex );
@@ -246,7 +234,6 @@ public class CallParamRule
         sb.append( fromStack );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

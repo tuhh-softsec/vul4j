@@ -106,7 +106,6 @@ public class PluginCreateRule
      */
     public PluginCreateRule( Class<?> baseClass, Class<?> dfltPluginClass, RuleLoader dfltPluginRuleLoader )
     {
-
         this.baseClass = baseClass;
         if ( dfltPluginClass != null )
         {
@@ -471,7 +470,6 @@ public class PluginCreateRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // see body method for more info
         String path = getDigester().getMatch();
         PluginRules newRules = (PluginRules) getDigester().getRules();
@@ -544,7 +542,6 @@ public class PluginCreateRule
     private void fireBodyMethods( List<Rule> rules, String namespaceURI, String name, String text )
         throws Exception
     {
-
         if ( ( rules != null ) && ( rules.size() > 0 ) )
         {
             Log log = getDigester().getLogger();
@@ -579,7 +576,6 @@ public class PluginCreateRule
     public void fireEndMethods( List<Rule> rules, String namespaceURI, String name )
         throws Exception
     {
-
         // Fire "end" events for all relevant rules in reverse order
         if ( rules != null )
         {
@@ -608,4 +604,5 @@ public class PluginCreateRule
             }
         }
     }
+
 }

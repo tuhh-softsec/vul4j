@@ -40,7 +40,6 @@ import org.xml.sax.Attributes;
  * child of the same element. The digester object stack and named stacks should be used to store any state that a rule
  * requires, making the rule class safe under all possible uses.
  */
-
 public abstract class Rule
 {
 
@@ -63,9 +62,7 @@ public abstract class Rule
      */
     public Digester getDigester()
     {
-
         return ( this.digester );
-
     }
 
     /**
@@ -73,9 +70,7 @@ public abstract class Rule
      */
     public void setDigester( Digester digester )
     {
-
         this.digester = digester;
-
     }
 
     /**
@@ -83,9 +78,7 @@ public abstract class Rule
      */
     public String getNamespaceURI()
     {
-
         return ( this.namespaceURI );
-
     }
 
     /**
@@ -96,9 +89,7 @@ public abstract class Rule
      */
     public void setNamespaceURI( String namespaceURI )
     {
-
         this.namespaceURI = namespaceURI;
-
     }
 
     // --------------------------------------------------------- Public Methods
@@ -117,9 +108,7 @@ public abstract class Rule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         // The default implementation does nothing
-
     }
 
     /**
@@ -138,9 +127,7 @@ public abstract class Rule
     public void body( String namespace, String name, String text )
         throws Exception
     {
-
         // The default implementation does nothing
-
     }
 
     /**
@@ -156,9 +143,7 @@ public abstract class Rule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // The default implementation does nothing
-
     }
 
     /**
@@ -167,9 +152,7 @@ public abstract class Rule
     public void finish()
         throws Exception
     {
-
         // The default implementation does nothing
-
     }
 
 }

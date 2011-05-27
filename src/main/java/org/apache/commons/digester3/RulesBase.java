@@ -81,9 +81,7 @@ public class RulesBase
      */
     public Digester getDigester()
     {
-
         return ( this.digester );
-
     }
 
     /**
@@ -93,13 +91,11 @@ public class RulesBase
      */
     public void setDigester( Digester digester )
     {
-
         this.digester = digester;
         for ( Rule rule : rules )
         {
             rule.setDigester( digester );
         }
-
     }
 
     /**
@@ -107,9 +103,7 @@ public class RulesBase
      */
     public String getNamespaceURI()
     {
-
         return ( this.namespaceURI );
-
     }
 
     /**
@@ -120,9 +114,7 @@ public class RulesBase
      */
     public void setNamespaceURI( String namespaceURI )
     {
-
         this.namespaceURI = namespaceURI;
-
     }
 
     // --------------------------------------------------------- Public Methods
@@ -158,7 +150,6 @@ public class RulesBase
         {
             rule.setNamespaceURI( this.namespaceURI );
         }
-
     }
 
     /**
@@ -166,10 +157,8 @@ public class RulesBase
      */
     public void clear()
     {
-
         cache.clear();
         rules.clear();
-
     }
 
     /**
@@ -183,7 +172,6 @@ public class RulesBase
      */
     public List<Rule> match( String namespaceURI, String pattern )
     {
-
         // List rulesList = (List) this.cache.get(pattern);
         List<Rule> rulesList = lookup( namespaceURI, pattern );
         if ( ( rulesList == null ) || ( rulesList.size() < 1 ) )
@@ -211,7 +199,6 @@ public class RulesBase
             rulesList = new ArrayList<Rule>();
         }
         return ( rulesList );
-
     }
 
     /**
@@ -221,9 +208,7 @@ public class RulesBase
      */
     public List<Rule> rules()
     {
-
         return ( this.rules );
-
     }
 
     // ------------------------------------------------------ Protected Methods
@@ -238,7 +223,6 @@ public class RulesBase
      */
     protected List<Rule> lookup( String namespaceURI, String pattern )
     {
-
         // Optimize when no namespace URI is specified
         List<Rule> list = this.cache.get( pattern );
         if ( list == null )
@@ -260,7 +244,6 @@ public class RulesBase
             }
         }
         return ( results );
-
     }
 
 }

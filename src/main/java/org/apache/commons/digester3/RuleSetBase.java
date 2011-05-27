@@ -25,7 +25,6 @@ package org.apache.commons.digester3;
  * their actual rule creation logic in the <code>addRuleSet()</code> implementation.
  * </p>
  */
-
 public abstract class RuleSetBase
     implements RuleSet
 {
@@ -65,9 +64,7 @@ public abstract class RuleSetBase
      */
     public String getNamespaceURI()
     {
-
         return ( this.namespaceURI );
-
     }
 
     // --------------------------------------------------------- Public Methods

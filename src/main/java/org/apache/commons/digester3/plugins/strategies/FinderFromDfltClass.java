@@ -32,7 +32,6 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromDfltClass
     extends RuleFinder
 {
@@ -78,7 +77,6 @@ public class FinderFromDfltClass
     public RuleLoader findLoader( Digester digester, Class<?> pluginClass, Properties p )
         throws PluginException
     {
-
         String rulesClassName = pluginClass.getName() + rulesClassSuffix;
 
         Class<?> rulesClass = null;
@@ -99,4 +97,5 @@ public class FinderFromDfltClass
 
         return new LoaderFromClass( rulesClass, methodName );
     }
+
 }

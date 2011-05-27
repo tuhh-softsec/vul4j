@@ -29,10 +29,10 @@ import java.util.ArrayList;
  * 
  * @since 1.6
  */
-
 public class MultiVariableExpander
     implements VariableExpander
 {
+
     private int nEntries = 0;
 
     private ArrayList<String> markers = new ArrayList<String>( 2 );
@@ -50,8 +50,9 @@ public class MultiVariableExpander
         sources.add( source );
     }
 
-    /*
+    /**
      * Expands any variable declarations using any of the known variable marker strings.
+     *
      * @throws IllegalArgumentException if the input param references a variable which is not known to the specified
      * source.
      */

@@ -33,7 +33,6 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class LoaderFromClass
     extends RuleLoader
 {
@@ -102,10 +101,10 @@ public class LoaderFromClass
     public static Method locateMethod( Class<?> rulesClass, String methodName )
         throws PluginException
     {
-
         Class<?>[] paramSpec = { Digester.class, String.class };
         Method rulesMethod = MethodUtils.getAccessibleMethod( rulesClass, methodName, paramSpec );
 
         return rulesMethod;
     }
+
 }

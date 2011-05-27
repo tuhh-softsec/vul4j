@@ -35,10 +35,10 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromDfltResource
     extends RuleFinder
 {
+
     public static String DFLT_RESOURCE_SUFFIX = "RuleInfo.xml";
 
     private String resourceSuffix;
@@ -87,4 +87,5 @@ public class FinderFromDfltResource
 
         return FinderFromResource.loadRules( d, pluginClass, is, resourceName );
     }
+
 }

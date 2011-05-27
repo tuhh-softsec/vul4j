@@ -87,7 +87,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * somewhat differently.
  * </p>
  */
-
 public class Digester
     extends DefaultHandler
 {

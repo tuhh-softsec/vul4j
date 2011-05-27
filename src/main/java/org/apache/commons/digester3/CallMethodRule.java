@@ -74,7 +74,6 @@ import org.xml.sax.Attributes;
  * instances is not commonly required.
  * </p>
  */
-
 public class CallMethodRule
     extends Rule
 {
@@ -107,7 +106,6 @@ public class CallMethodRule
      */
     public CallMethodRule( int targetOffset, String methodName, int paramCount )
     {
-
         this.targetOffset = targetOffset;
         this.methodName = methodName;
         this.paramCount = paramCount;
@@ -123,7 +121,6 @@ public class CallMethodRule
                 this.paramTypes[i] = String.class;
             }
         }
-
     }
 
     /**
@@ -133,9 +130,7 @@ public class CallMethodRule
      */
     public CallMethodRule( String methodName )
     {
-
         this( 0, methodName, 0, (Class[]) null );
-
     }
 
     /**
@@ -148,9 +143,7 @@ public class CallMethodRule
      */
     public CallMethodRule( int targetOffset, String methodName )
     {
-
         this( targetOffset, methodName, 0, (Class[]) null );
-
     }
 
     /**
@@ -185,7 +178,6 @@ public class CallMethodRule
      */
     public CallMethodRule( int targetOffset, String methodName, int paramCount, String paramTypes[] )
     {
-
         this.targetOffset = targetOffset;
         this.methodName = methodName;
         this.paramCount = paramCount;
@@ -207,7 +199,6 @@ public class CallMethodRule
                 this.paramClassNames[i] = paramTypes[i];
             }
         }
-
     }
 
     /**
@@ -242,7 +233,6 @@ public class CallMethodRule
      */
     public CallMethodRule( int targetOffset, String methodName, int paramCount, Class<?> paramTypes[] )
     {
-
         this.targetOffset = targetOffset;
         this.methodName = methodName;
         this.paramCount = paramCount;
@@ -262,7 +252,6 @@ public class CallMethodRule
                 this.paramTypes[i] = paramTypes[i];
             }
         }
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -360,7 +349,6 @@ public class CallMethodRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-
         // Push an array to capture the parameter values if necessary
         if ( paramCount > 0 )
         {
@@ -371,7 +359,6 @@ public class CallMethodRule
             }
             getDigester().pushParams( parameters );
         }
-
     }
 
     /**
@@ -383,12 +370,10 @@ public class CallMethodRule
     public void body( String namespace, String name, String text )
         throws Exception
     {
-
         if ( paramCount == 0 )
         {
             this.bodyText = text.trim();
         }
-
     }
 
     /**
@@ -398,12 +383,10 @@ public class CallMethodRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         // Retrieve or construct the parameter values array
         Object parameters[] = null;
         if ( paramCount > 0 )
         {
-
             parameters = getDigester().popParams();
 
             if ( getDigester().getLogger().isTraceEnabled() )
@@ -450,7 +433,6 @@ public class CallMethodRule
                 paramTypes = new Class[1];
                 paramTypes[0] = String.class;
             }
-
         }
         else
         {
@@ -565,9 +547,7 @@ public class CallMethodRule
     public void finish()
         throws Exception
     {
-
         bodyText = null;
-
     }
 
     /**
@@ -586,7 +566,6 @@ public class CallMethodRule
     @Override
     public String toString()
     {
-
         StringBuilder sb = new StringBuilder( "CallMethodRule[" );
         sb.append( "methodName=" );
         sb.append( methodName );
@@ -607,7 +586,6 @@ public class CallMethodRule
         sb.append( "}" );
         sb.append( "]" );
         return ( sb.toString() );
-
     }
 
 }

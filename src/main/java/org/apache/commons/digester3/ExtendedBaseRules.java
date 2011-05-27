@@ -139,7 +139,6 @@ import java.util.Map;
  * existing rules.
  * </p>
  */
-
 public class ExtendedBaseRules
     extends RulesBase
 {
@@ -193,13 +192,11 @@ public class ExtendedBaseRules
         {
             // element has no parent
             hasParent = false;
-
         }
         else
         {
             // calculate the pattern of the parent
             parentPattern = pattern.substring( 0, lastIndex );
-
         }
 
         // we keep the list of universal matches separate
@@ -494,4 +491,5 @@ public class ExtendedBaseRules
         }
         return null;
     }
+
 }

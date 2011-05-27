@@ -61,7 +61,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  * @since Digester 1.4
  */
-
 public class NodeCreateRule
     extends Rule
 {
@@ -92,13 +91,11 @@ public class NodeCreateRule
         public NodeBuilder( Document doc, Node root )
             throws ParserConfigurationException, SAXException
         {
-
             this.doc = doc;
             this.root = root;
             this.top = root;
 
             oldContentHandler = getDigester().getCustomContentHandler();
-
         }
 
         // ------------------------------------------------- Instance Variables
@@ -190,7 +187,6 @@ public class NodeCreateRule
         public void characters( char[] ch, int start, int length )
             throws SAXException
         {
-
             topText.append( ch, start, length );
         }
 
@@ -206,7 +202,6 @@ public class NodeCreateRule
         public void endElement( String namespaceURI, String localName, String qName )
             throws SAXException
         {
-
             addTextIfPresent();
 
             try
@@ -225,7 +220,6 @@ public class NodeCreateRule
             {
                 throw new SAXException( e.getMessage() );
             }
-
         }
 
         /**
@@ -239,7 +233,6 @@ public class NodeCreateRule
         public void processingInstruction( String target, String data )
             throws SAXException
         {
-
             try
             {
                 top.appendChild( doc.createProcessingInstruction( target, data ) );
@@ -248,7 +241,6 @@ public class NodeCreateRule
             {
                 throw new SAXException( e.getMessage() );
             }
-
         }
 
         /**
@@ -264,7 +256,6 @@ public class NodeCreateRule
         public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
             throws SAXException
         {
-
             addTextIfPresent();
 
             try
@@ -301,9 +292,7 @@ public class NodeCreateRule
             {
                 throw new SAXException( e.getMessage() );
             }
-
         }
-
     }
 
     // ----------------------------------------------------------- Constructors
@@ -314,9 +303,7 @@ public class NodeCreateRule
     public NodeCreateRule()
         throws ParserConfigurationException
     {
-
         this( Node.ELEMENT_NODE );
-
     }
 
     /**
@@ -327,9 +314,7 @@ public class NodeCreateRule
      */
     public NodeCreateRule( DocumentBuilder documentBuilder )
     {
-
         this( Node.ELEMENT_NODE, documentBuilder );
-
     }
 
     /**
@@ -344,9 +329,7 @@ public class NodeCreateRule
     public NodeCreateRule( int nodeType )
         throws ParserConfigurationException
     {
-
         this( nodeType, DocumentBuilderFactory.newInstance().newDocumentBuilder() );
-
     }
 
     /**
@@ -362,14 +345,12 @@ public class NodeCreateRule
      */
     public NodeCreateRule( int nodeType, DocumentBuilder documentBuilder )
     {
-
         if ( !( ( nodeType == Node.DOCUMENT_FRAGMENT_NODE ) || ( nodeType == Node.ELEMENT_NODE ) ) )
         {
             throw new IllegalArgumentException( "Can only create nodes of type DocumentFragment and Element" );
         }
         this.nodeType = nodeType;
         this.documentBuilder = documentBuilder;
-
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -404,7 +385,6 @@ public class NodeCreateRule
     public void begin( String namespaceURI, String name, Attributes attributes )
         throws Exception
     {
-
         Document doc = documentBuilder.newDocument();
         NodeBuilder builder = null;
         if ( nodeType == Node.ELEMENT_NODE )
@@ -446,9 +426,7 @@ public class NodeCreateRule
     public void end( String namespace, String name )
         throws Exception
     {
-
         getDigester().pop();
-
     }
 
 }

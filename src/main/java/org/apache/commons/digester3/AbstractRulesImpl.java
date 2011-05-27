@@ -35,7 +35,6 @@ import java.util.List;
  * 
  * @since 1.5
  */
-
 abstract public class AbstractRulesImpl
     implements Rules
 {
@@ -110,7 +109,6 @@ abstract public class AbstractRulesImpl
         }
 
         registerRule( pattern, rule );
-
     }
 
     /**

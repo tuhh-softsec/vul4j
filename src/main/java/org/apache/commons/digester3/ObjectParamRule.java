@@ -37,7 +37,6 @@ import org.xml.sax.Attributes;
  * 
  * @since 1.4
  */
-
 public class ObjectParamRule
     extends Rule
 {
@@ -131,4 +130,5 @@ public class ObjectParamRule
         sb.append( "]" );
         return ( sb.toString() );
     }
+
 }

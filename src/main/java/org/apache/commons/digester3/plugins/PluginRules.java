@@ -42,7 +42,6 @@ import org.apache.commons.logging.Log;
  * 
  * @since 1.6
  */
-
 public class PluginRules
     implements Rules
 {
@@ -413,4 +412,5 @@ public class PluginRules
     {
         return pluginContext.getPluginIdAttr();
     }
+
 }

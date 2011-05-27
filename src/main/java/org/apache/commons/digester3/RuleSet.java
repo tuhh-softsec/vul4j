@@ -34,7 +34,6 @@ package org.apache.commons.digester3;
  * <li>Digester will call the <code>addRuleInstances()</code> method of your RuleSet to configure the necessary rules.</li>
  * </ul>
  */
-
 public interface RuleSet
 {
 

@@ -36,10 +36,10 @@ import org.apache.commons.digester3.plugins.RuleLoader;
  * 
  * @since 1.6
  */
-
 public class FinderFromFile
     extends RuleFinder
 {
+
     /**
      * Xml attribute that needs to be present on a plugin declaration in order to specify the file to load rules from.
      */
@@ -113,4 +113,5 @@ public class FinderFromFile
             }
         }
     }
+
 }
