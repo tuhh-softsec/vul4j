@@ -113,12 +113,12 @@ public abstract class AbstractRulesImpl
      * @param pattern Nesting pattern to be matched for this Rule
      * @param rule Rule instance to be registered
      */
-    abstract protected void registerRule( String pattern, Rule rule );
+    protected abstract void registerRule( String pattern, Rule rule );
 
     /**
      * Clear all existing Rule instance registrations.
      */
-    abstract public void clear();
+    public abstract void clear();
 
     /**
      * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
@@ -143,13 +143,13 @@ public abstract class AbstractRulesImpl
      *            namespace URI
      * @param pattern Nesting pattern to be matched
      */
-    abstract public List<Rule> match( String namespaceURI, String pattern );
+    public abstract List<Rule> match( String namespaceURI, String pattern );
 
     /**
      * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
      * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
      * originally registered through the <code>add()</code> method.
      */
-    abstract public List<Rule> rules();
+    public abstract List<Rule> rules();
 
 }
