@@ -76,7 +76,7 @@ public class BeanPropertySetterRule
     /**
      * Set this property on the top object.
      */
-    protected String propertyName = null;
+    private final String propertyName;
 
     /**
      * The body text used to set the property.
@@ -84,6 +84,16 @@ public class BeanPropertySetterRule
     protected String bodyText = null;
 
     // --------------------------------------------------------- Public Methods
+
+    /**
+     * Returns the property name associated to this setter rule.
+     *
+     * @return The property name associated to this setter rule
+     */
+    public String getPropertyName()
+    {
+        return propertyName;
+    }
 
     /**
      * {@inheritDoc}
