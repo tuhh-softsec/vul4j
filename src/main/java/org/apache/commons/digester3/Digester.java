@@ -2845,7 +2845,7 @@ public class Digester
      * The parameters stack is used to store <code>CallMethodRule</code> parameters. See {@link #params}.
      * </p>
      *
-     * @param the top object popped off of the parameters stack
+     * @return the top object popped off of the parameters stack
      */
     public Object[] popParams()
     {
