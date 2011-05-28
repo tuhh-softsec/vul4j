@@ -44,10 +44,10 @@ public class SimpleRegexMatcher
     // --------------------------------------------------------- Fields
 
     /** Default log (class wide) */
-    private static final Log baseLog = LogFactory.getLog( SimpleRegexMatcher.class );
+    private static final Log BASE_LOG = LogFactory.getLog( SimpleRegexMatcher.class );
 
     /** Custom log (can be set per object) */
-    private Log log = baseLog;
+    private Log log = BASE_LOG;
 
     // --------------------------------------------------------- Properties
 
