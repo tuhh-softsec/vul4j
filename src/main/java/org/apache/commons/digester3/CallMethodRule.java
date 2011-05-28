@@ -22,6 +22,7 @@ package org.apache.commons.digester3;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * <p>
@@ -479,7 +480,7 @@ public class CallMethodRule
             sb.append( ",stackdepth=" );
             sb.append( getDigester().getCount() );
             sb.append( ")" );
-            throw new org.xml.sax.SAXException( sb.toString() );
+            throw new SAXException( sb.toString() );
         }
 
         // Invoke the required method on the top object
