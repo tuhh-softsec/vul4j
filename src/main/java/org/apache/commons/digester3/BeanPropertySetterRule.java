@@ -86,12 +86,7 @@ public class BeanPropertySetterRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the body text of this element.
-     * 
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
-     *            aware or the element has no namespace
-     * @param name the local name if the parser is namespace aware, or just the element name otherwise
-     * @param text The text of the body of this element
+     * {@inheritDoc}
      */
     @Override
     public void body( String namespace, String name, String text )
@@ -108,12 +103,7 @@ public class BeanPropertySetterRule
     }
 
     /**
-     * Process the end of this element.
-     * 
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
-     *            aware or the element has no namespace
-     * @param name the local name if the parser is namespace aware, or just the element name otherwise
-     * @exception NoSuchMethodException if the bean does not have a writeable property of the specified name
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -164,7 +154,7 @@ public class BeanPropertySetterRule
     }
 
     /**
-     * Clean up after parsing is complete.
+     * {@inheritDoc}
      */
     @Override
     public void finish()
@@ -174,7 +164,7 @@ public class BeanPropertySetterRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
