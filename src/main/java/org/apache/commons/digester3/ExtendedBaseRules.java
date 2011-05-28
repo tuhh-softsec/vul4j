@@ -418,7 +418,6 @@ public class ExtendedBaseRules
         {
 
             public int compare( Rule r1, Rule r2 )
-                throws ClassCastException
             {
                 // Get the entry order from the map
                 Integer i1 = order.get( r1 );
