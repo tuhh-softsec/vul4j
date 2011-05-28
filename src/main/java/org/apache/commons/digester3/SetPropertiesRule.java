@@ -205,7 +205,9 @@ public class SetPropertiesRule
                 Object top = getDigester().peek();
                 boolean test = PropertyUtils.isWriteable( top, attributeName );
                 if ( !test )
+                {
                     throw new NoSuchMethodException( "Property " + attributeName + " can't be set" );
+                }
             }
 
             if ( attributeName != null )
