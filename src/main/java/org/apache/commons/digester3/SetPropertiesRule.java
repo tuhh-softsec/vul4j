@@ -144,9 +144,7 @@ public class SetPropertiesRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the beginning of this element.
-     * 
-     * @param attributes The attribute list of this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -235,8 +233,10 @@ public class SetPropertiesRule
     }
 
     /**
-     * <p>
      * Add an additional attribute name to property name mapping. This is intended to be used from the xml rules.
+     *
+     * @param attributeName the attribute name has to be mapped
+     * @param propertyName the target property name
      */
     public void addAlias( String attributeName, String propertyName )
     {
@@ -244,7 +244,7 @@ public class SetPropertiesRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
