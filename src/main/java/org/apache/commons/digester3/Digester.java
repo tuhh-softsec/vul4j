@@ -1961,6 +1961,7 @@ public class Digester
      * Add a "call parameter" rule. This will either take a parameter from the stack or from the current element body
      * text.
      * 
+     * @param pattern Element matching pattern
      * @param paramIndex The zero-relative parameter number
      * @param fromStack Should the call parameter be taken from the top of the stack?
      * @see CallParamRule
@@ -1974,6 +1975,7 @@ public class Digester
      * Add a "call parameter" rule that sets a parameter from the stack. This takes a parameter from the given position
      * on the stack.
      * 
+     * @param pattern Element matching pattern
      * @param paramIndex The zero-relative parameter number
      * @param stackIndex set the call parameter to the stackIndex'th object down the stack, where 0 is the top of the
      *            stack, 1 the next element down and so on
@@ -2006,6 +2008,7 @@ public class Digester
      * despite the paramObj being passed in here as type Object, the target method can declare its parameters as being
      * the true type of the object (or some ancestor type, according to the usual type-conversion rules).
      * 
+     * @param pattern Element matching pattern
      * @param paramIndex The zero-relative parameter number
      * @param paramObj Any arbitrary object to be passed to the target method.
      * @see CallMethodRule
