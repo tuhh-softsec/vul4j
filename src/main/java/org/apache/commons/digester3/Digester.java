@@ -107,6 +107,8 @@ public class Digester
      * Construct a new Digester, allowing a SAXParser to be passed in. This allows Digester to be used in environments
      * which are unfriendly to JAXP1.1 (such as WebLogic 6.0). This may help in places where you are able to load JAXP
      * 1.1 classes yourself.
+     *
+     * @param parser The SAXParser used to parse XML streams
      */
     public Digester( SAXParser parser )
     {
@@ -121,6 +123,8 @@ public class Digester
      * Construct a new Digester, allowing an XMLReader to be passed in. This allows Digester to be used in environments
      * which are unfriendly to JAXP1.1 (such as WebLogic 6.0). Note that if you use this option you have to configure
      * namespace and validation support yourself, as these properties only affect the SAXParser and emtpy constructor.
+     *
+     * @param reader The XMLReader used to parse XML streams
      */
     public Digester( XMLReader reader )
     {
@@ -314,6 +318,7 @@ public class Digester
      * These mappings come and go dynamically as the document is parsed.
      * 
      * @param prefix Prefix to look up
+     * @return the currently mapped namespace URI for the specified prefix
      */
     public String findNamespaceURI( String prefix )
     {
@@ -343,6 +348,8 @@ public class Digester
      * true</li>
      * <li>The class loader used to load the Digester class itself.
      * </ul>
+     *
+     * @return the class loader to be used for instantiating application objects.
      */
     public ClassLoader getClassLoader()
     {
@@ -377,6 +384,8 @@ public class Digester
 
     /**
      * Return the current depth of the element stack.
+     *
+     * @return the current depth of the element stack.
      */
     public int getCount()
     {
@@ -387,6 +396,8 @@ public class Digester
 
     /**
      * Return the name of the XML element that is currently being processed.
+     *
+     * @return the name of the XML element that is currently being processed.
      */
     public String getCurrentElementName()
     {
@@ -403,6 +414,8 @@ public class Digester
 
     /**
      * Return the error handler for this Digester.
+     *
+     * @return the error handler for this Digester.
      */
     public ErrorHandler getErrorHandler()
     {
@@ -425,6 +438,8 @@ public class Digester
 
     /**
      * Return the SAXParserFactory we will use, creating one if necessary.
+     *
+     * @return the SAXParserFactory we will use, creating one if necessary.
      */
     public SAXParserFactory getFactory()
     {
@@ -447,6 +462,8 @@ public class Digester
      * information about the standard SAX2 feature flags.
      * 
      * @param feature Name of the feature to inquire about
+     * @return true, if the requested feature is supported by the underlying implementation of
+     *         <code>org.xml.sax.XMLReader</code>, false otherwise
      * @exception ParserConfigurationException if a parser configuration error occurs
      * @exception SAXNotRecognizedException if the property name is not recognized
      * @exception SAXNotSupportedException if the property name is recognized but not supported
@@ -482,6 +499,8 @@ public class Digester
 
     /**
      * Return the current Logger associated with this instance of the Digester
+     *
+     * @return the current Logger associated with this instance of the Digester
      */
     public Log getLogger()
     {
@@ -492,6 +511,8 @@ public class Digester
 
     /**
      * Set the current logger for this Digester.
+     *
+     * @param log the current logger for this Digester.
      */
     public void setLogger( Log log )
     {
@@ -502,7 +523,8 @@ public class Digester
 
     /**
      * Gets the logger used for logging SAX-related information. <strong>Note</strong> the output is finely grained.
-     * 
+     *
+     * @return the logger used for logging SAX-related information
      * @since 1.6
      */
     public Log getSAXLogger()
@@ -514,7 +536,7 @@ public class Digester
     /**
      * Sets the logger used for logging SAX-related information. <strong>Note</strong> the output is finely grained.
      * 
-     * @param saxLog Log, not null
+     * @param saxLog the logger used for logging SAX-related information, not null
      * @since 1.6
      */
     public void setSAXLogger( Log saxLog )
@@ -525,6 +547,8 @@ public class Digester
 
     /**
      * Return the current rule match path
+     *
+     * @return the current rule match path
      */
     public String getMatch()
     {
@@ -535,6 +559,8 @@ public class Digester
 
     /**
      * Return the "namespace aware" flag for parsers we create.
+     *
+     * @return the "namespace aware" flag for parsers we create.
      */
     public boolean getNamespaceAware()
     {
@@ -585,7 +611,7 @@ public class Digester
     }
 
     /**
-     * Set the publid id of the current file being parse.
+     * Set the public id of the current file being parse.
      * 
      * @param publicId the DTD/Schema public's id.
      */
@@ -596,6 +622,8 @@ public class Digester
 
     /**
      * Return the public identifier of the DTD we are currently parsing under, if any.
+     *
+     * @return the public identifier of the DTD we are currently parsing under, if any.
      */
     public String getPublicId()
     {
@@ -606,6 +634,8 @@ public class Digester
 
     /**
      * Return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
+     *
+     * @return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
      */
     public String getRuleNamespaceURI()
     {
@@ -628,8 +658,11 @@ public class Digester
     }
 
     /**
-     * Return the SAXParser we will use to parse the input stream. If there is a problem creating the parser, return
-     * <code>null</code>.
+     * Return the SAXParser we will use to parse the input stream.
+     *
+     * If there is a problem creating the parser, return <code>null</code>.
+     *
+     * @return the SAXParser we will use to parse the input stream
      */
     public SAXParser getParser()
     {
@@ -656,11 +689,13 @@ public class Digester
     }
 
     /**
-     * Return the current value of the specified property for the underlying <code>XMLReader</code> implementation. See
-     * <a href="http://www.saxproject.org">the saxproject website</a> for information about the standard SAX2
+     * Return the current value of the specified property for the underlying <code>XMLReader</code> implementation.
+     *
+     * See <a href="http://www.saxproject.org">the saxproject website</a> for information about the standard SAX2
      * properties.
      * 
      * @param property Property name to be retrieved
+     * @return the current value of the specified property for the underlying <code>XMLReader</code> implementation.
      * @exception SAXNotRecognizedException if the property name is not recognized
      * @exception SAXNotSupportedException if the property name is recognized but not supported
      */
@@ -692,6 +727,8 @@ public class Digester
     /**
      * Return the <code>Rules</code> implementation object containing our rules collection and associated matching
      * policy. If none has been established, a default implementation will be created and returned.
+     *
+     * @return the <code>Rules</code> implementation object.
      */
     public Rules getRules()
     {
@@ -745,7 +782,9 @@ public class Digester
     }
 
     /**
-     * Return the boolean as to whether the context classloader should be used.
+     * Return the boolean as to whether the context ClassLoader should be used.
+     *
+     * @return true, if the context ClassLoader should be used, false otherwise.
      */
     public boolean getUseContextClassLoader()
     {
@@ -770,6 +809,8 @@ public class Digester
 
     /**
      * Return the validating parser flag.
+     *
+     * @return the validating parser flag.
      */
     public boolean getValidating()
     {
@@ -791,9 +832,11 @@ public class Digester
     }
 
     /**
-     * Return the XMLReader to be used for parsing the input document. FIX ME: there is a bug in JAXP/XERCES that
-     * prevent the use of a parser that contains a schema with a DTD.
+     * Return the XMLReader to be used for parsing the input document.
      * 
+     * FIXME: there is a bug in JAXP/XERCES that prevent the use of a parser that contains a schema with a DTD.
+     *
+     * @return the XMLReader to be used for parsing the input document.
      * @exception SAXException if no XMLReader can be instantiated
      */
     public XMLReader getXMLReader()
@@ -823,7 +866,8 @@ public class Digester
     /**
      * Gets the <code>Substitutor</code> used to convert attributes and body text.
      * 
-     * @return Substitutor, null if not substitutions are to be performed.
+     * @return the <code>Substitutor</code> used to convert attributes and body text, 
+     *         null if not substitutions are to be performed.
      */
     public Substitutor getSubstitutor()
     {
@@ -841,8 +885,11 @@ public class Digester
         this.substitutor = substitutor;
     }
 
-    /*
-     * See setCustomContentHandler.
+    /**
+     * returns the custom SAX ContentHandler where events are redirected.
+     *
+     * @return the custom SAX ContentHandler where events are redirected.
+     * @see #setCustomContentHandler(ContentHandler)
      * @since 1.7
      */
     public ContentHandler getCustomContentHandler()
@@ -877,7 +924,8 @@ public class Digester
      * <li>Directing the events via the Digester object potentially allows us to log information about those SAX events
      * at the digester level.</li>
      * </ul>
-     * 
+     *
+     * @param the custom SAX ContentHandler where events are redirected.
      * @since 1.7
      */
     public void setCustomContentHandler( ContentHandler handler )
@@ -886,9 +934,11 @@ public class Digester
     }
 
     /**
-     * Define a callback object which is invoked whever an object is pushed onto a digester object stack, or popped off
-     * one.
-     * 
+     * Define a callback object which is invoked whenever an object is pushed onto a digester object stack,
+     * or popped off one.
+     *
+     * @param the callback object which is invoked whenever an object is pushed onto a digester object stack,
+     *        or popped off one.
      * @since 1.8
      */
     public void setStackAction( StackAction stackAction )
@@ -897,8 +947,12 @@ public class Digester
     }
 
     /**
-     * See setStackAction.
-     * 
+     * Return the callback object which is invoked whenever an object is pushed onto a digester object stack,
+     * or popped off one.
+     *
+     * @return the callback object which is invoked whenever an object is pushed onto a digester object stack,
+     *         or popped off one.
+     * @see #setStackAction(StackAction).
      * @since 1.8
      */
     public StackAction getStackAction()
@@ -939,12 +993,7 @@ public class Digester
     // ------------------------------------------------- ContentHandler Methods
 
     /**
-     * Process notification of character data received from the body of an XML element.
-     * 
-     * @param buffer The characters from the XML document
-     * @param start Starting offset into the buffer
-     * @param length Number of characters from the buffer
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void characters( char buffer[], int start, int length )
@@ -968,9 +1017,7 @@ public class Digester
     }
 
     /**
-     * Process notification of the end of the document being reached.
-     * 
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void endDocument()
@@ -1014,15 +1061,7 @@ public class Digester
     }
 
     /**
-     * Process notification of the end of an XML element being reached.
-     * 
-     * @param namespaceURI - The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace
-     *            processing is not being performed.
-     * @param localName - The local name (without prefix), or the empty string if Namespace processing is not being
-     *            performed.
-     * @param qName - The qualified XML 1.0 name (with prefix), or the empty string if qualified names are not
-     *            available.
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void endElement( String namespaceURI, String localName, String qName )
@@ -1146,10 +1185,7 @@ public class Digester
     }
 
     /**
-     * Process notification that a namespace prefix is going out of scope.
-     * 
-     * @param prefix Prefix that is going out of scope
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void endPrefixMapping( String prefix )
@@ -1181,12 +1217,7 @@ public class Digester
     }
 
     /**
-     * Process notification of ignorable whitespace received from the body of an XML element.
-     * 
-     * @param buffer The characters from the XML document
-     * @param start Starting offset into the buffer
-     * @param len Number of characters from the buffer
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void ignorableWhitespace( char buffer[], int start, int len )
@@ -1203,11 +1234,7 @@ public class Digester
     }
 
     /**
-     * Process notification of a processing instruction that was encountered.
-     * 
-     * @param target The processing instruction target
-     * @param data The processing instruction data (if any)
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void processingInstruction( String target, String data )
@@ -1243,9 +1270,7 @@ public class Digester
     }
 
     /**
-     * Sets the document locator associated with our parser.
-     * 
-     * @param locator The new locator
+     * {@inheritDoc}
      */
     @Override
     public void setDocumentLocator( Locator locator )
@@ -1261,10 +1286,7 @@ public class Digester
     }
 
     /**
-     * Process notification of a skipped entity.
-     * 
-     * @param name Name of the skipped entity
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void skippedEntity( String name )
@@ -1281,9 +1303,7 @@ public class Digester
     }
 
     /**
-     * Process notification of the beginning of the document being reached.
-     * 
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void startDocument()
@@ -1302,16 +1322,7 @@ public class Digester
     }
 
     /**
-     * Process notification of the start of an XML element being reached.
-     * 
-     * @param namespaceURI The Namespace URI, or the empty string if the element has no Namespace URI or if Namespace
-     *            processing is not being performed.
-     * @param localName The local name (without prefix), or the empty string if Namespace processing is not being
-     *            performed.
-     * @param qName The qualified name (with prefix), or the empty string if qualified names are not available.\
-     * @param list The attributes attached to the element. If there are no attributes, it shall be an empty Attributes
-     *            object.
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void startElement( String namespaceURI, String localName, String qName, Attributes list )
@@ -1404,11 +1415,7 @@ public class Digester
     }
 
     /**
-     * Process notification that a namespace prefix is coming in to scope.
-     * 
-     * @param prefix Prefix that is being declared
-     * @param namespaceURI Corresponding namespace URI being mapped to
-     * @exception SAXException if a parsing error is to be reported
+     * {@inheritDoc}
      */
     @Override
     public void startPrefixMapping( String prefix, String namespaceURI )
@@ -1434,11 +1441,7 @@ public class Digester
     // ----------------------------------------------------- DTDHandler Methods
 
     /**
-     * Receive notification of a notation declaration event.
-     * 
-     * @param name The notation name
-     * @param publicId The public identifier (if any)
-     * @param systemId The system identifier (if any)
+     * {@inheritDoc}
      */
     @Override
     public void notationDecl( String name, String publicId, String systemId )
@@ -1452,12 +1455,7 @@ public class Digester
     }
 
     /**
-     * Receive notification of an unparsed entity declaration event.
-     * 
-     * @param name The unparsed entity name
-     * @param publicId The public identifier (if any)
-     * @param systemId The system identifier (if any)
-     * @param notation The name of the associated notation
+     * {@inheritDoc}
      */
     @Override
     public void unparsedEntityDecl( String name, String publicId, String systemId, String notation )
@@ -1486,7 +1484,7 @@ public class Digester
     /**
      * Return the Entity Resolver used by the SAX parser.
      * 
-     * @return Return the Entity Resolver used by the SAX parser.
+     * @return the Entity Resolver used by the SAX parser.
      */
     public EntityResolver getEntityResolver()
     {
@@ -1494,11 +1492,7 @@ public class Digester
     }
 
     /**
-     * Resolve the requested external entity.
-     * 
-     * @param publicId The public identifier of the entity being referenced
-     * @param systemId The system identifier of the entity being referenced
-     * @exception SAXException if a parsing exception occurs
+     * {@inheritDoc}
      */
     @Override
     public InputSource resolveEntity( String publicId, String systemId )
@@ -1572,10 +1566,7 @@ public class Digester
     // ------------------------------------------------- ErrorHandler Methods
 
     /**
-     * Forward notification of a parsing error to the application supplied error handler (if any).
-     * 
-     * @param exception The error information
-     * @exception SAXException if a parsing exception occurs
+     * {@inheritDoc}
      */
     @Override
     public void error( SAXParseException exception )
@@ -1592,10 +1583,7 @@ public class Digester
     }
 
     /**
-     * Forward notification of a fatal parsing error to the application supplied error handler (if any).
-     * 
-     * @param exception The fatal error information
-     * @exception SAXException if a parsing exception occurs
+     * {@inheritDoc}
      */
     @Override
     public void fatalError( SAXParseException exception )
@@ -1612,10 +1600,7 @@ public class Digester
     }
 
     /**
-     * Forward notification of a parse warning to the application supplied error handler (if any).
-     * 
-     * @param exception The warning information
-     * @exception SAXException if a parsing exception occurs
+     * {@inheritDoc}
      */
     @Override
     public void warning( SAXParseException exception )
@@ -1638,6 +1623,7 @@ public class Digester
      * any).
      * 
      * @param file File containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
@@ -1664,6 +1650,7 @@ public class Digester
      * stack (if any).
      * 
      * @param input Input source containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
@@ -1688,6 +1675,7 @@ public class Digester
      * stack (if any).
      * 
      * @param input Input stream containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
@@ -1713,6 +1701,7 @@ public class Digester
      * any).
      * 
      * @param reader Reader containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
@@ -1738,6 +1727,7 @@ public class Digester
      * any).
      * 
      * @param uri URI containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      */
@@ -1763,6 +1753,7 @@ public class Digester
      * any).
      * 
      * @param url URL containing the XML data to be parsed
+     * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
      * @exception SAXException if a parsing exception occurs
      * @since 1.8
@@ -1891,7 +1882,9 @@ public class Digester
      * 
      * This method pretty much duplicates the standard behaviour, except that it calls URLConnection.setUseCaches(false)
      * before opening the connection.
-     * 
+     *
+     * @param The URL has to be read
+     * @return The InputSource that reads from the input URL
      * @since 1.8
      */
     public InputSource createInputSourceFromURL( URL url )
@@ -1914,6 +1907,7 @@ public class Digester
      * </p>
      * 
      * @param url URL for which to create an <code>InputSource</code>
+     * @return The InputSource that reads from the input URL
      * @since 1.8
      */
     public InputSource createInputSourceFromURL( String url )
@@ -2598,8 +2592,12 @@ public class Digester
     }
 
     /**
-     * Return the top object on the stack without removing it. If there are no objects on the stack, return
-     * <code>null</code>.
+     * Return the top object on the stack without removing it.
+     *
+     * If there are no objects on the stack, return <code>null</code>.
+     *
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
+     * @return the top object on the stack without removing it.
      */
     public <T> T peek()
     {
@@ -2620,7 +2618,9 @@ public class Digester
      * Return the n'th object down the stack, where 0 is the top element and [getCount()-1] is the bottom element. If
      * the specified index is out of range, return <code>null</code>.
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param n Index of the desired element, where 0 is the top of the stack, 1 is the next element down, and so on.
+     * @return the n'th object down the stack
      */
     public <T> T peek( int n )
     {
@@ -2646,6 +2646,9 @@ public class Digester
     /**
      * Pop the top object off of the stack, and return it. If there are no objects on the stack, return
      * <code>null</code>.
+     * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
+     * @return the top object popped off of the stack
      */
     public <T> T pop()
     {
@@ -2670,6 +2673,7 @@ public class Digester
     /**
      * Push a new object onto the top of the object stack.
      * 
+     * @param <T> any type of the pushed object
      * @param object The new object
      */
     public <T> void push( T object )
@@ -2691,6 +2695,7 @@ public class Digester
      * Pushes the given object onto the stack with the given name. If no stack already exists with the given name then
      * one will be created.
      * 
+     * @param <T> any type of the pushed object
      * @param stackName the name of the stack onto which the object should be pushed
      * @param value the Object to be pushed onto the named stack.
      * @since 1.6
@@ -2719,6 +2724,7 @@ public class Digester
      * <strong>Note:</strong> a stack is considered empty if no objects have been pushed onto it yet.
      * </p>
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param stackName the name of the stack from which the top value is to be popped.
      * @return the top <code>Object</code> on the stack or or null if the stack is either empty or has not been created
      *         yet
@@ -2756,6 +2762,7 @@ public class Digester
      * <strong>Note:</strong> a stack is considered empty if no objects have been pushed onto it yet.
      * </p>
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param stackName the name of the stack to be peeked
      * @return the top <code>Object</code> on the stack or null if the stack is either empty or has not been created yet
      * @throws EmptyStackException if the named stack is empty
@@ -2774,6 +2781,7 @@ public class Digester
      * <strong>Note:</strong> a stack is considered empty if no objects have been pushed onto it yet.
      * </p>
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param stackName the name of the stack to be peeked
      * @param n Index of the desired element, where 0 is the top of the stack, 1 is the next element down, and so on.
      * @return the specified <code>Object</code> on the stack.
@@ -2844,6 +2852,7 @@ public class Digester
      * such return value is available; in this case, this method allows you to access the root object that has been
      * created after parsing has completed.
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @return the root object that has been created after parsing or null if the digester has not parsed any XML yet.
      */
     public <T> T getRoot()
@@ -2961,6 +2970,8 @@ public class Digester
 
     /**
      * Return the set of DTD URL registrations, keyed by public identifier. NOTE: the returned map is in read-only mode.
+     *
+     * @return the read-only Map of DTD URL registrations.
      */
     Map<String, URL> getRegistrations()
     {
@@ -2977,6 +2988,8 @@ public class Digester
      * <p>
      * The parameters stack is used to store <code>CallMethodRule</code> parameters. See {@link #params}.
      * </p>
+     *
+     * @return the top object on the parameters stack without removing it.
      */
     public Object[] peekParams()
     {
@@ -3003,6 +3016,7 @@ public class Digester
      * </p>
      * 
      * @param n Index of the desired element, where 0 is the top of the stack, 1 is the next element down, and so on.
+     * @return the n'th object down the parameters stack
      */
     public Object[] peekParams( int n )
     {
@@ -3033,6 +3047,8 @@ public class Digester
      * <p>
      * The parameters stack is used to store <code>CallMethodRule</code> parameters. See {@link #params}.
      * </p>
+     *
+     * @param the top object popped off of the parameters stack
      */
     public Object[] popParams()
     {
@@ -3075,8 +3091,10 @@ public class Digester
 
     /**
      * Create a SAX exception which also understands about the location in the digester file where the exception occurs
-     * 
-     * @return the new exception
+     *
+     * @param message the custom SAX exception message
+     * @param e the exception cause
+     * @return the new SAX exception
      */
     public SAXException createSAXException( String message, Exception e )
     {
@@ -3109,7 +3127,8 @@ public class Digester
     /**
      * Create a SAX exception which also understands about the location in the digester file where the exception occurs
      * 
-     * @return the new exception
+     * @param e the exception cause
+     * @return the new SAX exception
      */
     public SAXException createSAXException( Exception e )
     {
@@ -3127,7 +3146,8 @@ public class Digester
     /**
      * Create a SAX exception which also understands about the location in the digester file where the exception occurs
      * 
-     * @return the new exception
+     * @param message the custom SAX exception message
+     * @return the new SAX exception
      */
     public SAXException createSAXException( String message )
     {
@@ -3138,7 +3158,7 @@ public class Digester
      * Helps casting the input object to given type, avoiding NPEs.
      * 
      * @since 3.0
-     * @param <T> the type th einput object has to be cast.
+     * @param <T> the type the input object has to be cast.
      * @param obj the object has to be cast.
      * @return the casted object, if input object is not null, null otherwise.
      */
