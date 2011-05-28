@@ -222,9 +222,7 @@ public class FactoryCreateRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the beginning of this element.
-     * 
-     * @param attributes The attribute list of this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -287,7 +285,7 @@ public class FactoryCreateRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -319,7 +317,7 @@ public class FactoryCreateRule
     }
 
     /**
-     * Clean up after parsing is complete.
+     * {@inheritDoc}
      */
     @Override
     public void finish()
@@ -332,7 +330,7 @@ public class FactoryCreateRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
@@ -357,6 +355,7 @@ public class FactoryCreateRule
      * Return an instance of our associated object creation factory, creating one if necessary.
      * 
      * @param attributes Attributes passed to our factory creation element
+     * @return An instance of our associated object creation factory, creating one if necessary
      * @exception Exception if any error occurs
      */
     protected ObjectCreationFactory<?> getFactory( Attributes attributes )
