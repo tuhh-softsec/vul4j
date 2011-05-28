@@ -128,6 +128,7 @@ public abstract class AbstractRulesImpl
      * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
      *            namespace URI
      * @param pattern Nesting pattern to be matched
+     * @return A List of all registered Rule instances that match the specified nesting pattern
      */
     public abstract List<Rule> match( String namespaceURI, String pattern );
 
@@ -135,6 +136,8 @@ public abstract class AbstractRulesImpl
      * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
      * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
      * originally registered through the <code>add()</code> method.
+     *
+     * @return A List of all registered Rule instances
      */
     public abstract List<Rule> rules();
 
