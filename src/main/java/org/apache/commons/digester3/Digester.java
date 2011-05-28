@@ -98,9 +98,7 @@ public class Digester
      */
     public Digester()
     {
-
         super();
-
     }
 
     /**
@@ -112,11 +110,8 @@ public class Digester
      */
     public Digester( SAXParser parser )
     {
-
         super();
-
         this.parser = parser;
-
     }
 
     /**
@@ -128,11 +123,8 @@ public class Digester
      */
     public Digester( XMLReader reader )
     {
-
         super();
-
         this.reader = reader;
-
     }
 
     // --------------------------------------------------- Instance Variables
@@ -322,7 +314,6 @@ public class Digester
      */
     public String findNamespaceURI( String prefix )
     {
-
         Stack<String> nsStack = namespaces.get( prefix );
         if ( nsStack == null )
         {
@@ -336,7 +327,6 @@ public class Digester
         {
             return null;
         }
-
     }
 
     /**
@@ -353,7 +343,6 @@ public class Digester
      */
     public ClassLoader getClassLoader()
     {
-
         if ( this.classLoader != null )
         {
             return ( this.classLoader );
@@ -367,7 +356,6 @@ public class Digester
             }
         }
         return ( this.getClass().getClassLoader() );
-
     }
 
     /**
@@ -377,9 +365,7 @@ public class Digester
      */
     public void setClassLoader( ClassLoader classLoader )
     {
-
         this.classLoader = classLoader;
-
     }
 
     /**
@@ -389,9 +375,7 @@ public class Digester
      */
     public int getCount()
     {
-
         return ( stack.size() );
-
     }
 
     /**
@@ -401,7 +385,6 @@ public class Digester
      */
     public String getCurrentElementName()
     {
-
         String elementName = match;
         int lastSlash = elementName.lastIndexOf( '/' );
         if ( lastSlash >= 0 )
@@ -409,7 +392,6 @@ public class Digester
             elementName = elementName.substring( lastSlash + 1 );
         }
         return ( elementName );
-
     }
 
     /**
@@ -419,9 +401,7 @@ public class Digester
      */
     public ErrorHandler getErrorHandler()
     {
-
         return ( this.errorHandler );
-
     }
 
     /**
@@ -431,9 +411,7 @@ public class Digester
      */
     public void setErrorHandler( ErrorHandler errorHandler )
     {
-
         this.errorHandler = errorHandler;
-
     }
 
     /**
@@ -443,7 +421,6 @@ public class Digester
      */
     public SAXParserFactory getFactory()
     {
-
         if ( factory == null )
         {
             factory = SAXParserFactory.newInstance();
@@ -453,7 +430,6 @@ public class Digester
             factory.setSchema( schema );
         }
         return ( factory );
-
     }
 
     /**
@@ -471,9 +447,7 @@ public class Digester
     public boolean getFeature( String feature )
         throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException
     {
-
         return ( getFactory().getFeature( feature ) );
-
     }
 
     /**
@@ -492,9 +466,7 @@ public class Digester
     public void setFeature( String feature, boolean value )
         throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException
     {
-
         getFactory().setFeature( feature, value );
-
     }
 
     /**
@@ -504,9 +476,7 @@ public class Digester
      */
     public Log getLogger()
     {
-
         return log;
-
     }
 
     /**
@@ -516,9 +486,7 @@ public class Digester
      */
     public void setLogger( Log log )
     {
-
         this.log = log;
-
     }
 
     /**
@@ -529,7 +497,6 @@ public class Digester
      */
     public Log getSAXLogger()
     {
-
         return saxLog;
     }
 
@@ -541,7 +508,6 @@ public class Digester
      */
     public void setSAXLogger( Log saxLog )
     {
-
         this.saxLog = saxLog;
     }
 
@@ -552,9 +518,7 @@ public class Digester
      */
     public String getMatch()
     {
-
         return match;
-
     }
 
     /**
@@ -564,9 +528,7 @@ public class Digester
      */
     public boolean getNamespaceAware()
     {
-
         return ( this.namespaceAware );
-
     }
 
     /**
@@ -576,9 +538,7 @@ public class Digester
      */
     public void setNamespaceAware( boolean namespaceAware )
     {
-
         this.namespaceAware = namespaceAware;
-
     }
 
     /**
@@ -591,9 +551,7 @@ public class Digester
      */
     public boolean getXIncludeAware()
     {
-
         return ( this.xincludeAware );
-
     }
 
     /**
@@ -605,9 +563,7 @@ public class Digester
      */
     public void setXIncludeAware( boolean xincludeAware )
     {
-
         this.xincludeAware = xincludeAware;
-
     }
 
     /**
@@ -627,9 +583,7 @@ public class Digester
      */
     public String getPublicId()
     {
-
         return ( this.publicId );
-
     }
 
     /**
@@ -639,9 +593,7 @@ public class Digester
      */
     public String getRuleNamespaceURI()
     {
-
         return ( getRules().getNamespaceURI() );
-
     }
 
     /**
@@ -652,9 +604,7 @@ public class Digester
      */
     public void setRuleNamespaceURI( String ruleNamespaceURI )
     {
-
         getRules().setNamespaceURI( ruleNamespaceURI );
-
     }
 
     /**
@@ -666,7 +616,6 @@ public class Digester
      */
     public SAXParser getParser()
     {
-
         // Return the parser we already created (if any)
         if ( parser != null )
         {
@@ -685,7 +634,6 @@ public class Digester
         }
 
         return ( parser );
-
     }
 
     /**
@@ -702,9 +650,7 @@ public class Digester
     public Object getProperty( String property )
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
-
         return ( getParser().getProperty( property ) );
-
     }
 
     /**
@@ -719,9 +665,7 @@ public class Digester
     public void setProperty( String property, Object value )
         throws SAXNotRecognizedException, SAXNotSupportedException
     {
-
         getParser().setProperty( property, value );
-
     }
 
     /**
@@ -732,14 +676,12 @@ public class Digester
      */
     public Rules getRules()
     {
-
         if ( this.rules == null )
         {
             this.rules = new RulesBase();
             this.rules.setDigester( this );
         }
         return ( this.rules );
-
     }
 
     /**
@@ -749,10 +691,8 @@ public class Digester
      */
     public void setRules( Rules rules )
     {
-
         this.rules = rules;
         this.rules.setDigester( this );
-
     }
 
     /**
@@ -763,9 +703,7 @@ public class Digester
      */
     public Schema getXMLSchema()
     {
-
         return ( this.schema );
-
     }
 
     /**
@@ -776,9 +714,7 @@ public class Digester
      */
     public void setXMLSchema( Schema schema )
     {
-
         this.schema = schema;
-
     }
 
     /**
@@ -788,9 +724,7 @@ public class Digester
      */
     public boolean getUseContextClassLoader()
     {
-
         return useContextClassLoader;
-
     }
 
     /**
@@ -802,9 +736,7 @@ public class Digester
      */
     public void setUseContextClassLoader( boolean use )
     {
-
         useContextClassLoader = use;
-
     }
 
     /**
@@ -814,9 +746,7 @@ public class Digester
      */
     public boolean getValidating()
     {
-
         return ( this.validating );
-
     }
 
     /**
@@ -826,9 +756,7 @@ public class Digester
      */
     public void setValidating( boolean validating )
     {
-
         this.validating = validating;
-
     }
 
     /**
@@ -999,7 +927,6 @@ public class Digester
     public void characters( char buffer[], int start, int length )
         throws SAXException
     {
-
         if ( customContentHandler != null )
         {
             // forward calls instead of handling them here
@@ -1013,7 +940,6 @@ public class Digester
         }
 
         bodyText.append( buffer, start, length );
-
     }
 
     /**
@@ -1023,7 +949,6 @@ public class Digester
     public void endDocument()
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             if ( getCount() > 1 )
@@ -1057,7 +982,6 @@ public class Digester
 
         // Perform final cleanup
         clear();
-
     }
 
     /**
@@ -1067,7 +991,6 @@ public class Digester
     public void endElement( String namespaceURI, String localName, String qName )
         throws SAXException
     {
-
         if ( customContentHandler != null )
         {
             // forward calls instead of handling them here
@@ -1181,7 +1104,6 @@ public class Digester
         {
             match = "";
         }
-
     }
 
     /**
@@ -1191,7 +1113,6 @@ public class Digester
     public void endPrefixMapping( String prefix )
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "endPrefixMapping(" + prefix + ")" );
@@ -1213,7 +1134,6 @@ public class Digester
         {
             throw createSAXException( "endPrefixMapping popped too many times" );
         }
-
     }
 
     /**
@@ -1223,14 +1143,12 @@ public class Digester
     public void ignorableWhitespace( char buffer[], int start, int len )
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "ignorableWhitespace(" + new String( buffer, start, len ) + ")" );
         }
 
         // No processing required
-
     }
 
     /**
@@ -1240,7 +1158,6 @@ public class Digester
     public void processingInstruction( String target, String data )
         throws SAXException
     {
-
         if ( customContentHandler != null )
         {
             // forward calls instead of handling them here
@@ -1254,7 +1171,6 @@ public class Digester
         }
 
         // No processing is required
-
     }
 
     /**
@@ -1264,9 +1180,7 @@ public class Digester
      */
     public Locator getDocumentLocator()
     {
-
         return locator;
-
     }
 
     /**
@@ -1275,14 +1189,12 @@ public class Digester
     @Override
     public void setDocumentLocator( Locator locator )
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "setDocumentLocator(" + locator + ")" );
         }
 
         this.locator = locator;
-
     }
 
     /**
@@ -1292,14 +1204,12 @@ public class Digester
     public void skippedEntity( String name )
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "skippedEntity(" + name + ")" );
         }
 
         // No processing required
-
     }
 
     /**
@@ -1309,7 +1219,6 @@ public class Digester
     public void startDocument()
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "startDocument()" );
@@ -1411,7 +1320,6 @@ public class Digester
                 log.debug( "  No rules found matching '" + match + "'." );
             }
         }
-
     }
 
     /**
@@ -1421,7 +1329,6 @@ public class Digester
     public void startPrefixMapping( String prefix, String namespaceURI )
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "startPrefixMapping(" + prefix + "," + namespaceURI + ")" );
@@ -1435,7 +1342,6 @@ public class Digester
             namespaces.put( prefix, stack );
         }
         stack.push( namespaceURI );
-
     }
 
     // ----------------------------------------------------- DTDHandler Methods
@@ -1446,12 +1352,10 @@ public class Digester
     @Override
     public void notationDecl( String name, String publicId, String systemId )
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "notationDecl(" + name + "," + publicId + "," + systemId + ")" );
         }
-
     }
 
     /**
@@ -1460,12 +1364,10 @@ public class Digester
     @Override
     public void unparsedEntityDecl( String name, String publicId, String systemId, String notation )
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "unparsedEntityDecl(" + name + "," + publicId + "," + systemId + "," + notation + ")" );
         }
-
     }
 
     // ----------------------------------------------- EntityResolver Methods
@@ -1498,7 +1400,6 @@ public class Digester
     public InputSource resolveEntity( String publicId, String systemId )
         throws SAXException
     {
-
         if ( saxLog.isDebugEnabled() )
         {
             saxLog.debug( "resolveEntity('" + publicId + "', '" + systemId + "')" );
@@ -1572,14 +1473,12 @@ public class Digester
     public void error( SAXParseException exception )
         throws SAXException
     {
-
         log.error( "Parse Error at line " + exception.getLineNumber() + " column " + exception.getColumnNumber() + ": "
             + exception.getMessage(), exception );
         if ( errorHandler != null )
         {
             errorHandler.error( exception );
         }
-
     }
 
     /**
@@ -1589,14 +1488,12 @@ public class Digester
     public void fatalError( SAXParseException exception )
         throws SAXException
     {
-
         log.error( "Parse Fatal Error at line " + exception.getLineNumber() + " column " + exception.getColumnNumber()
             + ": " + exception.getMessage(), exception );
         if ( errorHandler != null )
         {
             errorHandler.fatalError( exception );
         }
-
     }
 
     /**
@@ -1613,7 +1510,6 @@ public class Digester
 
             errorHandler.warning( exception );
         }
-
     }
 
     // ------------------------------------------------------- Public Methods
@@ -1630,7 +1526,6 @@ public class Digester
     public <T> T parse( File file )
         throws IOException, SAXException
     {
-
         if ( file == null )
         {
             throw new IllegalArgumentException( "File to parse is null" );
@@ -1642,7 +1537,6 @@ public class Digester
         getXMLReader().parse( input );
         cleanup();
         return ( this.<T> getRoot() );
-
     }
 
     /**
@@ -1657,7 +1551,6 @@ public class Digester
     public <T> T parse( InputSource input )
         throws IOException, SAXException
     {
-
         if ( input == null )
         {
             throw new IllegalArgumentException( "InputSource to parse is null" );
@@ -1667,7 +1560,6 @@ public class Digester
         getXMLReader().parse( input );
         cleanup();
         return this.<T> getRoot();
-
     }
 
     /**
@@ -1682,7 +1574,6 @@ public class Digester
     public <T> T parse( InputStream input )
         throws IOException, SAXException
     {
-
         if ( input == null )
         {
             throw new IllegalArgumentException( "InputStream to parse is null" );
@@ -1693,7 +1584,6 @@ public class Digester
         getXMLReader().parse( is );
         cleanup();
         return ( this.<T> getRoot() );
-
     }
 
     /**
@@ -1708,7 +1598,6 @@ public class Digester
     public <T> T parse( Reader reader )
         throws IOException, SAXException
     {
-
         if ( reader == null )
         {
             throw new IllegalArgumentException( "Reader to parse is null" );
@@ -1719,7 +1608,6 @@ public class Digester
         getXMLReader().parse( is );
         cleanup();
         return ( this.<T> getRoot() );
-
     }
 
     /**
@@ -1734,7 +1622,6 @@ public class Digester
     public <T> T parse( String uri )
         throws IOException, SAXException
     {
-
         if ( uri == null )
         {
             throw new IllegalArgumentException( "String URI to parse is null" );
@@ -1745,7 +1632,6 @@ public class Digester
         getXMLReader().parse( is );
         cleanup();
         return ( this.<T> getRoot() );
-
     }
 
     /**
@@ -1761,7 +1647,6 @@ public class Digester
     public <T> T parse( URL url )
         throws IOException, SAXException
     {
-
         if ( url == null )
         {
             throw new IllegalArgumentException( "URL to parse is null" );
@@ -1772,7 +1657,6 @@ public class Digester
         getXMLReader().parse( is );
         cleanup();
         return ( this.<T> getRoot() );
-
     }
 
     /**
@@ -1799,13 +1683,11 @@ public class Digester
      */
     public void register( String publicId, URL entityURL )
     {
-
         if ( log.isDebugEnabled() )
         {
             log.debug( "register('" + publicId + "', '" + entityURL + "'" );
         }
         entityValidator.put( publicId, entityURL );
-
     }
 
     /**
@@ -1818,7 +1700,6 @@ public class Digester
      */
     public void register( String publicId, String entityURL )
     {
-
         if ( log.isDebugEnabled() )
         {
             log.debug( "register('" + publicId + "', '" + entityURL + "'" );
@@ -1831,7 +1712,6 @@ public class Digester
         {
             throw new IllegalArgumentException( "Malformed URL '" + entityURL + "' : " + e.getMessage() );
         }
-
     }
 
     /**
@@ -1890,7 +1770,6 @@ public class Digester
     public InputSource createInputSourceFromURL( URL url )
         throws MalformedURLException, IOException
     {
-
         URLConnection connection = url.openConnection();
         connection.setUseCaches( false );
         InputStream stream = connection.getInputStream();
@@ -1898,7 +1777,6 @@ public class Digester
         source.setSystemId( url.toExternalForm() );
         inputSources.add( source );
         return source;
-
     }
 
     /**
@@ -1913,9 +1791,7 @@ public class Digester
     public InputSource createInputSourceFromURL( String url )
         throws MalformedURLException, IOException
     {
-
         return createInputSourceFromURL( new URL( url ) );
-
     }
 
     // --------------------------------------------------------- Rule Methods
@@ -1931,10 +1807,8 @@ public class Digester
      */
     public void addRule( String pattern, Rule rule )
     {
-
         rule.setDigester( this );
         getRules().add( pattern, rule );
-
     }
 
     /**
@@ -1944,7 +1818,6 @@ public class Digester
      */
     public void addRuleSet( RuleSet ruleSet )
     {
-
         String oldNamespaceURI = getRuleNamespaceURI();
         String newNamespaceURI = ruleSet.getNamespaceURI();
         if ( log.isDebugEnabled() )
@@ -1961,7 +1834,6 @@ public class Digester
         setRuleNamespaceURI( newNamespaceURI );
         ruleSet.addRuleInstances( this );
         setRuleNamespaceURI( oldNamespaceURI );
-
     }
 
     /**
@@ -1972,9 +1844,7 @@ public class Digester
      */
     public void addBeanPropertySetter( String pattern )
     {
-
         addRule( pattern, new BeanPropertySetterRule() );
-
     }
 
     /**
@@ -1986,9 +1856,7 @@ public class Digester
      */
     public void addBeanPropertySetter( String pattern, String propertyName )
     {
-
         addRule( pattern, new BeanPropertySetterRule( propertyName ) );
-
     }
 
     /**
@@ -2000,9 +1868,7 @@ public class Digester
      */
     public void addCallMethod( String pattern, String methodName )
     {
-
         addRule( pattern, new CallMethodRule( methodName ) );
-
     }
 
     /**
@@ -2015,9 +1881,7 @@ public class Digester
      */
     public void addCallMethod( String pattern, String methodName, int paramCount )
     {
-
         addRule( pattern, new CallMethodRule( methodName, paramCount ) );
-
     }
 
     /**
@@ -2035,9 +1899,7 @@ public class Digester
      */
     public void addCallMethod( String pattern, String methodName, int paramCount, String paramTypes[] )
     {
-
         addRule( pattern, new CallMethodRule( methodName, paramCount, paramTypes ) );
-
     }
 
     /**
@@ -2055,9 +1917,7 @@ public class Digester
      */
     public void addCallMethod( String pattern, String methodName, int paramCount, Class<?> paramTypes[] )
     {
-
         addRule( pattern, new CallMethodRule( methodName, paramCount, paramTypes ) );
-
     }
 
     /**
@@ -2069,9 +1929,7 @@ public class Digester
      */
     public void addCallParam( String pattern, int paramIndex )
     {
-
         addRule( pattern, new CallParamRule( paramIndex ) );
-
     }
 
     /**
@@ -2084,9 +1942,7 @@ public class Digester
      */
     public void addCallParam( String pattern, int paramIndex, String attributeName )
     {
-
         addRule( pattern, new CallParamRule( paramIndex, attributeName ) );
-
     }
 
     /**
@@ -2099,9 +1955,7 @@ public class Digester
      */
     public void addCallParam( String pattern, int paramIndex, boolean fromStack )
     {
-
         addRule( pattern, new CallParamRule( paramIndex, fromStack ) );
-
     }
 
     /**
@@ -2115,9 +1969,7 @@ public class Digester
      */
     public void addCallParam( String pattern, int paramIndex, int stackIndex )
     {
-
         addRule( pattern, new CallParamRule( paramIndex, stackIndex ) );
-
     }
 
     /**
@@ -2149,9 +2001,7 @@ public class Digester
      */
     public void addObjectParam( String pattern, int paramIndex, Object paramObj )
     {
-
         addRule( pattern, new ObjectParamRule( paramIndex, paramObj ) );
-
     }
 
     /**
@@ -2164,9 +2014,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, String className )
     {
-
         addFactoryCreate( pattern, className, false );
-
     }
 
     /**
@@ -2179,9 +2027,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz )
     {
-
         addFactoryCreate( pattern, clazz, false );
-
     }
 
     /**
@@ -2195,9 +2041,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, String className, String attributeName )
     {
-
         addFactoryCreate( pattern, className, attributeName, false );
-
     }
 
     /**
@@ -2211,9 +2055,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz, String attributeName )
     {
-
         addFactoryCreate( pattern, clazz, attributeName, false );
-
     }
 
     /**
@@ -2226,9 +2068,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, ObjectCreationFactory<?> creationFactory )
     {
-
         addFactoryCreate( pattern, creationFactory, false );
-
     }
 
     /**
@@ -2242,9 +2082,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, String className, boolean ignoreCreateExceptions )
     {
-
         addRule( pattern, new FactoryCreateRule( className, ignoreCreateExceptions ) );
-
     }
 
     /**
@@ -2259,9 +2097,7 @@ public class Digester
     public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz,
                                   boolean ignoreCreateExceptions )
     {
-
         addRule( pattern, new FactoryCreateRule( clazz, ignoreCreateExceptions ) );
-
     }
 
     /**
@@ -2276,9 +2112,7 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, String className, String attributeName, boolean ignoreCreateExceptions )
     {
-
         addRule( pattern, new FactoryCreateRule( className, attributeName, ignoreCreateExceptions ) );
-
     }
 
     /**
@@ -2294,9 +2128,7 @@ public class Digester
     public void addFactoryCreate( String pattern, Class<? extends ObjectCreationFactory<?>> clazz,
                                   String attributeName, boolean ignoreCreateExceptions )
     {
-
         addRule( pattern, new FactoryCreateRule( clazz, attributeName, ignoreCreateExceptions ) );
-
     }
 
     /**
@@ -2310,10 +2142,8 @@ public class Digester
      */
     public void addFactoryCreate( String pattern, ObjectCreationFactory<?> creationFactory, boolean ignoreCreateExceptions )
     {
-
         creationFactory.setDigester( this );
         addRule( pattern, new FactoryCreateRule( creationFactory, ignoreCreateExceptions ) );
-
     }
 
     /**
@@ -2325,9 +2155,7 @@ public class Digester
      */
     public void addObjectCreate( String pattern, String className )
     {
-
         addRule( pattern, new ObjectCreateRule( className ) );
-
     }
 
     /**
@@ -2339,9 +2167,7 @@ public class Digester
      */
     public void addObjectCreate( String pattern, Class<?> clazz )
     {
-
         addRule( pattern, new ObjectCreateRule( clazz ) );
-
     }
 
     /**
@@ -2354,9 +2180,7 @@ public class Digester
      */
     public void addObjectCreate( String pattern, String className, String attributeName )
     {
-
         addRule( pattern, new ObjectCreateRule( className, attributeName ) );
-
     }
 
     /**
@@ -2369,9 +2193,7 @@ public class Digester
      */
     public void addObjectCreate( String pattern, String attributeName, Class<?> clazz )
     {
-
         addRule( pattern, new ObjectCreateRule( attributeName, clazz ) );
-
     }
 
     /**
@@ -2382,7 +2204,6 @@ public class Digester
      */
     public void addSetNestedProperties( String pattern )
     {
-
         addRule( pattern, new SetNestedPropertiesRule() );
     }
 
@@ -2396,7 +2217,6 @@ public class Digester
      */
     public void addSetNestedProperties( String pattern, String elementName, String propertyName )
     {
-
         addRule( pattern, new SetNestedPropertiesRule( elementName, propertyName ) );
     }
 
@@ -2410,7 +2230,6 @@ public class Digester
      */
     public void addSetNestedProperties( String pattern, String[] elementNames, String[] propertyNames )
     {
-
         addRule( pattern, new SetNestedPropertiesRule( elementNames, propertyNames ) );
     }
 
@@ -2423,9 +2242,7 @@ public class Digester
      */
     public void addSetNext( String pattern, String methodName )
     {
-
         addRule( pattern, new SetNextRule( methodName ) );
-
     }
 
     /**
@@ -2440,9 +2257,7 @@ public class Digester
      */
     public void addSetNext( String pattern, String methodName, String paramType )
     {
-
         addRule( pattern, new SetNextRule( methodName, paramType ) );
-
     }
 
     /**
@@ -2454,9 +2269,7 @@ public class Digester
      */
     public void addSetRoot( String pattern, String methodName )
     {
-
         addRule( pattern, new SetRootRule( methodName ) );
-
     }
 
     /**
@@ -2469,9 +2282,7 @@ public class Digester
      */
     public void addSetRoot( String pattern, String methodName, String paramType )
     {
-
         addRule( pattern, new SetRootRule( methodName, paramType ) );
-
     }
 
     /**
@@ -2482,9 +2293,7 @@ public class Digester
      */
     public void addSetProperties( String pattern )
     {
-
         addRule( pattern, new SetPropertiesRule() );
-
     }
 
     /**
@@ -2498,9 +2307,7 @@ public class Digester
      */
     public void addSetProperties( String pattern, String attributeName, String propertyName )
     {
-
         addRule( pattern, new SetPropertiesRule( attributeName, propertyName ) );
-
     }
 
     /**
@@ -2514,9 +2321,7 @@ public class Digester
      */
     public void addSetProperties( String pattern, String[] attributeNames, String[] propertyNames )
     {
-
         addRule( pattern, new SetPropertiesRule( attributeNames, propertyNames ) );
-
     }
 
     /**
@@ -2529,9 +2334,7 @@ public class Digester
      */
     public void addSetProperty( String pattern, String name, String value )
     {
-
         addRule( pattern, new SetPropertyRule( name, value ) );
-
     }
 
     /**
@@ -2543,9 +2346,7 @@ public class Digester
      */
     public void addSetTop( String pattern, String methodName )
     {
-
         addRule( pattern, new SetTopRule( methodName ) );
-
     }
 
     /**
@@ -2560,9 +2361,7 @@ public class Digester
      */
     public void addSetTop( String pattern, String methodName, String paramType )
     {
-
         addRule( pattern, new SetTopRule( methodName, paramType ) );
-
     }
 
     // --------------------------------------------------- Object Stack Methods
@@ -2581,7 +2380,6 @@ public class Digester
      */
     public void clear()
     {
-
         match = "";
         bodyTexts.clear();
         params.clear();
@@ -2601,7 +2399,6 @@ public class Digester
      */
     public <T> T peek()
     {
-
         try
         {
             return this.<T> npeSafeCast( stack.peek() );
@@ -2611,7 +2408,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -2624,7 +2420,6 @@ public class Digester
      */
     public <T> T peek( int n )
     {
-
         int index = ( stack.size() - 1 ) - n;
         if ( index < 0 )
         {
@@ -2640,7 +2435,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -2652,7 +2446,6 @@ public class Digester
      */
     public <T> T pop()
     {
-
         try
         {
             T popped = this.<T> npeSafeCast( stack.pop() );
@@ -2667,7 +2460,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -2678,7 +2470,6 @@ public class Digester
      */
     public <T> void push( T object )
     {
-
         if ( stackAction != null )
         {
             object = stackAction.onPush( this, null, object );
@@ -2888,7 +2679,6 @@ public class Digester
      */
     protected void cleanup()
     {
-
         // If we created any InputSource objects in this instance,
         // they each have an input stream that should be closed
         for ( InputSource source : inputSources )
@@ -2903,7 +2693,6 @@ public class Digester
             }
         }
         inputSources.clear();
-
     }
 
     /**
@@ -2918,7 +2707,6 @@ public class Digester
      */
     protected void configure()
     {
-
         // Do not configure more than once
         if ( configured )
         {
@@ -2931,7 +2719,6 @@ public class Digester
 
         // Set the configuration flag to avoid repeating
         configured = true;
-
     }
 
     /**
@@ -2960,10 +2747,8 @@ public class Digester
      */
     protected void initialize()
     {
-
         // Perform lazy initialization as needed
         // Nothing required by default
-
     }
 
     // -------------------------------------------------------- Package Methods
@@ -2975,9 +2760,7 @@ public class Digester
      */
     Map<String, URL> getRegistrations()
     {
-
         return Collections.unmodifiableMap( entityValidator );
-
     }
 
     /**
@@ -2993,7 +2776,6 @@ public class Digester
      */
     public Object[] peekParams()
     {
-
         try
         {
             return ( params.peek() );
@@ -3003,7 +2785,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -3020,7 +2801,6 @@ public class Digester
      */
     public Object[] peekParams( int n )
     {
-
         int index = ( params.size() - 1 ) - n;
         if ( index < 0 )
         {
@@ -3036,7 +2816,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -3052,7 +2831,6 @@ public class Digester
      */
     public Object[] popParams()
     {
-
         try
         {
             if ( log.isTraceEnabled() )
@@ -3066,7 +2844,6 @@ public class Digester
             log.warn( "Empty stack (returning null)" );
             return ( null );
         }
-
     }
 
     /**
@@ -3086,7 +2863,6 @@ public class Digester
             log.trace( "Pushing params" );
         }
         params.push( object );
-
     }
 
     /**
