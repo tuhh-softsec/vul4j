@@ -108,7 +108,8 @@ public class ObjectCreateRule
         }
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New " + realClassName );
+            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New "
+                                             + realClassName );
         }
 
         // Instantiate the new object and push it on the context stack
