@@ -1128,7 +1128,9 @@ public class Digester
         {
             stack.pop();
             if ( stack.empty() )
+            {
                 namespaces.remove( prefix );
+            }
         }
         catch ( EmptyStackException e )
         {
@@ -1406,7 +1408,9 @@ public class Digester
         }
 
         if ( publicId != null )
+        {
             this.publicId = publicId;
+        }
 
         // Has this system identifier been registered?
         URL entityURL = null;
