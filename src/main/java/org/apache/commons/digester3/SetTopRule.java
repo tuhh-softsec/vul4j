@@ -101,7 +101,7 @@ public class SetTopRule
      * </p>
      * 
      * @return true iff exact matching is enabled
-     * @since Digester Release 1.1.1
+     * @since 1.1.1
      */
     public boolean isExactMatch()
     {
@@ -117,7 +117,7 @@ public class SetTopRule
      * </p>
      * 
      * @param useExactMatch should this rule use exact method matching
-     * @since Digester Release 1.1.1
+     * @since 1.1.1
      */
     public void setExactMatch( boolean useExactMatch )
     {
@@ -125,7 +125,7 @@ public class SetTopRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -172,7 +172,7 @@ public class SetTopRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
