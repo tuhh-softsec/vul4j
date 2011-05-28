@@ -90,9 +90,7 @@ public class ObjectCreateRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the beginning of this element.
-     * 
-     * @param attributes The attribute list of this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -120,7 +118,7 @@ public class ObjectCreateRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -135,7 +133,7 @@ public class ObjectCreateRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
