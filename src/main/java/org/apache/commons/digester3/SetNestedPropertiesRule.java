@@ -97,7 +97,6 @@ import org.apache.commons.logging.Log;
  * 
  * @since 1.6
  */
-
 public class SetNestedPropertiesRule
     extends Rule
 {
