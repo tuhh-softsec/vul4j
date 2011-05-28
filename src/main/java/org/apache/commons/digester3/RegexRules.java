@@ -52,7 +52,6 @@ public class RegexRules
      * Construct sets the Regex matching strategy.
      * 
      * @param matcher the regex strategy to be used, not null
-     * @throws IllegalArgumentException if the strategy is null
      */
     public RegexRules( RegexMatcher matcher )
     {
@@ -63,6 +62,8 @@ public class RegexRules
 
     /**
      * Gets the current regex matching strategy.
+     *
+     * @return the current regex matching strategy.
      */
     public RegexMatcher getRegexMatcher()
     {
@@ -73,7 +74,6 @@ public class RegexRules
      * Sets the current regex matching strategy.
      * 
      * @param matcher use this RegexMatcher, not null
-     * @throws IllegalArgumentException if the strategy is null
      */
     public void setRegexMatcher( RegexMatcher matcher )
     {
@@ -87,10 +87,7 @@ public class RegexRules
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Register a new Rule instance matching the specified pattern.
-     * 
-     * @param pattern Nesting pattern to be matched for this Rule
-     * @param rule Rule instance to be registered
+     * {@inheritDoc}
      */
     @Override
     protected void registerRule( String pattern, Rule rule )
@@ -99,7 +96,7 @@ public class RegexRules
     }
 
     /**
-     * Clear all existing Rule instance registrations.
+     * {@inheritDoc}
      */
     @Override
     public void clear()
@@ -108,13 +105,7 @@ public class RegexRules
     }
 
     /**
-     * Finds matching rules by using current regex matching strategy. The rule associated with each path that matches is
-     * added to the list of matches. The order of matching rules is the same order that they were added.
-     * 
-     * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
-     *            namespace URI
-     * @param pattern Nesting pattern to be matched
-     * @return a list of matching <code>Rule</code>'s
+     * {@inheritDoc}
      */
     @Override
     public List<Rule> match( String namespaceURI, String pattern )
@@ -139,9 +130,7 @@ public class RegexRules
     }
 
     /**
-     * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
-     * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
+     * {@inheritDoc}
      */
     @Override
     public List<Rule> rules()
