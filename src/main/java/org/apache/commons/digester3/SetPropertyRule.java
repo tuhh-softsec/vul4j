@@ -64,10 +64,7 @@ public class SetPropertyRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the beginning of this element.
-     * 
-     * @param attributes The attribute list of this element
-     * @exception NoSuchMethodException if the bean does not have a writeable property of the specified name
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -138,7 +135,7 @@ public class SetPropertyRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
