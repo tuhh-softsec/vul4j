@@ -292,7 +292,7 @@ public class CallMethodRule
     /**
      * Should <code>MethodUtils.invokeExactMethod</code> be used for reflection.
      */
-    protected boolean useExactMatch = false;
+    private boolean useExactMatch = false;
 
     // --------------------------------------------------------- Public Methods
 
