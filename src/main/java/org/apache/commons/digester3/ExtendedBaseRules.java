@@ -404,8 +404,8 @@ public class ExtendedBaseRules
             while ( it.hasNext() )
             {
                 Rule rule = it.next();
-                String ns_uri = rule.getNamespaceURI();
-                if ( ns_uri != null && !ns_uri.equals( namespace ) )
+                String nsUri = rule.getNamespaceURI();
+                if ( nsUri != null && !nsUri.equals( namespace ) )
                 {
                     it.remove();
                 }
