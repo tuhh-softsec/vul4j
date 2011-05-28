@@ -53,6 +53,8 @@ public class SimpleRegexMatcher
 
     /**
      * Gets the <code>Log</code> implementation.
+     *
+     * @return the <code>Log</code> implementation.
      */
     public Log getLog()
     {
@@ -61,6 +63,8 @@ public class SimpleRegexMatcher
 
     /**
      * Sets the current <code>Log</code> implementation used by this class.
+     *
+     * @param the current <code>Log</code> implementation used by this class.
      */
     public void setLog( Log log )
     {
@@ -70,11 +74,7 @@ public class SimpleRegexMatcher
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Matches using simple regex algorithm.
-     * 
-     * @param basePattern the standard digester path representing the element
-     * @param regexPattern the regex pattern the path will be tested against
-     * @return true if the given pattern matches the given path
+     * {@inheritDoc}
      */
     @Override
     public boolean match( String basePattern, String regexPattern )
@@ -91,6 +91,11 @@ public class SimpleRegexMatcher
 
     /**
      * Implementation of regex matching algorithm. This calls itself recursively.
+     *
+     * @param basePattern the standard digester path representing the element
+     * @param regexPattern the regex pattern the path will be tested against
+     * @param baseAt FIXME
+     * @param regexAt FIXME
      */
     private boolean match( String basePattern, String regexPattern, int baseAt, int regexAt )
     {
