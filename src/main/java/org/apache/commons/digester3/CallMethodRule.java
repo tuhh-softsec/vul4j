@@ -313,7 +313,7 @@ public class CallMethodRule
     }
 
     /**
-     * Set the associated digester. If needed, this class loads the parameter classes from their names.
+     * {@inheritDoc}
      */
     @Override
     public void setDigester( Digester digester )
@@ -341,9 +341,7 @@ public class CallMethodRule
     }
 
     /**
-     * Process the start of this element.
-     * 
-     * @param attributes The attribute list for this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -362,9 +360,7 @@ public class CallMethodRule
     }
 
     /**
-     * Process the body text of this element.
-     * 
-     * @param bodyText The body text of this element
+     * {@inheritDoc}
      */
     @Override
     public void body( String namespace, String name, String text )
@@ -377,7 +373,7 @@ public class CallMethodRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -541,7 +537,7 @@ public class CallMethodRule
     }
 
     /**
-     * Clean up after parsing is complete.
+     * {@inheritDoc}
      */
     @Override
     public void finish()
@@ -561,7 +557,7 @@ public class CallMethodRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
