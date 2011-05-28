@@ -1773,12 +1773,13 @@ public class Digester
      * This method pretty much duplicates the standard behaviour, except that it calls URLConnection.setUseCaches(false)
      * before opening the connection.
      *
-     * @param The URL has to be read
+     * @param url The URL has to be read
      * @return The InputSource that reads from the input URL
+     * @throws IOException if any error occurs while reading the input URL
      * @since 1.8
      */
     public InputSource createInputSourceFromURL( URL url )
-        throws MalformedURLException, IOException
+        throws IOException
     {
         URLConnection connection = url.openConnection();
         connection.setUseCaches( false );
@@ -1796,10 +1797,11 @@ public class Digester
      * 
      * @param url URL for which to create an <code>InputSource</code>
      * @return The InputSource that reads from the input URL
+     * @throws IOException if any error occurs while reading the input URL
      * @since 1.8
      */
     public InputSource createInputSourceFromURL( String url )
-        throws MalformedURLException, IOException
+        throws IOException
     {
         return createInputSourceFromURL( new URL( url ) );
     }
