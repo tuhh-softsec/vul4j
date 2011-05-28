@@ -36,10 +36,10 @@ public interface ObjectCreationFactory<T>
 {
 
     /**
-     * <p>
      * Factory method called by {@link FactoryCreateRule} to supply an object based on the element's attributes.
-     * 
+     *
      * @param attributes the element's attributes
+     * @return the object to be pushed onto the <code>Digester</code> stack
      * @throws Exception any exception thrown will be propagated upwards
      */
     T createObject( Attributes attributes )
