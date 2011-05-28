@@ -183,7 +183,8 @@ public class FactoryCreateRule
      *            creation factory to create.
      * @param ignoreCreateExceptions if true, exceptions thrown by the object creation factory will be ignored.
      */
-    public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, String attributeName, boolean ignoreCreateExceptions )
+    public FactoryCreateRule( Class<? extends ObjectCreationFactory<?>> clazz, String attributeName,
+                              boolean ignoreCreateExceptions )
     {
         this( clazz.getName(), attributeName, ignoreCreateExceptions );
     }
