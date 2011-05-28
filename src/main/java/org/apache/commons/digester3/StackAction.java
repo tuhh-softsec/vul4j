@@ -44,7 +44,8 @@ public interface StackAction
 
     /**
      * Invoked just before an object is to be pushed onto a digester stack.
-     * 
+     *
+     * @param <T> whatever type is accepted
      * @param d is the digester instance.
      * @param stackName is the name of the stack onto which the object has been pushed. Null is passed to indicate the
      *            default stack.
@@ -57,7 +58,8 @@ public interface StackAction
 
     /**
      * Invoked just after an object has been popped from a digester stack.
-     * 
+     *
+     * @param <T> whatever type is accepted
      * @param d is the digester instance.
      * @param stackName is the name of the stack from which the object has been popped. Null is passed to indicate the
      *            default stack.
