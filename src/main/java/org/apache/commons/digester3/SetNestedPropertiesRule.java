@@ -251,7 +251,8 @@ public class SetNestedPropertiesRule
      * <p>
      * The default value of this attribute is false (unknown child elements are not allowed).
      *
-     * @param flag to ignore any child element for which there is no corresponding object property
+     * @param allowUnknownChildElements flag to ignore any child element for which there is no corresponding
+     *        object property
      */
     public void setAllowUnknownChildElements( boolean allowUnknownChildElements )
     {
