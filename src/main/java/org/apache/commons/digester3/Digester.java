@@ -853,7 +853,7 @@ public class Digester
      * at the digester level.</li>
      * </ul>
      *
-     * @param the custom SAX ContentHandler where events are redirected.
+     * @param handler the custom SAX ContentHandler where events are redirected.
      * @since 1.7
      */
     public void setCustomContentHandler( ContentHandler handler )
