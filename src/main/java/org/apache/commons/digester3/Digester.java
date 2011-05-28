@@ -865,8 +865,8 @@ public class Digester
      * Define a callback object which is invoked whenever an object is pushed onto a digester object stack,
      * or popped off one.
      *
-     * @param the callback object which is invoked whenever an object is pushed onto a digester object stack,
-     *        or popped off one.
+     * @param stackAction the callback object which is invoked whenever an object is pushed onto a digester
+     *        object stack, or popped off one.
      * @since 1.8
      */
     public void setStackAction( StackAction stackAction )
