@@ -31,7 +31,8 @@ package org.apache.commons.digester3;
  * configuring the value to be returned by <code>getNamespaceURI()</code>.</li>
  * <li>As you are configuring your Digester instance, call <code>digester.addRuleSet()</code> and pass the RuleSet
  * instance.</li>
- * <li>Digester will call the <code>addRuleInstances()</code> method of your RuleSet to configure the necessary rules.</li>
+ * <li>Digester will call the <code>addRuleInstances()</code> method of your RuleSet to configure the
+ * necessary rules.</li>
  * </ul>
  */
 public interface RuleSet
