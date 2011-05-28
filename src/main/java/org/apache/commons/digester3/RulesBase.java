@@ -77,7 +77,7 @@ public class RulesBase
     // ------------------------------------------------------------- Properties
 
     /**
-     * Return the Digester instance with which this Rules instance is associated.
+     * {@inheritDoc}
      */
     public Digester getDigester()
     {
@@ -85,9 +85,7 @@ public class RulesBase
     }
 
     /**
-     * Set the Digester instance with which this Rules instance is associated.
-     * 
-     * @param digester The newly associated Digester instance
+     * {@inheritDoc}
      */
     public void setDigester( Digester digester )
     {
@@ -99,7 +97,7 @@ public class RulesBase
     }
 
     /**
-     * Return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
+     * {@inheritDoc}
      */
     public String getNamespaceURI()
     {
@@ -107,10 +105,7 @@ public class RulesBase
     }
 
     /**
-     * Set the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
-     * 
-     * @param namespaceURI Namespace URI that must match on all subsequently added rules, or <code>null</code> for
-     *            matching regardless of the current namespace URI
+     * {@inheritDoc}
      */
     public void setNamespaceURI( String namespaceURI )
     {
@@ -120,10 +115,7 @@ public class RulesBase
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Register a new Rule instance matching the specified pattern.
-     * 
-     * @param pattern Nesting pattern to be matched for this Rule
-     * @param rule Rule instance to be registered
+     * {@inheritDoc}
      */
     public void add( String pattern, Rule rule )
     {
@@ -153,7 +145,7 @@ public class RulesBase
     }
 
     /**
-     * Clear all existing Rule instance registrations.
+     * {@inheritDoc}
      */
     public void clear()
     {
@@ -162,13 +154,7 @@ public class RulesBase
     }
 
     /**
-     * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
-     * there are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
-     * 
-     * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
-     *            namespace URI
-     * @param pattern Nesting pattern to be matched
+     * {@inheritDoc}
      */
     public List<Rule> match( String namespaceURI, String pattern )
     {
@@ -202,9 +188,7 @@ public class RulesBase
     }
 
     /**
-     * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
-     * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
+     * {@inheritDoc}
      */
     public List<Rule> rules()
     {
@@ -220,6 +204,7 @@ public class RulesBase
      * @param namespaceURI Namespace URI to match, or <code>null</code> to select matching rules regardless of namespace
      *            URI
      * @param pattern Pattern to be matched
+     * @return a List of Rule instances for the specified pattern that also match the specified namespace URI (if any)
      */
     protected List<Rule> lookup( String namespaceURI, String pattern )
     {
