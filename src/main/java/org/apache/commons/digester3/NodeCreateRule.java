@@ -400,7 +400,8 @@ public class NodeCreateRule
                 element = doc.createElementNS( namespaceURI, name );
                 for ( int i = 0; i < attributes.getLength(); i++ )
                 {
-                    element.setAttributeNS( attributes.getURI( i ), attributes.getQName( i ), attributes.getValue( i ) );
+                    element.setAttributeNS( attributes.getURI( i ), attributes.getQName( i ),
+                                            attributes.getValue( i ) );
                 }
             }
             else
