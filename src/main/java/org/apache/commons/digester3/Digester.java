@@ -2537,7 +2537,6 @@ public class Digester
      * @param stackName the name of the stack from which the top value is to be popped.
      * @return the top <code>Object</code> on the stack or or null if the stack is either empty or has not been created
      *         yet
-     * @throws EmptyStackException if the named stack is empty
      * @since 1.6
      */
     public <T> T pop( String stackName )
@@ -2574,7 +2573,6 @@ public class Digester
      * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param stackName the name of the stack to be peeked
      * @return the top <code>Object</code> on the stack or null if the stack is either empty or has not been created yet
-     * @throws EmptyStackException if the named stack is empty
      * @since 1.6
      */
     public <T> T peek( String stackName )
@@ -2594,7 +2592,6 @@ public class Digester
      * @param stackName the name of the stack to be peeked
      * @param n Index of the desired element, where 0 is the top of the stack, 1 is the next element down, and so on.
      * @return the specified <code>Object</code> on the stack.
-     * @throws EmptyStackException if the named stack is empty
      * @since 1.6
      */
     public <T> T peek( String stackName, int n )
