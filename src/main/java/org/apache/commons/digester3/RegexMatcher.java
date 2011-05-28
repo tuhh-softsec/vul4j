@@ -24,7 +24,7 @@ package org.apache.commons.digester3;
  * 
  * @since 1.5
  */
-abstract public class RegexMatcher
+public abstract class RegexMatcher
 {
 
     /**
@@ -35,6 +35,6 @@ abstract public class RegexMatcher
      * @param rulePattern the regex pattern the path will be tested against
      * @return true if the given pattern matches the given path
      */
-    abstract public boolean match( String pathPattern, String rulePattern );
+    public abstract boolean match( String pathPattern, String rulePattern );
 
 }
