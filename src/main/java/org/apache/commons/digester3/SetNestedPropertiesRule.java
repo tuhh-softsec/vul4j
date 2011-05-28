@@ -208,7 +208,9 @@ public class SetNestedPropertiesRule
 
     // --------------------------------------------------------- Public Methods
 
-    /** Invoked when rule is added to digester. */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDigester( Digester digester )
     {
@@ -219,13 +221,20 @@ public class SetNestedPropertiesRule
     /**
      * When set to true, any text within child elements will have leading and trailing whitespace removed before
      * assignment to the target object. The default value for this attribute is true.
+     *
+     * @param trimData flag to have leading and trailing whitespace removed
      */
     public void setTrimData( boolean trimData )
     {
         this.trimData = trimData;
     }
 
-    /** See {@link #setTrimData}. */
+    /**
+     * Return the flag to have leading and trailing whitespace removed.
+     *
+     * @see {@link #setTrimData}.
+     * @return flag to have leading and trailing whitespace removed
+     */
     public boolean getTrimData()
     {
         return trimData;
@@ -241,24 +250,27 @@ public class SetNestedPropertiesRule
      * When set to true, any child element for which there is no corresponding object property will simply be ignored.
      * <p>
      * The default value of this attribute is false (unknown child elements are not allowed).
+     *
+     * @param flag to ignore any child element for which there is no corresponding object property
      */
     public void setAllowUnknownChildElements( boolean allowUnknownChildElements )
     {
         this.allowUnknownChildElements = allowUnknownChildElements;
     }
 
-    /** See {@link #setAllowUnknownChildElements}. */
+    /**
+     * Return the flag to ignore any child element for which there is no corresponding object property
+     *
+     * @return flag to ignore any child element for which there is no corresponding object property
+     * @see {@link #setAllowUnknownChildElements}.
+     */
     public boolean getAllowUnknownChildElements()
     {
         return allowUnknownChildElements;
     }
 
     /**
-     * Process the beginning of this element.
-     * 
-     * @param namespace is the namespace this attribute is in, or null
-     * @param name is the name of the current xml element
-     * @param attributes is the attribute list of this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -273,8 +285,7 @@ public class SetNestedPropertiesRule
     }
 
     /**
-     * This is only invoked after all child elements have been processed, so we can remove the custom Rules object that
-     * does the child-element-matching.
+     * {@inheritDoc}
      */
     @Override
     public void body( String namespace, String name, String text )
@@ -290,6 +301,9 @@ public class SetNestedPropertiesRule
      * This is primarily intended to be used from the xml rules module (as it is not possible there to pass the
      * necessary parameters to the constructor for this class). However it is valid to use this method directly if
      * desired.
+     *
+     * @param elementName the xml-element has to be mapped
+     * @param propertyName the property name target
      */
     public void addAlias( String elementName, String propertyName )
     {
@@ -297,7 +311,7 @@ public class SetNestedPropertiesRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
