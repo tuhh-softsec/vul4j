@@ -131,7 +131,7 @@ public class SetNextRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -177,7 +177,7 @@ public class SetNextRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
