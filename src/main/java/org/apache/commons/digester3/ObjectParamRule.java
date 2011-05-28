@@ -87,9 +87,7 @@ public class ObjectParamRule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Process the start of this element.
-     * 
-     * @param attributes The attribute list for this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -115,7 +113,7 @@ public class ObjectParamRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
