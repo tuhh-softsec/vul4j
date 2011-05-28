@@ -29,6 +29,8 @@ import org.xml.sax.Attributes;
  * <p>
  * {@link AbstractObjectCreationFactory} is an abstract implementation suitable for creating anonymous
  * <code>ObjectCreationFactory</code> implementations.
+ *
+ * @param <T> The object type created byt the factory.
  */
 public interface ObjectCreationFactory<T>
 {
@@ -44,13 +46,13 @@ public interface ObjectCreationFactory<T>
         throws Exception;
 
     /**
-     * <p>
      * Returns the {@link Digester} that was set by the {@link FactoryCreateRule} upon initialization.
+     *
+     * @return the {@link Digester} that was set by the {@link FactoryCreateRule} upon initialization
      */
     Digester getDigester();
 
     /**
-     * <p>
      * Set the {@link Digester} to allow the implementation to do logging, classloading based on the digester's
      * classloader, etc.
      * 
