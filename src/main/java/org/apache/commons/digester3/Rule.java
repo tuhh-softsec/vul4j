@@ -59,6 +59,8 @@ public abstract class Rule
 
     /**
      * Return the Digester with which this Rule is associated.
+     *
+     * @return the Digester with which this Rule is associated
      */
     public Digester getDigester()
     {
@@ -67,6 +69,8 @@ public abstract class Rule
 
     /**
      * Set the <code>Digester</code> with which this <code>Rule</code> is associated.
+     *
+     * @param digester the <code>Digester</code> with which this <code>Rule</code> is associated
      */
     public void setDigester( Digester digester )
     {
@@ -75,6 +79,8 @@ public abstract class Rule
 
     /**
      * Return the namespace URI for which this Rule is relevant, if any.
+     *
+     * @return the namespace URI for which this Rule is relevant, if any
      */
     public String getNamespaceURI()
     {
@@ -103,6 +109,7 @@ public abstract class Rule
      *            aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param attributes The attribute list of this element
+     * @throws Exception if any error occurs
      * @since Digester 1.4
      */
     public void begin( String namespace, String name, Attributes attributes )
@@ -122,6 +129,7 @@ public abstract class Rule
      *            aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param text The text of the body of this element
+     * @throws Exception if any error occurs
      * @since Digester 1.4
      */
     public void body( String namespace, String name, String text )
@@ -138,6 +146,7 @@ public abstract class Rule
      * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @throws Exception if any error occurs
      * @since Digester 1.4
      */
     public void end( String namespace, String name )
@@ -148,6 +157,8 @@ public abstract class Rule
 
     /**
      * This method is called after all parsing methods have been called, to allow Rules to remove temporary data.
+     *
+     * @throws Exception if any error occurs
      */
     public void finish()
         throws Exception
