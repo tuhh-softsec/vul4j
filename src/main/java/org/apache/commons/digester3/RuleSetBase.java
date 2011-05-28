@@ -60,21 +60,11 @@ public abstract class RuleSetBase
     // ------------------------------------------------------------- Properties
 
     /**
-     * Return the namespace URI that will be applied to all Rule instances created from this RuleSet.
+     * {@inheritDoc}
      */
     public String getNamespaceURI()
     {
         return ( this.namespaceURI );
     }
-
-    // --------------------------------------------------------- Public Methods
-
-    /**
-     * Add the set of Rule instances defined in this RuleSet to the specified <code>Digester</code> instance,
-     * associating them with our namespace URI (if any). This method should only be called by a Digester instance.
-     * 
-     * @param digester Digester instance to which the new Rule instances should be added.
-     */
-    public abstract void addRuleInstances( Digester digester );
 
 }
