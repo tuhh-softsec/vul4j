@@ -172,8 +172,13 @@ public class SetPropertiesRule
 
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( "[SetPropertiesRule]{" + getDigester().getMatch()
-                                                     + "} Setting property '" + attributeName + "' to '" + value + "'" );
+                getDigester().getLogger().debug( "[SetPropertiesRule]{"
+                                                 + getDigester().getMatch()
+                                                 + "} Setting property '"
+                                                 + attributeName
+                                                 + "' to '"
+                                                 + value
+                                                 + "'" );
             }
 
             if ( ( !ignoreMissingProperty ) && ( attributeName != null ) )
