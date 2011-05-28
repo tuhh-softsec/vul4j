@@ -129,7 +129,7 @@ public class CallParamRule
     /**
      * Set the attribute from which to save the parameter value.
      *
-     * @param The attribute from which to save the parameter value
+     * @param attributeName The attribute from which to save the parameter value
      * @since 3.0
      */
     public void setAttributeName( String attributeName )
@@ -138,9 +138,7 @@ public class CallParamRule
     }
 
     /**
-     * Process the start of this element.
-     * 
-     * @param attributes The attribute list for this element
+     * {@inheritDoc}
      */
     @Override
     public void begin( String namespace, String name, Attributes attributes )
@@ -184,9 +182,7 @@ public class CallParamRule
     }
 
     /**
-     * Process the body text of this element.
-     * 
-     * @param bodyText The body text of this element
+     * {@inheritDoc}
      */
     @Override
     public void body( String namespace, String name, String text )
@@ -206,7 +202,7 @@ public class CallParamRule
     }
 
     /**
-     * Process any body texts now.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -220,7 +216,7 @@ public class CallParamRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
