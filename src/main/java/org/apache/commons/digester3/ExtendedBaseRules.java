@@ -159,10 +159,7 @@ public class ExtendedBaseRules
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Register a new Rule instance matching the specified pattern.
-     * 
-     * @param pattern Nesting pattern to be matched for this Rule
-     * @param rule Rule instance to be registered
+     * {@inheritDoc}
      */
     @Override
     public void add( String pattern, Rule rule )
@@ -173,11 +170,7 @@ public class ExtendedBaseRules
     }
 
     /**
-     * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
-     * there are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
-     * 
-     * @param pattern Nesting pattern to be matched
+     * {@inheritDoc}
      */
     @Override
     public List<Rule> match( String namespace, String pattern )
@@ -455,7 +448,12 @@ public class ExtendedBaseRules
     }
 
     /**
-     * Matching parent.
+     * Checks the input parentPattern contains the input key at the end.
+     *
+     * @param key The key to be found
+     * @param pattern FIXME unused
+     * @param parentPattern The pattern where looking for the key
+     * @return true, if {@code key} is found inside {@code parentPattern}, false otherwise
      */
     private boolean parentMatch( String key, String pattern, String parentPattern )
     {
@@ -464,6 +462,10 @@ public class ExtendedBaseRules
 
     /**
      * Standard match. Matches the end of the pattern to the key.
+     *
+     * @param key The key to be found
+     * @param pattern The pattern where looking for the key
+     * @return true, if {@code key} is found inside {@code pattern}, false otherwise
      */
     private boolean basicMatch( String key, String pattern )
     {
@@ -472,6 +474,9 @@ public class ExtendedBaseRules
 
     /**
      * Finds an exact ancester match for given pattern
+     *
+     * @param parentPattern The input pattern
+     * @return A list of {@code Rule} related to the input pattern
      */
     private List<Rule> findExactAncesterMatch( String parentPattern )
     {
