@@ -100,8 +100,8 @@ public class SetRootRule
      * The default setting is to disable exact matches.
      * </p>
      * 
-     * @return true iff exact matching is enabled
-     * @since Digester Release 1.1.1
+     * @return true if exact matching is enabled
+     * @since 1.1.1
      */
     public boolean isExactMatch()
     {
@@ -117,7 +117,7 @@ public class SetRootRule
      * </p>
      * 
      * @param useExactMatch should this rule use exact method matching
-     * @since Digester Release 1.1.1
+     * @since 1.1.1
      */
     public void setExactMatch( boolean useExactMatch )
     {
@@ -125,7 +125,7 @@ public class SetRootRule
     }
 
     /**
-     * Process the end of this element.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -171,7 +171,7 @@ public class SetRootRule
     }
 
     /**
-     * Render a printable version of this Rule.
+     * {@inheritDoc}
      */
     @Override
     public String toString()
