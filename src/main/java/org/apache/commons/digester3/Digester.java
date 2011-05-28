@@ -1522,6 +1522,7 @@ public class Digester
      * Parse the content of the specified file using this Digester. Returns the root element from the object stack (if
      * any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param file File containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
@@ -1547,6 +1548,7 @@ public class Digester
      * Parse the content of the specified input source using this Digester. Returns the root element from the object
      * stack (if any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param input Input source containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
@@ -1570,6 +1572,7 @@ public class Digester
      * Parse the content of the specified input stream using this Digester. Returns the root element from the object
      * stack (if any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param input Input stream containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
@@ -1594,6 +1597,7 @@ public class Digester
      * Parse the content of the specified reader using this Digester. Returns the root element from the object stack (if
      * any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param reader Reader containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
@@ -1618,6 +1622,7 @@ public class Digester
      * Parse the content of the specified URI using this Digester. Returns the root element from the object stack (if
      * any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param uri URI containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
@@ -1642,6 +1647,7 @@ public class Digester
      * Parse the content of the specified URL using this Digester. Returns the root element from the object stack (if
      * any).
      * 
+     * @param <T> the type used to auto-cast the returned object to the assigned variable type
      * @param url URL containing the XML data to be parsed
      * @return the root element from the object stack (if any)
      * @exception IOException if an input/output error occurs
