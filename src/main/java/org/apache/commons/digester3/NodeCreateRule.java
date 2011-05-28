@@ -299,6 +299,10 @@ public class NodeCreateRule
 
     /**
      * Default constructor. Creates an instance of this rule that will create a DOM {@link org.w3c.dom.Element Element}.
+     *
+     * @throws ParserConfigurationException if a DocumentBuilder cannot be created which satisfies the
+     *         configuration requested.
+     * @see DocumentBuilderFactory#newDocumentBuilder()
      */
     public NodeCreateRule()
         throws ParserConfigurationException
@@ -324,7 +328,9 @@ public class NodeCreateRule
      * 
      * @param nodeType the type of node to create, which can be either {@link org.w3c.dom.Node#ELEMENT_NODE
      *            Node.ELEMENT_NODE} or {@link org.w3c.dom.Node#DOCUMENT_FRAGMENT_NODE Node.DOCUMENT_FRAGMENT_NODE}
-     * @throws IllegalArgumentException if the node type is not supported
+     * @throws ParserConfigurationException if a DocumentBuilder cannot be created which satisfies the
+     *         configuration requested.
+     * @see DocumentBuilderFactory#newDocumentBuilder()
      */
     public NodeCreateRule( int nodeType )
         throws ParserConfigurationException
@@ -341,7 +347,6 @@ public class NodeCreateRule
      * @param nodeType the type of node to create, which can be either {@link org.w3c.dom.Node#ELEMENT_NODE
      *            Node.ELEMENT_NODE} or {@link org.w3c.dom.Node#DOCUMENT_FRAGMENT_NODE Node.DOCUMENT_FRAGMENT_NODE}
      * @param documentBuilder the JAXP <code>DocumentBuilder</code> to use
-     * @throws IllegalArgumentException if the node type is not supported
      */
     public NodeCreateRule( int nodeType, DocumentBuilder documentBuilder )
     {
@@ -420,7 +425,7 @@ public class NodeCreateRule
     }
 
     /**
-     * Pop the Node off the top of the stack.
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
