@@ -81,7 +81,7 @@ public class BeanPropertySetterRule
     /**
      * The body text used to set the property.
      */
-    protected String bodyText = null;
+    private String bodyText = null;
 
     // --------------------------------------------------------- Public Methods
 
@@ -93,6 +93,16 @@ public class BeanPropertySetterRule
     public String getPropertyName()
     {
         return propertyName;
+    }
+
+    /**
+     * Returns the body text used to set the property.
+     *
+     * @return The body text used to set the property
+     */
+    protected String getBodyText()
+    {
+        return bodyText;
     }
 
     /**
