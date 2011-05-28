@@ -48,7 +48,8 @@ public interface StackAction
      * @param d is the digester instance.
      * @param stackName is the name of the stack onto which the object has been pushed. Null is passed to indicate the
      *            default stack.
-     * @param o is the object that has just been pushed. Calling peek on the specified stack will return the same object.
+     * @param o is the object that has just been pushed. Calling peek on the specified stack will return
+     *        the same object.
      * @return the object to be pushed. Normally, parameter o is returned but this method could return an alternate
      *         object to be pushed instead (eg a proxy for the provided object).
      */
