@@ -72,9 +72,8 @@ public class WithDefaultsRulesWrapper
 
     /**
      * Base constructor.
-     * 
+     *
      * @param wrappedRules the wrapped <code>Rules</code> implementation, not null
-     * @throws IllegalArgumentException when <code>wrappedRules</code> is null
      */
     public WithDefaultsRulesWrapper( Rules wrappedRules )
     {
@@ -87,13 +86,17 @@ public class WithDefaultsRulesWrapper
 
     // --------------------------------------------------------- Properties
 
-    /** Gets digester using these Rules */
+    /**
+     * {@inheritDoc}
+     */
     public Digester getDigester()
     {
         return wrappedRules.getDigester();
     }
 
-    /** Sets digeseter using these Rules */
+    /**
+     * {@inheritDoc}
+     */
     public void setDigester( Digester digester )
     {
         wrappedRules.setDigester( digester );
@@ -103,19 +106,27 @@ public class WithDefaultsRulesWrapper
         }
     }
 
-    /** Gets namespace to apply to Rule's added */
+    /**
+     * {@inheritDoc}
+     */
     public String getNamespaceURI()
     {
         return wrappedRules.getNamespaceURI();
     }
 
-    /** Sets namespace to apply to Rule's added subsequently */
+    /**
+     * {@inheritDoc}
+     */
     public void setNamespaceURI( String namespaceURI )
     {
         wrappedRules.setNamespaceURI( namespaceURI );
     }
 
-    /** Gets Rule's which will be fired when the wrapped implementation returns no matches */
+    /**
+     * Gets Rule's which will be fired when the wrapped implementation returns no matches
+     *
+     * @return Rule's which will be fired when the wrapped implementation returns no matches
+     **/
     public List<Rule> getDefaults()
     {
         return defaultRules;
@@ -124,8 +135,7 @@ public class WithDefaultsRulesWrapper
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Return list of rules matching given pattern. If wrapped implementation returns any matches return those.
-     * Otherwise, return default matches.
+     * {@inheritDoc}
      */
     public List<Rule> match( String namespaceURI, String pattern )
     {
@@ -139,7 +149,11 @@ public class WithDefaultsRulesWrapper
         return matches;
     }
 
-    /** Adds a rule to be fired when wrapped implementation returns no matches */
+    /**
+     * Adds a rule to be fired when wrapped implementation returns no matches
+     *
+     * @param rule a Rule to be fired when wrapped implementation returns no matches
+     **/
     public void addDefault( Rule rule )
     {
         // set up rule
@@ -157,13 +171,17 @@ public class WithDefaultsRulesWrapper
         allRules.add( rule );
     }
 
-    /** Gets all rules */
+    /**
+     * {@inheritDoc}
+     */
     public List<Rule> rules()
     {
         return allRules;
     }
 
-    /** Clears all Rule's */
+    /**
+     * {@inheritDoc}
+     */
     public void clear()
     {
         wrappedRules.clear();
@@ -172,7 +190,7 @@ public class WithDefaultsRulesWrapper
     }
 
     /**
-     * Adds a Rule to be fired on given pattern. Pattern matching is delegated to wrapped implementation.
+     * {@inheritDoc}
      */
     public void add( String pattern, Rule rule )
     {
