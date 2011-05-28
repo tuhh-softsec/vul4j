@@ -64,7 +64,7 @@ public class SimpleRegexMatcher
     /**
      * Sets the current <code>Log</code> implementation used by this class.
      *
-     * @param the current <code>Log</code> implementation used by this class.
+     * @param log the current <code>Log</code> implementation used by this class.
      */
     public void setLog( Log log )
     {
