@@ -40,7 +40,7 @@ public interface AnnotationHandler<A extends Annotation, E extends AnnotatedElem
      *
      * @param annotation the current visited annotation.
      * @param element the current visited annotated element.
-     * @param ruleModule the annotations {@code RulesModule} where providers have to be
+     * @param rulesBinder the annotations {@code RulesBinder} where providers have to be
      *        added.
      */
     void handle( A annotation, E element, RulesBinder rulesBinder );
