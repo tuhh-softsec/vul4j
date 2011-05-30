@@ -55,7 +55,7 @@ public final class PluginCreateRuleBuilder
      * Set the class which any specified plugin <i>must</i> be descended from.
      *
      * @param <T> Any Java type
-     * @param type
+     * @param type the class which any specified plugin <i>must</i> be descended from
      * @return this builder instance
      */
     public <T> PluginCreateRuleBuilder ofType( Class<T> type )
