@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
+import org.xml.sax.Attributes;
 
 /**
  * A Digester rule which allows the user to pre-declare a class which is to be referenced later at a plugin point by a
@@ -60,7 +61,7 @@ public class PluginDeclarationRule
      * @exception Exception if any error occurs
      */
     @Override
-    public void begin( String namespace, String name, org.xml.sax.Attributes attributes )
+    public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
         int nAttrs = attributes.getLength();
