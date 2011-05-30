@@ -57,6 +57,13 @@ public abstract class AbstractRulesModule
     protected abstract void configure();
 
     /**
+     * Records an error message which will be presented to the user at a later time.
+     *
+     * Uses {@link java.lang.String#format(String, Object...)} to insert the arguments into the message.
+     *
+     * @param messagePattern A
+     *        <a href="http://download.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax">format string</a>
+     * @param arguments Arguments referenced by the format specifiers in the format string
      * @see RulesBinder#addError(String, Object...)
      */
     protected void addError( String messagePattern, Object... arguments )
@@ -65,6 +72,10 @@ public abstract class AbstractRulesModule
     }
 
     /**
+     * Records an exception, the full details of which will be logged, and the message of which will be presented to
+     * the user at a later time.
+     *
+     * @param t The exception has to be recorded
      * @see RulesBinder#addError(Throwable)
      */
     protected void addError( Throwable t )
@@ -73,6 +84,9 @@ public abstract class AbstractRulesModule
     }
 
     /**
+     * Uses the given module to configure more bindings.
+     *
+     * @param rulesModule The module used to configure more bindings
      * @see RulesBinder#install(RulesModule)
      */
     protected void install( RulesModule rulesModule )
@@ -81,6 +95,10 @@ public abstract class AbstractRulesModule
     }
 
     /**
+     * Allows user binding one or more Digester rules to the input pattern.
+     *
+     * @param pattern The pattern used to bind rules
+     * @return The Digester rules builder
      * @see RulesBinder#forPattern(String)
      */
     protected LinkedRuleBuilder forPattern( String pattern )
