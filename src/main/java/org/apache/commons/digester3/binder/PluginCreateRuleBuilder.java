@@ -128,7 +128,8 @@ public final class PluginCreateRuleBuilder
     {
         if ( attrName == null )
         {
-            reportError( "createPlugin().setPluginClassAttribute( String, String )", "NULL attribute name not allowed" );
+            reportError( "createPlugin().setPluginClassAttribute( String, String )",
+                         "NULL attribute name not allowed" );
             return this;
         }
 
