@@ -73,10 +73,10 @@ public class MultiVariableExpander
      * <p>
      * If no substitutions were made, the input string object is returned (not a copy).
      *
-     * @param str 
-     * @param marker 
-     * @param source 
-     * @return 
+     * @param str The input string containing placeholders
+     * @param marker The input variables marker
+     * @param source The variables source
+     * @return The input string where variables have been expanded by replacing values found in source
      */
     public String expand( String str, String marker, Map<String, Object> source )
     {
