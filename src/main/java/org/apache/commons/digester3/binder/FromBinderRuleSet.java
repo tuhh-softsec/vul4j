@@ -52,11 +52,11 @@ final class FromBinderRuleSet
         new HashMap<Key, Collection<AbstractBackToLinkedRuleBuilder<? extends Rule>>>();
 
     /**
-     * 
+     * Register the given rule builder and returns it.
      *
-     * @param <R>
-     * @param <RB>
-     * @param ruleBuilder
+     * @param <R> The Digester rule type
+     * @param <RB> The Digester rule builder type
+     * @param ruleBuilder The input rule builder instance.
      */
     public <R extends Rule, RB extends AbstractBackToLinkedRuleBuilder<R>> void registerProvider( RB ruleBuilder )
     {
@@ -75,14 +75,18 @@ final class FromBinderRuleSet
     }
 
     /**
-     * 
+     * Returns the first instance of {@link RuleProvider} assignable to the input type.
      *
-     * @param <R>
-     * @param <RB>
-     * @param keyPattern
-     * @param namespaceURI
-     * @param type
-     * @return
+     * This method is useful for rules that requires be unique in the pattern,
+     * like {@link org.apache.commons.digester3.SetPropertiesRule}
+     * and {@link org.apache.commons.digester3.SetNestedPropertiesRule}.
+     *
+     * @param <R> The Digester rule type
+     * @param <RB> The Digester rule builder type
+     * @param keyPattern the rule pattern
+     * @param namespaceURI the namespace URI (can be null)
+     * @param type the rule builder type the client is looking for
+     * @return the rule builder of input type, if any
      */
     public <R extends Rule, RB extends AbstractBackToLinkedRuleBuilder<R>> RB getProvider( String keyPattern,
     /* @Nullable */String namespaceURI, Class<RB> type )
@@ -123,7 +127,8 @@ final class FromBinderRuleSet
      */
     public void addRuleInstances( Digester digester )
     {
-        for ( AbstractBackToLinkedRuleBuilder<? extends Rule> provider : providers ) {
+        for ( AbstractBackToLinkedRuleBuilder<? extends Rule> provider : providers )
+        {
             digester.addRule( provider.getPattern(), provider.get() );
         }
     }
