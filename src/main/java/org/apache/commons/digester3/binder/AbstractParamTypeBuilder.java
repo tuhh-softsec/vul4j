@@ -59,7 +59,7 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
      * @param paramType The Java class of the method's argument
      * @return this builder instance
      */
-    public final AbstractParamTypeBuilder<R> withParameterType(Class<?> paramType)
+    public final AbstractParamTypeBuilder<R> withParameterType( Class<?> paramType )
     {
         if ( paramType == null )
         {
