@@ -40,6 +40,10 @@ public abstract class RuleLoader
      * <p>
      * This method is invoked when the start of an xml tag is encountered which maps to a PluginCreateRule. Any rules
      * added here are removed from the digester when the end of that xml tag is encountered.
+     *
+     * @param d The gigester has to be configured
+     * @param path The path where rule has to be bound
+     * @throws PluginException if any error occurs
      */
     public abstract void addRules( Digester d, String path )
         throws PluginException;
