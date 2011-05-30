@@ -100,22 +100,22 @@ public final class NodeCreateRuleProvider
     public enum NodeType
     {
 
-        ATTRIBUTE(ATTRIBUTE_NODE),
-        CDATA(CDATA_SECTION_NODE),
-        COMMENT(COMMENT_NODE),
-        DOCUMENT_FRAGMENT(DOCUMENT_FRAGMENT_NODE),
-        DOCUMENT(DOCUMENT_NODE),
-        DOCUMENT_TYPE(DOCUMENT_TYPE_NODE),
-        ELEMENT(ELEMENT_NODE),
-        ENTITY(ENTITY_NODE),
-        ENTITY_REFERENCE(ENTITY_REFERENCE_NODE),
-        NOTATION(NOTATION_NODE),
-        PROCESSING_INSTRUCTION(PROCESSING_INSTRUCTION_NODE),
-        TEXT(TEXT_NODE);
+        ATTRIBUTE( ATTRIBUTE_NODE ),
+        CDATA( CDATA_SECTION_NODE ),
+        COMMENT( COMMENT_NODE ),
+        DOCUMENT_FRAGMENT( DOCUMENT_FRAGMENT_NODE ),
+        DOCUMENT( DOCUMENT_NODE ),
+        DOCUMENT_TYPE( DOCUMENT_TYPE_NODE ),
+        ELEMENT( ELEMENT_NODE ),
+        ENTITY( ENTITY_NODE ),
+        ENTITY_REFERENCE( ENTITY_REFERENCE_NODE ),
+        NOTATION( NOTATION_NODE ),
+        PROCESSING_INSTRUCTION( PROCESSING_INSTRUCTION_NODE ),
+        TEXT( TEXT_NODE );
 
         private final int documentType;
 
-        private NodeType(final int documentType)
+        private NodeType( final int documentType )
         {
             this.documentType = documentType;
         }
