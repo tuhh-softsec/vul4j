@@ -36,8 +36,7 @@ public interface AnnotationHandlerFactory
      * @param <H>
      * @param type the class of the object to be returned.
      * @return an instance of the specified class.
-     * @throws DigesterLoadingException if any error occurs while creating the
-     *         {@code type} instance.
+     * @throws Exception if any error occurs while creating the {@link AnnotationHandler} instance.
      */
     <H extends AnnotationHandler<? extends Annotation, ? extends AnnotatedElement>> H newInstance( Class<H> type )
         throws Exception;
