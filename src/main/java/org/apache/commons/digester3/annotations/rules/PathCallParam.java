@@ -45,8 +45,6 @@ public @interface PathCallParam
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 

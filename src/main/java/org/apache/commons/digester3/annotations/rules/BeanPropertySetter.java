@@ -45,8 +45,6 @@ public @interface BeanPropertySetter
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 

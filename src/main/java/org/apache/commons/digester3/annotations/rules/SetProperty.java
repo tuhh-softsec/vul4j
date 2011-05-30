@@ -45,8 +45,6 @@ public @interface SetProperty
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 
@@ -59,8 +57,6 @@ public @interface SetProperty
 
     /**
      * The overridden parameter.
-     * 
-     * @return the overridden parameter.
      */
     String attributeName() default "";
 

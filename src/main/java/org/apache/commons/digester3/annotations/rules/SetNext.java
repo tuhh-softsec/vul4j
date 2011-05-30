@@ -44,8 +44,6 @@ public @interface SetNext
 
     /**
      * Defines the concrete implementation(s) of @SetNext annotated method argument.
-     * 
-     * @return the concrete implementation(s) of @SetNext annotated method argument.
      */
     Class<?>[] value() default {};
 

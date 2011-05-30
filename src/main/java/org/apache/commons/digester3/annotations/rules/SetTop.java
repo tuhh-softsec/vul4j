@@ -45,8 +45,6 @@ public @interface SetTop
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 

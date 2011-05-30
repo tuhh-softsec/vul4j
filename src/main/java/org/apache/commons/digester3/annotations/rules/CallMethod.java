@@ -45,8 +45,6 @@ public @interface CallMethod
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 
@@ -59,8 +57,6 @@ public @interface CallMethod
 
     /**
      * Marks the {@link CallMethodRule} to be invoked using the matching element body as argument.
-     *
-     * @return the {@link CallMethodRule} to be invoked using the matching element body as argument flag
      */
     boolean usingElementBodyAsArgument() default false;
 

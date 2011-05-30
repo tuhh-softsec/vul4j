@@ -45,8 +45,6 @@ public @interface CallParam
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 
@@ -60,15 +58,13 @@ public @interface CallParam
     /**
      * The attribute from which to save the parameter value.
      *
-     * @return the attribute from which to save the parameter value
      * @since 3.0
      */
     String attributeName() default "";
 
     /**
      * Flags the parameter to be set from the stack.
-     * 
-     * @return true if the parameter has to be set from the stack, false otherwise
+     *
      * @since 3.0
      */
     boolean fromStack() default false;
@@ -76,7 +72,6 @@ public @interface CallParam
     /**
      * Sets the position of the object from the top of the stack.
      *
-     * @return The position of the object from the top of the stack
      * @since 3.0
      */
     int stackIndex() default 0;

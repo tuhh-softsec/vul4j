@@ -47,24 +47,19 @@ public @interface FactoryCreate
 {
 
     /**
-     * The Java class of the object creation factory class
-     * 
-     * @return the Java class of the object creation factory class.
+     * The Java class of the object creation factory class.
      */
     Class<? extends AbstractObjectCreationFactory<?>> factoryClass() default DefaultObjectCreationFactory.class;
 
     /**
      * Allows specify the attribute containing an override class name if it is present.
      *
-     * @return The attribute containing an override class name if it is present
      * @since 3.0
      */
     String attributeName() default "";
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 
@@ -77,8 +72,6 @@ public @interface FactoryCreate
 
     /**
      * When true any exceptions thrown during object creation will be ignored.
-     * 
-     * @return when true any exceptions thrown during object creation will be ignored.
      */
     boolean ignoreCreateExceptions() default false;
 

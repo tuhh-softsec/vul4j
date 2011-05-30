@@ -46,8 +46,6 @@ public @interface ObjectCreate
 
     /**
      * The element matching pattern.
-     * 
-     * @return the element matching pattern.
      */
     String pattern();
 
@@ -61,7 +59,6 @@ public @interface ObjectCreate
     /**
      * Allows specify the attribute containing an override class name if it is present.
      *
-     * @return The attribute containing an override class name if it is present
      * @since 3.0
      */
     String attributeName() default "";
