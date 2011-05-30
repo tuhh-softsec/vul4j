@@ -24,6 +24,7 @@ import org.apache.commons.digester3.Rule;
 /**
  * An object capable of providing instances of {@link Rule}.
  *
+ * @param <R> The Rule type created by the provider.
  * @since 3.0
  */
 public interface RuleProvider<R extends Rule>
