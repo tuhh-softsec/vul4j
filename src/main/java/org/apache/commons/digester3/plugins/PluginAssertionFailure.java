@@ -49,18 +49,19 @@ public class PluginAssertionFailure
 
     private static final long serialVersionUID = 1L;
 
-    private Throwable cause = null;
-
     /**
+     * Constructs a new exception with the specified cause.
+     *
      * @param cause underlying exception that caused this to be thrown
      */
     public PluginAssertionFailure( Throwable cause )
     {
-        this( cause.getMessage() );
-        this.cause = cause;
+        super( cause );
     }
 
     /**
+     * Constructs a new exception with the specified detail message.
+     *
      * @param msg describes the reason this exception is being thrown.
      */
     public PluginAssertionFailure( String msg )
@@ -69,24 +70,14 @@ public class PluginAssertionFailure
     }
 
     /**
+     * Constructs a new exception with the specified detail message and cause.
+     *
      * @param msg describes the reason this exception is being thrown.
      * @param cause underlying exception that caused this to be thrown
      */
     public PluginAssertionFailure( String msg, Throwable cause )
     {
-        this( msg );
-        this.cause = cause;
-    }
-
-    /**
-     * Return the cause of this exception (if any) as specified in the exception constructor.
-     * 
-     * @since 1.8
-     */
-    @Override
-    public Throwable getCause()
-    {
-        return cause;
+        super( msg, cause );
     }
 
 }
