@@ -153,6 +153,7 @@ public class Declaration
      *
      * @param digester The Digester instance where plugin has to be plugged
      * @param pm The plugin manager reference
+     * @throws PluginException if any error occurs while loading the rules
      */
     public void init( Digester digester, PluginManager pm )
         throws PluginException
