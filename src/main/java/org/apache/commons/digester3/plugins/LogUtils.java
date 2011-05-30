@@ -43,10 +43,9 @@ import org.apache.commons.logging.Log;
  * <p>
  * And it also implies that logging filtering can no longer be applied to subcomponents of the Digester, because all
  * logging is done via a single Log object (a single Category). C'est la vie...
- * 
+ *
  * @since 1.6
  */
-
 class LogUtils
 {
 
