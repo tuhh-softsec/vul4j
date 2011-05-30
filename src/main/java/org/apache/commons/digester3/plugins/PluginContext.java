@@ -48,18 +48,15 @@ import org.apache.commons.digester3.plugins.strategies.FinderSetProperties;
 public class PluginContext
 {
 
-    // TODO: Consider making following four constants static in 2.0
-    // the xml attribute the user uses on an xml element to specify
-    // the plugin's class
-    public final String DFLT_PLUGIN_CLASS_ATTR_NS = null;
+    private static final String DFLT_PLUGIN_CLASS_ATTR_NS = null;
 
-    public final String DFLT_PLUGIN_CLASS_ATTR = "plugin-class";
+    private static final String DFLT_PLUGIN_CLASS_ATTR = "plugin-class";
 
     // the xml attribute the user uses on an xml element to specify
     // the plugin's class
-    public final String DFLT_PLUGIN_ID_ATTR_NS = null;
+    private static final String DFLT_PLUGIN_ID_ATTR_NS = null;
 
-    public final String DFLT_PLUGIN_ID_ATTR = "plugin-id";
+    private static final String DFLT_PLUGIN_ID_ATTR = "plugin-id";
 
     /** See {@link #setPluginClassAttribute}. */
     private String pluginClassAttrNs = DFLT_PLUGIN_CLASS_ATTR_NS;
