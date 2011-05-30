@@ -33,10 +33,7 @@ public interface InitializableRule
      * instance is associated with more than one pattern, then this method will be called more than once.
      * 
      * @param pattern is the digester match pattern that will trigger this rule.
-     * @exception PluginConfigurationException is thrown if the InitializableRule determines that it cannot correctly
-     *                initialise itself for any reason.
      */
-    void postRegisterInit( String pattern )
-        throws PluginConfigurationException;
+    void postRegisterInit( String pattern );
 
 }

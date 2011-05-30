@@ -148,10 +148,8 @@ public class PluginCreateRule
      * all configuration data is valid and remember the pattern for later.
      * 
      * @param matchPattern is the digester match pattern that is associated with this rule instance, eg "root/widget".
-     * @exception PluginConfigurationException
      */
     public void postRegisterInit( String matchPattern )
-        throws PluginConfigurationException
     {
         Log log = LogUtils.getLogger( getDigester() );
         boolean debug = log.isDebugEnabled();
