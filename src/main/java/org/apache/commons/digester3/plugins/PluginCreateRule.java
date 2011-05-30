@@ -518,15 +518,14 @@ public class PluginCreateRule
         throws Exception
     {
 
-        if ( ( rules != null ) && ( rules.size() > 0 ) )
+        if ( ( rules != null ) && ( !rules.isEmpty() ) )
         {
             Log log = getDigester().getLogger();
             boolean debug = log.isDebugEnabled();
-            for ( int i = 0; i < rules.size(); i++ )
+            for ( Rule rule : rules )
             {
                 try
                 {
-                    Rule rule = rules.get( i );
                     if ( debug )
                     {
                         log.debug( "  Fire begin() for " + rule );
@@ -561,15 +560,14 @@ public class PluginCreateRule
     private void fireBodyMethods( List<Rule> rules, String namespaceURI, String name, String text )
         throws Exception
     {
-        if ( ( rules != null ) && ( rules.size() > 0 ) )
+        if ( ( rules != null ) && ( !rules.isEmpty() ) )
         {
             Log log = getDigester().getLogger();
             boolean debug = log.isDebugEnabled();
-            for ( int i = 0; i < rules.size(); i++ )
+            for ( Rule rule : rules )
             {
                 try
                 {
-                    Rule rule = rules.get( i );
                     if ( debug )
                     {
                         log.debug( "  Fire body() for " + rule );
