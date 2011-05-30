@@ -57,12 +57,11 @@ public class PluginDeclarationRule
      * @param namespace The xml namespace in which the xml element which triggered this rule resides.
      * @param name The name of the xml element which triggered this rule.
      * @param attributes The set of attributes on the xml element which triggered this rule.
-     * @exception java.lang.Exception
+     * @exception Exception if any error occurs
      */
-
     @Override
     public void begin( String namespace, String name, org.xml.sax.Attributes attributes )
-        throws java.lang.Exception
+        throws Exception
     {
         int nAttrs = attributes.getLength();
         Properties props = new Properties();
@@ -88,6 +87,13 @@ public class PluginDeclarationRule
         }
     }
 
+    /**
+     * Helper method to declare a plugin inside the given Digester.
+     *
+     * @param digester The Digester instance to declare plugin
+     * @param props the properties where extracting plugin attributes
+     * @throws PluginException if any error occurs while declaring the plugin
+     */
     public static void declarePlugin( Digester digester, Properties props )
         throws PluginException
     {
