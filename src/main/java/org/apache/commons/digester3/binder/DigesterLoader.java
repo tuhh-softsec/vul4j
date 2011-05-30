@@ -186,6 +186,8 @@ public final class DigesterLoader
 
     /**
      * Return the "namespace aware" flag for parsers we create.
+     *
+     * @return true, if the "namespace aware" flag for parsers we create, false otherwise.
      */
     public boolean isNamespaceAware()
     {
@@ -301,6 +303,8 @@ public final class DigesterLoader
 
     /**
      * Return the set of DTD URL registrations, keyed by public identifier.
+     *
+     * @return the set of DTD URL registrations.
      */
     public Map<String, URL> getRegistrations()
     {
