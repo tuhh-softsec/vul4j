@@ -95,6 +95,8 @@ public class PluginRules
 
     /**
      * Constructor for top-level Rules object which handles rule-matching using the specified implementation.
+     *
+     * @param decoratedRules The top-level Rules object which handles rule-matching using the specified implementation.
      */
     public PluginRules( Rules decoratedRules )
     {
@@ -116,6 +118,7 @@ public class PluginRules
      *            "nested parsing scope" to begin. This is expected to be equal to digester.getMatch().
      * @param parent must be non-null.
      * @param pluginClass is the plugin class whose custom rules will be loaded into this new PluginRules object.
+     * @throws PluginException if any error occurs
      */
     PluginRules( Digester digester, String mountPoint, PluginRules parent, Class<?> pluginClass )
         throws PluginException
@@ -146,6 +149,8 @@ public class PluginRules
 
     /**
      * Return the parent Rules object.
+     *
+     * @return the parent Rules object.
      */
     public Rules getParent()
     {
@@ -154,6 +159,8 @@ public class PluginRules
 
     /**
      * Return the Digester instance with which this instance is associated.
+     *
+     * @return the Digester instance with which this instance is associated.
      */
     public Digester getDigester()
     {
@@ -173,6 +180,8 @@ public class PluginRules
 
     /**
      * Return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
+     *
+     * @return the namespace URI that will be applied to all subsequently added <code>Rule</code> objects.
      */
     public String getNamespaceURI()
     {
@@ -202,6 +211,8 @@ public class PluginRules
 
     /**
      * See {@link PluginContext#getRuleFinders}.
+     *
+     * @return the list of RuleFinder objects
      */
     public List<RuleFinder> getRuleFinders()
     {
@@ -210,6 +221,8 @@ public class PluginRules
 
     /**
      * See {@link PluginContext#setRuleFinders}.
+     *
+     * @param ruleFinders the list of RuleFinder objects
      */
     public void setRuleFinders( List<RuleFinder> ruleFinders )
     {
@@ -218,6 +231,8 @@ public class PluginRules
 
     /**
      * Return the rules factory object (or null if one has not been specified).
+     *
+     * @return the rules factory object.
      */
     public RulesFactory getRulesFactory()
     {
@@ -227,6 +242,8 @@ public class PluginRules
     /**
      * Set the object which is used to generate the new Rules instances created to hold and process the rules associated
      * with each plugged-in class.
+     *
+     * @param factory the rules factory object
      */
     public void setRulesFactory( RulesFactory factory )
     {
@@ -238,6 +255,8 @@ public class PluginRules
     /**
      * This package-scope method is used by the PluginCreateRule class to get direct access to the rules that were
      * dynamically added by the plugin. No other class should need access to this object.
+     *
+     * @return The decorated Rule instance
      */
     Rules getDecoratedRules()
     {
@@ -343,6 +362,7 @@ public class PluginRules
      * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
      *            namespace URI
      * @param path the path to the xml nodes to be matched.
+     * @return The List of all registered Rule instances that match the specified nodepath
      */
     public List<Rule> match( String namespaceURI, String path )
     {
@@ -379,37 +399,70 @@ public class PluginRules
         return matches;
     }
 
-    /** See {@link PluginContext#setPluginClassAttribute}. */
+    /**
+     * See {@link PluginContext#setPluginClassAttribute}.
+     *
+     * @param namespaceUri is the namespace uri that the specified attribute is in. If the attribute is in no namespace,
+     *            then this should be null. Note that if a namespace is used, the attrName value should <i>not</i>
+     *            contain any kind of namespace-prefix. Note also that if you are using a non-namespace-aware parser,
+     *            this parameter <i>must</i> be null.
+     * @param attrName is the attribute whose value contains the name of the class to be instantiated.
+     * */
     public void setPluginClassAttribute( String namespaceUri, String attrName )
     {
         pluginContext.setPluginClassAttribute( namespaceUri, attrName );
     }
 
-    /** See {@link PluginContext#setPluginIdAttribute}. */
+    /**
+     * See {@link PluginContext#setPluginIdAttribute}.
+     * 
+     * @param namespaceUri is the namespace uri that the specified attribute is in. If the attribute is in no namespace,
+     *            then this should be null. Note that if a namespace is used, the attrName value should <i>not</i>
+     *            contain any kind of namespace-prefix. Note also that if you are using a non-namespace-aware parser,
+     *            this parameter <i>must</i> be null.
+     * @param attrName is the attribute whose value contains the id of the plugin declaration to be used when
+     *            instantiating an object.
+     **/
     public void setPluginIdAttribute( String namespaceUri, String attrName )
     {
         pluginContext.setPluginIdAttribute( namespaceUri, attrName );
     }
 
-    /** See {@link PluginContext#getPluginClassAttrNs}. */
+    /**
+     * See {@link PluginContext#getPluginClassAttrNs}.
+     *
+     * @return the namespace for the xml attribute which indicates which class is to be plugged in.
+     */
     public String getPluginClassAttrNs()
     {
         return pluginContext.getPluginClassAttrNs();
     }
 
-    /** See {@link PluginContext#getPluginClassAttr}. */
+    /**
+     * See {@link PluginContext#getPluginClassAttr}.
+     *
+     * @return the namespace for the xml attribute which indicates which class is to be plugged in.
+     */
     public String getPluginClassAttr()
     {
         return pluginContext.getPluginClassAttr();
     }
 
-    /** See {@link PluginContext#getPluginIdAttrNs}. */
+    /**
+     * See {@link PluginContext#getPluginIdAttrNs}.
+     *
+     * @return the namespace for the xml attribute which indicates which previous plugin declaration should be used.
+     */
     public String getPluginIdAttrNs()
     {
         return pluginContext.getPluginIdAttrNs();
     }
 
-    /** See {@link PluginContext#getPluginIdAttr}. */
+    /**
+     * See {@link PluginContext#getPluginIdAttr}.
+     *
+     * @return the namespace for the xml attribute which indicates which previous plugin declaration should be used.
+     */
     public String getPluginIdAttr()
     {
         return pluginContext.getPluginIdAttr();
