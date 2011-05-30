@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.logging.Log;
+import org.xml.sax.Attributes;
 
 /**
  * Allows the original rules for parsing the configuration file to define points at which plugins are allowed, by
@@ -506,14 +507,14 @@ public class PluginCreateRule
      * Duplicate the processing that the Digester does when firing the begin methods of rules. It would be really nice
      * if the Digester class provided a way for this functionality to just be invoked directly.
      *
-     * @param rules The rules which {@link Rule#begin(String, String, org.xml.sax.Attributes)} method has to be fired
+     * @param rules The rules which {@link Rule#begin(String, String, Attributes)} method has to be fired
      * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @param list The attribute list of this element
      * @throws Exception if any error occurs
      */
-    public void fireBeginMethods( List<Rule> rules, String namespace, String name, org.xml.sax.Attributes list )
+    public void fireBeginMethods( List<Rule> rules, String namespace, String name, Attributes list )
         throws Exception
     {
 
