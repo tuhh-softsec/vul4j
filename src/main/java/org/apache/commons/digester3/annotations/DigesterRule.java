@@ -42,16 +42,12 @@ public @interface DigesterRule
 
     /**
      * The reflected commons-digester rule.
-     * 
-     * @return the reflected commons-digester rule.
      */
     Class<? extends Rule> reflectsRule();
 
     /**
      * The handler that takes care on converting this annotation in the related
      * {@link AnnotationRuleProvider} and adds it o the {@link FromAnnotationsRuleSet}
-     *
-     * @return the {@link AnnotationHandler}
      */
     Class<? extends AnnotationHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy();
 
