@@ -56,6 +56,16 @@ public final class NodeCreateRuleProvider
         super( keyPattern, namespaceURI, mainBinder, mainBuilder );
     }
 
+    /**
+     * {@link NodeCreateRule} instance will be created either a DOM {@link org.w3c.dom.Element Element}
+     * or a DOM {@link org.w3c.dom.DocumentFragment DocumentFragment}, depending on the value of the
+     * <code>nodeType</code> parameter.
+     *
+     * @param nodeType the type of node to create, which can be either
+     *                 {@link org.w3c.dom.Node#ELEMENT_NODE Node.ELEMENT_NODE} or
+     *                 {@link org.w3c.dom.Node#DOCUMENT_FRAGMENT_NODE Node.DOCUMENT_FRAGMENT_NODE}
+     * @return this builder instance
+     */
     public NodeCreateRuleProvider ofType( NodeType nodeType )
     {
         if ( nodeType == null )
@@ -67,6 +77,13 @@ public final class NodeCreateRuleProvider
         return this;
     }
 
+    /**
+     * {@link NodeCreateRule} instance will be created a DOM {@link org.w3c.dom.Element Element}, but
+     * lets users specify the JAXP <code>DocumentBuilder</code> that should be used when constructing the node tree.
+     *
+     * @param documentBuilder the JAXP <code>DocumentBuilder</code> to use
+     * @return this builder instance
+     */
     public NodeCreateRuleProvider usingDocumentBuilder( DocumentBuilder documentBuilder )
     {
         this.documentBuilder = documentBuilder;
@@ -95,7 +112,7 @@ public final class NodeCreateRuleProvider
     }
 
     /**
-     * 
+     * Enumeration that wraps admitted {@link org.w3c.dom.Node} node constants.
      */
     public enum NodeType
     {
