@@ -514,7 +514,7 @@ public class PluginCreateRule
      * @throws Exception if any error occurs
      */
     public void fireBeginMethods( List<Rule> rules, String namespace, String name, org.xml.sax.Attributes list )
-        throws java.lang.Exception
+        throws Exception
     {
 
         if ( ( rules != null ) && ( rules.size() > 0 ) )
