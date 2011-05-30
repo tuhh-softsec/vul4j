@@ -78,7 +78,10 @@ public abstract class FromAnnotationsRuleModule
     protected abstract void configureRules();
 
     /**
-     * 
+     * Allows users plug a different {@link AnnotationHandlerFactory} to create {@link AnnotationHandler} instances.
+     *
+     * @param annotationHandlerFactory A custom {@link AnnotationHandlerFactory} to create
+     *        {@link AnnotationHandler} instances
      */
     protected final void useAnnotationHandlerFactory( AnnotationHandlerFactory annotationHandlerFactory )
     {
@@ -91,7 +94,7 @@ public abstract class FromAnnotationsRuleModule
     }
 
     /**
-     * 
+     * Allows users to switch back to the default {@link AnnotationHandlerFactory} implementation.
      */
     protected final void useDefaultAnnotationHandlerFactory()
     {
@@ -99,9 +102,10 @@ public abstract class FromAnnotationsRuleModule
     }
 
     /**
-     * 
+     * Scan the input Class, looking for Digester rules expressed via annotations, and binds them.
      *
-     * @param type
+     * @param type the type has to be analyzed
+     * @see DigesterRule
      */
     protected final void bindRulesFrom( final Class<?> type )
     {
