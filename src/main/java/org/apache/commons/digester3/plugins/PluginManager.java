@@ -55,7 +55,11 @@ public class PluginManager
 
     // ------------------- constructors ---------------------------------------
 
-    /** Construct a "root" PluginManager, ie one with no parent. */
+    /**
+     * Construct a "root" PluginManager, ie one with no parent.
+     *
+     * @param r The object containing data that should only exist once for each Digester instance.
+     */
     public PluginManager( PluginContext r )
     {
         pluginContext = r;
@@ -108,6 +112,8 @@ public class PluginManager
 
     /**
      * Return the declaration object with the specified class. If no such plugin is known, null is returned.
+     *
+     * @param className The {@link Declaration} class name
      */
     public Declaration getDeclarationByClass( String className )
     {
@@ -144,6 +150,14 @@ public class PluginManager
      * detects a source of custom rules for this plugin (aka a RuleLoader).
      * <p>
      * If no source of custom rules can be found, null is returned.
+     *
+     * @param digester The digeste rinstance where locating plugin classes
+     * @param id The id that the user associated with a particular plugin declaration in the input xml
+     * @param pluginClass The plugin Java class
+     * @param props The properties object that holds any xml attributes the user may have specified on the plugin
+     *        declaration in order to indicate how to locate the plugin rules.
+     * @return The discovered Rule loader instance
+     * @throws PluginException if any error occurs while finding the loader
      */
     public RuleLoader findLoader( Digester digester, String id, Class<?> pluginClass, Properties props )
         throws PluginException
