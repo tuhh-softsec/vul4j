@@ -76,12 +76,6 @@ public class PluginContext
      */
     private List<RuleFinder> ruleFinders;
 
-    // ------------------- constructors ---------------------------------------
-
-    public PluginContext()
-    {
-    }
-
     // ------------------- methods ---------------------------------------
 
     /**
