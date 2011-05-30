@@ -42,7 +42,7 @@ public final class BeanPropertySetterHandler
         rulesBinder.forPattern( annotation.pattern() )
             .withNamespaceURI( annotation.namespaceURI() )
             .setBeanProperty()
-            .withName( element.getName());
+            .withName( element.getName() );
     }
 
 }
