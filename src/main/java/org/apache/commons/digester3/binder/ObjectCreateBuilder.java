@@ -71,6 +71,7 @@ public final class ObjectCreateBuilder
     /**
      * Construct an object with the specified class.
      *
+     * @param <T> any java type
      * @param type Java class of the object to be created
      * @return this builder instance
      */
