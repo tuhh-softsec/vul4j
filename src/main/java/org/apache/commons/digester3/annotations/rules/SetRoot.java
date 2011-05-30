@@ -45,6 +45,6 @@ public @interface SetRoot
     /**
      * Defines the concrete implementation(s) of @SetRoot annotated method argument.
      */
-    Class<?>[] value() default {};
+    Class<?>[] value() default { };
 
 }
