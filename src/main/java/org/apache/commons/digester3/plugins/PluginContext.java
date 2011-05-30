@@ -116,7 +116,7 @@ public class PluginContext
      * If the intent is just to add an additional rule-finding algorithm, then it may be better to call #getRuleFinders,
      * and insert a new object into the start of the list.
      *
-     * @param the list of RuleFinder objects
+     * @param ruleFinders the list of RuleFinder objects
      */
     public void setRuleFinders( List<RuleFinder> ruleFinders )
     {
