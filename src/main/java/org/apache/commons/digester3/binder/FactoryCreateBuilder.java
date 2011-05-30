@@ -151,7 +151,7 @@ public final class FactoryCreateBuilder
                          "at least one between 'className', 'attributeName' or 'creationFactory' has to be specified" );
         }
 
-        if ( type != null || attributeName != null)
+        if ( type != null || attributeName != null )
         {
             return new FactoryCreateRule( type, attributeName, ignoreCreateExceptions );
         }
