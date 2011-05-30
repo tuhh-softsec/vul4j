@@ -139,6 +139,7 @@ public final class DigesterLoader
      * using the calling-class' ClassLoader.
      *
      * @param useContextClassLoader determines whether to use Context ClassLoader.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setUseContextClassLoader( boolean useContextClassLoader )
     {
@@ -150,6 +151,7 @@ public final class DigesterLoader
      * Set the class loader to be used for instantiating application objects when required.
      *
      * @param classLoader the class loader to be used for instantiating application objects when required.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setClassLoader( ClassLoader classLoader )
     {
@@ -161,7 +163,8 @@ public final class DigesterLoader
      * Sets the <code>Substitutor</code> to be used to convert attributes and body text.
      *
      * @param substitutor the Substitutor to be used to convert attributes and body text
-     * or null if not substitution of these values is to be performed.
+     *        or null if not substitution of these values is to be performed.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setSubstitutor( Substitutor substitutor )
     {
@@ -173,6 +176,7 @@ public final class DigesterLoader
      * Set the "namespace aware" flag for parsers we create.
      *
      * @param namespaceAware The new "namespace aware" flag
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setNamespaceAware( boolean namespaceAware )
     {
@@ -192,7 +196,8 @@ public final class DigesterLoader
      * Set the XInclude-aware flag for parsers we create. This additionally
      * requires namespace-awareness.
      *
-     * @param xincludeAware The new XInclude-aware flag
+     * @param xIncludeAware The new XInclude-aware flag
+     * @return This loader instance, useful to chain methods.
      * @see #setNamespaceAware(boolean)
      */
     public DigesterLoader setXIncludeAware( boolean xIncludeAware )
@@ -216,6 +221,7 @@ public final class DigesterLoader
      * Set the validating parser flag.
      *
      * @param validating The new validating parser flag.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setValidating( boolean validating )
     {
@@ -237,6 +243,7 @@ public final class DigesterLoader
      * Set the XML Schema to be used when parsing.
      *
      * @param schema The {@link Schema} instance to use.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setSchema( Schema schema )
     {
@@ -264,6 +271,7 @@ public final class DigesterLoader
      * </p>
      * @param publicId Public identifier of the DTD to be resolved
      * @param entityURL The URL to use for reading this DTD
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader register( String publicId, URL entityURL )
     {
@@ -277,6 +285,7 @@ public final class DigesterLoader
      *
      * @param publicId Public identifier of the entity to be resolved
      * @param entityURL The URL to use for reading this entity
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader register( String publicId, String entityURL )
     {
@@ -303,6 +312,7 @@ public final class DigesterLoader
      *
      * @param stackAction the Object which will receive callbacks for every pop/push action on the default stack
      *        or named stacks.
+     * @return This loader instance, useful to chain methods.
      */
     public DigesterLoader setStackAction( StackAction stackAction )
     {
@@ -421,8 +431,7 @@ public final class DigesterLoader
 
     /**
      * Add rules to an already created Digester instance, analyzing the digester annotations in the target class.
-     * 
-     * @param target the class has to be analyzed.
+     *
      * @param digester the Digester instance reference.
      */
     public void addRules( final Digester digester )
@@ -432,8 +441,9 @@ public final class DigesterLoader
     }
 
     /**
-     * 
-     * @return
+     * Creates a new {@link RuleSet} instance based on the current configuration.
+     *
+     * @return A new {@link RuleSet} instance based on the current configuration.
      */
     public RuleSet createRuleSet()
     {
