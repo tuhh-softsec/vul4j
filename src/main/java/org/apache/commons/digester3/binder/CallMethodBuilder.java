@@ -75,7 +75,7 @@ public final class CallMethodBuilder
      * If you wish to use a primitive type, specify the corresonding Java wrapper class instead,
      * such as {@code java.lang.Boolean.TYPE} for a {@code boolean} parameter.
      *
-     * @param The Java classe names that represent the parameter types of the method arguments
+     * @param paramTypeNames The Java classes names that represent the parameter types of the method arguments
      * @return this builder instance
      */
     public CallMethodBuilder withParamTypes( String... paramTypeNames )
