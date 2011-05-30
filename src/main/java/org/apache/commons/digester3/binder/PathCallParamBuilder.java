@@ -32,7 +32,8 @@ public final class PathCallParamBuilder
 
     private int paramIndex = 0;
 
-    PathCallParamBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder, LinkedRuleBuilder mainBuilder )
+    PathCallParamBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder,
+                          LinkedRuleBuilder mainBuilder )
     {
         super( keyPattern, namespaceURI, mainBinder, mainBuilder );
     }
@@ -60,7 +61,7 @@ public final class PathCallParamBuilder
     @Override
     protected PathCallParamRule createRule()
     {
-        return new PathCallParamRule(this.paramIndex);
+        return new PathCallParamRule( paramIndex );
     }
 
 }
