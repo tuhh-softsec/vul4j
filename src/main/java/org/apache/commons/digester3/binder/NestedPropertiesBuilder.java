@@ -89,7 +89,8 @@ public final class NestedPropertiesBuilder
      * and trailing whitespace removed before assignment to the target
      * object.
      *
-     * @param trimData
+     * @param trimData Flag to set any text within child elements will have leading
+     *                 and trailing whitespace removed
      * @return this builder instance
      */
     public NestedPropertiesBuilder trimData( boolean trimData )
@@ -99,10 +100,12 @@ public final class NestedPropertiesBuilder
     }
 
     /**
-     * 
+     * Determines whether an error is reported when a nested element is encountered for which there is no corresponding
+     * property-setter method.
      *
-     * @param allowUnknownChildElements
-     * @return
+     * @param allowUnknownChildElements flag to ignore any child element for which there is no corresponding
+     *        object property
+     * @return this builder instance
      */
     public NestedPropertiesBuilder allowUnknownChildElements( boolean allowUnknownChildElements )
     {
