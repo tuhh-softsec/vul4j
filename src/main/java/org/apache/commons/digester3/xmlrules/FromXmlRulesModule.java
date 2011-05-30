@@ -53,7 +53,7 @@ public abstract class FromXmlRulesModule
 
     private static final String DIGESTER_DTD_PATH = "digester-rules.dtd";
 
-    private final URL xmlRulesDtdUrl = FromXmlRulesModule.class.getResource(DIGESTER_DTD_PATH);
+    private final URL xmlRulesDtdUrl = FromXmlRulesModule.class.getResource( DIGESTER_DTD_PATH );
 
     private final List<InputSource> inputSource = new ArrayList<InputSource>();
 
@@ -220,14 +220,15 @@ public abstract class FromXmlRulesModule
         try
         {
             URLConnection connection = url.openConnection();
-            connection.setUseCaches(false);
+            connection.setUseCaches( false );
             InputStream stream = connection.getInputStream();
-            InputSource source = new InputSource(stream);
-            source.setSystemId(url.toExternalForm());
+            InputSource source = new InputSource( stream );
+            source.setSystemId( url.toExternalForm() );
 
             loadXMLRules( source );
         }
-        catch (Exception e) {
+        catch ( Exception e )
+        {
             rulesBinder().addError( e );
         }
     }
