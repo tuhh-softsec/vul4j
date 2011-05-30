@@ -409,15 +409,18 @@ public final class DigesterLoader
      * @param rules The custom user define {@link Rules} implementation
      * @return a new {@link Digester} instance
      */
-    public Digester newDigester(XMLReader reader, Rules rules) {
-        if (reader == null) {
-            throw new DigesterLoadingException("XMLReader must be not null");
+    public Digester newDigester( XMLReader reader, Rules rules )
+    {
+        if ( reader == null )
+        {
+            throw new DigesterLoadingException( "XMLReader must be not null" );
         }
-        if (rules == null) {
-            throw new DigesterLoadingException("Impossible to create a new Digester with null Rules");
+        if ( rules == null )
+        {
+            throw new DigesterLoadingException( "Impossible to create a new Digester with null Rules" );
         }
 
-        Digester digester = new Digester(reader);
+        Digester digester = new Digester( reader );
         digester.setRules( rules );
         digester.setSubstitutor( substitutor );
         digester.registerAll( entityValidator );
