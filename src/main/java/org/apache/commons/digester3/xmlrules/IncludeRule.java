@@ -103,7 +103,7 @@ final class IncludeRule
                         loadXMLRules( xmlRulesResource );
                     }
 
-                });
+                } );
             }
             else
             {
