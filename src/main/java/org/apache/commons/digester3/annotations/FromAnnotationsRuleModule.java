@@ -45,7 +45,7 @@ public abstract class FromAnnotationsRuleModule
 
     private static final String JAVA_PACKAGE = "java";
 
-    private static AnnotationHandlerFactory DEFAULT_HANDLER_FACTORY = new DefaultAnnotationHandlerFactory();
+    private static final AnnotationHandlerFactory DEFAULT_HANDLER_FACTORY = new DefaultAnnotationHandlerFactory();
 
     private AnnotationHandlerFactory annotationHandlerFactory = DEFAULT_HANDLER_FACTORY;
 
