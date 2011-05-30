@@ -51,6 +51,8 @@ public final class LinkedRuleBuilder
     /**
      * Construct rule that automatically sets a property from the body text, taking the property
      * name the same as the current element.
+     *
+     * @return a new {@link BeanPropertySetterBuilder} instance.
      */
     public BeanPropertySetterBuilder setBeanProperty()
     {
@@ -62,6 +64,7 @@ public final class LinkedRuleBuilder
      * subsequent {@link #callParam(int)} rule or from the body of this element.
      *
      * @param methodName Method name of the parent object to call
+     * @return a new {@link CallMethodBuilder} instance.
      */
     public CallMethodBuilder callMethod( String methodName )
     {
@@ -77,6 +80,8 @@ public final class LinkedRuleBuilder
 
     /**
      * Saves a parameter for use by a surrounding {@link #callMethod(String)}.
+     *
+     * @return a new {@link CallParamBuilder} instance.
      */
     public CallParamBuilder callParam()
     {
@@ -85,6 +90,8 @@ public final class LinkedRuleBuilder
 
     /**
      * Construct a "call parameter" rule that will save the body text of this element as the parameter value.
+     *
+     * @return a new {@link PathCallParamBuilder} instance.
      */
     public PathCallParamBuilder callParamPath()
     {
@@ -95,6 +102,8 @@ public final class LinkedRuleBuilder
      * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
      *
      * When the element is complete, the object will be popped.
+     *
+     * @return a new {@link FactoryCreateBuilder} instance.
      */
     public FactoryCreateBuilder factoryCreate()
     {
@@ -103,6 +112,8 @@ public final class LinkedRuleBuilder
 
     /**
      * Construct an object.
+     *
+     * @return a new {@link ObjectCreateBuilder} instance.
      */
     public ObjectCreateBuilder createObject()
     {
@@ -114,6 +125,7 @@ public final class LinkedRuleBuilder
      *
      * @param <T> The parameter type to pass along
      * @param paramObj The parameter to pass along
+     * @return a new {@link ObjectParamBuilder} instance.
      */
     public <T> ObjectParamBuilder<T> objectParam( /* @Nullable */T paramObj )
     {
@@ -123,6 +135,8 @@ public final class LinkedRuleBuilder
     /**
      * Sets properties on the object at the top of the stack,
      * based on child elements with names matching properties on that  object.
+     *
+     * @return a new {@link NestedPropertiesBuilder} instance.
      */
     public NestedPropertiesBuilder setNestedProperties()
     {
@@ -142,6 +156,7 @@ public final class LinkedRuleBuilder
      * commonly used to establish parent-child relationships.
      *
      * @param methodName Method name of the parent method to call
+     * @return a new {@link SetNextBuilder} instance.
      */
     public SetNextBuilder setNext( String methodName )
     {
@@ -156,6 +171,8 @@ public final class LinkedRuleBuilder
 
     /**
      * Sets properties on the object at the top of the stack, based on attributes with corresponding names.
+     *
+     * @return a new {@link SetPropertiesBuilder} instance.
      */
     public SetPropertiesBuilder setProperties()
     {
@@ -174,6 +191,7 @@ public final class LinkedRuleBuilder
      * Sets an individual property on the object at the top of the stack, based on attributes with specified names.
      *
      * @param attributePropertyName Name of the attribute that will contain the name of the property to be set
+     * @return a new {@link SetPropertyBuilder} instance.
      */
     public SetPropertyBuilder setProperty( String attributePropertyName )
     {
@@ -190,6 +208,7 @@ public final class LinkedRuleBuilder
      * Calls a method on the root object on the stack, passing the top object (child) as an argument.
      *
      * @param methodName Method name of the parent method to call
+     * @return a new {@link SetRootBuilder} instance.
      */
     public SetRootBuilder setRoot( String methodName )
     {
@@ -206,6 +225,7 @@ public final class LinkedRuleBuilder
      * Calls a "set top" method on the top (child) object, passing the (top-1) (parent) object as an argument.
      *
      * @param methodName Method name of the "set parent" method to call
+     * @return a new {@link SetTopBuilder} instance.
      */
     public SetTopBuilder setTop( String methodName )
     {
@@ -223,6 +243,8 @@ public final class LinkedRuleBuilder
      *
      * NOTE: when using this rule, make sure {@link org.apache.commons.digester3.Digester} instances
      * will be created using {@link org.apache.commons.digester3.plugins.PluginRules} rules strategy.
+     *
+     * @return a new {@link PluginDeclarationRuleBuilder} instance.
      */
     public PluginDeclarationRuleBuilder declarePlugin()
     {
@@ -230,10 +252,12 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * 
+     * A Digester rule which allows the user to declare a plugin.
      *
      * NOTE: when using this rule, make sure {@link org.apache.commons.digester3.Digester} instances
      * will be created using {@link org.apache.commons.digester3.plugins.PluginRules} rules strategy.
+     *
+     * @return a new {@link PluginDeclarationRuleBuilder} instance.
      */
     public PluginCreateRuleBuilder createPlugin()
     {
@@ -241,7 +265,9 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * TODO: fill javadoc
+     * A rule implementation that creates a DOM Node containing the XML at the element that matched the rule.
+     *
+     * @return a new {@link NodeCreateRuleProvider} instance.
      */
     public NodeCreateRuleProvider createNode()
     {
@@ -257,9 +283,9 @@ public final class LinkedRuleBuilder
      *
      * @see #addRuleCreatedBy(RuleProvider)
      * @see Rule#setDigester(org.apache.commons.digester3.Digester)
-     * @param <R>
-     * @param rule
-     * @return
+     * @param <R> The rule type
+     * @param rule The custom user rule
+     * @return a new {@link ByRuleBuilder} instance.
      */
     public <R extends Rule> ByRuleBuilder<R> addRule( R rule )
     {
@@ -274,9 +300,9 @@ public final class LinkedRuleBuilder
     /**
      * Add a custom user rule in the specified pattern built by the given provider.
      *
-     * @param <R>
-     * @param provider
-     * @return
+     * @param <R> The rule type
+     * @param provider The rule provider
+     * @return a new {@link ByRuleProviderBuilder} instance.
      */
     public <R extends Rule> ByRuleProviderBuilder<R> addRuleCreatedBy(RuleProvider<R> provider)
     {
