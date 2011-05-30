@@ -35,7 +35,8 @@ public final class SetPropertiesBuilder
 
     private boolean ignoreMissingProperty = true;
 
-    SetPropertiesBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder, LinkedRuleBuilder mainBuilder )
+    SetPropertiesBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder,
+                          LinkedRuleBuilder mainBuilder )
     {
         super( keyPattern, namespaceURI, mainBinder, mainBuilder );
     }
