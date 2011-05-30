@@ -22,10 +22,8 @@ package org.apache.commons.digester3.plugins;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.Iterator;
 
 import org.apache.commons.digester3.Digester;
-
 import org.apache.commons.logging.Log;
 
 /**
@@ -173,23 +171,21 @@ public class PluginManager
 
         List<RuleFinder> ruleFinders = pluginContext.getRuleFinders();
         RuleLoader ruleLoader = null;
-        try
+        for ( RuleFinder finder : ruleFinders )
         {
-            for ( Iterator<RuleFinder> i = ruleFinders.iterator(); i.hasNext() && ruleLoader == null; )
+            if ( debug )
             {
-
-                RuleFinder finder = i.next();
-                if ( debug )
-                {
-                    log.debug( "checking finder of type " + finder.getClass().getName() );
-                }
+                log.debug( "checking finder of type " + finder.getClass().getName() );
+            }
+            try
+            {
                 ruleLoader = finder.findLoader( digester, pluginClass, props );
             }
-        }
-        catch ( PluginException e )
-        {
-            throw new PluginException( "Unable to locate plugin rules for plugin" + " with id [" + id + "]"
-                + ", and class [" + pluginClass.getName() + "]" + ":" + e.getMessage(), e.getCause() );
+            catch ( PluginException e )
+            {
+                throw new PluginException( "Unable to locate plugin rules for plugin" + " with id [" + id + "]"
+                    + ", and class [" + pluginClass.getName() + "]" + ":" + e.getMessage(), e.getCause() );
+            }
         }
         log.debug( "scanned ruleFinders." );
 
