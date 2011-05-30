@@ -32,10 +32,9 @@ import java.security.PrivilegedAction;
 import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.annotations.reflect.MethodArgument;
 import org.apache.commons.digester3.binder.AbstractRulesModule;
-import org.apache.commons.digester3.binder.RulesModule;
 
 /**
- * {@link RulesModule} implementation that allows loading rules from
+ * {@link org.apache.commons.digester3.binder.RulesModule} implementation that allows loading rules from
  * annotated classes.
  *
  * @since 3.0
