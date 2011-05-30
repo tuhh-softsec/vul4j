@@ -122,6 +122,12 @@ public class PluginCreateRule
      * instantiated.
      * <p>
      * See {@link PluginRules#setPluginClassAttribute} for more info.
+     *
+     * @param namespaceUri is the namespace uri that the specified attribute is in. If the attribute is in no namespace,
+     *            then this should be null. Note that if a namespace is used, the attrName value should <i>not</i>
+     *            contain any kind of namespace-prefix. Note also that if you are using a non-namespace-aware parser,
+     *            this parameter <i>must</i> be null.
+     * @param attrName is the attribute whose value contains the name of the class to be instantiated.
      */
     public void setPluginClassAttribute( String namespaceUri, String attrName )
     {
@@ -134,6 +140,13 @@ public class PluginCreateRule
      * being referenced.
      * <p>
      * See {@link PluginRules#setPluginIdAttribute} for more info.
+     * 
+     * @param namespaceUri is the namespace uri that the specified attribute is in. If the attribute is in no namespace,
+     *            then this should be null. Note that if a namespace is used, the attrName value should <i>not</i>
+     *            contain any kind of namespace-prefix. Note also that if you are using a non-namespace-aware parser,
+     *            this parameter <i>must</i> be null.
+     * @param attrName is the attribute whose value contains the id of the plugin declaration to be used when
+     *            instantiating an object.
      */
     public void setPluginIdAttribute( String namespaceUri, String attrName )
     {
@@ -144,10 +157,7 @@ public class PluginCreateRule
     // ------------------- methods --------------------------------------------
 
     /**
-     * Invoked after this rule has been added to the set of digester rules, associated with the specified pattern. Check
-     * all configuration data is valid and remember the pattern for later.
-     * 
-     * @param matchPattern is the digester match pattern that is associated with this rule instance, eg "root/widget".
+     * {@inheritDoc}
      */
     public void postRegisterInit( String matchPattern )
     {
@@ -291,16 +301,15 @@ public class PluginCreateRule
      * are then loaded into that new Rules object. Finally, any custom rules that are associated with the current
      * pattern (such as SetPropertiesRules) have their begin methods executed.
      * 
-     * @param namespace
-     * @param name
-     * @param attributes
-     * @throws ClassNotFoundException
-     * @throws PluginInvalidInputException
-     * @throws PluginConfigurationException
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @param attributes The attribute list of this element
+     * @throws Exception if any error occurs
      */
     @Override
     public void begin( String namespace, String name, org.xml.sax.Attributes attributes )
-        throws java.lang.Exception
+        throws Exception
     {
         Log log = getDigester().getLogger();
         boolean debug = log.isDebugEnabled();
@@ -430,9 +439,7 @@ public class PluginCreateRule
     }
 
     /**
-     * Process the body text of this element.
-     * 
-     * @param text The body text of this element
+     * {@inheritDoc}
      */
     @Override
     public void body( String namespace, String name, String text )
@@ -459,12 +466,7 @@ public class PluginCreateRule
     }
 
     /**
-     * Invoked by the digester when the closing tag matching this Rule's pattern is encountered. </p>
-     * 
-     * @param namespace Description of the Parameter
-     * @param name Description of the Parameter
-     * @exception Exception Description of the Exception
-     * @see #begin
+     * {@inheritDoc}
      */
     @Override
     public void end( String namespace, String name )
@@ -503,6 +505,13 @@ public class PluginCreateRule
     /**
      * Duplicate the processing that the Digester does when firing the begin methods of rules. It would be really nice
      * if the Digester class provided a way for this functionality to just be invoked directly.
+     *
+     * @param rules The rules which {@link Rule#begin(String, String, org.xml.sax.Attributes)} method has to be fired
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @param list The attribute list of this element
+     * @throws Exception if any error occurs
      */
     public void fireBeginMethods( List<Rule> rules, String namespace, String name, org.xml.sax.Attributes list )
         throws java.lang.Exception
@@ -536,8 +545,17 @@ public class PluginCreateRule
     }
 
     /**
-     * Duplicate the processing that the Digester does when firing the body methods of rules. It would be really nice if
-     * the Digester class provided a way for this functionality to just be invoked directly.
+     * Duplicate the processing that the Digester does when firing the {@link Rule#body(String, String, String)} methods
+     * of rules.
+     *
+     * It would be really nice if the Digester class provided a way for this functionality to just be invoked directly.
+     *
+     * @param rules The rules which {@link Rule#body(String, String, String)} method has to be fired
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @param text The text of the body of this element
+     * @throws Exception if any error occurs
      */
     private void fireBodyMethods( List<Rule> rules, String namespaceURI, String name, String text )
         throws Exception
@@ -570,8 +588,15 @@ public class PluginCreateRule
     }
 
     /**
-     * Duplicate the processing that the Digester does when firing the end methods of rules. It would be really nice if
-     * the Digester class provided a way for this functionality to just be invoked directly.
+     * Duplicate the processing that the Digester does when firing the end methods of rules.
+     *
+     * It would be really nice if the Digester class provided a way for this functionality to just be invoked directly.
+     *
+     * @param rules The rules which {@link Rule#end(String, String)} method has to be fired
+     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     *            aware or the element has no namespace
+     * @param name the local name if the parser is namespace aware, or just the element name otherwise
+     * @throws Exception if any error occurs
      */
     public void fireEndMethods( List<Rule> rules, String namespaceURI, String name )
         throws Exception
