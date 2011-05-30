@@ -130,12 +130,14 @@ final class DefaultRulesBinder
     }
 
     /**
-     * 
+     * Records an error, the full details of which will be logged, and the message of which will be presented to the
+     * user at a later time.
      *
-     * @param errorMessage
+     * @param errorMessage The error to record.
      */
-    private void addError(ErrorMessage errorMessage) {
-        this.errors.add(errorMessage);
+    private void addError( ErrorMessage errorMessage )
+    {
+        this.errors.add( errorMessage );
     }
 
     /**
