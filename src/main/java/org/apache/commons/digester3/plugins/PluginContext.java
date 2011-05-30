@@ -90,6 +90,8 @@ public class PluginContext
      * first, then the list specified there is returned.
      * <p>
      * It is explicitly permitted for the caller to modify this list by inserting or removing RuleFinder objects.
+     *
+     * @return the list of RuleFinder objects
      */
     public List<RuleFinder> getRuleFinders()
     {
@@ -119,6 +121,8 @@ public class PluginContext
      * <p>
      * If the intent is just to add an additional rule-finding algorithm, then it may be better to call #getRuleFinders,
      * and insert a new object into the start of the list.
+     *
+     * @param the list of RuleFinder objects
      */
     public void setRuleFinders( List<RuleFinder> ruleFinders )
     {
@@ -210,6 +214,8 @@ public class PluginContext
      * Get the namespace for the xml attribute which indicates to a PluginCreateRule which class is to be plugged in.
      * <p>
      * May be null (in fact, normally will be).
+     *
+     * @return the namespace for the xml attribute which indicates which class is to be plugged in.
      */
     public String getPluginClassAttrNs()
     {
@@ -220,6 +226,8 @@ public class PluginContext
      * Get the namespace for the xml attribute which indicates to a PluginCreateRule which class is to be plugged in.
      * <p>
      * The return value is never null.
+     *
+     * @return the namespace for the xml attribute which indicates which class is to be plugged in.
      */
     public String getPluginClassAttr()
     {
@@ -231,6 +239,8 @@ public class PluginContext
      * should be used.
      * <p>
      * May be null (in fact, normally will be).
+     *
+     * @return the namespace for the xml attribute which indicates which previous plugin declaration should be used.
      */
     public String getPluginIdAttrNs()
     {
@@ -242,6 +252,8 @@ public class PluginContext
      * should be used.
      * <p>
      * The return value is never null.
+     *
+     * @return the namespace for the xml attribute which indicates which previous plugin declaration should be used.
      */
     public String getPluginIdAttr()
     {
