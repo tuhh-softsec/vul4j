@@ -43,7 +43,8 @@ import org.apache.commons.digester3.binder.RulesBinder;
  *
  * @since 3.0
  */
-abstract class AbstractMethodHandler<A extends Annotation> implements AnnotationHandler<A, Method> {
+abstract class AbstractMethodHandler<A extends Annotation> implements AnnotationHandler<A, Method>
+{
 
     /**
      * The default args size the method has to have in order to be analyzed.
