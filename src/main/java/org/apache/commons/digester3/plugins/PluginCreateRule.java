@@ -524,12 +524,12 @@ public class PluginCreateRule
             boolean debug = log.isDebugEnabled();
             for ( Rule rule : rules )
             {
+                if ( debug )
+                {
+                    log.debug( "  Fire begin() for " + rule );
+                }
                 try
                 {
-                    if ( debug )
-                    {
-                        log.debug( "  Fire begin() for " + rule );
-                    }
                     rule.begin( namespace, name, list );
                 }
                 catch ( Exception e )
@@ -566,12 +566,12 @@ public class PluginCreateRule
             boolean debug = log.isDebugEnabled();
             for ( Rule rule : rules )
             {
+                if ( debug )
+                {
+                    log.debug( "  Fire body() for " + rule );
+                }
                 try
                 {
-                    if ( debug )
-                    {
-                        log.debug( "  Fire body() for " + rule );
-                    }
                     rule.body( namespaceURI, name, text );
                 }
                 catch ( Exception e )
@@ -608,13 +608,13 @@ public class PluginCreateRule
             for ( int i = 0; i < rules.size(); i++ )
             {
                 int j = ( rules.size() - i ) - 1;
+                Rule rule = rules.get( j );
+                if ( debug )
+                {
+                    log.debug( "  Fire end() for " + rule );
+                }
                 try
                 {
-                    Rule rule = rules.get( j );
-                    if ( debug )
-                    {
-                        log.debug( "  Fire end() for " + rule );
-                    }
                     rule.end( namespaceURI, name );
                 }
                 catch ( Exception e )
