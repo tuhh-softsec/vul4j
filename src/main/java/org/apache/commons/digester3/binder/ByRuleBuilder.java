@@ -24,7 +24,7 @@ import org.apache.commons.digester3.Rule;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilderImpl#addRule(Rule)}.
  *
- * @param <R>
+ * @param <R> The rule type will be returned by this builder
  */
 public final class ByRuleBuilder<R extends Rule>
     extends AbstractBackToLinkedRuleBuilder<R>
@@ -32,7 +32,8 @@ public final class ByRuleBuilder<R extends Rule>
 
     private final R rule;
 
-    ByRuleBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder, LinkedRuleBuilder mainBuilder, R rule )
+    ByRuleBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder, LinkedRuleBuilder mainBuilder,
+                   R rule )
     {
         super( keyPattern, namespaceURI, mainBinder, mainBuilder );
         this.rule = rule;
