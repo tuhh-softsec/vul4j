@@ -42,7 +42,10 @@ final class FactoryCreateRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        linkedRuleBuilder.factoryCreate().ofType( attributes.getValue( "classname" ) ).overriddenByAttribute( attributes.getValue( "attrname" ) ).ignoreCreateExceptions( "true".equalsIgnoreCase( attributes.getValue( "ignore-exceptions" ) ) );
+        linkedRuleBuilder.factoryCreate()
+            .ofType( attributes.getValue( "classname" ) )
+            .overriddenByAttribute( attributes.getValue( "attrname" ) )
+            .ignoreCreateExceptions( "true".equalsIgnoreCase( attributes.getValue( "ignore-exceptions" ) ) );
     }
 
 }
