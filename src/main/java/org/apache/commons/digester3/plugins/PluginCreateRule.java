@@ -592,7 +592,7 @@ public class PluginCreateRule
      * It would be really nice if the Digester class provided a way for this functionality to just be invoked directly.
      *
      * @param rules The rules which {@link Rule#end(String, String)} method has to be fired
-     * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
+     * @param namespaceURI the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if any error occurs
