@@ -40,7 +40,7 @@ public abstract class RulesFactory
      * <p>
      * 
      * @param d is the digester that the returned rules object will be associated with.
-     * @param pluginClass is the class that is to be configured using rules added to the returnedobject.
+     * @param pluginClass is the class that is to be configured using rules added to the returned object.
      * @return an instance of some Rules implementation that the plugged-in class shall use to match its private parsing
      *         rules.
      * @throws PluginException if the algorithm finds a source of rules, but there is something invalid about that

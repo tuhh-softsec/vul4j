@@ -150,7 +150,7 @@ public class PluginManager
      * <p>
      * If no source of custom rules can be found, null is returned.
      *
-     * @param digester The digeste rinstance where locating plugin classes
+     * @param digester The digester instance where locating plugin classes
      * @param id The id that the user associated with a particular plugin declaration in the input xml
      * @param pluginClass The plugin Java class
      * @param props The properties object that holds any xml attributes the user may have specified on the plugin
