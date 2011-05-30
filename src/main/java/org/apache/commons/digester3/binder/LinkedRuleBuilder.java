@@ -56,7 +56,10 @@ public final class LinkedRuleBuilder
      */
     public BeanPropertySetterBuilder setBeanProperty()
     {
-        return addProvider( new BeanPropertySetterBuilder( this.keyPattern, this.namespaceURI, this.mainBinder, this ) );
+        return addProvider( new BeanPropertySetterBuilder( this.keyPattern,
+                                                           this.namespaceURI,
+                                                           this.mainBinder,
+                                                           this ) );
     }
 
     /**
@@ -201,7 +204,11 @@ public final class LinkedRuleBuilder
                                  keyPattern );
         }
 
-        return addProvider( new SetPropertyBuilder( keyPattern, namespaceURI, mainBinder, this, attributePropertyName ) );
+        return addProvider( new SetPropertyBuilder( keyPattern,
+                                                    namespaceURI,
+                                                    mainBinder,
+                                                    this,
+                                                    attributePropertyName ) );
     }
 
     /**
@@ -231,7 +238,8 @@ public final class LinkedRuleBuilder
     {
         if ( methodName == null || methodName.length() == 0 )
         {
-            mainBinder.addError( "{ forPattern( \"%s\" ).setTop( String ) } empty 'methodName' not allowed", keyPattern );
+            mainBinder.addError( "{ forPattern( \"%s\" ).setTop( String ) } empty 'methodName' not allowed",
+                                 keyPattern );
         }
 
         return addProvider( new SetTopBuilder( keyPattern, namespaceURI, mainBinder, this, methodName, classLoader ) );
@@ -304,11 +312,12 @@ public final class LinkedRuleBuilder
      * @param provider The rule provider
      * @return a new {@link ByRuleProviderBuilder} instance.
      */
-    public <R extends Rule> ByRuleProviderBuilder<R> addRuleCreatedBy(RuleProvider<R> provider)
+    public <R extends Rule> ByRuleProviderBuilder<R> addRuleCreatedBy( RuleProvider<R> provider )
     {
         if ( provider == null )
         {
-            mainBinder.addError( "{ forPattern( \"%s\" ).addRuleCreatedBy() } null rule provider not valid", keyPattern );
+            mainBinder.addError( "{ forPattern( \"%s\" ).addRuleCreatedBy() } null rule provider not valid",
+                                 keyPattern );
         }
 
         return addProvider( new ByRuleProviderBuilder<R>( keyPattern, namespaceURI, mainBinder, this, provider ) );
