@@ -21,12 +21,11 @@ package org.apache.commons.digester3.annotations.handlers;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.digester3.annotations.rules.SetNext;
 import org.apache.commons.digester3.annotations.rules.SetRoot;
 import org.apache.commons.digester3.binder.RulesBinder;
 
 /**
- * {@link SetNext} handler.
+ * {@link SetRoot} handler.
  *
  * @since 3.0
  */
