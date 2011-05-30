@@ -24,6 +24,7 @@ import org.apache.commons.digester3.ObjectParamRule;
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#objectParam(Object)}.
  *
+ * @param <T> The object type represented by this builder
  * @since 3.0
  */
 public final class ObjectParamBuilder<T>
@@ -49,9 +50,11 @@ public final class ObjectParamBuilder<T>
      * @param paramIndex The zero-relative index of the parameter we are saving
      * @return this builder instance
      */
-    public ObjectParamBuilder<T> ofIndex(int paramIndex) {
-        if (paramIndex < 0) {
-            this.reportError("objectParam(%s).ofIndex(int)", "negative index argument not allowed");
+    public ObjectParamBuilder<T> ofIndex( int paramIndex )
+    {
+        if ( paramIndex < 0 )
+        {
+            this.reportError( "objectParam( %s ).ofIndex( int )", "negative index argument not allowed" );
         }
 
         this.paramIndex = paramIndex;
@@ -64,7 +67,8 @@ public final class ObjectParamBuilder<T>
      * @param attributeName The attribute which we are attempting to match
      * @return this builder instance
      */
-    public ObjectParamBuilder<T> matchingAttribute(/* @Nullable */String attributeName) {
+    public ObjectParamBuilder<T> matchingAttribute( /* @Nullable */String attributeName )
+    {
         this.attributeName = attributeName;
         return this;
     }
