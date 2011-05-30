@@ -42,7 +42,9 @@ final class ObjectCreateRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        linkedRuleBuilder.createObject().ofType( attributes.getValue( "classname" ) ).ofTypeSpecifiedByAttribute( attributes.getValue( "attrname" ) );
+        linkedRuleBuilder.createObject()
+            .ofType( attributes.getValue( "classname" ) )
+            .ofTypeSpecifiedByAttribute( attributes.getValue( "attrname" ) );
     }
 
 }
