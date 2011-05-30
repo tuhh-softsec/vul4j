@@ -39,6 +39,12 @@ public class MultiVariableExpander
 
     private final ArrayList<Map<String, Object>> sources = new ArrayList<Map<String, Object>>( 2 );
 
+    /**
+     * Add a new variables source, identified by the input marker
+     *
+     * @param marker The input variables marker
+     * @param source The variables source
+     */
     public void addSource( String marker, Map<String, Object> source )
     {
         ++nEntries;
@@ -47,10 +53,7 @@ public class MultiVariableExpander
     }
 
     /**
-     * Expands any variable declarations using any of the known variable marker strings.
-     *
-     * @throws IllegalArgumentException if the input param references a variable which is not known to the specified
-     * source.
+     * {@inheritDoc}
      */
     public String expand( String param )
     {
@@ -69,9 +72,11 @@ public class MultiVariableExpander
      * Returns the string after performing all substitutions.
      * <p>
      * If no substitutions were made, the input string object is returned (not a copy).
-     * 
-     * @throws IllegalArgumentException if the input param references a variable which is not known to the specified
-     *             source.
+     *
+     * @param str 
+     * @param marker 
+     * @param source 
+     * @return 
      */
     public String expand( String str, String marker, Map<String, Object> source )
     {
