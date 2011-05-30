@@ -148,7 +148,7 @@ public final class FactoryCreateBuilder
         if ( type == null && attributeName == null && creationFactory == null )
         {
             reportError( "factoryCreate()",
-                         "at least one between 'className' ar 'attributeName' or 'creationFactory' has to be specified" );
+                         "at least one between 'className', 'attributeName' or 'creationFactory' has to be specified" );
         }
 
         if ( type != null || attributeName != null)
