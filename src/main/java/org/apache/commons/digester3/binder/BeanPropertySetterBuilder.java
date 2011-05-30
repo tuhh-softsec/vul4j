@@ -54,7 +54,7 @@ public final class BeanPropertySetterBuilder
     @Override
     protected BeanPropertySetterRule createRule()
     {
-        return new BeanPropertySetterRule(this.propertyName);
+        return new BeanPropertySetterRule( propertyName );
     }
 
 }
