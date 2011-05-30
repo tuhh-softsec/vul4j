@@ -43,7 +43,7 @@ public abstract class AbstractRulesModule
         this.rulesBinder = rulesBinder;
         try
         {
-            this.configure();
+            configure();
         }
         finally
         {
@@ -68,7 +68,7 @@ public abstract class AbstractRulesModule
      */
     protected void addError( String messagePattern, Object... arguments )
     {
-        this.rulesBinder.addError( messagePattern, arguments );
+        rulesBinder.addError( messagePattern, arguments );
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class AbstractRulesModule
      */
     protected void addError( Throwable t )
     {
-        this.rulesBinder.addError( t );
+        rulesBinder.addError( t );
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class AbstractRulesModule
      */
     protected void install( RulesModule rulesModule )
     {
-        this.rulesBinder.install( rulesModule );
+        rulesBinder.install( rulesModule );
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class AbstractRulesModule
      */
     protected LinkedRuleBuilder forPattern( String pattern )
     {
-        return this.rulesBinder.forPattern( pattern );
+        return rulesBinder.forPattern( pattern );
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractRulesModule
      */
     protected RulesBinder rulesBinder()
     {
-        return this.rulesBinder;
+        return rulesBinder;
     }
 
 }
