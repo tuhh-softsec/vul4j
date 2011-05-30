@@ -52,8 +52,9 @@ public final class PluginCreateRuleBuilder
     }
 
     /**
-     * 
-     * @param <T>
+     * Set the class which any specified plugin <i>must</i> be descended from.
+     *
+     * @param <T> Any Java type
      * @param type
      * @return this builder instance
      */
@@ -71,9 +72,10 @@ public final class PluginCreateRuleBuilder
     }
 
     /**
-     * 
-     * @param <T>
-     * @param type
+     * Set the class which will be used if the user doesn't specify any plugin-class or plugin-id.
+     *
+     * @param <T> Any Java type
+     * @param type the class which will be used if the user doesn't specify any plugin-class or plugin-id.
      * @return this builder instance
      */
     public <T> PluginCreateRuleBuilder usingDefaultPluginClass( /* @Nullable */Class<T> type )
@@ -83,9 +85,11 @@ public final class PluginCreateRuleBuilder
     }
 
     /**
-     * 
-     * @param <RL>
-     * @param ruleLoader
+     * Set RuleLoader instance which knows how to load the custom rules associated with the default plugin.
+     *
+     * @param <RL> Any {@link RuleLoader} extension.
+     * @param ruleLoader the RuleLoader instance which knows how to load the custom rules associated with
+     *        the default plugin.
      * @return this builder instance
      */
     public <RL extends RuleLoader> PluginCreateRuleBuilder usingRuleLoader( /* @Nullable */RL ruleLoader )
@@ -116,8 +120,8 @@ public final class PluginCreateRuleBuilder
      * Sets the xml attribute which the input xml uses to indicate to a
      * PluginCreateRule which class should be instantiated.
      *
-     * @param namespaceUri
-     * @param attrName
+     * @param namespaceUri The attribute NameSpace
+     * @param attrName The attribute name
      * @return this builder instance
      */
     public PluginCreateRuleBuilder setPluginClassAttribute( /* @Nullable */String namespaceUri, String attrName )
@@ -135,7 +139,7 @@ public final class PluginCreateRuleBuilder
      * Sets the xml attribute which the input xml uses to indicate to a 
      * PluginCreateRule which plugin declaration is being referenced.
      *
-     * @param attrName
+     * @param attrName The attribute name
      * @return this builder instance
      */
     public PluginCreateRuleBuilder setPluginIdAttribute( String attrName )
@@ -153,8 +157,8 @@ public final class PluginCreateRuleBuilder
      * Sets the xml attribute which the input xml uses to indicate to a 
      * PluginCreateRule which plugin declaration is being referenced.
      *
-     * @param namespaceUri
-     * @param attrName
+     * @param namespaceUri The attribute NameSpace
+     * @param attrName The attribute name
      * @return this builder instance
      */
     public PluginCreateRuleBuilder setPluginIdAttribute( /* @Nullable */String namespaceUri, String attrName )
@@ -169,11 +173,11 @@ public final class PluginCreateRuleBuilder
     }
 
     /**
-     * 
+     * Private internal method to set values to a {@link Map} instance and return the current builder.
      *
-     * @param map
-     * @param namespaceUri
-     * @param attrName
+     * @param map The target {@link Map}
+     * @param namespaceUri The attribute NameSpace
+     * @param attrName The attribute name
      * @return this builder instance
      */
     private PluginCreateRuleBuilder addToMap( Map<String, String> map, String namespaceUri, String attrName )
