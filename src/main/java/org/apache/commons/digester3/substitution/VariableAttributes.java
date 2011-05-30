@@ -24,11 +24,9 @@ import org.xml.sax.Attributes;
 import java.util.ArrayList;
 
 /**
- * <p>
- * Wrapper for an org.xml.sax.Attributes object which expands any "variables" referenced in the attribute value via
+ * Wrapper for an {@link Attributes} object which expands any "variables" referenced in the attribute value via
  * ${foo} or similar. This is only done when something actually asks for the attribute value, thereby imposing no
  * performance penalty if the attribute is not used.
- * </p>
  * 
  * @since 1.6
  */
@@ -47,6 +45,9 @@ public class VariableAttributes
 
     /**
      * Specify which attributes class this object is a proxy for.
+     *
+     * @param attrs The attributes where variables have to be expanded.
+     * @param expander The variables expander instance.
      */
     public void init( Attributes attrs, VariableExpander expander )
     {
@@ -58,6 +59,9 @@ public class VariableAttributes
         values.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getValue( int index )
     {
         if ( index >= values.size() )
@@ -92,6 +96,9 @@ public class VariableAttributes
         return s;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getValue( String qname )
     {
         int index = attrs.getIndex( qname );
@@ -102,6 +109,9 @@ public class VariableAttributes
         return getValue( index );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getValue( String uri, String localname )
     {
         int index = attrs.getIndex( uri, localname );
@@ -113,46 +123,73 @@ public class VariableAttributes
     }
 
     // plain proxy methods follow : nothing interesting :-)
+    /**
+     * {@inheritDoc}
+     */
     public int getIndex( String qname )
     {
         return attrs.getIndex( qname );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getIndex( String uri, String localpart )
     {
         return attrs.getIndex( uri, localpart );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int getLength()
     {
         return attrs.getLength();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getLocalName( int index )
     {
         return attrs.getLocalName( index );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getQName( int index )
     {
         return attrs.getQName( index );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getType( int index )
     {
         return attrs.getType( index );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getType( String qname )
     {
         return attrs.getType( qname );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getType( String uri, String localname )
     {
         return attrs.getType( uri, localname );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getURI( int index )
     {
         return attrs.getURI( index );
