@@ -221,6 +221,7 @@ public class Declaration
      *
      * @param digester The Digester instance where plugin has to be plugged
      * @param pattern The pattern the custom rules have to be bound
+     * @throws PluginException if any error occurs
      */
     public void configure( Digester digester, String pattern )
         throws PluginException
