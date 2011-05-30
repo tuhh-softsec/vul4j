@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.RuleSet;
 import org.apache.commons.digester3.plugins.PluginException;
 import org.apache.commons.digester3.plugins.RuleLoader;
 import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
@@ -95,7 +94,7 @@ public class LoaderFromStream
         // caching the input data in memory anyway.
 
         final InputSource source = new InputSource( new ByteArrayInputStream( input ) );
-        RuleSet ruleSet = newLoader( new FromXmlRulesModule()
+        newLoader( new FromXmlRulesModule()
         {
 
             @Override
@@ -105,8 +104,7 @@ public class LoaderFromStream
                 loadXMLRules( source );
             }
 
-        }).createRuleSet();
-        ruleSet.addRuleInstances( d );
+        }).createRuleSet().addRuleInstances( d );
     }
 
 }
