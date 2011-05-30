@@ -57,6 +57,8 @@ public class Declaration
 
     /**
      * Constructor.
+     *
+     * @param pluginClassName The name of the class of the object to be instantiated (will be load in the init method)
      */
     public Declaration( String pluginClassName )
     {
@@ -69,6 +71,8 @@ public class Declaration
 
     /**
      * Constructor.
+     *
+     * @param pluginClass The class of the object to be instantiated (will be load in the init method)
      */
     public Declaration( Class<?> pluginClass )
     {
@@ -79,6 +83,9 @@ public class Declaration
     /**
      * Create an instance where a fully-initialised ruleLoader instance is provided by the caller instead of having the
      * PluginManager "discover" an appropriate one.
+     *
+     * @param pluginClass The class of the object to be instantiated (will be load in the init method)
+     * @param ruleLoader Class which is responsible for dynamically loading this plugin's rules on demand
      */
     public Declaration( Class<?> pluginClass, RuleLoader ruleLoader )
     {
@@ -94,6 +101,8 @@ public class Declaration
      * the input xml to refer back to the original declaration.
      * <p>
      * For plugins declared "in-line", the id is null.
+     *
+     * @param id The id that the user associated with a particular plugin declaration in the input xml
      */
     public void setId( String id )
     {
@@ -119,6 +128,8 @@ public class Declaration
      * consider significant.
      * <p>
      * The "id" and "class" properties are treated differently.
+     *
+     * @param p The properties have to be copied into the properties member of this object
      */
     public void setProperties( Properties p )
     {
@@ -139,6 +150,9 @@ public class Declaration
 
     /**
      * Must be called exactly once, and must be called before any call to the configure method.
+     *
+     * @param digester The Digester instance where plugin has to be plugged
+     * @param pm The plugin manager reference
      */
     public void init( Digester digester, PluginManager pm )
         throws PluginException
@@ -203,8 +217,10 @@ public class Declaration
      * <p>
      * On return, any custom rules associated with the plugin class have been loaded into the Rules object currently
      * associated with the specified digester object.
+     *
+     * @param digester The Digester instance where plugin has to be plugged
+     * @param pattern The pattern the custom rules have to be bound
      */
-
     public void configure( Digester digester, String pattern )
         throws PluginException
     {
