@@ -36,7 +36,7 @@ public interface InitializableRule
      * @exception PluginConfigurationException is thrown if the InitializableRule determines that it cannot correctly
      *                initialise itself for any reason.
      */
-    public void postRegisterInit( String pattern )
+    void postRegisterInit( String pattern )
         throws PluginConfigurationException;
 
 }
