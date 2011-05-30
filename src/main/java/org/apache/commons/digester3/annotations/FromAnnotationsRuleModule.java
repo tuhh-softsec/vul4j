@@ -80,7 +80,7 @@ public abstract class FromAnnotationsRuleModule
     /**
      * 
      */
-    protected final void useAnnotationHandlerFactory(AnnotationHandlerFactory annotationHandlerFactory)
+    protected final void useAnnotationHandlerFactory( AnnotationHandlerFactory annotationHandlerFactory )
     {
         if ( annotationHandlerFactory == null )
         {
@@ -103,7 +103,7 @@ public abstract class FromAnnotationsRuleModule
      *
      * @param type
      */
-    protected final void bindRulesFrom(final Class<?> type)
+    protected final void bindRulesFrom( final Class<?> type )
     {
         if ( type == null || type.getPackage().getName().startsWith( JAVA_PACKAGE )
             || rulesBinder.isAlreadyBound( type ) )
@@ -204,7 +204,7 @@ public abstract class FromAnnotationsRuleModule
      * @param annotation the current visited annotation.
      * @param element the current visited element.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     private <A extends Annotation, E extends AnnotatedElement, R extends Rule> void handle( A annotation, E element )
     {
         Class<?> annotationType = annotation.annotationType();
