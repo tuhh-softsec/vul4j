@@ -76,7 +76,7 @@ public class VariableSubstitutor
     }
 
     /**
-     * Substitutes the attributes (before they are passed to the <code>Rule</code> implementations's)
+     * {@inheritDoc}
      */
     @Override
     public Attributes substitute( Attributes attributes )
@@ -91,11 +91,7 @@ public class VariableSubstitutor
     }
 
     /**
-     * Substitutes for the body text. This method may substitute values into the body text of the elements that Digester
-     * parses.
-     * 
-     * @param bodyText the body text (as passed to <code>Digester</code>)
-     * @return the body text to be passed to the <code>Rule</code> implementations
+     * {@inheritDoc}
      */
     @Override
     public String substitute( String bodyText )
