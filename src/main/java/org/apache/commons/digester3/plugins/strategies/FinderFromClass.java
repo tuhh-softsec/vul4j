@@ -89,7 +89,7 @@ public class FinderFromClass
      * here as properties, so the user can select any class in the classpath (and any method on that class provided it
      * has the correct prototype) as the source of dynamic rules for the plugged-in class.
      *
-     * @param d The digester instance where locating plugin classes
+     * @param digester The digester instance where locating plugin classes
      * @param pluginClass The plugin Java class
      * @param p The properties object that holds any xml attributes the user may have specified on the plugin
      *          declaration in order to indicate how to locate the plugin rules.
