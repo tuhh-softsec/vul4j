@@ -37,7 +37,7 @@ public class LoaderSetProperties
 {
 
     /**
-     * Just add a SetPropertiesRule at the specified path.
+     * {@inheritDoc}
      */
     @Override
     public void addRules( Digester digester, String path )
