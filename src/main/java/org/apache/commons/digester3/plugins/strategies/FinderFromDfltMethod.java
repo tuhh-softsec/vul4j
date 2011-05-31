@@ -37,7 +37,7 @@ public class FinderFromDfltMethod
 {
     public static String DFLT_METHOD_NAME = "addRules";
 
-    private String methodName;
+    private final String methodName;
 
     /** See {@link #findLoader}. */
     public FinderFromDfltMethod()
