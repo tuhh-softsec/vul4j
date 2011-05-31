@@ -81,7 +81,8 @@ public class LoaderFromStream
                     s.close();
                 }
             }
-            catch (IOException e) {
+            catch ( IOException e )
+            {
                 // close quietly
             }
         }
