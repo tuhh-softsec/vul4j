@@ -69,6 +69,13 @@ public class FinderFromDfltResource
      * <p>
      * The returned object (when non-null) will add the selected rules to the digester whenever its addRules method is
      * invoked.
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
