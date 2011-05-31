@@ -34,11 +34,11 @@ import org.apache.commons.digester3.plugins.RuleLoader;
 public class FinderFromClass
     extends RuleFinder
 {
-    public static String DFLT_RULECLASS_ATTR = "ruleclass";
+    private static final String DFLT_RULECLASS_ATTR = "ruleclass";
 
-    public static String DFLT_METHOD_ATTR = "method";
+    private static final String DFLT_METHOD_ATTR = "method";
 
-    public static String DFLT_METHOD_NAME = "addRules";
+    private static final String DFLT_METHOD_NAME = "addRules";
 
     private final String ruleClassAttr;
 
