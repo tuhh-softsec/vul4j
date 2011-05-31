@@ -52,7 +52,7 @@ public abstract class AbstractRulesModule
     }
 
     /**
-     * Configures a {@link Binder} via the exposed methods.
+     * Configures a {@link RulesBinder} via the exposed methods.
      */
     protected abstract void configure();
 
