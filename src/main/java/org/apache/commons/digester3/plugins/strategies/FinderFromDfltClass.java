@@ -72,6 +72,13 @@ public class FinderFromDfltClass
      * The returned object (when non-null) will invoke the target method on the selected class whenever its addRules
      * method is invoked. The target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester digester, Class<?> pluginClass, Properties p )
