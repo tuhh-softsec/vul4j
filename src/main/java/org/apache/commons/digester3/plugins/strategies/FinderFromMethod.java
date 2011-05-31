@@ -40,7 +40,7 @@ public class FinderFromMethod
      * Default XML attribute that needs to be present on a plugin declaration in order to specify the method
      * to load rules from.
      */
-    public static String DFLT_METHOD_ATTR = "method";
+    private static final String DFLT_METHOD_ATTR = "method";
 
     /** See {@link #findLoader}. */
     private final String methodAttr;
