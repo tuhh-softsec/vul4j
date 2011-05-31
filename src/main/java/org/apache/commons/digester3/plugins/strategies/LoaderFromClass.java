@@ -58,6 +58,7 @@ public class LoaderFromClass
      *
      * @param rulesClass The target class
      * @param methodName The method name has to be invoked
+     * @throws PluginException if input method can't be located inside the given class
      */
     public LoaderFromClass( Class<?> rulesClass, String methodName )
         throws PluginException
