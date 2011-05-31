@@ -36,11 +36,10 @@ import java.util.Set;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.binder.AbstractRulesModule;
-import org.apache.commons.digester3.binder.RulesModule;
 import org.xml.sax.InputSource;
 
 /**
- * {@link RulesModule} implementation that allows loading rules from
+ * {@link org.apache.commons.digester3.binder.RulesModule} implementation that allows loading rules from
  * XML files.
  *
  * @since 3.0
