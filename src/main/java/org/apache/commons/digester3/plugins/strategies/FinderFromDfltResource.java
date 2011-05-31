@@ -39,7 +39,7 @@ public class FinderFromDfltResource
     extends RuleFinder
 {
 
-    public static String DFLT_RESOURCE_SUFFIX = "RuleInfo.xml";
+    private static final String DFLT_RESOURCE_SUFFIX = "RuleInfo.xml";
 
     private final String resourceSuffix;
 
