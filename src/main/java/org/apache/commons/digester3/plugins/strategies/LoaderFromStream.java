@@ -75,7 +75,9 @@ public class LoaderFromStream
         {
             int i = s.read( buf );
             if ( i == -1 )
+            {
                 break;
+            }
             baos.write( buf, 0, i );
         }
         input = baos.toByteArray();
@@ -112,7 +114,7 @@ public class LoaderFromStream
                 loadXMLRules( source );
             }
 
-        }).createRuleSet().addRuleInstances( d );
+        } ).createRuleSet().addRuleInstances( d );
     }
 
 }
