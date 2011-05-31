@@ -22,6 +22,7 @@ package org.apache.commons.digester3.plugins.strategies;
 import java.util.Properties;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.plugins.PluginException;
 import org.apache.commons.digester3.plugins.RuleFinder;
 import org.apache.commons.digester3.plugins.RuleLoader;
 
@@ -81,6 +82,13 @@ public class FinderSetProperties
      * <p>
      * The returned object (when non-null) will add a SetPropertiesRule to the digester whenever its addRules method is
      * invoked.
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
