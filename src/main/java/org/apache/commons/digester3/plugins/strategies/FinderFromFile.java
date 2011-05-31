@@ -43,7 +43,7 @@ public class FinderFromFile
     /**
      * Xml attribute that needs to be present on a plugin declaration in order to specify the file to load rules from.
      */
-    public static String DFLT_FILENAME_ATTR = "file";
+    private static final String DFLT_FILENAME_ATTR = "file";
 
     /** See {@link #findLoader}. */
     private final String filenameAttr;
