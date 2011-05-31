@@ -46,7 +46,7 @@ public class FinderFromFile
     public static String DFLT_FILENAME_ATTR = "file";
 
     /** See {@link #findLoader}. */
-    private String filenameAttr;
+    private final String filenameAttr;
 
     /** See {@link #findLoader}. */
     public FinderFromFile()
