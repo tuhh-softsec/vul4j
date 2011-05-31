@@ -41,7 +41,7 @@ public class FinderFromResource
      * Default name of xml attribute on the plugin declaration which is used to configure rule-loading
      * for that declaration.
      */
-    public static String DFLT_RESOURCE_ATTR = "resource";
+    private static final String DFLT_RESOURCE_ATTR = "resource";
 
     /** See {@link #findLoader}. */
     private final String resourceAttr;
