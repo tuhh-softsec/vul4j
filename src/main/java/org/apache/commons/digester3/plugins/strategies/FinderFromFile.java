@@ -19,10 +19,10 @@ package org.apache.commons.digester3.plugins.strategies;
  * under the License.
  */
 
-import java.util.Properties;
-import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.plugins.PluginException;
@@ -120,7 +120,7 @@ public class FinderFromFile
             {
                 is.close();
             }
-            catch ( java.io.IOException ioe )
+            catch ( IOException ioe )
             {
                 throw new PluginException( "Unable to close stream for file [" + rulesFileName + "]", ioe );
             }
