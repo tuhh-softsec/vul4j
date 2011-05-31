@@ -44,7 +44,7 @@ public class FinderFromResource
     public static String DFLT_RESOURCE_ATTR = "resource";
 
     /** See {@link #findLoader}. */
-    private String resourceAttr;
+    private final String resourceAttr;
 
     /** Constructor. */
     public FinderFromResource()
