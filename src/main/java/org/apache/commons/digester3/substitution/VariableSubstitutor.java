@@ -37,18 +37,18 @@ public class VariableSubstitutor
     /**
      * The expander to be used to expand variables in the attributes. Null when no expansion should be performed.
      */
-    private VariableExpander attributesExpander;
+    private final VariableExpander attributesExpander;
 
     /**
      * Attributes implementation that (lazily) performs variable substitution. Will be lazily created when needed then
      * reused.
      */
-    private VariableAttributes variableAttributes;
+    private final VariableAttributes variableAttributes;
 
     /**
      * The expander to be used to expand variables in the body text. Null when no expansion should be performed.
      */
-    private VariableExpander bodyTextExpander;
+    private final VariableExpander bodyTextExpander;
 
     /**
      * Constructs a Substitutor which uses the same VariableExpander for both body text and attibutes.
