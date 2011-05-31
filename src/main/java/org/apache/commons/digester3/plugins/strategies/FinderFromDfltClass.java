@@ -35,9 +35,9 @@ import org.apache.commons.digester3.plugins.RuleLoader;
 public class FinderFromDfltClass
     extends RuleFinder
 {
-    public static String DFLT_RULECLASS_SUFFIX = "RuleInfo";
+    private static final String DFLT_RULECLASS_SUFFIX = "RuleInfo";
 
-    public static String DFLT_METHOD_NAME = "addRules";
+    private static final String DFLT_METHOD_NAME = "addRules";
 
     private final String rulesClassSuffix;
 
