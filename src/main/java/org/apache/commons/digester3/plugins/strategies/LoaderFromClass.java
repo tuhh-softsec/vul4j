@@ -37,9 +37,9 @@ public class LoaderFromClass
     extends RuleLoader
 {
 
-    private Class<?> rulesClass;
+    private final Class<?> rulesClass;
 
-    private Method rulesMethod;
+    private final Method rulesMethod;
 
     /**
      * Constructor.
