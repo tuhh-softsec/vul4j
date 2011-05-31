@@ -43,9 +43,9 @@ public class FinderSetProperties
     extends RuleFinder
 {
 
-    public static String DFLT_PROPS_ATTR = "setprops";
+    private static final String DFLT_PROPS_ATTR = "setprops";
 
-    public static String DFLT_FALSEVAL = "false";
+    private static final String DFLT_FALSEVAL = "false";
 
     private final String propsAttr;
 
