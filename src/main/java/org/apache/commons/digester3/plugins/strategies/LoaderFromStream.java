@@ -44,19 +44,7 @@ public class LoaderFromStream
     extends RuleLoader
 {
 
-    private byte[] input;
-
-    /**
-     * See {@link #load}.
-     *
-     * @param s the input stream has to be loaded into memory
-     * @throws Exception if any error occurs while reading the input stream
-     */
-    public LoaderFromStream( InputStream s )
-        throws Exception
-    {
-        load( s );
-    }
+    private final byte[] input;
 
     /**
      * The contents of the input stream are loaded into memory, and cached for later use.
@@ -64,23 +52,39 @@ public class LoaderFromStream
      * The caller is responsible for closing the input stream after this method has returned.
      *
      * @param s the input stream has to be loaded into memory
-     * @throws IOException if any error occurs while reading the input stream
+     * @throws Exception if any error occurs while reading the input stream
      */
-    private void load( InputStream s )
-        throws IOException
+    public LoaderFromStream( InputStream s )
+        throws Exception
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buf = new byte[256];
-        for ( ;; )
+        try
         {
-            int i = s.read( buf );
-            if ( i == -1 )
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buf = new byte[256];
+            for ( ;; )
             {
-                break;
+                int i = s.read( buf );
+                if ( i == -1 )
+                {
+                    break;
+                }
+                baos.write( buf, 0, i );
             }
-            baos.write( buf, 0, i );
+            input = baos.toByteArray();
         }
-        input = baos.toByteArray();
+        finally
+        {
+            try
+            {
+                if ( s != null )
+                {
+                    s.close();
+                }
+            }
+            catch (IOException e) {
+                // close quietly
+            }
+        }
     }
 
     /**
