@@ -20,6 +20,7 @@ package org.apache.commons.digester3.plugins;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -172,8 +173,10 @@ public class PluginManager
 
         List<RuleFinder> ruleFinders = pluginContext.getRuleFinders();
         RuleLoader ruleLoader = null;
-        for ( RuleFinder finder : ruleFinders )
+        for ( Iterator<RuleFinder> i = ruleFinders.iterator(); i.hasNext() && ruleLoader == null; )
         {
+
+            RuleFinder finder = i.next();
             if ( debug )
             {
                 log.debug( "checking finder of type " + finder.getClass().getName() );
