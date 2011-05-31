@@ -37,7 +37,8 @@ public class FinderFromMethod
 {
 
     /**
-     * Xml attribute that needs to be present on a plugin declaration in order to specify the method to load rules from.
+     * Default XML attribute that needs to be present on a plugin declaration in order to specify the method
+     * to load rules from.
      */
     public static String DFLT_METHOD_ATTR = "method";
 
@@ -50,7 +51,12 @@ public class FinderFromMethod
         this( DFLT_METHOD_ATTR );
     }
 
-    /** See {@link #findLoader}. */
+    /**
+     * See {@link #findLoader}.
+     *
+     * @param methodAttr The XML attribute that needs to be present on a plugin declaration in order to specify the
+     *        method to load rules from.
+     */
     public FinderFromMethod( String methodAttr )
     {
         this.methodAttr = methodAttr;
@@ -65,6 +71,13 @@ public class FinderFromMethod
      * The returned object (when non-null) will invoke the target method on the plugin class whenever its addRules
      * method is invoked. The target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
