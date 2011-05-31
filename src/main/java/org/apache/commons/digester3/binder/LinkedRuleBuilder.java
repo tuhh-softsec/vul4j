@@ -200,8 +200,9 @@ public final class LinkedRuleBuilder
     {
         if ( attributePropertyName == null || attributePropertyName.length() == 0 )
         {
-            mainBinder.addError( "{ forPattern( \"%s\" ).setProperty( String )} empty 'attributePropertyName' not allowed",
-                                 keyPattern );
+            mainBinder
+                .addError( "{ forPattern( \"%s\" ).setProperty( String ) } empty 'attributePropertyName' not allowed",
+                           keyPattern );
         }
 
         return addProvider( new SetPropertyBuilder( keyPattern,
