@@ -41,14 +41,24 @@ public class LoaderFromClass
 
     private Method rulesMethod;
 
-    /** Constructor. */
+    /**
+     * Constructor.
+     *
+     * @param rulesClass The target class
+     * @param rulesMethod The method has to be invoked
+     */
     public LoaderFromClass( Class<?> rulesClass, Method rulesMethod )
     {
         this.rulesClass = rulesClass;
         this.rulesMethod = rulesMethod;
     }
 
-    /** Constructor. */
+    /**
+     * Constructor.
+     *
+     * @param rulesClass The target class
+     * @param methodName The method name has to be invoked
+     */
     public LoaderFromClass( Class<?> rulesClass, String methodName )
         throws PluginException
     {
@@ -66,7 +76,7 @@ public class LoaderFromClass
     }
 
     /**
-     * Just invoke the target method.
+     * {@inheritDoc}
      */
     @Override
     public void addRules( Digester d, String path )
@@ -95,8 +105,11 @@ public class LoaderFromClass
     /**
      * Find a method on the specified class whose name matches methodName, and whose signature is:
      * <code> public static void foo(Digester d, String patternPrefix);</code>.
-     * 
-     * @return null if no such method exists.
+     *
+     * @param rulesClass The target class
+     * @param methodName The method name has to be invoked
+     * @return The method name has to be invoked, or null if no such method exists.
+     * @throws PluginException if any error occurs while discovering the method
      */
     public static Method locateMethod( Class<?> rulesClass, String methodName )
         throws PluginException
