@@ -38,7 +38,8 @@ public class FinderFromResource
 {
 
     /**
-     * Name of xml attribute on the plugin declaration which is used to configure rule-loading for that declaration.
+     * Default name of xml attribute on the plugin declaration which is used to configure rule-loading
+     * for that declaration.
      */
     public static String DFLT_RESOURCE_ATTR = "resource";
 
@@ -51,7 +52,12 @@ public class FinderFromResource
         this( DFLT_RESOURCE_ATTR );
     }
 
-    /** See {@link #findLoader}. */
+    /**
+     * See {@link #findLoader}.
+     *
+     * @param resourceAttr Name of xml attribute on the plugin declaration which is used to configure rule-loading
+     *        for that declaration
+     */
     public FinderFromResource( String resourceAttr )
     {
         this.resourceAttr = resourceAttr;
@@ -65,6 +71,13 @@ public class FinderFromResource
      * <p>
      * The returned object (when non-null) will add the selected rules to the digester whenever its addRules method is
      * invoked.
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
@@ -96,6 +109,7 @@ public class FinderFromResource
      * @param pluginClass is the class whose xml params the rules are parsing.
      * @param is is where the xmlrules will be read from, and must be non-null.
      * @param resourceName is a string describing the source of the xmlrules, for use in generating error messages.
+     * @throws PluginException if any error occurs
      */
     public static RuleLoader loadRules( Digester d, Class<?> pluginClass, InputStream is, String resourceName )
         throws PluginException
