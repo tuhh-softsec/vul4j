@@ -92,6 +92,7 @@ public class FinderSetProperties
      */
     @Override
     public RuleLoader findLoader( Digester d, Class<?> pluginClass, Properties p )
+        throws PluginException
     {
         String state = p.getProperty( propsAttr );
         if ( ( state != null ) && state.equals( falseval ) )
