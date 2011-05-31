@@ -37,22 +37,8 @@ implementation that can be used in many different projects.</p>
 Java object mapping module, which triggers certain actions called
 <em>rules</em> whenever a particular pattern of nested XML elements is
 recognized.  A rich set of predefined <em>rules</em> is available for your
-use, or you can also create your own.  Advanced features of <em>Digester</em>
-include:</p>
-<ul>
-<li>Ability to plug in your own pattern matching engine, if the standard one
-    is not sufficient for your requirements.</li>
-<li>Optional namespace-aware processing, so that you can define rules that
-    are relevant only to a particular XML namespace.</li>
-<li>Encapsulation of <em>Rules</em> into <em>RuleSets</em> that can be
-    easily and conveniently reused in more than one application that requires
-    the same type of processing.</li>
-</ul>
+use, or you can also create your own.</p>
 
-<p>Starting from release 2.1, the Digester supports Java5 Annotations definition
-of rules improving maintainability of both Java code and XML documents, since
-rules are now defined in POJOs and <code>Digester</code> parser instances can be
-generated at run-time, avoiding manual updates.</p>
 
 </section>
 
@@ -60,9 +46,9 @@ generated at run-time, avoiding manual updates.</p>
 <section name="Documentation">
 
 <p>User documentation is available in the website, you can start reading the
-<a href="http://commons.apache.org/digester/commons-digester-2.1/core.html">Core APIs</a>.</p>
+<a href="http://commons.apache.org/digester/commons-digester-3.0/core.html">Core APIs</a>.</p>
 
-<p>The <a href="http://commons.apache.org/digester/commons-digester-2.1/RELEASE-NOTES.txt">
+<p>The <a href="http://commons.apache.org/digester/commons-digester-3.0/RELEASE-NOTES.txt">
 Release Notes</a> document the new features and bug fixes that have been
 included in this release.</p>
 
@@ -82,6 +68,43 @@ download the files.
 </section>
 
 <section name="Releases">
+    <subsection name="Digester 3.0 Release (Still in sandbox, not released yet)">
+      <p>
+The Digester 3.0 is an almost complete rewrite of the original Digester implementation, which offers:
+</p>
+<ul>
+<li>
+A universal loader: core features and extensions became not so easy to maintain, since every contribution was created
+with a different approach; a fresh new architecture is able to load modules that allow users write and include easily
+their own extensions;
+</li>
+<li>
+Reusability of Digester configurations: what was missing is a way to
+<i>describe</i>
+how the Digester instances have to be built and not how to set rules given an existing instance;
+</li>
+<li>
+Rules are now expressed via EDSL: the key feature of Digester3 is expressing rule bindings using a fluent APIs
+collection, that speak more in English rather than in a programming language;
+</li>
+<li>
+Improved errors reporting: rules binding debug operations have made easier, a detailed errors list of wrong binding is
+reported just when the loader attempts to create a new Digester instance, and not when running it.
+</li>
+</ul>
+<p><em>Acknowledgements</em>: The Digester 3 has been inspired by special people:</p>
+<ul>
+<li>Rahul Akolkar, for mentoring;</li>
+<li>
+James Carman, who had the initial idea of building a Digester with fluent APIs;
+</li>
+<li>Matt Benson, for having influenced on DSL;</li>
+<li>
+Daniele Testa [mrwolfgraphics AT gmail DOT com], who provided the Digester3 logo.
+</li>
+    </subsection>
+
+
     <subsection name="Digester 2.1 Release (September 2010)">
         <p>
 Digester 2.1 is a minor release with new features, a new <code>annotations</code> package
