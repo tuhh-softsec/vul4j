@@ -43,7 +43,7 @@ public class FinderFromMethod
     public static String DFLT_METHOD_ATTR = "method";
 
     /** See {@link #findLoader}. */
-    private String methodAttr;
+    private final String methodAttr;
 
     /** Constructor. */
     public FinderFromMethod()
