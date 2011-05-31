@@ -47,9 +47,9 @@ public class FinderSetProperties
 
     public static String DFLT_FALSEVAL = "false";
 
-    private String propsAttr;
+    private final String propsAttr;
 
-    private String falseval;
+    private final String falseval;
 
     /** See {@link #findLoader}. */
     public FinderSetProperties()
