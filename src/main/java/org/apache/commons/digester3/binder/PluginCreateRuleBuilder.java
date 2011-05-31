@@ -102,7 +102,8 @@ public final class PluginCreateRuleBuilder
      * Sets the xml attribute which the input xml uses to indicate to a
      * PluginCreateRule which class should be instantiated.
      *
-     * @param attrName
+     * @param attrName the xml attribute which the input xml uses to indicate to a
+     *                 PluginCreateRule which class should be instantiated.
      * @return this builder instance
      */
     public PluginCreateRuleBuilder setPluginClassAttribute( String attrName )
