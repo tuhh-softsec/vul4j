@@ -40,11 +40,11 @@ public class FinderFromClass
 
     public static String DFLT_METHOD_NAME = "addRules";
 
-    private String ruleClassAttr;
+    private final String ruleClassAttr;
 
-    private String methodAttr;
+    private final String methodAttr;
 
-    private String dfltMethodName;
+    private final String dfltMethodName;
 
     /**
      * See {@link #findLoader}.
@@ -88,6 +88,13 @@ public class FinderFromClass
      * When the user explicitly declares a plugin in the input xml, the xml attributes on the declaration tag are passed
      * here as properties, so the user can select any class in the classpath (and any method on that class provided it
      * has the correct prototype) as the source of dynamic rules for the plugged-in class.
+     *
+     * @param d The digester instance where locating plugin classes
+     * @param pluginClass The plugin Java class
+     * @param p The properties object that holds any xml attributes the user may have specified on the plugin
+     *          declaration in order to indicate how to locate the plugin rules.
+     * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
+     *         about that source.
      */
     @Override
     public RuleLoader findLoader( Digester digester, Class<?> pluginClass, Properties p )
