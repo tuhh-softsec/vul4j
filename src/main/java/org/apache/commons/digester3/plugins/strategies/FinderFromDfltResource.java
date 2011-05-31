@@ -41,7 +41,7 @@ public class FinderFromDfltResource
 
     public static String DFLT_RESOURCE_SUFFIX = "RuleInfo.xml";
 
-    private String resourceSuffix;
+    private final String resourceSuffix;
 
     /** See {@link #findLoader}. */
     public FinderFromDfltResource()
