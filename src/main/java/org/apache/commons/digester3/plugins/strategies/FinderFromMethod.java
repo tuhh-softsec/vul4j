@@ -76,6 +76,7 @@ public class FinderFromMethod
      * @param pluginClass The plugin Java class
      * @param p The properties object that holds any xml attributes the user may have specified on the plugin
      *          declaration in order to indicate how to locate the plugin rules.
+     * @return a source of digester rules for the specified plugin class.
      * @throws PluginException if the algorithm finds a source of rules, but there is something invalid
      *         about that source.
      */
