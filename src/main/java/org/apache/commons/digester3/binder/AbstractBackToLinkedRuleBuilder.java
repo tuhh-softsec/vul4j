@@ -48,9 +48,9 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
     }
 
     /**
-     * Come back to the main {@link LinkedRuleBuilderImpl}.
+     * Come back to the main {@link LinkedRuleBuilder}.
      *
-     * @return the main {@link LinkedRuleBuilderImpl}
+     * @return the main {@link LinkedRuleBuilder}
      */
     public final LinkedRuleBuilder then()
     {

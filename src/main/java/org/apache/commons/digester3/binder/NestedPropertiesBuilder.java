@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.commons.digester3.SetNestedPropertiesRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilderImpl#setNestedProperties()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#setNestedProperties()}.
  *
  * @since 3.0
  */

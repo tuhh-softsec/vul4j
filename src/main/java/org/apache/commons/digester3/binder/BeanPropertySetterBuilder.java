@@ -22,7 +22,7 @@ package org.apache.commons.digester3.binder;
 import org.apache.commons.digester3.BeanPropertySetterRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilderImpl#setBeanProperty()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#setBeanProperty()}.
  */
 public final class BeanPropertySetterBuilder
     extends AbstractBackToLinkedRuleBuilder<BeanPropertySetterRule>

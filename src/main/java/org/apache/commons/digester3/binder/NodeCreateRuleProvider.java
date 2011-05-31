@@ -38,7 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.digester3.NodeCreateRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilderImpl#createNode()}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#createNode()}.
  *
  * @since 3.0
  */

@@ -22,7 +22,7 @@ package org.apache.commons.digester3.binder;
 import org.apache.commons.digester3.Rule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilderImpl#addRule(Rule)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#addRule(Rule)}.
  *
  * @param <R> The rule type will be returned by this builder
  */
