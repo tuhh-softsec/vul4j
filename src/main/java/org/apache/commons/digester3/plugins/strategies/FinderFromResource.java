@@ -111,6 +111,7 @@ public class FinderFromResource
      * @param pluginClass is the class whose xml params the rules are parsing.
      * @param is is where the xmlrules will be read from, and must be non-null.
      * @param resourceName is a string describing the source of the xmlrules, for use in generating error messages.
+     * @return a source of digester rules for the specified plugin class.
      * @throws PluginException if any error occurs
      */
     public static RuleLoader loadRules( Digester d, Class<?> pluginClass, InputStream is, String resourceName )
