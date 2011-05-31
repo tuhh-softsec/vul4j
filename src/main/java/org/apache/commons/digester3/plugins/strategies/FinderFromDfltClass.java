@@ -73,7 +73,7 @@ public class FinderFromDfltClass
      * method is invoked. The target method is expected to have the following prototype:
      * <code> public static void xxxxx(Digester d, String patternPrefix); </code>
      *
-     * @param d The digester instance where locating plugin classes
+     * @param digester The digester instance where locating plugin classes
      * @param pluginClass The plugin Java class
      * @param p The properties object that holds any xml attributes the user may have specified on the plugin
      *          declaration in order to indicate how to locate the plugin rules.
