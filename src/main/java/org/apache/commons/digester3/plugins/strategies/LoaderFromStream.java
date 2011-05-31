@@ -46,7 +46,12 @@ public class LoaderFromStream
 
     private byte[] input;
 
-    /** See {@link #load}. */
+    /**
+     * See {@link #load}.
+     *
+     * @param s the input stream has to be loaded into memory
+     * @throws Exception if any error occurs while reading the input stream
+     */
     public LoaderFromStream( InputStream s )
         throws Exception
     {
@@ -57,6 +62,9 @@ public class LoaderFromStream
      * The contents of the input stream are loaded into memory, and cached for later use.
      * <p>
      * The caller is responsible for closing the input stream after this method has returned.
+     *
+     * @param s the input stream has to be loaded into memory
+     * @throws IOException if any error occurs while reading the input stream
      */
     private void load( InputStream s )
         throws IOException
@@ -74,7 +82,7 @@ public class LoaderFromStream
     }
 
     /**
-     * Add the rules previously loaded from the input stream into the specified digester.
+     * {@inheritDoc}
      */
     @Override
     public void addRules( final Digester d, final String path )
