@@ -39,9 +39,9 @@ public class FinderFromDfltClass
 
     public static String DFLT_METHOD_NAME = "addRules";
 
-    private String rulesClassSuffix;
+    private final String rulesClassSuffix;
 
-    private String methodName;
+    private final String methodName;
 
     /** See {@link #findLoader}. */
     public FinderFromDfltClass()
@@ -99,7 +99,7 @@ public class FinderFromDfltClass
 
         if ( methodName == null )
         {
-            methodName = DFLT_METHOD_NAME;
+            return new LoaderFromClass( rulesClass, DFLT_METHOD_NAME );
         }
 
         return new LoaderFromClass( rulesClass, methodName );
