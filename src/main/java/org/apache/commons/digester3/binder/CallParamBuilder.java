@@ -22,7 +22,7 @@ package org.apache.commons.digester3.binder;
 import org.apache.commons.digester3.CallParamRule;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#callParam(int)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#callParam()}.
  *
  * @since 3.0
  */
