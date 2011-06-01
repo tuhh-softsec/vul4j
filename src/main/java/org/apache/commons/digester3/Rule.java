@@ -101,9 +101,7 @@ public abstract class Rule
     // --------------------------------------------------------- Public Methods
 
     /**
-     * This method is called when the beginning of a matching XML element is encountered. The default implementation
-     * delegates to the deprecated method {@link #begin(Attributes) begin} without the <code>namespace</code> and
-     * <code>name</code> parameters, to retain backwards compatibility.
+     * This method is called when the beginning of a matching XML element is encountered.
      * 
      * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
@@ -121,9 +119,6 @@ public abstract class Rule
     /**
      * This method is called when the body of a matching XML element is encountered. If the element has no body, this
      * method is called with an empty string as the body text.
-     * <p>
-     * The default implementation delegates to the deprecated method {@link #body(String) body} without the
-     * <code>namespace</code> and <code>name</code> parameters, to retain backwards compatibility.
      * 
      * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
@@ -139,9 +134,7 @@ public abstract class Rule
     }
 
     /**
-     * This method is called when the end of a matching XML element is encountered. The default implementation delegates
-     * to the deprecated method {@link #end end} without the <code>namespace</code> and <code>name</code> parameters, to
-     * retain backwards compatibility.
+     * This method is called when the end of a matching XML element is encountered.
      * 
      * @param namespace the namespace URI of the matching element, or an empty string if the parser is not namespace
      *            aware or the element has no namespace
