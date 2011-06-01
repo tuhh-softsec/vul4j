@@ -64,7 +64,7 @@ public final class LinkedRuleBuilder
 
     /**
      * Calls a method on an object on the stack (normally the top/parent object), passing arguments collected from
-     * subsequent {@link #callParam(int)} rule or from the body of this element.
+     * subsequent {@link #callParam()} rule or from the body of this element.
      *
      * @param methodName Method name of the parent object to call
      * @return a new {@link CallMethodBuilder} instance.
