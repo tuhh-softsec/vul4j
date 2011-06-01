@@ -102,7 +102,8 @@ public final class LinkedRuleBuilder
     }
 
     /**
-     * Uses an {@link ObjectCreationFactory} to create a new object which it pushes onto the object stack.
+     * Uses an {@link org.apache.commons.digester3.ObjectCreationFactory} to create a new object which it
+     * pushes onto the object stack.
      *
      * When the element is complete, the object will be popped.
      *
