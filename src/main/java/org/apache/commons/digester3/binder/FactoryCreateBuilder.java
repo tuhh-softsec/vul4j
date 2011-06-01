@@ -23,7 +23,7 @@ import org.apache.commons.digester3.FactoryCreateRule;
 import org.apache.commons.digester3.ObjectCreationFactory;
 
 /**
- * Builder chained when invoking {@link LinkedRuleBuilder#factoryCreate(String)}.
+ * Builder chained when invoking {@link LinkedRuleBuilder#factoryCreate()}.
  *
  * @since 3.0
  */
