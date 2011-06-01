@@ -118,51 +118,51 @@ public final class NodeCreateRuleProvider
     {
 
         /**
-         * @see {@link org.w3c.dom.Node.ATTRIBUTE_NODE}
+         * @see org.w3c.dom.Node#ATTRIBUTE_NODE
          */
         ATTRIBUTE( ATTRIBUTE_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.CDATA_SECTION_NODE}
+         * @see org.w3c.dom.Node#CDATA_SECTION_NODE
          */
         CDATA( CDATA_SECTION_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.COMMENT_NODE}
+         * @see org.w3c.dom.Node#COMMENT_NODE
          */
         COMMENT( COMMENT_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE}
+         * @see org.w3c.dom.Node#DOCUMENT_FRAGMENT_NODE
          */
         DOCUMENT_FRAGMENT( DOCUMENT_FRAGMENT_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.DOCUMENT_NODE}
+         * @see org.w3c.dom.Node#DOCUMENT_NODE
          */
         DOCUMENT( DOCUMENT_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.DOCUMENT_TYPE_NODE}
+         * @see org.w3c.dom.Node#DOCUMENT_TYPE_NODE
          */
         DOCUMENT_TYPE( DOCUMENT_TYPE_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.ELEMENT_NODE}
+         * @see org.w3c.dom.Node#ELEMENT_NODE
          */
         ELEMENT( ELEMENT_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.ENTITY_NODE}
+         * @see org.w3c.dom.Node#ENTITY_NODE
          */
         ENTITY( ENTITY_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.ENTITY_REFERENCE_NODE}
+         * @see org.w3c.dom.Node#ENTITY_REFERENCE_NODE
          */
         ENTITY_REFERENCE( ENTITY_REFERENCE_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.NOTATION_NODE}
+         * @see org.w3c.dom.Node#NOTATION_NODE
          */
         NOTATION( NOTATION_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE}
+         * @see org.w3c.dom.Node#PROCESSING_INSTRUCTION_NODE
          */
         PROCESSING_INSTRUCTION( PROCESSING_INSTRUCTION_NODE ),
         /**
-         * @see {@link org.w3c.dom.Node.TEXT_NODE}
+         * @see org.w3c.dom.Node#TEXT_NODE
          */
         TEXT( TEXT_NODE );
 
