@@ -244,7 +244,6 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -255,7 +254,6 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>clirr-maven-plugin</artifactId>
@@ -308,7 +306,6 @@
         </configuration>
         <!--Use default rules-->
       </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>clirr-maven-plugin</artifactId>
