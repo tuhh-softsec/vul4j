@@ -177,7 +177,7 @@ public class DriverFactory {
 	 * @param instance
 	 *            The instance
 	 */
-	final static void put(String instanceName, Driver instance) {
+	public final static void put(String instanceName, Driver instance) {
 		synchronized (INSTANCIES) {
 			INSTANCIES.put(instanceName, instance);
 		}
