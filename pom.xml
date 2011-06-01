@@ -29,11 +29,11 @@
   <version>3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Commons Digester</name>
+  <name>Apache Commons Digester</name>
   <description>
-    The Digester package lets you configure an XML to Java object mapping module
-    which triggers certain actions called rules whenever a particular 
-    pattern of nested XML elements is recognized.
+    The Apache Commons Digester package lets you configure an XML to Java
+    object mapping module which triggers certain actions called rules whenever
+    a particular pattern of nested XML elements is recognized.
   </description>
   <url>http://commons.apache.org/digester/</url>
   <inceptionYear>2001</inceptionYear>
