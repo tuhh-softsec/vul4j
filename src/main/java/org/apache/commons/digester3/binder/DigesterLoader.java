@@ -41,6 +41,7 @@ import org.apache.commons.digester3.Rules;
 import org.apache.commons.digester3.RulesBase;
 import org.apache.commons.digester3.StackAction;
 import org.apache.commons.digester3.Substitutor;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -115,6 +116,11 @@ public final class DigesterLoader
     private ClassLoader classLoader;
 
     private Substitutor substitutor;
+
+    /**
+     * The EntityResolver used by the SAX parser. By default it use this class
+     */
+    private EntityResolver entityResolver;
 
     /**
      * Object which will receive callbacks for every pop/push action on the default stack or named stacks.
@@ -265,7 +271,7 @@ public final class DigesterLoader
      * a local version without having to ensure every <code>SYSTEM</code>
      * URI on every processed xml document is local. This implementation provides
      * only basic functionality. If more sophisticated features are required,
-     * using {@link #setEntityResolver} to set a custom resolver is recommended.
+     * using {@link #setEntityResolver(EntityResolver)} to set a custom resolver is recommended.
      * </p><p>
      * <strong>Note:</strong> This method will have no effect when a custom 
      * <code>EntityResolver</code> has been set. (Setting a custom 
@@ -309,6 +315,19 @@ public final class DigesterLoader
     public Map<String, URL> getRegistrations()
     {
         return Collections.unmodifiableMap( this.entityValidator );
+    }
+
+    /**
+     * Set the <code>EntityResolver</code> used by SAX when resolving public id and system id. This must be called
+     * before the first call to <code>parse()</code>.
+     * 
+     * @param entityResolver a class that implement the <code>EntityResolver</code> interface.
+     * @return This loader instance, useful to chain methods.
+     */
+    public DigesterLoader setEntityResolver( EntityResolver entityResolver )
+    {
+        this.entityResolver = entityResolver;
+        return this;
     }
 
     /**
@@ -428,6 +447,7 @@ public final class DigesterLoader
         digester.setRules( rules );
         digester.setSubstitutor( substitutor );
         digester.registerAll( entityValidator );
+        digester.setEntityResolver( entityResolver );
         digester.setStackAction( stackAction );
         digester.setNamespaceAware( isNamespaceAware() );
 
