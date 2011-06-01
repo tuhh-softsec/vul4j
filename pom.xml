@@ -255,6 +255,20 @@
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <configuration>
+          <comparisonArtifacts>
+            <comparisonArtifact>
+              <groupId>commons-digester</groupId>
+              <artifactId>commons-digester</artifactId>
+              <version>2.1</version>
+            </comparisonArtifact>
+          </comparisonArtifacts>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -293,6 +307,20 @@
           <targetJdk>1.5</targetJdk>
         </configuration>
         <!--Use default rules-->
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <configuration>
+          <comparisonArtifacts>
+            <comparisonArtifact>
+              <groupId>commons-digester</groupId>
+              <artifactId>commons-digester</artifactId>
+              <version>2.1</version>
+            </comparisonArtifact>
+          </comparisonArtifacts>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
