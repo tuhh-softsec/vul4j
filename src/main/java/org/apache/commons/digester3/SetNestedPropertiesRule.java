@@ -115,7 +115,7 @@ public class SetNestedPropertiesRule
      * Base constructor, which maps every child element into a bean property with the same name as the xml element.
      * <p>
      * It is an error if a child xml element exists but the target java bean has no such property (unless
-     * setAllowUnknownChildElements has been set to true).
+     * {@link #setAllowUnknownChildElements(boolean)} has been set to true).
      * </p>
      */
     public SetNestedPropertiesRule()
@@ -232,7 +232,7 @@ public class SetNestedPropertiesRule
     /**
      * Return the flag to have leading and trailing whitespace removed.
      *
-     * @see {@link #setTrimData}.
+     * @see #setTrimData(boolean)
      * @return flag to have leading and trailing whitespace removed
      */
     public boolean getTrimData()
@@ -263,7 +263,7 @@ public class SetNestedPropertiesRule
      * Return the flag to ignore any child element for which there is no corresponding object property
      *
      * @return flag to ignore any child element for which there is no corresponding object property
-     * @see {@link #setAllowUnknownChildElements}.
+     * @see #setAllowUnknownChildElements(boolean).
      */
     public boolean getAllowUnknownChildElements()
     {
