@@ -73,7 +73,7 @@ public abstract class FromAnnotationsRuleModule
     }
 
     /**
-     * Configures a {@link Binder} via the exposed methods.
+     * Configures a {@link org.apache.commons.digester3.binder.RulesBinder} via the exposed methods.
      */
     protected abstract void configureRules();
 
