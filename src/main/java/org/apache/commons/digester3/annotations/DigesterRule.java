@@ -47,7 +47,7 @@ public @interface DigesterRule
 
     /**
      * The handler that takes care on converting this annotation in the related
-     * {@link AnnotationHandler} and adds it o the {@link FromAnnotationsRuleSet}
+     * {@link AnnotationHandler} and adds it to the {@link FromAnnotationsRuleModule}
      */
     Class<? extends AnnotationHandler<? extends Annotation, ? extends AnnotatedElement>> handledBy();
 
