@@ -96,8 +96,10 @@ abstract class AbstractBackToLinkedRuleBuilder<R extends Rule>
     }
 
     /**
+     * Provides an instance of {@link Rule}. Must never return null.
+     *
+     * @return an instance of {@link Rule}.
      * @see #get()
-     * @return
      */
     protected abstract R createRule();
 
