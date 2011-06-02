@@ -18,7 +18,6 @@ package org.apache.commons.digester3.examples.api.catalog;
  */ 
 
 import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.AbstractObjectCreationFactory;
 
 /**
  * A simple program to demonstrate some of the functionality of the
