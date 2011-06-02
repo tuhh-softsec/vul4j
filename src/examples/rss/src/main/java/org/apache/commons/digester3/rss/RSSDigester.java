@@ -1,3 +1,5 @@
+package org.apache.commons.digester3.rss;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -13,11 +15,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
-
-
-package org.apache.commons.digester3.rss;
-
+ */
 
 import java.io.File;
 import java.io.IOException;
