@@ -27,41 +27,61 @@
   <artifactId>commons-digester3-samples-plugins-pipeline</artifactId>
   <packaging>jar</packaging>
   <name>Apache Commons Digester :: Examples :: Plugins :: Pipeline</name>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run-uppercase</id>
+
+  <profiles>
+    <profile>
+      <id>run-uppercase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
             <configuration>
+              <mainClass>org.apache.commons.digester3.examples.plugins.pipeline.Pipeline</mainClass>
               <arguments>
-                <argument>${basedir}/uppercase.xml</argument>
+                <argument>file:${basedir}/uppercase.xml</argument>
               </arguments>
             </configuration>
-          </execution>
-          <execution>
-            <id>run-substitute</id>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>run-substitute</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
             <configuration>
+              <mainClass>org.apache.commons.digester3.examples.plugins.pipeline.Pipeline</mainClass>
               <arguments>
-                <argument>${basedir}/substitute.xml</argument>
+                <argument>file:${basedir}/substitute.xml</argument>
               </arguments>
             </configuration>
-          </execution>
-          <execution>
-            <id>run-compound</id>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>run-compound</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
             <configuration>
+              <mainClass>org.apache.commons.digester3.examples.plugins.pipeline.Pipeline</mainClass>
               <arguments>
-                <argument>${basedir}/compound.xml</argument>
+                <argument>file:${basedir}/compound.xml</argument>
               </arguments>
             </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <mainClass>org.apache.commons.digester3.examples.plugins.pipeline.Pipeline</mainClass>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
