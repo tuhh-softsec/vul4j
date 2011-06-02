@@ -17,6 +17,7 @@ package org.apache.commons.digester3.examples.api.dbinsert;
  * limitations under the License.
  */ 
 
+import java.sql.Connection;
 import java.util.Iterator;
 
 /**
@@ -24,9 +25,9 @@ import java.util.Iterator;
  */
 public class RowInserterRule extends org.apache.commons.digester3.Rule {
 
-    private java.sql.Connection conn;
+    private Connection conn;
     
-    public RowInserterRule(java.sql.Connection conn) {
+    public RowInserterRule(Connection conn) {
         this.conn = conn;
     }
     
