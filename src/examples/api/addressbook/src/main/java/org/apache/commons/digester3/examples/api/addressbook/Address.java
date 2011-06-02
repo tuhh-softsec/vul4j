@@ -20,58 +20,69 @@ package org.apache.commons.digester3.examples.api.addressbook;
 /**
  * See Main.java.
  */
-public class Address {
+public class Address
+{
+
     private String type;
+
     private String street;
+
     private String city;
+
     private String state;
+
     private String zip;
+
     private String country;
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
-        sb.append( " address (type "+ type + ")\n");
-        sb.append( "       " + street + "\n");
-        sb.append( "       " + city + " " + state + " " + zip + "\n");
-        sb.append( "       " + country + "\n");
+        sb.append( " address (type " + type + ")\n" );
+        sb.append( "       " + street + "\n" );
+        sb.append( "       " + city + " " + state + " " + zip + "\n" );
+        sb.append( "       " + country + "\n" );
         return sb.toString();
     }
 
-    public void print(java.io.PrintStream out, int indentAmount) {
-        StringBuilder indentStr = new StringBuilder(indentAmount);
-        for(; indentAmount > 0; --indentAmount) {
-            indentStr.append(' ');
+    public void print( java.io.PrintStream out, int indentAmount )
+    {
+        StringBuilder indentStr = new StringBuilder( indentAmount );
+        for ( ; indentAmount > 0; --indentAmount )
+        {
+            indentStr.append( ' ' );
         }
-        
-        out.print(indentStr);
-        out.print("address type: ");
-        out.println(type);
-        
-        out.print(indentStr);
-        out.println("  " + street);
-        
-        out.print(indentStr);
-        out.println("  " + city + " " + state + " " + zip);
-        
-        out.print(indentStr);
-        out.println("  " + country);
+
+        out.print( indentStr );
+        out.print( "address type: " );
+        out.println( type );
+
+        out.print( indentStr );
+        out.println( "  " + street );
+
+        out.print( indentStr );
+        out.println( "  " + city + " " + state + " " + zip );
+
+        out.print( indentStr );
+        out.println( "  " + country );
     }
-    
+
     /**
      * Returns the value of street.
      */
     public String getStreet()
     {
-         return street; 
+        return street;
     }
 
     /**
      * Sets the value of street.
+     * 
      * @param street The value to assign to street.
      */
-    public void setStreet(String street)
+    public void setStreet( String street )
     {
-        this.street = street; 
+        this.street = street;
     }
 
     /**
@@ -79,16 +90,17 @@ public class Address {
      */
     public String getCity()
     {
-        return city; 
+        return city;
     }
 
     /**
      * Sets the value of city.
+     * 
      * @param city The value to assign to city.
      */
-    public void setCity(String city)
+    public void setCity( String city )
     {
-        this.city = city; 
+        this.city = city;
     }
 
     /**
@@ -96,16 +108,17 @@ public class Address {
      */
     public String getState()
     {
-        return state; 
+        return state;
     }
 
     /**
      * Sets the value of state.
+     * 
      * @param state The value to assign to state.
      */
-    public void setState(String state)
+    public void setState( String state )
     {
-        this.state = state; 
+        this.state = state;
     }
 
     /**
@@ -113,16 +126,17 @@ public class Address {
      */
     public String getZip()
     {
-        return zip; 
+        return zip;
     }
 
     /**
      * Sets the value of zip.
+     * 
      * @param zip The value to assign to zip.
      */
-    public void setZip(String zip)
+    public void setZip( String zip )
     {
-        this.zip = zip; 
+        this.zip = zip;
     }
 
     /**
@@ -130,16 +144,17 @@ public class Address {
      */
     public String getCountry()
     {
-        return country; 
+        return country;
     }
 
     /**
      * Sets the value of country.
+     * 
      * @param country The value to assign to country.
      */
-    public void setCountry(String country)
+    public void setCountry( String country )
     {
-        this.country = country; 
+        this.country = country;
     }
 
     /**
@@ -147,17 +162,17 @@ public class Address {
      */
     public String getType()
     {
-        return type; 
+        return type;
     }
 
     /**
      * Sets the value of type.
+     * 
      * @param type The value to assign to type.
      */
-    public void setType(String type)
+    public void setType( String type )
     {
-        this.type = type; 
+        this.type = type;
     }
+
 }
-
-

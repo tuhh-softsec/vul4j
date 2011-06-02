@@ -25,53 +25,67 @@ import java.util.List;
 /**
  * See Main.java.
  */
-public class Person {
-  private int id;
-  private String category;
-  private String name;
-  private HashMap emails = new HashMap();
-  private List addresses = new ArrayList();
-  
-  /** 
-   * A unique id for this person. Note that the Digester automatically
-   * converts the id to an integer.
-   */
-  public void setId(int id) {
-      this.id = id;
-  }
-  
-  public void setCategory(String category) {
-      this.category = category;
-  }
-  
-  public void setName(String name) {
-      this.name = name;
-  }
-  
-  /** we assume only one email of each type... */
-  public void addEmail(String type, String address) {
-      emails.put(type, address);
-  }
-  
-  public void addAddress( Address addr ) {
-     addresses.add( addr );
-  }
+public class Person
+{
 
-  public void print() {
-      System.out.println("Person #" + id);
-      System.out.println("  category=" + category);
-      System.out.println("  name=" + name);
-      
-      for(Iterator i = emails.keySet().iterator(); i.hasNext(); ) {
-          String type = (String) i.next();
-          String address = (String) emails.get(type);
-          
-          System.out.println("  email (type " + type + ") : " + address);
-      }
-      
-      for(Iterator i = addresses.iterator(); i.hasNext(); ) {
-          Address addr = (Address) i.next();
-          addr.print(System.out, 2);
-      }
-  }
+    private int id;
+
+    private String category;
+
+    private String name;
+
+    private HashMap emails = new HashMap();
+
+    private List addresses = new ArrayList();
+
+    /**
+     * A unique id for this person. Note that the Digester automatically converts the id to an integer.
+     */
+    public void setId( int id )
+    {
+        this.id = id;
+    }
+
+    public void setCategory( String category )
+    {
+        this.category = category;
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
+    }
+
+    /** we assume only one email of each type... */
+    public void addEmail( String type, String address )
+    {
+        emails.put( type, address );
+    }
+
+    public void addAddress( Address addr )
+    {
+        addresses.add( addr );
+    }
+
+    public void print()
+    {
+        System.out.println( "Person #" + id );
+        System.out.println( "  category=" + category );
+        System.out.println( "  name=" + name );
+
+        for ( Iterator i = emails.keySet().iterator(); i.hasNext(); )
+        {
+            String type = (String) i.next();
+            String address = (String) emails.get( type );
+
+            System.out.println( "  email (type " + type + ") : " + address );
+        }
+
+        for ( Iterator i = addresses.iterator(); i.hasNext(); )
+        {
+            Address addr = (Address) i.next();
+            addr.print( System.out, 2 );
+        }
+    }
+
 }
