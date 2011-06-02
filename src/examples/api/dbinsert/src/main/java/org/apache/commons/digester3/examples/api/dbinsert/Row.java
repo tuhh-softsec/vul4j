@@ -56,7 +56,7 @@ public class Row
         }
     }
 
-    private LinkedList columns = new LinkedList();
+    private LinkedList<Column> columns = new LinkedList<Column>();
 
     public Row()
     {
@@ -67,7 +67,7 @@ public class Row
         columns.add( new Column( name, value ) );
     }
 
-    public List getColumns()
+    public List<Column> getColumns()
     {
         return columns;
     }

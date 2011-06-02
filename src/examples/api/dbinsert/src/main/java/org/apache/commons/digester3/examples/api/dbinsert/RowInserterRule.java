@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.util.Iterator;
 
 import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.examples.api.dbinsert.Row.Column;
 
 /**
  * See Main.java.
@@ -79,9 +80,9 @@ public class RowInserterRule
         StringBuilder colnames = new StringBuilder();
         StringBuilder colvalues = new StringBuilder();
 
-        for ( Iterator i = row.getColumns().iterator(); i.hasNext(); )
+        for ( Iterator<Column> i = row.getColumns().iterator(); i.hasNext(); )
         {
-            Row.Column column = (Row.Column) i.next();
+            Column column = i.next();
 
             if ( colnames.length() > 0 )
             {
