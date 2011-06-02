@@ -27,5 +27,15 @@
   <artifactId>commons-digester3-samples-rss</artifactId>
   <packaging>jar</packaging>
   <name>Apache Commons Digester :: Examples :: RSS</name>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>org.apache.commons.digester3.rss.RSSDigester</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
