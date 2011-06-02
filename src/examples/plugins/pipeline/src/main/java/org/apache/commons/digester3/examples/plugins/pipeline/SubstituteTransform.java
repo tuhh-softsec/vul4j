@@ -54,7 +54,9 @@ public class SubstituteTransform
         {
             int idx = buf.indexOf( from );
             if ( idx == -1 )
+            {
                 break;
+            }
 
             StringBuilder buf2 = buf.replace( idx, idx + from.length(), to );
         }
