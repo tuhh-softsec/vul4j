@@ -36,6 +36,7 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
      * digester stack (rather like an ObjectCreateRule) so that column data
      * can be stored on it.
      */
+    @Override
     public void begin(String namespace, String name, org.xml.sax.Attributes attrs) {
         getDigester().push(new Row());
     }
@@ -54,6 +55,7 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
      * which is to build trees of objects for later use. But it's a perfectly
      * valid use of Digester.
      */
+    @Override
     public void end(String namespace, String name) {
         Row row = getDigester().pop();
         Table table = getDigester().peek();
