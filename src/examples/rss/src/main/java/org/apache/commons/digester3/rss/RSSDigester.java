@@ -147,7 +147,7 @@ public class RSSDigester extends Digester {
      * @exception SAXException if a parsing exception occurs
      */
     @Override
-    public Object parse(File file) throws IOException, SAXException {
+    public <T> T parse(File file) throws IOException, SAXException {
 
         configure();
         return (super.parse(file));
