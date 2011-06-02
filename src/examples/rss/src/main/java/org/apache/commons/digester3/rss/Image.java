@@ -29,9 +29,12 @@ import java.io.Serializable;
 
 public class Image implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7651966908064015194L;
 
     // ------------------------------------------------------------- Properties
-
 
     /**
      * The image description (1-100 characters).

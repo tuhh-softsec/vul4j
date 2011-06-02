@@ -34,6 +34,10 @@ import java.util.ArrayList;
 
 public class Channel implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7358941908590407568L;
 
     // ----------------------------------------------------- Instance Variables
 

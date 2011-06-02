@@ -29,6 +29,10 @@ import java.io.Serializable;
 
 public class TextInput implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -147615076863607237L;
 
     // ------------------------------------------------------------- Properties
 
