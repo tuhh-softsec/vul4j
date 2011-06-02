@@ -49,7 +49,7 @@ public class SetTextSegmentRule extends Rule implements TextSegmentHandler {
      */
     public void textSegment(String text) throws Exception {
 
-        Object target = digester.peek(0);
+        Object target = getDigester().peek(0);
 
         // Call the specified method
         Class paramTypes[] = new Class[] {String.class};
