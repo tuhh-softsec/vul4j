@@ -522,6 +522,19 @@ public class Digester
     }
 
     /**
+     * Return a Stack whose elements are List objects, each containing a list of
+     * Rule objects as returned from Rules.getMatch().
+     *
+     * @return a Stack whose elements are List objects, each containing a list of
+     *         Rule objects as returned from Rules.getMatch().
+     * @since 3.0
+     */
+    public Stack<List<Rule>> getMatches()
+    {
+        return matches;
+    }
+
+    /**
      * Return the "namespace aware" flag for parsers we create.
      *
      * @return the "namespace aware" flag for parsers we create.
