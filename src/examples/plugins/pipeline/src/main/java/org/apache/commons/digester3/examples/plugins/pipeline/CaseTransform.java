@@ -35,17 +35,22 @@ public class CaseTransform
     public void setCase( String caseType )
     {
         if ( caseType.equalsIgnoreCase( "upper" ) )
+        {
             toLower = false;
+        }
         else
+        {
             toLower = true;
+        }
     }
 
     public String transform( String s )
     {
         if ( toLower )
+        {
             return s.toLowerCase();
-        else
-            return s.toUpperCase();
+        }
+        return s.toUpperCase();
     }
 
 }
