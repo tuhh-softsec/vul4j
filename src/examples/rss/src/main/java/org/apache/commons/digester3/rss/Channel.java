@@ -41,19 +41,19 @@ public class Channel implements Serializable {
     /**
      * The set of items associated with this Channel.
      */
-    protected ArrayList items = new ArrayList();
+    protected ArrayList<Item> items = new ArrayList<Item>();
 
 
     /**
      * The set of skip days for this channel.
      */
-    protected ArrayList skipDays = new ArrayList();
+    protected ArrayList<String> skipDays = new ArrayList<String>();
 
 
     /**
      * The set of skip hours for this channel.
      */
-    protected ArrayList skipHours = new ArrayList();
+    protected ArrayList<String> skipHours = new ArrayList<String>();
 
 
     // ------------------------------------------------------------- Properties
