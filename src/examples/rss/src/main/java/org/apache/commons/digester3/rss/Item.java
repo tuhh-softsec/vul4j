@@ -20,13 +20,11 @@ package org.apache.commons.digester3.rss;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
-
 /**
  * <p>Implementation object representing an <strong>item</strong> in the
  * <em>Rich Site Summary</em> DTD, version 0.91.  This class may be subclassed
  * to further specialize its behavior.</p>
  */
-
 public class Item implements Serializable {
 
     /**
@@ -41,45 +39,47 @@ public class Item implements Serializable {
      */
     protected String description = null;
 
-    public String getDescription() {
-        return (this.description);
+    public String getDescription()
+    {
+        return ( this.description );
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
-
 
     /**
      * The item link (1-500 characters).
      */
     protected String link = null;
 
-    public String getLink() {
-        return (this.link);
+    public String getLink()
+    {
+        return ( this.link );
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
-
 
     /**
      * The item title (1-100 characters).
      */
     protected String title = null;
 
-    public String getTitle() {
-        return (this.title);
+    public String getTitle()
+    {
+        return ( this.title );
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
-
     // -------------------------------------------------------- Package Methods
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -87,27 +87,26 @@ public class Item implements Serializable {
      *
      * @param writer The writer to render output to
      */
-    void render(PrintWriter writer) {
+    void render( PrintWriter writer )
+    {
+        writer.println( "    <item>" );
 
-        writer.println("    <item>");
+        writer.print( "      <title>" );
+        writer.print( title );
+        writer.println( "</title>" );
 
-        writer.print("      <title>");
-        writer.print(title);
-        writer.println("</title>");
+        writer.print( "      <link>" );
+        writer.print( link );
+        writer.println( "</link>" );
 
-        writer.print("      <link>");
-        writer.print(link);
-        writer.println("</link>");
-
-        if (description != null) {
-            writer.print("      <description>");
-            writer.print(description);
-            writer.println("</description>");
+        if ( description != null )
+        {
+            writer.print( "      <description>" );
+            writer.print( description );
+            writer.println( "</description>" );
         }
 
-        writer.println("    </item>");
-
+        writer.println( "    </item>" );
     }
-
 
 }

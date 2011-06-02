@@ -36,65 +36,67 @@ public class TextInput implements Serializable {
 
     // ------------------------------------------------------------- Properties
 
-
     /**
      * The text input description (1-100 characters).
      */
     protected String description = null;
 
-    public String getDescription() {
-        return (this.description);
+    public String getDescription()
+    {
+        return ( this.description );
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
-
 
     /**
      * The text input link (1-500 characters).
      */
     protected String link = null;
 
-    public String getLink() {
-        return (this.link);
+    public String getLink()
+    {
+        return ( this.link );
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
-
 
     /**
      * The text input field name (1-100 characters).
      */
     protected String name = null;
 
-    public String getName() {
-        return (this.name);
+    public String getName()
+    {
+        return ( this.name );
     }
 
-    public void setName(String name) {
+    public void setName( String name )
+    {
         this.name = name;
     }
-
 
     /**
      * The text input submit button label (1-100 characters).
      */
     protected String title = null;
 
-    public String getTitle() {
-        return (this.title);
+    public String getTitle()
+    {
+        return ( this.title );
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
 
-
     // -------------------------------------------------------- Package Methods
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -102,29 +104,27 @@ public class TextInput implements Serializable {
      *
      * @param writer The writer to render output to
      */
-    void render(PrintWriter writer) {
+    void render( PrintWriter writer )
+    {
+        writer.println( "    <textinput>" );
 
-        writer.println("    <textinput>");
+        writer.print( "      <title>" );
+        writer.print( title );
+        writer.println( "</title>" );
 
-        writer.print("      <title>");
-        writer.print(title);
-        writer.println("</title>");
+        writer.print( "      <description>" );
+        writer.print( description );
+        writer.println( "</description>" );
 
-        writer.print("      <description>");
-        writer.print(description);
-        writer.println("</description>");
+        writer.print( "      <name>" );
+        writer.print( name );
+        writer.println( "</name>" );
 
-        writer.print("      <name>");
-        writer.print(name);
-        writer.println("</name>");
+        writer.print( "      <link>" );
+        writer.print( link );
+        writer.println( "</link>" );
 
-        writer.print("      <link>");
-        writer.print(link);
-        writer.println("</link>");
-
-        writer.println("    </textinput>");
-
+        writer.println( "    </textinput>" );
     }
-
 
 }

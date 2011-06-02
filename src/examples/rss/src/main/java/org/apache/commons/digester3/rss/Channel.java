@@ -25,14 +25,14 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 
-
 /**
  * <p>Implementation object representing a <strong>channel</strong> in the
  * <em>Rich Site Summary</em> DTD, version 0.91.  This class may be subclassed
  * to further specialize its behavior.</p>
  */
-
-public class Channel implements Serializable {
+public class Channel
+    implements Serializable
+{
 
     /**
      * 
@@ -41,355 +41,372 @@ public class Channel implements Serializable {
 
     // ----------------------------------------------------- Instance Variables
 
-
     /**
      * The set of items associated with this Channel.
      */
     protected ArrayList<Item> items = new ArrayList<Item>();
-
 
     /**
      * The set of skip days for this channel.
      */
     protected ArrayList<String> skipDays = new ArrayList<String>();
 
-
     /**
      * The set of skip hours for this channel.
      */
     protected ArrayList<String> skipHours = new ArrayList<String>();
 
-
     // ------------------------------------------------------------- Properties
-
 
     /**
      * The channel copyright (1-100 characters).
      */
     protected String copyright = null;
 
-    public String getCopyright() {
-        return (this.copyright);
+    public String getCopyright()
+    {
+        return ( this.copyright );
     }
 
-    public void setCopyright(String copyright) {
+    public void setCopyright( String copyright )
+    {
         this.copyright = copyright;
     }
-
 
     /**
      * The channel description (1-500 characters).
      */
     protected String description = null;
 
-    public String getDescription() {
-        return (this.description);
+    public String getDescription()
+    {
+        return ( this.description );
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
-
 
     /**
      * The channel description file URL (1-500 characters).
      */
     protected String docs = null;
 
-    public String getDocs() {
-        return (this.docs);
+    public String getDocs()
+    {
+        return ( this.docs );
     }
 
-    public void setDocs(String docs) {
+    public void setDocs( String docs )
+    {
         this.docs = docs;
     }
-
 
     /**
      * The image describing this channel.
      */
     protected Image image = null;
 
-    public Image getImage() {
-        return (this.image);
+    public Image getImage()
+    {
+        return ( this.image );
     }
 
-    public void setImage(Image image) {
+    public void setImage( Image image )
+    {
         this.image = image;
     }
-
 
     /**
      * The channel language (2-5 characters).
      */
     protected String language = null;
 
-    public String getLanguage() {
-        return (this.language);
+    public String getLanguage()
+    {
+        return ( this.language );
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage( String language )
+    {
         this.language = language;
     }
-
 
     /**
      * The channel last build date (1-100 characters).
      */
     protected String lastBuildDate = null;
 
-    public String getLastBuildDate() {
-        return (this.lastBuildDate);
+    public String getLastBuildDate()
+    {
+        return ( this.lastBuildDate );
     }
 
-    public void setLastBuildDate(String lastBuildDate) {
+    public void setLastBuildDate( String lastBuildDate )
+    {
         this.lastBuildDate = lastBuildDate;
     }
-
 
     /**
      * The channel link (1-500 characters).
      */
     protected String link = null;
 
-    public String getLink() {
-        return (this.link);
+    public String getLink()
+    {
+        return ( this.link );
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
-
 
     /**
      * The managing editor (1-100 characters).
      */
     protected String managingEditor = null;
 
-    public String getManagingEditor() {
-        return (this.managingEditor);
+    public String getManagingEditor()
+    {
+        return ( this.managingEditor );
     }
 
-    public void setManagingEditor(String managingEditor) {
+    public void setManagingEditor( String managingEditor )
+    {
         this.managingEditor = managingEditor;
     }
-
 
     /**
      * The channel publication date (1-100 characters).
      */
     protected String pubDate = null;
 
-    public String getPubDate() {
-        return (this.pubDate);
+    public String getPubDate()
+    {
+        return ( this.pubDate );
     }
 
-    public void setPubDate(String pubDate) {
+    public void setPubDate( String pubDate )
+    {
         this.pubDate = pubDate;
     }
-
 
     /**
      * The channel rating (20-500 characters).
      */
     protected String rating = null;
 
-    public String getRating() {
-        return (this.rating);
+    public String getRating()
+    {
+        return ( this.rating );
     }
 
-    public void setRating(String rating) {
+    public void setRating( String rating )
+    {
         this.rating = rating;
     }
-
 
     /**
      * The text input description for this channel.
      */
     protected TextInput textInput = null;
 
-    public TextInput getTextInput() {
-        return (this.textInput);
+    public TextInput getTextInput()
+    {
+        return ( this.textInput );
     }
 
-    public void setTextInput(TextInput textInput) {
+    public void setTextInput( TextInput textInput )
+    {
         this.textInput = textInput;
     }
-
 
     /**
      * The channel title (1-100 characters).
      */
     protected String title = null;
 
-    public String getTitle() {
-        return (this.title);
+    public String getTitle()
+    {
+        return ( this.title );
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
-
 
     /**
      * The RSS specification version number used to create this Channel.
      */
     protected double version = 0.91;
 
-    public double getVersion() {
-        return (this.version);
+    public double getVersion()
+    {
+        return ( this.version );
     }
 
-    public void setVersion(double version) {
+    public void setVersion( double version )
+    {
         this.version = version;
     }
-
 
     /**
      * The webmaster email address (1-100 characters).
      */
     protected String webMaster = null;
 
-    public String getWebMaster() {
-        return (this.webMaster);
+    public String getWebMaster()
+    {
+        return ( this.webMaster );
     }
 
-    public void setWebMaster(String webMaster) {
+    public void setWebMaster( String webMaster )
+    {
         this.webMaster = webMaster;
     }
 
-
     // --------------------------------------------------------- Public Methods
-
 
     /**
      * Add an additional item.
      *
      * @param item The item to be added
      */
-    public void addItem(Item item) {
-        synchronized (items) {
-            items.add(item);
+    public void addItem( Item item )
+    {
+        synchronized ( items )
+        {
+            items.add( item );
         }
     }
-
 
     /**
      * Add an additional skip day name.
      *
      * @param skipDay The skip day to be added
      */
-    public void addSkipDay(String skipDay) {
-        synchronized (skipDays) {
-            skipDays.add(skipDay);
+    public void addSkipDay( String skipDay )
+    {
+        synchronized ( skipDays )
+        {
+            skipDays.add( skipDay );
         }
     }
-
 
     /**
      * Add an additional skip hour name.
      *
      * @param skipHour The skip hour to be added
      */
-    public void addSkipHour(String skipHour) {
-        synchronized (skipHours) {
-            skipHours.add(skipHour);
+    public void addSkipHour( String skipHour )
+    {
+        synchronized ( skipHours )
+        {
+            skipHours.add( skipHour );
         }
     }
-
 
     /**
      * Return the items for this channel.
      */
-    public Item[] findItems() {
-        synchronized (items) {
+    public Item[] findItems()
+    {
+        synchronized ( items )
+        {
             Item items[] = new Item[this.items.size()];
-            return this.items.toArray(items);
+            return this.items.toArray( items );
         }
     }
-
 
     /**
      * Return the items for this channel.
      */
-    public Item[] getItems() {
+    public Item[] getItems()
+    {
         return findItems();
     }
 
-
     /**
      * Return the skip days for this channel.
      */
-    public String[] findSkipDays() {
-        synchronized (skipDays) {
+    public String[] findSkipDays()
+    {
+        synchronized ( skipDays )
+        {
             String skipDays[] = new String[this.skipDays.size()];
-            return this.skipDays.toArray(skipDays);
+            return this.skipDays.toArray( skipDays );
         }
     }
-
 
     /**
      * Return the skip hours for this channel.
      */
-    public String[] getSkipHours() {
+    public String[] getSkipHours()
+    {
         return findSkipHours();
     }
 
-
     /**
      * Return the skip hours for this channel.
      */
-    public String[] findSkipHours() {
-        synchronized (skipHours) {
+    public String[] findSkipHours()
+    {
+        synchronized ( skipHours )
+        {
             String skipHours[] = new String[this.skipHours.size()];
-            return this.skipHours.toArray(skipHours);
+            return this.skipHours.toArray( skipHours );
         }
     }
-
 
     /**
      * Return the skip days for this channel.
      */
-    public String[] getSkipDays() {
+    public String[] getSkipDays()
+    {
         return findSkipDays();
     }
-
 
     /**
      * Remove an item for this channel.
      *
      * @param item The item to be removed
      */
-    public void removeItem(Item item) {
-        synchronized (items) {
-            items.remove(item);
+    public void removeItem( Item item )
+    {
+        synchronized ( items )
+        {
+            items.remove( item );
         }
     }
-
 
     /**
      * Remove a skip day for this channel.
      *
      * @param skipDay The skip day to be removed
      */
-    public void removeSkipDay(String skipDay) {
-        synchronized (skipDays) {
-            skipDays.remove(skipDay);
+    public void removeSkipDay( String skipDay )
+    {
+        synchronized ( skipDays )
+        {
+            skipDays.remove( skipDay );
         }
     }
-
 
     /**
      * Remove a skip hour for this channel.
      *
      * @param skipHour The skip hour to be removed
      */
-    public void removeSkipHour(String skipHour) {
-        synchronized (skipHours) {
-            skipHours.remove(skipHour);
+    public void removeSkipHour( String skipHour )
+    {
+        synchronized ( skipHours )
+        {
+            skipHours.remove( skipHour );
         }
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -398,16 +415,17 @@ public class Channel implements Serializable {
      *
      * @param stream The output stream to write to
      */
-    public void render(OutputStream stream) {
-
-        try {
-            render(stream, null);
-        } catch (UnsupportedEncodingException e) {
+    public void render( OutputStream stream )
+    {
+        try
+        {
+            render( stream, null );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
             // Can not happen
         }
-
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -420,20 +438,21 @@ public class Channel implements Serializable {
      * @exception UnsupportedEncodingException if the named encoding
      *  is not supported
      */
-    public void render(OutputStream stream, String encoding)
-            throws UnsupportedEncodingException {
-
+    public void render( OutputStream stream, String encoding )
+        throws UnsupportedEncodingException
+    {
         PrintWriter pw = null;
-        if (encoding == null) {
-            pw = new PrintWriter(stream);
-        } else {
-            pw = new PrintWriter(new OutputStreamWriter(stream, encoding));
+        if ( encoding == null )
+        {
+            pw = new PrintWriter( stream );
         }
-        render(pw, encoding);
+        else
+        {
+            pw = new PrintWriter( new OutputStreamWriter( stream, encoding ) );
+        }
+        render( pw, encoding );
         pw.flush();
-
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -441,12 +460,10 @@ public class Channel implements Serializable {
      *
      * @param writer The writer to render output to
      */
-    public void render(Writer writer) {
-
-        render(writer, null);
-
+    public void render( Writer writer )
+    {
+        render( writer, null );
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -456,14 +473,12 @@ public class Channel implements Serializable {
      * @param encoding The character encoding to declare, or <code>null</code>
      *  for no declaration
      */
-    public void render(Writer writer, String encoding) {
-
-        PrintWriter pw = new PrintWriter(writer);
-        render(pw, encoding);
+    public void render( Writer writer, String encoding )
+    {
+        PrintWriter pw = new PrintWriter( writer );
+        render( pw, encoding );
         pw.flush();
-
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -471,12 +486,10 @@ public class Channel implements Serializable {
      *
      * @param writer The writer to render output to
      */
-    public void render(PrintWriter writer) {
-
-        render(writer, null);
-
+    public void render( PrintWriter writer )
+    {
+        render( writer, null );
     }
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -486,134 +499,146 @@ public class Channel implements Serializable {
      * @param encoding The character encoding to declare, or <code>null</code>
      *  for no declaration
      */
-    public void render(PrintWriter writer, String encoding) {
-
-        writer.print("<?xml version=\"1.0\"");
-        if (encoding != null) {
-            writer.print(" encoding=\"");
-            writer.print(encoding);
-            writer.print("\"");
+    public void render( PrintWriter writer, String encoding )
+    {
+        writer.print( "<?xml version=\"1.0\"" );
+        if ( encoding != null )
+        {
+            writer.print( " encoding=\"" );
+            writer.print( encoding );
+            writer.print( "\"" );
         }
-        writer.println("?>");
+        writer.println( "?>" );
         writer.println();
 
-        writer.println("<!DOCTYPE rss PUBLIC");
-        writer.println("  \"-//Netscape Communications//DTD RSS 0.91//EN\"");
-        writer.println("  \"http://my.netscape.com/publish/formats/rss-0.91.dtd\">");
+        writer.println( "<!DOCTYPE rss PUBLIC" );
+        writer.println( "  \"-//Netscape Communications//DTD RSS 0.91//EN\"" );
+        writer.println( "  \"http://my.netscape.com/publish/formats/rss-0.91.dtd\">" );
         writer.println();
 
-        writer.println("<rss version=\"0.91\">");
+        writer.println( "<rss version=\"0.91\">" );
         writer.println();
 
-        writer.println("  <channel>");
+        writer.println( "  <channel>" );
         writer.println();
 
-        writer.print("    <title>");
-        writer.print(title);
-        writer.println("</title>");
+        writer.print( "    <title>" );
+        writer.print( title );
+        writer.println( "</title>" );
 
-        writer.print("    <description>");
-        writer.print(description);
-        writer.println("</description>");
+        writer.print( "    <description>" );
+        writer.print( description );
+        writer.println( "</description>" );
 
-        writer.print("    <link>");
-        writer.print(link);
-        writer.println("</link>");
+        writer.print( "    <link>" );
+        writer.print( link );
+        writer.println( "</link>" );
 
-        writer.print("    <language>");
-        writer.print(language);
-        writer.println("</language>");
+        writer.print( "    <language>" );
+        writer.print( language );
+        writer.println( "</language>" );
 
-        if (rating != null) {
-            writer.print("    <rating>");
-            writer.print(rating);
-            writer.println("</rating>");
+        if ( rating != null )
+        {
+            writer.print( "    <rating>" );
+            writer.print( rating );
+            writer.println( "</rating>" );
         }
 
-        if (copyright != null) {
-            writer.print("    <copyright>");
-            writer.print(copyright);
-            writer.print("</copyright>");
+        if ( copyright != null )
+        {
+            writer.print( "    <copyright>" );
+            writer.print( copyright );
+            writer.print( "</copyright>" );
         }
 
-
-        if (pubDate != null) {
-            writer.print("    <pubDate>");
-            writer.print(pubDate);
-            writer.println("</pubDate>");
+        if ( pubDate != null )
+        {
+            writer.print( "    <pubDate>" );
+            writer.print( pubDate );
+            writer.println( "</pubDate>" );
         }
 
-        if (lastBuildDate != null) {
-            writer.print("    <lastBuildDate>");
-            writer.print(lastBuildDate);
-            writer.println("</lastBuildDate>");
+        if ( lastBuildDate != null )
+        {
+            writer.print( "    <lastBuildDate>" );
+            writer.print( lastBuildDate );
+            writer.println( "</lastBuildDate>" );
         }
 
-        if (docs != null) {
-            writer.print("    <docs>");
-            writer.print(docs);
-            writer.println("</docs>");
+        if ( docs != null )
+        {
+            writer.print( "    <docs>" );
+            writer.print( docs );
+            writer.println( "</docs>" );
         }
 
-        if (managingEditor != null) {
-            writer.print("    <managingEditor>");
-            writer.print(managingEditor);
-            writer.println("</managingEditor>");
+        if ( managingEditor != null )
+        {
+            writer.print( "    <managingEditor>" );
+            writer.print( managingEditor );
+            writer.println( "</managingEditor>" );
         }
 
-        if (webMaster != null) {
-            writer.print("    <webMaster>");
-            writer.print(webMaster);
-            writer.println("</webMaster>");
+        if ( webMaster != null )
+        {
+            writer.print( "    <webMaster>" );
+            writer.print( webMaster );
+            writer.println( "</webMaster>" );
         }
 
         writer.println();
 
-        if (image != null) {
-            image.render(writer);
+        if ( image != null )
+        {
+            image.render( writer );
             writer.println();
         }
 
-        if (textInput != null) {
-            textInput.render(writer);
+        if ( textInput != null )
+        {
+            textInput.render( writer );
             writer.println();
         }
 
         String skipDays[] = findSkipDays();
-        if (skipDays.length > 0) {
-            writer.println("    <skipDays>");
-            for (int i = 0; i < skipDays.length; i++) {
-                writer.print("      <skipDay>");
-                writer.print(skipDays[i]);
-                writer.println("</skipDay>");
+        if ( skipDays.length > 0 )
+        {
+            writer.println( "    <skipDays>" );
+            for ( int i = 0; i < skipDays.length; i++ )
+            {
+                writer.print( "      <skipDay>" );
+                writer.print( skipDays[i] );
+                writer.println( "</skipDay>" );
             }
-            writer.println("    </skipDays>");
+            writer.println( "    </skipDays>" );
         }
 
         String skipHours[] = findSkipHours();
-        if (skipHours.length > 0) {
-            writer.println("    <skipHours>");
-            for (int i = 0; i < skipHours.length; i++) {
-                writer.print("      <skipHour>");
-                writer.print(skipHours[i]);
-                writer.println("</skipHour>");
+        if ( skipHours.length > 0 )
+        {
+            writer.println( "    <skipHours>" );
+            for ( int i = 0; i < skipHours.length; i++ )
+            {
+                writer.print( "      <skipHour>" );
+                writer.print( skipHours[i] );
+                writer.println( "</skipHour>" );
             }
-            writer.println("    </skipHours>");
+            writer.println( "    </skipHours>" );
             writer.println();
         }
 
         Item items[] = findItems();
-        for (int i = 0; i < items.length; i++) {
-            items[i].render(writer);
+        for ( int i = 0; i < items.length; i++ )
+        {
+            items[i].render( writer );
             writer.println();
         }
 
-        writer.println("  </channel>");
+        writer.println( "  </channel>" );
         writer.println();
 
-        writer.println("</rss>");
-
+        writer.println( "</rss>" );
     }
-
 
 }

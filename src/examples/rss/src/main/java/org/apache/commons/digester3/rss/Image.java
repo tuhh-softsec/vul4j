@@ -20,14 +20,14 @@ package org.apache.commons.digester3.rss;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
-
 /**
  * <p>Implementation object representing an <strong>image</strong> in the
  * <em>Rich Site Summary</em> DTD, version 0.91.  This class may be subclassed
  * to further specialize its behavior.</p>
  */
-
-public class Image implements Serializable {
+public class Image
+    implements Serializable
+{
 
     /**
      * 
@@ -41,87 +41,92 @@ public class Image implements Serializable {
      */
     protected String description = null;
 
-    public String getDescription() {
-        return (this.description);
+    public String getDescription()
+    {
+        return ( this.description );
     }
 
-    public void setDescription(String description) {
+    public void setDescription( String description )
+    {
         this.description = description;
     }
-
 
     /**
      * The image height in pixels (1-400).
      */
     protected int height = 31;
 
-    public int getHeight() {
-        return (this.height);
+    public int getHeight()
+    {
+        return ( this.height );
     }
 
-    public void setHeight(int height) {
+    public void setHeight( int height )
+    {
         this.height = height;
     }
-
 
     /**
      * The image link (1-500 characters).
      */
     protected String link = null;
 
-    public String getLink() {
-        return (this.link);
+    public String getLink()
+    {
+        return ( this.link );
     }
 
-    public void setLink(String link) {
+    public void setLink( String link )
+    {
         this.link = link;
     }
-
 
     /**
      * The image alternate text (1-100 characters).
      */
     protected String title = null;
 
-    public String getTitle() {
-        return (this.title);
+    public String getTitle()
+    {
+        return ( this.title );
     }
 
-    public void setTitle(String title) {
+    public void setTitle( String title )
+    {
         this.title = title;
     }
-
 
     /**
      * The image location URL (1-500 characters).
      */
     protected String url = null;
 
-    public String getURL() {
-        return (this.url);
+    public String getURL()
+    {
+        return ( this.url );
     }
 
-    public void setURL(String url) {
+    public void setURL( String url )
+    {
         this.url = url;
     }
-
 
     /**
      * The image width in pixels (1-400).
      */
     protected int width = 31;
 
-    public int getWidth() {
-        return (this.width);
+    public int getWidth()
+    {
+        return ( this.width );
     }
 
-    public void setWidth(int width) {
+    public void setWidth( int width )
+    {
         this.width = width;
     }
 
-
     // -------------------------------------------------------- Package Methods
-
 
     /**
      * Render this channel as XML conforming to the RSS 0.91 specification,
@@ -129,41 +134,41 @@ public class Image implements Serializable {
      *
      * @param writer The writer to render output to
      */
-    void render(PrintWriter writer) {
+    void render( PrintWriter writer )
+    {
+        writer.println( "    <image>" );
 
-        writer.println("    <image>");
+        writer.print( "      <title>" );
+        writer.print( title );
+        writer.println( "</title>" );
 
-        writer.print("      <title>");
-        writer.print(title);
-        writer.println("</title>");
+        writer.print( "      <url>" );
+        writer.print( url );
+        writer.println( "</url>" );
 
-        writer.print("      <url>");
-        writer.print(url);
-        writer.println("</url>");
-
-        if (link != null) {
-            writer.print("      <link>");
-            writer.print(link);
-            writer.println("</link>");
+        if ( link != null )
+        {
+            writer.print( "      <link>" );
+            writer.print( link );
+            writer.println( "</link>" );
         }
 
-        writer.print("      <width>");
-        writer.print(width);
-        writer.println("</width>");
+        writer.print( "      <width>" );
+        writer.print( width );
+        writer.println( "</width>" );
 
-        writer.print("      <height>");
-        writer.print(height);
-        writer.println("</height>");
+        writer.print( "      <height>" );
+        writer.print( height );
+        writer.println( "</height>" );
 
-        if (description != null) {
-            writer.print("      <description>");
-            writer.print(description);
-            writer.println("</description>");
+        if ( description != null )
+        {
+            writer.print( "      <description>" );
+            writer.print( description );
+            writer.println( "</description>" );
         }
 
-        writer.println("    </image>");
-
+        writer.println( "    </image>" );
     }
-
 
 }
