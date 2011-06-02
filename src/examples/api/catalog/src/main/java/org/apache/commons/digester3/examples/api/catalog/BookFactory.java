@@ -18,6 +18,7 @@ package org.apache.commons.digester3.examples.api.catalog;
  */ 
 
 import org.apache.commons.digester3.AbstractObjectCreationFactory;
+import org.xml.sax.Attributes;
 
 /**
  * The Book class doesn't have a no-argument constructor, so the
@@ -64,7 +65,7 @@ public class BookFactory
 {
 
     @Override
-    public Book createObject( org.xml.sax.Attributes attributes )
+    public Book createObject( Attributes attributes )
         throws Exception
     {
         String isbn = attributes.getValue( "isbn" );
