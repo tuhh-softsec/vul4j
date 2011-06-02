@@ -26,7 +26,7 @@ import java.util.Iterator;
 public class Catalog
 {
 
-    LinkedList<Item> items = new LinkedList<Item>();
+    private final LinkedList<Item> items = new LinkedList<Item>();
 
     public void addItem( Item item )
     {
