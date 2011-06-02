@@ -58,7 +58,7 @@ public class SubstituteTransform
                 break;
             }
 
-            StringBuilder buf2 = buf.replace( idx, idx + from.length(), to );
+            buf.replace( idx, idx + from.length(), to );
         }
         return buf.toString();
     }
