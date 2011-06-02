@@ -63,6 +63,7 @@ public class BookFactory
     extends AbstractObjectCreationFactory<Book>
 {
 
+    @Override
     public Book createObject( org.xml.sax.Attributes attributes )
         throws Exception
     {
