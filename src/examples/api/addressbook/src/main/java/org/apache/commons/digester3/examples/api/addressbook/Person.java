@@ -34,9 +34,9 @@ public class Person
 
     private String name;
 
-    private HashMap emails = new HashMap();
+    private HashMap<String, String> emails = new HashMap<String, String>();
 
-    private List addresses = new ArrayList();
+    private List<Address> addresses = new ArrayList<Address>();
 
     /**
      * A unique id for this person. Note that the Digester automatically converts the id to an integer.
@@ -73,17 +73,17 @@ public class Person
         System.out.println( "  category=" + category );
         System.out.println( "  name=" + name );
 
-        for ( Iterator i = emails.keySet().iterator(); i.hasNext(); )
+        for ( Iterator<String> i = emails.keySet().iterator(); i.hasNext(); )
         {
-            String type = (String) i.next();
-            String address = (String) emails.get( type );
+            String type = i.next();
+            String address = emails.get( type );
 
             System.out.println( "  email (type " + type + ") : " + address );
         }
 
-        for ( Iterator i = addresses.iterator(); i.hasNext(); )
+        for ( Iterator<Address> i = addresses.iterator(); i.hasNext(); )
         {
-            Address addr = (Address) i.next();
+            Address addr = i.next();
             addr.print( System.out, 2 );
         }
     }
