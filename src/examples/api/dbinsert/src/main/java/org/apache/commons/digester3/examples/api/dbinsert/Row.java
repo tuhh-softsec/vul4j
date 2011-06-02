@@ -23,45 +23,53 @@ import java.util.LinkedList;
 /**
  * See Main.java.
  */
-public class Row {
-    
-  /**
-   * Alas, we can't just use a Map to store the (name, value) pairs
-   * because the output will look weird if we don't preserve the column
-   * order. This wouldn't be a problem if we were really inserting into
-   * a database; it only matters because we are displaying the SQL statements
-   * via stdout instead. The LinkedHashMap class would be nice to use, but
-   * that would require java 1.4, so we'll use a list instead, and may as
-   * well call the entries in the list 'Column' objects.
-   */
-  public static class Column {
-      private String name, value;
-      
-      public Column(String name, String value) {
-          this.name = name; 
-          this.value = value;
-      }
-      
-      public String getName() {
-          return name;
-      }
-      
-      public String getValue() {
-          return value;
-      }
-  }
-    
-  private LinkedList columns = new LinkedList();
+public class Row
+{
 
-  public Row() {
-  }
-  
-  public void addColumn(String name, String value) {
-      columns.add(new Column(name, value));
-  }
+    /**
+     * Alas, we can't just use a Map to store the (name, value) pairs
+     * because the output will look weird if we don't preserve the column
+     * order. This wouldn't be a problem if we were really inserting into
+     * a database; it only matters because we are displaying the SQL statements
+     * via stdout instead. The LinkedHashMap class would be nice to use, but
+     * that would require java 1.4, so we'll use a list instead, and may as
+     * well call the entries in the list 'Column' objects.
+     */
+    public static class Column
+    {
+        private String name, value;
 
-  public List getColumns() {
-      return columns;
-  }
-}  
+        public Column( String name, String value )
+        {
+            this.name = name;
+            this.value = value;
+        }
 
+        public String getName()
+        {
+            return name;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+    }
+
+    private LinkedList columns = new LinkedList();
+
+    public Row()
+    {
+    }
+
+    public void addColumn( String name, String value )
+    {
+        columns.add( new Column( name, value ) );
+    }
+
+    public List getColumns()
+    {
+        return columns;
+    }
+
+}

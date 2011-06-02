@@ -25,14 +25,17 @@ import org.apache.commons.digester3.Rule;
 /**
  * See Main.java.
  */
-public class RowInserterRule extends Rule {
+public class RowInserterRule
+    extends Rule
+{
 
     private Connection conn;
-    
-    public RowInserterRule(Connection conn) {
+
+    public RowInserterRule( Connection conn )
+    {
         this.conn = conn;
     }
-    
+
     /**
      * This method is invoked when the start tag for an xml element representing
      * a database row is encountered. It pushes a new Row instance onto the
@@ -40,10 +43,11 @@ public class RowInserterRule extends Rule {
      * can be stored on it.
      */
     @Override
-    public void begin(String namespace, String name, org.xml.sax.Attributes attrs) {
-        getDigester().push(new Row());
+    public void begin( String namespace, String name, org.xml.sax.Attributes attrs )
+    {
+        getDigester().push( new Row() );
     }
-    
+
     /**
      * This method is invoked when the end tag for an xml element representing
      * a database row is encountered. It pops a fully-configured Row instance
@@ -59,50 +63,52 @@ public class RowInserterRule extends Rule {
      * valid use of Digester.
      */
     @Override
-    public void end(String namespace, String name) {
+    public void end( String namespace, String name )
+    {
         Row row = getDigester().pop();
         Table table = getDigester().peek();
 
         // Obviously, all this would be replaced by code like:
-        //   stmt = conn.prepareStatement();
-        //   stmt.setString(n, value);
+        // stmt = conn.prepareStatement();
+        // stmt.setString(n, value);
         //
-        // Many improvements can then be implemented, such as using the 
+        // Many improvements can then be implemented, such as using the
         // PreparedStatement.getParameterMetaData method to retrieve
         // retrieve parameter types, etc.
-        
+
         StringBuilder colnames = new StringBuilder();
         StringBuilder colvalues = new StringBuilder();
-        
-        for(Iterator i = row.getColumns().iterator(); i.hasNext();)
+
+        for ( Iterator i = row.getColumns().iterator(); i.hasNext(); )
         {
             Row.Column column = (Row.Column) i.next();
-            
-            if (colnames.length() > 0)
+
+            if ( colnames.length() > 0 )
             {
-                colnames.append(", ");
-                colvalues.append(", ");
+                colnames.append( ", " );
+                colvalues.append( ", " );
             }
-        
-            colnames.append("'");
-            colnames.append(column.getName());
-            colnames.append("'");
-            
-            colvalues.append("'");
-            colvalues.append(column.getValue());
-            colvalues.append("'");
+
+            colnames.append( "'" );
+            colnames.append( column.getName() );
+            colnames.append( "'" );
+
+            colvalues.append( "'" );
+            colvalues.append( column.getValue() );
+            colvalues.append( "'" );
         }
 
         StringBuilder buf = new StringBuilder();
-        buf.append("insert into ");
-        buf.append(table.getName());
-        buf.append(" (");
-        buf.append(colnames.toString());
-        buf.append(") values (");
-        buf.append(colvalues.toString());
-        buf.append(")");
-        
+        buf.append( "insert into " );
+        buf.append( table.getName() );
+        buf.append( " (" );
+        buf.append( colnames.toString() );
+        buf.append( ") values (" );
+        buf.append( colvalues.toString() );
+        buf.append( ")" );
+
         // here the prepared statement would be executed....
-        System.out.println(buf.toString());
+        System.out.println( buf.toString() );
     }
+
 }

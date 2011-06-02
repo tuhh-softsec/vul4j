@@ -20,18 +20,23 @@ package org.apache.commons.digester3.examples.api.dbinsert;
 /**
  * See Main.java.
  */
-public class Table {
-  private String name;
+public class Table
+{
 
-  public Table() {
-  }
-  
-  public void setName(String name) {
-      this.name = name;
-  }
-  
-  public String getName() {
-      return name;
-  }
-}  
+    private String name;
 
+    public Table()
+    {
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+}
