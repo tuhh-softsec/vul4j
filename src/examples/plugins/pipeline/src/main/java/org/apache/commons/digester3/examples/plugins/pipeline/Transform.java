@@ -1,3 +1,5 @@
+package org.apache.commons.digester3.examples.plugins.pipeline;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,29 +18,10 @@
  */ 
 
 /**
- * An implementation of the Transform interface which converts all
- * input text to either upper or lower case.
- * <p>
- * Note that because it doesn't use any nested tags for configuration,
- * just xml attributes which map 1:1 onto bean property-setter methods,
- * there is no need to define any custom addRules method to use this
- * as a Digester plugin class.
+ * An interface that any user class must implement if it wishes to be
+ * plugged in at the "transform" tag of a pipeline configuration file.
  */
 
-public class CaseTransform implements Transform {
-    private boolean toLower = true;
-    
-    public void setCase(String caseType) {
-        if (caseType.equalsIgnoreCase("upper"))
-            toLower = false;
-        else 
-            toLower = true;
-    }
-    
-    public String transform(String s) {
-        if (toLower)
-            return s.toLowerCase();
-        else
-            return s.toUpperCase();
-    }
+public interface Transform {
+    String transform(String s);
 }
