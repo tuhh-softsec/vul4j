@@ -17,7 +17,12 @@ package org.apache.commons.digester3.examples.api.dbinsert;
  * limitations under the License.
  */ 
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+
 import org.apache.commons.digester3.Digester;
+import org.xml.sax.SAXException;
 
 /**
  * A simple program to demonstrate that the Commons Digester module can be
@@ -63,7 +68,7 @@ public class Main
         // Here you would establish a real connection.
         // There would also be a finally clause to ensure it is
         // closed after parsing terminates, etc.
-        java.sql.Connection connection = null;
+        Connection connection = null;
 
         // Add rules to the digester that will be triggered while
         // parsing occurs.
@@ -73,15 +78,15 @@ public class Main
         System.out.println( "Parsing commencing..." );
         try
         {
-            java.io.File srcfile = new java.io.File( filename );
+            File srcfile = new File( filename );
             d.parse( srcfile );
         }
-        catch ( java.io.IOException ioe )
+        catch ( IOException ioe )
         {
             System.out.println( "Error reading input file:" + ioe.getMessage() );
             System.exit( -1 );
         }
-        catch ( org.xml.sax.SAXException se )
+        catch ( SAXException se )
         {
             System.out.println( "Error parsing input file:" + se.getMessage() );
             System.exit( -1 );
