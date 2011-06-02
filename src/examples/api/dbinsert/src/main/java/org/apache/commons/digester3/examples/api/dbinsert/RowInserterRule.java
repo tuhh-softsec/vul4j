@@ -20,10 +20,12 @@ package org.apache.commons.digester3.examples.api.dbinsert;
 import java.sql.Connection;
 import java.util.Iterator;
 
+import org.apache.commons.digester3.Rule;
+
 /**
  * See Main.java.
  */
-public class RowInserterRule extends org.apache.commons.digester3.Rule {
+public class RowInserterRule extends Rule {
 
     private Connection conn;
     
