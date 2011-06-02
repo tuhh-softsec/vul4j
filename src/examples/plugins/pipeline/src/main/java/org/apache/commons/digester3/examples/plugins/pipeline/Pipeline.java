@@ -77,7 +77,7 @@ public class Pipeline
         Pipeline pipeline = null;
         try
         {
-            pipeline = (Pipeline) digester.parse( configFile );
+            pipeline = digester.parse( configFile );
         }
         catch ( Exception e )
         {
