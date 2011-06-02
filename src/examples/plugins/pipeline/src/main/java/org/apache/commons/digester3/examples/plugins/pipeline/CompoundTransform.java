@@ -31,25 +31,32 @@ import org.apache.commons.digester3.plugins.PluginCreateRule;
  * This demonstrates that a plugged-in class can itself define plugin-points 
  * for user-defined classes if it wishes.
  */
+public class CompoundTransform
+    implements Transform
+{
 
-public class CompoundTransform implements Transform {
     private LinkedList transforms = new LinkedList();
-    
-    public void addTransform(Transform transform) {
-        transforms.add(transform);
+
+    public void addTransform( Transform transform )
+    {
+        transforms.add( transform );
     }
-    
-    public String transform(String s) {
-        for(Iterator i = transforms.iterator(); i.hasNext(); ) {
+
+    public String transform( String s )
+    {
+        for ( Iterator i = transforms.iterator(); i.hasNext(); )
+        {
             Transform t = (Transform) i.next();
-            s = t.transform(s);
+            s = t.transform( s );
         }
         return s;
     }
-    
-    public static void addRules(Digester d, String patternPrefix) {
-        PluginCreateRule pcr = new PluginCreateRule(Transform.class);
-        d.addRule(patternPrefix+"/subtransform", pcr);
-        d.addSetNext(patternPrefix+"/subtransform", "addTransform");
+
+    public static void addRules( Digester d, String patternPrefix )
+    {
+        PluginCreateRule pcr = new PluginCreateRule( Transform.class );
+        d.addRule( patternPrefix + "/subtransform", pcr );
+        d.addSetNext( patternPrefix + "/subtransform", "addTransform" );
     }
+
 }

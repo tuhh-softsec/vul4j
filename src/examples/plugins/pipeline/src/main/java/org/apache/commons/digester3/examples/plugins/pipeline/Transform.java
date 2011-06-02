@@ -15,13 +15,15 @@ package org.apache.commons.digester3.examples.plugins.pipeline;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
-
-/**
- * An interface that any user class must implement if it wishes to be
- * plugged in at the "transform" tag of a pipeline configuration file.
  */
 
-public interface Transform {
-    String transform(String s);
+/**
+ * An interface that any user class must implement if it wishes to be plugged in at the "transform" tag of a pipeline
+ * configuration file.
+ */
+public interface Transform
+{
+
+    String transform( String s );
+
 }

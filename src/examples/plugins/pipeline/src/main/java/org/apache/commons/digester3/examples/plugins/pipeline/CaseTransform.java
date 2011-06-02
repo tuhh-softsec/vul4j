@@ -26,21 +26,26 @@ package org.apache.commons.digester3.examples.plugins.pipeline;
  * there is no need to define any custom addRules method to use this
  * as a Digester plugin class.
  */
+public class CaseTransform
+    implements Transform
+{
 
-public class CaseTransform implements Transform {
     private boolean toLower = true;
-    
-    public void setCase(String caseType) {
-        if (caseType.equalsIgnoreCase("upper"))
+
+    public void setCase( String caseType )
+    {
+        if ( caseType.equalsIgnoreCase( "upper" ) )
             toLower = false;
-        else 
+        else
             toLower = true;
     }
-    
-    public String transform(String s) {
-        if (toLower)
+
+    public String transform( String s )
+    {
+        if ( toLower )
             return s.toLowerCase();
         else
             return s.toUpperCase();
     }
+
 }

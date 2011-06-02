@@ -29,33 +29,42 @@ import org.apache.commons.digester3.Digester;
  * rules though; for example they can be defined in a separate
  * SubstituteTransformRuleInfo class.
  */
- 
-public class SubstituteTransform implements Transform {
+public class SubstituteTransform
+    implements Transform
+{
+
     private String from;
+
     private String to;
-    
-    public void setFrom(String from) {
+
+    public void setFrom( String from )
+    {
         this.from = from;
     }
-    
-    public void setTo(String to) {
+
+    public void setTo( String to )
+    {
         this.to = to;
     }
-    
-    public String transform(String s) {
-        StringBuilder buf = new StringBuilder(s);
-        while (true) {
-            int idx = buf.indexOf(from);
-            if (idx == -1)
+
+    public String transform( String s )
+    {
+        StringBuilder buf = new StringBuilder( s );
+        while ( true )
+        {
+            int idx = buf.indexOf( from );
+            if ( idx == -1 )
                 break;
-            
-            StringBuilder buf2 = buf.replace(idx, idx+from.length(), to);
+
+            StringBuilder buf2 = buf.replace( idx, idx + from.length(), to );
         }
         return buf.toString();
     }
-    
-    public static void addRules(Digester d, String patternPrefix) {
-        d.addCallMethod(patternPrefix+"/from", "setFrom", 0);
-        d.addCallMethod(patternPrefix+"/to", "setTo", 0);
+
+    public static void addRules( Digester d, String patternPrefix )
+    {
+        d.addCallMethod( patternPrefix + "/from", "setFrom", 0 );
+        d.addCallMethod( patternPrefix + "/to", "setTo", 0 );
     }
+
 }
