@@ -149,7 +149,7 @@ public class RSSDigester
         throws IOException, SAXException
     {
         configure();
-        return ( super.parse( file ) );
+        return ( super.<T>parse( file ) );
     }
 
     /**
@@ -167,7 +167,7 @@ public class RSSDigester
         throws IOException, SAXException
     {
         configure();
-        return ( super.parse( input ) );
+        return ( super.<T>parse( input ) );
     }
 
 
@@ -186,7 +186,7 @@ public class RSSDigester
         throws IOException, SAXException
     {
         configure();
-        return ( super.parse( input ) );
+        return ( super.<T>parse( input ) );
     }
 
     /**
@@ -204,7 +204,7 @@ public class RSSDigester
         throws IOException, SAXException
     {
         configure();
-        return ( super.parse( uri ) );
+        return ( super.<T>parse( uri ) );
     }
 
     // -------------------------------------------------------- Package Methods
