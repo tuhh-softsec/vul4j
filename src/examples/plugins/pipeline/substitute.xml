@@ -21,7 +21,7 @@
   
 <pipeline>
   <source file="input.txt"/>
-  <transform plugin-class="SubstituteTransform">
+  <transform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.SubstituteTransform">
     <from>changeme</from>
     <to>changed</to>
   </transform>

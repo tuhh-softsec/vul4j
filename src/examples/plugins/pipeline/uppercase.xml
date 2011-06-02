@@ -20,7 +20,7 @@
   
 <pipeline>
   <source file="input.txt"/>
-  <transform plugin-class="CaseTransform" case="upper"/>
+  <transform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.CaseTransform" case="upper"/>
   <destination file="output.txt"/>
 </pipeline>
   
