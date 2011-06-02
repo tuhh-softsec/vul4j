@@ -26,7 +26,7 @@ import java.util.Iterator;
 public class Catalog
 {
 
-    LinkedList items = new LinkedList();
+    LinkedList<Item> items = new LinkedList<Item>();
 
     public void addItem( Item item )
     {
@@ -37,9 +37,9 @@ public class Catalog
     {
         System.out.println( "This catalog has " + items.size() + " items" );
 
-        for ( Iterator i = items.iterator(); i.hasNext(); )
+        for ( Iterator<Item> i = items.iterator(); i.hasNext(); )
         {
-            Item item = (Item) i.next();
+            Item item = i.next();
             item.print();
         }
     }
