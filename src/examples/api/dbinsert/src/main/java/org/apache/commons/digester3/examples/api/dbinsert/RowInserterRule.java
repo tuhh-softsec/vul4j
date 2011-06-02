@@ -38,7 +38,7 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
      * can be stored on it.
      */
     public void begin(String namespace, String name, org.xml.sax.Attributes attrs) {
-        digester.push(new Row());
+        getDigester().push(new Row());
     }
     
     /**
@@ -56,8 +56,8 @@ public class RowInserterRule extends org.apache.commons.digester3.Rule {
      * valid use of Digester.
      */
     public void end(String namespace, String name) {
-        Row row = (Row) digester.pop();
-        Table table = (Table) digester.peek();
+        Row row = getDigester().pop();
+        Table table = getDigester().peek();
 
         // Obviously, all this would be replaced by code like:
         //   stmt = conn.prepareStatement();
