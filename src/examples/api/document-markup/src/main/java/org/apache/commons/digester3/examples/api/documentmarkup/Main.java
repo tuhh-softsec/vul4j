@@ -17,6 +17,8 @@ package org.apache.commons.digester3.examples.api.documentmarkup;
  * limitations under the License.
  */ 
 
+import java.io.StringReader;
+
 /** 
  * A simple "test harness" which demonstrates how the MarkupDigester class
  * (plus the supporting interface/rule classes) can process "document-markup"
@@ -81,7 +83,7 @@ public class Main
         d.addCallMethod( "p/i", "addItalic", 0 );
         d.addCallMethod( "p/b", "addBold", 0 );
 
-        d.parse( new java.io.StringReader( in ) );
+        d.parse( new StringReader( in ) );
 
         System.out.println( "Finished." );
     }
