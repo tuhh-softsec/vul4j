@@ -511,11 +511,6 @@ public class Channel
         writer.println( "?>" );
         writer.println();
 
-        writer.println( "<!DOCTYPE rss PUBLIC" );
-        writer.println( "  \"-//Netscape Communications//DTD RSS 0.91//EN\"" );
-        writer.println( "  \"http://my.netscape.com/publish/formats/rss-0.91.dtd\">" );
-        writer.println();
-
         writer.println( "<rss version=\"0.91\">" );
         writer.println();
 

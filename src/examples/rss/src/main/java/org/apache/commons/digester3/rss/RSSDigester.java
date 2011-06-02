@@ -20,7 +20,6 @@ package org.apache.commons.digester3.rss;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.logging.LogFactory;
@@ -54,18 +53,6 @@ public class RSSDigester
      * Have we been configured yet?
      */
     protected boolean configured = false;
-
-
-    /**
-     * The set of public identifiers, and corresponding resource names,
-     * for the versions of the DTDs that we know about.
-     */
-    protected static final String registrations[] = {
-        "-//Netscape Communications//DTD RSS 0.9//EN",
-        "/org/apache/commons/digester3/rss/rss-0.9.dtd",
-        "-//Netscape Communications//DTD RSS 0.91//EN",
-        "/org/apache/commons/digester3/rss/rss-0.91.dtd",
-    };
 
     // ------------------------------------------------------------- Properties
 
@@ -220,16 +207,6 @@ public class RSSDigester
         if ( configured )
         {
             return;
-        }
-
-        // Register local copies of the DTDs we understand
-        for ( int i = 0; i < registrations.length; i += 2 )
-        {
-            URL url = this.getClass().getResource( registrations[i + 1] );
-            if ( url != null )
-            {
-                register( registrations[i], url.toString() );
-            }
         }
 
         // FIXME - validate the "version" attribute of the rss element?
