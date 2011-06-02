@@ -34,9 +34,9 @@ public class Person
 
     private String name;
 
-    private HashMap<String, String> emails = new HashMap<String, String>();
+    private final HashMap<String, String> emails = new HashMap<String, String>();
 
-    private List<Address> addresses = new ArrayList<Address>();
+    private final List<Address> addresses = new ArrayList<Address>();
 
     /**
      * A unique id for this person. Note that the Digester automatically converts the id to an integer.
