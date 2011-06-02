@@ -51,7 +51,6 @@ public class SetTextSegmentRule
     public void textSegment( String text )
         throws Exception
     {
-
         Object target = getDigester().peek( 0 );
 
         // Call the specified method
