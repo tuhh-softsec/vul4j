@@ -304,7 +304,7 @@ public class Channel implements Serializable {
     public Item[] findItems() {
         synchronized (items) {
             Item items[] = new Item[this.items.size()];
-            return ((Item[]) this.items.toArray(items));
+            return this.items.toArray(items);
         }
     }
 
@@ -323,7 +323,7 @@ public class Channel implements Serializable {
     public String[] findSkipDays() {
         synchronized (skipDays) {
             String skipDays[] = new String[this.skipDays.size()];
-            return ((String[]) this.skipDays.toArray(skipDays));
+            return this.skipDays.toArray(skipDays);
         }
     }
 
@@ -342,7 +342,7 @@ public class Channel implements Serializable {
     public String[] findSkipHours() {
         synchronized (skipHours) {
             String skipHours[] = new String[this.skipHours.size()];
-            return ((String[]) this.skipHours.toArray(skipHours));
+            return this.skipHours.toArray(skipHours);
         }
     }
 
@@ -403,7 +403,7 @@ public class Channel implements Serializable {
         try {
             render(stream, null);
         } catch (UnsupportedEncodingException e) {
-            ; // Can not happen
+            // Can not happen
         }
 
     }
