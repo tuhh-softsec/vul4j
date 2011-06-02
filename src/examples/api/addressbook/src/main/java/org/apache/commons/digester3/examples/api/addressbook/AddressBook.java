@@ -26,7 +26,7 @@ import java.util.Iterator;
 public class AddressBook
 {
 
-    LinkedList<Person> people = new LinkedList<Person>();
+    private final LinkedList<Person> people = new LinkedList<Person>();
 
     public void addPerson( Person p )
     {
