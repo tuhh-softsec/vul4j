@@ -17,16 +17,14 @@
 <!--
   - Example compound pipeline
   -->
-  
 <pipeline>
-  <source file="input.txt"/>
+  <source file="input.txt" />
   <transform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.CompoundTransform">
-    <subtransform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.CaseTransform" case="lower"/>
+    <subtransform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.CaseTransform" case="lower" />
     <subtransform plugin-class="org.apache.commons.digester3.examples.plugins.pipeline.SubstituteTransform">
       <from>changeme</from>
       <to>transformed</to>
     </subtransform>
   </transform>
-  <destination file="output.txt"/>
+  <destination file="output.txt" />
 </pipeline>
-  
