@@ -22,8 +22,16 @@ The package name has not been changed, so the only impact on applications
 relying on these classes will be the need to include an additional JAR
 file (commons-digester-rss.jar) in their classpath.
 
-A packaged distribution can be created by using ant:
+A packaged distribution can be created by using Apache Maven:
 
-1 Copy build.properties.sample to build.properties and edit the properties to 
-match those on your local system
-2 run ant dist
+* to compile:
+  mvn compile
+
+* to build the jar artifact
+  mvn package
+
+* to run:
+  mvn verify
+
+Alternatively, you can set up your CLASSPATH appropriately, and
+run the example directly.
