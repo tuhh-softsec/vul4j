@@ -68,6 +68,7 @@ public class MarkupDigester extends Digester {
      *
      * @exception SAXException if a parsing error is to be reported
      */
+    @Override
     public void characters(char buffer[], int start, int length)
             throws SAXException {
 
@@ -89,6 +90,7 @@ public class MarkupDigester extends Digester {
      * @exception SAXException if a parsing error is to be reported
      */
  
+    @Override
     public void startElement(String namespaceURI, String localName,
                              String qName, Attributes list)
             throws SAXException {
@@ -115,6 +117,7 @@ public class MarkupDigester extends Digester {
      *   empty string if qualified names are not available.
      * @exception SAXException if a parsing error is to be reported
      */
+    @Override
     public void endElement(String namespaceURI, String localName,
                            String qName) throws SAXException {
  
