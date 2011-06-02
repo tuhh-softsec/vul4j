@@ -24,18 +24,19 @@ import org.apache.commons.digester3.Rule;
  * When a text segment is discovered, it calls a specific method on the top
  * object on the stack.
  */
-
-public class SetTextSegmentRule extends Rule implements TextSegmentHandler {
-
+public class SetTextSegmentRule
+    extends Rule
+    implements TextSegmentHandler
+{
 
     // ----------------------------------------------------------- Constructors
 
-    public SetTextSegmentRule(String methodName) {
+    public SetTextSegmentRule( String methodName )
+    {
         this.methodName = methodName;
     }
 
     // ----------------------------------------------------- Instance Variables
-
 
     /**
      * The method name to call on the parent object.
@@ -47,13 +48,15 @@ public class SetTextSegmentRule extends Rule implements TextSegmentHandler {
     /**
      * Process the end of this element.
      */
-    public void textSegment(String text) throws Exception {
+    public void textSegment( String text )
+        throws Exception
+    {
 
-        Object target = getDigester().peek(0);
+        Object target = getDigester().peek( 0 );
 
         // Call the specified method
-        Class paramTypes[] = new Class[] {String.class};
-        MethodUtils.invokeMethod(target, methodName,
-            new Object[]{ text }, paramTypes);
+        Class paramTypes[] = new Class[] { String.class };
+        MethodUtils.invokeMethod( target, methodName, new Object[] { text }, paramTypes );
     }
+
 }

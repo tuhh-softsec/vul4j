@@ -34,21 +34,25 @@ import org.xml.sax.Attributes;
  * <p>
  * See the readme file included with this example for more information.
  */
- 
-public class MarkupDigester extends Digester {
+public class MarkupDigester
+    extends Digester
+{
 
     /** See equivalent constructor in Digester class. */
-    public MarkupDigester() {
+    public MarkupDigester()
+    {
     }
 
     /** See equivalent constructor in Digester class. */
-    public MarkupDigester(SAXParser parser) {
-        super(parser);
+    public MarkupDigester( SAXParser parser )
+    {
+        super( parser );
     }
 
     /** See equivalent constructor in Digester class. */
-    public MarkupDigester(XMLReader reader) {
-        super(reader);
+    public MarkupDigester( XMLReader reader )
+    {
+        super( reader );
     }
 
     //===================================================================
@@ -69,11 +73,11 @@ public class MarkupDigester extends Digester {
      * @exception SAXException if a parsing error is to be reported
      */
     @Override
-    public void characters(char buffer[], int start, int length)
-            throws SAXException {
-
-        super.characters(buffer, start, length);
-        currTextSegment.append(buffer, start, length);
+    public void characters( char buffer[], int start, int length )
+        throws SAXException
+    {
+        super.characters( buffer, start, length );
+        currTextSegment.append( buffer, start, length );
     }
 
     /**
@@ -89,20 +93,18 @@ public class MarkupDigester extends Digester {
      *   no attributes, it shall be an empty Attributes object. 
      * @exception SAXException if a parsing error is to be reported
      */
- 
     @Override
-    public void startElement(String namespaceURI, String localName,
-                             String qName, Attributes list)
-            throws SAXException {
-
+    public void startElement( String namespaceURI, String localName, String qName, Attributes list )
+        throws SAXException
+    {
         handleTextSegments();
 
         // Unlike bodyText, which accumulates despite intervening child
         // elements, currTextSegment gets cleared here. This means that
         // we don't need to save it on a stack either.
-        currTextSegment.setLength(0);
+        currTextSegment.setLength( 0 );
 
-        super.startElement(namespaceURI, localName, qName, list);
+        super.startElement( namespaceURI, localName, qName, list );
     }
 
     /**
@@ -118,13 +120,13 @@ public class MarkupDigester extends Digester {
      * @exception SAXException if a parsing error is to be reported
      */
     @Override
-    public void endElement(String namespaceURI, String localName,
-                           String qName) throws SAXException {
- 
+    public void endElement( String namespaceURI, String localName, String qName )
+        throws SAXException
+    {
         handleTextSegments();
-        currTextSegment.setLength(0);
-        super.endElement(namespaceURI, localName, qName);
-     }
+        currTextSegment.setLength( 0 );
+        super.endElement( namespaceURI, localName, qName );
+    }
 
     /**
      * Iterate over the list of rules most recently matched, and
@@ -132,22 +134,31 @@ public class MarkupDigester extends Digester {
      * invoke that rule's textSegment method passing the current
      * segment of text from the xml element body.
      */
-    private void handleTextSegments() throws SAXException {    
-        if (currTextSegment.length() > 0) {
+    private void handleTextSegments()
+        throws SAXException
+    {
+        if ( currTextSegment.length() > 0 )
+        {
             String segment = currTextSegment.toString();
             List parentMatches = (List) matches.peek();
             int len = parentMatches.size();
-            for(int i=0; i<len; ++i) {
-                Rule r = (Rule) parentMatches.get(i);
-                if (r instanceof TextSegmentHandler) {
+            for ( int i = 0; i < len; ++i )
+            {
+                Rule r = (Rule) parentMatches.get( i );
+                if ( r instanceof TextSegmentHandler )
+                {
                     TextSegmentHandler h = (TextSegmentHandler) r;
-                    try {
-                        h.textSegment(segment);
-                    } catch(Exception e) {
-                        throw createSAXException(e);
+                    try
+                    {
+                        h.textSegment( segment );
+                    }
+                    catch ( Exception e )
+                    {
+                        throw createSAXException( e );
                     }
                 }
             }
         }
     }
+
 }

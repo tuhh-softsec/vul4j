@@ -15,13 +15,16 @@ package org.apache.commons.digester3.examples.api.documentmarkup;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
-
-/**
- * Public interface for any Rule subclass which is interested in handling
- * text segments as well as the complete body text.
  */
 
-public interface TextSegmentHandler {
-    public void textSegment(String text) throws Exception;
+/**
+ * Public interface for any Rule subclass which is interested in handling text segments as well as the complete body
+ * text.
+ */
+public interface TextSegmentHandler
+{
+
+    public void textSegment( String text )
+        throws Exception;
+
 }
