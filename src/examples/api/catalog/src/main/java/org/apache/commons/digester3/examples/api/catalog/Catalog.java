@@ -23,19 +23,25 @@ import java.util.Iterator;
 /**
  * See Main.java.
  */
-public class Catalog {
-    LinkedList items = new LinkedList();
-    
-    public void addItem(Item item) {
-        items.addLast(item);
-    }
-    
-    public void print() {
-        System.out.println("This catalog has " + items.size() + " items");
+public class Catalog
+{
 
-        for(Iterator i = items.iterator(); i.hasNext(); ) {
+    LinkedList items = new LinkedList();
+
+    public void addItem( Item item )
+    {
+        items.addLast( item );
+    }
+
+    public void print()
+    {
+        System.out.println( "This catalog has " + items.size() + " items" );
+
+        for ( Iterator i = items.iterator(); i.hasNext(); )
+        {
             Item item = (Item) i.next();
             item.print();
         }
     }
+
 }

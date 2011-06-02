@@ -59,17 +59,21 @@ import org.apache.commons.digester3.AbstractObjectCreationFactory;
  * inner classes or anonymous classes if appropriate, reducing the
  * overhead of using this functionality in many cases. 
  */
-public class BookFactory extends AbstractObjectCreationFactory {
+public class BookFactory
+    extends AbstractObjectCreationFactory
+{
 
-    public Object createObject(org.xml.sax.Attributes attributes) 
-    throws Exception {
-        String isbn = attributes.getValue("isbn");
-        
-        if (isbn == null) {
-            throw new Exception(
-                "Mandatory isbn attribute not present on book tag.");
+    public Object createObject( org.xml.sax.Attributes attributes )
+        throws Exception
+    {
+        String isbn = attributes.getValue( "isbn" );
+
+        if ( isbn == null )
+        {
+            throw new Exception( "Mandatory isbn attribute not present on book tag." );
         }
-        
-        return new Book(isbn);
+
+        return new Book( isbn );
     }
+
 }

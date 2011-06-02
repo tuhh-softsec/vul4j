@@ -20,6 +20,9 @@ package org.apache.commons.digester3.examples.api.catalog;
 /**
  * See Main.java.
  */
-public interface Item {
+public interface Item
+{
+
     public void print();
+
 }

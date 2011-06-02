@@ -20,34 +20,45 @@ package org.apache.commons.digester3.examples.api.catalog;
 /**
  * See Main.java.
  */
-public class Book implements Item {
+public class Book
+    implements Item
+{
 
-  private String isbn;
-  private String title;
-  private String author;
-  private String desc;
+    private String isbn;
 
-  public Book(String isbn) {
-      this.isbn = isbn;
-  }
-  
-  public void setTitle(String title) {
-      this.title = title;
-  }
-  
-  public void setAuthor(String author) {
-      this.author = author;
-  }
-  
-  public void setDesc(String desc) {
-      this.desc = desc;
-  }
-  
-  public void print() {
-      System.out.println("Book:");
-      System.out.println("  isbn=" + isbn);
-      System.out.println("  title=" + title);
-      System.out.println("  author=" + author);
-      System.out.println("  desc=" + desc);
-  }
+    private String title;
+
+    private String author;
+
+    private String desc;
+
+    public Book( String isbn )
+    {
+        this.isbn = isbn;
+    }
+
+    public void setTitle( String title )
+    {
+        this.title = title;
+    }
+
+    public void setAuthor( String author )
+    {
+        this.author = author;
+    }
+
+    public void setDesc( String desc )
+    {
+        this.desc = desc;
+    }
+
+    public void print()
+    {
+        System.out.println( "Book:" );
+        System.out.println( "  isbn=" + isbn );
+        System.out.println( "  title=" + title );
+        System.out.println( "  author=" + author );
+        System.out.println( "  desc=" + desc );
+    }
+
 }

@@ -20,50 +20,63 @@ package org.apache.commons.digester3.examples.api.catalog;
 /**
  *  See Main.java.
  */
- 
-public class AudioVisual implements Item {
+public class AudioVisual
+    implements Item
+{
 
     private int yearMade;
+
     private String category;
+
     private String name;
+
     private String desc;
+
     private Integer runtime;
+
     private String type;
 
     // note: digester can convert a string in the xml file to an int.
-    public void setYearMade(int yearMade) {
+    public void setYearMade( int yearMade )
+    {
         this.yearMade = yearMade;
     }
 
-    public void setCategory(String category) {
+    public void setCategory( String category )
+    {
         this.category = category;
     }
 
-    public void setName(String name) {
+    public void setName( String name )
+    {
         this.name = name;
     }
 
-    public void setDesc(String desc) {
+    public void setDesc( String desc )
+    {
         this.desc = desc;
     }
 
     // note: digester can convert a string in the xml file to an Integer
-    public void setRuntime(Integer runtime) {
+    public void setRuntime( Integer runtime )
+    {
         this.runtime = runtime;
     }
 
-    public void setType(String type) {
+    public void setType( String type )
+    {
         this.type = type;
     }
 
-    public void print() {
-        System.out.println("AudioVisual:");
-        System.out.println("  type=" + type);
-        System.out.println("  yearMade=" + yearMade);
-        System.out.println("  category=" + category);
-        System.out.println("  name=" + name);
-        System.out.println("  desc=" + desc);
-        System.out.println("  runtime=" + runtime);
+    public void print()
+    {
+        System.out.println( "AudioVisual:" );
+        System.out.println( "  type=" + type );
+        System.out.println( "  yearMade=" + yearMade );
+        System.out.println( "  category=" + category );
+        System.out.println( "  name=" + name );
+        System.out.println( "  desc=" + desc );
+        System.out.println( "  runtime=" + runtime );
     }
-}
 
+}
