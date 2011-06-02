@@ -35,7 +35,7 @@ public class CompoundTransform
     implements Transform
 {
 
-    private LinkedList transforms = new LinkedList();
+    private LinkedList<Transform> transforms = new LinkedList<Transform>();
 
     public void addTransform( Transform transform )
     {
@@ -44,9 +44,9 @@ public class CompoundTransform
 
     public String transform( String s )
     {
-        for ( Iterator i = transforms.iterator(); i.hasNext(); )
+        for ( Iterator<Transform> i = transforms.iterator(); i.hasNext(); )
         {
-            Transform t = (Transform) i.next();
+            Transform t = i.next();
             s = t.transform( s );
         }
         return s;
