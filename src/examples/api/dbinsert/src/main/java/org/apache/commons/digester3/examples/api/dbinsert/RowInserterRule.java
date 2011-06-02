@@ -17,7 +17,6 @@ package org.apache.commons.digester3.examples.api.dbinsert;
  * limitations under the License.
  */ 
 
-import java.util.Map;
 import java.util.Iterator;
 
 /**
