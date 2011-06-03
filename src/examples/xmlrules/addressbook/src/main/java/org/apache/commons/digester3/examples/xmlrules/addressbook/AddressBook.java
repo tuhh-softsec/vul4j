@@ -23,19 +23,25 @@ import java.util.Iterator;
 /**
  * See Main.java.
  */
-public class AddressBook {
-    LinkedList<Person> people = new LinkedList<Person>();
-    
-    public void addPerson(Person p) {
-        people.addLast(p);
-    }
-    
-    public void print() {
-        System.out.println("Address book has " + people.size() + " entries");
+public class AddressBook
+{
 
-        for(Iterator<Person> i = people.iterator(); i.hasNext(); ) {
+    LinkedList<Person> people = new LinkedList<Person>();
+
+    public void addPerson( Person p )
+    {
+        people.addLast( p );
+    }
+
+    public void print()
+    {
+        System.out.println( "Address book has " + people.size() + " entries" );
+
+        for ( Iterator<Person> i = people.iterator(); i.hasNext(); )
+        {
             Person p = i.next();
             p.print();
         }
     }
+
 }

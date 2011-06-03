@@ -46,58 +46,67 @@ import java.net.URL;
  * <p>
  * Usage: java Main xmlrules.xml example.xml
  */
-public class Main {
-    
+public class Main
+{
+
     /**
      * Main method : entry point for running this example program.
      * <p>
      * Usage: java Example example.xml
      */
-    public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
+    public static void main( String[] args )
+        throws Exception
+    {
+        if ( args.length != 2 )
+        {
             usage();
-            System.exit(-1);
+            System.exit( -1 );
         }
-        
+
         String rulesfileName = args[0];
         String datafileName = args[1];
-        
+
         // Create a Digester instance which has been initialised with
         // rules loaded from the specified file.
-        URL rulesURL = ClassLoader.getSystemResource(rulesfileName);
-        if (rulesURL == null) {
-            System.out.println("Unable to find rules file.");
-            System.exit(-1);
+        URL rulesURL = ClassLoader.getSystemResource( rulesfileName );
+        if ( rulesURL == null )
+        {
+            System.out.println( "Unable to find rules file." );
+            System.exit( -1 );
         }
-        Digester d = DigesterLoader.createDigester(rulesURL);
-        
+        Digester d = DigesterLoader.createDigester( rulesURL );
+
         // Prime the digester stack with an object for rules to
         // operate on. Note that it is quite common for "this"
         // to be the object pushed.
         AddressBook book = new AddressBook();
-        d.push(book);
-        
+        d.push( book );
+
         // Process the input file.
-        try {
-            java.io.File srcfile = new java.io.File(datafileName);
-            d.parse(srcfile);
+        try
+        {
+            java.io.File srcfile = new java.io.File( datafileName );
+            d.parse( srcfile );
         }
-        catch(java.io.IOException ioe) {
-            System.out.println("Error reading input file:" + ioe.getMessage());
-            System.exit(-1);
+        catch ( java.io.IOException ioe )
+        {
+            System.out.println( "Error reading input file:" + ioe.getMessage() );
+            System.exit( -1 );
         }
-        catch(org.xml.sax.SAXException se) {
-            System.out.println("Error parsing input file:" + se.getMessage());
-            System.exit(-1);
+        catch ( org.xml.sax.SAXException se )
+        {
+            System.out.println( "Error parsing input file:" + se.getMessage() );
+            System.exit( -1 );
         }
-        
-        
+
         // Print out all the contents of the address book, as loaded from
         // the input file.
         book.print();
     }
-    
-    private static void usage() {
-        System.out.println("Usage: java Main xmlrules.xml example.xml");
+
+    private static void usage()
+    {
+        System.out.println( "Usage: java Main xmlrules.xml example.xml" );
     }
+
 }
