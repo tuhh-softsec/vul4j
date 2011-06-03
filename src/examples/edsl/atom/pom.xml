@@ -34,6 +34,9 @@
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
           <mainClass>org.apache.commons.digester3.edsl.atom.Main</mainClass>
+          <arguments>
+            <argument>file:${basedir}/xmlcontent.xml</argument>
+          </arguments>
         </configuration>
       </plugin>
     </plugins>
