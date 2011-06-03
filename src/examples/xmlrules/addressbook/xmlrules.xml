@@ -19,7 +19,7 @@
 <digester-rules>
   <pattern value="address-book">
     <pattern value="person">
-      <object-create-rule classname="Person" />
+      <object-create-rule classname="org.apache.commons.digester3.examples.xmlrules.addressbook.Person" />
       <set-properties-rule />
       <set-next-rule methodname="addPerson" />
 
@@ -34,7 +34,7 @@
       </pattern>
 
       <pattern value="address">
-        <object-create-rule classname="Address" />
+        <object-create-rule classname="org.apache.commons.digester3.examples.xmlrules.addressbook.Address" />
         <set-nested-properties-rule />
         <set-next-rule methodname="addAddress" />
       </pattern>
