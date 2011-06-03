@@ -35,7 +35,7 @@
         <configuration>
           <mainClass>org.apache.commons.digester3.examples.xmlrules.addressbook.Main</mainClass>
           <arguments>
-            <argument>${basedir}/xmlrules.xml</argument>
+            <argument>file:${basedir}/xmlrules.xml</argument>
             <argument>${basedir}/example.xml</argument>
           </arguments>
         </configuration>
