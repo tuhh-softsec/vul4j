@@ -17,9 +17,6 @@ package org.apache.commons.digester3.examples.xmlrules.addressbook;
  * limitations under the License.
  */ 
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 /**
  * See Main.java.
  */
