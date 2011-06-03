@@ -1,3 +1,5 @@
+package org.apache.commons.digester3.examples.xmlrules.addressbook;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
