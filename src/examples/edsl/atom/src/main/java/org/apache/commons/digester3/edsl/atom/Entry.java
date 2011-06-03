@@ -89,7 +89,7 @@ public final class Entry
     public String toString()
     {
         return "\n    Entry [title=" + title + ", link=" + link + ", updated=" + updated + ", id=" + id + ", content="
-            + content + "]";
+            + content + "]\n";
     }
 
 }
