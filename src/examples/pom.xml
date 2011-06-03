@@ -53,7 +53,7 @@
     <module>api/document-markup</module>
     <module>plugins/pipeline</module>
     <module>rss</module>
-    <module>xmlmodules/addressbook</module>
+    <module>xmlrules/addressbook</module>
   </modules>
 
   <properties>
