@@ -17,12 +17,14 @@ package org.apache.commons.digester3.examples.xmlrules.addressbook;
  * limitations under the License.
  */ 
 
-import java.net.URL;
-
 import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
+import org.xml.sax.SAXException;
 
 /**
  * A simple program to demonstrate the basic functionality of the
@@ -90,15 +92,15 @@ public class Main
         // Process the input file.
         try
         {
-            java.io.File srcfile = new java.io.File( datafileName );
+            File srcfile = new java.io.File( datafileName );
             d.parse( srcfile );
         }
-        catch ( java.io.IOException ioe )
+        catch ( IOException ioe )
         {
             System.out.println( "Error reading input file:" + ioe.getMessage() );
             System.exit( -1 );
         }
-        catch ( org.xml.sax.SAXException se )
+        catch ( SAXException se )
         {
             System.out.println( "Error parsing input file:" + se.getMessage() );
             System.exit( -1 );
