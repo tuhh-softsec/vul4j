@@ -24,7 +24,7 @@
     <relativePath>../../</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>commons-digester3-samples-edsl</artifactId>
+  <artifactId>commons-digester3-samples-edsl-atom</artifactId>
   <packaging>jar</packaging>
   <name>Apache Commons Digester :: Examples :: EDSL :: Atom</name>
   <build>
