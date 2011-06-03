@@ -26,14 +26,14 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>commons-digester3-samples-edsl</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Commons Digester :: Examples :: EDSL</name>
+  <name>Apache Commons Digester :: Examples :: EDSL :: Atom</name>
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
-          <mainClass>org.apache.commons.digester3.edsl.Main</mainClass>
+          <mainClass>org.apache.commons.digester3.edsl.atom.Main</mainClass>
         </configuration>
       </plugin>
     </plugins>
