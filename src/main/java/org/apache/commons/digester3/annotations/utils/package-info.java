@@ -1,3 +1,6 @@
+/**
+ * Contains commons utilities classes for Java5 Annotations manipulation.
+ */
 package org.apache.commons.digester3.annotations.utils;
 
 /*
@@ -17,8 +20,4 @@ package org.apache.commons.digester3.annotations.utils;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * Contains commons utilities classes for Java5 Annotations manipulation.
  */

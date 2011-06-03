@@ -1,3 +1,8 @@
+/**
+ * The Digester package lets you configure an XML -> Java object mapping module,
+ * which triggers certain actions called rules whenever a particular pattern of
+ * nested XML elements is recognized.
+ */
 package org.apache.commons.digester3.xmlrules;
 
 /*
@@ -17,10 +22,4 @@ package org.apache.commons.digester3.xmlrules;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The Digester package lets you configure an XML -> Java object mapping module,
- * which triggers certain actions called rules whenever a particular pattern of
- * nested XML elements is recognized.
  */

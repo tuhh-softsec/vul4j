@@ -1,3 +1,8 @@
+/**
+ * The Digester EDSL allows configure Digester using fluent APIs.
+ *
+ * @since 3.0
+ */
 package org.apache.commons.digester3.binder;
 
 /*
@@ -17,10 +22,4 @@ package org.apache.commons.digester3.binder;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The Digester EDSL allows configure Digester using fluent APIs.
- *
- * @since 3.0
  */

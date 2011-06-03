@@ -1,3 +1,7 @@
+/**
+ * The <code>plugins</code> package provides an easy mechanism whereby new
+ * digestion rules can be added dynamically during a digestion.
+ */
 package org.apache.commons.digester3.plugins;
 
 /*
@@ -17,9 +21,4 @@ package org.apache.commons.digester3.plugins;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The <code>plugins</code> package provides an easy mechanism whereby new
- * digestion rules can be added dynamically during a digestion.
  */

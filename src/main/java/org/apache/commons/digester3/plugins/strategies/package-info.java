@@ -1,3 +1,7 @@
+/**
+ * The <code>plugins.strategies</code> package contains "rule-finding" strategy
+ * classes, and their associated "helper" loader classes.
+ */
 package org.apache.commons.digester3.plugins.strategies;
 
 /*
@@ -17,9 +21,4 @@ package org.apache.commons.digester3.plugins.strategies;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The <code>plugins.strategies</code> package contains "rule-finding" strategy
- * classes, and their associated "helper" loader classes.
  */

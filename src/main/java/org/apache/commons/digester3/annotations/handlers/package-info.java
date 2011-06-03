@@ -1,3 +1,8 @@
+/**
+ * The <code>handlers</code> package contains
+ * {@link org.apache.commons.digester3.annotations.AnnotationHandler}
+ * implementations.
+ */
 package org.apache.commons.digester3.annotations.handlers;
 
 /*
@@ -17,10 +22,4 @@ package org.apache.commons.digester3.annotations.handlers;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The <code>handlers</code> package contains
- * {@link org.apache.commons.digester3.annotations.DigesterLoaderHandler}
- * implementations.
  */

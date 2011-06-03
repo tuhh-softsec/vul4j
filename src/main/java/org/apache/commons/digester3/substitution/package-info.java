@@ -1,3 +1,7 @@
+/**
+ * The <code>substitution</code> provides for manipulation of xml attributes and
+ * element body text before the data is processed by any Rule objects.
+ */
 package org.apache.commons.digester3.substitution;
 
 /*
@@ -17,9 +21,4 @@ package org.apache.commons.digester3.substitution;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * The <code>substitution</code> provides for manipulation of xml attributes and
- * element body text before the data is processed by any Rule objects.
  */

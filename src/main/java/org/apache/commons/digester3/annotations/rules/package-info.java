@@ -1,3 +1,6 @@
+/**
+ * Classes contained in this package are annotations that reflect Digester rules.
+ */
 package org.apache.commons.digester3.annotations.rules;
 
 /*
@@ -17,8 +20,4 @@ package org.apache.commons.digester3.annotations.rules;
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */
-
-/**
- * Classes contained in this package are annotations that reflect Digester rules.
  */

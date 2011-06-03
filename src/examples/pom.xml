@@ -47,10 +47,12 @@
   </licenses>
 
   <modules>
+    <module>annotations/atom</module>
     <module>api/addressbook</module>
     <module>api/catalog</module>
     <module>api/dbinsert</module>
     <module>api/document-markup</module>
+    <module>edsl/atom</module>
     <module>plugins/pipeline</module>
     <module>rss</module>
     <module>xmlrules/addressbook</module>
