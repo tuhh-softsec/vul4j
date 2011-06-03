@@ -255,6 +255,34 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>jarjar-maven-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jarjar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <input>target/classes</input>
+          <output>target/relocated-classes</output>
+          <excludes>
+            <exclude>commons-beanutils</exclude>
+            <exclude>commons-logging</exclude>
+            <exclude>junit:junit</exclude>
+          </excludes>
+          <rules>
+            <rule>
+              <pattern>org.apache.commons.digester3.**</pattern>
+              <result>org.apache.commons.digester.@1</result>
+            </rule>
+          </rules>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>clirr-maven-plugin</artifactId>
         <configuration>
@@ -265,6 +293,9 @@
               <version>2.1</version>
             </comparisonArtifact>
           </comparisonArtifacts>
+          <textOutputFile>clirr.txt</textOutputFile>
+          <classesDirectory>target/relocated-classes</classesDirectory>
+          <minSeverity>info</minSeverity>
         </configuration>
       </plugin>
     </plugins>
@@ -317,6 +348,9 @@
               <version>2.1</version>
             </comparisonArtifact>
           </comparisonArtifacts>
+          <textOutputFile>clirr.txt</textOutputFile>
+          <classesDirectory>target/relocated-classes</classesDirectory>
+          <minSeverity>info</minSeverity>
         </configuration>
       </plugin>
     </plugins>
