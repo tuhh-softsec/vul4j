@@ -3,7 +3,10 @@ package org.apache.commons.digester3.edsl.atom;
 import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
 
 import java.io.IOException;
+import java.util.Date;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.digester3.Digester;
 import org.xml.sax.SAXException;
 
@@ -39,6 +42,11 @@ public final class Main
             usage();
             System.exit( -1 );
         }
+
+        // Drive commons-beanutils how to convert dates
+        DateConverter dateConverter = new DateConverter();
+        dateConverter.setPatterns( new String[] { "yyyy-MM-dd'T'HH:mm" } );
+        ConvertUtils.register( dateConverter, Date.class );
 
         String filename = args[0];
 
