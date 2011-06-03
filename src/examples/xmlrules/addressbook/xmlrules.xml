@@ -29,8 +29,8 @@
 
       <pattern value="email">
         <call-method-rule methodname="addEmail" paramcount="2" />
-        <call-param-rule paramnumber='0' attrname='type' />
-        <call-param-rule paramnumber='1' />
+        <call-param-rule paramnumber="0" attrname="type" />
+        <call-param-rule paramnumber="1" />
       </pattern>
 
       <pattern value="address">
