@@ -17,10 +17,12 @@ package org.apache.commons.digester3.examples.xmlrules.addressbook;
  * limitations under the License.
  */ 
 
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.xmlrules.DigesterLoader;
-import org.xml.sax.InputSource;
 import java.net.URL;
+
+import static org.apache.commons.digester3.binder.DigesterLoader.newLoader;
+
+import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.xmlrules.FromXmlRulesModule;
 
 /**
  * A simple program to demonstrate the basic functionality of the
@@ -63,18 +65,21 @@ public class Main
             System.exit( -1 );
         }
 
-        String rulesfileName = args[0];
+        final String rulesfileName = args[0];
         String datafileName = args[1];
 
         // Create a Digester instance which has been initialised with
         // rules loaded from the specified file.
-        URL rulesURL = ClassLoader.getSystemResource( rulesfileName );
-        if ( rulesURL == null )
+        Digester d = newLoader( new FromXmlRulesModule()
         {
-            System.out.println( "Unable to find rules file." );
-            System.exit( -1 );
-        }
-        Digester d = DigesterLoader.createDigester( rulesURL );
+
+            @Override
+            protected void loadRules()
+            {
+                loadXMLRules( rulesfileName );
+            }
+
+        } ).newDigester();
 
         // Prime the digester stack with an object for rules to
         // operate on. Note that it is quite common for "this"
