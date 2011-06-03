@@ -24,7 +24,7 @@ import java.util.Iterator;
  * See Main.java.
  */
 public class AddressBook {
-    LinkedList people = new LinkedList();
+    LinkedList<Person> people = new LinkedList<Person>();
     
     public void addPerson(Person p) {
         people.addLast(p);
@@ -33,8 +33,8 @@ public class AddressBook {
     public void print() {
         System.out.println("Address book has " + people.size() + " entries");
 
-        for(Iterator i = people.iterator(); i.hasNext(); ) {
-            Person p = (Person) i.next();
+        for(Iterator<Person> i = people.iterator(); i.hasNext(); ) {
+            Person p = i.next();
             p.print();
         }
     }

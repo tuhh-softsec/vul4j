@@ -29,8 +29,8 @@ public class Person {
   private int id;
   private String category;
   private String name;
-  private HashMap emails = new HashMap();
-  private List addresses = new ArrayList();
+  private HashMap<String, String> emails = new HashMap<String, String>();
+  private List<Address> addresses = new ArrayList<Address>();
   
   /** 
    * A unique id for this person. Note that the Digester automatically
@@ -62,15 +62,15 @@ public class Person {
       System.out.println("  category=" + category);
       System.out.println("  name=" + name);
       
-      for(Iterator i = emails.keySet().iterator(); i.hasNext(); ) {
-          String type = (String) i.next();
-          String address = (String) emails.get(type);
+      for(Iterator<String> i = emails.keySet().iterator(); i.hasNext(); ) {
+          String type = i.next();
+          String address = emails.get(type);
           
           System.out.println("  email (type " + type + ") : " + address);
       }
       
-      for(Iterator i = addresses.iterator(); i.hasNext(); ) {
-          Address addr = (Address) i.next();
+      for(Iterator<Address> i = addresses.iterator(); i.hasNext(); ) {
+          Address addr = i.next();
           addr.print(System.out, 2);
       }
   }
