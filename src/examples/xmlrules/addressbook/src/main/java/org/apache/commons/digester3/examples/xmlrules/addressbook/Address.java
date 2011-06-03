@@ -31,6 +31,7 @@ public class Address {
     private String zip;
     private String country;
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append( " address (type "+ type + ")\n");
