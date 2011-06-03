@@ -17,6 +17,8 @@ package org.apache.commons.digester3.examples.xmlrules.addressbook;
  * limitations under the License.
  */ 
 
+import java.io.PrintStream;
+
 /**
  * See Main.java.
  */
@@ -38,7 +40,7 @@ public class Address {
         return sb.toString();
     }
 
-    public void print(java.io.PrintStream out, int indentAmount) {
+    public void print(PrintStream out, int indentAmount) {
         StringBuilder indentStr = new StringBuilder(indentAmount);
         for(; indentAmount > 0; --indentAmount) {
             indentStr.append(' ');
