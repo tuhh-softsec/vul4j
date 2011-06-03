@@ -19,26 +19,25 @@
 <digester-rules>
   <pattern value="address-book">
     <pattern value="person">
-      <object-create-rule classname="Person"/>
-      <set-properties-rule/>
-      <set-next-rule methodname="addPerson"/>
-      
+      <object-create-rule classname="Person" />
+      <set-properties-rule />
+      <set-next-rule methodname="addPerson" />
+
       <pattern value="name">
-        <call-method-rule methodname="setName" paramcount="0"/>
+        <call-method-rule methodname="setName" paramcount="0" />
       </pattern>
-      
+
       <pattern value="email">
-        <call-method-rule methodname="addEmail" paramcount="2"/>  
-        <call-param-rule paramnumber='0' attrname='type'/>
-        <call-param-rule paramnumber='1'/>
+        <call-method-rule methodname="addEmail" paramcount="2" />
+        <call-param-rule paramnumber='0' attrname='type' />
+        <call-param-rule paramnumber='1' />
       </pattern>
-      
+
       <pattern value="address">
-        <object-create-rule classname="Address"/>
-        <set-nested-properties-rule/>
-        <set-next-rule methodname="addAddress"/>
+        <object-create-rule classname="Address" />
+        <set-nested-properties-rule />
+        <set-next-rule methodname="addAddress" />
       </pattern>
-      
     </pattern>
   </pattern>
 </digester-rules>
