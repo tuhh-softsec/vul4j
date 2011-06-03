@@ -22,8 +22,8 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title>Example Feed</title>
-  <link href="http://example.org/"/>
-  <updated>2003-12-13T18:30:02Z</updated>
+  <link href="http://example.org/" />
+  <updated>2003-12-13T18:30</updated>
   <author>
     <name>John Doe</name>
   </author>
@@ -31,9 +31,9 @@
 
   <entry>
     <title>Atom-Powered Robots Run Amok</title>
-    <link href="http://example.org/2003/12/13/atom03"/>
+    <link href="http://example.org/2003/12/13/atom03" />
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-    <updated>2003-12-13T18:30:02Z</updated>
+    <updated>2003-12-13T18:30</updated>
     <content type="text/plain">this is just a simple test!</content>
   </entry>
 
