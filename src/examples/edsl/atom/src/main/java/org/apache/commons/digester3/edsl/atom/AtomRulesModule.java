@@ -42,6 +42,7 @@ public final class AtomRulesModule
         forPattern( "feed/entry/link" ).setProperties().addAlias( "href", "link" );
         forPattern( "feed/entry/updated" ).setBeanProperty();
         forPattern( "feed/entry/id" ).setBeanProperty();
+        forPattern( "feed/entry/content" ).setBeanProperty();
     }
 
 }
