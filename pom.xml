@@ -293,7 +293,6 @@
               <version>2.1</version>
             </comparisonArtifact>
           </comparisonArtifacts>
-          <textOutputFile>clirr.txt</textOutputFile>
           <classesDirectory>target/relocated-classes</classesDirectory>
           <minSeverity>info</minSeverity>
         </configuration>
@@ -348,7 +347,6 @@
               <version>2.1</version>
             </comparisonArtifact>
           </comparisonArtifacts>
-          <textOutputFile>clirr.txt</textOutputFile>
           <classesDirectory>target/relocated-classes</classesDirectory>
           <minSeverity>info</minSeverity>
         </configuration>
