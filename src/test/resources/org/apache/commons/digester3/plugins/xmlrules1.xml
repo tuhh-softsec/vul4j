@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE digester-rules PUBLIC "-//Apache Commons //DTD digester-rules XML V1.0//EN" "http://commons.apache.org/digester/dtds/digester-rules-3.0.dtd">
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,6 +19,6 @@
 <digester-rules>
   <pattern value="">
     <call-method-rule methodname="setValue" paramcount="1" />
-    <object-param-rule paramnumber='0' type="java.lang.String" value='xmlrules1' />
+    <object-param-rule paramnumber="0" type="java.lang.String" value="xmlrules1" />
   </pattern>
 </digester-rules>

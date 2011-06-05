@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -16,38 +15,32 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:dt="http://commons.apache.org/digester/tests"
+  targetNamespace="http://commons.apache.org/digester/tests" elementFormDefault="qualified">
 
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:dt="http://commons.apache.org/digester/tests"
-    targetNamespace="http://commons.apache.org/digester/tests"
-    elementFormDefault="qualified">
+  <xsd:complexType name="dt.employee.type">
+    <xsd:sequence>
+      <xsd:element ref="dt:firstName" minOccurs="1" maxOccurs="1" />
+      <xsd:element ref="dt:lastName" minOccurs="1" maxOccurs="1" />
+      <xsd:element ref="dt:address" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
 
-    <xsd:complexType name="dt.employee.type">
-        <xsd:sequence>
-            <xsd:element ref="dt:firstName" minOccurs="1" maxOccurs="1" />
-            <xsd:element ref="dt:lastName" minOccurs="1" maxOccurs="1" />
-            <xsd:element ref="dt:address" minOccurs="0" maxOccurs="unbounded" />
-        </xsd:sequence>
-    </xsd:complexType>
+  <xsd:element name="employee" type="dt:dt.employee.type" />
+  <xsd:element name="firstName" type="xsd:string" />
+  <xsd:element name="lastName" type="xsd:string" />
 
-    <xsd:element name="employee" type="dt:dt.employee.type" />
+  <xsd:complexType name="dt.address.type">
+    <xsd:sequence>
+      <xsd:element ref="dt:type" minOccurs="1" maxOccurs="1" />
+      <xsd:element ref="dt:city" minOccurs="1" maxOccurs="1" />
+      <xsd:element ref="dt:state" minOccurs="1" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
 
-    <xsd:element name="firstName" type="xsd:string" />
-    <xsd:element name="lastName" type="xsd:string" />
-
-    <xsd:complexType name="dt.address.type">
-        <xsd:sequence>
-            <xsd:element ref="dt:type" minOccurs="1" maxOccurs="1" />
-            <xsd:element ref="dt:city" minOccurs="1" maxOccurs="1" />
-            <xsd:element ref="dt:state" minOccurs="1" maxOccurs="1" />
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:element name="address" type="dt:dt.address.type" />
-
-    <xsd:element name="type" type="xsd:string" />
-    <xsd:element name="city" type="xsd:string" />
-    <xsd:element name="state" type="xsd:string" />
+  <xsd:element name="address" type="dt:dt.address.type" />
+  <xsd:element name="type" type="xsd:string" />
+  <xsd:element name="city" type="xsd:string" />
+  <xsd:element name="state" type="xsd:string" />
 
 </xsd:schema>
-

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -16,7 +16,8 @@
  limitations under the License.
 -->
 <root>
-  <plugin id="textlabel2" class="org.apache.commons.digester3.plugins.TextLabel2" ruleclass="org.apache.commons.digester3.plugins.TextLabel2RuleInfo"
+  <plugin id="textlabel2" class="org.apache.commons.digester3.plugins.TextLabel2"
+    ruleclass="org.apache.commons.digester3.plugins.TextLabel2RuleInfo"
     method="addAltRules" />
 
   <widget plugin-id="textlabel2" id="badid">
