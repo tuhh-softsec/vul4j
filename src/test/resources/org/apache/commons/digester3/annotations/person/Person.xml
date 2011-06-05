@@ -20,7 +20,7 @@
  version: $Id$
 -->
 <person id="1" category="acquaintance">
-    <name>Gonzo</name>
-    <email type="business">gonzo@muppets.com</email>
-    <email type="home">gonzo@mymuppets.com</email>
+  <name>Gonzo</name>
+  <email type="business">gonzo@muppets.com</email>
+  <email type="home">gonzo@mymuppets.com</email>
 </person>

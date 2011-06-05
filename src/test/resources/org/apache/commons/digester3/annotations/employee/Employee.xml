@@ -20,19 +20,17 @@
  version: $Id$
 -->
 <employee name="First Name" surname="Last Name">
+  <address place="home">
+    <street>Home Street</street>
+    <city>Home City</city>
+    <state>HS</state>
+    <zip-code>HmZip</zip-code>
+  </address>
 
-    <address place="home">
-        <street>Home Street</street>
-        <city>Home City</city>
-        <state>HS</state>
-        <zip-code>HmZip</zip-code>
-    </address>
-
-    <address place="office">
-        <street>Office Street</street>
-        <city>Office City</city>
-        <state>OS</state>
-        <zip-code>OfZip</zip-code>
-    </address>
-
+  <address place="office">
+    <street>Office Street</street>
+    <city>Office City</city>
+    <state>OS</state>
+    <zip-code>OfZip</zip-code>
+  </address>
 </employee>

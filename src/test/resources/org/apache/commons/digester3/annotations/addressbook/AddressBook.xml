@@ -20,39 +20,38 @@
  version: $Id$
 -->
 <address-book>
-    <person id="1" category="acquaintance">
-        <name>Gonzo</name>
-        <email type="business">gonzo@muppets.com</email>
-        <address>
-            <type>home</type>
-            <street>123 Maine Ave.</street>
-            <city>Las Vegas</city>
-            <state>NV</state>
-            <zip>01234</zip>
-            <country>USA</country>
-        </address>
-        <address>
-            <type>business</type>
-            <street>234 Maple Dr.</street>
-            <city>Los Angeles</city>
-            <state>CA</state>
-            <zip>98765</zip>
-            <country>USA</country>
-        </address>
-    </person>
+  <person id="1" category="acquaintance">
+    <name>Gonzo</name>
+    <email type="business">gonzo@muppets.com</email>
+    <address>
+      <type>home</type>
+      <street>123 Maine Ave.</street>
+      <city>Las Vegas</city>
+      <state>NV</state>
+      <zip>01234</zip>
+      <country>USA</country>
+    </address>
+    <address>
+      <type>business</type>
+      <street>234 Maple Dr.</street>
+      <city>Los Angeles</city>
+      <state>CA</state>
+      <zip>98765</zip>
+      <country>USA</country>
+    </address>
+  </person>
 
-    <person id="2" category="rolemodel">
-        <name>Kermit</name>
-        <email type="business">kermit@muppets.com</email>
-        <email type="home">kermie@acme.com</email>
-        <address>
-            <type>business</type>
-            <street>987 Brown Rd</street>
-            <city>Las Cruces</city>
-            <state>NM</state>
-            <zip>75321</zip>
-            <country>USA</country>
-        </address>
-    </person>
-
+  <person id="2" category="rolemodel">
+    <name>Kermit</name>
+    <email type="business">kermit@muppets.com</email>
+    <email type="home">kermie@acme.com</email>
+    <address>
+      <type>business</type>
+      <street>987 Brown Rd</street>
+      <city>Las Cruces</city>
+      <state>NM</state>
+      <zip>75321</zip>
+      <country>USA</country>
+    </address>
+  </person>
 </address-book>
