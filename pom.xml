@@ -43,6 +43,23 @@ limitations under the License.
     <url>http://jira.codehaus.org/browse/PLXUTILS</url>
   </issueManagement>
 
+  <distributionManagement>
+    <repository>
+      <id>plexus-releases</id>
+      <name>Plexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>plexus-snapshots</id>
+      <name>Plexus Snapshot Repository</name>
+      <url>${plexusDistMgmtSnapshotsUrl}</url>
+    </snapshotRepository>
+    <site>
+      <id>codehaus.org</id>
+      <url>dav:https://dav.codehaus.org/plexus</url>
+    </site>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
