@@ -627,10 +627,7 @@ public class DigesterTestCase
             {
                 return new String( str );
             }
-            else
-            {
-                return o;
-            }
+            return o;
         }
 
         public Object onPop( Digester d, String stackName, Object o )
@@ -642,10 +639,7 @@ public class DigesterTestCase
             {
                 return new String( str );
             }
-            else
-            {
-                return o;
-            }
+            return o;
         }
     }
 
