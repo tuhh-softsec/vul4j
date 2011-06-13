@@ -21,6 +21,7 @@ package org.apache.commons.digester3;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -670,7 +671,7 @@ public class DigesterTestCase
 
         assertNotNull( d.peek( 0 ) );
         // for obj4, a copy should have been pushed
-        assertFalse( obj4 == d.peek( 0 ) );
+        assertNotSame( obj4, d.peek( 0 ) );
         assertEquals( obj4, d.peek( 0 ) );
         // for obj3, replacement only occurs on pop
         assertSame( obj3, d.peek( 1 ) );
