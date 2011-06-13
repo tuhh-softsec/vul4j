@@ -18,55 +18,58 @@ $Id$
 
 
                           Commons Digester Package
-                                Version 2.1
+                                Version 3.0
                                Release Notes
 
 
 INTRODUCTION
 ============
 
-This is a minor release with new features. New projects are encouraged to
+This is major release with new features. New projects are encouraged to
 use this release of digester. There is no urgency for existing projects to
-upgrade; Digester 2.0 has proven to be a stable release.
+upgrade; Digester 2.1 has proven to be a stable release.
 
 IMPORTANT NOTES
 ================
 
 BREAKING CHANGES:
 
- * This release eliminates the Apache Ant build support. Apache Maven 2 is
-   required to build this release of Digester;
-
- * The project structure has been moved to the default Apache Maven
-   archetype structure;
-
- * Tests have been migrated from JUnit 3.X to JUnit 4.X.
-
-OTHER IMPORTANT CHANGES:
-
- * The project documentation is no more present in the Javadoc but rather
-   in the generated Digester site, under the menu 'Users Guide'.
+ * APIs are not retro-compatibles.
 
 DEPENDENCIES
 =============
 
-Digester 2.1 users should upgrade to the recommended dependency set below
+Digester 3.0 users should upgrade to the recommended dependency set below
 where possible.
 
-The Recommended Dependency Set for Digester 2.1 is:
-   Digester 2.1 + Logging 1.1.1 + BeanUtils 1.8.3
+The Recommended Dependency Set for Digester 3.0 is:
+   Digester 3.0 + Logging 1.1.1 + BeanUtils 1.8.3
 
 It is also possible to use Logging 1.0.x or BeanUtils 1.7.0 instead.
 
 NEW FEATURES
 =============
 
- * JAVA5 ANNOTATIONS SUPPORT
-       Added a new package 'annotations' that provides for Java5 Annotations
-       meta-data based definition of rules for Digester.
-       This improves maintainability of both Java code and XML documents, as
-       rules are now defined in POJOs and generating Digester parsers at
-       runtime, avoiding manual updates.
+ * ONLY ONE UNIVERSAL LOADER
+       No more Loaders from XML, Annotations, ... only one loader is
+       able to create Digester instances and manage all the extensions.
+
+
+ * CONFIGURATIONS REUSABILITY
+       Users configure Digesters implementing a RulesModule.
+       Users pass to the DigesterLoader a list of RulesModule which
+       receive a RulesBinder to configure rules binding.
+       Modules can be reused across multiple DigesterLoader instances.
+
+
+ * RULES EXPRESSED VIA EDSL
+       The key feature of DIgester3 is expressing Rule bindings via
+       the RulesBinder EDSL fluent APIs.
+
+
+ * IMPROVED ERROR REPORTING
+       Debug made easier, error list is reported at binding time,
+       no more at runtime.
 
 BUGS FROM PREVIOUS RELEASE
 ===========================
@@ -86,5 +89,4 @@ DEPRECATIONS
 OTHER NOTES
 ============
 
- * This is the first Digester release that provides an Apache Maven 2 build only.
-   The Apache Maven 1 and Apache Ant builds have been removed.
+ * none.

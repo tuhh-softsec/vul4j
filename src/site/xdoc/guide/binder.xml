@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  <properties>
+    <title>Apache Commons Digester | Guide | Rules Binder</title>
+    <author email="dev@commons.apache.org">Commons Documentation Team</author>
+  </properties>
+  <body>
+    <section name="Rules Binder (new)">
+      <p>The Digester 3 design aims to eliminate all the Digester boilerplate without sacrificing maintainability.</p>
+
+<p>With Digester 3, you implement modules, the
+<a href="../apidocs/org/apache/commons/digester3/binder/DigesterLoader.html">DigesterLoader</a>
+passes a <a href="../apidocs/org/apache/commons/digester3/binder/RulesBinder.html">RulesBinder</a> to your module, and your
+module uses the binder to map patterns to <a href="../apidocs/org/apache/commons/digester3/binder/Rule.html">Rule</a>s.
+We can break Digester's 3 architecture down into two distinct stages: startup and runtime.
+You build a <code>DigesterLoader</code> during startup and use it to obtain <code>Digester</code> instances at
+runtime.</p>
+
+<subsection name="Startup">
+<p>You configure the Digester by implementing <a href="../apidocs/org/apache/commons/digester3/binder/RulesModule.html">RulesModule</a>.
+You pass <a href="../apidocs/org/apache/commons/digester3/binder/DigesterLoader.html">DigesterLoader</a> a module, the
+<code>DigesterLoader</code> passes your module a <a href="../apidocs/org/apache/commons/digester3/binder/RulesBinder.html">RulesBinder</a>,
+and your module uses the binder to configure <i>patterns/rules</i> bindings. A binding most commonly consist of a mapping
+between a pattern and one or more <a href="../apidocs/org/apache/commons/digester3/binder/Rule.html">Rule</a>. For example:</p>
+</subsection>
+
+<source>
+class EmployeeModule
+    implements RulesModule
+{
+
+    protected void configure( RulesBinder rulesBinder )
+    {
+        rulesBinder.forPattern( "employee" ).createObject().ofType( Employee.class );
+        rulesBinder.forPattern( "employee/firstName" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/lastName" ).setBeanProperty();
+
+        rulesBinder.forPattern( "employee/address" )
+            .createObject().ofType( Address.class )
+            .then()
+            .setNext( "addAddress" );
+        rulesBinder.forPattern( "employee/address/type" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/address/city" ).setBeanProperty();
+        rulesBinder.forPattern( "employee/address/state" ).setBeanProperty();
+    }
+
+}
+</source>
+
+<p>DRY (Don't Repeat Yourself): Repeating "rulesBinder" over and over for each binding can get a little tedious.
+The Digester package provides a module support class named
+<a href="../apidocs/org/apache/commons/digester3/binder/AbstractRulesModule.html">AbstractRulesModule</a> which
+implicitly gives you access to <code>RulesBinder</code>'s methods. For example, we could extend
+<code>AbstractRulesModule</code> and rewrite the above binding as:</p>
+
+<source>
+class EmployeeModule
+    extends AbstractRulesModule
+{
+
+    @Override
+    protected void configure()
+    {
+        forPattern( "employee" ).createObject().ofType( Employee.class );
+        forPattern( "employee/firstName" ).setBeanProperty();
+        forPattern( "employee/lastName" ).setBeanProperty();
+
+        forPattern( "employee/address" )
+            .createObject().ofType( Address.class )
+            .then()
+            .setNext( "addAddress" );
+        forPattern( "employee/address/type" ).setBeanProperty();
+        forPattern( "employee/address/city" ).setBeanProperty();
+        forPattern( "employee/address/state" ).setBeanProperty();
+    }
+
+}
+</source>
+
+<p>We'll use this syntax throughout the rest of the guide.</p>
+
+<p>Creating a Digester entails the following steps:</p>
+<ol>
+<li>First, create an instance of your module and pass it to <code>DigesterLoader.newLoader()</code>.</li>
+<li>The <code>DigesterLoader</code> creates a <code>RulesBinder</code> and passes it to your module.</li>
+<li>Your module uses the binder to define bindings.</li>
+<li>Set any desired <a href="./core.html#doc.Properties">configuration properties</a>
+    that will customize the operation of the Digester when you next initiate
+    a parse operation.</li>
+<li>Based on the bindings you specified, <code>DigesterLoader</code> creates a <code>Digester</code> by invoking
+<code>DigesterLoader.newDigester()</code> and returns it to you.</li>
+<li>Optionally, push any desired initial object(s) onto the Digester's <a href="core.html#doc.Stack">object stack</a>.</li>
+<li>Call the <code>digester.parse()</code> method, passing a reference to the
+    XML document to be parsed in one of a variety of forms.  See the
+    <a href="../apidocs/org/apache/commons/digester3/Digester.html#parse(java.io.File)">Digester.parse()</a>
+    documentation for details.  Note that you will need to be prepared to
+    catch any <code>IOException</code> or <code>SAXException</code> that is
+    thrown by the parser, or any runtime expression that is thrown by one of
+    the processing rules.</li>
+<li>Please remember that previously
+    created Digester instances may be safely reused, as long as you have
+    completed any previously requested parse, and you do not try to utilize
+    a particular Digester instance from more than one thread at a time.</li>
+</ol>
+    </section>
+
+    <section name="New Digester fluent APIs">
+      <p>The main difference between Digester <i>1.X</i>, <i>2.X</i> and <i>3.X</i> is that the
+      while the first follows the approach <i>"given a Digester instance, then configure it"</i>,
+      the new Digester instead follows the opposite approach <i>"given one (or more) configuration(s), create
+      multiple Digester instances" or "configure once, create everywhere".</i></p>
+      <p>Why? Even if both approaches sound complementary, the core concept is given by the assumption that every
+      Digester instance is not thread-safe, that implies that in a multi-thread application users have often
+      to reinstantiate the Digester and reconfigure it, i.e in a Servlet:</p>
+      <source>public class EmployeeServlet
+  extends HttpServlet
+{
+
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException
+    {
+        Digester digester = new Digester();
+        digester.setNamespaceAware( true );
+        digester.setXIncludeAware( true );
+        digester.addObjectCreate( "employee", Employee.class );
+        digester.addCallMethod( "employee/firstName", "setFirstName", 0 );
+        digester.addCallMethod( "employee/lastName", "setLastName", 0 );
+
+        digester.addObjectCreate( "employee/address", Address.class );
+        digester.addCallMethod( "employee/address/type", "setType", 0 );
+        digester.addCallMethod( "employee/address/city", "setCity", 0 );
+        digester.addCallMethod( "employee/address/state", "setState", 0 );
+        digester.addSetNext( "employee/address", "addAddress" );
+
+        Employee employee = digester.parse( openStream( req.getParameter( "employeeId" ) ) );
+        ...
+}</source>
+      <p>Nothing wrong with that approach but configuration is not reusable; the <i>RuleSet</i>
+      interface fills in some way the reuse of configurations lack:</p>
+      <source>public class EmployeeRuleSet
+  implements RuleSet
+{
+
+    public void addRuleInstances( Digester digester )
+    {
+        digester.addObjectCreate( "employee", Employee.class );
+        digester.addCallMethod( "employee/firstName", "setFirstName", 0 );
+        digester.addCallMethod( "employee/lastName", "setLastName", 0 );
+
+        digester.addObjectCreate( "employee/address", Address.class );
+        digester.addCallMethod( "employee/address/type", "setType", 0 );
+        digester.addCallMethod( "employee/address/city", "setCity", 0 );
+        digester.addCallMethod( "employee/address/state", "setState", 0 );
+        digester.addSetNext( "employee/address", "addAddress" );
+    }
+
+}</source>
+      <p>then, in our sample servlet</p>
+      <source>public class EmployeeServlet
+  extends HttpServlet
+{
+
+    private final RuleSet employeeRuleSet = new EmployeeRuleSet();
+
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException
+    {
+        Digester digester = new Digester();
+        digester.setNamespaceAware( true );
+        digester.setXIncludeAware( true );
+
+        employeeRuleSet.addRuleInstances( digester );
+
+        Employee employee = digester.parse( openStream( req.getParameter( "employeeId" ) ) );
+        ...
+    }
+
+}</source>
+      <p>Nothing wrong again, but:</p>
+      <ol>
+        <li>RuleSet is not really a configuration, it just sets rules to given Digester instance;</li>
+        <li>Digester instance creation is totally delegated to clients;</li>
+        <li>Rules that match to the same pattern, need to specify this last <i>n</i> times for how many
+        rules match, that violates the DRY principle;</li>
+        <li>Rules semantic is not intuitive, since their creation is strictly related to
+        methods/constructors arguments.</li>
+      </ol>
+      <p>In the new Digester, <i>RuleSet</i> has been suppressed in favor of <i>RulesModule</i></p>
+      <source>class EmployeeModule
+    extends AbstractRulesModule
+{
+
+    @Override
+    protected void configure()
+    {
+        forPattern( "employee" ).createObject().ofType( Employee.class );
+        forPattern( "employee/firstName" ).setBeanProperty();
+        forPattern( "employee/lastName" ).setBeanProperty();
+
+        forPattern( "employee/address" )
+            .createObject().ofType( Address.class )
+            .then()
+            .setNext( "addAddress");
+        forPattern( "employee/address/type" ).setBeanProperty();
+        forPattern( "employee/address/city" ).setBeanProperty();
+        forPattern( "employee/address/state" ).setBeanProperty();
+    }
+
+}</source>
+      <p>Then, our sample Servlet become:</p>
+      <source>public class EmployeeServlet
+    extends HttpServlet
+{
+
+    private final DigesterLoader loader = newLoader( new EmployeeModule() )
+        .setNamespaceAware( true )
+        .setXIncludeAware( true );
+
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException
+    {
+        Digester digester = loader.newDigester()
+
+        Employee employee = digester.parse( openStream( req.getParameter("employeeId") ) );
+        ...
+    }
+
+}</source>
+
+      <p>As you can notice, the <i>RulesModule</i> implements rules via fluent APIs,
+      making rules semantic simpler, and the effort of configuration is moved to the startup;
+      the <i>DigesterLoader</i> indeed will analyze all the <i>RulesModule</i> instances
+      and will be ready to create new Digester instances with pre-filled rules.</p>
+    </section>
+
+    <section name="One single configuration point, one single universal loader">
+      <p>As shown above, basic Digester2.X usage would be creating a Digester then setting the rules:</p>
+      <source>Digester digester = new Digester();
+digester.addObjectCreate( "root", "org.apache.commons.digester.SimpleTestBean" );
+digester.addBeanPropertySetter( "root", "alpha" );
+digester.addBeanPropertySetter( "root/alpha", "beta" );
+digester.addBeanPropertySetter( "root/delta", "delta" );</source>
+
+      <p>Alternatively, users can create the <code>Rules</code> instance, set the rules and pass it to the Digester:</p>
+      <source>ExtendedBaseRules rules = new ExtendedBaseRules();
+rules.addRule( "root", new ObjectCreateRule( "org.apache.commons.digester.SimpleTestBean" ) );
+rules.addRule( "root", new BeanPropertySetterRule( "alpha" ) );
+rules.addRule( "root/alpha", new BeanPropertySetterRule( "beta" ) );
+rules.addRule( "root/delta", new BeanPropertySetterRule( "delta" ) );
+
+Digester digester = new Digester();
+digester.setRules( rules );</source>
+
+      <p>Last, but not least, special loader classes have been created to gain more benefits from <code>RuleSet</code>:
+like the <code>annotations</code> package <code>DigesterLoader</code>, to avoid scanning class elements each time
+users want to create a new Digester instance to parse <code>Channel</code> type:</p>
+      <source>import org.apache.commons.digester.annotations.*;
+
+DigesterLoader digesterLoader = new DigesterLoaderBuilder()
+    .useDefaultAnnotationRuleProviderFactory()
+    .useDefaultDigesterLoaderHandlerFactory();
+Digester digester = digesterLoader.createDigester( Channel.class );</source>
+
+      <p>In Digester3 there is just one universal loader that aggregates all the power of the components described above,
+configurations are expressed via <code>(Abstract)RulesModule</code></p>
+      <source>class SimpleTestBeanModule
+  extends AbstractRulesModule
+{
+
+    @Override
+    protected void configure()
+    {
+        forPattern( "root" )
+            .createObject().ofType( "org.apache.commons.digester.SimpleTestBean" )
+            .then()
+            .setBeanProperty( "alpha" );
+        forPattern( "root/alpha" ).setBeanProperty( "beta" );
+        forPattern( "root/delta" ).setBeanProperty( "delta" );
+    }
+
+}</source>
+      <p>Users can simply create new Digester instances:</p>
+      <source>DigesterLoader loader = newLoader(new SimpleTestBeanModule());
+...
+Digester digester = loader.newDigester();</source>
+
+      <p>Users can create new Digester instances on top of different <code>Rules</code> types:</p>
+      <code>Digester digester = loader.newDigester(new ExtendedBaseRules());</code>
+
+      <p>An, by the nature of the universal loader, auxiliary optimizations are not needed:</p>
+      <source>DigesterLoader loader = newLoader( new FromAnnotationsRuleModule()
+    {
+
+        @Override
+        protected void configureRules()
+        {
+            bindRulesFrom( Channel.class );
+        }
+
+    } );
+...
+Digester digester = loader.newDigester();
+...
+digester = loader.newDigester(); // Channel.class won't be analyzed again!</source>
+    </section>
+
+    <section name="Extensions optimization">
+      <p>As shown above, the universal DigesterLoader introduces a set of optimizations not or partially
+      introduced in the previous Digester releases: the <code>FromXmlRuleSet</code>, for example,
+      parses the XML Digester rules each time the Digester creation is performed:</p>
+      <source>FromXmlRuleSet ruleSet = new FromXmlRuleSet( MyClass.class.getResource( "myrule.xml" ) );
+Digester digester = new Digester();
+ruleSet.addRuleInstances( digester ); // myrule.xml will be parsed
+...
+Digester newDigester = new Digester();
+ruleSet.addRuleInstances( newDigester ); // myrule.xml will be parsed again!</source>
+
+      <p>In Digester3 there's only one <code>RulesModule</code>s loading, so in the case of
+      <code>FromXmlRulesModule</code>, the XML rules will be parsed only once:</p>
+      <source>DigesterLoader loader = newLoader( new FromXmlRulesModule()
+    {
+
+        @Override
+        protected void loadRules()
+        {
+            loadXMLRulesFromText( MyClass.class.getResource( "myrule.xml" ) );
+        }
+
+    } );
+...
+Digester digester = loader.newDigester(); // myrule.xml already parsed
+...
+Digester newDigester = loader.newDigester(); // myrule.xml won't be parsed again!</source>
+    </section>
+
+    <section name="Startup checks and improved error reporting">
+      <p>The new Digester tries as much as possible to check patterns/rules binding errors during the
+      <code>DigesterLoader</code> bootstrap, avoiding exceptions during the parsing operations.</p>
+      <p>Let's suppose for example the following Digester</p>
+      <source>Digester digester = new Digester();
+  digester.addObjectCreate( "root", "com.acme.InOtherClassLoader" );
+  ....
+  digester.addObjectCreate( "root/child", "foo.bar.DoesNotExist" );
+  ...</source>
+
+      <p>is using a wrong <code>ClassLoader</code> to resolve types, or declared types are in the wrong
+      package; a runtime error will be thrown as soon as the <i>root</i> pattern will match.</p>
+      <p>Let's suppose users debug their application and fix the <code>ClassLoader</code> problem, a new
+      runtime error will be thrown as soon as the <i>root/child</i> pattern will match, and so on.</p>
+
+      <p>The new Digester tries to report all patterns/rules binding error in one single detailed report, i.e.</p>
+      <source>class SampleModule
+    extends AbstractRulesModule
+{
+
+    @Override
+    protected void configure()
+    {
+        forPattern( "root" ).createObject().ofType( "com.acme.InOtherClassLoader" );
+        ...
+        forPattern( "root/child" ).createObject().ofType( "foo.bar.DoesNotExist" );
+        ...
+    }
+
+}</source>
+      <p>The <code>DigesterLoader</code> will report problems in the following way:</p>
+      <source>Exception in thread "XXX" org.apache.commons.digester3.DigesterLoadingException: Digester creation errors:
+
+1) { forPattern( "root" ).createObject().ofType( String ) } class 'com.acme.InOtherClassLoader' cannot be load (SampleModule.java:5)
+
+2) { forPattern( "root/child" ).createObject().ofType( String ) } class 'foo.bar.DoesNotExist' cannot be load (SampleModule.java:10)
+
+2 errors</source>
+        <p>So, users have at least an overview to debug their applications.</p>
+    </section>
+  </body>
+</document>

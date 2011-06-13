@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-
+<!DOCTYPE digester-rules PUBLIC "-//Apache Commons //DTD digester-rules XML V1.0//EN" "http://commons.apache.org/digester/dtds/digester-rules-3.0.dtd">
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -16,34 +16,28 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-<!DOCTYPE digester-rules 
-  PUBLIC "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
-    "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
-
 <digester-rules>
   <pattern value="address-book">
     <pattern value="person">
-      <object-create-rule classname="Person"/>
-      <set-properties-rule/>
-      <set-next-rule methodname="addPerson"/>
-      
+      <object-create-rule classname="org.apache.commons.digester3.examples.xmlrules.addressbook.Person" />
+      <set-properties-rule />
+      <set-next-rule methodname="addPerson" />
+
       <pattern value="name">
-        <call-method-rule methodname="setName" paramcount="0"/>
+        <call-method-rule methodname="setName" paramcount="0" />
       </pattern>
-      
+
       <pattern value="email">
-        <call-method-rule methodname="addEmail" paramcount="2"/>  
-        <call-param-rule paramnumber='0' attrname='type'/>
-        <call-param-rule paramnumber='1'/>
+        <call-method-rule methodname="addEmail" paramcount="2" />
+        <call-param-rule paramnumber="0" attrname="type" />
+        <call-param-rule paramnumber="1" />
       </pattern>
-      
+
       <pattern value="address">
-        <object-create-rule classname="Address"/>
-        <set-nested-properties-rule/>
-        <set-next-rule methodname="addAddress"/>
+        <object-create-rule classname="org.apache.commons.digester3.examples.xmlrules.addressbook.Address" />
+        <set-nested-properties-rule />
+        <set-next-rule methodname="addAddress" />
       </pattern>
-      
     </pattern>
   </pattern>
 </digester-rules>

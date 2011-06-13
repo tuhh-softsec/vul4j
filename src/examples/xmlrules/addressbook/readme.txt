@@ -38,16 +38,14 @@ Topics covered:
 
 == compiling and running
 
-First rename the build.properties.sample file in the parent directory
-to build.properties and edit it to suit your environment. Then in this
-directory:
-
 * to compile:
-  ant compile
+  mvn compile
+
+* to build the jar artifact
+  mvn package
 
 * to run:
-  ant run
+  mvn verify
 
 Alternatively, you can set up your CLASSPATH appropriately, and
-run the example directly. See the build.properties and build.xml
-files for details.
+run the example directly.

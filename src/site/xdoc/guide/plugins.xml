@@ -19,7 +19,7 @@ limitations under the License.
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Download Commons Digester</title>
+    <title>Apache Commons Digester | Guide | Plugins</title>
     <author email="dev@commons.apache.org">Commons Documentation Team</author>
   </properties>
   <body>
@@ -48,21 +48,21 @@ Given the following digester rules in the main "parsing" application:</p>
 <source>
         Digester digester = new Digester();
         PluginRules rc = new PluginRules();
-        digester.setRules(rc);
+        digester.setRules( rc );
 
-        digester.addObjectCreate("pipeline", Pipeline.class);
+        digester.addObjectCreate( "pipeline", Pipeline.class );
 
-        digester.addCallMethod("pipeline/source", "setSource", 1);
-        digester.addCallParam("pipeline/source", 0, "file");
+        digester.addCallMethod( "pipeline/source", "setSource", 1 );
+        digester.addCallParam( "pipeline/source", 0, "file" );
 
-        PluginCreateRule pcr = new PluginCreateRule(Transform.class);
-        digester.addRule("pipeline/transform", pcr);
-        digester.addSetNext("pipeline/transform", "setTransform");
+        PluginCreateRule pcr = new PluginCreateRule( Transform.class );
+        digester.addRule( "pipeline/transform", pcr );
+        digester.addSetNext( "pipeline/transform", "setTransform" );
 
         digester.addCallMethod("pipeline/destination", "setDest", 1);
         digester.addCallParam("pipeline/destination", 0, "file");
 
-        digester.parse(filename);
+        digester.parse( filename );
 </source>
 <p>
 the following input can be processed:

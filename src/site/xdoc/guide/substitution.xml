@@ -19,16 +19,16 @@ limitations under the License.
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
-    <title>Download Commons Digester</title>
+    <title>Apache Commons Digester | Guide | Substitution</title>
     <author email="dev@commons.apache.org">Commons Documentation Team</author>
   </properties>
   <body>
-    <section name="Package Documentation for org.apache.commons.digester.substitution Package">
+    <section name="Package Documentation for org.apache.commons.digester3.substitution Package">
       <p>Provides for manipulation of xml attributes and element body text before
 the data is processed by any Rule objects.</p>
 
 <p>
-The class org.apache.commons.digester.Substitutor defines an abstract
+The class org.apache.commons.digester3.Substitutor defines an abstract
 interface for mechanisms which manipulate xml attributes and body text.
 The Digester method setSubstitutor can be used to define a concrete
 substitutor that will be applied to the data before it is passed to the
@@ -43,19 +43,19 @@ using a syntax such as "${user.name}".
 <p>Here's an example of setting up the VariableSubstitutor:</p>
 <source>
   // set up the variables the input xml can reference
-  Map vars = new HashMap();
-  vars.put("user.name", "me");
-  vars.put("os", "Linux");
+  Map&lt;String, Object&gt; vars = new HashMap&lt;String, Object&gt;();
+  vars.put( "user.name", "me" );
+  vars.put( "os", "Linux" );
 
   // map ${varname} to the entries in the var map
   MultiVariableExpander expander = new MultiVariableExpander();
-  expander.addSource("$", vars);
+  expander.addSource( "$", vars );
 
   // allow expansion in both xml attributes and element text
-  Substitutor substitutor = new VariableSubstitutor(expander);
+  Substitutor substitutor = new VariableSubstitutor( expander );
 
   Digester digester = new Digester();
-  digester.setSubstitutor(substitutor);
+  digester.setSubstitutor( substitutor );
 </source>
     </section>
   </body>
