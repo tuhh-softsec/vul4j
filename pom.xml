@@ -190,7 +190,6 @@
                         <Specification-Title>Apache XML Security</Specification-Title>
                         <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
                         <Specification-Version>${project.version}</Specification-Version>
-
                         <Export-Package>
                               org.apache.xml.security.*;version="${project.version}",
                               javax.xml.crypto.*;version="${project.version}",
@@ -200,7 +199,11 @@
                               !org.apache.xml.security.*,
                               !javax.xml.crypto.*,
                               !org.jcp.xml.dsig.internal.*,
-                              *;resolution:=optional
+                              org.apache.commons.logging;resolution:=optional;version="[1.1,2)",
+                              org.apache.xml.dtm*;resolution:=optional;version="[2.7,3)",
+                              org.apache.xml.utils*;resolution:=optional;version="[2.7,3)",
+                              org.apache.xpath*;resolution:=optional;version="[2.7,3)",
+                              *
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
