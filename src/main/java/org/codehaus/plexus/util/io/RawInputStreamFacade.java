@@ -22,12 +22,10 @@ import java.io.InputStream;
 /**
  * Implementation of {@link InputStreamFacade} for raw input streams.
  */
+@SuppressWarnings( { "UnusedDeclaration" } )
 public class RawInputStreamFacade implements InputStreamFacade {
     final InputStream stream;
 
-    /**
-     * Creates a new instance.
-     */
     public RawInputStreamFacade( InputStream stream )
     {
         this.stream = stream;

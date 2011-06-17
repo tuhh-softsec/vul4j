@@ -27,9 +27,6 @@ import java.io.InputStream;
 public class FileInputStreamFacade implements InputStreamFacade {
     private final File file;
 
-    /**
-     * Creates a new instance.
-     */
     public FileInputStreamFacade( File file )
     {
         this.file = file;

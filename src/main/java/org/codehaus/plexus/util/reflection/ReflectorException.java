@@ -26,9 +26,7 @@ package org.codehaus.plexus.util.reflection;
 public class ReflectorException
     extends Exception
 {
-    /**
-     * Create a new ReflectorException.
-     */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public ReflectorException()
     {
     }

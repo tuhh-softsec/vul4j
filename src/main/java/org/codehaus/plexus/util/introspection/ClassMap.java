@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * A cache of introspection information for a specific class instance.
- * Keys {@link java.lang.Method} objects by a concatenation of the
+ * Keys {@link java.lang.reflect.Method} objects by a concatenation of the
  * method name and the names of classes that make up the parameters.
  *
  * @author <a href="mailto:jvanzyl@apache.org">Jason van Zyl</a>
@@ -46,7 +46,7 @@ public class ClassMap
      * the basis for the Method map.
      */
 
-    private Class clazz;
+    private final Class clazz;
 
     /**
      * Cache of Methods, or CACHE_MISS, keyed by method
@@ -426,7 +426,7 @@ public class ClassMap
      * Looks up the method with specified name and signature in the first public
      * superclass or implemented interface of the class.
      *
-     * @param class      the class whose method is sought
+     * @param clazz      the class whose method is sought
      * @param name       the name of the method
      * @param paramTypes the classes of method parameters
      */

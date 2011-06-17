@@ -16,15 +16,14 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
+import junit.framework.TestCase;
+import org.codehaus.plexus.util.Os;
+
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.codehaus.plexus.util.Os;
-
-import junit.framework.TestCase;
-
+@SuppressWarnings( { "JavaDoc", "deprecation" } )
 public class CommandLineUtilsTest
     extends TestCase
 {
@@ -64,9 +63,9 @@ public class CommandLineUtilsTest
         throws Exception
     {
         Properties vars = CommandLineUtils.getSystemEnvVars( false );
-        for ( Iterator it = vars.keySet().iterator(); it.hasNext(); )
+        for ( Object o : vars.keySet() )
         {
-            String variable = (String) it.next();
+            String variable = (String) o;
             assertEquals( variable.toUpperCase( Locale.ENGLISH ), variable );
         }
     }
@@ -82,9 +81,9 @@ public class CommandLineUtilsTest
             return;
         }
         Properties vars = CommandLineUtils.getSystemEnvVars();
-        for ( Iterator it = vars.keySet().iterator(); it.hasNext(); )
+        for ( Object o : vars.keySet() )
         {
-            String variable = (String) it.next();
+            String variable = (String) o;
             assertEquals( variable.toUpperCase( Locale.ENGLISH ), variable );
         }
     }

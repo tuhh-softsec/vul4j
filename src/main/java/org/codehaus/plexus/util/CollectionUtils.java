@@ -55,7 +55,7 @@ public class CollectionUtils
      * @param recessiveMap Recessive Map.
      * @return The result map with combined dominant and recessive values.
      */
-    public static Map mergeMaps( Map dominantMap, Map recessiveMap )
+    public static <K,V> Map<K,V> mergeMaps( Map<K,V> dominantMap, Map<K,V> recessiveMap )
     {
 
         if ( dominantMap == null && recessiveMap == null )
@@ -68,21 +68,21 @@ public class CollectionUtils
             return dominantMap;
         }
 
-        if ( dominantMap == null && recessiveMap != null )
+        if ( dominantMap == null)
         {
             return recessiveMap;
         }
 
-        Map result = new HashMap();
+        Map<K,V> result = new HashMap<K,V>();
 
         // Grab the keys from the dominant and recessive maps.
-        Set dominantMapKeys = dominantMap.keySet();
-        Set recessiveMapKeys = recessiveMap.keySet();
+        Set<K> dominantMapKeys = dominantMap.keySet();
+        Set<K> recessiveMapKeys = recessiveMap.keySet();
 
         // Create the set of keys that will be contributed by the
         // recessive Map by subtracting the intersection of keys
         // from the recessive Map's keys.
-        Collection contributingRecessiveKeys =
+        Collection<K> contributingRecessiveKeys =
             CollectionUtils.subtract( recessiveMapKeys,
                                       CollectionUtils.intersection( dominantMapKeys, recessiveMapKeys ) );
 
@@ -90,9 +90,8 @@ public class CollectionUtils
 
         // Now take the keys we just found and extract the values from
         // the recessiveMap and put the key:value pairs into the dominantMap.
-        for ( Iterator i = contributingRecessiveKeys.iterator(); i.hasNext(); )
+        for ( K key : contributingRecessiveKeys )
         {
-            Object key = i.next();
             result.put( key, recessiveMap.get( key ) );
         }
 
@@ -107,9 +106,9 @@ public class CollectionUtils
      * @param maps An array of Maps to merge.
      * @return Map The result Map produced after the merging process.
      */
-    public static Map mergeMaps( Map[] maps )
+    public static <K,V> Map<K,V> mergeMaps( Map<K,V>[] maps )
     {
-        Map result = null;
+        Map<K,V> result;
 
         if ( maps.length == 0 )
         {
@@ -140,20 +139,21 @@ public class CollectionUtils
      * will be equal to the minimum of the cardinality of that element
      * in the two given {@link Collection}s.
      *
+     * @param a The first collection
+     * @param b The second collection
      * @see Collection#retainAll
+     * @return  The intersection of a and b, never null
      */
-    public static Collection intersection( final Collection a, final Collection b )
+    public static <E> Collection<E> intersection( final Collection<E> a, final Collection<E> b )
     {
-        ArrayList list = new ArrayList();
-        Map mapa = getCardinalityMap( a );
-        Map mapb = getCardinalityMap( b );
-        Set elts = new HashSet( a );
+        ArrayList<E> list = new ArrayList<E>();
+        Map<E, Integer> mapa = getCardinalityMap( a );
+        Map<E, Integer> mapb = getCardinalityMap( b );
+        Set<E> elts = new HashSet<E>( a );
         elts.addAll( b );
-        Iterator it = elts.iterator();
-        while ( it.hasNext() )
+        for ( E obj : elts )
         {
-            Object obj = it.next();
-            for ( int i = 0,m = Math.min( getFreq( obj, mapa ), getFreq( obj, mapb ) ); i < m; i++ )
+            for ( int i = 0, m = Math.min( getFreq( obj, mapa ), getFreq( obj, mapb ) ); i < m; i++ )
             {
                 list.add( obj );
             }
@@ -167,15 +167,17 @@ public class CollectionUtils
      * will be the cardinality of <i>e</i> in <i>a</i> minus the cardinality
      * of <i>e</i> in <i>b</i>, or zero, whichever is greater.
      *
+     * @param a The start collection
+     * @param b The collection that will be subtracted
      * @see Collection#removeAll
+     * @return The result of the subtraction
      */
-    public static Collection subtract( final Collection a, final Collection b )
+    public static <T> Collection<T> subtract( final Collection<T> a, final Collection<T> b )
     {
-        ArrayList list = new ArrayList( a );
-        Iterator it = b.iterator();
-        while ( it.hasNext() )
+        ArrayList<T> list = new ArrayList<T>( a );
+        for ( T aB : b )
         {
-            list.remove( it.next() );
+            list.remove( aB );
         }
         return list;
     }
@@ -187,35 +189,35 @@ public class CollectionUtils
      * in the {@link Collection}.
      * An entry that maps to <tt>null</tt> indicates that the
      * element does not appear in the given {@link Collection}.
+     * @param col The collection to count cardinalities for
+     * @return A map of counts, indexed on each element in the collection
      */
-    public static Map getCardinalityMap( final Collection col )
+    public static <E> Map<E, Integer> getCardinalityMap( final Collection<E> col )
     {
-        HashMap count = new HashMap();
-        Iterator it = col.iterator();
-        while ( it.hasNext() )
+        HashMap<E, Integer> count = new HashMap<E, Integer>();
+        for ( E obj : col )
         {
-            Object obj = it.next();
-            Integer c = (Integer) ( count.get( obj ) );
+            Integer c = count.get( obj );
             if ( null == c )
             {
-                count.put( obj, new Integer( 1 ) );
+                count.put( obj, 1 );
             }
             else
             {
-                count.put( obj, new Integer( c.intValue() + 1 ) );
+                count.put( obj, c + 1 );
             }
         }
         return count;
     }
 
-    public static List iteratorToList( Iterator it )
+    public static <E> List<E> iteratorToList( Iterator<E> it )
     {
         if ( it == null )
         {
             throw new NullPointerException( "it cannot be null." );
         }
 
-        List list = new ArrayList();
+        List<E> list = new ArrayList<E>();
 
         while ( it.hasNext() )
         {
@@ -229,23 +231,21 @@ public class CollectionUtils
     //
     // ----------------------------------------------------------------------
 
-    private static final int getFreq( final Object obj, final Map freqMap )
+    private static <E> int getFreq( final E obj, final Map<E, Integer> freqMap )
     {
         try
         {
-            Object o = freqMap.get( obj );
+            Integer o = freqMap.get( obj );
             if ( o != null )  // minimize NullPointerExceptions
             {
-                return ( (Integer) o ).intValue();
+                return o;
             }
         }
-        catch ( NullPointerException e )
+        catch ( NullPointerException ignore )
         {
-            // ignored
         }
-        catch ( NoSuchElementException e )
+        catch ( NoSuchElementException ignore )
         {
-            // ignored
         }
         return 0;
     }

@@ -56,7 +56,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case anything goes wrong here...
      */
-    public Object newInstance( Class theClass, Object[] params )
+    @SuppressWarnings( { "UnusedDeclaration" } )
+    public <T> T newInstance( Class<T> theClass, Object[] params )
         throws ReflectorException
     {
         if ( params == null )
@@ -73,19 +74,19 @@ public final class Reflector
 
         try
         {
-            Constructor con = getConstructor( theClass, paramTypes );
+            Constructor<T> con = getConstructor( theClass, paramTypes );
 
             if ( con == null )
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
 
                 buffer.append( "Constructor not found for class: " );
                 buffer.append( theClass.getName() );
                 buffer.append( " with specified or ancestor parameter classes: " );
 
-                for ( int i = 0; i < paramTypes.length; i++ )
+                for ( Class paramType : paramTypes )
                 {
-                    buffer.append( paramTypes[i].getName() );
+                    buffer.append( paramType.getName() );
                     buffer.append( ',' );
                 }
 
@@ -123,7 +124,8 @@ public final class Reflector
      * @throws ReflectorException
      *             In case anything goes wrong here...
      */
-    public Object getSingleton( Class theClass, Object[] initParams )
+    @SuppressWarnings( { "UnusedDeclaration" } )
+    public <T> T getSingleton( Class<T> theClass, Object[] initParams )
         throws ReflectorException
     {
         Class[] paramTypes = new Class[initParams.length];
@@ -137,7 +139,8 @@ public final class Reflector
         {
             Method method = getMethod( theClass, GET_INSTANCE_METHOD_NAME, paramTypes );
 
-            return method.invoke( null, initParams );
+            //noinspection unchecked
+            return (T) method.invoke( null, initParams );
         }
         catch ( InvocationTargetException ex )
         {
@@ -163,6 +166,7 @@ public final class Reflector
      * @throws ReflectorException
      *             In case of an error looking up or invoking the method.
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public Object invoke( Object target, String methodName, Object[] params )
         throws ReflectorException
     {
@@ -184,14 +188,14 @@ public final class Reflector
 
             if ( method == null )
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
 
                 buffer.append( "Singleton-producing method named '" ).append( methodName )
                       .append( "' not found with specified parameter classes: " );
 
-                for ( int i = 0; i < paramTypes.length; i++ )
+                for ( Class paramType : paramTypes )
                 {
-                    buffer.append( paramTypes[i].getName() );
+                    buffer.append( paramType.getName() );
                     buffer.append( ',' );
                 }
 
@@ -212,6 +216,7 @@ public final class Reflector
         }
     }
 
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public Object getStaticField( Class targetClass, String fieldName )
         throws ReflectorException
     {
@@ -239,6 +244,7 @@ public final class Reflector
         }
     }
 
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public Object getField( Object target, String fieldName )
         throws ReflectorException
     {
@@ -303,6 +309,7 @@ public final class Reflector
      * @throws ReflectorException
      *             In case of an error looking up or invoking the method.
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public Object invokeStatic( Class targetClass, String methodName, Object[] params )
         throws ReflectorException
     {
@@ -324,14 +331,15 @@ public final class Reflector
 
             if ( method == null )
             {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
 
-                buffer.append( "Singleton-producing method named \'" + methodName
-                    + "\' not found with specified parameter classes: " );
+                buffer.append( "Singleton-producing method named \'" )
+                    .append( methodName )
+                    .append( "\' not found with specified parameter classes: " );
 
-                for ( int i = 0; i < paramTypes.length; i++ )
+                for ( Class paramType : paramTypes )
                 {
-                    buffer.append( paramTypes[i].getName() );
+                    buffer.append( paramType.getName() );
                     buffer.append( ',' );
                 }
 
@@ -365,12 +373,12 @@ public final class Reflector
      * @throws ReflectorException
      *             In case we can't retrieve the proper constructor.
      */
-    public Constructor getConstructor( Class targetClass, Class[] params )
+    public <T> Constructor<T> getConstructor( Class<T> targetClass, Class[] params )
         throws ReflectorException
     {
-        Map constructorMap = getConstructorMap( targetClass );
+        Map<String, Constructor<T>> constructorMap = getConstructorMap( targetClass );
 
-        StringBuffer key = new StringBuffer( 200 );
+        StringBuilder key = new StringBuilder( 200 );
 
         key.append( "(" );
 
@@ -387,17 +395,18 @@ public final class Reflector
 
         key.append( ")" );
 
-        Constructor constructor = null;
+        Constructor<T> constructor;
 
         String paramKey = key.toString();
 
         synchronized ( paramKey.intern() )
         {
-            constructor = (Constructor) constructorMap.get( paramKey );
+            constructor = constructorMap.get( paramKey );
 
             if ( constructor == null )
             {
-                Constructor[] cands = targetClass.getConstructors();
+                @SuppressWarnings( { "unchecked" } )
+                Constructor<T>[] cands = (Constructor<T>[]) targetClass.getConstructors();
 
                 for ( int i = 0, len = cands.length; i < len; i++ )
                 {
@@ -435,7 +444,7 @@ public final class Reflector
     public Object getObjectProperty( Object target, String propertyName )
         throws ReflectorException
     {
-        Object returnValue = null;
+        Object returnValue;
 
         if ( propertyName == null || propertyName.trim().length() < 1 )
         {
@@ -494,7 +503,7 @@ public final class Reflector
         else
         {
             returnValue = getField( target, propertyName, true );
-            if ( method == null && returnValue == null )
+            if ( returnValue == null )
             {
                 // TODO: Check if exception is the right action! Field exists, but contains null
                 throw new ReflectorException( "Neither method: \'" + propertyName + "\' nor bean accessor: \'"
@@ -535,9 +544,9 @@ public final class Reflector
     private Method _getMethod( Class targetClass, String methodName, Class[] params )
         throws ReflectorException
     {
-        Map methodMap = getMethodMap( targetClass, methodName );
+        Map<String, Method> methodMap = (Map<String, Method>) getMethodMap( targetClass, methodName );
 
-        StringBuffer key = new StringBuffer( 200 );
+        StringBuilder key = new StringBuilder( 200 );
 
         key.append( "(" );
 
@@ -549,7 +558,7 @@ public final class Reflector
 
         key.append( ")" );
 
-        Method method = null;
+        Method method;
 
         String paramKey = key.toString();
 
@@ -604,10 +613,10 @@ public final class Reflector
      * @throws ReflectorException
      *             in case of a lookup error.
      */
-    private Map getConstructorMap( Class theClass )
+    private <T> Map<String, Constructor<T>> getConstructorMap( Class<T> theClass )
         throws ReflectorException
     {
-        return getMethodMap( theClass, CONSTRUCTOR_METHOD_NAME );
+        return (Map<String, Constructor<T>>) getMethodMap( theClass, CONSTRUCTOR_METHOD_NAME );
     }
 
     /**
@@ -621,10 +630,10 @@ public final class Reflector
      * @throws ReflectorException
      *             in case of a lookup error.
      */
-    private Map getMethodMap( Class theClass, String methodName )
+    private Map<String, ?> getMethodMap( Class theClass, String methodName )
         throws ReflectorException
     {
-        Map methodMap = null;
+        Map<String, Method> methodMap;
 
         if ( theClass == null )
         {
@@ -635,14 +644,13 @@ public final class Reflector
 
         synchronized ( className.intern() )
         {
-            Map classMethods = (Map) classMaps.get( className );
+            Map<String, Map<String, Method>> classMethods = (Map<String, Map<String, Method>>) classMaps.get( className );
 
             if ( classMethods == null )
             {
                 classMethods = new HashMap();
-                methodMap = new HashMap();
+                methodMap = new HashMap<String, Method>();
                 classMethods.put( methodName, methodMap );
-
                 classMaps.put( className, classMethods );
             }
             else
@@ -651,11 +659,11 @@ public final class Reflector
 
                 synchronized ( key.intern() )
                 {
-                    methodMap = (Map) classMethods.get( methodName );
+                    methodMap = classMethods.get( methodName );
 
                     if ( methodMap == null )
                     {
-                        methodMap = new HashMap();
+                        methodMap = new HashMap<String, Method>();
                         classMethods.put( methodName, methodMap );
                     }
                 }

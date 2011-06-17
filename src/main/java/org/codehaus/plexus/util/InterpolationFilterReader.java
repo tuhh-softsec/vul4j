@@ -90,10 +90,10 @@ public class InterpolationFilterReader
     private int endTokenLength;
 
     /** Default begin token. */
-    private static String DEFAULT_BEGIN_TOKEN = "${";
+    private static final String DEFAULT_BEGIN_TOKEN = "${";
 
     /** Default end token. */
-    private static String DEFAULT_END_TOKEN = "}";
+    private static final String DEFAULT_END_TOKEN = "}";
 
     public InterpolationFilterReader( Reader in, Map variables, String beginToken, String endToken )
     {
@@ -201,7 +201,7 @@ public class InterpolationFilterReader
             return ch;
         }
 
-        int ch = -1;
+        int ch;
         if ( previousIndex != -1 && previousIndex < endTokenLength )
         {
             ch = endToken.charAt( previousIndex++ );
@@ -213,7 +213,7 @@ public class InterpolationFilterReader
 
         if ( ch == beginToken.charAt( 0 ) )
         {
-            StringBuffer key = new StringBuffer();
+            StringBuilder key = new StringBuilder();
 
             int beginTokenMatchPos = 1;
 

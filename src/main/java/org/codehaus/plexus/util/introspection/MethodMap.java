@@ -42,28 +42,27 @@ public class MethodMap
     /**
      * Keep track of all methods with the same name.
      */
-    Map methodByNameMap = new Hashtable();
+    Map<String, List<Method>> methodByNameMap = new Hashtable<String, List<Method>>();
 
     /**
      * Add a method to a list of methods by name.
      * For a particular class we are keeping track
      * of all the methods with the same name.
+     * @param method The method
      */
     public void add(Method method)
     {
         String methodName = method.getName();
 
-        List l = get( methodName );
+        List<Method> l = get( methodName );
 
         if ( l == null)
         {
-            l = new ArrayList();
+            l = new ArrayList<Method>();
             methodByNameMap.put(methodName, l);
         }
 
         l.add(method);
-
-        return;
     }
 
     /**
@@ -72,9 +71,9 @@ public class MethodMap
      * @param key The name of the method.
      * @return List list of methods
      */
-    public List get(String key)
+    public List<Method> get(String key)
     {
-        return (List) methodByNameMap.get(key);
+        return methodByNameMap.get(key);
     }
 
     /**
@@ -145,7 +144,7 @@ public class MethodMap
     private static Method getMostSpecific(List methods, Class[] classes)
         throws AmbiguousException
     {
-        LinkedList applicables = getApplicables(methods, classes);
+        LinkedList<Method> applicables = getApplicables(methods, classes);
 
         if(applicables.isEmpty())
         {
@@ -154,7 +153,7 @@ public class MethodMap
 
         if(applicables.size() == 1)
         {
-            return (Method)applicables.getFirst();
+            return applicables.getFirst();
         }
 
         /*
@@ -163,21 +162,18 @@ public class MethodMap
          * (the most specific method) otherwise we have ambiguity.
          */
 
-        LinkedList maximals = new LinkedList();
+        LinkedList<Method> maximals = new LinkedList<Method>();
 
-        for (Iterator applicable = applicables.iterator();
-             applicable.hasNext();)
+        for ( Method app : applicables )
         {
-            Method app = (Method) applicable.next();
             Class[] appArgs = app.getParameterTypes();
             boolean lessSpecific = false;
 
-            for (Iterator maximal = maximals.iterator();
-                 !lessSpecific && maximal.hasNext();)
+            for ( Iterator maximal = maximals.iterator(); !lessSpecific && maximal.hasNext(); )
             {
                 Method max = (Method) maximal.next();
 
-                switch(moreSpecific(appArgs, max.getParameterTypes()))
+                switch ( moreSpecific( appArgs, max.getParameterTypes() ) )
                 {
                     case MORE_SPECIFIC:
                     {
@@ -205,9 +201,9 @@ public class MethodMap
                 }
             }
 
-            if(!lessSpecific)
+            if ( !lessSpecific )
             {
-                maximals.addLast(app);
+                maximals.addLast( app );
             }
         }
 
@@ -217,7 +213,7 @@ public class MethodMap
             throw new AmbiguousException();
         }
 
-        return (Method)maximals.getFirst();
+        return maximals.getFirst();
     }
 
     /**
@@ -282,17 +278,17 @@ public class MethodMap
      * formal and actual arguments matches, and argument types are assignable
      * to formal types through a method invocation conversion).
      */
-    private static LinkedList getApplicables(List methods, Class[] classes)
+    private static LinkedList<Method> getApplicables(List methods, Class[] classes)
     {
-        LinkedList list = new LinkedList();
+        LinkedList<Method> list = new LinkedList<Method>();
 
-        for (Iterator imethod = methods.iterator(); imethod.hasNext();)
+        for ( Object method1 : methods )
         {
-            Method method = (Method) imethod.next();
+            Method method = (Method) method1;
 
-            if(isApplicable(method, classes))
+            if ( isApplicable( method, classes ) )
             {
-                list.add(method);
+                list.add( method );
             }
 
         }
@@ -302,6 +298,9 @@ public class MethodMap
     /**
      * Returns true if the supplied method is applicable to actual
      * argument types.
+     * @param method The method to check for applicability
+     * @param classes The arguments
+     * @return true if the method applies to the parameter types
      */
     private static boolean isApplicable(Method method, Class[] classes)
     {

@@ -25,7 +25,6 @@ import java.io.PushbackReader;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -48,7 +47,7 @@ public class LineOrientedInterpolatingReader
 
     private final PushbackReader pushbackReader;
 
-    private final Map context;
+    private final Map<String, Object> context;
 
     private final String startDelim;
 
@@ -64,7 +63,7 @@ public class LineOrientedInterpolatingReader
 
     private String line;
 
-    public LineOrientedInterpolatingReader( Reader reader, Map context, String startDelim, String endDelim,
+    public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context, String startDelim, String endDelim,
                                            String escapeSeq )
     {
         super( reader );
@@ -92,12 +91,12 @@ public class LineOrientedInterpolatingReader
         }
     }
 
-    public LineOrientedInterpolatingReader( Reader reader, Map context, String startDelim, String endDelim )
+    public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context, String startDelim, String endDelim )
     {
         this( reader, context, startDelim, endDelim, DEFAULT_ESCAPE_SEQ );
     }
 
-    public LineOrientedInterpolatingReader( Reader reader, Map context )
+    public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context )
     {
         this( reader, context, DEFAULT_START_DELIM, DEFAULT_END_DELIM, DEFAULT_ESCAPE_SEQ );
     }
@@ -192,8 +191,8 @@ public class LineOrientedInterpolatingReader
 
     private String readLine() throws IOException
     {
-        StringBuffer lineBuffer = new StringBuffer( 40 ); // half of the "normal" line maxsize
-        int next = -1;
+        StringBuilder lineBuffer = new StringBuilder( 40 ); // half of the "normal" line maxsize
+        int next;
 
         boolean lastWasCR = false;
         while ( ( next = pushbackReader.read() ) > -1 )
@@ -235,9 +234,9 @@ public class LineOrientedInterpolatingReader
     {
         String result = rawLine;
 
-        for ( Iterator it = evaluatedExpressions.entrySet().iterator(); it.hasNext(); )
+        for ( Object o : evaluatedExpressions.entrySet() )
         {
-            Map.Entry entry = (Map.Entry) it.next();
+            Map.Entry entry = (Map.Entry) o;
 
             String expression = (String) entry.getKey();
 
@@ -251,14 +250,14 @@ public class LineOrientedInterpolatingReader
 
     private Map evaluateExpressions( Set expressions )
     {
-        Map evaluated = new TreeMap();
+        Map<String, Object> evaluated = new TreeMap<String,Object>();
 
-        for ( Iterator it = expressions.iterator(); it.hasNext(); )
+        for ( Object expression : expressions )
         {
-            String rawExpression = (String) it.next();
+            String rawExpression = (String) expression;
 
-            String realExpression = rawExpression.substring( startDelim.length(), rawExpression.length()
-                - endDelim.length() );
+            String realExpression =
+                rawExpression.substring( startDelim.length(), rawExpression.length() - endDelim.length() );
 
             String[] parts = realExpression.split( "\\." );
             if ( parts.length > 0 )
@@ -297,7 +296,7 @@ public class LineOrientedInterpolatingReader
 
     private Set parseForExpressions( String rawLine )
     {
-        Set expressions = new HashSet();
+        Set<String> expressions = new HashSet<String>();
 
         if ( rawLine != null )
         {
@@ -342,7 +341,7 @@ public class LineOrientedInterpolatingReader
     {
         int placeholder = lastPos;
 
-        int position = -1;
+        int position;
         do
         {
             position = rawLine.indexOf( delimiter, placeholder );
@@ -371,7 +370,7 @@ public class LineOrientedInterpolatingReader
 
     private String findAndReplaceUnlessEscaped(String rawLine, String search, String replace)
     {
-        StringBuffer lineBuffer = new StringBuffer( (int)(rawLine.length() * 1.5) );
+        StringBuilder lineBuffer = new StringBuilder( (int) ( rawLine.length() * 1.5 ) );
 
         int lastReplacement = -1;
 

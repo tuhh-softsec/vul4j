@@ -26,9 +26,6 @@ import java.net.URL;
 public class URLInputStreamFacade implements InputStreamFacade {
     private final URL url;
 
-    /**
-     * Creates a new instance.
-     */
     public URLInputStreamFacade( URL url )
     {
         this.url = url;

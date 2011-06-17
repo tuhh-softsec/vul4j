@@ -75,9 +75,7 @@ public class LineOrientedInterpolatingReaderTest
 
     public void testDefaultInterpolationWithNonInterpolatedValueAtEnd() throws Exception
     {
-        Map m = new HashMap();
-        m.put( "name", "jason" );
-        m.put( "noun", "asshole" );
+        Map<String, String> m = getStandardMap();
 
         String foo = "${name} is an ${noun}. ${not.interpolated}";
 
@@ -90,11 +88,17 @@ public class LineOrientedInterpolatingReaderTest
         assertEquals( "jason is an asshole. ${not.interpolated}", bar );
     }
 
-    public void testDefaultInterpolationWithEscapedExpression() throws Exception
+    private Map<String, String> getStandardMap()
     {
-        Map m = new HashMap();
+        Map<String, String> m = new HashMap<String, String>();
         m.put( "name", "jason" );
         m.put( "noun", "asshole" );
+        return m;
+    }
+
+    public void testDefaultInterpolationWithEscapedExpression() throws Exception
+    {
+        Map<String, String> m = getStandardMap();
 
         String foo = "${name} is an ${noun}. \\${noun} value";
 
@@ -109,9 +113,7 @@ public class LineOrientedInterpolatingReaderTest
 
     public void testDefaultInterpolationWithInterpolatedValueAtEnd() throws Exception
     {
-        Map m = new HashMap();
-        m.put( "name", "jason" );
-        m.put( "noun", "asshole" );
+        Map<String, String> m = getStandardMap();
 
         String foo = "${name} is an ${noun}";
 
@@ -126,9 +128,7 @@ public class LineOrientedInterpolatingReaderTest
 
     public void testInterpolationWithSpecifiedBoundaryTokens() throws Exception
     {
-        Map m = new HashMap();
-        m.put( "name", "jason" );
-        m.put( "noun", "asshole" );
+        Map<String, String> m = getStandardMap();
 
         String foo = "@name@ is an @noun@. @not.interpolated@ baby @foo@. @bar@";
 
@@ -144,9 +144,7 @@ public class LineOrientedInterpolatingReaderTest
 
     public void testInterpolationWithSpecifiedBoundaryTokensWithNonInterpolatedValueAtEnd() throws Exception
     {
-        Map m = new HashMap();
-        m.put( "name", "jason" );
-        m.put( "noun", "asshole" );
+        Map<String, String> m = getStandardMap();
 
         String foo = "@name@ is an @foobarred@";
 
@@ -162,9 +160,7 @@ public class LineOrientedInterpolatingReaderTest
 
     public void testInterpolationWithSpecifiedBoundaryTokensWithInterpolatedValueAtEnd() throws Exception
     {
-        Map m = new HashMap();
-        m.put( "name", "jason" );
-        m.put( "noun", "asshole" );
+        Map<String, String> m = getStandardMap();
 
         String foo = "@name@ is an @noun@";
 

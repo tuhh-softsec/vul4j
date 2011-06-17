@@ -155,40 +155,40 @@ public class DirectoryScanner extends AbstractScanner
     /** The files which matched at least one include and no excludes
      *  and were selected.
      */
-    protected Vector filesIncluded;
+    protected Vector<String> filesIncluded;
 
     /** The files which did not match any includes or selectors. */
-    protected Vector filesNotIncluded;
+    protected Vector<String> filesNotIncluded;
 
     /**
      * The files which matched at least one include and at least
      * one exclude.
      */
-    protected Vector filesExcluded;
+    protected Vector<String> filesExcluded;
 
     /** The directories which matched at least one include and no excludes
      *  and were selected.
      */
-    protected Vector dirsIncluded;
+    protected Vector<String> dirsIncluded;
 
     /** The directories which were found and did not match any includes. */
-    protected Vector dirsNotIncluded;
+    protected Vector<String> dirsNotIncluded;
 
     /**
      * The directories which matched at least one include and at least one
      * exclude.
      */
-    protected Vector dirsExcluded;
+    protected Vector<String> dirsExcluded;
 
     /** The files which matched at least one include and no excludes and
      *  which a selector discarded.
      */
-    protected Vector filesDeselected;
+    protected Vector<String> filesDeselected;
 
     /** The directories which matched at least one include and no excludes
      *  but which a selector discarded.
      */
-    protected Vector dirsDeselected;
+    protected Vector<String> dirsDeselected;
 
     /** Whether or not our results were built by a slow scan. */
     protected boolean haveSlowResults = false;
@@ -219,6 +219,7 @@ public class DirectoryScanner extends AbstractScanner
      * @param basedir The base directory to scan.
      *                Must not be <code>null</code>.
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setBasedir( String basedir )
     {
         setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace(
@@ -253,6 +254,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @param followSymlinks whether or not symbolic links should be followed
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setFollowSymlinks( boolean followSymlinks )
     {
         this.followSymlinks = followSymlinks;
@@ -265,6 +267,7 @@ public class DirectoryScanner extends AbstractScanner
      * @return <code>true</code> if all files and directories which have
      *         been found so far have been included.
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public boolean isEverythingIncluded()
     {
         return everythingIncluded;
@@ -298,14 +301,14 @@ public class DirectoryScanner extends AbstractScanner
 
         setupDefaultFilters();
 
-        filesIncluded = new Vector();
-        filesNotIncluded = new Vector();
-        filesExcluded = new Vector();
-        filesDeselected = new Vector();
-        dirsIncluded = new Vector();
-        dirsNotIncluded = new Vector();
-        dirsExcluded = new Vector();
-        dirsDeselected = new Vector();
+        filesIncluded = new Vector<String>();
+        filesNotIncluded = new Vector<String>();
+        filesExcluded = new Vector<String>();
+        filesDeselected = new Vector<String>();
+        dirsIncluded = new Vector<String>();
+        dirsNotIncluded = new Vector<String>();
+        dirsExcluded = new Vector<String>();
+        dirsDeselected = new Vector<String>();
 
         if ( isIncluded( "" ) )
         {
@@ -353,21 +356,19 @@ public class DirectoryScanner extends AbstractScanner
         String[] notIncl = new String[dirsNotIncluded.size()];
         dirsNotIncluded.copyInto( notIncl );
 
-        for ( int i = 0; i < excl.length; i++ )
+        for ( String anExcl : excl )
         {
-            if ( !couldHoldIncluded( excl[i] ) )
+            if ( !couldHoldIncluded( anExcl ) )
             {
-                scandir( new File( basedir, excl[i] ),
-                         excl[i] + File.separator, false );
+                scandir( new File( basedir, anExcl ), anExcl + File.separator, false );
             }
         }
 
-        for ( int i = 0; i < notIncl.length; i++ )
+        for ( String aNotIncl : notIncl )
         {
-            if ( !couldHoldIncluded( notIncl[i] ) )
+            if ( !couldHoldIncluded( aNotIncl ) )
             {
-                scandir( new File( basedir, notIncl[i] ),
-                         notIncl[i] + File.separator, false );
+                scandir( new File( basedir, aNotIncl ), aNotIncl + File.separator, false );
             }
         }
 
@@ -385,7 +386,6 @@ public class DirectoryScanner extends AbstractScanner
      *              prevent problems with an absolute path when using
      *              dir). Must not be <code>null</code>.
      * @param fast  Whether or not this call is part of a fast scan.
-     * @throws IOException
      *
      * @see #filesIncluded
      * @see #filesNotIncluded
@@ -429,15 +429,15 @@ public class DirectoryScanner extends AbstractScanner
 
         if ( !followSymlinks )
         {
-            Vector noLinks = new Vector();
-            for ( int i = 0; i < newfiles.length; i++ )
+            Vector<String> noLinks = new Vector<String>();
+            for ( String newfile : newfiles )
             {
                 try
                 {
-                    if ( isSymbolicLink( dir, newfiles[i] ) )
+                    if ( isSymbolicLink( dir, newfile ) )
                     {
-                        String name = vpath + newfiles[i];
-                        File file = new File( dir, newfiles[i] );
+                        String name = vpath + newfile;
+                        File file = new File( dir, newfile );
                         if ( file.isDirectory() )
                         {
                             dirsExcluded.addElement( name );
@@ -449,26 +449,25 @@ public class DirectoryScanner extends AbstractScanner
                     }
                     else
                     {
-                        noLinks.addElement( newfiles[i] );
+                        noLinks.addElement( newfile );
                     }
                 }
                 catch ( IOException ioe )
                 {
-                    String msg = "IOException caught while checking "
-                        + "for links, couldn't get cannonical path!";
+                    String msg = "IOException caught while checking " + "for links, couldn't get cannonical path!";
                     // will be caught and redirected to Ant's logging system
                     System.err.println( msg );
-                    noLinks.addElement( newfiles[i] );
+                    noLinks.addElement( newfile );
                 }
             }
             newfiles = new String[noLinks.size()];
             noLinks.copyInto( newfiles );
         }
 
-        for ( int i = 0; i < newfiles.length; i++ )
+        for ( String newfile : newfiles )
         {
-            String name = vpath + newfiles[i];
-            File file = new File( dir, newfiles[i] );
+            String name = vpath + newfile;
+            File file = new File( dir, newfile );
             if ( file.isDirectory() )
             {
                 if ( isIncluded( name ) )
@@ -557,6 +556,7 @@ public class DirectoryScanner extends AbstractScanner
      * @return <code>false</code> when the selectors says that the file
      *         should not be selected, <code>true</code> otherwise.
      */
+    @SuppressWarnings( { "UnusedParameters" } )
     protected boolean isSelected( String name, File file )
     {
         return true;
@@ -587,6 +587,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getNotIncludedFiles()
     {
         slowScan();
@@ -606,6 +607,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getExcludedFiles()
     {
         slowScan();
@@ -625,6 +627,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getDeselectedFiles()
     {
         slowScan();
@@ -658,6 +661,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getNotIncludedDirectories()
     {
         slowScan();
@@ -677,6 +681,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getExcludedDirectories()
     {
         slowScan();
@@ -696,6 +701,7 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getDeselectedDirectories()
     {
         slowScan();
@@ -715,6 +721,8 @@ public class DirectoryScanner extends AbstractScanner
      * @param name the name of the file to test.
      *
      * @since Ant 1.5
+     * @return true if it's a symbolic link
+     * @throws java.io.IOException .
      */
     public boolean isSymbolicLink( File parent, String name )
         throws IOException
