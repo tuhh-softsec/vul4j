@@ -257,7 +257,7 @@
     </plugins>
 
     <!--
-     | Maven3 doest'n handle ssh/scp by default
+     | Maven3 doesn't handle ssh/scp by default
      | let's take in consideration to add it in the parent pom
     -->
     <extensions>
