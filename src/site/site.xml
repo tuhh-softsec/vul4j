@@ -46,7 +46,7 @@
     <!--
       - Note that the links in these menu options require manual installation of the
       - appropriate dirs on the website; maven won't set this up.
-      -->
+      
     <menu name="Release 3.0 (Current)">
       <item name="Guide" href="http://commons.apache.org/digester/commons-digester-3.0/core.html">
         <item name="Core APIs"            href="http://commons.apache.org/digester/commons-digester-3.0/core.html" />
@@ -59,8 +59,8 @@
       </item>
       <item name="Javadoc" href="http://commons.apache.org/digester/commons-digester-3.0/docs/api" />
       <item name="Release Notes" href="http://commons.apache.org/digester/commons-digester-3.0/RELEASE-NOTES.txt" />
-    </menu>
-    <menu name="Release 2.1">
+    </menu>-->
+    <menu name="Release 2.1 (Current)">
       <item name="Guide" href="http://commons.apache.org/digester/commons-digester-2.1/core.html">
         <item name="Core APIs"            href="http://commons.apache.org/digester/commons-digester-2.1/core.html" />
         <item name="Plugins"              href="http://commons.apache.org/digester/commons-digester-2.1/plugins.html" />
