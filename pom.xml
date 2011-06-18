@@ -156,7 +156,7 @@
     <site>
       <id>people.apache.org</id>
       <name>Apache Commons Site</name>
-      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/sandbox/digester3</url>
+      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/digester</url>
     </site>
   </distributionManagement>
 
