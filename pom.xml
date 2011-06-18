@@ -255,6 +255,18 @@
         </configuration>
       </plugin>
     </plugins>
+
+    <!--
+     | Maven3 doest'n handle ssh/scp by default
+     | let's take in consideration to add it in the parent pom
+    -->
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
   </build>
 
   <reporting>
