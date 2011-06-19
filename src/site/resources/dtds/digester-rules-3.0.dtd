@@ -79,7 +79,7 @@
 -->
 <!ELEMENT include EMPTY>
 <!ATTLIST include
-    path  CDATA #IMPLIED
+    url   CDATA #IMPLIED
     class CDATA #IMPLIED>
 
 

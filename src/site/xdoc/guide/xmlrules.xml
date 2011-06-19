@@ -145,7 +145,7 @@ File rules1.xml:
   &lt;pattern value="root/foo"&gt;
     &lt;object-create-rule classname="Foo" /&gt;
 
-    &lt;include path="rules2.xml" /&gt;
+    &lt;include url="rules2.xml" /&gt;
   &lt;/pattern&gt;
 &lt;/digester-rules&gt;
 
