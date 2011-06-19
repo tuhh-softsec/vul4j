@@ -24,7 +24,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -77,11 +76,11 @@ public final class DigesterLoader
      * @param rulesModules The modules containing the {@code Rule} binding
      * @return A new {@link DigesterLoader} instance
      */
-    public static DigesterLoader newLoader( Collection<RulesModule> rulesModules )
+    public static DigesterLoader newLoader( Iterable<RulesModule> rulesModules )
     {
-        if ( rulesModules == null || rulesModules.isEmpty() )
+        if ( rulesModules == null )
         {
-            throw new DigesterLoadingException( "At least one RulesModule has to be specified" );
+            throw new DigesterLoadingException( "RulesModule has to be specified" );
         }
 
         return new DigesterLoader( rulesModules );
@@ -103,7 +102,7 @@ public final class DigesterLoader
      */
     private final SAXParserFactory factory = SAXParserFactory.newInstance();
 
-    private final Collection<RulesModule> rulesModules;
+    private final Iterable<RulesModule> rulesModules;
 
     private boolean useContextClassLoader;
 
@@ -132,7 +131,7 @@ public final class DigesterLoader
      *
      * @param rulesModules The modules containing the {@code Rule} binding
      */
-    private DigesterLoader( Collection<RulesModule> rulesModules )
+    private DigesterLoader( Iterable<RulesModule> rulesModules )
     {
         this.rulesModules = rulesModules;
     }
