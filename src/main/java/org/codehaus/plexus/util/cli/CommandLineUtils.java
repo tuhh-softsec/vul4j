@@ -27,12 +27,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -88,6 +88,7 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, null, systemOut, systemErr, timeoutInSeconds );
     }
 
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
                                           StreamConsumer systemErr )
         throws CommandLineException
@@ -109,26 +110,53 @@ public abstract class CommandLineUtils
                                           StreamConsumer systemErr, int timeoutInSeconds )
         throws CommandLineException
     {
+        final Callable<Integer> future =
+            executeCommandLineAsCallable( cl, systemIn, systemOut, systemErr, timeoutInSeconds );
+        try
+        {
+            return future.call();
+        }
+        catch ( Exception e )
+        {
+            if (e instanceof CommandLineException){
+                throw (CommandLineException) e.getCause();
+            }
+            throw new RuntimeException( e );
+        }
+    }
+
+    /**
+     * Immediately forks a process, returns a callable that will block until process is complete.
+     * @param cl               The command line to execute
+     * @param systemIn         The input to read from, must be thread safe
+     * @param systemOut        A consumer that receives output, must be thread safe
+     * @param systemErr        A consumer that receives system error stream output, must be thread safe
+     * @param timeoutInSeconds Positive integer to specify timeout, zero and negative integers for no timeout.
+     * @return A Callable that provides the process return value, see {@link Process#exitValue()}. "call" must be called on
+     *         this to be sure the forked process has terminated, no guarantees is made about
+     *         any internal state before after the completion of the call statements
+     * @throws CommandLineException or CommandLineTimeOutException if time out occurs
+     * @noinspection ThrowableResultOfMethodCallIgnored
+     */
+    public static Callable<Integer> executeCommandLineAsCallable( final Commandline cl, final InputStream systemIn,
+                                                                  final StreamConsumer systemOut,
+                                                                  final StreamConsumer systemErr,
+                                                                  final int timeoutInSeconds )
+        throws CommandLineException
+    {
         if ( cl == null )
         {
             throw new IllegalArgumentException( "cl cannot be null." );
         }
 
-        Process p;
+        final Process p = cl.execute();
 
-        p = cl.execute();
+        final StreamFeeder inputFeeder = systemIn != null ?
+             new StreamFeeder( systemIn, p.getOutputStream() ) : null;
 
+        final StreamPumper outputPumper = new StreamPumper( p.getInputStream(), systemOut );
 
-        StreamFeeder inputFeeder = null;
-
-        if ( systemIn != null )
-        {
-            inputFeeder = new StreamFeeder( systemIn, p.getOutputStream() );
-        }
-
-        StreamPumper outputPumper = new StreamPumper( p.getInputStream(), systemOut );
-
-        StreamPumper errorPumper = new StreamPumper( p.getErrorStream(), systemErr );
+        final StreamPumper errorPumper = new StreamPumper( p.getErrorStream(), systemErr );
 
         if ( inputFeeder != null )
         {
@@ -139,73 +167,79 @@ public abstract class CommandLineUtils
 
         errorPumper.start();
 
-        ProcessHook processHook = new ProcessHook( p );
+        final ProcessHook processHook = new ProcessHook( p );
 
         ShutdownHookUtils.addShutDownHook( processHook );
 
-        try
+        return new Callable<Integer>()
         {
-            int returnValue;
-            if ( timeoutInSeconds <= 0 )
+            public Integer call()
+                throws Exception
             {
-                returnValue = p.waitFor();
-            }
-            else
-            {
-                long now = System.currentTimeMillis();
-                long timeoutInMillis = 1000L * timeoutInSeconds;
-                long finish = now + timeoutInMillis;
-                while ( isAlive( p ) && ( System.currentTimeMillis() < finish ) )
+                try
                 {
-                    Thread.sleep( 10 );
+                    int returnValue;
+                    if ( timeoutInSeconds <= 0 )
+                    {
+                        returnValue = p.waitFor();
+                    }
+                    else
+                    {
+                        long now = System.currentTimeMillis();
+                        long timeoutInMillis = 1000L * timeoutInSeconds;
+                        long finish = now + timeoutInMillis;
+                        while ( isAlive( p ) && ( System.currentTimeMillis() < finish ) )
+                        {
+                            Thread.sleep( 10 );
+                        }
+                        if ( isAlive( p ) )
+                        {
+                            throw new InterruptedException( "Process timeout out after " + timeoutInSeconds + " seconds" );
+                        }
+                        returnValue = p.exitValue();
+                    }
+
+                    waitForAllPumpers( inputFeeder, outputPumper, errorPumper );
+
+                    if ( outputPumper.getException() != null )
+                    {
+                        throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
+                    }
+
+                    if ( errorPumper.getException() != null )
+                    {
+                        throw new CommandLineException( "Error inside systemErr parser", errorPumper.getException() );
+                    }
+
+                    return returnValue;
                 }
-                if ( isAlive( p ) )
+                catch ( InterruptedException ex )
                 {
-                    throw new InterruptedException( "Process timeout out after " + timeoutInSeconds + " seconds" );
+                    if ( inputFeeder != null )
+                    {
+                        inputFeeder.disable();
+                    }
+                    outputPumper.disable();
+                    errorPumper.disable();
+                    throw new CommandLineTimeOutException( "Error while executing external command, process killed.", ex );
                 }
-                returnValue = p.exitValue();
+                finally
+                {
+                    ShutdownHookUtils.removeShutdownHook( processHook );
+
+                    processHook.run();
+
+                    if ( inputFeeder != null )
+                    {
+                        inputFeeder.close();
+                    }
+
+                    outputPumper.close();
+
+                    errorPumper.close();
+                }
             }
-
-            waitForAllPumpers( inputFeeder, outputPumper, errorPumper );
-
-            if ( outputPumper.getException() != null )
-            {
-                throw new CommandLineException( "Error inside systemOut parser", outputPumper.getException() );
-            }
-
-            if ( errorPumper.getException() != null )
-            {
-                throw new CommandLineException( "Error inside systemErr parser", errorPumper.getException() );
-            }
-
-            return returnValue;
-        }
-        catch ( InterruptedException ex )
-        {
-            if ( inputFeeder != null )
-            {
-                inputFeeder.disable();
-            }
-            outputPumper.disable();
-            errorPumper.disable();
-            throw new CommandLineTimeOutException( "Error while executing external command, process killed.", ex );
-        }
-        finally
-        {
-            ShutdownHookUtils.removeShutdownHook( processHook );
-
-            processHook.run();
-
-            if ( inputFeeder != null )
-            {
-                inputFeeder.close();
-            }
-
-            outputPumper.close();
-
-            errorPumper.close();
-
-        }
+        };
     }
 
     private static void waitForAllPumpers( StreamFeeder inputFeeder, StreamPumper outputPumper,
@@ -244,7 +278,7 @@ public abstract class CommandLineUtils
      *
      * @param caseSensitive Whether environment variable keys should be treated case-sensitively.
      * @return Properties object of (possibly modified) envar keys mapped to their values.
-     * @throws IOException
+     * @throws IOException .
      * @see System#getenv() System.getenv() API, new in JDK 5.0, to get the same result
      *      <b>since 2.0.2 System#getenv() will be used if available in the current running jvm.</b>
      */
@@ -383,8 +417,8 @@ public abstract class CommandLineUtils
         final int inDoubleQuote = 2;
         int state = normal;
         StringTokenizer tok = new StringTokenizer( toProcess, "\"\' ", true );
-        Vector v = new Vector();
-        StringBuffer current = new StringBuffer();
+        Vector<String> v = new Vector<String>();
+        StringBuilder current = new StringBuilder();
 
         while ( tok.hasMoreTokens() )
         {
@@ -463,6 +497,7 @@ public abstract class CommandLineUtils
      *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
      *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
+    @SuppressWarnings( { "JavaDoc", "deprecation" } )
     public static String quote( String argument )
         throws CommandLineException
     {
@@ -481,6 +516,7 @@ public abstract class CommandLineUtils
      *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
      *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
+    @SuppressWarnings( { "JavaDoc", "UnusedDeclaration", "deprecation" } )
     public static String quote( String argument, boolean wrapExistingQuotes )
         throws CommandLineException
     {
@@ -492,13 +528,14 @@ public abstract class CommandLineUtils
      *             {@link StringUtils#quoteAndEscape(String, char, char[], char, boolean)}, or
      *             {@link StringUtils#quoteAndEscape(String, char)} instead.
      */
+    @SuppressWarnings( { "JavaDoc" } )
     public static String quote( String argument, boolean escapeSingleQuotes, boolean escapeDoubleQuotes,
                                 boolean wrapExistingQuotes )
         throws CommandLineException
     {
-        if ( argument.indexOf( "\"" ) > -1 )
+        if ( argument.contains( "\"" ) )
         {
-            if ( argument.indexOf( "\'" ) > -1 )
+            if ( argument.contains( "\'" ) )
             {
                 throw new CommandLineException( "Can't handle single and double quotes in same argument" );
             }
@@ -514,7 +551,7 @@ public abstract class CommandLineUtils
                 }
             }
         }
-        else if ( argument.indexOf( "\'" ) > -1 )
+        else if ( argument.contains( "\'" ) )
         {
             if ( escapeDoubleQuotes )
             {
@@ -525,7 +562,7 @@ public abstract class CommandLineUtils
                 return '\"' + argument + '\"';
             }
         }
-        else if ( argument.indexOf( " " ) > -1 )
+        else if ( argument.contains( " " ) )
         {
             if ( escapeDoubleQuotes )
             {
@@ -549,7 +586,7 @@ public abstract class CommandLineUtils
         }
 
         // path containing one or more elements
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         for ( int i = 0; i < line.length; i++ )
         {
             if ( i > 0 )
@@ -572,7 +609,7 @@ public abstract class CommandLineUtils
     {
         try
         {
-            return System.class.getMethod( "getenv", null );
+            return System.class.getMethod( "getenv");
         }
         catch ( NoSuchMethodException e )
         {
@@ -588,12 +625,10 @@ public abstract class CommandLineUtils
         throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         Properties envVars = new Properties();
-        Map envs = (Map) method.invoke( null, null );
-        Iterator iterator = envs.keySet().iterator();
-        while ( iterator.hasNext() )
+        @SuppressWarnings( { "unchecked" } ) Map<String, String> envs = (Map<String, String>) method.invoke( null );
+        for ( String key : envs.keySet() )
         {
-            String key = (String) iterator.next();
-            String value = (String) envs.get( key );
+            String value = envs.get( key );
             if ( !caseSensitive )
             {
                 key = key.toUpperCase( Locale.ENGLISH );
