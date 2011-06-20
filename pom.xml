@@ -26,7 +26,7 @@
 
   <groupId>org.apache.commons</groupId>
   <artifactId>commons-digester3</artifactId>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0</version>
   <packaging>jar</packaging>
 
   <name>Apache Commons Digester</name>
@@ -143,9 +143,9 @@
   </contributors>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/tags/commons-digester3-3.0</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/tags/commons-digester3-3.0</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/tags/commons-digester3-3.0</url>
   </scm>
   <issueManagement>
     <system>jira</system>
