@@ -56,10 +56,7 @@ public final class LinkedRuleBuilder
      */
     public BeanPropertySetterBuilder setBeanProperty()
     {
-        return addProvider( new BeanPropertySetterBuilder( this.keyPattern,
-                                                           this.namespaceURI,
-                                                           this.mainBinder,
-                                                           this ) );
+        return addProvider( new BeanPropertySetterBuilder( keyPattern, namespaceURI, mainBinder, this ) );
     }
 
     /**
