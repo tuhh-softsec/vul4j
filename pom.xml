@@ -143,9 +143,9 @@
   </contributors>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/digester3/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/commons/sandbox/digester3/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/digester/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/digester/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/digester/trunk</url>
   </scm>
   <issueManagement>
     <system>jira</system>
