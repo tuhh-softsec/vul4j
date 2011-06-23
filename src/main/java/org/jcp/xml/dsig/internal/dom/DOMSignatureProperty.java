@@ -89,13 +89,19 @@ public final class DOMSignatureProperty extends DOMStructure
      *
      * @param propElem a SignatureProperty element
      */
-    public DOMSignatureProperty(Element propElem) throws MarshalException {
+    public DOMSignatureProperty(Element propElem, XMLCryptoContext context)
+        throws MarshalException
+    {
         // unmarshal attributes
         target = DOMUtils.getAttributeValue(propElem, "Target");
         if (target == null) {
             throw new MarshalException("target cannot be null");
         }
         id = DOMUtils.getAttributeValue(propElem, "Id");
+        if (id != null) {
+            DOMCryptoContext dcc = (DOMCryptoContext)context;
+            dcc.setIdAttributeNS(propElem, null, "Id");
+        }
 
         NodeList nodes = propElem.getChildNodes();
         int length = nodes.getLength();

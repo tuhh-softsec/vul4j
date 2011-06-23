@@ -139,7 +139,7 @@ public final class DOMXMLSignature extends DOMStructure
 
         // unmarshal SignatureValue 
         Element sigValElem = DOMUtils.getNextSiblingElement(siElem);
-        sv = new DOMSignatureValue(sigValElem);
+        sv = new DOMSignatureValue(sigValElem, context);
 
         // unmarshal KeyInfo, if specified
         Element nextSibling = DOMUtils.getNextSiblingElement(sigValElem);
@@ -482,7 +482,9 @@ public final class DOMXMLSignature extends DOMStructure
             this.id = id;
         }
 
-        DOMSignatureValue(Element sigValueElem) throws MarshalException {
+        DOMSignatureValue(Element sigValueElem, XMLCryptoContext context)
+            throws MarshalException
+        {
             try {
                 // base64 decode signatureValue
                 value = Base64.decode(sigValueElem);
@@ -491,6 +493,10 @@ public final class DOMXMLSignature extends DOMStructure
             }
 
             id = DOMUtils.getAttributeValue(sigValueElem, "Id");
+            if (id != null) {
+                DOMCryptoContext dcc = (DOMCryptoContext)context;
+                dcc.setIdAttributeNS(sigValueElem, null, "Id");
+            }
             this.sigValueElem = sigValueElem;
         }
 

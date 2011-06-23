@@ -86,6 +86,10 @@ public final class DOMManifest extends DOMStructure implements Manifest {
         throws MarshalException
     {
         this.id = DOMUtils.getAttributeValue(manElem, "Id");
+        if (this.id != null) {
+            DOMCryptoContext dcc = (DOMCryptoContext)context;
+            dcc.setIdAttributeNS(manElem, null, "Id");
+        }
         Element refElem = DOMUtils.getFirstChildElement(manElem);
         List<Reference> refs = new ArrayList<Reference>();
         while (refElem != null) {

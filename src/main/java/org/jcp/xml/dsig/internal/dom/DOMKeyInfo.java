@@ -87,6 +87,10 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
     {
         // get Id attribute, if specified
         id = DOMUtils.getAttributeValue(kiElem, "Id");
+        if (id != null) {
+            DOMCryptoContext dcc = (DOMCryptoContext)context;
+            dcc.setIdAttributeNS(kiElem, null, "Id");
+        }
 
         // get all children nodes
         NodeList nl = kiElem.getChildNodes();

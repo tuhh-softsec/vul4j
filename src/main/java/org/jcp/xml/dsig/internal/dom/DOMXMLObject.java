@@ -94,6 +94,10 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
         // unmarshal attributes
         this.encoding = DOMUtils.getAttributeValue(objElem, "Encoding");
         this.id = DOMUtils.getAttributeValue(objElem, "Id");
+        if (this.id != null) {
+            DOMCryptoContext dcc = (DOMCryptoContext)context;
+            dcc.setIdAttributeNS(objElem, null, "Id");
+        }
         this.mimeType = DOMUtils.getAttributeValue(objElem, "MimeType");
 
         NodeList nodes = objElem.getChildNodes();
@@ -108,7 +112,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
                     content.add(new DOMManifest(childElem, context, provider));
                     continue;
                 } else if (tag.equals("SignatureProperties")) {
-                    content.add(new DOMSignatureProperties(childElem));
+                    content.add(new DOMSignatureProperties(childElem, context));
                     continue;
                 } else if (tag.equals("X509Data")) {
                     content.add(new DOMX509Data(childElem));

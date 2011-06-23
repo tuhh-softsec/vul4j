@@ -219,6 +219,10 @@ public final class DOMReference extends DOMStructure
         // unmarshal attributes
         this.uri = DOMUtils.getAttributeValue(refElem, "URI");
         this.id = DOMUtils.getAttributeValue(refElem, "Id");
+        if (this.id != null) {
+            DOMCryptoContext dcc = (DOMCryptoContext)context;
+            dcc.setIdAttributeNS(refElem, null, "Id");
+        }
 
         this.type = DOMUtils.getAttributeValue(refElem, "Type");
         this.here = refElem.getAttributeNodeNS(null, "URI");
