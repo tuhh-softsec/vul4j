@@ -16,10 +16,6 @@ package org.codehaus.plexus.util.cli;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.ReaderFactory;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +28,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.concurrent.Callable;
+import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
@@ -110,19 +108,9 @@ public abstract class CommandLineUtils
                                           StreamConsumer systemErr, int timeoutInSeconds )
         throws CommandLineException
     {
-        final Callable<Integer> future =
+        final CommandLineCallable future =
             executeCommandLineAsCallable( cl, systemIn, systemOut, systemErr, timeoutInSeconds );
-        try
-        {
-            return future.call();
-        }
-        catch ( Exception e )
-        {
-            if (e instanceof CommandLineException){
-                throw (CommandLineException) e.getCause();
-            }
-            throw new RuntimeException( e );
-        }
+        return future.call();
     }
 
     /**
@@ -132,13 +120,13 @@ public abstract class CommandLineUtils
      * @param systemOut        A consumer that receives output, must be thread safe
      * @param systemErr        A consumer that receives system error stream output, must be thread safe
      * @param timeoutInSeconds Positive integer to specify timeout, zero and negative integers for no timeout.
-     * @return A Callable that provides the process return value, see {@link Process#exitValue()}. "call" must be called on
+     * @return A CommandLineCallable that provides the process return value, see {@link Process#exitValue()}. "call" must be called on
      *         this to be sure the forked process has terminated, no guarantees is made about
      *         any internal state before after the completion of the call statements
      * @throws CommandLineException or CommandLineTimeOutException if time out occurs
      * @noinspection ThrowableResultOfMethodCallIgnored
      */
-    public static Callable<Integer> executeCommandLineAsCallable( final Commandline cl, final InputStream systemIn,
+    public static CommandLineCallable executeCommandLineAsCallable( final Commandline cl, final InputStream systemIn,
                                                                   final StreamConsumer systemOut,
                                                                   final StreamConsumer systemErr,
                                                                   final int timeoutInSeconds )
@@ -171,10 +159,10 @@ public abstract class CommandLineUtils
 
         ShutdownHookUtils.addShutDownHook( processHook );
 
-        return new Callable<Integer>()
+        return new CommandLineCallable()
         {
             public Integer call()
-                throws Exception
+                throws CommandLineException
             {
                 try
                 {
