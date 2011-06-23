@@ -81,7 +81,7 @@ BUGS FROM PREVIOUS RELEASE
 IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
 
- * none.
+ * [DIGESTER-131] Allow recursive match in ExtendedBaseRules
 
 DEPRECATIONS
 ============

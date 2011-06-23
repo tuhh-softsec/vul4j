@@ -26,6 +26,9 @@
     <action dev="simonetripodi" type="fix" issue="DIGESTER-118">
       ObjectCreateRule shouldn't keep className as a field.
     </action>
+    <action dev="simonetripodi" type="add" issue="DIGESTER-131">
+      Allow recursive match in ExtendedBaseRules.
+    </action>
     <action dev="simonetripodi" type="fix" issue="DIGESTER-134">
       Bug in SetPropertyRule.
     </action>
