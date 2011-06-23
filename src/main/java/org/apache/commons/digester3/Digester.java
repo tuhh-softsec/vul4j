@@ -1549,12 +1549,10 @@ public class Digester
             throw new IllegalArgumentException( "File to parse is null" );
         }
 
-        configure();
         InputSource input = new InputSource( new FileInputStream( file ) );
         input.setSystemId( file.toURI().toURL().toString() );
-        getXMLReader().parse( input );
-        cleanup();
-        return ( this.<T> getRoot() );
+
+        return ( this.<T> parse( input ) );
     }
 
     /**
@@ -1599,11 +1597,7 @@ public class Digester
             throw new IllegalArgumentException( "InputStream to parse is null" );
         }
 
-        configure();
-        InputSource is = new InputSource( input );
-        getXMLReader().parse( is );
-        cleanup();
-        return ( this.<T> getRoot() );
+        return ( this.<T> parse( new InputSource( input ) ) );
     }
 
     /**
@@ -1624,11 +1618,7 @@ public class Digester
             throw new IllegalArgumentException( "Reader to parse is null" );
         }
 
-        configure();
-        InputSource is = new InputSource( reader );
-        getXMLReader().parse( is );
-        cleanup();
-        return ( this.<T> getRoot() );
+        return ( this.<T> parse( new InputSource( reader ) ) );
     }
 
     /**
@@ -1649,11 +1639,7 @@ public class Digester
             throw new IllegalArgumentException( "String URI to parse is null" );
         }
 
-        configure();
-        InputSource is = createInputSourceFromURL( uri );
-        getXMLReader().parse( is );
-        cleanup();
-        return ( this.<T> getRoot() );
+        return ( this.<T> parse( createInputSourceFromURL( uri ) ) );
     }
 
     /**
@@ -1675,11 +1661,7 @@ public class Digester
             throw new IllegalArgumentException( "URL to parse is null" );
         }
 
-        configure();
-        InputSource is = createInputSourceFromURL( url );
-        getXMLReader().parse( is );
-        cleanup();
-        return ( this.<T> getRoot() );
+        return ( this.<T> parse( createInputSourceFromURL( url ) ) );
     }
 
     /**
