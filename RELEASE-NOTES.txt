@@ -74,7 +74,9 @@ NEW FEATURES
 BUGS FROM PREVIOUS RELEASE
 ===========================
 
- * none.
+ * [DIGESTER-118] ObjectCreateRule shouldn't keep className as a field
+
+ * [DIGESTER-134] Bug in SetPropertyRule
 
 IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
