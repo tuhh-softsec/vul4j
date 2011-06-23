@@ -11,9 +11,7 @@
 		<groupId>net.sourceforge.webassembletool</groupId>
 		<version>2.19-SNAPSHOT</version>
 	</parent>
-	<modules>
-		<module>webassembletool-staticassembly-plugin</module>
-		<module>webassembletool-staticassembly-archetype</module>
+	<modules>		
 		<module>webassembletool-maven-skin</module>
 	</modules>
 </project>
