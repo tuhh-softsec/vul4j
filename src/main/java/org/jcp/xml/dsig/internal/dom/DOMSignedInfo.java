@@ -31,14 +31,17 @@ import javax.xml.crypto.dsig.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.security.Provider;
 import java.util.*;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
  * DOM-based implementation of SignedInfo.
@@ -171,8 +174,9 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             throw new NullPointerException("context cannot be null");
         }
 
+        OutputStream os = new UnsyncBufferedOutputStream(bos);
         try {
-            bos.flush();
+            os.close();
         } catch (IOException e) {
             if (log.isDebugEnabled()) {
                 log.debug(e);

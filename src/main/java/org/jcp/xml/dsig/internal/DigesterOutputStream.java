@@ -25,10 +25,11 @@
 package org.jcp.xml.dsig.internal;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+
+import org.apache.xml.security.utils.UnsyncByteArrayOutputStream;
 
 /**
  * This class has been modified slightly to use java.security.MessageDigest
@@ -44,7 +45,7 @@ public class DigesterOutputStream extends OutputStream {
         org.apache.commons.logging.LogFactory.getLog(DigesterOutputStream.class);
     
     private final boolean buffer;
-    private ByteArrayOutputStream bos;
+    private UnsyncByteArrayOutputStream bos;
     private final MessageDigest md;
 
     /**
@@ -66,7 +67,7 @@ public class DigesterOutputStream extends OutputStream {
         this.md = md;
         this.buffer = buffer;
         if (buffer) {
-            bos = new ByteArrayOutputStream();
+            bos = new UnsyncByteArrayOutputStream();
         }
     }
 

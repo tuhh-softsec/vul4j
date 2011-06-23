@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.signature;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Key;
@@ -41,6 +40,7 @@ import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.SignerOutputStream;
+import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -541,7 +541,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 // generate digest values for all References in this SignedInfo
                 si.generateDigestValues();
-                OutputStream so = new BufferedOutputStream(new SignerOutputStream(sa));
+                OutputStream so = new UnsyncBufferedOutputStream(new SignerOutputStream(sa));
                 // get the canonicalized bytes from SignedInfo
                 si.signInOctetStream(so);
 
@@ -648,7 +648,7 @@ public final class XMLSignature extends SignatureElementProxy {
 
                 // Get the canonicalized (normalized) SignedInfo
                 SignerOutputStream so = new SignerOutputStream(sa);
-                OutputStream bos = new BufferedOutputStream(so);
+                OutputStream bos = new UnsyncBufferedOutputStream(so);
 
                 si.signInOctetStream(bos);
                 bos.close();
