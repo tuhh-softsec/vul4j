@@ -195,6 +195,34 @@ public class ExtendedBaseRules
         // we keep the list of universal matches separate
         List<Rule> universalList = new ArrayList<Rule>( counter );
 
+        // Universal wildcards ('*') in the middle of the pattern-string
+        List<Rule> recList = null;
+        int parentLastIndex = -1;
+        // temporary parentPattern
+        // we don't want to change anything....
+        String tempParentPattern = parentPattern;
+        // look for pattern. Here, we search the whole
+        // parent. Not ideal, but does the thing....
+        while ( ( parentLastIndex = tempParentPattern.lastIndexOf( '/' ) ) > -1 && recList == null )
+        {
+            recList = this.cache.get( tempParentPattern + "/*/" + pattern.substring( lastIndex + 1 ) );
+            if ( recList != null )
+            {
+                // when /*/-pattern-string is found, add method
+                // list to universalList.
+                // Digester will do the rest
+                universalList.addAll( recList );
+            }
+            else
+            {
+                // if not, shorten tempParent to move /*/ one position
+                // to the left.
+                // as last part of patttern is always added
+                // we make sure pattern is allowed anywhere.
+                tempParentPattern = parentPattern.substring( 0, parentLastIndex );
+            }
+        }
+
         // Universal all wildards ('!*')
         // These are always matched so always add them
         List<Rule> tempList = this.cache.get( "!*" );
