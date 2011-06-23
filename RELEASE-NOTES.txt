@@ -74,7 +74,11 @@ NEW FEATURES
 BUGS FROM PREVIOUS RELEASE
 ===========================
 
+ * [DIGESTER-103] xmlrules does not support NodeCreateRule
+
  * [DIGESTER-118] ObjectCreateRule shouldn't keep className as a field
+
+ * [DIGESTER-123] xmlrules dtd does not define xmlattrs for node-create-rule
 
  * [DIGESTER-134] Bug in SetPropertyRule
 
@@ -82,6 +86,11 @@ IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
 
  * [DIGESTER-131] Allow recursive match in ExtendedBaseRules
+
+ * [DIGESTER-132] Add a CompoundSubstitutor to support more than one Substitutors at a time
+
+ * [DIGESTER-137] Public/protected static fields which intended as constants,
+                  but which are not marked final
 
 DEPRECATIONS
 ============
