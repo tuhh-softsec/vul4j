@@ -19,6 +19,9 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
+import java.util.Formatter;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -241,11 +244,10 @@ public class FactoryCreateRule
 
                 if ( getDigester().getLogger().isDebugEnabled() )
                 {
-                    getDigester().getLogger().debug( "[FactoryCreateRule]{"
-                                                         + getDigester().getMatch()
-                                                         + "} New "
-                                                         + ( instance == null ? "null object"
-                                                                         : instance.getClass().getName() ) );
+                    getDigester().getLogger().debug( format( "[FactoryCreateRule]{%s} New %s",
+                                                             getDigester().getMatch(),
+                                                             ( instance == null ? "null object"
+                                                                             : instance.getClass().getName() ) ) );
                 }
                 getDigester().push( instance );
                 exceptionIgnoredStack.push( Boolean.FALSE );
@@ -256,9 +258,10 @@ public class FactoryCreateRule
                 // log message and error
                 if ( getDigester().getLogger().isInfoEnabled() )
                 {
-                    getDigester().getLogger().info( "[FactoryCreateRule] Create exception ignored: "
-                                                        + ( ( e.getMessage() == null ) ? e.getClass().getName()
-                                                                        : e.getMessage() ) );
+                    getDigester().getLogger().info( format( "[FactoryCreateRule]{%s} Create exception ignored: %s",
+                                                            getDigester().getMatch(),
+                                                            ( ( e.getMessage() == null ) ? e.getClass().getName()
+                                                                            : e.getMessage() ) ) );
                     if ( getDigester().getLogger().isDebugEnabled() )
                     {
                         getDigester().getLogger().debug( "[FactoryCreateRule] Ignored exception:", e );
@@ -274,11 +277,10 @@ public class FactoryCreateRule
 
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( "[FactoryCreateRule]{"
-                                                     + getDigester().getMatch()
-                                                     + "} New "
-                                                     + ( instance == null ? "null object"
-                                                                     : instance.getClass().getName() ) );
+                getDigester().getLogger().debug( format( "[FactoryCreateRule]{%s} New %s",
+                                                         getDigester().getMatch(),
+                                                         ( instance == null ? "null object"
+                                                                         : instance.getClass().getName() ) ) );
             }
             getDigester().push( instance );
         }
@@ -302,7 +304,8 @@ public class FactoryCreateRule
                 // nothing was put onto the stack
                 if ( getDigester().getLogger().isTraceEnabled() )
                 {
-                    getDigester().getLogger().trace( "[FactoryCreateRule] No creation so no push so no pop" );
+                    getDigester().getLogger().trace( format( "[FactoryCreateRule]{%s} No creation so no push so no pop",
+                                                             getDigester().getMatch() ) );
                 }
                 return;
             }
@@ -311,8 +314,9 @@ public class FactoryCreateRule
         Object top = getDigester().pop();
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[FactoryCreateRule]{" + getDigester().getMatch() + "} Pop "
-                                                 + top.getClass().getName() );
+            getDigester().getLogger().debug( format( "[FactoryCreateRule]{%s} Pop %s",
+                                                     getDigester().getMatch(),
+                                                     top.getClass().getName() ) );
         }
     }
 
@@ -335,18 +339,14 @@ public class FactoryCreateRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "FactoryCreateRule[" );
-        sb.append( "className=" );
-        sb.append( className );
-        sb.append( ", attributeName=" );
-        sb.append( attributeName );
+        Formatter formatter = new Formatter().format( "FactoryCreateRule[className=%s, attributeName=%s",
+                                                      className, attributeName );
         if ( creationFactory != null )
         {
-            sb.append( ", creationFactory=" );
-            sb.append( creationFactory );
+            formatter.format( ", creationFactory=%s", creationFactory );
         }
-        sb.append( "]" );
-        return ( sb.toString() );
+        formatter.format( "]" );
+        return ( formatter.toString() );
     }
 
     // ------------------------------------------------------ Protected Methods
@@ -374,8 +374,8 @@ public class FactoryCreateRule
             }
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( "[FactoryCreateRule]{" + getDigester().getMatch() + "} New factory "
-                                                     + realClassName );
+                getDigester().getLogger().debug( format( "[FactoryCreateRule]{%s} New factory %s",
+                                                         getDigester().getMatch(), realClassName ) );
             }
             Class<?> clazz = getDigester().getClassLoader().loadClass( realClassName );
             creationFactory = (ObjectCreationFactory<?>) clazz.newInstance();

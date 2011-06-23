@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -77,11 +79,7 @@ public class PathCallParamRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "PathCallParamRule[" );
-        sb.append( "paramIndex=" );
-        sb.append( paramIndex );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "PathCallParamRule[paramIndex=%s]", paramIndex );
     }
 
 }

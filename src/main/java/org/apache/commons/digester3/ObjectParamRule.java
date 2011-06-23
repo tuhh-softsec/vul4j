@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -118,15 +120,7 @@ public class ObjectParamRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "ObjectParamRule[" );
-        sb.append( "paramIndex=" );
-        sb.append( paramIndex );
-        sb.append( ", attributeName=" );
-        sb.append( attributeName );
-        sb.append( ", param=" );
-        sb.append( param );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "ObjectParamRule[paramIndex=%s, attributeName=%s, param=%s]", paramIndex, attributeName, param );
     }
 
 }

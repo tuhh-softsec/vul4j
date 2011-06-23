@@ -19,6 +19,7 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -159,12 +160,10 @@ public class CallParamRule
 
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-
-                StringBuilder sb = new StringBuilder( "[CallParamRule]{" );
-                sb.append( getDigester().getMatch() );
-                sb.append( "} Save from stack; from stack?" ).append( fromStack );
-                sb.append( "; object=" ).append( param );
-                getDigester().getLogger().debug( sb.toString() );
+                getDigester().getLogger().debug( format( "[CallParamRule]{%s} Save from stack; from stack?%s; object=%s",
+                                                         getDigester().getMatch(),
+                                                         fromStack,
+                                                         param ) );
             }
         }
 
@@ -221,15 +220,8 @@ public class CallParamRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "CallParamRule[" );
-        sb.append( "paramIndex=" );
-        sb.append( paramIndex );
-        sb.append( ", attributeName=" );
-        sb.append( attributeName );
-        sb.append( ", from stack=" );
-        sb.append( fromStack );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "CallParamRule[paramIndex=%s, attributeName=%s, from stack=%s]",
+                       paramIndex, attributeName, fromStack );
     }
 
 }

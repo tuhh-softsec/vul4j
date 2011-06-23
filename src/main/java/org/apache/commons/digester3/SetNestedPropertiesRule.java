@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -317,15 +319,10 @@ public class SetNestedPropertiesRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetNestedPropertiesRule[" );
-        sb.append( "allowUnknownChildElements=" );
-        sb.append( allowUnknownChildElements );
-        sb.append( ", trimData=" );
-        sb.append( trimData );
-        sb.append( ", elementNames=" );
-        sb.append( elementNames );
-        sb.append( "]" );
-        return sb.toString();
+        return format( "SetNestedPropertiesRule[allowUnknownChildElements=%s, trimData=%s, elementNames=%s]",
+                       allowUnknownChildElements,
+                       trimData,
+                       elementNames );
     }
 
     // ----------------------------------------- local classes

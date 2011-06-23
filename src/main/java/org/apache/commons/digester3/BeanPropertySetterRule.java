@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import java.beans.PropertyDescriptor;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -115,8 +117,9 @@ public class BeanPropertySetterRule
         // log some debugging information
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[BeanPropertySetterRule]{" + getDigester().getMatch()
-                                                 + "} Called with text '" + text + "'" );
+            getDigester().getLogger().debug( format( "[BeanPropertySetterRule]{%s} Called with text '%s'",
+                                                     getDigester().getMatch(),
+                                                     text ) );
         }
 
         bodyText = text.trim();
@@ -144,9 +147,11 @@ public class BeanPropertySetterRule
         // log some debugging information
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[BeanPropertySetterRule]{" + getDigester().getMatch() + "} Set "
-                                                 + top.getClass().getName() + " property " + property + " with text "
-                                                 + bodyText );
+            getDigester().getLogger().debug( format( "[BeanPropertySetterRule]{%s} Set %s property %s with text %s",
+                                                     getDigester().getMatch(),
+                                                     top.getClass().getName(),
+                                                     property,
+                                                     bodyText ) );
         }
 
         // Force an exception if the property does not exist
@@ -189,11 +194,7 @@ public class BeanPropertySetterRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "BeanPropertySetterRule[" );
-        sb.append( "propertyName=" );
-        sb.append( propertyName );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "BeanPropertySetterRule[propertyName=%s]", propertyName );
     }
 
 }

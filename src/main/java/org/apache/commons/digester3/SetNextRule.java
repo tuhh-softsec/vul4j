@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.apache.commons.beanutils.MethodUtils;
 
 /**
@@ -144,14 +146,18 @@ public class SetNextRule
         {
             if ( parent == null )
             {
-                getDigester().getLogger().debug( "[SetNextRule]{" + getDigester().getMatch() + "} Call [NULL PARENT]."
-                                                     + methodName + "(" + child + ")" );
+                getDigester().getLogger().debug( format( "[SetNextRule]{%s} Call [NULL PARENT].%s(%s)",
+                                                         getDigester().getMatch(),
+                                                         methodName,
+                                                         child ) );
             }
             else
             {
-                getDigester().getLogger().debug( "[SetNextRule]{" + getDigester().getMatch() + "} Call "
-                                                     + parent.getClass().getName() + "." + methodName + "(" + child
-                                                     + ")" );
+                getDigester().getLogger().debug( format( "[SetNextRule]{%s} Call %s.%s(%s)",
+                                                         getDigester().getMatch(),
+                                                         parent.getClass().getName(),
+                                                         methodName,
+                                                         child ) );
             }
         }
 
@@ -182,13 +188,7 @@ public class SetNextRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetNextRule[" );
-        sb.append( "methodName=" );
-        sb.append( methodName );
-        sb.append( ", paramType=" );
-        sb.append( paramType );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "SetNextRule[methodName=%s, paramType=%s]", methodName, paramType );
     }
 
 }

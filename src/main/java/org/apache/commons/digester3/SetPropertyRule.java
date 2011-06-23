@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import java.beans.PropertyDescriptor;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -102,9 +104,11 @@ public class SetPropertyRule
         // Log some debugging information
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[SetPropertyRule]{" + getDigester().getMatch() + "} Set "
-                                                 + top.getClass().getName() + " property " + actualName + " to "
-                                                 + actualValue );
+            getDigester().getLogger().debug( format( "[SetPropertiesRule]{%s} Set %s property %s to %s",
+                                                     getDigester().getMatch(),
+                                                     top.getClass().getName(),
+                                                     actualName,
+                                                     actualValue ) );
         }
 
         // Force an exception if the property does not exist
@@ -140,13 +144,7 @@ public class SetPropertyRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetPropertyRule[" );
-        sb.append( "name=" );
-        sb.append( name );
-        sb.append( ", value=" );
-        sb.append( value );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "SetPropertyRule[name=%s, value=%s]", name, value );
     }
 
 }

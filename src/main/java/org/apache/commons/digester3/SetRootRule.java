@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.apache.commons.beanutils.MethodUtils;
 
 /**
@@ -138,14 +140,18 @@ public class SetRootRule
         {
             if ( parent == null )
             {
-                getDigester().getLogger().debug( "[SetRootRule]{" + getDigester().getMatch() + "} Call [NULL ROOT]."
-                                                     + methodName + "(" + child + ")" );
+                getDigester().getLogger().debug( format( "[SetRootRule]{%s} Call [NULL ROOT].%s(%s)",
+                                                         getDigester().getMatch(),
+                                                         methodName,
+                                                         child ) );
             }
             else
             {
-                getDigester().getLogger().debug( "[SetRootRule]{" + getDigester().getMatch() + "} Call "
-                                                     + parent.getClass().getName() + "." + methodName + "(" + child
-                                                     + ")" );
+                getDigester().getLogger().debug( format( "[SetRootRule]{%s} Call %s.%s(%s)",
+                                                         getDigester().getMatch(),
+                                                         parent.getClass().getName(),
+                                                         methodName,
+                                                         child ) );
             }
         }
 
@@ -176,13 +182,7 @@ public class SetRootRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetRootRule[" );
-        sb.append( "methodName=" );
-        sb.append( methodName );
-        sb.append( ", paramType=" );
-        sb.append( paramType );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "SetRootRule[methodName=%s, paramType=%s]", methodName, paramType );
     }
 
 }

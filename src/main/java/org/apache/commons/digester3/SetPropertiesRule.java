@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -170,13 +172,10 @@ public class SetPropertiesRule
 
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( "[SetPropertiesRule]{"
-                                                 + getDigester().getMatch()
-                                                 + "} Setting property '"
-                                                 + attributeName
-                                                 + "' to '"
-                                                 + value
-                                                 + "'" );
+                getDigester().getLogger().debug( format( "[SetPropertiesRule]{%s} Setting property '%s' to '%s'",
+                                                         getDigester().getMatch(),
+                                                         attributeName,
+                                                         attributeName) );
             }
 
             if ( ( !ignoreMissingProperty ) && ( attributeName != null ) )
@@ -220,13 +219,14 @@ public class SetPropertiesRule
         {
             if ( top != null )
             {
-                getDigester().getLogger().debug( "[SetPropertiesRule]{" + getDigester().getMatch() + "} Set "
-                                                     + top.getClass().getName() + " properties" );
+                getDigester().getLogger().debug( format( "[SetPropertiesRule]{%s} Set '%s' properties",
+                                                         getDigester().getMatch(),
+                                                         top.getClass().getName() ) );
             }
             else
             {
-                getDigester().getLogger().debug( "[SetPropertiesRule]{" + getDigester().getMatch()
-                                                     + "} Set NULL properties" );
+                getDigester().getLogger().debug( format( "[SetPropertiesRule]{%s} Set NULL properties",
+                                                         getDigester().getMatch() ) );
             }
         }
         BeanUtils.populate( top, values );
@@ -249,9 +249,7 @@ public class SetPropertiesRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetPropertiesRule[" );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "SetPropertiesRule[aliases=%s, ignoreMissingProperty=%s]", aliases, ignoreMissingProperty );
     }
 
     /**

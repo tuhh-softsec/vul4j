@@ -19,6 +19,10 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
+import java.util.Formatter;
+
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
@@ -339,7 +343,8 @@ public class CallMethodRule
                 catch ( ClassNotFoundException e )
                 {
                     // use the digester log
-                    digester.getLogger().error( "(CallMethodRule) Cannot load class " + this.paramClassNames[i], e );
+                    digester.getLogger().error( format( "[CallMethodRule] Cannot load class %s",
+                                                        this.paramClassNames[i] ), e );
                     this.paramTypes[i] = null; // Will cause NPE later
                 }
             }
@@ -395,7 +400,10 @@ public class CallMethodRule
             {
                 for ( int i = 0, size = parameters.length; i < size; i++ )
                 {
-                    getDigester().getLogger().trace( "[CallMethodRule](" + i + ")" + parameters[i] );
+                    getDigester().getLogger().trace( format( "[CallMethodRule]{%s} parameters[%s]=%s",
+                                                             getDigester().getMatch(),
+                                                             i,
+                                                             parameters[i] ) );
                 }
             }
 
@@ -476,54 +484,24 @@ public class CallMethodRule
 
         if ( target == null )
         {
-            StringBuilder sb = new StringBuilder();
-            sb.append( "[CallMethodRule]{" );
-            sb.append( getDigester().getMatch() );
-            sb.append( "} Call target is null (" );
-            sb.append( "targetOffset=" );
-            sb.append( targetOffset );
-            sb.append( ",stackdepth=" );
-            sb.append( getDigester().getCount() );
-            sb.append( ")" );
-            throw new SAXException( sb.toString() );
+            throw new SAXException( format( "[CallMethodRule]{%s} Call target is null (targetOffset=%s, stackdepth=%s)",
+                                            getDigester().getMatch(), targetOffset, getDigester().getCount() ) );
         }
 
         // Invoke the required method on the top object
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            StringBuilder sb = new StringBuilder( "[CallMethodRule]{" );
-            sb.append( getDigester().getMatch() );
-            sb.append( "} Call " );
-            sb.append( target.getClass().getName() );
-            sb.append( "." );
-            sb.append( methodName );
-            sb.append( "(" );
+            Formatter formatter =
+                new Formatter().format( "[CallMethodRule]{%s} Call %s.%s(",
+                                        getDigester().getMatch(),
+                                        target.getClass().getName(),
+                                        methodName );
             for ( int i = 0; i < paramValues.length; i++ )
             {
-                if ( i > 0 )
-                {
-                    sb.append( "," );
-                }
-                if ( paramValues[i] == null )
-                {
-                    sb.append( "null" );
-                }
-                else
-                {
-                    sb.append( paramValues[i].toString() );
-                }
-                sb.append( "/" );
-                if ( paramTypes[i] == null )
-                {
-                    sb.append( "null" );
-                }
-                else
-                {
-                    sb.append( paramTypes[i].getName() );
-                }
+                formatter.format( "%s%s/%s", ( i > 0 ? ", " : "" ), paramValues[i], paramTypes[i].getName() );
             }
-            sb.append( ")" );
-            getDigester().getLogger().debug( sb.toString() );
+            formatter.format( ")" );
+            getDigester().getLogger().debug( formatter.toString() );
         }
 
         Object result = null;
@@ -568,26 +546,19 @@ public class CallMethodRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "CallMethodRule[" );
-        sb.append( "methodName=" );
-        sb.append( methodName );
-        sb.append( ", paramCount=" );
-        sb.append( paramCount );
-        sb.append( ", paramTypes={" );
+        Formatter formatter = new Formatter().format( "CallMethodRule[methodName=%s, paramCount=%s, paramTypes={",
+                                                      methodName, paramCount );
         if ( paramTypes != null )
         {
             for ( int i = 0; i < paramTypes.length; i++ )
             {
-                if ( i > 0 )
-                {
-                    sb.append( ", " );
-                }
-                sb.append( paramTypes[i].getName() );
+                formatter.format( "%s%s",
+                                  ( i > 0 ? ", " : "" ),
+                                  ( paramTypes[i] != null ? paramTypes[i].getName() : "null" ) );
             }
         }
-        sb.append( "}" );
-        sb.append( "]" );
-        return ( sb.toString() );
+        formatter.format( "}]" );
+        return ( formatter.toString() );
     }
 
 }

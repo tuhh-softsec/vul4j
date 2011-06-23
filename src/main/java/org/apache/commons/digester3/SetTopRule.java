@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.apache.commons.beanutils.MethodUtils;
 
 /**
@@ -177,13 +179,7 @@ public class SetTopRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "SetTopRule[" );
-        sb.append( "methodName=" );
-        sb.append( methodName );
-        sb.append( ", paramType=" );
-        sb.append( paramType );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "SetTopRule[methodName=%s, paramType=%s]", methodName, paramType );
     }
 
 }

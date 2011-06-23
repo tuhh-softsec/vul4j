@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import org.xml.sax.Attributes;
 
 /**
@@ -119,8 +121,9 @@ public class ObjectCreateRule
             }
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New "
-                                                 + realClassName );
+                getDigester().getLogger().debug( format( "[ObjectCreateRule]{%s} New '%s'",
+                                                         getDigester().getMatch(),
+                                                         realClassName ) );
             }
 
             // Instantiate the new object and push it on the context stack
@@ -140,8 +143,9 @@ public class ObjectCreateRule
         Object top = getDigester().pop();
         if ( getDigester().getLogger().isDebugEnabled() )
         {
-            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "} Pop "
-                                                 + top.getClass().getName() );
+            getDigester().getLogger().debug( format( "[ObjectCreateRule]{%s} Pop '%s'",
+                                                     getDigester().getMatch(),
+                                                     top.getClass().getName() ) );
         }
     }
 
@@ -151,13 +155,7 @@ public class ObjectCreateRule
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "ObjectCreateRule[" );
-        sb.append( "className=" );
-        sb.append( className );
-        sb.append( ", attributeName=" );
-        sb.append( attributeName );
-        sb.append( "]" );
-        return ( sb.toString() );
+        return format( "ObjectCreateRule[className=%s, attributeName=%s]", className, attributeName );
     }
 
 }
