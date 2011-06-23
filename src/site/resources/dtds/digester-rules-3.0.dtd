@@ -161,7 +161,7 @@
 <!--
     NodeCreateRule
     type 
-        - node type: either 'element' or 'fragment' or 'none'.  this is optional, default is 'element'
+        - node type: either 'element' or 'fragment'. this is optional, default is 'element'
     -->
 <!ELEMENT node-create-rule EMPTY>
 <!ATTLIST node-create-rule
