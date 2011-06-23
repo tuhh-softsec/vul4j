@@ -160,14 +160,11 @@
 
 <!--
     NodeCreateRule
-    attrname  
-           - an arbitrary Object defined programatically, assigned if the 
-             element pattern AND specified attribute name are matched
     type 
-           - node type: either 'element' or 'fragment' or 'none'.  this is optional, default is 'element'
+        - node type: either 'element' or 'fragment' or 'none'.  this is optional, default is 'element'
     -->
 <!ELEMENT node-create-rule EMPTY>
-<!ATTLIST object-param-rule
+<!ATTLIST node-create-rule
     pattern CDATA #IMPLIED
     type CDATA #IMPLIED>
 
