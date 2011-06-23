@@ -49,6 +49,7 @@ public class ObjectCreateRule
     public ObjectCreateRule( Class<?> clazz )
     {
         this( clazz.getName(), (String) null );
+        this.clazz = clazz;
     }
 
     /**
@@ -73,6 +74,7 @@ public class ObjectCreateRule
     public ObjectCreateRule( String attributeName, Class<?> clazz )
     {
         this( clazz.getName(), attributeName );
+        this.clazz = clazz;
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -81,6 +83,11 @@ public class ObjectCreateRule
      * The attribute containing an override class name if it is present.
      */
     protected String attributeName = null;
+
+    /**
+     * The Java class of the object to be created.
+     */
+    protected Class<?> clazz = null;
 
     /**
      * The Java class name of the object to be created.
@@ -96,24 +103,29 @@ public class ObjectCreateRule
     public void begin( String namespace, String name, Attributes attributes )
         throws Exception
     {
-        // Identify the name of the class to instantiate
-        String realClassName = className;
-        if ( attributeName != null )
-        {
-            String value = attributes.getValue( attributeName );
-            if ( value != null )
-            {
-                realClassName = value;
-            }
-        }
-        if ( getDigester().getLogger().isDebugEnabled() )
-        {
-            getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New "
-                                             + realClassName );
-        }
+        Class<?> clazz = this.clazz;
 
-        // Instantiate the new object and push it on the context stack
-        Class<?> clazz = getDigester().getClassLoader().loadClass( realClassName );
+        if ( clazz == null )
+        {
+            // Identify the name of the class to instantiate
+            String realClassName = className;
+            if ( attributeName != null )
+            {
+                String value = attributes.getValue( attributeName );
+                if ( value != null )
+                {
+                    realClassName = value;
+                }
+            }
+            if ( getDigester().getLogger().isDebugEnabled() )
+            {
+                getDigester().getLogger().debug( "[ObjectCreateRule]{" + getDigester().getMatch() + "}New "
+                                                 + realClassName );
+            }
+
+            // Instantiate the new object and push it on the context stack
+            clazz = getDigester().getClassLoader().loadClass( realClassName );
+        }
         Object instance = clazz.newInstance();
         getDigester().push( instance );
     }
