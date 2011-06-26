@@ -256,9 +256,9 @@ public class Digester
 
     /**
      * Do we want to use the Context ClassLoader when loading classes for instantiating new objects. Default is
-     * <code>false</code>.
+     * <code>true</code>.
      */
-    private boolean useContextClassLoader = false;
+    private boolean useContextClassLoader = true;
 
     /**
      * Do we want to use a validating parser.

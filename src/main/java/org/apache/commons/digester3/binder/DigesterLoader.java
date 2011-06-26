@@ -104,7 +104,7 @@ public final class DigesterLoader
 
     private final Iterable<RulesModule> rulesModules;
 
-    private boolean useContextClassLoader;
+    private boolean useContextClassLoader = true;
 
     /**
      * The class loader to use for instantiating application objects.
