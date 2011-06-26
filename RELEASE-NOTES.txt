@@ -74,6 +74,8 @@ NEW FEATURES
 BUGS FROM PREVIOUS RELEASE
 ===========================
 
+ * [DIGESTER-28] Default ClassLoader policy unusable in EAR archive
+
  * [DIGESTER-103] xmlrules does not support NodeCreateRule
 
  * [DIGESTER-118] ObjectCreateRule shouldn't keep className as a field

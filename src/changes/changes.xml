@@ -23,6 +23,9 @@
   </properties>
   <body>
   <release version="3.0" date="TBD" description="New major release.">
+    <action dev="simonetripodi" type="fix" issue="DIGESTER-28">
+      Default ClassLoader policy unusable in EAR archive
+    </action>
     <action dev="simonetripodi" type="fix" issue="DIGESTER-103">
       xmlrules does not support NodeCreateRule
     </action>
