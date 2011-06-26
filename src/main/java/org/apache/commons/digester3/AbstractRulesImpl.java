@@ -19,7 +19,6 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
-import java.util.List;
 
 /**
  * <p>
@@ -114,31 +113,5 @@ public abstract class AbstractRulesImpl
      * @param rule Rule instance to be registered
      */
     protected abstract void registerRule( String pattern, Rule rule );
-
-    /**
-     * Clear all existing Rule instance registrations.
-     */
-    public abstract void clear();
-
-    /**
-     * Return a List of all registered Rule instances that match the specified nesting pattern, or a zero-length List if
-     * there are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
-     * 
-     * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
-     *            namespace URI
-     * @param pattern Nesting pattern to be matched
-     * @return A List of all registered Rule instances that match the specified nesting pattern
-     */
-    public abstract List<Rule> match( String namespaceURI, String pattern );
-
-    /**
-     * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.
-     * If more than one Rule instance has been registered, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
-     *
-     * @return A List of all registered Rule instances
-     */
-    public abstract List<Rule> rules();
 
 }
