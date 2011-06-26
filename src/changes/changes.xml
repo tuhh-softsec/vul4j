@@ -35,6 +35,9 @@
     <action dev="simonetripodi" type="fix" issue="DIGESTER-123">
       xmlrules dtd does not define xmlattrs for node-create-rule
     </action>
+    <action dev="simonetripodi" type="add" issue="DIGESTER-127">
+      Allow DigesterLoader to accept an instance of a preconfigured Digester
+    </action>
     <action dev="simonetripodi" type="add" issue="DIGESTER-131">
       Allow recursive match in ExtendedBaseRules.
     </action>

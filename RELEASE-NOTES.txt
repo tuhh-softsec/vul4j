@@ -87,6 +87,8 @@ BUGS FROM PREVIOUS RELEASE
 IMPROVEMENTS OVER PREVIOUS RELEASE
 ===================================
 
+ * [DIGESTER-127] Allow DigesterLoader to accept an instance of a preconfigured Digester
+
  * [DIGESTER-131] Allow recursive match in ExtendedBaseRules
 
  * [DIGESTER-132] Add a CompoundSubstitutor to support more than one Substitutors at a time
