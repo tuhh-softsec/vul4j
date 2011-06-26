@@ -75,7 +75,8 @@ public abstract class FromXmlRulesModule
         {
             loadRules();
 
-            XmlRulesModule xmlRulesModule = new XmlRulesModule( rulesBinder(), getSystemIds(), rootPath );
+            XmlRulesModule xmlRulesModule = new XmlRulesModule( new NameSpaceURIRulesBinder( rulesBinder() ),
+                                                                getSystemIds(), rootPath );
             Digester digester = newLoader( xmlRulesModule )
                     .register( DIGESTER_PUBLIC_ID, xmlRulesDtdUrl.toString() )
                     .setXIncludeAware( true )

@@ -45,7 +45,8 @@
 
 <!-- digester-rules is the root element. -->
 <!ELEMENT digester-rules (pattern | include | %rule-elements; )*>
-
+<!ATTLIST digester-rules
+    namespaceURI   CDATA #IMPLIED>
 
 <!-- <pattern> defines a matching pattern, or part of a matching pattern. Any
      rule nested in a pattern element prepends its parent's to its pattern.

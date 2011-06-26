@@ -26,6 +26,9 @@
     <action dev="simonetripodi" type="fix" issue="DIGESTER-28">
       Default ClassLoader policy unusable in EAR archive
     </action>
+    <action dev="simonetripodi" type="add" issue="DIGESTER-90">
+      xmlrules does not support setNamespaceURI
+    </action>
     <action dev="simonetripodi" type="fix" issue="DIGESTER-103">
       xmlrules does not support NodeCreateRule
     </action>

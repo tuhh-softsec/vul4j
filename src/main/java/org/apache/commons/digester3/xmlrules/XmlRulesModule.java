@@ -32,7 +32,7 @@ final class XmlRulesModule
     implements RulesModule
 {
 
-    private final RulesBinder targetRulesBinder;
+    private final NameSpaceURIRulesBinder targetRulesBinder;
 
     private final Set<String> rootSystemIds;
 
@@ -40,7 +40,7 @@ final class XmlRulesModule
 
     private WithMemoryRulesBinder memoryRulesBinder;
 
-    public XmlRulesModule( final RulesBinder targetRulesBinder, Set<String> rootSystemIds,
+    public XmlRulesModule( final NameSpaceURIRulesBinder targetRulesBinder, Set<String> rootSystemIds,
     /* @Nullable */String rootPath )
     {
         this.targetRulesBinder = targetRulesBinder;
@@ -75,6 +75,8 @@ final class XmlRulesModule
 
         try
         {
+            forPattern( "digester-rules" ).addRule( new SetNamespaceURIRule( targetRulesBinder ) );
+
             forPattern( "*/pattern" ).addRule( new PatternRule( patternStack ) );
             forPattern( "*/include" ).addRule( new IncludeRule( memoryRulesBinder, targetRulesBinder ) );
 
