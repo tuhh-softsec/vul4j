@@ -27,8 +27,8 @@
         should use the following DOCTYPE declaration:
 
         <!DOCTYPE digester-rules PUBLIC
-         "-//Jakarta Apache //DTD digester-rules XML V1.0//EN"
-         "digester-rules.dtd">
+         "-//Apache Commons //DTD digester-rules XML V1.0//EN"
+         "http://commons.apache.org/digester/dtds/digester-rules-3.0.dtd">
 
 -->
 
