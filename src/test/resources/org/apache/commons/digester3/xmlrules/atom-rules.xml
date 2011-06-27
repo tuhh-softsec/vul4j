@@ -35,7 +35,7 @@
       <set-properties-rule pattern="link">
         <alias attr-name="href" prop-name="link" />
       </set-properties-rule>
-      <set-next-rule methodname="addEntry" />
+      <set-next-rule methodname="addEntry" fireOnBegin="true" />
     </pattern>
   </pattern>
 </digester-rules>

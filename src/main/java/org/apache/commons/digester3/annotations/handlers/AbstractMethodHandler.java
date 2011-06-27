@@ -23,6 +23,7 @@ import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.get
 import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationPattern;
 import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationValue;
 import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getAnnotationsArrayValue;
+import static org.apache.commons.digester3.annotations.utils.AnnotationUtils.getFireOnBegin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -76,6 +77,7 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
 
         Class<?>[] explicitTypes = (Class<?>[]) explicitTypesObject;
         Class<?> paramType = element.getParameterTypes()[0];
+        boolean fireOnBegin = getFireOnBegin( annotation );
 
         if ( explicitTypes.length > 0 )
         {
@@ -89,16 +91,16 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
                     return;
                 }
 
-                doHandle( annotation, element, explicitType, rulesBinder );
+                doHandle( annotation, element, explicitType, fireOnBegin, rulesBinder );
             }
         }
         else
         {
-            doHandle( annotation, element, paramType, rulesBinder );
+            doHandle( annotation, element, paramType, fireOnBegin, rulesBinder );
         }
     }
 
-    private void doHandle( A methodAnnotation, Method method, Class<?> type, RulesBinder rulesBinder )
+    private void doHandle( A methodAnnotation, Method method, Class<?> type, boolean fireOnBegin, RulesBinder rulesBinder )
     {
         if ( type.isInterface() && Modifier.isAbstract( type.getModifiers() ) )
         {
@@ -109,12 +111,12 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
 
         for ( Annotation annotation : type.getAnnotations() )
         {
-            doHandle( methodAnnotation, annotation, method, type, rulesBinder );
+            doHandle( methodAnnotation, annotation, method, type, fireOnBegin, rulesBinder );
         }
     }
 
     private void doHandle( A methodAnnotation, Annotation annotation, Method method, final Class<?> type,
-                           RulesBinder rulesBinder )
+                           boolean fireOnBegin, RulesBinder rulesBinder )
     {
         if ( annotation.annotationType().isAnnotationPresent( DigesterRule.class )
             && annotation.annotationType().isAnnotationPresent( CreationRule.class ) )
@@ -132,7 +134,7 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
 
             String pattern = getAnnotationPattern( annotation );
             String namespaceURI = getAnnotationNamespaceURI( annotation );
-            doBind( pattern, namespaceURI, method, type, rulesBinder );
+            doBind( pattern, namespaceURI, method, type, fireOnBegin, rulesBinder );
         }
         else if ( annotation.annotationType().isAnnotationPresent( DigesterRuleList.class ) )
         {
@@ -143,13 +145,13 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
                 // if it is an annotations array, process them
                 for ( Annotation ptr : annotations )
                 {
-                    doHandle( methodAnnotation, ptr, method, type, rulesBinder );
+                    doHandle( methodAnnotation, ptr, method, type, fireOnBegin, rulesBinder );
                 }
             }
         }
     }
 
     protected abstract void doBind( String pattern, String namespaceURI, Method method, Class<?> type,
-                                    RulesBinder rulesBinder );
+                                    boolean fireOnBegin, RulesBinder rulesBinder );
 
 }

@@ -46,7 +46,7 @@ public final class SetTopBuilder
 
         if ( getParamType() != null )
         {
-            rule = new SetTopRule( getMethodName(), getParamType().getName() );
+            rule = new SetTopRule( getMethodName(), getParamType() );
         }
         else
         {
@@ -54,6 +54,7 @@ public final class SetTopBuilder
         }
 
         rule.setExactMatch( isUseExactMatch() );
+        rule.setFireOnBegin( isFireOnBegin() );
         return rule;
     }
 

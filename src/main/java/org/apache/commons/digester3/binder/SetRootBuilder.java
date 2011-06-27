@@ -46,7 +46,7 @@ public final class SetRootBuilder
 
         if ( getParamType() != null )
         {
-            rule = new SetRootRule( getMethodName(), getParamType().getName() );
+            rule = new SetRootRule( getMethodName(), getParamType() );
         }
         else
         {
@@ -54,6 +54,7 @@ public final class SetRootBuilder
         }
 
         rule.setExactMatch( isUseExactMatch() );
+        rule.setFireOnBegin( isFireOnBegin() );
         return rule;
     }
 

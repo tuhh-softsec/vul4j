@@ -19,9 +19,6 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
-import static java.lang.String.format;
-
-import org.apache.commons.beanutils.MethodUtils;
 
 /**
  * <p>
@@ -34,152 +31,64 @@ import org.apache.commons.beanutils.MethodUtils;
  * </p>
  */
 public class SetTopRule
-    extends Rule
+    extends AbstractMethodRule
 {
 
     // ----------------------------------------------------------- Constructors
 
     /**
-     * Construct a "set parent" rule with the specified method name. The "set parent" method's argument type is assumed
-     * to be the class of the parent object.
+     * Construct a "set top" rule with the specified method name. The method's argument type is assumed to be the class
+     * of the child object.
      * 
-     * @param methodName Method name of the "set parent" method to call
+     * @param methodName Method name of the parent method to call
      */
     public SetTopRule( String methodName )
     {
-        this( methodName, null );
+        super( methodName );
     }
 
     /**
-     * Construct a "set parent" rule with the specified method name.
+     * Construct a "set top" rule with the specified method name.
      * 
-     * @param methodName Method name of the "set parent" method to call
-     * @param paramType Java class of the "set parent" method's argument (if you wish to use a primitive type, specify
-     *            the corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
+     * @param methodName Method name of the parent method to call
+     * @param paramType Java class name of the parent method's argument (if you wish to use a primitive type, specify the
+     *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
      *            <code>boolean</code> parameter)
      */
     public SetTopRule( String methodName, String paramType )
     {
-        this.methodName = methodName;
-        this.paramType = paramType;
-    }
-
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * The method name to call on the child object.
-     */
-    protected String methodName = null;
-
-    /**
-     * The Java class name of the parameter type expected by the method.
-     */
-    protected String paramType = null;
-
-    /**
-     * Should we use exact matching. Default is no.
-     */
-    protected boolean useExactMatch = false;
-
-    // --------------------------------------------------------- Public Methods
-
-    /**
-     * <p>
-     * Is exact matching being used.
-     * </p>
-     * <p>
-     * This rule uses <code>org.apache.commons.beanutils.MethodUtils</code> to introspect the relevent objects so that
-     * the right method can be called. Originally, <code>MethodUtils.invokeExactMethod</code> was used. This matches
-     * methods very strictly and so may not find a matching method when one exists. This is still the behaviour when
-     * exact matching is enabled.
-     * </p>
-     * <p>
-     * When exact matching is disabled, <code>MethodUtils.invokeMethod</code> is used. This method finds more methods
-     * but is less precise when there are several methods with correct signatures. So, if you want to choose an exact
-     * signature you might need to enable this property.
-     * </p>
-     * <p>
-     * The default setting is to disable exact matches.
-     * </p>
-     * 
-     * @return true iff exact matching is enabled
-     * @since 1.1.1
-     */
-    public boolean isExactMatch()
-    {
-        return useExactMatch;
+        super( methodName, paramType );
     }
 
     /**
-     * <p>
-     * Set whether exact matching is enabled.
-     * </p>
-     * <p>
-     * See {@link #isExactMatch()}.
-     * </p>
+     * Construct a "set top" rule with the specified method name.
      * 
-     * @param useExactMatch should this rule use exact method matching
-     * @since 1.1.1
+     * @param methodName Method name of the parent method to call
+     * @param paramType Java class of the parent method's argument (if you wish to use a primitive type, specify the
+     *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
+     *            <code>boolean</code> parameter)
      */
-    public void setExactMatch( boolean useExactMatch )
+    public SetTopRule( String methodName, Class<?> paramType )
     {
-        this.useExactMatch = useExactMatch;
+        super( methodName, paramType );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void end( String namespace, String name )
-        throws Exception
+    protected Object getChild()
     {
-        // Identify the objects to be used
-        Object child = getDigester().peek( 0 );
-        Object parent = getDigester().peek( 1 );
-
-        if ( getDigester().getLogger().isDebugEnabled() )
-        {
-            if ( child == null )
-            {
-                getDigester().getLogger().debug( "[SetTopRule]{" + getDigester().getMatch() + "} Call [NULL CHILD]."
-                                                     + methodName + "(" + parent + ")" );
-            }
-            else
-            {
-                getDigester().getLogger().debug( "[SetTopRule]{" + getDigester().getMatch() + "} Call "
-                                                     + child.getClass().getName() + "." + methodName + "(" + parent
-                                                     + ")" );
-            }
-        }
-
-        // Call the specified method
-        Class<?> paramTypes[] = new Class<?>[1];
-        if ( paramType != null )
-        {
-            paramTypes[0] = getDigester().getClassLoader().loadClass( paramType );
-        }
-        else
-        {
-            paramTypes[0] = parent.getClass();
-        }
-
-        if ( useExactMatch )
-        {
-            MethodUtils.invokeExactMethod( child, methodName, new Object[] { parent }, paramTypes );
-        }
-        else
-        {
-            MethodUtils.invokeMethod( child, methodName, new Object[] { parent }, paramTypes );
-        }
+        return getDigester().peek( 1 );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toString()
+    protected Object getParent()
     {
-        return format( "SetTopRule[methodName=%s, paramType=%s]", methodName, paramType );
+        return getDigester().peek( 0 );
     }
 
 }

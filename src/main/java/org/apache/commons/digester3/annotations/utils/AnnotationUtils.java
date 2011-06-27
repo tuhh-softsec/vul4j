@@ -47,6 +47,11 @@ public class AnnotationUtils
     private static final String NAMESPACE_URI = "namespaceURI";
 
     /**
+     * The {@code namespaceURI} string constant.
+     */
+    private static final String FIRE_ON_BEGIN = "fireOnBegin";
+
+    /**
      * This class can't be instantiated.
      */
     private AnnotationUtils()
@@ -95,6 +100,22 @@ public class AnnotationUtils
             return (String) ret;
         }
         return null;
+    }
+
+    /**
+     * Extract the {@code fireOnBegin()} from annotation.
+     *
+     * @param annotation The annotation has to be introspected
+     * @return The annotation {@code fireOnBegin()}
+     */
+    public static boolean getFireOnBegin( Annotation annotation )
+    {
+        Object ret = invokeAnnotationMethod( annotation, FIRE_ON_BEGIN );
+        if ( ret != null )
+        {
+            return (Boolean) ret;
+        }
+        return false;
     }
 
     /**

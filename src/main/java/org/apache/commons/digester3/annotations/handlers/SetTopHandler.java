@@ -50,7 +50,8 @@ public final class SetTopHandler
             .forPattern( annotation.pattern() )
             .withNamespaceURI( annotation.namespaceURI().length() > 0 ? annotation.namespaceURI() : null )
             .setTop( element.getName() )
-            .withParameterType( element.getParameterTypes()[0] );
+            .withParameterType( element.getParameterTypes()[0] )
+            .fireOnBegin( annotation.fireOnBegin() );
     }
 
 }

@@ -37,12 +37,14 @@ public final class SetNextHandler
      * {@inheritDoc}
      */
     @Override
-    protected void doBind( String pattern, String namespaceURI, Method method, Class<?> type, RulesBinder rulesBinder )
+    protected void doBind( String pattern, String namespaceURI, Method method, Class<?> type, boolean fireOnBegin,
+                           RulesBinder rulesBinder )
     {
         rulesBinder.forPattern( pattern )
                    .withNamespaceURI( namespaceURI )
                    .setNext( method.getName() )
-                   .withParameterType( type );
+                   .withParameterType( type )
+                   .fireOnBegin( fireOnBegin );
     }
 
 }

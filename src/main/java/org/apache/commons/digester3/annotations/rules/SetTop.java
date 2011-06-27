@@ -49,6 +49,11 @@ public @interface SetTop
     String pattern();
 
     /**
+     * Marks the rule be invoked when {@code begin} or {@code end} events match.
+     */
+    boolean fireOnBegin() default false;
+
+    /**
      * The namespace URI for which this Rule is relevant, if any.
      *
      * @since 3.0

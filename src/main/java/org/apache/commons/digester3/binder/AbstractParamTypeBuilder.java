@@ -21,7 +21,7 @@ package org.apache.commons.digester3.binder;
 
 import static java.lang.String.format;
 
-import org.apache.commons.digester3.Rule;
+import org.apache.commons.digester3.AbstractMethodRule;
 
 /**
  * Builder chained when invoking {@link LinkedRuleBuilder#setNext(String)},
@@ -29,7 +29,7 @@ import org.apache.commons.digester3.Rule;
  *
  * @since 3.0
  */
-abstract class AbstractParamTypeBuilder<R extends Rule>
+public abstract class AbstractParamTypeBuilder<R extends AbstractMethodRule>
     extends AbstractBackToLinkedRuleBuilder<R>
 {
 
@@ -40,6 +40,8 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
     private boolean useExactMatch = false;
 
     private Class<?> paramType;
+
+    private boolean fireOnBegin = false;
 
     AbstractParamTypeBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder,
                               LinkedRuleBuilder mainBuilder, String methodName, ClassLoader classLoader )
@@ -66,6 +68,7 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
             reportError( format( ".%s.withParameterType( Class<?> )", methodName ), "NULL Java type not allowed" );
             return this;
         }
+        this.paramType = paramType;
         return withParameterType( paramType.getName() );
     }
 
@@ -87,14 +90,17 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
             return this;
         }
 
-        try
+        if ( this.paramType == null )
         {
-            this.paramType = classLoader.loadClass( paramType );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            this.reportError( format( ".%s.withParameterType( Class<?> )", methodName ),
-                              format( "class '%s' cannot be load", paramType ) );
+            try
+            {
+                this.paramType = classLoader.loadClass( paramType );
+            }
+            catch ( ClassNotFoundException e )
+            {
+                this.reportError( format( ".%s.withParameterType( Class<?> )", methodName ),
+                                  format( "class '%s' cannot be load", paramType ) );
+            }
         }
         return this;
     }
@@ -111,6 +117,18 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
         return this;
     }
 
+    /**
+     * Marks the rule be invoked when {@code begin} or {@code end} events match.
+     *
+     * @param fireOnBegin true, to invoke the rule at {@code begin}, false for {@code end}
+     * @return this builder instance
+     */
+    public final AbstractParamTypeBuilder<R> fireOnBegin( boolean fireOnBegin )
+    {
+        this.fireOnBegin = fireOnBegin;
+        return this;
+    }
+
     final String getMethodName()
     {
         return methodName;
@@ -124,6 +142,11 @@ abstract class AbstractParamTypeBuilder<R extends Rule>
     final boolean isUseExactMatch()
     {
         return useExactMatch;
+    }
+
+    final boolean isFireOnBegin()
+    {
+        return fireOnBegin;
     }
 
 }

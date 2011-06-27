@@ -44,7 +44,7 @@ final class SetRootRule
      */
     @Override
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType,
-                             boolean exactMatch )
+                             boolean exactMatch, boolean fireOnBegin )
     {
         SetRootBuilder builder = linkedRuleBuilder.setRoot( methodName );
 
@@ -54,6 +54,7 @@ final class SetRootRule
         }
 
         builder.useExactMatch( exactMatch );
+        builder.fireOnBegin( fireOnBegin );
     }
 
 }

@@ -96,7 +96,7 @@ public class Person
         this.emails.put( type, address );
     }
 
-    @SetNext
+    @SetNext( fireOnBegin = true )
     public void addAddress( Address addr )
     {
         this.addresses.add( addr );

@@ -46,7 +46,7 @@ public final class SetNextBuilder
 
         if ( getParamType() != null )
         {
-            rule = new SetNextRule( getMethodName(), getParamType().getName() );
+            rule = new SetNextRule( getMethodName(), getParamType() );
         }
         else
         {
@@ -54,6 +54,7 @@ public final class SetNextBuilder
         }
 
         rule.setExactMatch( isUseExactMatch() );
+        rule.setFireOnBegin( isFireOnBegin() );
         return rule;
     }
 

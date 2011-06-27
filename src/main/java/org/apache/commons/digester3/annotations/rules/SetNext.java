@@ -47,4 +47,9 @@ public @interface SetNext
      */
     Class<?>[] value() default { };
 
+    /**
+     * Marks the rule be invoked when {@code begin} or {@code end} events match.
+     */
+    boolean fireOnBegin() default false;
+
 }

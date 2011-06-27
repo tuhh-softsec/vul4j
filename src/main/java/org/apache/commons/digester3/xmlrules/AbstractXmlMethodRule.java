@@ -45,8 +45,9 @@ abstract class AbstractXmlMethodRule
         String methodName = attributes.getValue( "methodname" );
         String paramType = attributes.getValue( "paramtype" );
         String exactMatch = attributes.getValue( "exactMatch" );
+        String fireOnBegin = attributes.getValue( "fireOnBegin" );
 
-        bindRule( linkedRuleBuilder, methodName, paramType, "true".equals( exactMatch ) );
+        bindRule( linkedRuleBuilder, methodName, paramType, "true".equals( exactMatch ), "true".equals( fireOnBegin ) );
     }
 
     /**
@@ -54,6 +55,6 @@ abstract class AbstractXmlMethodRule
      * @return
      */
     protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType,
-                                      boolean exactMatch );
+                                      boolean exactMatch, boolean fireOnBegin );
 
 }

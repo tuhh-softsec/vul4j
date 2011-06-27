@@ -19,9 +19,6 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
-import static java.lang.String.format;
-
-import org.apache.commons.beanutils.MethodUtils;
 
 /**
  * <p>
@@ -34,7 +31,7 @@ import org.apache.commons.beanutils.MethodUtils;
  * </p>
  */
 public class SetRootRule
-    extends Rule
+    extends AbstractMethodRule
 {
 
     // ----------------------------------------------------------- Constructors
@@ -47,7 +44,20 @@ public class SetRootRule
      */
     public SetRootRule( String methodName )
     {
-        this( methodName, null );
+        super( methodName );
+    }
+
+    /**
+     * Construct a "set root" rule with the specified method name.
+     * 
+     * @param methodName Method name of the parent method to call
+     * @param paramType Java class name of the parent method's argument (if you wish to use a primitive type, specify the
+     *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
+     *            <code>boolean</code> parameter)
+     */
+    public SetRootRule( String methodName, String paramType )
+    {
+        super( methodName, paramType );
     }
 
     /**
@@ -58,131 +68,27 @@ public class SetRootRule
      *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
      *            <code>boolean</code> parameter)
      */
-    public SetRootRule( String methodName, String paramType )
+    public SetRootRule( String methodName, Class<?> paramType )
     {
-        this.methodName = methodName;
-        this.paramType = paramType;
-    }
-
-    // ----------------------------------------------------- Instance Variables
-
-    /**
-     * The method name to call on the parent object.
-     */
-    protected String methodName = null;
-
-    /**
-     * The Java class name of the parameter type expected by the method.
-     */
-    protected String paramType = null;
-
-    /**
-     * Should we use exact matching. Default is no.
-     */
-    protected boolean useExactMatch = false;
-
-    // --------------------------------------------------------- Public Methods
-
-    /**
-     * <p>
-     * Is exact matching being used.
-     * </p>
-     * <p>
-     * This rule uses <code>org.apache.commons.beanutils.MethodUtils</code> to introspect the relevent objects so that
-     * the right method can be called. Originally, <code>MethodUtils.invokeExactMethod</code> was used. This matches
-     * methods very strictly and so may not find a matching method when one exists. This is still the behaviour when
-     * exact matching is enabled.
-     * </p>
-     * <p>
-     * When exact matching is disabled, <code>MethodUtils.invokeMethod</code> is used. This method finds more methods
-     * but is less precise when there are several methods with correct signatures. So, if you want to choose an exact
-     * signature you might need to enable this property.
-     * </p>
-     * <p>
-     * The default setting is to disable exact matches.
-     * </p>
-     * 
-     * @return true if exact matching is enabled
-     * @since 1.1.1
-     */
-    public boolean isExactMatch()
-    {
-        return useExactMatch;
-    }
-
-    /**
-     * <p>
-     * Set whether exact matching is enabled.
-     * </p>
-     * <p>
-     * See {@link #isExactMatch()}.
-     * </p>
-     * 
-     * @param useExactMatch should this rule use exact method matching
-     * @since 1.1.1
-     */
-    public void setExactMatch( boolean useExactMatch )
-    {
-        this.useExactMatch = useExactMatch;
+        super( methodName, paramType );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void end( String namespace, String name )
-        throws Exception
+    protected Object getChild()
     {
-        // Identify the objects to be used
-        Object child = getDigester().peek( 0 );
-        Object parent = getDigester().getRoot();
-        if ( getDigester().getLogger().isDebugEnabled() )
-        {
-            if ( parent == null )
-            {
-                getDigester().getLogger().debug( format( "[SetRootRule]{%s} Call [NULL ROOT].%s(%s)",
-                                                         getDigester().getMatch(),
-                                                         methodName,
-                                                         child ) );
-            }
-            else
-            {
-                getDigester().getLogger().debug( format( "[SetRootRule]{%s} Call %s.%s(%s)",
-                                                         getDigester().getMatch(),
-                                                         parent.getClass().getName(),
-                                                         methodName,
-                                                         child ) );
-            }
-        }
-
-        // Call the specified method
-        Class<?> paramTypes[] = new Class<?>[1];
-        if ( paramType != null )
-        {
-            paramTypes[0] = getDigester().getClassLoader().loadClass( paramType );
-        }
-        else
-        {
-            paramTypes[0] = child.getClass();
-        }
-
-        if ( useExactMatch )
-        {
-            MethodUtils.invokeExactMethod( parent, methodName, new Object[] { child }, paramTypes );
-        }
-        else
-        {
-            MethodUtils.invokeMethod( parent, methodName, new Object[] { child }, paramTypes );
-        }
+        return getDigester().peek( 0 );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toString()
+    protected Object getParent()
     {
-        return format( "SetRootRule[methodName=%s, paramType=%s]", methodName, paramType );
+        return getDigester().getRoot();
     }
 
 }
