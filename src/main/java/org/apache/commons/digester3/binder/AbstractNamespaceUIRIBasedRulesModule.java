@@ -31,6 +31,13 @@ public abstract class AbstractNamespaceUIRIBasedRulesModule
 
     private final String namespaceURI;
 
+    /**
+     * Creates a new (nullable) namespaceURI-based {@link RulesModule} that automatically binds every
+     * rule to the input namespaceURI.
+     *
+     * @param namespaceURI Namespace URI for which this Rule is relevant, or <code>null</code> to match
+     *        independent of namespace.
+     */
     public AbstractNamespaceUIRIBasedRulesModule( /* @Nullable */String namespaceURI )
     {
         this.namespaceURI = namespaceURI;
