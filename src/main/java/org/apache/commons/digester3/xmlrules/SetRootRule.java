@@ -43,7 +43,8 @@ final class SetRootRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType,
+                             boolean exactMatch )
     {
         SetRootBuilder builder = linkedRuleBuilder.setRoot( methodName );
 
@@ -51,6 +52,8 @@ final class SetRootRule
         {
             builder.withParameterType( paramType );
         }
+
+        builder.useExactMatch( exactMatch );
     }
 
 }

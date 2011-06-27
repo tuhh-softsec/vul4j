@@ -43,7 +43,8 @@ final class SetNextRule
      * {@inheritDoc}
      */
     @Override
-    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType )
+    protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType,
+                             boolean exactMatch )
     {
         SetNextBuilder builder = linkedRuleBuilder.setNext( methodName );
 
@@ -51,6 +52,8 @@ final class SetNextRule
         {
             builder.withParameterType( paramType );
         }
+
+        builder.useExactMatch( exactMatch );
     }
 
 }

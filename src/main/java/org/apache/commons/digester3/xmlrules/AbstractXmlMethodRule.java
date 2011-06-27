@@ -44,14 +44,16 @@ abstract class AbstractXmlMethodRule
     {
         String methodName = attributes.getValue( "methodname" );
         String paramType = attributes.getValue( "paramtype" );
+        String exactMatch = attributes.getValue( "exactMatch" );
 
-        bindRule( linkedRuleBuilder, methodName, paramType );
+        bindRule( linkedRuleBuilder, methodName, paramType, "true".equals( exactMatch ) );
     }
 
     /**
      * @param methodName
      * @return
      */
-    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType );
+    protected abstract void bindRule( LinkedRuleBuilder linkedRuleBuilder, String methodName, String paramType,
+                                      boolean exactMatch );
 
 }
