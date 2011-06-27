@@ -116,4 +116,6 @@ DEPRECATIONS
 OTHER NOTES
 ============
 
- * none.
+ * APIs are not compatible with Digester 2.X or Digester 1.X.
+
+ * this is the first Digester release that provides a way to reuse Digester configurations.
