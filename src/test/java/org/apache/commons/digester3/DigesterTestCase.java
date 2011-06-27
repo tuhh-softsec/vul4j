@@ -359,21 +359,21 @@ public class DigesterTestCase
         assertEquals( "Pushed one item size", 1, digester.getCount() );
         value = digester.peek();
         assertNotNull( "Peeked first item is not null", value );
-        assertEquals( "Peeked first item value", "First Item", (String) value );
+        assertEquals( "Peeked first item value", "First Item", value );
 
         digester.push( "Second Item" );
         assertEquals( "Pushed two items size", 2, digester.getCount() );
         value = digester.peek();
         assertNotNull( "Peeked second item is not null", value );
-        assertEquals( "Peeked second item value", "Second Item", (String) value );
+        assertEquals( "Peeked second item value", "Second Item", value );
 
         value = digester.pop();
         assertEquals( "Popped stack size", 1, digester.getCount() );
         assertNotNull( "Popped second item is not null", value );
-        assertEquals( "Popped second item value", "Second Item", (String) value );
+        assertEquals( "Popped second item value", "Second Item", value );
         value = digester.peek();
         assertNotNull( "Remaining item is not null", value );
-        assertEquals( "Remaining item value", "First Item", (String) value );
+        assertEquals( "Remaining item value", "First Item", value );
         assertEquals( "Remaining stack size", 1, digester.getCount() );
 
         // Cleared stack is empty
