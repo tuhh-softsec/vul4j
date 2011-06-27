@@ -38,7 +38,7 @@ matching rules.
 This package provides some useful concrete implementations of the abstract
 Substitutor class. In particular, it provides an implementation that allows
 the application to define "variables" which the input data can reference
-using a syntax such as "${user.name}".
+using a syntax such as <code>${user.name}</code>.
 </p>
 <p>Here's an example of setting up the VariableSubstitutor:</p>
 <source>
