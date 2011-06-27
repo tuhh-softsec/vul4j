@@ -100,7 +100,8 @@ abstract class AbstractMethodHandler<A extends Annotation> implements Annotation
         }
     }
 
-    private void doHandle( A methodAnnotation, Method method, Class<?> type, boolean fireOnBegin, RulesBinder rulesBinder )
+    private void doHandle( A methodAnnotation, Method method, Class<?> type, boolean fireOnBegin,
+                           RulesBinder rulesBinder )
     {
         if ( type.isInterface() && Modifier.isAbstract( type.getModifiers() ) )
         {

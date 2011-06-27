@@ -51,9 +51,9 @@ public class SetTopRule
      * Construct a "set top" rule with the specified method name.
      * 
      * @param methodName Method name of the parent method to call
-     * @param paramType Java class name of the parent method's argument (if you wish to use a primitive type, specify the
-     *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
-     *            <code>boolean</code> parameter)
+     * @param paramType Java class name of the parent method's argument (if you wish to use a primitive type,
+     *                  specify the corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code>
+     *                  for a <code>boolean</code> parameter)
      */
     public SetTopRule( String methodName, String paramType )
     {
