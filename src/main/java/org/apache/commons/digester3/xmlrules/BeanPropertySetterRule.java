@@ -46,8 +46,8 @@ final class BeanPropertySetterRule
         BeanPropertySetterBuilder builder =
             linkedRuleBuilder.setBeanProperty().withName( attributes.getValue( "propertyname" ) );
 
-        int propertyNameFromAttributeIndex = -1;
-        if ( ( propertyNameFromAttributeIndex = attributes.getIndex( "propertynameFromAttribute" ) ) >= 0 )
+        int propertyNameFromAttributeIndex = attributes.getIndex( "propertynameFromAttribute" );
+        if ( propertyNameFromAttributeIndex >= 0 )
         {
             builder.extractPropertyNameFromAttribute( attributes.getValue( propertyNameFromAttributeIndex ) );
         }
