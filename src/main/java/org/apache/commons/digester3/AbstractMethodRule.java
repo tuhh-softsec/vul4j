@@ -22,13 +22,11 @@ package org.apache.commons.digester3;
 import static java.lang.String.format;
 
 import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.digester3.annotations.rules.SetNext;
-import org.apache.commons.digester3.annotations.rules.SetRoot;
-import org.apache.commons.digester3.annotations.rules.SetTop;
 import org.xml.sax.Attributes;
 
 /**
- * Abstarct implementation for {@link SetNext}, {@link SetRoot} and {@link SetTop} rules.
+ * Abstract implementation for {@link org.apache.commons.digester3.SetNext},
+ * {@link org.apache.commons.digester3.SetRoot} and {@link org.apache.commons.digester3.SetTop} rules.
  *
  * @since 3.0
  */
