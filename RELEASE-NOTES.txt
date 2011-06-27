@@ -107,7 +107,11 @@ IMPROVEMENTS OVER PREVIOUS RELEASE
 DEPRECATIONS
 ============
 
- * none.
+ * org.apache.commons.digester.xmlrules.FromXmlRuleSet and org.apache.commons.digester.xmlrules.DigesterLoader
+   do not exist anymore.
+
+ * org.apache.commons.digester.annotations.FromAnnotationsRuleSet and
+   org.apache.commons.digester.annotations.DigesterLoader do not exist anymore.
 
 OTHER NOTES
 ============
