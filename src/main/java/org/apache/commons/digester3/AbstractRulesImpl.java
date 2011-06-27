@@ -83,11 +83,7 @@ public abstract class AbstractRulesImpl
     // --------------------------------------------------------- Public Methods
 
     /**
-     * Registers a new Rule instance matching the specified pattern. This implementation sets the <code>Digester</code>
-     * and the <code>namespaceURI</code> on the <code>Rule</code> before calling {@link #registerRule}.
-     * 
-     * @param pattern Nesting pattern to be matched for this Rule
-     * @param rule Rule instance to be registered
+     * {@inheritDoc}
      */
     public void add( String pattern, Rule rule )
     {
