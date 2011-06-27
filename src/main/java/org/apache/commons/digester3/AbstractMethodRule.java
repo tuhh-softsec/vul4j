@@ -1,13 +1,5 @@
 package org.apache.commons.digester3;
 
-import static java.lang.String.format;
-
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.digester3.annotations.rules.SetNext;
-import org.apache.commons.digester3.annotations.rules.SetRoot;
-import org.apache.commons.digester3.annotations.rules.SetTop;
-import org.xml.sax.Attributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -26,6 +18,14 @@ import org.xml.sax.Attributes;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import static java.lang.String.format;
+
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.digester3.annotations.rules.SetNext;
+import org.apache.commons.digester3.annotations.rules.SetRoot;
+import org.apache.commons.digester3.annotations.rules.SetTop;
+import org.xml.sax.Attributes;
 
 /**
  * Abstarct implementation for {@link SetNext}, {@link SetRoot} and {@link SetTop} rules.
