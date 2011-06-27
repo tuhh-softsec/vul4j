@@ -17,6 +17,19 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -39,20 +52,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
 /**
  * @version $Id$
@@ -410,10 +409,9 @@ public abstract class AbstractArchiver
 
             private ArchiveEntry nextEntry;
 
-            private final Set seenEntries = new HashSet();
+            private final Set<String> seenEntries = new HashSet<String>();
 
             public boolean hasNext()
-                throws ArchiverException
             {
                 if ( nextEntry == null )
                 {
@@ -499,7 +497,6 @@ public abstract class AbstractArchiver
             }
 
             public ArchiveEntry next()
-                throws ArchiverException
             {
                 if ( !hasNext() )
                 {
@@ -512,6 +509,11 @@ public abstract class AbstractArchiver
                 seenEntries.add( next.getName() );
 
                 return next;
+            }
+
+            public void remove()
+            {
+                throw new UnsupportedOperationException( "Does not support iterator" );
             }
         };
     }

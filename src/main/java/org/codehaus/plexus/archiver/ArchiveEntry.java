@@ -162,7 +162,7 @@ public class ArchiveEntry
             throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
         }
         
-        final PlexusIoFileResource res =  new PlexusIoFileResource( file, attrs );
+        final PlexusIoFileResource res =  PlexusIoFileResource.existingFile( file, attrs );
         return new ArchiveEntry( target, res, FILE, permissions );
     }
 

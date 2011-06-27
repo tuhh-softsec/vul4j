@@ -1,11 +1,11 @@
 package org.codehaus.plexus.archiver.zip;
 
-import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
+import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 public class PlexusIoZipFileResourceCollection
     extends AbstractPlexusIoArchiveResourceCollection
@@ -16,7 +16,7 @@ public class PlexusIoZipFileResourceCollection
      */
     public static final String ROLE_HINT = "zip";
 
-    protected Iterator getEntries()
+    protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
         final File f = getFile();
@@ -26,19 +26,18 @@ public class PlexusIoZipFileResourceCollection
         }
         final ZipFile zipFile = new ZipFile( f );
         final Enumeration en = zipFile.getEntries();
-        return new Iterator()
+        return new Iterator<PlexusIoResource>()
         {
             public boolean hasNext()
             {
                 return en.hasMoreElements();
             }
 
-            public Object next()
+            public PlexusIoResource next()
             {
                 final ZipEntry entry = (ZipEntry) en.nextElement();
-                final ZipResource res = new ZipResource( zipFile, entry );
 
-                return res;
+                return new ZipResource( zipFile, entry );
             }
 
             public void remove()

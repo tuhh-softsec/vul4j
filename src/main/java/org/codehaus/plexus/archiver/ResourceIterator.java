@@ -1,10 +1,11 @@
 package org.codehaus.plexus.archiver;
 
-public interface ResourceIterator
-{
-    boolean hasNext()
-        throws ArchiverException;
+import java.util.Iterator;
 
-    ArchiveEntry next()
-        throws ArchiverException;
+public interface ResourceIterator extends Iterator<ArchiveEntry>
+{
+    boolean hasNext();
+
+    ArchiveEntry next();
+
 }

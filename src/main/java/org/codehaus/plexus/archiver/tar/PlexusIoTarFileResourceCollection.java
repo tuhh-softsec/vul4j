@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
-
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 
 public class PlexusIoTarFileResourceCollection
@@ -21,7 +21,7 @@ public class PlexusIoTarFileResourceCollection
         return new TarFile( file );
     }
 
-    protected Iterator getEntries()
+    protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
         final File f = getFile();
@@ -31,19 +31,17 @@ public class PlexusIoTarFileResourceCollection
         }
         final TarFile tarFile = newTarFile( f );
         final Enumeration en = tarFile.getEntries();
-        return new Iterator()
+        return new Iterator<PlexusIoResource>()
         {
             public boolean hasNext()
             {
                 return en.hasMoreElements();
             }
 
-            public Object next()
+            public PlexusIoResource next()
             {
                 final TarEntry entry = (TarEntry) en.nextElement();
-                final TarResource res = new TarResource( tarFile, entry );
-                
-                return res;
+                return new TarResource( tarFile, entry );
             }
 
             public void remove()

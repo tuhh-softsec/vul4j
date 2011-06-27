@@ -17,7 +17,7 @@ package org.codehaus.plexus.archiver;
  */
 
 public class ArchiverException
-    extends Exception
+    extends RuntimeException
 {
     public ArchiverException( String message )
     {
