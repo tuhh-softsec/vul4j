@@ -25,7 +25,7 @@ package org.apache.commons.digester3.binder;
  *
  * @since 3.0
  */
-public abstract class AbstractNamespaceUIRIBasedRulesModule
+public abstract class AbstractNamespaceURIBasedRulesModule
     extends AbstractRulesModule
 {
 
@@ -38,7 +38,7 @@ public abstract class AbstractNamespaceUIRIBasedRulesModule
      * @param namespaceURI Namespace URI for which this Rule is relevant, or <code>null</code> to match
      *        independent of namespace.
      */
-    public AbstractNamespaceUIRIBasedRulesModule( /* @Nullable */String namespaceURI )
+    public AbstractNamespaceURIBasedRulesModule( /* @Nullable */String namespaceURI )
     {
         this.namespaceURI = namespaceURI;
     }
