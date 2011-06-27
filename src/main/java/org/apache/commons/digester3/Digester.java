@@ -19,6 +19,8 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -1574,7 +1576,29 @@ public class Digester
         }
 
         configure();
-        getXMLReader().parse( input );
+
+        String systemId = input.getSystemId();
+        if ( systemId == null )
+        {
+            systemId = "(already loaded from stream)";
+        }
+
+        try
+        {
+            getXMLReader().parse( input );
+        }
+        catch ( IOException e )
+        {
+            log.error( format( "An error occurred while reading stream from '%s', see nested exceptions", systemId ),
+                       e );
+            throw e;
+        }
+        catch ( SAXException e )
+        {
+            log.error( format( "An error occurred while parsing XML from '%s', see nested exceptions", systemId ),
+                       e );
+            throw e;
+        }
         cleanup();
         return this.<T> getRoot();
     }
