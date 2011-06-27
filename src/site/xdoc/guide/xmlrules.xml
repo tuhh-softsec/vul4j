@@ -72,7 +72,7 @@ them to the API documentation for the <code>Digester</code> rules classes.
       <subsection name="Defining matching patterns">
         <p>The matching pattern is a simple, xpath-like string which the
 <code>Digester</code> uses to determine which elements to apply each rule to.
-See the <code>Digester</code> <a href="/core.html">documentation</a> for
+See the <code>Digester</code> <a href="./core.html">documentation</a> for
 more details.</p>
 <p>
 There are two methods for associating patterns to rules in the XML file. One
