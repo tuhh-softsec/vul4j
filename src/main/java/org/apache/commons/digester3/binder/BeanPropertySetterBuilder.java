@@ -53,7 +53,7 @@ public final class BeanPropertySetterBuilder
     /**
      * Sets the attribute name from which the property name has to be extracted.
      *
-     * @param propertyName The name of property to set
+     * @param attribute The attribute name from which extracting the name of property to set
      * @return this builder instance
      */
     public BeanPropertySetterBuilder extractPropertyNameFromAttribute( String attribute )
