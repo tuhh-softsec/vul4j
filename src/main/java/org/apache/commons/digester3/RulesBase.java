@@ -49,7 +49,7 @@ import org.xml.sax.Attributes;
  */
 
 public class RulesBase
-    implements Rules
+    extends AbstractRulesImpl
 {
 
     // ----------------------------------------------------- Instance Variables
@@ -61,17 +61,6 @@ public class RulesBase
     protected HashMap<String, List<Rule>> cache = new HashMap<String, List<Rule>>();
 
     /**
-     * The Digester instance with which this Rules instance is associated.
-     */
-    protected Digester digester = null;
-
-    /**
-     * The namespace URI for which subsequently added <code>Rule</code> objects are relevant, or <code>null</code> for
-     * matching independent of namespaces.
-     */
-    protected String namespaceURI = null;
-
-    /**
      * The set of registered Rule instances, in the order that they were originally registered.
      */
     protected ArrayList<Rule> rules = new ArrayList<Rule>();
@@ -81,37 +70,14 @@ public class RulesBase
     /**
      * {@inheritDoc}
      */
-    public Digester getDigester()
-    {
-        return ( this.digester );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setDigester( Digester digester )
     {
-        this.digester = digester;
+        super.setDigester( digester );
         for ( Rule rule : rules )
         {
             rule.setDigester( digester );
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getNamespaceURI()
-    {
-        return ( this.namespaceURI );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setNamespaceURI( String namespaceURI )
-    {
-        this.namespaceURI = namespaceURI;
     }
 
     // --------------------------------------------------------- Public Methods
@@ -119,7 +85,8 @@ public class RulesBase
     /**
      * {@inheritDoc}
      */
-    public void add( String pattern, Rule rule )
+    @Override
+    protected void registerRule( String pattern, Rule rule )
     {
         // to help users who accidently add '/' to the end of their patterns
         int patternLength = pattern.length();
@@ -136,14 +103,6 @@ public class RulesBase
         }
         list.add( rule );
         rules.add( rule );
-        if ( this.digester != null )
-        {
-            rule.setDigester( this.digester );
-        }
-        if ( this.namespaceURI != null )
-        {
-            rule.setNamespaceURI( this.namespaceURI );
-        }
     }
 
     /**
