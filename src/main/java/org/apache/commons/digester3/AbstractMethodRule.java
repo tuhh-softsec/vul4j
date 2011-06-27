@@ -192,6 +192,11 @@ public abstract class AbstractMethodRule
         }
     }
 
+    /**
+     * Just performs the method execution.
+     *
+     * @throws Exception if any error occurs.
+     */
     private void invoke()
         throws Exception
     {
@@ -240,8 +245,18 @@ public abstract class AbstractMethodRule
         }
     }
 
+    /**
+     * Returns the argument object of method has to be invoked.
+     *
+     * @return the argument object of method has to be invoked.
+     */
     protected abstract Object getChild();
 
+    /**
+     * Returns the target object of method has to be invoked.
+     *
+     * @return the target object of method has to be invoked.
+     */
     protected abstract Object getParent();
 
     /**
