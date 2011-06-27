@@ -47,12 +47,12 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>2.0.5</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-io</artifactId>
-      <version>1.0.1</version>
+      <version>2.0</version>
     </dependency>
   </dependencies>
   
@@ -67,6 +67,15 @@
           <systemPropertyVariables>
             <useJvmChmod>${useJvmChmod}</useJvmChmod>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.1</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
         </configuration>
       </plugin>
     </plugins>

@@ -6,5 +6,5 @@ public interface FinalizerEnabled
 {
     void addArchiveFinalizer( ArchiveFinalizer finalizer );
 
-    void setArchiveFinalizers( List archiveFinalizers );
+    void setArchiveFinalizers( List<ArchiveFinalizer> archiveFinalizers );
 }

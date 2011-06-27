@@ -17,20 +17,6 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -39,11 +25,15 @@ import org.codehaus.plexus.archiver.zip.ZipFile;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
 import org.codehaus.plexus.util.IOUtil;
 
+import java.io.*;
+import java.util.*;
+
 /**
  * Base class for tasks that build archives in JAR file format.
  *
  * @version $Revision$ $Date$
  */
+@SuppressWarnings({"NullableProblems"})
 public class JarArchiver
     extends ZipArchiver
 {
@@ -131,12 +121,12 @@ public class JarArchiver
      * <p/>
      * Will not be filled unless the user has asked for an index.
      */
-    private Vector rootEntries;
+    private Vector<String> rootEntries;
 
     /**
      * Path containing jars that shall be indexed in addition to this archive.
      */
-    private ArrayList indexJars;
+    private ArrayList<String> indexJars;
 
     /**
      * constructor
@@ -146,12 +136,13 @@ public class JarArchiver
         super();
         archiveType = "jar";
         setEncoding( "UTF8" );
-        rootEntries = new Vector();
+        rootEntries = new Vector<String>();
     }
 
     /**
      * Set whether or not to create an index list for classes.
      * This may speed up classloading in some cases.
+     * @param flag true to create an index
      */
     public void setIndex( boolean flag )
     {
@@ -162,6 +153,7 @@ public class JarArchiver
      * Set whether or not to create an index list for classes.
      * This may speed up classloading in some cases.
      */
+    @SuppressWarnings({"JavaDoc", "UnusedDeclaration"})
     public void setManifestEncoding( String manifestEncoding )
     {
         this.manifestEncoding = manifestEncoding;
@@ -171,8 +163,8 @@ public class JarArchiver
      * Allows the manifest for the archive file to be provided inline
      * in the build file rather than in an external file.
      *
-     * @param newManifest
-     * @throws ManifestException
+     * @param newManifest The new manifest
+     * @throws ManifestException .
      */
     public void addConfiguredManifest( Manifest newManifest )
         throws ManifestException
@@ -193,7 +185,9 @@ public class JarArchiver
      * fileset. If its the name of an added jar, the task expects the manifest to be in the jar at META-INF/MANIFEST.MF.
      * 
      * @param manifestFile the manifest file to use.
+     * @throws org.codehaus.plexus.archiver.ArchiverException .
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public void setManifest( File manifestFile )
         throws ArchiverException
     {
@@ -269,6 +263,7 @@ public class JarArchiver
      *
      * @param config setting for found manifest behavior.
      */
+    @SuppressWarnings({"UnusedDeclaration"})
     public void setFilesetmanifest( FilesetManifestConfig config )
     {
         filesetManifestConfig = config;
@@ -282,25 +277,14 @@ public class JarArchiver
     }
 
     /**
-     * Adds a zipfileset to include in the META-INF directory.
      *
-     * @param fs zipfileset to add
-     */
-/*    public void addMetainf(ZipFileSet fs) {
-        // We just set the prefix for this fileset, and pass it up.
-        fs.setPrefix("META-INF/");
-        super.addFileset(fs);
-    }
-*/
-
-    /**
-     *
+     * @param indexJar The indexjar
      */
     public void addConfiguredIndexJars( File indexJar )
     {
         if ( indexJars == null )
         {
-            indexJars = new ArrayList();
+            indexJars = new ArrayList<String>();
         }
         indexJars.add( indexJar.getAbsolutePath() );
     }
@@ -402,6 +386,7 @@ public class JarArchiver
      * @param zOut the zip stream representing the jar being built.
      * @throws IOException thrown if there is an error while creating the
      *                     index and adding it to the zip stream.
+     * @throws org.codehaus.plexus.archiver.ArchiverException .
      */
     private void createIndexList( ZipOutputStream zOut )
         throws IOException, ArchiverException
@@ -419,19 +404,15 @@ public class JarArchiver
 
         // filter out META-INF if it doesn't contain anything other than the index and manifest.
         // this is what sun.misc.JarIndex does, guess we ought to be consistent.
-        Set filteredDirs = new HashSet( addedDirs.keySet() );
+        Set<String> filteredDirs = new HashSet<String>( addedDirs.keySet() );
         // our added dirs always have a trailing slash
         if ( filteredDirs.contains( META_INF_NAME + '/' ) )
         {
             boolean add = false;
-            Iterator i = entries.keySet().iterator();
-            while ( i.hasNext() )
-            {
-                String entry = (String) i.next();
-                if ( entry.startsWith( META_INF_NAME + '/' )
-                        && !entry.equals( INDEX_NAME )
-                        && !entry.equals( MANIFEST_NAME ) )
-                {
+            for (String entry : entries.keySet()) {
+                if (entry.startsWith(META_INF_NAME + '/')
+                    && !entry.equals(INDEX_NAME)
+                    && !entry.equals(MANIFEST_NAME)) {
                     add = true;
                     break;
                 }
@@ -441,7 +422,7 @@ public class JarArchiver
                 filteredDirs.remove( META_INF_NAME + '/' );
             }
         }
-        writeIndexLikeList( new ArrayList( filteredDirs ), rootEntries, writer );
+        writeIndexLikeList( new ArrayList<String>( filteredDirs ), rootEntries, writer );
         writer.println();
 
         if ( indexJars != null )
@@ -460,19 +441,15 @@ public class JarArchiver
                 }
             }
 
-            for ( Iterator i = indexJars.iterator(); i.hasNext(); )
-            {
-                String indexJar = (String)i.next();
-                String name = findJarName( indexJar, cpEntries );
-                if ( name != null )
-                {
-                    ArrayList dirs = new ArrayList();
-                    ArrayList files = new ArrayList();
-                    grabFilesAndDirs( indexJar, dirs, files );
-                    if ( dirs.size() + files.size() > 0 )
-                    {
-                        writer.println( name );
-                        writeIndexLikeList( dirs, files, writer );
+            for (String indexJar : indexJars) {
+                String name = findJarName(indexJar, cpEntries);
+                if (name != null) {
+                    ArrayList<String> dirs = new ArrayList<String>();
+                    ArrayList<String> files = new ArrayList<String>();
+                    grabFilesAndDirs(indexJar, dirs, files);
+                    if (dirs.size() + files.size() > 0) {
+                        writer.println(name);
+                        writeIndexLikeList(dirs, files, writer);
                         writer.println();
                     }
                 }
@@ -507,7 +484,7 @@ public class JarArchiver
         }
         else
         {
-            if ( index && ( vPath.indexOf( "/" ) == -1 ) )
+            if ( index && (!vPath.contains("/")) )
             {
                 rootEntries.addElement( vPath );
             }
@@ -595,82 +572,7 @@ public class JarArchiver
                 throw new ArchiverException( "Invalid Manifest", e );
             }
         }
-        else
-        {
-            // assuming 'skip' otherwise
-            // don't warn if skip has been requested explicitly, warn if user
-            // didn't set the attribute
-
-            // Hide warning also as it makes no sense since
-            // the filesetmanifest attribute itself has been
-            // hidden
-
-            //int logLevel = filesetManifestConfig == null ?
-            //    Project.MSG_WARN : Project.MSG_VERBOSE;
-            //log("File " + file
-            //    + " includes a META-INF/MANIFEST.MF which will be ignored. "
-            //    + "To include this file, set filesetManifest to a value other "
-            //    + "than 'skip'.", logLevel);
-        }
     }
-
-    /**
-     * Collect the resources that are newer than the corresponding
-     * entries (or missing) in the original archive.
-     * <p/>
-     * <p>If we are going to recreate the archive instead of updating
-     * it, all resources should be considered as new, if a single one
-     * is.  Because of this, subclasses overriding this method must
-     * call <code>super.getResourcesToAdd</code> and indicate with the
-     * third arg if they already know that the archive is
-     * out-of-date.</p>
-     *
-     * @param filesets    The filesets to grab resources from
-     * @param zipFile     intended archive file (may or may not exist)
-     * @param needsUpdate whether we already know that the archive is
-     *                    out-of-date.  Subclasses overriding this method are supposed to
-     *                    set this value correctly in their call to
-     *                    super.getResourcesToAdd.
-     * @return an map of resources to add for each fileset passed in as well
-     *         as a flag that indicates whether the archive is uptodate.
-     * @throws ArchiverException if it likes
-     */
-/*    protected Map getResourcesToAdd(FileSet[] filesets,
-                                             File zipFile,
-                                             boolean needsUpdate)
-        throws ArchiverException {
-
-        // need to handle manifest as a special check
-        if (zipFile.exists()) {
-            // if it doesn't exist, it will get created anyway, don't
-            // bother with any up-to-date checks.
-
-            try {
-                originalManifest = getManifestFromJar(zipFile);
-                if (originalManifest == null) {
-                    getLogger().debug("Updating jar since the current jar has no manifest");
-                    needsUpdate = true;
-                } else {
-                    Manifest mf = createManifest();
-                    if (!mf.equals(originalManifest)) {
-                        getLogger().debug("Updating jar since jar manifest has changed");
-                        needsUpdate = true;
-                    }
-                }
-            } catch (Throwable t) {
-                getLogger().warn("error while reading original manifest: " + t.getMessage());
-                needsUpdate = true;
-            }
-
-        } else {
-            // no existing archive
-            needsUpdate = true;
-        }
-
-        createEmpty = needsUpdate;
-        return super.getResourcesToAdd(filesets, zipFile, needsUpdate);
-    }
-*/
 
     /**
      */
@@ -761,8 +663,11 @@ public class JarArchiver
     /**
      * Writes the directory entries from the first and the filenames
      * from the second list to the given writer, one entry per line.
+     * @param dirs The directories
+     * @param files The files
+     * @param writer The printwriter ;)
      */
-    protected final void writeIndexLikeList( List dirs, List files, PrintWriter writer )
+    protected final void writeIndexLikeList( List<String> dirs, List<String> files, PrintWriter writer )
     {
         // JarIndex is sorting the directories by ascending order.
         // it has no value but cosmetic since it will be read into a
@@ -815,59 +720,59 @@ public class JarArchiver
      * <p/>
      * <p>if there is a classpath and the given file doesn't match any
      * of its entries, return null.</p>
+     * @param fileName .
+     * @param classpath .
+     * @return The guessed name
      */
-    protected static final String findJarName( String fileName, String[] classpath )
+    protected static  String findJarName( String fileName, String[] classpath )
     {
         if ( classpath == null )
         {
             return new File( fileName ).getName();
         }
         fileName = fileName.replace( File.separatorChar, '/' );
-        SortedMap matches = new TreeMap( new Comparator()
+        SortedMap<String, String> matches = new TreeMap<String, String>( new Comparator<String>()
         {
             // longest match comes first
-            public int compare( Object o1, Object o2 )
+            public int compare( String o1, String o2 )
             {
-                if ( ( o1 instanceof String ) && ( o2 instanceof String ) )
+                if ( (o1 != null) && (o2 != null) )
                 {
-                    return ( (String) o2 ).length()
-                           - ( (String) o1 ).length();
+                    return o2 .length() - o1.length();
                 }
                 return 0;
             }
         } );
 
-        for ( int i = 0; i < classpath.length; i++ )
-        {
-            if ( fileName.endsWith( classpath[ i ] ) )
-            {
-                matches.put( classpath[ i ], classpath[ i ] );
-            }
-            else
-            {
-                int slash = classpath[ i ].indexOf( "/" );
-                String candidate = classpath[ i ];
-                while ( slash > -1 )
-                {
-                    candidate = candidate.substring( slash + 1 );
-                    if ( fileName.endsWith( candidate ) )
-                    {
-                        matches.put( candidate, classpath[ i ] );
+        for (String aClasspath : classpath) {
+            if (fileName.endsWith(aClasspath)) {
+                matches.put(aClasspath, aClasspath);
+            } else {
+                int slash = aClasspath.indexOf("/");
+                String candidate = aClasspath;
+                while (slash > -1) {
+                    candidate = candidate.substring(slash + 1);
+                    if (fileName.endsWith(candidate)) {
+                        matches.put(candidate, aClasspath);
                         break;
                     }
-                    slash = candidate.indexOf( "/" );
+                    slash = candidate.indexOf("/");
                 }
             }
         }
 
-        return matches.size() == 0 ? null : (String) matches.get( matches.firstKey() );
+        return matches.size() == 0 ? null :  matches.get( matches.firstKey() );
     }
 
     /**
      * Grab lists of all root-level files and all directories
      * contained in the given archive.
+     * @param file .
+     * @param files .
+     * @param dirs .
+     * @throws java.io.IOException .
      */
-    protected static final void grabFilesAndDirs( String file, List dirs, List files )
+    protected static void grabFilesAndDirs( String file, List<String> dirs, List<String> files )
         throws IOException
     {
         ZipFile zf = null;
@@ -875,7 +780,7 @@ public class JarArchiver
         {
             zf = new ZipFile( file, "utf-8" );
             Enumeration entries = zf.getEntries();
-            HashSet dirSet = new HashSet();
+            HashSet<String> dirSet = new HashSet<String>();
             while ( entries.hasMoreElements() )
             {
                 ZipEntry ze = (ZipEntry) entries.nextElement();
@@ -888,7 +793,7 @@ public class JarArchiver
                     {
                         dirSet.add( name );
                     }
-                    else if ( name.indexOf( "/" ) == -1 )
+                    else if (!name.contains("/"))
                     {
                         files.add( name );
                     }

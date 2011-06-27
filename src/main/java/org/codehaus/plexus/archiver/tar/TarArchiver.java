@@ -293,9 +293,9 @@ public class TarArchiver
                             : options.getUserName() );
             te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName()
                             : options.getGroup() );
-            te.setUserId( ( attributes != null && attributes.getUserId() != -1 ) ? attributes.getUserId()
+            te.setUserId( ( attributes != null && attributes.getUserId() != null) ? attributes.getUserId()
                             : options.getUid() );
-            te.setGroupId( ( attributes != null && attributes.getGroupId() != -1 ) ? attributes.getGroupId()
+            te.setGroupId( ( attributes != null && attributes.getGroupId() != null) ? attributes.getGroupId()
                             : options.getGid() );
 
             tOut.putNextEntry( te );

@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Vector;
 import java.util.zip.CRC32;
 
 import org.codehaus.plexus.archiver.AbstractArchiver;
@@ -48,6 +47,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  * @version $Revision$ $Date$
  */
+@SuppressWarnings({"NullableProblems", "UnusedDeclaration"})
 public abstract class AbstractZipArchiver
     extends AbstractArchiver
 {
@@ -76,11 +76,9 @@ public abstract class AbstractZipArchiver
     //not used: private boolean keepCompression = false;
     private boolean doFilesonly = false;
 
-    protected Hashtable entries = new Hashtable();
+    protected Hashtable<String, String> entries = new Hashtable<String, String>();
 
-    protected Hashtable addedDirs = new Hashtable();
-
-    private Vector addedFiles = new Vector();
+    protected Hashtable<String, String> addedDirs = new Hashtable<String, String>();
 
     private static final long EMPTY_CRC = new CRC32().getValue();
 
@@ -198,6 +196,7 @@ public abstract class AbstractZipArchiver
     /**
      * If true, emulate Sun's jar utility by not adding parent directories;
      * optional, defaults to false.
+     * @param f true to emilate sun jar utility
      */
     public void setFilesonly( boolean f )
     {
@@ -220,6 +219,7 @@ public abstract class AbstractZipArchiver
      * up.  Rounding up may lead to a different type of problems like
      * JSPs inside a web archive that seem to be slightly more recent
      * than precompiled pages, rendering precompilation useless.</p>
+     * @param r true to round
      */
     public void setRoundUp( boolean r )
     {
@@ -262,8 +262,10 @@ public abstract class AbstractZipArchiver
     private void createArchiveMain()
         throws ArchiverException, IOException
     {
+        //noinspection deprecation
         if ( !Archiver.DUPLICATES_SKIP.equals( duplicate ) )
         {
+            //noinspection deprecation
             setDuplicateBehavior( duplicate );
         }
         
@@ -361,19 +363,20 @@ public abstract class AbstractZipArchiver
         success = true;
     }
 
-    protected Map getZipEntryNames( File file )
+    protected Map<String, Long> getZipEntryNames( File file )
         throws IOException
     {
         if ( !file.exists()  ||  !doUpdate )
         {
+            //noinspection unchecked
             return Collections.EMPTY_MAP;
         }
-        final Map entries = new HashMap();
+        final Map<String, Long> entries = new HashMap<String, Long>();
         final ZipFile zipFile = new ZipFile( file );
         for ( Enumeration en = zipFile.getEntries();  en.hasMoreElements();  )
         {
             ZipEntry ze = (ZipEntry) en.nextElement();
-            entries.put( ze.getName(), new Long( ze.getLastModificationTime() ) );
+            entries.put( ze.getName(), ze.getLastModificationTime());
         }
         return entries;
     }
@@ -386,11 +389,7 @@ public abstract class AbstractZipArchiver
     protected boolean isFileUpdated( ArchiveEntry entry, Map entries )
     {
         Long l = (Long) entries.get( entry.getName() );
-        if ( l == null )
-        {
-            return false;
-        }
-        return l.longValue() == -1  ||  !ResourceUtils.isUptodate( entry.getResource(), l.longValue() );
+        return l != null && (l == -1 || !ResourceUtils.isUptodate(entry.getResource(), l));
     }
 
     /**
@@ -399,6 +398,7 @@ public abstract class AbstractZipArchiver
      * @param resources the resources to add
      * @param zOut      the stream to write to
      */
+    @SuppressWarnings({"JavaDoc"})
     protected final void addResources( ResourceIterator resources, ZipOutputStream zOut )
         throws IOException, ArchiverException
     {
@@ -436,12 +436,13 @@ public abstract class AbstractZipArchiver
     /**
      * Ensure all parent dirs of a given entry have been added.
      */
+    @SuppressWarnings({"JavaDoc"})
     protected final void addParentDirs( File baseDir, String entry, ZipOutputStream zOut, String prefix )
         throws IOException
     {
         if ( !doFilesonly && getIncludeEmptyDirs() )
         {
-            Stack directories = new Stack();
+            Stack<String> directories = new Stack<String>();
 
             // Don't include the last entry itself if it's
             // a dir; it will be added on its own.
@@ -461,7 +462,7 @@ public abstract class AbstractZipArchiver
 
             while ( !directories.isEmpty() )
             {
-                String dir = (String) directories.pop();
+                String dir = directories.pop();
                 File f;
                 if ( baseDir != null )
                 {
@@ -488,6 +489,7 @@ public abstract class AbstractZipArchiver
      *                     entry from, will be null if we are not copying from an archive.
      * @param mode         the Unix permissions to set.
      */
+    @SuppressWarnings({"JavaDoc"})
     protected void zipFile( InputStream in, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
                             int mode )
         throws IOException, ArchiverException
@@ -567,8 +569,6 @@ public abstract class AbstractZipArchiver
             }
             while ( count != -1 );
         }
-
-        addedFiles.addElement( vPath );
     }
 
     /**
@@ -580,6 +580,7 @@ public abstract class AbstractZipArchiver
      * @param zOut  the stream to write to
      * @param vPath the name this entry shall have in the archive
      */
+    @SuppressWarnings({"JavaDoc"})
     protected void zipFile( ArchiveEntry entry, ZipOutputStream zOut, String vPath )
         throws IOException, ArchiverException
     {
@@ -649,8 +650,10 @@ public abstract class AbstractZipArchiver
     /**
      * Create an empty zip file
      *
+     * @param zipFile The file
      * @return true for historic reasons
      */
+    @SuppressWarnings({"JavaDoc"})
     protected boolean createEmptyZip( File zipFile )
         throws ArchiverException
     {
@@ -700,7 +703,6 @@ public abstract class AbstractZipArchiver
     {
         super.cleanUp();
         addedDirs.clear();
-        addedFiles.removeAllElements();
         entries.clear();
         addingNewFiles = false;
         doUpdate = savedDoUpdate;

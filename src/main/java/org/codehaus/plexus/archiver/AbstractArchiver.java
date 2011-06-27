@@ -90,7 +90,7 @@ public abstract class AbstractArchiver
 
     private FilterSupport filterSupport;
 
-    private List finalizers;
+    private List<ArchiveFinalizer> finalizers;
 
     private File dotFileDirectory;
 
@@ -738,13 +738,13 @@ public abstract class AbstractArchiver
     {
         if ( finalizers == null )
         {
-            finalizers = new ArrayList();
+            finalizers = new ArrayList<ArchiveFinalizer>();
         }
 
         finalizers.add( finalizer );
     }
 
-    public void setArchiveFinalizers( final List archiveFinalizers )
+    public void setArchiveFinalizers( final List<ArchiveFinalizer> archiveFinalizers )
     {
         finalizers = archiveFinalizers;
     }
