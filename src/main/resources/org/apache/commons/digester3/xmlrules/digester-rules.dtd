@@ -220,18 +220,21 @@
 <!ATTLIST set-top-rule
     pattern    CDATA #IMPLIED
     methodname CDATA #REQUIRED
-    paramtype  CDATA #IMPLIED>
+    paramtype  CDATA #IMPLIED
+    exactMatch CDATA #IMPLIED>
 
 <!-- SetNextRule -->
 <!ELEMENT set-next-rule EMPTY>
 <!ATTLIST set-next-rule
     pattern    CDATA #IMPLIED
     methodname CDATA #REQUIRED
-    paramtype  CDATA #IMPLIED>
+    paramtype  CDATA #IMPLIED
+    exactMatch CDATA #IMPLIED>
 
 <!-- SetRootRule -->
 <!ELEMENT set-root-rule EMPTY>
 <!ATTLIST set-root-rule
     pattern    CDATA #IMPLIED
     methodname CDATA #REQUIRED
-    paramtype  CDATA #IMPLIED>
+    paramtype  CDATA #IMPLIED
+    exactMatch CDATA #IMPLIED>
