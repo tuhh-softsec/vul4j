@@ -27,6 +27,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.xml.sax.Attributes;
 
 /**
  * <p>
@@ -70,7 +71,7 @@ public class BeanPropertySetterRule
      */
     public BeanPropertySetterRule()
     {
-        this( (String) null );
+        this( null );
     }
 
     // ----------------------------------------------------- Instance Variables
@@ -78,7 +79,12 @@ public class BeanPropertySetterRule
     /**
      * Set this property on the top object.
      */
-    private final String propertyName;
+    private String propertyName;
+
+    /**
+     * Extract the property name from attribute
+     */
+    private String propertyNameFromAttribute;
 
     /**
      * The body text used to set the property.
@@ -98,6 +104,17 @@ public class BeanPropertySetterRule
     }
 
     /**
+     * Sets the attribute name from which the property name has to be extracted.
+     *
+     * @param propertyNameFromAttribute the attribute name from which the property name has to be extracted.
+     * @since 3.0
+     */
+    public void setPropertyNameFromAttribute( String propertyNameFromAttribute )
+    {
+        this.propertyNameFromAttribute = propertyNameFromAttribute;
+    }
+
+    /**
      * Returns the body text used to set the property.
      *
      * @return The body text used to set the property
@@ -105,6 +122,22 @@ public class BeanPropertySetterRule
     protected String getBodyText()
     {
         return bodyText;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void begin( String namespace, String name, Attributes attributes )
+        throws Exception
+    {
+        if ( propertyNameFromAttribute != null )
+        {
+            propertyName = attributes.getValue( propertyNameFromAttribute );
+
+            getDigester().getLogger().warn( format( "[BeanPropertySetterRule]{%s} Attribute '%s' not found in matching element '%s'",
+                                                    getDigester().getMatch(), propertyNameFromAttribute, name ) );
+        }
     }
 
     /**

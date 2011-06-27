@@ -35,6 +35,9 @@
     <action dev="simonetripodi" type="fix" issue="DIGESTER-103">
       xmlrules does not support NodeCreateRule
     </action>
+    <action dev="simonetripodi" type="add" issue="DIGESTER-105">
+      Need to process [attribute id="name"]somename[/attribute]
+    </action>
     <action dev="simonetripodi" type="fix" issue="DIGESTER-118">
       ObjectCreateRule shouldn't keep className as a field.
     </action>

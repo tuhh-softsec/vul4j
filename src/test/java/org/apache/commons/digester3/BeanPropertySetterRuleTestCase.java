@@ -264,6 +264,29 @@ public class BeanPropertySetterRuleTestCase
 
     }
 
+    @Test
+    public void extractPropertyNameFromAttribute() throws Exception
+    {
+        Employee expected = new Employee( "John", "Doe" );
+
+        Employee actual = newLoader( new AbstractRulesModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                forPattern( "employee" ).createObject().ofType( Employee.class );
+                forPattern( "employee/property" ).setBeanProperty().extractPropertyNameFromAttribute( "name" );
+            }
+
+        } )
+        .newDigester()
+        .parse( getClass().getResource( "extractPropertyNameFromAttribute.xml" ) );
+
+        assertEquals( expected.getFirstName(), actual.getFirstName() );
+        assertEquals( expected.getLastName(), actual.getLastName() );
+    }
+
     /**
      * Get input stream from {@link #TEST_XML}.
      */

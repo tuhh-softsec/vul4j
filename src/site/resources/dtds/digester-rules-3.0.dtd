@@ -95,8 +95,9 @@
 <!-- Bean Property Setter Rule -->
 <!ELEMENT bean-property-setter-rule EMPTY>
 <!ATTLIST bean-property-setter-rule
-    pattern      CDATA #IMPLIED
-    propertyname CDATA #IMPLIED>
+    pattern                   CDATA #IMPLIED
+    propertyname              CDATA #IMPLIED
+    propertynameFromAttribute CDATA #IMPLIED>
 
 <!-- CallMethodRule
   -

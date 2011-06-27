@@ -19,6 +19,7 @@ package org.apache.commons.digester3.xmlrules;
  * under the License.
  */
 
+import org.apache.commons.digester3.binder.BeanPropertySetterBuilder;
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
 import org.xml.sax.Attributes;
@@ -42,7 +43,14 @@ final class BeanPropertySetterRule
     protected void bindRule( LinkedRuleBuilder linkedRuleBuilder, Attributes attributes )
         throws Exception
     {
-        linkedRuleBuilder.setBeanProperty().withName( attributes.getValue( "propertyname" ) );
+        BeanPropertySetterBuilder builder =
+            linkedRuleBuilder.setBeanProperty().withName( attributes.getValue( "propertyname" ) );
+
+        int propertyNameFromAttributeIndex = -1;
+        if ( ( propertyNameFromAttributeIndex = attributes.getIndex( "propertynameFromAttribute" ) ) >= 0 )
+        {
+            builder.extractPropertyNameFromAttribute( attributes.getValue( propertyNameFromAttributeIndex ) );
+        }
     }
 
 }

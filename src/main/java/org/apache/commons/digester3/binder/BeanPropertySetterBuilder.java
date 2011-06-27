@@ -30,6 +30,8 @@ public final class BeanPropertySetterBuilder
 
     private String propertyName;
 
+    private String attribute;
+
     BeanPropertySetterBuilder( String keyPattern, String namespaceURI, RulesBinder mainBinder,
                                LinkedRuleBuilder mainBuilder )
     {
@@ -49,12 +51,31 @@ public final class BeanPropertySetterBuilder
     }
 
     /**
+     * Sets the attribute name from which the property name has to be extracted.
+     *
+     * @param propertyName The name of property to set
+     * @return this builder instance
+     */
+    public BeanPropertySetterBuilder extractPropertyNameFromAttribute( String attribute )
+    {
+        if ( attribute == null )
+        {
+            reportError( "setBeanProperty().extractPropertyNameFromAttribute( String )",
+                         "Attribute name can not be null" );
+        }
+        this.attribute = attribute;
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected BeanPropertySetterRule createRule()
     {
-        return new BeanPropertySetterRule( propertyName );
+        BeanPropertySetterRule rule = new BeanPropertySetterRule( propertyName );
+        rule.setPropertyNameFromAttribute( attribute );
+        return rule;
     }
 
 }
