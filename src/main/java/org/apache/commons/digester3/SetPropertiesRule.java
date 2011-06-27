@@ -175,7 +175,7 @@ public class SetPropertiesRule
                 getDigester().getLogger().debug( format( "[SetPropertiesRule]{%s} Setting property '%s' to '%s'",
                                                          getDigester().getMatch(),
                                                          attributeName,
-                                                         attributeName) );
+                                                         attributeName ) );
             }
 
             if ( ( !ignoreMissingProperty ) && ( attributeName != null ) )
