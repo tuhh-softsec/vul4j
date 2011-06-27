@@ -166,6 +166,7 @@ public class ExtendedBaseRules
     @Override
     protected void registerRule( String pattern, Rule rule )
     {
+        super.registerRule( pattern, rule );
         counter++;
         order.put( rule, counter );
     }
