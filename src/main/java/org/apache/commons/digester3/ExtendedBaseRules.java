@@ -164,9 +164,8 @@ public class ExtendedBaseRules
      * {@inheritDoc}
      */
     @Override
-    public void add( String pattern, Rule rule )
+    protected void registerRule( String pattern, Rule rule )
     {
-        super.add( pattern, rule );
         counter++;
         order.put( rule, counter );
     }

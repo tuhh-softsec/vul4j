@@ -85,7 +85,7 @@ public abstract class AbstractRulesImpl
     /**
      * {@inheritDoc}
      */
-    public void add( String pattern, Rule rule )
+    public final void add( String pattern, Rule rule )
     {
         // set up rule
         if ( this.digester != null )
