@@ -27,6 +27,9 @@ import org.apache.commons.digester3.AbstractMethodRule;
  * Builder chained when invoking {@link LinkedRuleBuilder#setNext(String)},
  * {@link LinkedRuleBuilder#setRoot(String)} or {@link LinkedRuleBuilder#setTop(String)}.
  *
+ * @param <R> any {@link AbstractMethodRule} concrete implementation, typically
+ *        {@link org.apache.commons.digester3.SetNext}, {@link org.apache.commons.digester3.SetRoot}
+ *        and {@link org.apache.commons.digester3.SetTop}
  * @since 3.0
  */
 public abstract class AbstractParamTypeBuilder<R extends AbstractMethodRule>
