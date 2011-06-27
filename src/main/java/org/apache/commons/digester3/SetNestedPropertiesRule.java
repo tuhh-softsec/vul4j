@@ -21,21 +21,19 @@ package org.apache.commons.digester3;
 
 import static java.lang.String.format;
 
-import java.util.List;
-import java.util.LinkedList;
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.beans.PropertyDescriptor;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
-
-import org.xml.sax.Attributes;
-
 import org.apache.commons.logging.Log;
+import org.xml.sax.Attributes;
 
 /**
  * <p>
@@ -371,9 +369,9 @@ public class SetNestedPropertiesRule
         {
         }
 
-        public List<Rule> match( String namespaceURI, String matchPath )
+        public List<Rule> match( String namespaceURI, String matchPath, String name, Attributes attributes )
         {
-            List<Rule> match = decoratedRules.match( namespaceURI, matchPath );
+            List<Rule> match = decoratedRules.match( namespaceURI, matchPath, name, attributes );
 
             if ( ( matchPath.startsWith( matchPrefix ) ) && ( matchPath.indexOf( '/', matchPrefix.length() ) == -1 ) )
             {

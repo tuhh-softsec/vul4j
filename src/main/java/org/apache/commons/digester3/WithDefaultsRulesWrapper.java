@@ -22,6 +22,8 @@ package org.apache.commons.digester3;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xml.sax.Attributes;
+
 /**
  * <p>
  * <code>Rules</code> <em>Decorator</em> that returns default rules when no matches are returned by the wrapped
@@ -137,9 +139,9 @@ public class WithDefaultsRulesWrapper
     /**
      * {@inheritDoc}
      */
-    public List<Rule> match( String namespaceURI, String pattern )
+    public List<Rule> match( String namespaceURI, String pattern, String name, Attributes attributes )
     {
-        List<Rule> matches = wrappedRules.match( namespaceURI, pattern );
+        List<Rule> matches = wrappedRules.match( namespaceURI, pattern, name, attributes );
         if ( matches == null || matches.isEmpty() )
         {
             // a little bit of defensive programming

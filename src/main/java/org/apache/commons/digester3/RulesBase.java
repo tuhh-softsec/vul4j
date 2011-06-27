@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.xml.sax.Attributes;
+
 /**
  * <p>
  * Default implementation of the <code>Rules</code> interface that supports the standard rule matching behavior. This
@@ -156,7 +158,7 @@ public class RulesBase
     /**
      * {@inheritDoc}
      */
-    public List<Rule> match( String namespaceURI, String pattern )
+    public List<Rule> match( String namespaceURI, String pattern, String name, Attributes attributes )
     {
         // List rulesList = (List) this.cache.get(pattern);
         List<Rule> rulesList = lookup( namespaceURI, pattern );

@@ -95,13 +95,13 @@ public class WithDefaultsRulesWrapperTestCase
         rules.addDefault( new TestRule( "Roger" ) );
         rules.addDefault( new TestRule( "Rabbit" ) );
 
-        List<Rule> matches = rules.match( "", "alpha" );
+        List<Rule> matches = rules.match( "", "alpha", null, null );
         assertEquals( "Wrong size (1)", 3, matches.size() );
         assertEquals( "Wrong order (1)", "Tom", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
         assertEquals( "Wrong order (2)", "Dick", ( (TestRule) matches.get( 1 ) ).getIdentifier() );
         assertEquals( "Wrong order (3)", "Harry", ( (TestRule) matches.get( 2 ) ).getIdentifier() );
 
-        matches = rules.match( "", "not-alpha" );
+        matches = rules.match( "", "not-alpha", null, null );
         assertEquals( "Wrong size (2)", 2, matches.size() );
         assertEquals( "Wrong order (4)", "Roger", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
         assertEquals( "Wrong order (5)", "Rabbit", ( (TestRule) matches.get( 1 ) ).getIdentifier() );

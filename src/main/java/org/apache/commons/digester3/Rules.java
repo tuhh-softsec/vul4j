@@ -21,6 +21,8 @@ package org.apache.commons.digester3;
 
 import java.util.List;
 
+import org.xml.sax.Attributes;
+
 /**
  * Public interface defining a collection of Rule instances (and corresponding matching patterns) plus an implementation
  * of a matching policy that selects the rules that match a particular pattern of nested elements discovered during
@@ -85,7 +87,7 @@ public interface Rules
      * @param pattern Nesting pattern to be matched
      * @return a List of all registered Rule instances that match the specified nesting pattern
      */
-    List<Rule> match( String namespaceURI, String pattern );
+    List<Rule> match( String namespaceURI, String pattern, String name, Attributes attributes );
 
     /**
      * Return a List of all registered Rule instances, or a zero-length List if there are no registered Rule instances.

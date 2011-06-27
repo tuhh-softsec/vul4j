@@ -435,7 +435,7 @@ public class PluginCreateRule
         // and now we have to fire any custom rules which would have
         // been matched by the same path that matched this rule, had
         // they been loaded at that time.
-        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path );
+        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path, name, attributes );
         fireBeginMethods( rules, namespace, name, attributes );
     }
 
@@ -462,7 +462,7 @@ public class PluginCreateRule
 
         String path = getDigester().getMatch();
         PluginRules newRules = (PluginRules) getDigester().getRules();
-        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path );
+        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path, name, null );
         fireBodyMethods( rules, namespace, name, text );
     }
 
@@ -476,7 +476,7 @@ public class PluginCreateRule
         // see body method for more info
         String path = getDigester().getMatch();
         PluginRules newRules = (PluginRules) getDigester().getRules();
-        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path );
+        List<Rule> rules = newRules.getDecoratedRules().match( namespace, path, name, null );
         fireEndMethods( rules, namespace, name );
 
         // pop the stack of PluginRules instances, which

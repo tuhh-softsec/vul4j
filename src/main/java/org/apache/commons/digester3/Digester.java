@@ -1296,7 +1296,7 @@ public class Digester
         }
 
         // Fire "begin" events for all relevant rules
-        List<Rule> rules = getRules().match( namespaceURI, match );
+        List<Rule> rules = getRules().match( namespaceURI, match, localName, list );
         matches.push( rules );
         if ( ( rules != null ) && ( rules.size() > 0 ) )
         {

@@ -80,7 +80,7 @@ public class ExtendedBaseRulesTestCase
         Iterator<Rule> it = null;
 
         // this should match just the exact since this has presidence
-        list = digester.getRules().match( null, "alpha/beta/gamma/delta" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/delta", null, null );
 
         // all three rules should match
         assertEquals( "Testing basic parent mismatch (A)", 1, list.size() );
@@ -89,7 +89,7 @@ public class ExtendedBaseRulesTestCase
         assertEquals( "Testing basic parent mismatch (B)", "exact", ( (TestRule) it.next() ).getIdentifier() );
 
         // we don't have an exact match for this child so we should get the exact parent
-        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon", null, null );
 
         // all three rules should match
         assertEquals( "Testing basic parent mismatch (C)", 1, list.size() );
@@ -98,7 +98,7 @@ public class ExtendedBaseRulesTestCase
         assertEquals( "Testing basic parent mismatch (D)", "exact_parent", ( (TestRule) it.next() ).getIdentifier() );
 
         // wild child overrides wild parent
-        list = digester.getRules().match( null, "alpha/omega/beta/gamma/epsilon" );
+        list = digester.getRules().match( null, "alpha/omega/beta/gamma/epsilon", null, null );
 
         // all three rules should match
         assertEquals( "Testing basic parent mismatch (E)", 1, list.size() );
@@ -107,7 +107,7 @@ public class ExtendedBaseRulesTestCase
         assertEquals( "Testing basic parent mismatch (F)", "wild_child", ( (TestRule) it.next() ).getIdentifier() );
 
         // nothing else matches so return wild parent
-        list = digester.getRules().match( null, "alpha/omega/beta/gamma/zeta" );
+        list = digester.getRules().match( null, "alpha/omega/beta/gamma/zeta", null, null );
 
         // all three rules should match
         assertEquals( "Testing basic parent mismatch (G)", 1, list.size() );
@@ -148,7 +148,7 @@ public class ExtendedBaseRulesTestCase
         Iterator<Rule> it = null;
 
         // test universal wild head
-        list = digester.getRules().match( null, "alpha/beta/gamma" );
+        list = digester.getRules().match( null, "alpha/beta/gamma", null, null );
 
         assertEquals( "Testing universal wildcard mismatch (A)", 2, list.size() );
 
@@ -158,7 +158,7 @@ public class ExtendedBaseRulesTestCase
                       ( (TestRule) it.next() ).getIdentifier() );
 
         // test universal parent
-        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon", null, null );
 
         assertEquals( "Testing universal wildcard mismatch (D)", 2, list.size() );
 
@@ -168,7 +168,7 @@ public class ExtendedBaseRulesTestCase
         assertEquals( "Testing universal wildcard mismatch (F)", "exact2", ( (TestRule) it.next() ).getIdentifier() );
 
         // test universal parent
-        list = digester.getRules().match( null, "alpha/beta/gamma/zeta" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/zeta", null, null );
 
         assertEquals( "Testing universal wildcard mismatch (G)", 2, list.size() );
 
@@ -179,7 +179,7 @@ public class ExtendedBaseRulesTestCase
                       ( (TestRule) it.next() ).getIdentifier() );
 
         // test wildcard universal parent
-        list = digester.getRules().match( null, "alpha/epsilon/beta/gamma/alpha" );
+        list = digester.getRules().match( null, "alpha/epsilon/beta/gamma/alpha", null, null );
 
         assertEquals( "Testing universal wildcard mismatch (J)", 2, list.size() );
 
@@ -190,7 +190,7 @@ public class ExtendedBaseRulesTestCase
                       ( (TestRule) it.next() ).getIdentifier() );
 
         // test wildcard universal parent
-        list = digester.getRules().match( null, "alpha/epsilon/beta/gamma/zeta" );
+        list = digester.getRules().match( null, "alpha/epsilon/beta/gamma/zeta", null, null );
 
         assertEquals( "Testing universal wildcard mismatch (M)", 2, list.size() );
 
@@ -228,7 +228,7 @@ public class ExtendedBaseRulesTestCase
         Iterator<Rule> it = null;
 
         // The universal wild will always match whatever else does
-        list = digester.getRules().match( null, "alpha/beta/gamma/delta" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/delta", null, null );
 
         // all three rules should match
         assertEquals( "Testing wild mismatch (A)", 2, list.size() );
@@ -238,7 +238,7 @@ public class ExtendedBaseRulesTestCase
         assertEquals( "Testing wild mismatch (C)", "exact", ( (TestRule) it.next() ).getIdentifier() );
 
         // The universal wild will always match whatever else does
-        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon" );
+        list = digester.getRules().match( null, "alpha/beta/gamma/epsilon", null, null );
 
         assertEquals( "Testing wild mismatch (D)", 2, list.size() );
 
@@ -248,7 +248,7 @@ public class ExtendedBaseRulesTestCase
 
         // The universal wild will always match whatever else does
         // we have no other non-universal matching so this will match the non-universal wild as well
-        list = digester.getRules().match( null, "alpha/gamma" );
+        list = digester.getRules().match( null, "alpha/gamma", null, null );
 
         assertEquals( "Testing wild mismatch (G)", 2, list.size() );
 
@@ -280,25 +280,25 @@ public class ExtendedBaseRulesTestCase
 
         List<Rule> list = null;
 
-        list = digester.getRules().match( null, "a" );
+        list = digester.getRules().match( null, "a", null, null );
 
         assertEquals( "Testing tail wrong size (A)", 1, list.size() );
         assertEquals( "Testing tail mismatch (B)", "a_tail", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "beta/a" );
+        list = digester.getRules().match( null, "beta/a", null, null );
 
         assertEquals( "Testing tail wrong size (C)", 1, list.size() );
         assertEquals( "Testing tail mismatch (D)", "a_tail", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "be/aaa" );
+        list = digester.getRules().match( null, "be/aaa", null, null );
 
         assertEquals( "Testing tail no matches (E)", 0, list.size() );
 
-        list = digester.getRules().match( null, "aaa" );
+        list = digester.getRules().match( null, "aaa", null, null );
 
         assertEquals( "Testing tail no matches (F)", 0, list.size() );
 
-        list = digester.getRules().match( null, "a/beta" );
+        list = digester.getRules().match( null, "a/beta", null, null );
 
         assertEquals( "Testing tail no matches (G)", 0, list.size() );
 
@@ -319,23 +319,23 @@ public class ExtendedBaseRulesTestCase
         digester.addRule( "a/b/c", new TestRule( "a-b-c" ) );
         digester.addRule( "a/b/?", new TestRule( "a-b-child" ) );
 
-        List<Rule> list = digester.getRules().match( null, "a/b/c" );
+        List<Rule> list = digester.getRules().match( null, "a/b/c", null, null );
 
         assertEquals( "Simple ancester matches (1)", 2, list.size() );
         assertEquals( "Univeral ancester mismatch (1)", "uni-a-b-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Parent precedence failure", "a-b-c", ( (TestRule) list.get( 1 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/b" );
+        list = digester.getRules().match( null, "a/b/b", null, null );
         assertEquals( "Simple ancester matches (2)", 2, list.size() );
         assertEquals( "Univeral ancester mismatch (2)", "uni-a-b-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Child precedence failure", "a-b-child", ( (TestRule) list.get( 1 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/d" );
+        list = digester.getRules().match( null, "a/b/d", null, null );
         assertEquals( "Simple ancester matches (3)", 2, list.size() );
         assertEquals( "Univeral ancester mismatch (3)", "uni-a-b-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Ancester mismatch (1)", "a-b-child", ( (TestRule) list.get( 1 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/d/e/f" );
+        list = digester.getRules().match( null, "a/b/d/e/f", null, null );
         assertEquals( "Simple ancester matches (4)", 2, list.size() );
         assertEquals( "Univeral ancester mismatch (4)", "uni-a-b-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Ancester mismatch (2)", "a-b-star", ( (TestRule) list.get( 1 ) ).getIdentifier() );
@@ -348,22 +348,22 @@ public class ExtendedBaseRulesTestCase
         digester.addRule( "*/b/c/d", new TestRule( "star-b-c-d" ) );
         digester.addRule( "a/b/c", new TestRule( "a-b-c" ) );
 
-        list = digester.getRules().match( null, "a/b/c" );
+        list = digester.getRules().match( null, "a/b/c", null, null );
         assertEquals( "Wild ancester match (1)", 2, list.size() );
         assertEquals( "Univeral ancester mismatch (5)", "uni-star-a-b-star",
                       ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Match missed (1)", "a-b-c", ( (TestRule) list.get( 1 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "b/c" );
+        list = digester.getRules().match( null, "b/c", null, null );
         assertEquals( "Wild ancester match (2)", 1, list.size() );
         assertEquals( "Match missed (2)", "star-b-c-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/c/d" );
+        list = digester.getRules().match( null, "a/b/c/d", null, null );
         assertEquals( "Wild ancester match (3)", 2, list.size() );
         assertEquals( "Match missed (3)", "uni-star-a-b-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
         assertEquals( "Match missed (4)", "star-b-c-d", ( (TestRule) list.get( 1 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "b/b/c/e/d" );
+        list = digester.getRules().match( null, "b/b/c/e/d", null, null );
         assertEquals( "Wild ancester match (2)", 1, list.size() );
         assertEquals( "Match missed (5)", "star-b-c-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
     }
@@ -376,19 +376,19 @@ public class ExtendedBaseRulesTestCase
 
         digester.addRule( "a/b/c/d/*", new TestRule( "a-b-c-d-star" ) );
 
-        List<Rule> list = digester.getRules().match( null, "a/b/c/d/e" );
+        List<Rule> list = digester.getRules().match( null, "a/b/c/d/e", null, null );
         assertEquals( "Long match (1)", 1, list.size() );
         assertEquals( "Match missed (1)", "a-b-c-d-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/c/d/e/f" );
+        list = digester.getRules().match( null, "a/b/c/d/e/f", null, null );
         assertEquals( "Long match (2)", 1, list.size() );
         assertEquals( "Match missed (2)", "a-b-c-d-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/c/d/e/f/g" );
+        list = digester.getRules().match( null, "a/b/c/d/e/f/g", null, null );
         assertEquals( "Long match (3)", 1, list.size() );
         assertEquals( "Match missed (3)", "a-b-c-d-star", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
-        list = digester.getRules().match( null, "a/b/c/d" );
+        list = digester.getRules().match( null, "a/b/c/d", null, null );
         assertEquals( "Long match (4)", 0, list.size() );
     }
 
@@ -400,7 +400,7 @@ public class ExtendedBaseRulesTestCase
         digester.addRule( "!instructors/*", new TestRule( "instructors" ) );
         digester.addRule( "!instructor/*", new TestRule( "instructor" ) );
 
-        List<Rule> list = digester.getRules().match( null, "instructors" );
+        List<Rule> list = digester.getRules().match( null, "instructors", null, null );
         assertEquals( "Only expect to match instructors", 1, list.size() );
         assertEquals( "Instructors expected", "instructors", ( (TestRule) list.get( 0 ) ).getIdentifier() );
 
@@ -413,7 +413,7 @@ public class ExtendedBaseRulesTestCase
 
         digester.addRule( "!instructors/*", new TestRule( "instructors" ) );
 
-        List<Rule> list = digester.getRules().match( null, "/tosh/instructors/fiddlesticks" );
+        List<Rule> list = digester.getRules().match( null, "/tosh/instructors/fiddlesticks", null, null );
         assertEquals( "No matches expected", 0, list.size() );
 
     }

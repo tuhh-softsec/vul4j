@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.xml.sax.Attributes;
+
 /**
  * <p>
  * Extension of {@link RulesBase} for complex schema.
@@ -173,7 +175,7 @@ public class ExtendedBaseRules
      * {@inheritDoc}
      */
     @Override
-    public List<Rule> match( String namespace, String pattern )
+    public List<Rule> match( String namespaceURI, String pattern, String name, Attributes attributes )
     {
         // calculate the pattern of the parent
         // (if the element has one)
@@ -425,7 +427,7 @@ public class ExtendedBaseRules
         }
 
         // don't filter if namespace is null
-        if ( namespace != null )
+        if ( namespaceURI != null )
         {
             // remove invalid namespaces
             Iterator<Rule> it = universalList.iterator();
@@ -433,7 +435,7 @@ public class ExtendedBaseRules
             {
                 Rule rule = it.next();
                 String nsUri = rule.getNamespaceURI();
-                if ( nsUri != null && !nsUri.equals( namespace ) )
+                if ( nsUri != null && !nsUri.equals( namespaceURI ) )
                 {
                     it.remove();
                 }

@@ -101,15 +101,15 @@ public class RulesBaseTestCase
 
         // perform tests
 
-        assertEquals( "Initial rules list is empty", 0, digester.getRules().match( null, "a" ).size() );
+        assertEquals( "Initial rules list is empty", 0, digester.getRules().match( null, "a", null, null ).size() );
         digester.addSetProperties( "a" );
-        assertEquals( "Add a matching rule", 1, digester.getRules().match( null, "a" ).size() );
+        assertEquals( "Add a matching rule", 1, digester.getRules().match( null, "a", null, null ).size() );
         digester.addSetProperties( "b" );
-        assertEquals( "Add a non-matching rule", 1, digester.getRules().match( null, "a" ).size() );
+        assertEquals( "Add a non-matching rule", 1, digester.getRules().match( null, "a", null, null ).size() );
         digester.addSetProperties( "a/b" );
-        assertEquals( "Add a non-matching nested rule", 1, digester.getRules().match( null, "a" ).size() );
+        assertEquals( "Add a non-matching nested rule", 1, digester.getRules().match( null, "a", null, null ).size() );
         digester.addSetProperties( "a/b" );
-        assertEquals( "Add a second matching rule", 2, digester.getRules().match( null, "a/b" ).size() );
+        assertEquals( "Add a second matching rule", 2, digester.getRules().match( null, "a/b", null, null ).size() );
 
         // clean up
         digester.getRules().clear();
@@ -144,27 +144,27 @@ public class RulesBaseTestCase
         digester.addRule( "*/c/d", new TestRule( "*/c/d" ) );
 
         // Test exact match
-        assertEquals( "Exact match takes precedence 1", 1, digester.getRules().match( null, "a/b/c/d" ).size() );
+        assertEquals( "Exact match takes precedence 1", 1, digester.getRules().match( null, "a/b/c/d", null, null ).size() );
         assertEquals( "Exact match takes precedence 2", "a/b/c/d",
-                      ( (TestRule) digester.getRules().match( null, "a/b/c/d" ).iterator().next() ).getIdentifier() );
+                      ( (TestRule) digester.getRules().match( null, "a/b/c/d", null, null ).iterator().next() ).getIdentifier() );
 
         // Test wildcard tail matching
-        assertEquals( "Wildcard tail matching rule 1", 1, digester.getRules().match( null, "a/b/d" ).size() );
+        assertEquals( "Wildcard tail matching rule 1", 1, digester.getRules().match( null, "a/b/d", null, null ).size() );
         assertEquals( "Wildcard tail matching rule 2", "*/d",
-                      ( (TestRule) digester.getRules().match( null, "a/b/d" ).iterator().next() ).getIdentifier() );
+                      ( (TestRule) digester.getRules().match( null, "a/b/d", null, null ).iterator().next() ).getIdentifier() );
 
         // Test the longest matching pattern rule
-        assertEquals( "Longest tail rule 1", 1, digester.getRules().match( null, "x/c/d" ).size() );
+        assertEquals( "Longest tail rule 1", 1, digester.getRules().match( null, "x/c/d", null, null ).size() );
         assertEquals( "Longest tail rule 2", "*/c/d",
-                      ( (TestRule) digester.getRules().match( null, "x/c/d" ).iterator().next() ).getIdentifier() );
+                      ( (TestRule) digester.getRules().match( null, "x/c/d", null, null ).iterator().next() ).getIdentifier() );
 
         // Test wildcard tail matching at the top level,
         // i.e. the wildcard is nothing
         digester.addRule( "*/a", new TestRule( "*/a" ) );
-        assertEquals( "Wildcard tail matching rule 3", 1, digester.getRules().match( null, "a" ).size() );
+        assertEquals( "Wildcard tail matching rule 3", 1, digester.getRules().match( null, "a", null, null ).size() );
 
         assertEquals( "Wildcard tail matching rule 3 (match too much)", 0,
-                      digester.getRules().match( null, "aa" ).size() );
+                      digester.getRules().match( null, "aa", null, null ).size() );
         // clean up
         digester.getRules().clear();
 
@@ -192,7 +192,7 @@ public class RulesBaseTestCase
         list = digester.getRules().rules();
 
         // test that matching null namespace brings back namespace and non-namespace rules
-        list = digester.getRules().match( null, "alpha/beta/gamma" );
+        list = digester.getRules().match( null, "alpha/beta/gamma", null, null );
 
         assertEquals( "Null namespace match (A)", 2, list.size() );
 
@@ -201,7 +201,7 @@ public class RulesBaseTestCase
         assertEquals( "Null namespace match (C)", "Euclidean-Namespace", ( (TestRule) it.next() ).getIdentifier() );
 
         // test that matching euclid namespace brings back namespace and non-namespace rules
-        list = digester.getRules().match( "euclidean", "alpha/beta/gamma" );
+        list = digester.getRules().match( "euclidean", "alpha/beta/gamma", null, null );
 
         assertEquals( "Matching namespace match (A)", 2, list.size() );
 
@@ -210,7 +210,7 @@ public class RulesBaseTestCase
         assertEquals( "Matching namespace match (C)", "Euclidean-Namespace", ( (TestRule) it.next() ).getIdentifier() );
 
         // test that matching another namespace brings back only non-namespace rule
-        list = digester.getRules().match( "hyperbolic", "alpha/beta/gamma" );
+        list = digester.getRules().match( "hyperbolic", "alpha/beta/gamma", null, null );
 
         assertEquals( "Non matching namespace match (A)", 1, list.size() );
 
@@ -240,7 +240,7 @@ public class RulesBaseTestCase
         digester.addRule( "alpha/beta/gamma", new TestRule( "three" ) );
 
         // test that rules are returned in set order
-        List<Rule> list = digester.getRules().match( null, "alpha/beta/gamma" );
+        List<Rule> list = digester.getRules().match( null, "alpha/beta/gamma", null, null );
 
         assertEquals( "Testing ordering mismatch (A)", 3, list.size() );
 
@@ -269,7 +269,7 @@ public class RulesBaseTestCase
         digester.addRule( "beta/gamma/alpha", new TestRule( "three" ) );
 
         // test that rules are returned in set order
-        List<Rule> list = digester.getRules().match( null, "alpha/beta/gamma" );
+        List<Rule> list = digester.getRules().match( null, "alpha/beta/gamma", null, null );
 
         assertEquals( "Testing number of matches", 1, list.size() );
 

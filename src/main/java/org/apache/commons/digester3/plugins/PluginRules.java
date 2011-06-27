@@ -26,6 +26,7 @@ import org.apache.commons.digester3.Rule;
 import org.apache.commons.digester3.Rules;
 import org.apache.commons.digester3.RulesBase;
 import org.apache.commons.logging.Log;
+import org.xml.sax.Attributes;
 
 /**
  * A custom digester Rules manager which must be used as the Rules object when using the plugins module functionality.
@@ -354,17 +355,9 @@ public class PluginRules
     }
 
     /**
-     * Return a List of all registered Rule instances that match the specified nodepath, or a zero-length List if there
-     * are no matches. If more than one Rule instance matches, they <strong>must</strong> be returned in the order
-     * originally registered through the <code>add()</code> method.
-     * <p>
-     * 
-     * @param namespaceURI Namespace URI for which to select matching rules, or <code>null</code> to match regardless of
-     *            namespace URI
-     * @param path the path to the xml nodes to be matched.
-     * @return The List of all registered Rule instances that match the specified nodepath
+     * {@inheritDoc}
      */
-    public List<Rule> match( String namespaceURI, String path )
+    public List<Rule> match( String namespaceURI, String path, String name, Attributes attributes )
     {
         Log log = LogUtils.getLogger( digester );
         boolean debug = log.isDebugEnabled();
@@ -382,7 +375,7 @@ public class PluginRules
                 log.debug( "Path [" + path + "] delegated to parent." );
             }
 
-            matches = parent.match( namespaceURI, path );
+            matches = parent.match( namespaceURI, path, name, attributes );
 
             // Note that in the case where path equals mountPoint,
             // we deliberately return only the rules from the parent,
@@ -393,7 +386,7 @@ public class PluginRules
         else
         {
             log.debug( "delegating to decorated rules." );
-            matches = decoratedRules.match( namespaceURI, path );
+            matches = decoratedRules.match( namespaceURI, path, name, attributes );
         }
 
         return matches;

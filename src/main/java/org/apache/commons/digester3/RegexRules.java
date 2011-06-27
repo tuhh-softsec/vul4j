@@ -22,6 +22,8 @@ package org.apache.commons.digester3;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xml.sax.Attributes;
+
 /**
  * <p>
  * Rules implementation that uses regular expression matching for paths.
@@ -98,7 +100,6 @@ public class RegexRules
     /**
      * {@inheritDoc}
      */
-    @Override
     public void clear()
     {
         registeredRules.clear();
@@ -107,8 +108,7 @@ public class RegexRules
     /**
      * {@inheritDoc}
      */
-    @Override
-    public List<Rule> match( String namespaceURI, String pattern )
+    public List<Rule> match( String namespaceURI, String pattern, String name, Attributes attributes )
     {
         //
         // not a particularly quick implementation
@@ -132,7 +132,6 @@ public class RegexRules
     /**
      * {@inheritDoc}
      */
-    @Override
     public List<Rule> rules()
     {
         ArrayList<Rule> rules = new ArrayList<Rule>( registeredRules.size() );

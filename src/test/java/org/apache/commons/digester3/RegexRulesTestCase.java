@@ -58,13 +58,13 @@ public class RegexRulesTestCase
 
         // now test a few patterns
         // check that all are return in the order which they were added
-        List<Rule> matches = rules.match( "", "x/g/e" );
+        List<Rule> matches = rules.match( "", "x/g/e", null, null );
         assertEquals( "Wrong number of rules returned (1)", 3, matches.size() );
         assertEquals( "Rule Out Of Order (1)", "alpha", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
         assertEquals( "Rule Out Of Order (2)", "beta", ( (TestRule) matches.get( 1 ) ).getIdentifier() );
         assertEquals( "Rule Out Of Order (3)", "gamma", ( (TestRule) matches.get( 2 ) ).getIdentifier() );
 
-        matches = rules.match( "", "/a" );
+        matches = rules.match( "", "/a", null, null );
         assertEquals( "Wrong number of rules returned (2)", 3, matches.size() );
         assertEquals( "Rule Out Of Order (4)", "alpha", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
         assertEquals( "Rule Out Of Order (5)", "beta", ( (TestRule) matches.get( 1 ) ).getIdentifier() );
@@ -91,10 +91,10 @@ public class RegexRulesTestCase
 
         // now test a few patterns
         // check that all are return in the order which they were added
-        List<Rule> matches = rules.match( "", "/b/c" );
+        List<Rule> matches = rules.match( "", "/b/c", null, null );
         assertEquals( "Wrong number of rules returned (1)", 0, matches.size() );
 
-        matches = rules.match( "", "/b/c/f" );
+        matches = rules.match( "", "/b/c/f", null, null );
         assertEquals( "Wrong number of rules returned (2)", 0, matches.size() );
     }
 
@@ -118,11 +118,11 @@ public class RegexRulesTestCase
 
         // now test a few patterns
         // check that all are return in the order which they were added
-        List<Rule> matches = rules.match( "", "/match" );
+        List<Rule> matches = rules.match( "", "/match", null, null );
         assertEquals( "Wrong number of rules returned (1)", 1, matches.size() );
         assertEquals( "Wrong Rule (1)", "beta", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
 
-        matches = rules.match( "", "/a/match" );
+        matches = rules.match( "", "/a/match", null, null );
         assertEquals( "Wrong Rule (2)", "beta", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
     }
 
@@ -151,7 +151,7 @@ public class RegexRulesTestCase
         assertEquals( "Rule Out Of Order (2)", "beta", ( (TestRule) matches.get( 1 ) ).getIdentifier() );
         assertEquals( "Rule Out Of Order (3)", "gamma", ( (TestRule) matches.get( 2 ) ).getIdentifier() );
 
-        matches = rules.match( "", "/eggs" );
+        matches = rules.match( "", "/eggs", null, null );
         assertEquals( "Wrong number of rules returned (2)", 3, matches.size() );
         assertEquals( "Rule Out Of Order (4)", "alpha", ( (TestRule) matches.get( 0 ) ).getIdentifier() );
         assertEquals( "Rule Out Of Order (5)", "beta", ( (TestRule) matches.get( 1 ) ).getIdentifier() );
@@ -161,7 +161,7 @@ public class RegexRulesTestCase
         matches = rules.rules();
         assertEquals( "Wrong number of rules returned (3)", 0, matches.size() );
 
-        matches = rules.match( "", "/eggs" );
+        matches = rules.match( "", "/eggs", null, null );
         assertEquals( "Wrong number of rules returned (4)", 0, matches.size() );
     }
 
