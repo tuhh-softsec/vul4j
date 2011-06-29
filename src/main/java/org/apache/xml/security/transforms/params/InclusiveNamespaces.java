@@ -20,7 +20,6 @@ package org.apache.xml.security.transforms.params;
 
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -70,7 +69,6 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
     public InclusiveNamespaces(Document doc, Set<String> prefixes) {
         super(doc);
 
-        StringBuilder sb = new StringBuilder();
         SortedSet<String> prefixList = null;
         if (prefixes instanceof SortedSet<?>) {
             prefixList = (SortedSet<String>)prefixes;
@@ -78,6 +76,7 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
             prefixList = new TreeSet<String>(prefixes);
         }
 
+        StringBuilder sb = new StringBuilder();
         for (String prefix : prefixList) {
             if (prefix.equals("xmlns")) {
                 sb.append("#default ");
@@ -135,11 +134,8 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
             return prefixes;
         }
 
-        StringTokenizer st = new StringTokenizer(inclusiveNamespaces, " \t\r\n");
-
-        while (st.hasMoreTokens()) {
-            String prefix = st.nextToken();
-
+        String[] tokens = inclusiveNamespaces.split("\\s");
+        for (String prefix : tokens) {
             if (prefix.equals("#default")) {
                 prefixes.add("xmlns");
             } else {

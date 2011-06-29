@@ -30,6 +30,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -81,8 +82,8 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     static {
         // The null xmlns definiton.
         try {
-            nullNode = DocumentBuilderFactory.newInstance().
-            newDocumentBuilder().newDocument().createAttributeNS(Constants.NamespaceSpecNS, XMLNS);
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            nullNode = documentBuilder.newDocument().createAttributeNS(Constants.NamespaceSpecNS, XMLNS);
             nullNode.setValue("");
         } catch (Exception e) {
             throw new RuntimeException("Unable to create nullNode: " + e);
@@ -315,7 +316,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 }
                 break;
             }
-            while (sibling == null  && parentNode != null) {    		      		      			
+            while (sibling == null && parentNode != null) {    		      		      			
                 writer.write(END_TAG);
                 UtfHelpper.writeByte(((Element)parentNode).getTagName(), writer, cache);        
                 writer.write('>');
@@ -409,7 +410,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             case Node.DOCUMENT_FRAGMENT_NODE :
             case Node.DOCUMENT_NODE :
                 ns.outputNodePush();
-                //currentNode = currentNode.getFirstChild();  
                 sibling = currentNode.getFirstChild();
                 break;
 
@@ -609,12 +609,12 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param ns
      */
     protected final void getParentNameSpaces(Element el, NameSpaceSymbTable ns)  {
-        List<Element> parents = new ArrayList<Element>(10);
         Node n1 = el.getParentNode();
         if (n1 == null || Node.ELEMENT_NODE != n1.getNodeType()) {
             return;
         }
-        //Obtain all the parents of the elemnt
+        //Obtain all the parents of the element
+        List<Element> parents = new ArrayList<Element>(10);
         Element parent = (Element) n1;
         while (parent != null) {
             parents.add(parent);
