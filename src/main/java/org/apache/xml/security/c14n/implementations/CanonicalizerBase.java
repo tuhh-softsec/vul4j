@@ -574,18 +574,14 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         NamedNodeMap attrs = e.getAttributes();
         int attrsLength = attrs.getLength();
         for (int i = 0; i < attrsLength; i++) {
-            Attr N = (Attr) attrs.item(i);
-            if (!Constants.NamespaceSpecNS.equals(N.getNamespaceURI())) {
-                //Not a namespace definition, ignore.
-                continue;
+            Attr attribute = (Attr) attrs.item(i);
+            String NName = attribute.getLocalName();
+            String NValue = attribute.getNodeValue();
+            
+            if (Constants.NamespaceSpecNS.equals(attribute.getNamespaceURI())
+                && (!XML.equals(NName) || !Constants.XML_LANG_SPACE_SpecNS.equals(NValue))) {
+                ns.addMapping(NName, NValue, attribute);
             }
-
-            String NName = N.getLocalName();
-            String NValue = N.getNodeValue();
-            if (XML.equals(NName) && Constants.XML_LANG_SPACE_SpecNS.equals(NValue)) {
-                continue;
-            }            
-            ns.addMapping(NName, NValue, N);             
         }
         if (e.getNamespaceURI() != null) {
             String NName = e.getPrefix();
@@ -640,23 +636,23 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     /**
      * Obtain the attributes to output for this node in XPathNodeSet c14n. 
      *
-     * @param E
+     * @param element
      * @param ns
      * @return the attributes nodes to output.
      * @throws CanonicalizationException
      */
-    abstract Iterator<Attr> handleAttributes(Element E, NameSpaceSymbTable ns)
+    abstract Iterator<Attr> handleAttributes(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException;
 
     /**
      * Obtain the attributes to output for this node in a Subtree c14n.
      *
-     * @param E
+     * @param element
      * @param ns
      * @return the attributes nodes to output.
      * @throws CanonicalizationException
      */
-    abstract Iterator<Attr> handleAttributesSubtree(Element E, NameSpaceSymbTable ns)
+    abstract Iterator<Attr> handleAttributesSubtree(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException;
 
     abstract void circumventBugIfNeeded(XMLSignatureInput input) 

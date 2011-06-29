@@ -143,6 +143,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
         return super.engineCanonicalizeXPathNodeSet(xpathNodeSet);
     }
     
+    @Override
     protected Iterator<Attr> handleAttributesSubtree(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be output
@@ -208,9 +209,10 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
         
     /**
      * @inheritDoc
-     * @param E
+     * @param element
      * @throws CanonicalizationException
      */
+    @Override
     protected final Iterator<Attr> handleAttributes(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be output
