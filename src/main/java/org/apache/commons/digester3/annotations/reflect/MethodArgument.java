@@ -19,6 +19,8 @@ package org.apache.commons.digester3.annotations.reflect;
  * under the License.
  */
 
+import static java.lang.System.arraycopy;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
@@ -55,9 +57,20 @@ public final class MethodArgument
      */
     public MethodArgument( int index, Class<?> parameterType, Annotation[] annotations )
     {
+        if ( parameterType == null )
+        {
+            throw new IllegalArgumentException( "Argument 'parameterType' must be not null" );
+        }
+        if ( annotations == null )
+        {
+            throw new IllegalArgumentException( "Argument 'annotations' must be not null" );
+        }
+
         this.index = index;
         this.parameterType = parameterType;
-        this.annotations = annotations;
+        this.annotations = new Annotation[annotations.length];
+
+        arraycopy( annotations, 0, this.annotations, 0, annotations.length );
     }
 
     /**
