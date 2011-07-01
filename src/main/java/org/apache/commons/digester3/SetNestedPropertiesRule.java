@@ -437,7 +437,6 @@ public class SetNestedPropertiesRule
     private class AnyChildRule
         extends Rule
     {
-        private String currChildNamespaceURI = null;
 
         private String currChildElementName = null;
 
@@ -445,8 +444,6 @@ public class SetNestedPropertiesRule
         public void begin( String namespaceURI, String name, Attributes attributes )
             throws Exception
         {
-
-            currChildNamespaceURI = namespaceURI;
             currChildElementName = name;
         }
 
