@@ -454,7 +454,7 @@ public class CallMethodRule
         // Construct the parameter values array we will need
         // We only do the conversion if the param value is a String and
         // the specified paramType is not String.
-        Object paramValues[] = new Object[paramTypes.length];
+        Object[] paramValues = new Object[paramTypes.length];
         for ( int i = 0; i < paramTypes.length; i++ )
         {
             // convert nulls and convert stringy parameters
