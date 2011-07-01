@@ -199,13 +199,13 @@ public class ExtendedBaseRules
 
         // Universal wildcards ('*') in the middle of the pattern-string
         List<Rule> recList = null;
-        int parentLastIndex = -1;
         // temporary parentPattern
         // we don't want to change anything....
         String tempParentPattern = parentPattern;
+        int parentLastIndex = tempParentPattern.lastIndexOf( '/' );
         // look for pattern. Here, we search the whole
         // parent. Not ideal, but does the thing....
-        while ( ( parentLastIndex = tempParentPattern.lastIndexOf( '/' ) ) > -1 && recList == null )
+        while ( parentLastIndex > -1 && recList == null )
         {
             recList = this.cache.get( tempParentPattern + "/*/" + pattern.substring( lastIndex + 1 ) );
             if ( recList != null )
@@ -223,6 +223,8 @@ public class ExtendedBaseRules
                 // we make sure pattern is allowed anywhere.
                 tempParentPattern = parentPattern.substring( 0, parentLastIndex );
             }
+
+            parentLastIndex = tempParentPattern.lastIndexOf( '/' );
         }
 
         // Universal all wildards ('!*')
