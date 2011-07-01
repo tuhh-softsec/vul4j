@@ -24,4 +24,5 @@
   <suppress checks="LineLength" files="BeanPropertySetterRule.java" lines="138" />
   <suppress checks="LineLength" files="DefaultAnnotationHandlerFactory.java" lines="37" />
   <suppress checks="FileLength" files="Digester.java" lines="1" />
+  <suppress checks="MethodLength" files="ExtendedBaseRules.java" lines="177" />
 </suppressions>
