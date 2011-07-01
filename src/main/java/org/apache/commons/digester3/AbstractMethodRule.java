@@ -25,8 +25,8 @@ import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
 
 /**
- * Abstract implementation for {@link org.apache.commons.digester3.SetNext},
- * {@link org.apache.commons.digester3.SetRoot} and {@link org.apache.commons.digester3.SetTop} rules.
+ * Abstract implementation for {@link org.apache.commons.digester3.SetNextRule},
+ * {@link org.apache.commons.digester3.SetRootRule} and {@link org.apache.commons.digester3.SetTopRule} rules.
  *
  * @since 3.0
  */
