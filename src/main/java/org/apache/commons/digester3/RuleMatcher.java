@@ -1,7 +1,5 @@
 package org.apache.commons.digester3;
 
-import org.xml.sax.Attributes;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,6 +18,8 @@ import org.xml.sax.Attributes;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import org.xml.sax.Attributes;
 
 /**
  * Defines a functor interface implemented by classes that perform a predicate test
