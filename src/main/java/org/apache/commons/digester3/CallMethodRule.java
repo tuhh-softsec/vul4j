@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  * <p>
  * Note that the target method is invoked when the <i>end</i> of the tag the CallMethodRule fired on is encountered,
  * <i>not</i> when the last parameter becomes available. This implies that rules which fire on tags nested within the
- * one associated with the CallMethodRule will fire before the CallMethodRule invokes the target method. This behaviour
+ * one associated with the CallMethodRule will fire before the CallMethodRule invokes the target method. This behavior
  * is not configurable.
  * </p>
  * <p>
@@ -60,7 +60,7 @@ import org.xml.sax.SAXException;
  * null, meaning that CallMethodRule will passed null for all String parameters for which there is no parameter info
  * available from the XML. However parameters of type Float and Integer will be passed a real object containing a zero
  * value as that is the output of the default ConvertUtils converters for those types when passed a null. You can
- * register custom converters to change this behaviour; see the beautils library documentation for more info.
+ * register custom converters to change this behavior; see the BeanUtils library documentation for more info.
  * </p>
  * <p>
  * Note that when a constructor is used with paramCount=0, indicating that the body of the element is to be passed to
@@ -176,9 +176,9 @@ public class CallMethodRule
      *            object stack. Negative numbers are relative to the bottom of the stack. Zero implies the top object on
      *            the stack.
      * @param methodName Method name of the parent method to call
-     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of ths element
+     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of the element
      * @param paramTypes The Java class names of the arguments (if you wish to use a primitive type, specify the
-     *            corresonding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
+     *            corresponding Java wrapper class instead, such as <code>java.lang.Boolean</code> for a
      *            <code>boolean</code> parameter)
      */
     public CallMethodRule( int targetOffset, String methodName, int paramCount, String paramTypes[] )
@@ -212,9 +212,9 @@ public class CallMethodRule
      * <code>paramTypes</code> is null or empty, in this case the rule will call the specified method with no arguments.
      * 
      * @param methodName Method name of the parent method to call
-     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of ths element
+     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of the element
      * @param paramTypes The Java classes that represent the parameter types of the method arguments (if you wish to use
-     *            a primitive type, specify the corresonding Java wrapper class instead, such as
+     *            a primitive type, specify the corresponding Java wrapper class instead, such as
      *            <code>java.lang.Boolean.TYPE</code> for a <code>boolean</code> parameter)
      */
     public CallMethodRule( String methodName, int paramCount, Class<?> paramTypes[] )
@@ -231,9 +231,9 @@ public class CallMethodRule
      *            object stack. Negative numbers are relative to the bottom of the stack. Zero implies the top object on
      *            the stack.
      * @param methodName Method name of the parent method to call
-     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of ths element
+     * @param paramCount The number of parameters to collect, or zero for a single argument from the body of the element
      * @param paramTypes The Java classes that represent the parameter types of the method arguments (if you wish to use
-     *            a primitive type, specify the corresonding Java wrapper class instead, such as
+     *            a primitive type, specify the corresponding Java wrapper class instead, such as
      *            <code>java.lang.Boolean.TYPE</code> for a <code>boolean</code> parameter)
      */
     public CallMethodRule( int targetOffset, String methodName, int paramCount, Class<?> paramTypes[] )
