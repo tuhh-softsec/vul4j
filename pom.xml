@@ -26,7 +26,7 @@
 
   <groupId>org.apache.commons</groupId>
   <artifactId>commons-digester3</artifactId>
-  <version>3.1-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Apache Commons Digester</name>
