@@ -160,10 +160,9 @@ public class CallParamRule
 
             if ( getDigester().getLogger().isDebugEnabled() )
             {
-                getDigester().getLogger().debug( format( "[CallParamRule]{%s} Save from stack; from stack?%s; object=%s",
-                                                         getDigester().getMatch(),
-                                                         fromStack,
-                                                         param ) );
+                getDigester()
+                    .getLogger().debug( format( "[CallParamRule]{%s} Save from stack; from stack?%s; object=%s",
+                                                getDigester().getMatch(), fromStack, param ) );
             }
         }
 
