@@ -439,12 +439,10 @@ public class CallMethodRule
                 return;
             }
 
-            parameters = new Object[1];
-            parameters[0] = bodyText;
+            parameters = new Object[] { bodyText };
             if ( paramTypes.length == 0 )
             {
-                paramTypes = new Class[1];
-                paramTypes[0] = String.class;
+                paramTypes = new Class[] { String.class };
             }
         }
         else
