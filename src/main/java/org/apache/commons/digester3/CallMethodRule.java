@@ -394,7 +394,7 @@ public class CallMethodRule
         throws Exception
     {
         // Retrieve or construct the parameter values array
-        Object parameters[] = null;
+        Object[] parameters;
         if ( paramCount > 0 )
         {
             parameters = getDigester().popParams();
@@ -450,6 +450,7 @@ public class CallMethodRule
             // When paramCount is zero and paramTypes.length is zero it
             // means that we truly are calling a method with no parameters.
             // Nothing special needs to be done here.
+            parameters = new Object[0];
         }
 
         // Construct the parameter values array we will need
