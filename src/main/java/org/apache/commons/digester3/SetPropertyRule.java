@@ -20,13 +20,13 @@ package org.apache.commons.digester3;
  */
 
 import static java.lang.String.format;
+import static org.apache.commons.beanutils.BeanUtils.setProperty;
+import static org.apache.commons.beanutils.PropertyUtils.getPropertyDescriptor;
 
 import java.beans.PropertyDescriptor;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
 
 /**
@@ -127,7 +127,7 @@ public class SetPropertyRule
         else
         /* this is a standard JavaBean */
         {
-            PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, actualName );
+            PropertyDescriptor desc = getPropertyDescriptor( top, actualName );
             if ( desc == null )
             {
                 throw new NoSuchMethodException( "Bean has no property named " + actualName );
@@ -135,7 +135,7 @@ public class SetPropertyRule
         }
 
         // Set the property (with conversion as necessary)
-        BeanUtils.setProperty( top, actualName, actualValue );
+        setProperty( top, actualName, actualValue );
     }
 
     /**

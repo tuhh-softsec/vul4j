@@ -19,9 +19,9 @@ package org.apache.commons.digester3.annotations.utils;
  * under the License.
  */
 
-import java.lang.annotation.Annotation;
+import static org.apache.commons.beanutils.MethodUtils.invokeExactMethod;
 
-import org.apache.commons.beanutils.MethodUtils;
+import java.lang.annotation.Annotation;
 
 /**
  * Simple utility class to introspect annotations.
@@ -146,7 +146,7 @@ public class AnnotationUtils
     {
         try
         {
-            return MethodUtils.invokeExactMethod( annotation, method, null );
+            return invokeExactMethod( annotation, method, null );
         }
         catch ( Throwable t )
         {

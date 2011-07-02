@@ -19,6 +19,9 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static org.apache.commons.beanutils.BeanUtils.setProperty;
+import static org.apache.commons.beanutils.PropertyUtils.getPropertyDescriptor;
+
 import static java.lang.String.format;
 
 import java.beans.PropertyDescriptor;
@@ -28,10 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.xml.sax.Attributes;
 
@@ -506,7 +507,7 @@ public class SetNestedPropertiesRule
                 else
                 /* this is a standard JavaBean */
                 {
-                    PropertyDescriptor desc = PropertyUtils.getPropertyDescriptor( top, propName );
+                    PropertyDescriptor desc = getPropertyDescriptor( top, propName );
                     if ( desc == null )
                     {
                         throw new NoSuchMethodException( "Bean has no property named " + propName );
@@ -516,7 +517,7 @@ public class SetNestedPropertiesRule
 
             try
             {
-                BeanUtils.setProperty( top, propName, text );
+                setProperty( top, propName, text );
             }
             catch ( NullPointerException e )
             {

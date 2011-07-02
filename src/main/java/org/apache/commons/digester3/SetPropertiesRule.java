@@ -19,13 +19,13 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static org.apache.commons.beanutils.BeanUtils.*;
+import static org.apache.commons.beanutils.PropertyUtils.*;
 import static java.lang.String.format;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.xml.sax.Attributes;
 
 /**
@@ -200,7 +200,7 @@ public class SetPropertiesRule
                 // compatible so we'll accept the risk here.
 
                 Object top = getDigester().peek();
-                boolean test = PropertyUtils.isWriteable( top, attributeName );
+                boolean test = isWriteable( top, attributeName );
                 if ( !test )
                 {
                     throw new NoSuchMethodException( "Property " + attributeName + " can't be set" );
@@ -229,7 +229,7 @@ public class SetPropertiesRule
                                                          getDigester().getMatch() ) );
             }
         }
-        BeanUtils.populate( top, values );
+        populate( top, values );
     }
 
     /**

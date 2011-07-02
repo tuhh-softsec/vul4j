@@ -19,13 +19,14 @@ package org.apache.commons.digester3.plugins.strategies;
  * under the License.
  */
 
+import static org.apache.commons.beanutils.MethodUtils.getAccessibleMethod;
+
 import java.lang.reflect.Method;
 
-import org.apache.commons.beanutils.MethodUtils;
-import org.apache.commons.logging.Log;
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.plugins.PluginException;
 import org.apache.commons.digester3.plugins.RuleLoader;
+import org.apache.commons.logging.Log;
 
 /**
  * A RuleLoader which invokes a static method on a target class, leaving that method to actually instantiate and add new
@@ -116,7 +117,7 @@ public class LoaderFromClass
         throws PluginException
     {
         Class<?>[] paramSpec = { Digester.class, String.class };
-        Method rulesMethod = MethodUtils.getAccessibleMethod( rulesClass, methodName, paramSpec );
+        Method rulesMethod = getAccessibleMethod( rulesClass, methodName, paramSpec );
 
         return rulesMethod;
     }

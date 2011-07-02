@@ -19,7 +19,8 @@ package org.apache.commons.digester3.xmlrules;
  * under the License.
  */
 
-import org.apache.commons.beanutils.ConvertUtils;
+import static org.apache.commons.beanutils.ConvertUtils.convert;
+
 import org.apache.commons.digester3.binder.LinkedRuleBuilder;
 import org.apache.commons.digester3.binder.ObjectParamBuilder;
 import org.apache.commons.digester3.binder.RulesBinder;
@@ -66,7 +67,7 @@ final class ObjectParamRule
         }
         else
         {
-            param = ConvertUtils.convert( value, clazz );
+            param = convert( value, clazz );
         }
 
         ObjectParamBuilder<?> builder = linkedRuleBuilder.objectParam( param ).ofIndex( paramIndex );
