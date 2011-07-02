@@ -20,6 +20,7 @@ package org.apache.commons.digester3;
  */
 
 import static java.lang.String.format;
+import static java.util.Arrays.fill;
 import static org.apache.commons.beanutils.ConvertUtils.convert;
 import static org.apache.commons.beanutils.MethodUtils.invokeExactMethod;
 import static org.apache.commons.beanutils.MethodUtils.invokeMethod;
@@ -123,10 +124,7 @@ public class CallMethodRule
         else
         {
             this.paramTypes = new Class[paramCount];
-            for ( int i = 0; i < this.paramTypes.length; i++ )
-            {
-                this.paramTypes[i] = String.class;
-            }
+            fill( this.paramTypes, String.class );
         }
     }
 
@@ -191,10 +189,7 @@ public class CallMethodRule
         if ( paramTypes == null )
         {
             this.paramTypes = new Class[paramCount];
-            for ( int i = 0; i < this.paramTypes.length; i++ )
-            {
-                this.paramTypes[i] = String.class;
-            }
+            fill( this.paramTypes, String.class );
         }
         else
         {
@@ -246,10 +241,7 @@ public class CallMethodRule
         if ( paramTypes == null )
         {
             this.paramTypes = new Class[paramCount];
-            for ( int i = 0; i < this.paramTypes.length; i++ )
-            {
-                this.paramTypes[i] = String.class;
-            }
+            fill( this.paramTypes, String.class );
         }
         else
         {
