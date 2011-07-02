@@ -352,10 +352,7 @@ public class CallMethodRule
         if ( paramCount > 0 )
         {
             Object parameters[] = new Object[paramCount];
-            for ( int i = 0; i < parameters.length; i++ )
-            {
-                parameters[i] = null;
-            }
+            fill( parameters, null );
             getDigester().pushParams( parameters );
         }
     }
