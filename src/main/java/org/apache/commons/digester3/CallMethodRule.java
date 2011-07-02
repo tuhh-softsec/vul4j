@@ -20,10 +20,12 @@ package org.apache.commons.digester3;
  */
 
 import static java.lang.String.format;
+import static org.apache.commons.beanutils.ConvertUtils.convert;
+import static org.apache.commons.beanutils.MethodUtils.invokeExactMethod;
+import static org.apache.commons.beanutils.MethodUtils.invokeMethod;
 
 import java.util.Formatter;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -464,7 +466,7 @@ public class CallMethodRule
                 || ( parameters[i] instanceof String && !String.class.isAssignableFrom( paramTypes[i] ) ) )
             {
 
-                paramValues[i] = ConvertUtils.convert( (String) parameters[i], paramTypes[i] );
+                paramValues[i] = convert( (String) parameters[i], paramTypes[i] );
             }
             else
             {
@@ -509,13 +511,13 @@ public class CallMethodRule
         if ( useExactMatch )
         {
             // invoke using exact match
-            result = MethodUtils.invokeExactMethod( target, methodName, paramValues, paramTypes );
+            result = invokeExactMethod( target, methodName, paramValues, paramTypes );
 
         }
         else
         {
             // invoke using fuzzier match
-            result = MethodUtils.invokeMethod( target, methodName, paramValues, paramTypes );
+            result = invokeMethod( target, methodName, paramValues, paramTypes );
         }
 
         processMethodCallResult( result );

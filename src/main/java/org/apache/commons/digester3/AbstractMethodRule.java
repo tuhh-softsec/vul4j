@@ -20,8 +20,9 @@ package org.apache.commons.digester3;
  */
 
 import static java.lang.String.format;
+import static org.apache.commons.beanutils.MethodUtils.invokeExactMethod;
+import static org.apache.commons.beanutils.MethodUtils.invokeMethod;
 
-import org.apache.commons.beanutils.MethodUtils;
 import org.xml.sax.Attributes;
 
 /**
@@ -237,11 +238,11 @@ public abstract class AbstractMethodRule
 
         if ( useExactMatch )
         {
-            MethodUtils.invokeExactMethod( parent, methodName, new Object[] { child }, paramTypes );
+            invokeExactMethod( parent, methodName, new Object[] { child }, paramTypes );
         }
         else
         {
-            MethodUtils.invokeMethod( parent, methodName, new Object[] { child }, paramTypes );
+            invokeMethod( parent, methodName, new Object[] { child }, paramTypes );
         }
     }
 
