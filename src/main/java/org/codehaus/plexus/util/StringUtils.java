@@ -678,7 +678,7 @@ public class StringUtils
      * @param separator  the separator character to use
      * @return the joined String
      */
-    public static String join( Iterator iterator, String separator )
+    public static String join( Iterator<?> iterator, String separator )
     {
         if ( separator == null )
         {
@@ -2130,9 +2130,9 @@ public class StringUtils
         return -1;
     }
 
-    public static String interpolate( String text, Map namespace )
+    public static String interpolate( String text, Map<?, ?> namespace )
     {
-        Iterator keys = namespace.keySet().iterator();
+        Iterator<?> keys = namespace.keySet().iterator();
 
         while ( keys.hasNext() )
         {
@@ -2350,7 +2350,6 @@ public class StringUtils
 
         StringBuffer buffer = new StringBuffer( source.length() );
 
-        int escapeCount = 0;
         for ( int i = 0; i < source.length(); i++ )
         {
             final char c = source.charAt( i );
@@ -2359,7 +2358,6 @@ public class StringUtils
             if ( result > -1 )
             {
                 buffer.append( escapeChar );
-                escapeCount++;
             }
 
             buffer.append( c );

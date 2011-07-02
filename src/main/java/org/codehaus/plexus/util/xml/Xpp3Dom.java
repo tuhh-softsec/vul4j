@@ -41,11 +41,11 @@ public class Xpp3Dom
 
     protected String value;
 
-    protected Map attributes;
+    protected Map<String, String> attributes;
 
-    protected final List childList;
+    protected final List<Xpp3Dom> childList;
 
-    protected final Map childMap;
+    protected final Map<String, Xpp3Dom> childMap;
 
     protected Xpp3Dom parent;
 
@@ -85,8 +85,8 @@ public class Xpp3Dom
     public Xpp3Dom( String name )
     {
         this.name = name;
-        childList = new ArrayList();
-        childMap = new HashMap();
+        childList = new ArrayList<Xpp3Dom>();
+        childMap = new HashMap<String, Xpp3Dom>();
     }
 
     /**
@@ -106,8 +106,8 @@ public class Xpp3Dom
 
         int childCount = src.getChildCount();
 
-        childList = new ArrayList( childCount );
-        childMap = new HashMap( childCount << 1 );
+        childList = new ArrayList<Xpp3Dom>( childCount );
+        childMap = new HashMap<String, Xpp3Dom>( childCount << 1 );
 
         setValue( src.getValue() );
 
@@ -183,7 +183,7 @@ public class Xpp3Dom
         }
         if ( null == attributes )
         {
-            attributes = new HashMap();
+            attributes = new HashMap<String, String>();
         }
 
         attributes.put( name, value );
@@ -230,7 +230,7 @@ public class Xpp3Dom
         }
         else
         {
-            ArrayList children = new ArrayList();
+            ArrayList<Xpp3Dom> children = new ArrayList<Xpp3Dom>();
             int size = childList.size();
 
             for ( int i = 0; i < size; i++ )
@@ -408,11 +408,10 @@ public class Xpp3Dom
                 }
                 else
                 {
-                    Map commonChildren = new HashMap();
+                    Map<String, Iterator<Xpp3Dom>> commonChildren = new HashMap<String, Iterator<Xpp3Dom>>();
 
-                    for ( Iterator it = recessive.childMap.keySet().iterator(); it.hasNext(); )
+                    for ( String childName : recessive.childMap.keySet() )
                     {
-                        String childName = (String) it.next();
                         Xpp3Dom[] dominantChildren = dominant.getChildren( childName );
                         if ( dominantChildren.length > 0 )
                         {
@@ -423,14 +422,14 @@ public class Xpp3Dom
                     for ( int i = 0, recessiveChildCount = recessive.getChildCount(); i < recessiveChildCount; i++ )
                     {
                         Xpp3Dom recessiveChild = recessive.getChild( i );
-                        Iterator it = (Iterator) commonChildren.get( recessiveChild.getName() );
+                        Iterator<Xpp3Dom> it = commonChildren.get( recessiveChild.getName() );
                         if ( it == null )
                         {
                             dominant.addChild( new Xpp3Dom( recessiveChild ) );
                         }
                         else if ( it.hasNext() )
                         {
-                            Xpp3Dom dominantChild = (Xpp3Dom) it.next();
+                            Xpp3Dom dominantChild = it.next();
                             mergeIntoXpp3Dom( dominantChild, recessiveChild, childMergeOverride );
                         }
                     }

@@ -219,7 +219,6 @@ public class DirectoryScanner extends AbstractScanner
      * @param basedir The base directory to scan.
      *                Must not be <code>null</code>.
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setBasedir( String basedir )
     {
         setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace(
@@ -254,7 +253,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @param followSymlinks whether or not symbolic links should be followed
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setFollowSymlinks( boolean followSymlinks )
     {
         this.followSymlinks = followSymlinks;
@@ -267,7 +265,6 @@ public class DirectoryScanner extends AbstractScanner
      * @return <code>true</code> if all files and directories which have
      *         been found so far have been included.
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public boolean isEverythingIncluded()
     {
         return everythingIncluded;
@@ -556,7 +553,6 @@ public class DirectoryScanner extends AbstractScanner
      * @return <code>false</code> when the selectors says that the file
      *         should not be selected, <code>true</code> otherwise.
      */
-    @SuppressWarnings( { "UnusedParameters" } )
     protected boolean isSelected( String name, File file )
     {
         return true;
@@ -587,7 +583,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getNotIncludedFiles()
     {
         slowScan();
@@ -607,7 +602,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getExcludedFiles()
     {
         slowScan();
@@ -627,7 +621,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getDeselectedFiles()
     {
         slowScan();
@@ -661,7 +654,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getNotIncludedDirectories()
     {
         slowScan();
@@ -681,7 +673,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getExcludedDirectories()
     {
         slowScan();
@@ -701,7 +692,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @see #slowScan
      */
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public String[] getDeselectedDirectories()
     {
         slowScan();

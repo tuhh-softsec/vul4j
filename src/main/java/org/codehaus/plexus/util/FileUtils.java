@@ -73,10 +73,8 @@ import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 import org.codehaus.plexus.util.io.FileInputStreamFacade;
 import org.codehaus.plexus.util.io.InputStreamFacade;
@@ -165,7 +163,7 @@ public class FileUtils
      * @return the default excludes pattern as list.
      * @see #getDefaultExcludes()
      */
-    public static List getDefaultExcludesAsList()
+    public static List<String> getDefaultExcludesAsList()
     {
         return Arrays.asList( getDefaultExcludes() );
     }
@@ -599,7 +597,7 @@ public class FileUtils
      */
     public static String[] getFilesFromExtension( String directory, String[] extensions )
     {
-        Vector files = new Vector();
+        List<String> files = new ArrayList<String>();
 
         File currentDir = new File( directory );
 
@@ -636,14 +634,14 @@ public class FileUtils
                 String add = currentFile.getAbsolutePath();
                 if ( isValidFile( add, extensions ) )
                 {
-                    files.addElement( add );
+                    files.add( add );
                 }
             }
         }
 
         //ok... move the Vector into the files list...
         String[] foundFiles = new String[files.size()];
-        files.copyInto( foundFiles );
+        files.toArray( foundFiles );
 
         return foundFiles;
     }
@@ -651,11 +649,11 @@ public class FileUtils
     /**
      * Private helper method for getFilesFromExtension()
      */
-    private static Vector blendFilesToVector( Vector v, String[] files )
+    private static List<String> blendFilesToVector( List<String> v, String[] files )
     {
         for ( int i = 0; i < files.length; ++i )
         {
-            v.addElement( files[i] );
+            v.add( files[i] );
         }
 
         return v;
@@ -1698,7 +1696,7 @@ public class FileUtils
      * @throws IOException
      * @see #getFileNames( File, String, String, boolean )
      */
-    public static List getFiles( File directory, String includes, String excludes )
+    public static List<File> getFiles( File directory, String includes, String excludes )
         throws IOException
     {
         return getFiles( directory, includes, excludes, true );
@@ -1715,16 +1713,16 @@ public class FileUtils
      * @throws IOException
      * @see #getFileNames( File, String, String, boolean )
      */
-    public static List getFiles( File directory, String includes, String excludes, boolean includeBasedir )
+    public static List<File> getFiles( File directory, String includes, String excludes, boolean includeBasedir )
         throws IOException
     {
-        List fileNames = getFileNames( directory, includes, excludes, includeBasedir );
+        List<String> fileNames = getFileNames( directory, includes, excludes, includeBasedir );
 
-        List files = new ArrayList();
+        List<File> files = new ArrayList<File>();
 
-        for ( Iterator i = fileNames.iterator(); i.hasNext(); )
+        for ( String filename : fileNames )
         {
-            files.add( new File( (String) i.next() ) );
+            files.add( new File( filename ) );
         }
 
         return files;
@@ -1741,7 +1739,7 @@ public class FileUtils
      * @return a list of files as String
      * @throws IOException
      */
-    public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir )
+    public static List<String> getFileNames( File directory, String includes, String excludes, boolean includeBasedir )
         throws IOException
     {
         return getFileNames( directory, includes, excludes, includeBasedir, true );
@@ -1758,7 +1756,7 @@ public class FileUtils
      * @return a list of files as String
      * @throws IOException
      */
-    public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir,
+    public static List<String> getFileNames( File directory, String includes, String excludes, boolean includeBasedir,
                                      boolean isCaseSensitive )
         throws IOException
     {
@@ -1776,7 +1774,7 @@ public class FileUtils
      * @return a list of directories as String
      * @throws IOException
      */
-    public static List getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir )
+    public static List<String> getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir )
         throws IOException
     {
         return getDirectoryNames( directory, includes, excludes, includeBasedir, true );
@@ -1793,7 +1791,7 @@ public class FileUtils
      * @return a list of directories as String
      * @throws IOException
      */
-    public static List getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir,
+    public static List<String> getDirectoryNames( File directory, String includes, String excludes, boolean includeBasedir,
                                           boolean isCaseSensitive )
         throws IOException
     {
@@ -1813,7 +1811,7 @@ public class FileUtils
      * @return a list of files as String
      * @throws IOException
      */
-    public static List getFileAndDirectoryNames( File directory, String includes, String excludes,
+    public static List<String> getFileAndDirectoryNames( File directory, String includes, String excludes,
                                                  boolean includeBasedir, boolean isCaseSensitive, boolean getFiles,
                                                  boolean getDirectories )
         throws IOException
@@ -1836,7 +1834,7 @@ public class FileUtils
 
         scanner.scan();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
 
         if ( getFiles )
         {
@@ -1907,12 +1905,10 @@ public class FileUtils
             return;
         }
 
-        List files = getFiles( sourceDirectory, includes, excludes );
+        List<File> files = getFiles( sourceDirectory, includes, excludes );
 
-        for ( Iterator i = files.iterator(); i.hasNext(); )
+        for ( File file : files )
         {
-            File file = (File) i.next();
-
             copyFileToDirectory( file, destinationDirectory );
         }
     }
@@ -1977,20 +1973,18 @@ public class FileUtils
 
         scanner.addDefaultExcludes();
         scanner.scan();
-        List includedDirectories = Arrays.asList( scanner.getIncludedDirectories() );
+        List<String> includedDirectories = Arrays.asList( scanner.getIncludedDirectories() );
 
-        for (Iterator i = includedDirectories.iterator();i.hasNext();)
+        for ( String name : includedDirectories )
         {
-            String name = (String)i.next();
-
-            File source = new File(sourceDirectory, name);
+            File source = new File( sourceDirectory, name );
 
             if ( source.equals( sourceDirectory ) )
             {
                 continue;
             }
 
-            File destination = new File(destinationDirectory, name);
+            File destination = new File( destinationDirectory, name );
             destination.mkdirs();
         }
     }
@@ -2278,10 +2272,10 @@ public class FileUtils
      * @return a List containing every every line not starting with # and not empty
      * @throws IOException if any
      */
-    public static List loadFile( File file )
+    public static List<String> loadFile( File file )
         throws IOException
     {
-        List lines = new ArrayList();
+        List<String> lines = new ArrayList<String>();
 
         if ( file.exists() )
         {

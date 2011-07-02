@@ -38,7 +38,7 @@ public final class ReflectionUtils
     // Field utils
     // ----------------------------------------------------------------------
 
-    public static Field getFieldByNameIncludingSuperclasses( String fieldName, Class clazz  )
+    public static Field getFieldByNameIncludingSuperclasses( String fieldName, Class<?> clazz  )
     {
         Field retValue = null;
 
@@ -48,7 +48,7 @@ public final class ReflectionUtils
         }
         catch ( NoSuchFieldException e )
         {
-            Class superclass = clazz.getSuperclass();
+            Class<?> superclass = clazz.getSuperclass();
 
             if ( superclass != null )
             {
@@ -59,11 +59,11 @@ public final class ReflectionUtils
         return retValue;
     }
 
-    public static List getFieldsIncludingSuperclasses( Class clazz )
+    public static List<Field> getFieldsIncludingSuperclasses( Class<?> clazz )
     {
-        List fields = new ArrayList( Arrays.asList( clazz.getDeclaredFields() ) );
+        List<Field> fields = new ArrayList<Field>( Arrays.asList( clazz.getDeclaredFields() ) );
 
-        Class superclass = clazz.getSuperclass();
+        Class<?> superclass = clazz.getSuperclass();
 
         if ( superclass != null )
         {
@@ -85,16 +85,14 @@ public final class ReflectionUtils
      * @param clazz The class to find the method in.
      * @return null or the method found.
      */
-    public static Method getSetter( String fieldName, Class clazz )
+    public static Method getSetter( String fieldName, Class<?> clazz )
     {
-        Method [] methods = clazz.getMethods();
+        Method[] methods = clazz.getMethods();
 
         fieldName = "set" + StringUtils.capitalizeFirstLetter( fieldName );
 
-        for ( int i = 0; i < methods.length; i++ )
+        for ( Method method : methods )
         {
-            Method method = methods[i];
-
             if ( method.getName().equals( fieldName ) && isSetter( method ) )
             {
                 return method;
@@ -107,16 +105,14 @@ public final class ReflectionUtils
     /**
      * Finds all setters in the given class and super classes.
      */
-    public static List getSetters( Class clazz )
+    public static List<Method> getSetters( Class<?> clazz )
     {
         Method[] methods = clazz.getMethods();
 
-        List list = new ArrayList();
+        List<Method> list = new ArrayList<Method>();
 
-        for ( int i = 0; i < methods.length; i++ )
+        for ( Method method : methods )
         {
-            Method method = methods[i];
-
             if ( isSetter( method ) )
             {
                 list.add( method );
@@ -131,7 +127,7 @@ public final class ReflectionUtils
      *
      * Will throw an RuntimeException if the method isn't a setter.
      */
-    public static Class getSetterType( Method method )
+    public static Class<?> getSetterType( Method method )
     {
         if ( !isSetter( method ) )
         {
@@ -191,9 +187,9 @@ public final class ReflectionUtils
     public static Map getVariablesAndValuesIncludingSuperclasses( Object object )
         throws IllegalAccessException
     {
-        HashMap map = new HashMap ();
+        HashMap map = new HashMap();
 
-        gatherVariablesAndValuesIncludingSuperclasses(object, map);
+        gatherVariablesAndValuesIncludingSuperclasses( object, map );
 
         return map;
     }
@@ -220,7 +216,7 @@ public final class ReflectionUtils
         throws IllegalAccessException
     {
 
-        Class clazz = object.getClass();
+        Class<?> clazz = object.getClass();
 
         Field[] fields = clazz.getDeclaredFields();
 
@@ -234,7 +230,7 @@ public final class ReflectionUtils
 
         }
 
-        Class superclass = clazz.getSuperclass();
+        Class<?> superclass = clazz.getSuperclass();
 
         if ( !Object.class.equals(  superclass ) )
         {

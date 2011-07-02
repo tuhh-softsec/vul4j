@@ -86,7 +86,6 @@ public abstract class CommandLineUtils
         return executeCommandLine( cl, null, systemOut, systemErr, timeoutInSeconds );
     }
 
-    @SuppressWarnings( { "UnusedDeclaration" } )
     public static int executeCommandLine( Commandline cl, InputStream systemIn, StreamConsumer systemOut,
                                           StreamConsumer systemErr )
         throws CommandLineException

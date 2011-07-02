@@ -55,7 +55,6 @@
 package org.codehaus.plexus.util;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -94,7 +93,7 @@ public class Os
     public static final String FAMILY_OPENVMS = "openvms";
 
     // store the valid families
-    private static final Set validFamilies = setValidFamilies();
+    private static final Set<String> validFamilies = setValidFamilies();
 
     // get the current info
     private static final String PATH_SEP = System.getProperty( "path.separator" );
@@ -136,9 +135,9 @@ public class Os
     /**
      * Initializes the set of valid families.
      */
-    private static Set setValidFamilies()
+    private static Set<String> setValidFamilies()
     {
-        Set valid = new HashSet();
+        Set<String> valid = new HashSet<String>();
         valid.add( FAMILY_DOS );
         valid.add( FAMILY_MAC );
         valid.add( FAMILY_NETWARE );
@@ -381,7 +380,7 @@ public class Os
         // in case the order of static initialization is
         // wrong, get the list
         // safely.
-        Set families = null;
+        Set<String> families = null;
         if ( !validFamilies.isEmpty() )
         {
             families = validFamilies;
@@ -390,10 +389,8 @@ public class Os
         {
             families = setValidFamilies();
         }
-        Iterator iter = families.iterator();
-        while ( iter.hasNext() )
+        for ( String fam : families )
         {
-            String fam = (String) iter.next();
             if ( Os.isFamily( fam ) )
             {
                 return fam;
@@ -432,8 +429,8 @@ public class Os
      * @return a copy of the valid families
      * @since 1.4.2
      */
-    public static Set getValidFamilies()
+    public static Set<String> getValidFamilies()
     {
-        return new HashSet( validFamilies );
+        return new HashSet<String>( validFamilies );
     }
 }

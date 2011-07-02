@@ -78,10 +78,10 @@ public class BourneShell
         return unifyQuotes( super.getExecutable());
     }
 
-    public List getShellArgsList()
+    public List<String> getShellArgsList()
     {
-        List shellArgs = new ArrayList();
-        List existingShellArgs = super.getShellArgsList();
+        List<String> shellArgs = new ArrayList<String>();
+        List<String> existingShellArgs = super.getShellArgsList();
 
         if ( ( existingShellArgs != null ) && !existingShellArgs.isEmpty() )
         {

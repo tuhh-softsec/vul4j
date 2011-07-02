@@ -44,7 +44,7 @@ public class Shell
 
     private String shellCommand;
 
-    private List shellArgs = new ArrayList();
+    private List<String> shellArgs = new ArrayList<String>();
 
     private boolean quotedArgumentsEnabled = true;
 
@@ -122,14 +122,14 @@ public class Shell
      * @param arguments  arguments for the executable, not the shell
      * @return List with one String object with executable and arguments quoted as needed
      */
-    public List getCommandLine( String executable, String[] arguments )
+    public List<String> getCommandLine( String executable, String[] arguments )
     {
         return getRawCommandLine( executable, arguments );
     }
 
-    protected List getRawCommandLine( String executable, String[] arguments )
+    protected List<String> getRawCommandLine( String executable, String[] arguments )
     {
-        List commandLine = new ArrayList();
+        List<String> commandLine = new ArrayList<String>();
         StringBuffer sb = new StringBuffer();
 
         if ( executable != null )
@@ -252,10 +252,10 @@ public class Shell
      * @return List of String objects, whose array version is suitable to be used as argument
      *         of Runtime.getRuntime().exec()
      */
-    public List getShellCommandLine( String[] arguments )
+    public List<String> getShellCommandLine( String[] arguments )
     {
 
-        List commandLine = new ArrayList();
+        List<String> commandLine = new ArrayList<String>();
 
         if ( getShellCommand() != null )
         {
@@ -273,7 +273,7 @@ public class Shell
 
     }
 
-    public List getShellArgsList()
+    public List<String> getShellArgsList()
     {
         return shellArgs;
     }
@@ -371,7 +371,7 @@ public class Shell
         return executable;
     }
 
-    public List getOriginalCommandLine( String executable, String[] arguments )
+    public List<String> getOriginalCommandLine( String executable, String[] arguments )
     {
         return getRawCommandLine( executable, arguments );
     }

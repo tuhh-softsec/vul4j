@@ -77,7 +77,7 @@ public class CmdShell
      * appears to make Windows processes invoke successfully.
      * </p>
      */
-    public List getCommandLine( String executable, String[] arguments )
+    public List<String> getCommandLine( String executable, String[] arguments )
     {
         StringBuffer sb = new StringBuffer();
         sb.append( "\"" );
