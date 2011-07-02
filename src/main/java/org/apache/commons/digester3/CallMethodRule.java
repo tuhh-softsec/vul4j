@@ -19,6 +19,7 @@ package org.apache.commons.digester3;
  * under the License.
  */
 
+import static java.lang.System.arraycopy;
 import static java.lang.String.format;
 import static java.util.Arrays.fill;
 import static org.apache.commons.beanutils.ConvertUtils.convert;
@@ -196,10 +197,7 @@ public class CallMethodRule
             // copy the parameter class names into an array
             // the classes will be loaded when the digester is set
             this.paramClassNames = new String[paramTypes.length];
-            for ( int i = 0; i < this.paramClassNames.length; i++ )
-            {
-                this.paramClassNames[i] = paramTypes[i];
-            }
+            arraycopy( paramTypes, 0, this.paramClassNames, 0, paramTypes.length );
         }
     }
 
@@ -246,10 +244,7 @@ public class CallMethodRule
         else
         {
             this.paramTypes = new Class[paramTypes.length];
-            for ( int i = 0; i < this.paramTypes.length; i++ )
-            {
-                this.paramTypes[i] = paramTypes[i];
-            }
+            arraycopy( paramTypes, 0, this.paramTypes, 0, paramTypes.length );
         }
     }
 
