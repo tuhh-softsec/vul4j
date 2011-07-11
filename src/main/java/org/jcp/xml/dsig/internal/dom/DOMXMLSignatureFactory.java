@@ -25,6 +25,7 @@
 package org.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.*;
+import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.keyinfo.*;
@@ -142,10 +143,14 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
         }
         return unmarshal
             (((javax.xml.crypto.dom.DOMStructure) xmlStructure).getNode(), 
-             null);
+             new UnmarshalContext());
     }
 
-    private XMLSignature unmarshal(Node node, XMLValidateContext context) 
+    private static class UnmarshalContext extends DOMCryptoContext {
+        UnmarshalContext() {}
+    }
+
+    private XMLSignature unmarshal(Node node, XMLCryptoContext context) 
         throws MarshalException {
 
         node.normalize();

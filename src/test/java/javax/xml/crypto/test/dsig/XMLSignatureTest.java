@@ -21,6 +21,7 @@
  */
 package javax.xml.crypto.test.dsig;
 
+import java.io.*;
 import java.util.*;
 import java.security.*;
 import javax.xml.crypto.URIDereferencer;
@@ -30,10 +31,10 @@ import javax.xml.crypto.dsig.keyinfo.*;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
+import javax.xml.parsers.*;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 import junit.framework.*;
 
@@ -295,6 +296,46 @@ public class XMLSignatureTest extends TestCase {
         if (sig2.validate(dvc) == false) {
             throw new Exception("Validation of generated signature failed");
         }
+    }
+
+    public void testSignTemplateWithObjectNSDefs() throws Exception {
+        String base = System.getProperty("basedir") == null ? "./"
+                      : System.getProperty("basedir");
+ 
+        File f = new File(base + "/src/test/resources/javax/xml/crypto/dsig/" +
+            "signature-enveloping-rsa-template.xml");
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        Document doc = dbf.newDocumentBuilder().parse(new FileInputStream(f));
+
+        // Find Signature element
+        NodeList nl =
+            doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
+        if (nl.getLength() == 0) {
+            throw new Exception("Cannot find Signature element");
+        }
+        DOMStructure domSignature = new DOMStructure(nl.item(0));
+        // unmarshal the XMLSignature
+        XMLSignature signature = fac.unmarshalXMLSignature(domSignature);
+
+        // create copy of Signature
+        XMLSignature newSignature = fac.newXMLSignature
+            (signature.getSignedInfo(), null, signature.getObjects(),
+             signature.getId(), signature.getSignatureValue().getId());
+
+        // Sign the template
+        Node parent = domSignature.getNode().getParentNode();
+        DOMSignContext signContext = new DOMSignContext(SIGN_KEYS[0], parent);
+        // remove the signature node (since it will get recreated)
+        parent.removeChild(domSignature.getNode());
+        newSignature.sign(signContext);
+
+        // check that Object element retained namespace definitions
+        Element objElem = (Element)parent.getFirstChild().getLastChild();
+        Attr a = objElem.getAttributeNode("xmlns:test");
+        if (!a.getValue().equals("http://www.example.org/ns"))
+            throw new Exception("Object namespace definition not retained");
     }
 
     private SignedInfo createSignedInfo(SignatureMethod sm) throws Exception {
