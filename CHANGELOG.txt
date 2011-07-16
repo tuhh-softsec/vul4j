@@ -1,11 +1,20 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.0-SNAPSHOT
+    Fixed SANTUARIO-273: xml:base attribute not processed correctly in C14N11 canonicalization.
+    Fixed SANTUARIO-260: Review logging
+    Fixed SANTUARIO-257: Use JUnit4 for testing
+    Fixed SANTUARIO-256: Port non-JSR 105 code to use JDK 1.5.
+    Fixed SANTUARIO-269: Register default algorithms/implementations dynamically.
     Fixed SANTUARIO-283: JSR105 does not retain namespace definitions on Object element when unmarshalling
+    Fixed SANTUARIO-254: Rework org.apache.xml.security.utils.resolver.ResourceResolver.
+    Fixed SANTUARIO-248: Add support for ECDSA signature with SHA-2 message digests + enhancements in ASN.1 to XMLDSIG converter (and viceversa)
+
+New in v1.4.5
     Fixed SANTUARIO-250: VerifyMerlinsExamplesFifteen/TwentyThree.java samples should ignore signature-enveloping-hmac-sha1-40.xml
     Fixed SANTUARIO-191: xml:id attributes are not correctly handled when using c14n11.
     Fixed SANTUARIO-266: c14n11 produces different signatures using version 1.4.3 and 1.4.4.
-    Fixed SANTUARIO-254: Rework org.apache.xml.security.utils.resolver.ResourceResolver.
+    Fixed SANTUARIO-253: org.apache.xml.security.utils.resolver.ResourceResolver is not thread safe.
     Fixed SANTUARIO-263: Canonicalizer can't handle dynamical created DOM correctly. Thanks to Martin Koegler.
     Fixed SANTUARIO-262: Invalid use of String.getBytes(). Thanks to Martin Koegler.
 
