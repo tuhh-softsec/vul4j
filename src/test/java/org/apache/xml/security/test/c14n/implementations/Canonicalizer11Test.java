@@ -398,7 +398,7 @@ public class Canonicalizer11Test extends org.junit.Assert {
         // if everything is OK, result is true; we do a binary compare, byte by byte
         boolean result = java.security.MessageDigest.isEqual(refBytes, c14nBytes);
 
-        if (result == false) {    	  
+        if (!result) {    	  
             File f = new File(fileOut);
             if (!f.exists()) {
                 File parent = new File(f.getParent());
@@ -409,7 +409,7 @@ public class Canonicalizer11Test extends org.junit.Assert {
 
             fos.write(c14nBytes);
             log.debug("Wrote errorneous result to file " + f.toURI().toURL().toString());
-            assertEquals(new String(refBytes),new String(c14nBytes));
+            assertEquals(new String(refBytes), new String(c14nBytes));
         }
 
         return result;

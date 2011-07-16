@@ -54,6 +54,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
     private static final String XML_LANG_URI = Constants.XML_LANG_SPACE_SpecNS;
     
     private boolean firstCall = true;
+    private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
     
     private static class XmlAttrStack {
         static class XmlsStackElement {
@@ -75,11 +76,12 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             cur = null;
             while (lastlevel >= currentLevel) {
                 levels.remove(levels.size() - 1);
-                if (levels.size() == 0) {
+                int newSize = levels.size();
+                if (newSize == 0) {
                     lastlevel = 0;
                     return;    				
                 }
-                lastlevel = (levels.get(levels.size()-1)).level;
+                lastlevel = (levels.get(newSize - 1)).level;
             }
         }
         
@@ -127,12 +129,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                         loa.put(n.getName(), n);
                     }
                 }
-                //if (e.rendered)
-                //break;
-
             }
-            //cur.nodes.clear();
-            //cur.nodes.addAll(loa.values());
+            
             cur.rendered = true;
             col.addAll(loa.values());
         }
@@ -200,8 +198,9 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         if (!element.hasAttributes() && !firstCall) {
             return null; 
         }
-        // result will contain the attrs which have to be output	  
-        SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+        // result will contain the attrs which have to be output
+        final SortedSet<Attr> result = this.result;       
+        result.clear();
 
         if (element.hasAttributes()) {
             NamedNodeMap attrs = element.getAttributes();
@@ -264,7 +263,8 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
         // result will contain the attrs which have to be output
         xmlattrStack.push(ns.getLevel());
         boolean isRealVisible = isVisibleDO(element, ns.getLevel()) == 1;
-        SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+        final SortedSet<Attr> result = this.result;       
+        result.clear();
         
         if (element.hasAttributes()) {
             NamedNodeMap attrs = element.getAttributes();
@@ -280,11 +280,11 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
                     //A non namespace definition node.
                     if (XML_LANG_URI.equals(NUri)) {
                         xmlattrStack.addXmlnsAttr(attribute);
-                    } else if (isRealVisible){
+                    } else if (isRealVisible) {
                         //The node is visible add the attribute to the list of output attributes.
                         result.add(attribute);
                     } 
-                } else if (!"xml".equals(NName) || !XML_LANG_URI.equals(NValue)) {
+                } else if (!XML.equals(NName) || !XML_LANG_URI.equals(NValue)) {
                     /* except omit namespace node with local name xml, which defines
                      * the xml prefix, if its string value is http://www.w3.org/XML/1998/namespace.
                      */

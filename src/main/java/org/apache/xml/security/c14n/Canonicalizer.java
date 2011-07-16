@@ -273,7 +273,7 @@ public class Canonicalizer {
     /**
      * Canonicalizes the subtree rooted by <CODE>node</CODE>.
      *
-     * @param node The node to canicalize
+     * @param node The node to canonicalize
      * @return the result of the c14n.
      *
      * @throws CanonicalizationException

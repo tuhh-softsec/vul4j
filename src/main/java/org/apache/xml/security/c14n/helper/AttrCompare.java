@@ -91,9 +91,7 @@ public class AttrCompare implements Comparator<Attr>, Serializable {
             }
             // attr0 is a namespace, attr1 is not
             return ATTR0_BEFORE_ATTR1;
-        } 
-
-        if (isNamespaceAttr1) {
+        } else if (isNamespaceAttr1) {
             // attr1 is a namespace, attr0 is not
             return ATTR1_BEFORE_ATTR0;
         } 
@@ -106,9 +104,7 @@ public class AttrCompare implements Comparator<Attr>, Serializable {
                 return name0.compareTo(name1);
             }
             return ATTR0_BEFORE_ATTR1;
-        } 
-
-        if (namespaceURI1 == null) {
+        } else if (namespaceURI1 == null) {
             return ATTR1_BEFORE_ATTR0;
         } 
 

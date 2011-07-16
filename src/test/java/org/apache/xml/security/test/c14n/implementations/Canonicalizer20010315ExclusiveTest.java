@@ -119,8 +119,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLSignature xmlSignature = new XMLSignature(signatureElement,
                                                      fileIn.toURI().toURL().toString());
         boolean verify =
-            xmlSignature
-            .checkSignatureValue(xmlSignature.getKeyInfo().getPublicKey());
+            xmlSignature.checkSignatureValue(xmlSignature.getKeyInfo().getPublicKey());
         int length = xmlSignature.getSignedInfo().getLength();
         int numberOfPositiveReferences = 0;
 
@@ -308,7 +307,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
                 "src/test/resources/org/apache/xml/security/c14n/inExcl/example2_2_3_c14nized_exclusive.xml")
             );
         byte[] result = c.engineCanonicalizeXPathNodeSet(nodes);
-        assertEquals(new String(reference),new String(result));
+        assertEquals(new String(reference), new String(result));
     }
 
     /**
@@ -351,7 +350,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         XMLUtils.getSet(doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
         XMLSignatureInput input = new XMLSignatureInput(nodeSet);
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
-        assertEquals(c14nXML,new String(bytes));
+        assertEquals(c14nXML, new String(bytes));
     }
     
     /**

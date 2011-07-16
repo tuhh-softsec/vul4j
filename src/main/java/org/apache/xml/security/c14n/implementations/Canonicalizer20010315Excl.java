@@ -64,6 +64,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
       * the inclusive namespaces.
       */
     private SortedSet<String> inclusiveNSSet;
+    
+    private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
 
     /**
      * Constructor Canonicalizer20010315Excl
@@ -147,15 +149,14 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
     protected Iterator<Attr> handleAttributesSubtree(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be output
-        SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+        final SortedSet<Attr> result = this.result;       
+        result.clear();
     
         // The prefix visibly utilized (in the attribute or in the name) in 
         // the element
-        SortedSet<String> visiblyUtilized = null;
-        if (inclusiveNSSet == null) {
-            visiblyUtilized = new TreeSet<String>();
-        } else {
-            visiblyUtilized = new TreeSet<String>(inclusiveNSSet);
+        SortedSet<String> visiblyUtilized = new TreeSet<String>();
+        if (inclusiveNSSet != null && !inclusiveNSSet.isEmpty()) {
+            visiblyUtilized.addAll(inclusiveNSSet);
         }
     
         if (element.hasAttributes()) {
@@ -216,7 +217,8 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
     protected final Iterator<Attr> handleAttributes(Element element, NameSpaceSymbTable ns)
         throws CanonicalizationException {
         // result will contain the attrs which have to be output
-        SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
+        final SortedSet<Attr> result = this.result;       
+        result.clear();
 
         // The prefix visibly utilized (in the attribute or in the name) in 
         // the element
@@ -224,10 +226,9 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
         // It's the output selected.
         boolean isOutputElement = isVisibleDO(element, ns.getLevel()) == 1;
         if (isOutputElement) {
-            if (inclusiveNSSet == null) {
-                visiblyUtilized = new TreeSet<String>();
-            } else {
-                visiblyUtilized = new TreeSet<String>(inclusiveNSSet);
+            visiblyUtilized = new TreeSet<String>();
+            if (inclusiveNSSet != null && !inclusiveNSSet.isEmpty()) {
+                visiblyUtilized.addAll(inclusiveNSSet);
             }
         }
 
@@ -313,7 +314,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
     protected void circumventBugIfNeeded(XMLSignatureInput input) 
         throws CanonicalizationException, ParserConfigurationException, 
                IOException, SAXException {
-        if (!input.isNeedsToBeExpanded() || inclusiveNSSet.isEmpty()) {
+        if (!input.isNeedsToBeExpanded() || inclusiveNSSet.isEmpty() || inclusiveNSSet.isEmpty()) {
             return;
         }
         Document doc = null;
