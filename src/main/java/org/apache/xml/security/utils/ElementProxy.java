@@ -370,15 +370,11 @@ public abstract class ElementProxy {
      * @return the Text of the textNode
      */
     public String getTextFromChildElement(String localname, String namespace) {
-        Text t =
-            (Text) XMLUtils.selectNode(
+        return XMLUtils.selectNode(
                 this.constructionElement.getFirstChild(),
                 namespace,
                 localname,
-                0
-            ).getFirstChild();
-
-        return t.getData();      
+                0).getTextContent();
     }
 
     /**
