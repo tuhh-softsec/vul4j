@@ -38,7 +38,7 @@ public abstract class AbstractScanner
      * <li>Mac: &#42;&#42;/.DS_Store</li>
      * <li>Serena Dimension: &#42;&#42;/.metadata, &#42;&#42;/.metadata/&#42;&#42;</li>
      * <li>Mercurial: &#42;&#42;/.hg, &#42;&#42;/.hg/&#42;&#42;</li>
-     * <li>GIT: &#42;&#42;/.git, &#42;&#42;/.git/&#42;&#42;</li>
+     * <li>GIT: &#42;&#42;/.git, &#42;&#42;/.gitignore, &#42;&#42;/.gitattributes, &#42;&#42;/.git/&#42;&#42;</li>
      * <li>Bitkeeper: &#42;&#42;/BitKeeper, &#42;&#42;/BitKeeper/&#42;&#42;, &#42;&#42;/ChangeSet, &#42;&#42;/ChangeSet/&#42;&#42;</li>
      * <li>Darcs: &#42;&#42;/_darcs, &#42;&#42;/_darcs/&#42;&#42;, &#42;&#42;/.darcsrepo, &#42;&#42;/.darcsrepo/&#42;&#42;&#42;&#42;/-darcs-backup&#42;, &#42;&#42;/.darcs-temp-mail
      * </ul>
@@ -100,6 +100,8 @@ public abstract class AbstractScanner
   
         // git
         "**/.git",
+        "**/.gitignore",
+        "**/.gitattributes",
         "**/.git/**",
   
         // BitKeeper
