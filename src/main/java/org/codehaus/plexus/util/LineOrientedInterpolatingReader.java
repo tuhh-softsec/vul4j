@@ -30,7 +30,35 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
+ * A FilterReader which interpolates keyword values into a character stream.
+ * Keywords are recognized when enclosed between starting and ending delimiter
+ * strings.  The keywords themselves, and their values, are fetched from a Map
+ * supplied to the constructor.
+ * <p>
+ * When a possible keyword token is recognized (by detecting the starting and
+ * ending token delimiters):
+ * </p>
+ * <ul>
+ * <li>if the enclosed string is found in the keyword Map, the delimiters and
+ * the keyword are effectively replaced by the keyword's value;</li>
+ * <li>if the enclosed string is found in the keyword Map, but its value has
+ * zero length, then the token (delimiters and keyword) is effectively removed
+ * from the character stream;</li>
+ * <li>if the enclosed string is <em>not</em> found in the keyword Map, then
+ * no substitution is made; the token text is passed through unaltered.</li>
+ * </ul>
+ * <p>
+ * A token in the incoming character stream may be <em>escaped</em> by
+ * prepending an "escape sequence" which is specified to the constructor.  An
+ * escaped token is passed through as written, with the escape sequence removed.
+ * This allows things which would look like tokens to be read literally rather
+ * than interpolated.
+ * </p>
+ * 
  * @author jdcasey Created on Feb 3, 2005
+ * 
+ * @see InterpolationFilterReader
+ * @see org.codehaus.plexus.interpolation
  */
 public class LineOrientedInterpolatingReader
     extends FilterReader
@@ -63,6 +91,16 @@ public class LineOrientedInterpolatingReader
 
     private String line;
 
+    /**
+     * Construct an interpolating Reader, specifying token delimiters and the
+     * escape sequence.
+     * 
+     * @param reader the Reader to be filtered.
+     * @param context keyword/value pairs for interpolation.
+     * @param startDelim character sequence which (possibly) begins a token.
+     * @param endDelim character sequence which ends a token.
+     * @param escapeSeq 
+     */
     public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context, String startDelim, String endDelim,
                                            String escapeSeq )
     {
@@ -91,11 +129,26 @@ public class LineOrientedInterpolatingReader
         }
     }
 
+    /**
+     * Filters a Reader using the default escape sequence "\".
+     * 
+     * @param reader the Reader to be filtered.
+     * @param context keyword/value pairs for interpolation.
+     * @param startDelim the character sequence which (possibly) begins a token.
+     * @param endDelim  the character sequence which ends a token.
+     */
     public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context, String startDelim, String endDelim )
     {
         this( reader, context, startDelim, endDelim, DEFAULT_ESCAPE_SEQ );
     }
 
+    /**
+     * Filters a Reader using the default escape sequence "\" and token
+     * delimiters "${", "}".
+     * 
+     * @param reader the Reader to be filtered.
+     * @param context keyword/value pairs for interpolation.
+     */
     public LineOrientedInterpolatingReader( Reader reader, Map<String, ?> context )
     {
         this( reader, context, DEFAULT_START_DELIM, DEFAULT_END_DELIM, DEFAULT_ESCAPE_SEQ );
@@ -189,6 +242,11 @@ public class LineOrientedInterpolatingReader
         }
     }
 
+    /*
+     * Read one line from the wrapped Reader.  A line is a sequence of characters
+     * ending in CRLF, CR, or LF.  The terminating character(s) will be included
+     * in the returned line.
+     */
     private String readLine() throws IOException
     {
         StringBuilder lineBuffer = new StringBuilder( 40 ); // half of the "normal" line maxsize

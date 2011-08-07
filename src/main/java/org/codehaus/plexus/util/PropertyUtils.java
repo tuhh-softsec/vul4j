@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- *
+ * Static methods to create Properties loaded from various sources.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>

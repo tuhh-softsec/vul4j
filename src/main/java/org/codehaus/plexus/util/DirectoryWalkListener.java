@@ -19,8 +19,9 @@ package org.codehaus.plexus.util;
 import java.io.File;
 
 /**
- * DirectoryWalkListener
+ * Observes the actions of a {@link DirectoryWalker}.
  * @version $Id$
+ * @see DirectoryWalker
  */
 public interface DirectoryWalkListener
 {

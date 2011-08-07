@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * Operations on a class' fields and their setters.
+ * 
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @author <a href="mailto:jesse@codehaus.org">Jesse McConnell</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>

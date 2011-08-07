@@ -61,6 +61,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A FilterReader which interpolates keyword values into a character stream.
+ * Keywords are recognized when enclosed between starting and ending delimiter
+ * strings.  The keywords themselves, and their values, are fetched from a Map
+ * supplied to the constructor.
+ * <p>
+ * When a possible keyword token is recognized (by detecting the starting and
+ * ending token delimiters):
+ * </p>
+ * <ul>
+ * <li>if the enclosed string is found in the keyword Map, the delimiters and
+ * the keyword are effectively replaced by the keyword's value;</li>
+ * <li>if the enclosed string is found in the keyword Map, but its value has
+ * zero length, then the token (delimiters and keyword) is effectively removed
+ * from the character stream;</li>
+ * <li>if the enclosed string is <em>not</em> found in the keyword Map, then
+ * no substitution is made; the token text is passed through unaltered.</li>
+ * </ul>
+ * @see LineOrientedInterpolatingReader
+ * @see org.codehaus.plexus.interpolation
  */
 public class InterpolationFilterReader
     extends FilterReader
@@ -95,6 +114,15 @@ public class InterpolationFilterReader
     /** Default end token. */
     private static final String DEFAULT_END_TOKEN = "}";
 
+    /**
+     * Construct a Reader to interpolate values enclosed between the given
+     * delimiter tokens.
+     * 
+     * @param in a Reader to be wrapped for interpolation.
+     * @param variables name/value pairs to be interpolated into the character stream.
+     * @param beginToken an interpolation target begins with this.
+     * @param endToken  an interpolation target ends with this.
+     */
     public InterpolationFilterReader( Reader in, Map variables, String beginToken, String endToken )
     {
         super( in );
@@ -107,6 +135,13 @@ public class InterpolationFilterReader
         endTokenLength = endToken.length();
     }
 
+    /**
+     * Construct a Reader using the default interpolation delimiter tokens
+     * "${" and "}".
+     * 
+     * @param in a Reader to be wrapped for interpolation.
+     * @param variables name/value pairs to be interpolated into the character stream.
+     */
     public InterpolationFilterReader( Reader in, Map variables )
     {
         this( in, variables, DEFAULT_BEGIN_TOKEN, DEFAULT_END_TOKEN );

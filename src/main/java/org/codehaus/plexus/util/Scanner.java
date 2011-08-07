@@ -18,6 +18,9 @@ package org.codehaus.plexus.util;
 
 import java.io.File;
 
+/**
+ * Scan a directory tree for files, with specified inclusions and exclusions.
+ */
 public interface Scanner
 {
 
