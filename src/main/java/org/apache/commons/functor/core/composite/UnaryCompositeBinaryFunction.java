@@ -40,7 +40,7 @@ import org.apache.commons.functor.UnaryFunction;
  */
 public class UnaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L, R, T>, Serializable {
 
-    private class Helper<G, H> implements BinaryFunction<L, R, T>, Serializable {
+    private static class Helper<G, H, L, R, T> implements BinaryFunction<L, R, T>, Serializable {
         private BinaryFunction<? super G, ? super H, ? extends T> f;
         private UnaryFunction<? super L, ? extends G> g;
         private UnaryFunction<? super R, ? extends H> h;
@@ -66,7 +66,7 @@ public class UnaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L, 
         }
     }
 
-    private final Helper<?, ?> helper;
+    private final Helper<?, ?, L, R, T> helper;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -84,7 +84,7 @@ public class UnaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L, 
         if (g == null || h == null) {
             throw new IllegalArgumentException("Left and right UnaryFunctions may not be null");
         }
-        this.helper = new Helper<G, H>(f, g, h);
+        this.helper = new Helper<G, H, L, R, T>(f, g, h);
     }
 
     // function interface

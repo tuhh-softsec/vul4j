@@ -32,7 +32,7 @@ public class TransformedBinaryProcedure<L, R> implements BinaryProcedure<L, R>, 
      * Type-remembering helper
      * @param <X>
      */
-    private class Helper<X> implements BinaryProcedure<L, R>, Serializable {
+    private static class Helper<X, L, R> implements BinaryProcedure<L, R>, Serializable {
         private BinaryFunction<? super L, ? super R, ? extends X> function;
         private UnaryProcedure<? super X> procedure;
 
@@ -54,7 +54,7 @@ public class TransformedBinaryProcedure<L, R> implements BinaryProcedure<L, R>, 
         }
     }
 
-    private final Helper<?> helper;
+    private final Helper<?, L, R> helper;
 
     /**
      * Create a new TransformedBinaryProcedure.
@@ -64,7 +64,7 @@ public class TransformedBinaryProcedure<L, R> implements BinaryProcedure<L, R>, 
      */
     public <X> TransformedBinaryProcedure(BinaryFunction<? super L, ? super R, ? extends X> function,
             UnaryProcedure<? super X> procedure) {
-        this.helper = new Helper<X>(function, procedure);
+        this.helper = new Helper<X, L, R>(function, procedure);
     }
 
     /**

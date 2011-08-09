@@ -31,7 +31,7 @@ public class TransformedFunction<T> implements Function<T>, Serializable {
      * Type-remembering helper
      * @param <X>
      */
-    private class Helper<X> implements Function<T>, Serializable {
+    private static class Helper<X, T> implements Function<T>, Serializable {
         private Function<? extends X> preceding;
         private UnaryFunction<? super X, ? extends T> following;
 
@@ -53,7 +53,7 @@ public class TransformedFunction<T> implements Function<T>, Serializable {
         }
     }
 
-    private final Helper<?> helper;
+    private final Helper<?, T> helper;
 
     /**
      * Create a new TransformedFunction.
@@ -63,7 +63,7 @@ public class TransformedFunction<T> implements Function<T>, Serializable {
      */
     public <X> TransformedFunction(Function<? extends X> preceding,
             UnaryFunction<? super X, ? extends T> following) {
-        this.helper = new Helper<X>(preceding, following);
+        this.helper = new Helper<X, T>(preceding, following);
     }
 
     /**

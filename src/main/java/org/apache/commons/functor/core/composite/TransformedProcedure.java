@@ -32,7 +32,7 @@ public class TransformedProcedure implements Procedure, Serializable {
      * Type-remembering helper
      * @param <X>
      */
-    private class Helper<X> implements Procedure, Serializable {
+    private static class Helper<X> implements Procedure, Serializable {
         private Function<? extends X> function;
         private UnaryProcedure<? super X> procedure;
 

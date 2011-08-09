@@ -31,7 +31,7 @@ public class TransformedBinaryFunction<L, R, T> implements BinaryFunction<L, R, 
      * Type-remembering helper
      * @param <X>
      */
-    private class Helper<X> implements BinaryFunction<L, R, T>, Serializable {
+    private static class Helper<X, L, R, T> implements BinaryFunction<L, R, T>, Serializable {
         private BinaryFunction<? super L, ? super R, ? extends X> preceding;
         private UnaryFunction<? super X, ? extends T> following;
 
@@ -53,7 +53,7 @@ public class TransformedBinaryFunction<L, R, T> implements BinaryFunction<L, R, 
         }
     }
 
-    private final Helper<?> helper;
+    private final Helper<?, L, R, T> helper;
 
     /**
      * Create a new TransformedBinaryFunction.
@@ -63,7 +63,7 @@ public class TransformedBinaryFunction<L, R, T> implements BinaryFunction<L, R, 
      */
     public <X> TransformedBinaryFunction(BinaryFunction<? super L, ? super R, ? extends X> preceding,
             UnaryFunction<? super X, ? extends T> following) {
-        this.helper = new Helper<X>(preceding, following);
+        this.helper = new Helper<X, L, R, T>(preceding, following);
     }
 
     /**

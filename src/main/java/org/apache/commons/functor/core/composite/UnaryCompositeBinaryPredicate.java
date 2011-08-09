@@ -39,7 +39,7 @@ import org.apache.commons.functor.UnaryFunction;
  * @author Rodney Waldhoff
  */
 public class UnaryCompositeBinaryPredicate<L, R> implements BinaryPredicate<L, R>, Serializable {
-    private class Helper<G, H> implements BinaryPredicate<L, R>, Serializable {
+    private static class Helper<G, H, L, R> implements BinaryPredicate<L, R>, Serializable {
         private BinaryPredicate<? super G, ? super H> f;
         private UnaryFunction<? super L, ? extends G> g;
         private UnaryFunction<? super R, ? extends H> h;
@@ -67,7 +67,7 @@ public class UnaryCompositeBinaryPredicate<L, R> implements BinaryPredicate<L, R
 
     // attributes
     // ------------------------------------------------------------------------
-    private final Helper<?, ?> helper;
+    private final Helper<?, ?, L, R> helper;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public class UnaryCompositeBinaryPredicate<L, R> implements BinaryPredicate<L, R
         if (g == null || h == null) {
             throw new IllegalArgumentException("Left and right UnaryFunctions may not be null");
         }
-        helper = new Helper<G, H>(f, g, h);
+        helper = new Helper<G, H, L, R>(f, g, h);
     }
 
     // function interface

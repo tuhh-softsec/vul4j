@@ -56,7 +56,7 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
      * @param <X> intermediate type
      * @param <T> return type
      */
-    private class Helper<X> implements UnaryFunction<A, T>, Serializable {
+    private static class Helper<X, A, T> implements UnaryFunction<A, T>, Serializable {
         private UnaryFunction<? super X, ? extends T> following;
         private UnaryFunction<? super A, ? extends X> preceding;
 
@@ -82,10 +82,10 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
          */
         @Override
         public boolean equals(Object obj) {
-            return obj == this || obj instanceof CompositeUnaryFunction<?, ?>.Helper<?> && equals((Helper<?>) obj);
+            return obj == this || obj instanceof Helper<?, ?, ?> && equals((Helper<?, A, T>) obj);
         }
 
-        private boolean equals(Helper<?> helper) {
+        private boolean equals(Helper<?, A, T> helper) {
             return helper.following.equals(following) && helper.preceding.equals(preceding);
         }
 
@@ -126,7 +126,7 @@ public class CompositeUnaryFunction<A, T> implements UnaryFunction<A, T>, Serial
 
     private <X> CompositeUnaryFunction(UnaryFunction<? super X, ? extends T> following,
             UnaryFunction<? super A, ? extends X> preceding) {
-        this.function = new Helper<X>(following, preceding);
+        this.function = new Helper<X, A, T>(following, preceding);
     }
 
     /**

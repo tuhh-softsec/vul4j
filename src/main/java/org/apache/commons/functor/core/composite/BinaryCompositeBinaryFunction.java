@@ -44,7 +44,7 @@ public class BinaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L,
      * @param <G>
      * @param <H>
      */
-    private class Helper<G, H> implements BinaryFunction<L, R, T>, Serializable {
+    private static class Helper<G, H, L, R, T> implements BinaryFunction<L, R, T>, Serializable {
         private BinaryFunction<? super G, ? super H, ? extends T> f;
         private BinaryFunction<? super L, ? super R, ? extends G> g;
         private BinaryFunction<? super L, ? super R, ? extends H> h;
@@ -70,7 +70,7 @@ public class BinaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L,
         }
     }
 
-    private final Helper<?, ?> helper;
+    private final Helper<?, ?, L, R, T> helper;
 
     // constructor
     // ------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public class BinaryCompositeBinaryFunction<L, R, T> implements BinaryFunction<L,
         if (f == null || g == null || h == null) {
             throw new IllegalArgumentException("BinaryFunction arguments may not be null");
         }
-        this.helper = new Helper<G, H>(f, g, h);
+        this.helper = new Helper<G, H, L, R, T>(f, g, h);
     }
 
     // function interface
