@@ -60,7 +60,7 @@ public final class EachElement {
         if (map == null) {
             return null;
         }
-        return map == null ? null : EachElement.from(((Map<K, V>) map).entrySet().iterator());
+        return EachElement.from(((Map<K, V>) map).entrySet().iterator());
     }
 
     /**
