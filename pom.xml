@@ -43,6 +43,14 @@
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/sandbox/functor/trunk/</developerConnection>
     <url>http://svn.apache.org/viewvc/commons/sandbox/functor/trunk/</url>
   </scm>
+  <distributionManagement>
+    <!-- Cannot define in parent ATM, see COMMONSSITE-26 -->
+    <site>
+      <id>people.apache.org</id>
+      <name>Apache Commons Site</name>
+      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/sandbox/functor</url>
+    </site>
+  </distributionManagement>
 
   <developers>
     <developer>
