@@ -46,9 +46,29 @@
 
   <developers>
     <developer>
+      <name>Dennis Lundberg</name>
+      <id>dennisl</id>
+      <email>dennisl AT apache DOT org</email>
+    </developer>
+    <developer>
       <name>Rodney Waldhoff</name>
       <id>rwaldhoff</id>
       <email>rwaldhoff AT apache DOT org</email>
+    </developer>
+    <developer>
+      <name>Matt Benson</name>
+      <id>mbenson</id>
+      <email>mbenson AT apache DOT org</email>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <email>niallp AT apache DOT org</email>
+    </developer>
+    <developer>
+      <name>Simone Tripodi</name>
+      <id>simonetripodi</id>
+      <email>simonetripodi AT apache DOT org</email>
     </developer>
   </developers>
 
