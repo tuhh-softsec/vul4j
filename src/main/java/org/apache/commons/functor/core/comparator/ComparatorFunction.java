@@ -51,7 +51,7 @@ public final class ComparatorFunction<T> implements BinaryFunction<T, T, Integer
      * {@inheritDoc}
      */
     public Integer evaluate(T left, T right) {
-        return new Integer(comparator.compare(left, right));
+        return Integer.valueOf(comparator.compare(left, right));
     }
 
     /**
