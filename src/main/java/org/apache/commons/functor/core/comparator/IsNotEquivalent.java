@@ -90,7 +90,13 @@ public final class IsNotEquivalent<T> implements BinaryPredicate<T, T>, Serializ
      * @return boolean
      */
     public boolean equals(IsNotEquivalent<?> that) {
-        return null != that && null == comparator ? null == that.comparator : comparator.equals(that.comparator);
+        if (null != that) {
+            if (null == comparator) {
+                return null == that.comparator;
+            }
+            return comparator.equals(that.comparator);
+        }
+        return false;
     }
 
     /**
