@@ -6,7 +6,6 @@
 <%@page import="net.webassembletool.cookie.SerializableBasicCookieStore"%>
 <%@taglib uri="http://www.sourceforge.net/webassembletool" prefix="assemble"%>
 <%
-	UserContext context = DriverFactory.getInstance().createNewUserContext();	
+	UserContext context = DriverFactory.getInstance().getUserContext(request);	
 	context.setUser("test");
-	DriverFactory.getInstance().setUserContext(context, request);
 %><assemble:includeTemplate page="user.jsp" />

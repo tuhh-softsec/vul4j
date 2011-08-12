@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -92,10 +93,10 @@ public class OSCacheStorageTest extends TestCase{
 		assertEquals(cachedResponse, newCachedResponse);
 	}
 
-	private Map<String, List<String>> createHeaders(Map<String, String> src) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>(src.size());
+	private Map<String, Set<String>> createHeaders(Map<String, String> src) {
+		Map<String, Set<String>> result = new HashMap<String, Set<String>>(src.size());
 		for (Entry<String, String> entry : src.entrySet()) {
-			result.put(entry.getKey(), Collections.singletonList(entry.getValue()));
+			result.put(entry.getKey(), Collections.singleton(entry.getValue()));
 		}
 		return result;
 	}

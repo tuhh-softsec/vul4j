@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.ClientParamBean;
@@ -33,7 +34,6 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,13 +46,15 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpClientRequest {
-	private final static Logger LOG = LoggerFactory.getLogger(HttpClientRequest.class);
+	private final static Logger LOG = LoggerFactory
+			.getLogger(HttpClientRequest.class);
 	private String uri;
 	private final HttpServletRequest originalRequest;
 	private final boolean proxy;
 	private BasicHttpRequest httpRequest;
 	private HashMap<String, String> headers;
 	private boolean preserveHost = false;
+	private CookieStore cookieStore;
 
 	public HttpClientRequest(String uri, HttpServletRequest originalRequest,
 			boolean proxy, boolean preserveHost) {
@@ -66,8 +68,10 @@ public class HttpClientRequest {
 		this.preserveHost = preserveHost;
 	}
 
-	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
-	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E", "%5B", "%5D", "%60" };
+	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~",
+			"[", "]", "`" };
+	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C",
+			"%5E", "%7E", "%5B", "%5D", "%60" };
 
 	private String escapeUnsafeCharacters(String url) {
 		String result = url;
@@ -77,10 +81,11 @@ public class HttpClientRequest {
 		return result;
 	}
 
-	public HttpClientResponse execute(HttpClient httpClient, HttpContext httpContext) throws IOException {
+	public HttpClientResponse execute(HttpClient httpClient) throws IOException {
 		buildHttpMethod();
 		URL url = new URL(uri);
-		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
+		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(),
+				url.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
 			// original port is -1 for default ports(80, 443),
@@ -100,7 +105,8 @@ public class HttpClientRequest {
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		HttpClientResponse result = HttpClientResponse.create(httpHost, httpRequest, httpClient, httpContext);
+		HttpClientResponse result = HttpClientResponse.create(httpHost,
+				httpRequest, httpClient, cookieStore);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(toString() + " -> " + result.toString() + " ("
@@ -165,7 +171,8 @@ public class HttpClientRequest {
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
+		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
+				!proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
@@ -236,5 +243,13 @@ public class HttpClientRequest {
 
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	public CookieStore getCookieStore() {
+		return cookieStore;
+	}
+
+	public void setCookieStore(CookieStore cookieStore) {
+		this.cookieStore = cookieStore;
 	}
 }

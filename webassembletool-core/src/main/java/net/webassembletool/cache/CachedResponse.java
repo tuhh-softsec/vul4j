@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,8 +15,8 @@ import net.webassembletool.output.Output;
 import net.webassembletool.util.Rfc2616;
 
 /**
- * Resource implementation that keeps the contents inside a byte array. A MemoryResource can be reused and kept in
- * cache.
+ * Resource implementation that keeps the contents inside a byte array. A
+ * MemoryResource can be reused and kept in cache.
  * 
  * @author Francois-Xavier Bonnet
  * 
@@ -28,7 +28,8 @@ public class CachedResponse extends BaseCachedResource {
 	private final Date localDate = new Date();
 	private Map<String, String> requestHeaders;
 
-	public CachedResponse(byte[] byteArray, String charset, Map<String, List<String>> headers, int statusCode,
+	public CachedResponse(byte[] byteArray, String charset,
+			Map<String, Set<String>> headers, int statusCode,
 			String statusMessage) {
 		super(headers, statusCode, statusMessage);
 		this.byteArray = byteArray;
@@ -62,7 +63,7 @@ public class CachedResponse extends BaseCachedResource {
 		output.setStatus(statusCode, statusMessage);
 		try {
 			output.setCharsetName(charset);
-			for (Entry<String, List<String>> entry : headers.entrySet()) {
+			for (Entry<String, Set<String>> entry : headers.entrySet()) {
 				for (String value : entry.getValue()) {
 					output.addHeader(entry.getKey(), value);
 				}
@@ -81,7 +82,8 @@ public class CachedResponse extends BaseCachedResource {
 
 	@Override
 	public String toString() {
-		return statusCode + " " + statusMessage + " age=" + Rfc2616.getAge(this) + " stale=" + Rfc2616.isStale(this)
+		return statusCode + " " + statusMessage + " age="
+				+ Rfc2616.getAge(this) + " stale=" + Rfc2616.isStale(this)
 				+ " hasBody=" + hasResponseBody();
 	}
 
@@ -92,10 +94,13 @@ public class CachedResponse extends BaseCachedResource {
 		result = prime * result + Arrays.hashCode(byteArray);
 		result = prime * result + ((charset == null) ? 0 : charset.hashCode());
 		result = prime * result + ((headers == null) ? 0 : headers.hashCode());
-		result = prime * result + ((localDate == null) ? 0 : localDate.hashCode());
-		result = prime * result + ((requestHeaders == null) ? 0 : requestHeaders.hashCode());
+		result = prime * result
+				+ ((localDate == null) ? 0 : localDate.hashCode());
+		result = prime * result
+				+ ((requestHeaders == null) ? 0 : requestHeaders.hashCode());
 		result = prime * result + statusCode;
-		result = prime * result + ((statusMessage == null) ? 0 : statusMessage.hashCode());
+		result = prime * result
+				+ ((statusMessage == null) ? 0 : statusMessage.hashCode());
 		return result;
 	}
 
@@ -186,7 +191,8 @@ public class CachedResponse extends BaseCachedResource {
 	}
 
 	/**
-	 * Set headers which were used to get this resource from the original HttpServletRequest.
+	 * Set headers which were used to get this resource from the original
+	 * HttpServletRequest.
 	 * <p>
 	 * Headers can then be retrieved from HttpServletRequest#getRequestHeaders()
 	 * 
@@ -211,7 +217,9 @@ public class CachedResponse extends BaseCachedResource {
 	}
 
 	public CachedResponseSummary getSummary() {
-		CachedResponseSummary s = new CachedResponseSummary(new HashMap<String, List<String>>(headers), statusCode, statusMessage);
+		CachedResponseSummary s = new CachedResponseSummary(
+				new HashMap<String, Set<String>>(headers), statusCode,
+				statusMessage);
 		s.setResponseBody(this.hasResponseBody());
 		s.setLocalDate(localDate);
 		// Copy Request headers

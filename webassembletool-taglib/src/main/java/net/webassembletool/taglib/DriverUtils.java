@@ -22,7 +22,8 @@ import net.webassembletool.HttpErrorPage;
  */
 public class DriverUtils {
 	public final static String getBaseUrl(String provider) {
-		return DriverFactory.getInstance(provider).getBaseURL();
+		return DriverFactory.getInstance(provider).getConfiguration()
+				.getBaseURL();
 	}
 
 	public final static void renderBlock(String provider, String page,

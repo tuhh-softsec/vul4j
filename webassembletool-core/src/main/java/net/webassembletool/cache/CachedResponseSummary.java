@@ -2,15 +2,15 @@ package net.webassembletool.cache;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.webassembletool.output.Output;
 
 /**
- * A summary of a response, which does not include body content. Can be used to check the validity of a resource before
- * actually getting it.
+ * A summary of a response, which does not include body content. Can be used to
+ * check the validity of a resource before actually getting it.
  * 
  * @author Nicolas Richeton
  * 
@@ -22,7 +22,8 @@ public class CachedResponseSummary extends BaseCachedResource {
 	private String cacheKey;
 	private Date localDate;
 
-	public CachedResponseSummary(Map<String, List<String>> headers, int statusCode, String statusMessage) {
+	public CachedResponseSummary(Map<String, Set<String>> headers,
+			int statusCode, String statusMessage) {
 		super(headers, statusCode, statusMessage);
 	}
 

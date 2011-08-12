@@ -9,8 +9,8 @@ import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -24,7 +24,8 @@ class FileUtils {
 	}
 
 	public static HeadersFile loadHeaders(File src) throws IOException {
-		LineNumberReader in = new LineNumberReader(new InputStreamReader(new FileInputStream(src), "UTF-8"));
+		LineNumberReader in = new LineNumberReader(new InputStreamReader(
+				new FileInputStream(src), "UTF-8"));
 		try {
 			HeadersFile result = new HeadersFile();
 
@@ -53,17 +54,21 @@ class FileUtils {
 		}
 	}
 
-	public static void storeHeaders(File dest, HeadersFile headers) throws IOException {
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(dest), "UTF-8"));
+	public static void storeHeaders(File dest, HeadersFile headers)
+			throws IOException {
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(
+				new FileOutputStream(dest), "UTF-8"));
 		try {
 			out.println("#Headers");
 			out.println("#" + new Date().toString());
-			for (Entry<String, List<String>> entry : headers.getHeadersMap().entrySet()) {
+			for (Entry<String, Set<String>> entry : headers.getHeadersMap()
+					.entrySet()) {
 				for (String value : entry.getValue()) {
 					out.println(entry.getKey() + "=" + value);
 				}
 			}
-			out.println(Integer.toString(headers.getStatusCode()) + "=" + headers.getStatusMessage());
+			out.println(Integer.toString(headers.getStatusCode()) + "="
+					+ headers.getStatusMessage());
 		} finally {
 			out.close();
 		}

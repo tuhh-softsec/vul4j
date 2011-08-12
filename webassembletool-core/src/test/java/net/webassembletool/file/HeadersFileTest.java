@@ -1,11 +1,11 @@
 package net.webassembletool.file;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 
@@ -14,9 +14,12 @@ public class HeadersFileTest extends TestCase {
 
 	@Override
 	protected void setUp() {
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		headers.put("single", Collections.singletonList("header value"));
-		headers.put("multiple", Arrays.asList("first", "second"));
+		Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
+		headers.put("single", Collections.singleton("header value"));
+		Set<String> multiValuedHeader = new TreeSet<String>();
+		multiValuedHeader.add("first");
+		multiValuedHeader.add("second");
+		headers.put("multiple", multiValuedHeader);
 		tested = new HeadersFile(headers, -1, null);
 	}
 
@@ -26,7 +29,8 @@ public class HeadersFileTest extends TestCase {
 	}
 
 	public void testAddHeader() {
-		assertFalse("no header named 'header'", tested.getHeadersMap().containsKey("header"));
+		assertFalse("no header named 'header'", tested.getHeadersMap()
+				.containsKey("header"));
 
 		tested.addHeader("header", "value");
 		assertTrue(tested.getHeadersMap().containsKey("header"));

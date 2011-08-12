@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.webassembletool.output.Output;
 import net.webassembletool.resource.Resource;
@@ -41,9 +41,11 @@ public class FileResource extends Resource {
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(headersFile.getStatusCode(), headersFile.getStatusMessage());
-		for (Entry<String, List<String>> header : headersFile.getHeadersMap().entrySet()) {
-			List<String> values = header.getValue();
+		output.setStatus(headersFile.getStatusCode(),
+				headersFile.getStatusMessage());
+		for (Entry<String, Set<String>> header : headersFile.getHeadersMap()
+				.entrySet()) {
+			Set<String> values = header.getValue();
 			for (String value : values) {
 				output.addHeader(header.getKey(), value);
 			}

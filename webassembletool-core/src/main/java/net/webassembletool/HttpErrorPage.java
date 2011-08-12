@@ -3,6 +3,8 @@ package net.webassembletool;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Exception thrown when an error occurred retrieving a resource
  * 
@@ -32,5 +34,22 @@ public class HttpErrorPage extends Exception {
 
 	public void render(Writer writer) throws IOException {
 		writer.write(errorPageContent);
+	}
+
+	public void render(HttpServletResponse response) throws IOException {
+		try {
+			response.setStatus(statusCode);
+			Writer writer = response.getWriter();
+			render(writer);
+			// If we cannot render the Exception to browser, do our best to
+			// render it in the log file
+		} catch (IllegalStateException e) {
+			throw new IOException(
+					"Response already committed, unable to render exception to browser",
+					this);
+		} catch (IOException e) {
+			throw new IOException("Unable to render exception to browser", this);
+		}
+
 	}
 }

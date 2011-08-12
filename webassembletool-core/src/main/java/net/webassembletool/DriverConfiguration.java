@@ -14,6 +14,8 @@
  */
 package net.webassembletool;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,10 +65,19 @@ public class DriverConfiguration {
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie";
 
+	private URL baseURLasURL = null;
+
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
 		baseURL = props.getProperty("remoteUrlBase");
+		try {
+			if (baseURL != null) {
+				baseURLasURL = new URL(baseURL);
+			}
+		} catch (MalformedURLException e1) {
+			throw new ConfigurationException(e1);
+		}
 		if (props.getProperty("uriEncoding") != null) {
 			uriEncoding = props.getProperty("uriEncoding");
 		}
@@ -292,6 +303,10 @@ public class DriverConfiguration {
 	 */
 	public List<String> getParsableContentTypes() {
 		return parsableContentTypes;
+	}
+
+	public URL getBaseURLasURL() {
+		return baseURLasURL;
 	}
 
 }

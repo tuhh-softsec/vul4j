@@ -27,7 +27,6 @@ import org.apache.http.impl.client.BasicCookieStore;
  */
 public class SerializableBasicCookieStore extends BasicCookieStore implements
 		CustomCookieStore {
-
 	/** Serial Id. */
 	private static final long serialVersionUID = 5884817839252416275L;
 
@@ -35,7 +34,7 @@ public class SerializableBasicCookieStore extends BasicCookieStore implements
 	 * @see org.apache.http.impl.client.BasicCookieStore#addCookie(org.apache.http.cookie.Cookie)
 	 */
 	@Override
-	public synchronized void addCookie(Cookie cookie) {
+	public void addCookie(Cookie cookie) {
 		// Copy cookie using a serializable implementation.
 		super.addCookie(new SerializableBasicClientCookie2(cookie));
 	}
@@ -46,15 +45,6 @@ public class SerializableBasicCookieStore extends BasicCookieStore implements
 	 * @see net.webassembletool.extension.Extension#init(java.util.Properties)
 	 */
 	public void init(Properties properties) {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see net.webassembletool.cookie.CustomCookieStore#cleanUpCookies()
-	 */
-	public void cleanUpCookies() {
-		// Default implementation, does nothing
 	}
 
 }

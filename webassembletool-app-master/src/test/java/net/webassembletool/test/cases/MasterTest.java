@@ -102,7 +102,7 @@ public class MasterTest extends TestCase {
 		req.setHeaderField("if-modified-since",
 				resp.getHeaderField("Last-modified"));
 		resp = webConversation.getResponse(req);
-		assertEquals("Status should be 200",
+		assertEquals("Status should be 304",
 				HttpServletResponse.SC_NOT_MODIFIED, resp.getResponseCode());
 	}
 

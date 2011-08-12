@@ -10,9 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Represents the location of a requested resource with all the necessary parameters. When proxyMode is set to true, the
- * resource should not be cached and any cookie or parameter coming from the original request should be forwarded to the
- * target server.
+ * Represents the location of a requested resource with all the necessary
+ * parameters. When proxyMode is set to true, the resource should not be cached
+ * and any cookie or parameter coming from the original request should be
+ * forwarded to the target server.
  * 
  * @author Francois-Xavier Bonnet
  */
@@ -47,7 +48,8 @@ public class ResourceContext {
 		this.proxy = proxyMode;
 	}
 
-	public ResourceContext(Driver driver, String relUrl, Map<String, String> parameters, HttpServletRequest originalRequest,
+	public ResourceContext(Driver driver, String relUrl,
+			Map<String, String> parameters, HttpServletRequest originalRequest,
 			HttpServletResponse originalResponse) {
 		this.driver = driver;
 		this.relUrl = relUrl;
@@ -76,8 +78,8 @@ public class ResourceContext {
 		return proxy;
 	}
 
-	public UserContext getUserContext(boolean create) {
-		return driver.getUserContext(originalRequest, create);
+	public UserContext getUserContext() {
+		return driver.getUserContext(originalRequest);
 	}
 
 	public boolean isNeededForTransformation() {

@@ -14,22 +14,14 @@
  */
 package net.webassembletool.http;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+public class ResponseOutputStreamException extends IOException {
 
-/**
- * Serializable implementation of {@link HttpContext}.
- * 
- * @author Nicolas Richeton
- */
-public class SerializableBasicHttpContext extends BasicHttpContext implements
-		Serializable {
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Serial Id
-	 */
-	private static final long serialVersionUID = -5003819783854207519L;
+	public ResponseOutputStreamException(IOException cause) {
+		super("Network problem or client abort", cause);
+	}
 
 }

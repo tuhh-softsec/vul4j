@@ -1,12 +1,12 @@
 package net.webassembletool.cache;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import junit.framework.TestCase;
 import net.webassembletool.output.Output;
@@ -19,17 +19,19 @@ public class BaseCachedResourceTest extends TestCase {
 	}
 
 	public void testGetStatusMessage() {
-		BaseCachedResource tested = new MockBaseCachedResource(null, -1, "expected");
+		BaseCachedResource tested = new MockBaseCachedResource(null, -1,
+				"expected");
 		assertEquals("expected", tested.getStatusMessage());
 	}
 
 	public void testGetHeader() {
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		List<String> values = new ArrayList<String>();
+		Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
+		Set<String> values = new TreeSet<String>();
 		values.add("header value");
-		headers.put("some", Collections.singletonList("some value"));
+		headers.put("some", Collections.singleton("some value"));
 
-		BaseCachedResource tested = new MockBaseCachedResource(headers, -1, null);
+		BaseCachedResource tested = new MockBaseCachedResource(headers, -1,
+				null);
 
 		assertNull(tested.getHeader("header"));
 
@@ -43,12 +45,13 @@ public class BaseCachedResourceTest extends TestCase {
 	}
 
 	public void testGetHeaders() {
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		List<String> values = new ArrayList<String>();
+		Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
+		Set<String> values = new TreeSet<String>();
 		values.add("header value");
-		headers.put("some", Collections.singletonList("some value"));
+		headers.put("some", Collections.singleton("some value"));
 
-		BaseCachedResource tested = new MockBaseCachedResource(headers, -1, null);
+		BaseCachedResource tested = new MockBaseCachedResource(headers, -1,
+				null);
 
 		assertEquals(0, tested.getHeaders("header").size());
 
@@ -56,8 +59,10 @@ public class BaseCachedResourceTest extends TestCase {
 		Collection<String> actual = tested.getHeaders("header");
 		assertNotNull(actual);
 		assertEquals(Collections.singleton("header value"), actual);
-		assertEquals(Collections.singleton("header value"), tested.getHeaders("header".toUpperCase()));
-		assertEquals(Collections.singleton("header value"), tested.getHeaders("HeAder"));
+		assertEquals(Collections.singleton("header value"),
+				tested.getHeaders("header".toUpperCase()));
+		assertEquals(Collections.singleton("header value"),
+				tested.getHeaders("HeAder"));
 
 		values.add("next value");
 		actual = tested.getHeaders("header");
@@ -67,11 +72,12 @@ public class BaseCachedResourceTest extends TestCase {
 	}
 
 	public void testGetHeaderNames() {
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+		Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
 		headers.put("header-01", null);
 		headers.put("header-02", null);
 
-		BaseCachedResource tested = new MockBaseCachedResource(headers, -1, null);
+		BaseCachedResource tested = new MockBaseCachedResource(headers, -1,
+				null);
 
 		Collection<String> actual = tested.getHeaderNames();
 		assertNotNull(actual);
@@ -81,8 +87,9 @@ public class BaseCachedResourceTest extends TestCase {
 	}
 
 	public void testAddHeader() {
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		BaseCachedResource tested = new MockBaseCachedResource(headers, -1, null);
+		Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
+		BaseCachedResource tested = new MockBaseCachedResource(headers, -1,
+				null);
 
 		assertTrue(headers.isEmpty());
 
@@ -101,7 +108,8 @@ public class BaseCachedResourceTest extends TestCase {
 
 	private static class MockBaseCachedResource extends BaseCachedResource {
 
-		public MockBaseCachedResource(Map<String, List<String>> headers, int statusCode, String statusMessage) {
+		public MockBaseCachedResource(Map<String, Set<String>> headers,
+				int statusCode, String statusMessage) {
 			super(headers, statusCode, statusMessage);
 		}
 

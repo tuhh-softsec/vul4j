@@ -25,10 +25,10 @@ import net.webassembletool.Driver;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.wicket.utils.ResponseWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A container for WAT block. Insert target content into the page.
@@ -125,7 +125,7 @@ public class WATBlock extends AbstractWatDriverContainer {
 
 		if (parseAbsoluteUrl) {
 
-			String baseUrl = driver.getBaseURL();
+			String baseUrl = driver.getConfiguration().getBaseURL();
 			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
 			if (baseUrlEnd > 0) {
 				baseUrl = baseUrl.substring(0, baseUrlEnd);
@@ -148,7 +148,8 @@ public class WATBlock extends AbstractWatDriverContainer {
 		} catch (HttpErrorPage e) {
 			// Insert default content
 			this.sendErrorContent(blocks, webResponse, e.getStatusCode());
-			LOG.warn(e.getMessage() + ": " + driver.getBaseURL() + page);
+			LOG.warn(e.getMessage() + ": "
+					+ driver.getConfiguration().getBaseURL() + page);
 		}
 
 	}

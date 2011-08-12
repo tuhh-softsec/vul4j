@@ -52,7 +52,8 @@ public class PerformanceTestCase extends TestCase {
 	private final static String AGGREGATOR = "http://localhost:8080/webassembletool-app-aggregator/";
 	private final static String AGGREGATOR_NO_CACHE = "http://localhost:8080/webassembletool-app-aggregator/nocache/ag1/";
 
-	private static final Logger LOG = LoggerFactory.getLogger(PerformanceTestCase.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(PerformanceTestCase.class);
 
 	/**
 	 * Execute a get request

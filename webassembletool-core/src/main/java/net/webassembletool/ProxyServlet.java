@@ -18,7 +18,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ProxyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(ProxyServlet.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ProxyServlet.class);
 	private String provider;
 
 	@Override
@@ -34,8 +35,7 @@ public class ProxyServlet extends HttpServlet {
 			DriverFactory.getInstance(provider)
 					.proxy(relUrl, request, response);
 		} catch (HttpErrorPage e) {
-			response.setStatus(e.getStatusCode());
-			e.render(response.getWriter());
+			e.render(response);
 		}
 	}
 

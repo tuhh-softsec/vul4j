@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceUtils.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ResourceUtils.class);
 
 	/**
 	 * Private constructor
@@ -214,8 +215,9 @@ public class ResourceUtils {
 		String url = target.getRelUrl();
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			// Relative URL, we need to add the driver base url
-			if (target.getDriver().getBaseURL() != null) {
-				url = concatUrl(target.getDriver().getBaseURL(), url);
+			if (target.getDriver().getConfiguration().getBaseURL() != null) {
+				url = concatUrl(target.getDriver().getConfiguration()
+						.getBaseURL(), url);
 			}
 		}
 		String queryString = ResourceUtils.buildQueryString(target);
@@ -226,19 +228,23 @@ public class ResourceUtils {
 		}
 	}
 
-	public static FileOutput createFileOutput(String localBase, ResourceContext target) {
+	public static FileOutput createFileOutput(String localBase,
+			ResourceContext target) {
 		String baseFileName = getFileUrl(localBase, target);
 		String headersFileName = baseFileName + ".headers";
 		return new FileOutput(new File(baseFileName), new File(headersFileName));
 	}
 
-	public static FileResource createFileResource(String localBase, ResourceContext target) throws IOException {
+	public static FileResource createFileResource(String localBase,
+			ResourceContext target) throws IOException {
 		String baseFileName = getFileUrl(localBase, target);
 		String headersFileName = baseFileName + ".headers";
-		return new FileResource(new File(baseFileName), new File(headersFileName));
+		return new FileResource(new File(baseFileName), new File(
+				headersFileName));
 	}
 
-	private final static String getFileUrl(String localBase, ResourceContext target) {
+	private final static String getFileUrl(String localBase,
+			ResourceContext target) {
 		String answer = "";
 		String url = target.getRelUrl();
 		// Remove ":" and "//" for absolute urls

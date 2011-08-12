@@ -38,7 +38,6 @@ import net.webassembletool.util.Rfc2616;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
-import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,23 +64,14 @@ public class HttpResource extends Resource {
 				.getOriginalRequest();
 
 		// Retrieve session and other cookies
-		UserContext userContext = null;
-		boolean newUserContext = true;
-		if (driver.getUserContext(originalRequest, false) == null) {
-			// Create a new user context and cookie store.
-			userContext = driver.createNewUserContext();
-		} else {
-			userContext = driver.getUserContext(originalRequest, false);
-			newUserContext = false;
-		}
-
-		HttpContext httpContext = userContext.getHttpContext();
+		UserContext userContext = resourceContext.getUserContext();
 
 		// Proceed with request
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
 				originalRequest, proxy, preserveHost);
+		httpClientRequest.setCookieStore(userContext.getCookieStore());
 		if (resourceContext.getValidators() != null) {
 			for (Entry<String, String> header : resourceContext.getValidators()
 					.entrySet()) {
@@ -97,36 +87,12 @@ public class HttpResource extends Resource {
 
 		// Filter
 		Filter filter = driver.getFilter();
-		if (newUserContext && filter.needUserContext()) {
-			// Store user context in session. Filter requirement
-			resourceContext.getDriver().setUserContext(userContext,
-					originalRequest);
-		}
 		filter.preRequest(httpClientRequest, resourceContext);
 
-		httpClientResponse = httpClientRequest.execute(httpClient, httpContext);
-		// if (httpClientResponse.getStatusCode() ==
-		// HttpServletResponse.SC_MOVED_PERMANENTLY
-		// || httpClientResponse.getStatusCode() ==
-		// HttpServletResponse.SC_MOVED_TEMPORARILY) {
-		// if
-		// (!httpClientResponse.getCurrentLocation().startsWith(resourceContext.getDriver().getBaseURL()))
-		// {
-		// LOG.debug("Current location should be started with: "
-		// + resourceContext.getDriver().getBaseURL());
-		// throw new IOException("Current location should be started with: " +
-		// resourceContext.getDriver().getBaseURL()
-		// + " but it is: " + httpClientResponse.getCurrentLocation());
-		// }
-		// }
-
-		// Store context in session if cookies where created. Not needed if
-		// filter need userContext (already done)
-		if (!filter.needUserContext() && newUserContext
-				&& !userContext.getCookies().isEmpty()) {
-			resourceContext.getDriver().setUserContext(userContext,
-					originalRequest);
-		}
+		httpClientResponse = httpClientRequest.execute(httpClient);
+		// Save the cookies to session if necessary
+		resourceContext.getDriver().saveUserContext(
+				resourceContext.getOriginalRequest());
 
 		while (authenticationHandler.needsNewRequest(httpClientResponse,
 				resourceContext)) {
@@ -140,16 +106,11 @@ public class HttpResource extends Resource {
 					.preRequest(httpClientRequest, resourceContext);
 			// Filter
 			filter.preRequest(httpClientRequest, resourceContext);
-			httpClientResponse = httpClientRequest.execute(httpClient,
-					httpContext);
+			httpClientResponse = httpClientRequest.execute(httpClient);
 
-			// Store context if cookies where created. Not needed if filter need
-			// userContext (already done)
-			if (!filter.needUserContext() && newUserContext
-					&& !userContext.getCookies().isEmpty()) {
-				resourceContext.getDriver().setUserContext(userContext,
-						originalRequest);
-			}
+			// Save the cookies to session if necessary
+			resourceContext.getDriver().saveUserContext(
+					resourceContext.getOriginalRequest());
 		}
 
 		if (isError()) {
@@ -217,7 +178,8 @@ public class HttpResource extends Resource {
 		// Look for the relUrl starting from the end of the url
 		int pos = originalBase.lastIndexOf(target.getRelUrl());
 
-		String driverBaseUrl = target.getDriver().getBaseURL();
+		String driverBaseUrl = target.getDriver().getConfiguration()
+				.getBaseURL();
 		if (pos >= 0) {
 			// Remove relUrl from originalBase.
 			originalBase = originalBase.substring(0, pos);
@@ -295,9 +257,7 @@ public class HttpResource extends Resource {
 		result.append(" ");
 		result.append(ResourceUtils.getHttpUrlWithQueryString(target));
 		result.append("\n");
-		if (target.getUserContext(false) != null) {
-			result.append(target.getUserContext(false).toString());
-		}
+		result.append(target.getUserContext().toString());
 		return result.toString();
 	}
 

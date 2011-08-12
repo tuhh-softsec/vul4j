@@ -30,9 +30,4 @@ import org.apache.http.client.CookieStore;
  * 
  */
 public interface CustomCookieStore extends CookieStore, Serializable, Extension {
-
-	/**
-	 * Clean up cookies, removing unused ones.
-	 */
-	void cleanUpCookies();
 }

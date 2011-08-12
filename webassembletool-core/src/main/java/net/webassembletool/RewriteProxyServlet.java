@@ -197,7 +197,8 @@ public class RewriteProxyServlet extends HttpServlet {
 
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(RewriteProxyServlet.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(RewriteProxyServlet.class);
 
 	private static final long serialVersionUID = 8479657871058986339L;
 
@@ -384,15 +385,13 @@ public class RewriteProxyServlet extends HttpServlet {
 										+ targetQueryString);
 							}
 							DriverFactory.getInstance(conf.getProvider())
-									.proxy(
-											newUrl,
+									.proxy(newUrl,
 											new ReverseHttpRequest(request,
 													targetQueryString),
 											response);
 							return;
 						} catch (HttpErrorPage e) {
-							response.setStatus(e.getStatusCode());
-							e.render(response.getWriter());
+							e.render(response);
 						}
 					} else {
 						// Create target
@@ -404,12 +403,12 @@ public class RewriteProxyServlet extends HttpServlet {
 							targetFile = newUrl;
 						}
 						if (targetPort != null) {
-							target = new URL(targetScheme, request
-									.getServerName(), targetPort, targetFile)
-									.toString();
+							target = new URL(targetScheme,
+									request.getServerName(), targetPort,
+									targetFile).toString();
 						} else {
-							target = new URL(targetScheme, request
-									.getServerName(), newUrl).toString();
+							target = new URL(targetScheme,
+									request.getServerName(), newUrl).toString();
 						}
 
 						// Redirect request and return;

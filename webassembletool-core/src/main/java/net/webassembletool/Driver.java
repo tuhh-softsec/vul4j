@@ -37,6 +37,7 @@ import net.webassembletool.filter.Filter;
 import net.webassembletool.http.CachedHttpResourceFactory;
 import net.webassembletool.http.HttpResourceFactory;
 import net.webassembletool.http.ResponseOutput;
+import net.webassembletool.http.ResponseOutputStreamException;
 import net.webassembletool.output.Output;
 import net.webassembletool.output.StringOutput;
 import net.webassembletool.output.TextOnlyStringOutput;
@@ -158,26 +159,26 @@ public class Driver {
 	}
 
 	/**
-	 * Get current user context in session or null if no context exists.
+	 * Get current user context in session or request. Context will be saved to
+	 * session only if not empty.
 	 * 
 	 * @param request
 	 *            http request
-	 * @param create
-	 *            if true and no current user context, it will be created and
-	 *            added to the session.
-	 * @return UserContext or null
+	 * 
+	 * @return UserContext
 	 */
-	public final UserContext getUserContext(HttpServletRequest request,
-			boolean create) {
-		UserContext context = null;
-		HttpSession session = request.getSession(create);
-		if (session != null) {
-			String key = getContextKey();
-			context = (UserContext) session.getAttribute(key);
-			if (context == null && create) {
-				context = createNewUserContext();
-				setUserContext(context, request);
+	public final UserContext getUserContext(HttpServletRequest request) {
+		String key = getContextKey();
+		UserContext context = (UserContext) request.getAttribute(key);
+		if (context == null) {
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				context = (UserContext) session.getAttribute(key);
 			}
+			if (context == null) {
+				context = createNewUserContext();
+			}
+			request.setAttribute(key, context);
 		}
 		return context;
 	}
@@ -187,34 +188,25 @@ public class Driver {
 	 * 
 	 * @return UserContext
 	 */
-	public UserContext createNewUserContext() {
+	private UserContext createNewUserContext() {
 		UserContext context = new UserContext(
 				extension.getExtension(CustomCookieStore.class));
 		return context;
 	}
 
 	/**
-	 * Add user context to session.
+	 * Save user context to session only if not empty.
 	 * 
-	 * @param context
-	 *            UserContext to save.
 	 * @param request
 	 *            http request.
 	 */
-	public final void setUserContext(UserContext context,
-			HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		session.setAttribute(getContextKey(), context);
-	}
-
-	/**
-	 * Returns the base URL used to retrieve contents from the provider
-	 * application.
-	 * 
-	 * @return the base URL as a String
-	 */
-	public final String getBaseURL() {
-		return config.getBaseURL();
+	public final void saveUserContext(HttpServletRequest request) {
+		String key = getContextKey();
+		UserContext context = (UserContext) request.getAttribute(key);
+		if (context != null && !context.isEmpty()) {
+			HttpSession session = request.getSession();
+			session.setAttribute(key, context);
+		}
 	}
 
 	/**
@@ -494,6 +486,10 @@ public class Driver {
 			resource = this.resourceFactory.getResource(resourceContext);
 			try {
 				Rfc2616.renderResource(config, resource, output);
+			} catch (ResponseOutputStreamException e) {
+				if (LOG.isInfoEnabled()) {
+					LOG.info("Client or network problem, ignoring", e);
+				}
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));

@@ -12,95 +12,75 @@ import net.webassembletool.DriverFactory;
 import net.webassembletool.HttpErrorPage;
 
 /**
- * Retrieves an HTML fragment from the provider application and inserts it into the page. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside this tag.
+ * Retrieves an HTML fragment from the provider application and inserts it into
+ * the page. Extends AbstractReplaceableTag, so a ReplaceTag can be used inside
+ * this tag.
  * 
  * @author Francois-Xavier Bonnet
  */
-public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, ParametrizableTag, ErrorManageableTag {
+public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
+		ParametrizableTag, ErrorManageableTag {
 	private static final long serialVersionUID = 1L;
+	private boolean addQuery = false;
+	private String defaultErrorMessage;
+	private boolean displayErrorPage = false;
+	private Map<Integer, String> errorMap = new HashMap<Integer, String>();
 	private String name;
 	private String page;
-	private String provider;
-	private Map<Integer, String> errorMap = new HashMap<Integer, String>();
-	private Map<String, String> replaceRules = new HashMap<String, String>();
 	private Map<String, String> parameters = new HashMap<String, String>();
-	private boolean addQuery = false;
-	private boolean displayErrorPage = false;
 	private boolean parseAbsoluteUrl = true;
-	private String defaultErrorMessage;
-
-	public boolean isParseAbsoluteUrl() {
-		return parseAbsoluteUrl;
-	}
-
-	public void setParseAbsoluteUrl(boolean parseAbsoluteUrl) {
-		this.parseAbsoluteUrl = parseAbsoluteUrl;
-	}
-
-	public boolean isDisplayErrorPage() {
-		return displayErrorPage;
-	}
-
-	public void setDisplayErrorPage(boolean displayErrorPage) {
-		this.displayErrorPage = displayErrorPage;
-	}
-
-	public boolean isAddQuery() {
-		return addQuery;
-	}
-
-	public void setAddQuery(boolean addQuery) {
-		this.addQuery = addQuery;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	private String provider;
+	private Map<String, String> replaceRules = new HashMap<String, String>();
 
 	@Override
 	public int doEndTag() throws JspException {
 		if (parseAbsoluteUrl) {
-			if (replaceRules == null)
+			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
-			String baseUrl = DriverFactory.getInstance(provider).getBaseURL();
+			}
+			String baseUrl = DriverFactory.getInstance(provider)
+					.getConfiguration().getBaseURL();
 			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
-			if (baseUrlEnd > 0)
+			if (baseUrlEnd > 0) {
 				baseUrl = baseUrl.substring(0, baseUrlEnd);
-			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl + "/$2$3");
-			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl + "/$2$3");
+			}
+			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
+					+ "/$2$3");
+			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
+					+ "/$2$3");
 		}
 		try {
-			DriverUtils.renderBlock(provider, page, name, pageContext, replaceRules, parameters, addQuery);
+			DriverUtils.renderBlock(provider, page, name, pageContext,
+					replaceRules, parameters, addQuery);
 		} catch (HttpErrorPage re) {
-			if (displayErrorPage)
+			if (displayErrorPage) {
 				try {
 					re.render(pageContext.getOut());
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
-			else if (errorMap.containsKey(re.getStatusCode()))
+			} else if (errorMap.containsKey(re.getStatusCode())) {
 				try {
-					pageContext.getOut().append(errorMap.get(re.getStatusCode()));
+					pageContext.getOut().append(
+							errorMap.get(re.getStatusCode()));
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
-			else if (defaultErrorMessage != null)
+			} else if (defaultErrorMessage != null) {
 				try {
 					pageContext.getOut().append(defaultErrorMessage);
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
-			else
+			} else {
 				try {
-					pageContext.getOut().write(re.getStatusCode() + " " + re.getStatusMessage());
+					pageContext.getOut().write(
+							re.getStatusCode() + " " + re.getStatusMessage());
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
 			}
+		}
 		name = null;
 		page = null;
 		provider = null;
@@ -113,36 +93,8 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
 		return Tag.EVAL_PAGE;
 	}
 
-	public String getPage() {
-		return page;
-	}
-
-	public void setPage(String page) {
-		this.page = page;
-	}
-
-	public String getProvider() {
-		return provider;
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.webassembletool.taglib.IReplaceableTag#getReplaceRules()
-	 */
-	public Map<String, String> getReplaceRules() {
-		return replaceRules;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.webassembletool.taglib.IParameterTag#getParameters()
-	 */
-	public Map<String, String> getParameters() {
-		return parameters;
+	public String getDefaultMessage() {
+		return defaultErrorMessage;
 	}
 
 	/**
@@ -152,12 +104,74 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
 		return errorMap;
 	}
 
-	public String getDefaultMessage() {
-		return defaultErrorMessage;
+	public String getName() {
+		return name;
+	}
+
+	public String getPage() {
+		return page;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.webassembletool.taglib.IParameterTag#getParameters()
+	 */
+	public Map<String, String> getParameters() {
+		return parameters;
+	}
+
+	public String getProvider() {
+		return provider;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.webassembletool.taglib.IReplaceableTag#getReplaceRules()
+	 */
+	public Map<String, String> getReplaceRules() {
+		return replaceRules;
+	}
+
+	public boolean isAddQuery() {
+		return addQuery;
+	}
+
+	public boolean isDisplayErrorPage() {
+		return displayErrorPage;
+	}
+
+	public boolean isParseAbsoluteUrl() {
+		return parseAbsoluteUrl;
+	}
+
+	public void setAddQuery(boolean addQuery) {
+		this.addQuery = addQuery;
 	}
 
 	public void setDefaultMessage(String errorMessage) {
 		defaultErrorMessage = errorMessage;
+	}
+
+	public void setDisplayErrorPage(boolean displayErrorPage) {
+		this.displayErrorPage = displayErrorPage;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	public void setParseAbsoluteUrl(boolean parseAbsoluteUrl) {
+		this.parseAbsoluteUrl = parseAbsoluteUrl;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 
 }

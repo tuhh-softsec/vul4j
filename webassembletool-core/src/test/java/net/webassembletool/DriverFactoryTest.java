@@ -31,7 +31,8 @@ public class DriverFactoryTest extends TestCase {
 		DriverFactory.configure(id, props);
 		Driver instance = DriverFactory.getInstance(id);
 		assertNotNull(instance);
-		assertEquals("http://base.url", instance.getBaseURL());
+		assertEquals("http://base.url", instance.getConfiguration()
+				.getBaseURL());
 	}
 
 	public void testConfigureStringProperties2() {
@@ -49,7 +50,8 @@ public class DriverFactoryTest extends TestCase {
 		DriverFactory.configure(null, props);
 		Driver instance = DriverFactory.getInstance();
 		assertNotNull(instance);
-		assertEquals("http://base.url", instance.getBaseURL());
+		assertEquals("http://base.url", instance.getConfiguration()
+				.getBaseURL());
 	}
 
 	public void testMergeProperties() {
@@ -95,7 +97,8 @@ public class DriverFactoryTest extends TestCase {
 			DriverFactory.configure();
 			Driver driver = DriverFactory.getInstance();
 
-			assertEquals(extendedBaseUrl, driver.getBaseURL());
+			assertEquals(extendedBaseUrl, driver.getConfiguration()
+					.getBaseURL());
 
 			assertEquals("net.webassembletool.filter.CookieForwardingFilter",
 					driver.getFilter().getClass().getCanonicalName());

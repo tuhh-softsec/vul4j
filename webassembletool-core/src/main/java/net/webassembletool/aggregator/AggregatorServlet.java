@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(AggregatorServlet.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(AggregatorServlet.class);
 	private String provider;
 
 	@Override
@@ -43,8 +44,7 @@ public class AggregatorServlet extends HttpServlet {
 					new EsiRenderer(request, response, DriverFactory
 							.getInstance(provider)));
 		} catch (HttpErrorPage e) {
-			response.setStatus(e.getStatusCode());
-			e.render(response.getWriter());
+			e.render(response);
 		}
 	}
 
