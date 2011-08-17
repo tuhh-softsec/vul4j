@@ -53,7 +53,6 @@ import org.w3c.dom.Attr;
  * @see <A HREF="http://www.javaworld.com/javaworld/javatips/jw-javatip42_p.html">Java Tip 42: Write Java apps that work with proxy-based firewalls</A>
  * @see <A HREF="http://java.sun.com/j2se/1.4/docs/guide/net/properties.html">SUN J2SE docs for network properties</A>
  * @see <A HREF="http://metalab.unc.edu/javafaq/javafaq.html#proxy">The JAVA FAQ Question 9.5: How do I make Java work with a proxy server?</A>
- * $todo$ the proxy behaviour seems not to work; if a on-existing proxy is set, it works ?!?
  */
 public class ResolverDirectHTTP extends ResourceResolverSpi {
 

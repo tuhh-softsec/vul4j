@@ -83,7 +83,6 @@ public final class Transform extends SignatureElementProxy {
      * @param algorithmURI <code>Transform algorithm</code> URI representation, 
      * such as specified in 
      * <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
-     * @return <code>{@link Transform}</code> object
      * @throws InvalidTransformException
      */
     public Transform(Document doc, String algorithmURI) throws InvalidTransformException {
@@ -99,7 +98,6 @@ public final class Transform extends SignatureElementProxy {
      * <a href=http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg>Transform algorithm </a>
      * @param contextChild the child element of <code>Transform</code> element
      * @param doc the proxy {@link Document}
-     * @return <code>{@link Transform}</code> object
      * @throws InvalidTransformException
      */
     public Transform(Document doc, String algorithmURI, Element contextChild) 
@@ -123,9 +121,7 @@ public final class Transform extends SignatureElementProxy {
      *
      * @param doc the {@link Document} in which <code>Transform</code> will be 
      * placed
-     * @param algorithmURI URI representation of 
-     * <code>Transform algorithm</code> which will be specified as parameter of 
-     * {@link #getInstance(Document, String)}, when generated. </br>
+     * @param algorithmURI URI representation of <code>Transform algorithm</code>
      * @param contextNodes the child node list of <code>Transform</code> element
      * @throws InvalidTransformException
      */
@@ -177,9 +173,7 @@ public final class Transform extends SignatureElementProxy {
     /**
      * Registers implementing class of the Transform algorithm with algorithmURI
      *
-     * @param algorithmURI algorithmURI URI representation of 
-     * <code>Transform algorithm</code> will be specified as parameter of 
-     * {@link #getInstance(Document, String)}, when generate. </br>
+     * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>
      * @param implementingClass <code>implementingClass</code> the implementing 
      * class of {@link TransformSpi}
      * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI 
@@ -204,9 +198,7 @@ public final class Transform extends SignatureElementProxy {
     /**
      * Registers implementing class of the Transform algorithm with algorithmURI
      *
-     * @param algorithmURI algorithmURI URI representation of 
-     * <code>Transform algorithm</code> will be specified as parameter of 
-     * {@link #getInstance(Document, String)}, when generate. </br>
+     * @param algorithmURI algorithmURI URI representation of <code>Transform algorithm</code>
      * @param implementingClass <code>implementingClass</code> the implementing 
      * class of {@link TransformSpi}
      * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI 

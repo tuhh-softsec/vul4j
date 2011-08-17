@@ -349,7 +349,7 @@ public class XMLSignatureInput {
     /**
      * Sets MIMEType
      *
-     * @param MIMEType
+     * @param mimeType
      */
     public void setMIMEType(String mimeType) {
         this.MIMEType = mimeType;
@@ -367,7 +367,7 @@ public class XMLSignatureInput {
     /**
      * Sets SourceURI
      *
-     * @param SourceURI
+     * @param sourceURI
      */
     public void setSourceURI(String sourceURI) {
         this.sourceURI = sourceURI;

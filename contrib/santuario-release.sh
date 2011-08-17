@@ -36,14 +36,18 @@ rm -rf ${SANTUARIO_STAGE_ROOT}
 mkdir -p ${SANTUARIO_STAGE_ROOT}/dist
 mkdir -p ${SANTUARIO_STAGE_ROOT}/maven/org/apache/santuario/xmlsec/${SANTUARIO_VERSION}
 #
-# Build and stage the distribution using ant
+# Build and stage through maven; copy the Jartifact built by Maven to the dist
 #
 cd ${SANTUARIO_SRC_ROOT}
+mvn clean || exit 1
+mvn -Prelease install || exit 1
+cp -r ${M2_REPO}/org/apache/santuario/xmlsec/${SANTUARIO_VERSION} ${SANTUARIO_STAGE_ROOT}/maven/org/apache/santuario/xmlsec
+#
+# Build and stage the distribution using ant
+#
 ant clean
 ant dist || exit 1
 cp -r build/*.zip ${SANTUARIO_STAGE_ROOT}/dist
-cp pom.xml ${SANTUARIO_STAGE_ROOT}/maven/org/apache/santuario/xmlsec/${SANTUARIO_VERSION}/xmlsec-${SANTUARIO_VERSION}.pom
-cp build/xmlsec-${SANTUARIO_VERSION}.jar ${SANTUARIO_STAGE_ROOT}/maven/org/apache/santuario/xmlsec/${SANTUARIO_VERSION}
 
 #
 # Sign and hash the release bits
@@ -68,10 +72,5 @@ for i in *.jar *.pom
 do
     md5sum $i > $i.md5
 done
-#
-# Build the web site
-#
-cd ${SANTUARIO_SRC_ROOT}
-ant xdocs || exit 1
-cp -r doc/site/build/site ${SANTUARIO_STAGE_ROOT}
+
 

@@ -77,8 +77,8 @@ import org.w3c.dom.Element;
 public interface AgreementMethod {
     
     /**
-     * Returns an <code>byte</code> array.
-     * @return
+     * Returns a <code>byte</code> array.
+     * @return a <code>byte</code> array.
      */
     byte[] getKANonce();
 
@@ -90,7 +90,7 @@ public interface AgreementMethod {
 
     /**
      * Returns additional information regarding the <code>AgreementMethod</code>.
-     * @return
+     * @return additional information regarding the <code>AgreementMethod</code>.
      */
     Iterator<Element> getAgreementMethodInformation();
 

@@ -193,7 +193,7 @@ public class ResourceResolver {
     /**
      * Registers a ResourceResolverSpi instance. This method logs a warning if the class 
      * cannot be registered.
-     * @param className
+     * @param resourceResolverSpi
      * @param start
      */
     public static void register(ResourceResolverSpi resourceResolverSpi, boolean start) {

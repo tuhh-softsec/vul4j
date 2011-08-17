@@ -78,7 +78,7 @@ public abstract class ResourceResolverSpi {
 
     /**
      * 
-     * @param properties
+     * @param newProperties
      */
     public void engineAddProperies(Map<String, String> newProperties) {
         if (newProperties != null && !newProperties.isEmpty()) {

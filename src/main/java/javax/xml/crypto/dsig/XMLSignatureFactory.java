@@ -108,7 +108,7 @@ import java.util.List;
  * Each <code>XMLSignatureFactory</code> must support the required 
  * <code>XMLValidateContext</code> types for that factory type, but may support 
  * others. A DOM <code>XMLSignatureFactory</code> must support {@link 
- * DOMValidateContext} objects.
+ * javax.xml.crypto.dsig.dom.DOMValidateContext} objects.
  * 
  * <h2>Signing and marshalling XMLSignatures to XML</h2>
  *

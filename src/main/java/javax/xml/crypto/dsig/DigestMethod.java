@@ -84,7 +84,7 @@ public interface DigestMethod extends XMLStructure, AlgorithmMethod {
      * <code>DigestMethod</code>.
      *
      * <p>The returned parameters can be typecast to a {@link 
-     * DigestMethodParameterSpec} object.
+     * javax.xml.crypto.dsig.spec.DigestMethodParameterSpec} object.
      *
      * @return the algorithm-specific parameters (may be <code>null</code> if
      *    not specified)

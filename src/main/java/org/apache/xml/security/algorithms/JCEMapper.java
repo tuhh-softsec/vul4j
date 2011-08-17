@@ -43,7 +43,8 @@ public class JCEMapper {
     /**
      * Method register
      *
-     * @param element
+     * @param id
+     * @param algorithm
      */
     public static void register(String id, Algorithm algorithm) {
         algorithmsMap.put(id, algorithm);
@@ -179,7 +180,7 @@ public class JCEMapper {
     /**
      * Method getJCEKeyAlgorithmFromURI
      *
-     * @param AlgorithmURI
+     * @param algorithmURI
      * @return The KeyAlgorithm for the given URI.
      */
     public static String getJCEKeyAlgorithmFromURI(String algorithmURI) {

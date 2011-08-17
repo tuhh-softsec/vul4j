@@ -40,7 +40,6 @@ public interface Transforms {
      * DS class, so we need to get to get the base class.
      * <p>
      * <b>Note</b> This will be removed in future versions
-     * @return
      */
     org.apache.xml.security.transforms.Transforms getDSTransforms();
 

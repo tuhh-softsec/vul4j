@@ -51,7 +51,7 @@ public abstract class KeyResolverSpi {
      * @param element
      * @param BaseURI
      * @param storage
-     * @return
+     * @return whether the KeyResolverSpi is able to perform the requested action.
      */
     public boolean engineCanResolve(Element element, String BaseURI, StorageResolver storage) {
         throw new UnsupportedOperationException();

@@ -59,7 +59,7 @@ public interface EncryptionProperty {
     /**
      * Sets the target.
      *
-     * @param target.
+     * @param target
      */
     void setTarget(String target);
 
@@ -73,7 +73,7 @@ public interface EncryptionProperty {
     /**
      * Sets the id.
      *
-     * @param id.
+     * @param id
      */
     void setId(String id);
 

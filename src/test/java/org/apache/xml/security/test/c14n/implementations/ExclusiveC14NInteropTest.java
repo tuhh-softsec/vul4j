@@ -24,7 +24,6 @@ import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.test.interop.InteropTestBase;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.JavaUtils;
 import org.w3c.dom.Element;
 
 
@@ -142,25 +141,21 @@ public class ExclusiveC14NInteropTest extends InteropTestBase {
 
         log.debug("   signature.checkSignatureValue finished: " + verify);
 
-        int failures = 0;
-
         // if (!verify) {
         StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
             boolean refVerify =
                 signature.getSignedInfo().getVerificationResult(i);
-            JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
+            //JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
             if (refVerify) {
                 log.debug("Reference " + i + " was OK");
             } else {
-                failures++;
-
                 sb.append(i + " ");
 
-                JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
-                JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
+                //JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
+                //JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());
 
                 Reference reference = signature.getSignedInfo().item(i);
                 int length = reference.getTransforms().getLength();

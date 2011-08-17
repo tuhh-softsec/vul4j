@@ -181,7 +181,6 @@ public class Transforms extends SignatureElementProxy {
      * transformation is applied to data
      * @param contextElement
      * @throws TransformationException
-     * @see Transform#getInstance(Document doc, String algorithmURI, Element childElement)
      */
     public void addTransform(String transformURI, Element contextElement)
        throws TransformationException {
@@ -206,7 +205,6 @@ public class Transforms extends SignatureElementProxy {
      * transformation is applied to data
      * @param contextNodes
      * @throws TransformationException
-     * @see Transform#getInstance(Document doc, String algorithmURI, NodeList contextNodes)
      */
     public void addTransform(String transformURI, NodeList contextNodes)
        throws TransformationException {

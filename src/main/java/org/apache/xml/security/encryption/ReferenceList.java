@@ -91,7 +91,7 @@ public interface ReferenceList {
      * <code>DataReference</code> factory method. Returns a
      * <code>DataReference</code>.
      * @param uri
-     * @return
+     * @return a <code>DataReference</code>.
      */
     public Reference newDataReference(String uri);
 
@@ -99,7 +99,7 @@ public interface ReferenceList {
      * <code>KeyReference</code> factory method. Returns a
      * <code>KeyReference</code>.
      * @param uri
-     * @return
+     * @return a <code>KeyReference</code>.
      */
     public Reference newKeyReference(String uri);
 }

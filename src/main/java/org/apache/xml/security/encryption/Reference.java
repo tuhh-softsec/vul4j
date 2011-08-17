@@ -75,14 +75,14 @@ public interface Reference {
     /**
      * Adds retrieval information.
      *
-     * @param info.
+     * @param info
      */
     void addElementRetrievalInformation(Element info);
 
     /**
      * Removes the specified retrieval information.
      *
-     * @param info.
+     * @param info
      */
     void removeElementRetrievalInformation(Element info);
 }

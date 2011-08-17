@@ -69,14 +69,14 @@ public interface EncryptionProperties {
     /**
      * Adds an <code>EncryptionProperty</code>.
      *
-     * @param property.
+     * @param property
      */
     void addEncryptionProperty(EncryptionProperty property);
 
     /**
      * Removes the specified <code>EncryptionProperty</code>.
      *
-     * @param property.
+     * @param property
      */
     void removeEncryptionProperty(EncryptionProperty property);
 }
