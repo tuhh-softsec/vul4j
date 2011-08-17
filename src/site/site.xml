@@ -61,6 +61,7 @@
 			<item href="esi.html" name="Edge Side Include" />
 			<item href="xpathxslt.html" name="Xpath and XSLT" />
 			<item href="authentication.html" name="Authentication" />
+			<item href="cookies.html" name="Cookies" />
 			<item href="cache.html" name="Cache" />
 			<item href="httpheaders.html" name="HTTP headers support" />
 			<item href="errors.html" name="Errors management" />
