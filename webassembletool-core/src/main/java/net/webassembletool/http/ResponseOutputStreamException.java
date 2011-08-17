@@ -16,7 +16,9 @@ package net.webassembletool.http;
 
 import java.io.IOException;
 
-public class ResponseOutputStreamException extends IOException {
+import net.webassembletool.ResponseException;
+
+public class ResponseOutputStreamException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
 

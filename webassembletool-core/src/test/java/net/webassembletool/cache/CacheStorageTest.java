@@ -140,7 +140,8 @@ public abstract class CacheStorageTest extends TestCase {
 		requestHeaders.put("Cache-Control", "max-age=0");
 
 		EasyMock.expect(originalRequest.getHeaderNames())
-				.andReturn(new Vector(requestHeaders.keySet()).elements())
+				.andReturn(
+						new Vector<String>(requestHeaders.keySet()).elements())
 				.anyTimes();
 		EasyMock.expect(
 				originalRequest.getHeader((String) EasyMock.anyObject()))

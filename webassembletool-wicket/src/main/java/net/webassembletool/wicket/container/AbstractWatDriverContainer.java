@@ -28,7 +28,8 @@ import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 /**
- * A container for a template parameter. It encloses a block which will be inserted into the template.
+ * A container for a template parameter. It encloses a block which will be
+ * inserted into the template.
  * 
  * <p>
  * Usage :
@@ -71,7 +72,6 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	 * Create a template block
 	 * 
 	 * @param id
-	 * @param page
 	 */
 	public AbstractWatDriverContainer(String id) {
 		super(id);
@@ -92,7 +92,7 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	/**
 	 * Get current driver, according to provider.
 	 * 
-	 * @see AbstractWatDriverContainer#setProvider(String);
+	 * @see AbstractWatDriverContainer#setProvider(String)
 	 * @return current WAT Driver
 	 */
 	protected Driver getDriver() {
@@ -110,11 +110,13 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket .markup.MarkupStream,
-	 * org.apache.wicket.markup.ComponentTag)
+	 * @see
+	 * org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
+	 * .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
 	 */
 	@Override
-	protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
+	protected void onComponentTagBody(MarkupStream markupStream,
+			ComponentTag openTag) {
 
 		// For unit tests, WAT can be disabled. This component will then behave
 		// like a standard MarkupContainer.
@@ -134,14 +136,15 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	}
 
 	/**
-	 * This method is called when the component is rendered. This is the place to do the specific processing and call
-	 * Driver.
+	 * This method is called when the component is rendered. This is the place
+	 * to do the specific processing and call Driver.
 	 * 
 	 * @param blocks
 	 * @param params
 	 * @param replaceRules
 	 */
-	public abstract void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules);
+	public abstract void process(Map<String, String> blocks,
+			Map<String, String> params, Map<String, String> replaceRules);
 
 	/**
 	 * Write error content according to the error.
@@ -150,7 +153,8 @@ public abstract class AbstractWatDriverContainer extends WebMarkupContainer {
 	 * @param response
 	 * @param httpStatusCode
 	 */
-	protected void sendErrorContent(Map<String, String> blocks, Response response, Integer httpStatusCode) {
+	protected void sendErrorContent(Map<String, String> blocks,
+			Response response, Integer httpStatusCode) {
 
 		String errorContent = blocks.get(WAT_ERROR_PREFIX + httpStatusCode);
 		if (errorContent == null) {

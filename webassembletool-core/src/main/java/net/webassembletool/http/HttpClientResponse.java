@@ -56,6 +56,7 @@ public class HttpClientResponse {
 	private final String currentLocation;
 	private final boolean error;
 	private CookieStore cookieStore;
+	private InputStream content;
 
 	public static HttpClientResponse create(HttpHost httpHost,
 			HttpRequest httpRequest, HttpClient httpClient,
@@ -130,9 +131,9 @@ public class HttpClientResponse {
 	}
 
 	public void finish() {
-		if (httpEntity != null) {
+		if (content != null) {
 			try {
-				httpEntity.consumeContent();
+				content.close();
 			} catch (IOException e) {
 				LOG.warn("Could not close response stream properly", e);
 			}
@@ -160,7 +161,8 @@ public class HttpClientResponse {
 	}
 
 	public InputStream openStream() throws IllegalStateException, IOException {
-		return httpEntity.getContent();
+		content = httpEntity.getContent();
+		return content;
 	}
 
 	public String getHeader(String name) {

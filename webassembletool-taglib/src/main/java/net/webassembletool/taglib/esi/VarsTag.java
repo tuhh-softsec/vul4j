@@ -7,6 +7,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class VarsTag extends BodyTagSupport {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public int doAfterBody() {
 		BodyContent bc = getBodyContent();

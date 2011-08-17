@@ -60,7 +60,6 @@ public class PerformanceTestCase extends TestCase {
 	 * 
 	 * @param path
 	 * @param page
-	 * @return
 	 * @throws Exception
 	 */
 	private void doGet(String path, String page) throws Exception {

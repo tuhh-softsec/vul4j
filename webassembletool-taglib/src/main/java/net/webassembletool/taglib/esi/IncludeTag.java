@@ -10,6 +10,7 @@ import net.webassembletool.taglib.DriverUtils;
 
 public class IncludeTag extends BodyTagSupport {
 
+	private static final long serialVersionUID = 1L;
 	private String alt = null;
 	private final String errorMessage = "An ESI Processor can fetch neither the 'src' nor the 'alt' sources";
 	private String onerror = null;

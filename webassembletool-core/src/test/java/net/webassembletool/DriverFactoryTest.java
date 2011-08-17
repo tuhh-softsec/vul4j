@@ -1,7 +1,7 @@
 package net.webassembletool;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
@@ -81,13 +81,14 @@ public class DriverFactoryTest extends TestCase {
 				+ "driver-ext.properties");
 
 		try {
-			FileWriter defaultWriter = new FileWriter(driverPropsFile);
-			FileWriter extWriter = new FileWriter(extendedPropsFile);
-			defaultProps.store(defaultWriter, "driver.properties");
-			extendedProps.store(extWriter, "driver.properties");
+			FileOutputStream defaultOutputStream = new FileOutputStream(
+					driverPropsFile);
+			FileOutputStream extOutputStream = new FileOutputStream(extendedPropsFile);
+			defaultProps.store(defaultOutputStream, "driver.properties");
+			extendedProps.store(extOutputStream, "driver.properties");
 
-			defaultWriter.close();
-			extWriter.close();
+			defaultOutputStream.close();
+			extOutputStream.close();
 
 		} catch (IOException e) {
 			fail(e.getMessage());

@@ -299,7 +299,7 @@ public class DriverConfiguration {
 	 * List of parsable content types. Default is text/html,
 	 * application/xhtml+xml
 	 * 
-	 * @return
+	 * @return List of parsable content types.
 	 */
 	public List<String> getParsableContentTypes() {
 		return parsableContentTypes;

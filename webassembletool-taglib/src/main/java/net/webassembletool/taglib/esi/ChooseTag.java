@@ -4,6 +4,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class ChooseTag extends TagSupport {
 
+	private static final long serialVersionUID = 1L;
 	private boolean condition;
 	private boolean hasCondition;
 

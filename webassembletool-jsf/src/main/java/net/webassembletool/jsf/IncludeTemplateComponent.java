@@ -18,71 +18,16 @@ import net.webassembletool.taglib.ReplaceableTag;
 
 public class IncludeTemplateComponent extends UIComponentBase implements
 		ReplaceableTag {
+	private Boolean displayErrorPage;
 	private String name;
 	private String page;
+	private final Map<String, String> params = new HashMap<String, String>();
 	private String provider;
-	private Boolean displayErrorPage;
-	private Map<String, String> replaceRules = new HashMap<String, String>();
-	private Map<String, String> params = new HashMap<String, String>();
-
-	public String getName() {
-		return UIComponentUtils.getParam(this, "name", name);
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPage() {
-		return UIComponentUtils.getParam(this, "page", page);
-	}
-
-	public void setPage(String page) {
-		this.page = page;
-	}
-
-	public String getProvider() {
-		return UIComponentUtils.getParam(this, "provider", provider);
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-
-	public boolean isDisplayErrorPage() {
-		return UIComponentUtils.getParam(this, "displayErrorPage",
-				displayErrorPage);
-	}
-
-	public void setDisplayErrorPage(boolean displayErrorPage) {
-		this.displayErrorPage = displayErrorPage;
-	}
-
-	@Override
-	public String getFamily() {
-		return IncludeTemplateComponent.class.getPackage().toString();
-	}
-
-	@Override
-	public void encodeEnd(FacesContext context) throws IOException {
-		ResponseWriter writer = context.getResponseWriter();
-		HttpServletRequest request = (HttpServletRequest) context
-				.getExternalContext().getRequest();
-		HttpServletResponse response = (HttpServletResponse) context
-				.getExternalContext().getResponse();
-		try {
-			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(),
-					getName(), writer, request, response, params, replaceRules,
-					null, false);
-		} catch (HttpErrorPage re) {
-			if (isDisplayErrorPage())
-				writer.write(re.getMessage());
-		}
-	}
+	private final Map<String, String> replaceRules = new HashMap<String, String>();
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()) {
 			UIComponent child = (UIComponent) it.next();
@@ -99,13 +44,53 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 
 	}
 
-	public Map<String, String> getReplaceRules() {
-		return replaceRules;
+	@Override
+	public void encodeEnd(FacesContext context) throws IOException {
+		ResponseWriter writer = context.getResponseWriter();
+		HttpServletRequest request = (HttpServletRequest) context
+				.getExternalContext().getRequest();
+		HttpServletResponse response = (HttpServletResponse) context
+				.getExternalContext().getResponse();
+		try {
+			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(),
+					getName(), writer, request, response, params, replaceRules,
+					null, false);
+		} catch (HttpErrorPage re) {
+			if (isDisplayErrorPage()) {
+				writer.write(re.getMessage());
+			}
+		}
+	}
+
+	@Override
+	public String getFamily() {
+		return IncludeTemplateComponent.class.getPackage().toString();
+	}
+
+	public String getName() {
+		return UIComponentUtils.getParam(this, "name", name);
+	}
+
+	public String getPage() {
+		return UIComponentUtils.getParam(this, "page", page);
+	}
+
+	public String getProvider() {
+		return UIComponentUtils.getParam(this, "provider", provider);
 	}
 
 	@Override
 	public boolean getRendersChildren() {
 		return true;
+	}
+
+	public Map<String, String> getReplaceRules() {
+		return replaceRules;
+	}
+
+	public boolean isDisplayErrorPage() {
+		return UIComponentUtils.getParam(this, "displayErrorPage",
+				displayErrorPage);
 	}
 
 	@Override
@@ -127,6 +112,22 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 		values[3] = provider;
 		values[4] = displayErrorPage;
 		return values;
+	}
+
+	public void setDisplayErrorPage(boolean displayErrorPage) {
+		this.displayErrorPage = displayErrorPage;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 
 }

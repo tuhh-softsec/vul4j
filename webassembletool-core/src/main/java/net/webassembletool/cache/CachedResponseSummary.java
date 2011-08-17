@@ -79,7 +79,7 @@ public class CachedResponseSummary extends BaseCachedResource {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see net.webassembletool.resource.Resource#getRequestHeaders()
+	 * @see net.webassembletool.resource.Resource#getRequestHeader(String)
 	 */
 	@Override
 	public String getRequestHeader(String key) {

@@ -44,8 +44,6 @@ public abstract class AbstractWatBufferedContainer extends WebMarkupContainer {
 	 * 
 	 * @param id
 	 *            - Must be unique in the page
-	 * @param name
-	 *            - Name of the block in the template.
 	 */
 	public AbstractWatBufferedContainer(String id) {
 		super(id);

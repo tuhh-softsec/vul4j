@@ -1,10 +1,6 @@
 package net.webassembletool.cookie;
 
 import junit.framework.TestCase;
-import net.webassembletool.Driver;
-import net.webassembletool.ResourceContext;
-
-import org.easymock.EasyMock;
 
 public class RequestCookieStoreTest extends TestCase {
 	public void testRewriteDomain() {
@@ -26,13 +22,6 @@ public class RequestCookieStoreTest extends TestCase {
 		assertEquals(null, RequestCookieStore.rewriteDomain(
 				"provider1.subdomain.net", "www.provider1.subdomain.net",
 				"www.foo.com"));
-	}
-
-	public void testRewriteCookie() {
-		ResourceContext resourceContext = EasyMock
-				.createMock(ResourceContext.class);
-		Driver driver = EasyMock.createMock(Driver.class);
-		// TODO Add some tests
 	}
 
 }

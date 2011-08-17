@@ -4,7 +4,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class CommentTag extends BodyTagSupport {
 
-	private String text;
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int doEndTag() {
@@ -17,6 +17,6 @@ public class CommentTag extends BodyTagSupport {
 	}
 
 	public void setText(String text) {
-		this.text = "";
+		// Just ignore
 	}
 }

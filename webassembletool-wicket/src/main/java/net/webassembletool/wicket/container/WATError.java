@@ -68,8 +68,6 @@ public class WATError extends AbstractWatBufferedContainer {
 	 * 
 	 * @param id
 	 *            - Must be unique in the page
-	 * @param name
-	 *            - Name of the block in the template.
 	 */
 	public WATError(String id, Integer errorCode) {
 		super(id);

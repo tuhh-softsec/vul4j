@@ -17,9 +17,6 @@ package net.webassembletool.http;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Wrapper for servlet OutputStream that wraps underlying IOExceptions to be
  * able to distinguish them later from other kinds of IOExceptions
@@ -28,8 +25,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ResponseOutputStream extends OutputStream {
-	private final static Logger LOG = LoggerFactory
-			.getLogger(ResponseOutputStream.class);
 	private final OutputStream outputStream;
 
 	public ResponseOutputStream(OutputStream outputStream) {

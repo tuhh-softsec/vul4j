@@ -2,13 +2,11 @@ package net.webassembletool.cache;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -186,16 +184,6 @@ public class OSCacheStorageTest extends TestCase{
 		
 		public MockDriver(String name, Properties props) {
 			super(name, props);
-		}
-
-		public void addResource(String relUrl, String content) {
-			StringOutput stringOutput = new StringOutput();
-			stringOutput.setStatusCode(200);
-			stringOutput.setStatusMessage("OK");
-			stringOutput.setCharsetName("ISO-8859-1");
-			stringOutput.open();
-			stringOutput.write(content);
-			resources.put(relUrl, stringOutput);
 		}
 
 		@Override

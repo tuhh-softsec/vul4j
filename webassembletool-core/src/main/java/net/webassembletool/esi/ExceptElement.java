@@ -29,10 +29,9 @@ public class ExceptElement implements BodyTagElement {
 	};
 
 	private boolean closed = false;
-	private HttpServletRequest request;
 
 	public void setRequest(HttpServletRequest request) {
-		this.request = request;
+		// Not used
 	}
 
 	public boolean isClosed() {

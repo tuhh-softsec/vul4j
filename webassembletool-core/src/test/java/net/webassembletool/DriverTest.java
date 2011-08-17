@@ -155,7 +155,7 @@ public class DriverTest extends TestCase {
 		localBase.mkdirs();
 		props.setProperty("localBase", localBase.getCanonicalPath());
 
-		MockDriver provider = new MockDriver("mockTestProxy", props);
+		new MockDriver("mockTestProxy", props);
 
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
@@ -298,8 +298,7 @@ public class DriverTest extends TestCase {
 		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
 		props.setProperty("cacheRefreshDelay", "1");
 
-		MockDriver provider = new MockDriver(
-				"mockTestProxyWithCacheRefreshDelay", props);
+		new MockDriver("mockTestProxyWithCacheRefreshDelay", props);
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
 		ServletOutputStream out = new ServletOutputStream() {
@@ -490,7 +489,7 @@ public class DriverTest extends TestCase {
 		Properties props = new Properties();
 		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
 		props.setProperty("useCache", "false");
-		MockDriver provider = new MockDriver("mockTestProxyWithoutCache", props);
+		new MockDriver("mockTestProxyWithoutCache", props);
 		String relUrl = "/wiki/Portal:Contents";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
 		ServletOutputStream out = new ServletOutputStream() {

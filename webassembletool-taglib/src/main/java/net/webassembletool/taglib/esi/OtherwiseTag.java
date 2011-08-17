@@ -8,6 +8,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class OtherwiseTag extends BodyTagSupport {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public int doAfterBody() throws JspTagException {
 		// find parent

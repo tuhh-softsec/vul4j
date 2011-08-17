@@ -25,7 +25,6 @@ public class PropertiesUtil {
 	 * 
 	 * @param properties
 	 * @param propertyName
-	 * @return
 	 */
 	public static Collection<String> parseListedProperty(Properties properties,
 			String propertyName) {

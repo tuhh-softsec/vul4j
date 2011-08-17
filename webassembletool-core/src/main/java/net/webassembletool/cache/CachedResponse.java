@@ -163,7 +163,7 @@ public class CachedResponse extends BaseCachedResource {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see net.webassembletool.resource.Resource#getRequestHeaders()
+	 * @see net.webassembletool.resource.Resource#getRequestHeader(String key)
 	 */
 	@Override
 	public String getRequestHeader(String key) {
@@ -180,8 +180,6 @@ public class CachedResponse extends BaseCachedResource {
 
 	/**
 	 * Set headers which were used to get this resource.
-	 * 
-	 * @param requestHeaders
 	 */
 	public void setRequestHeader(String name, String value) {
 		if (requestHeaders == null) {

@@ -108,6 +108,8 @@ public class BaseCachedResourceTest extends TestCase {
 
 	private static class MockBaseCachedResource extends BaseCachedResource {
 
+		private static final long serialVersionUID = 8431287643239757126L;
+
 		public MockBaseCachedResource(Map<String, Set<String>> headers,
 				int statusCode, String statusMessage) {
 			super(headers, statusCode, statusMessage);

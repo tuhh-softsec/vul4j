@@ -14,8 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This renderer fixes links to resources, images and pages in pages retrieved by the WAT. This enables use of WAT
- * without any special modifications of the generated urls on the provider side.
+ * This renderer fixes links to resources, images and pages in pages retrieved
+ * by the WAT. This enables use of WAT without any special modifications of the
+ * generated urls on the provider side.
  * 
  * All href and src attributes are processed, except javascript links.
  * 
@@ -23,14 +24,19 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ResourceFixupRenderer implements Renderer {
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceFixupRenderer.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ResourceFixupRenderer.class);
 
 	public static final int ABSOLUTE = 0;
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
 	private static final Pattern URL_PATTERNS[] = new Pattern[] {
-			Pattern.compile("<([^>]+)(src|href|action|background)=\"([^\"]+)\"([^>]*)>", Pattern.CASE_INSENSITIVE),
-			Pattern.compile("<([^>]+)(src|href|action|background)='([^']+)'([^>]*)>", Pattern.CASE_INSENSITIVE) };
+			Pattern.compile(
+					"<([^>]+)(src|href|action|background)=\"([^\"]+)\"([^>]*)>",
+					Pattern.CASE_INSENSITIVE),
+			Pattern.compile(
+					"<([^>]+)(src|href|action|background)='([^']+)'([^>]*)>",
+					Pattern.CASE_INSENSITIVE) };
 	private String contextAdd = null;
 	private String contextRemove = null;
 	private String pagePath = null;
@@ -41,13 +47,16 @@ public class ResourceFixupRenderer implements Renderer {
 	private final int mode;
 
 	/**
-	 * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
-	 * baseUrl + pageFullPath.
+	 * Creates a renderer which fixes urls. The domain name and the url path are
+	 * computed from the full url made of baseUrl + pageFullPath.
 	 * 
-	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
+	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls
+	 * :
 	 * <ul>
-	 * <li>images/image.png is replaced by http://server/context/images/image.png</li>
-	 * <li>/context/images/image.png is replaced by http://server/context/images/image.png</li>
+	 * <li>images/image.png is replaced by
+	 * http://server/context/images/image.png</li>
+	 * <li>/context/images/image.png is replaced by
+	 * http://server/context/images/image.png</li>
 	 * </ul>
 	 * 
 	 * If mode is RELATIVE, context will be added to relative urls :
@@ -60,24 +69,26 @@ public class ResourceFixupRenderer implements Renderer {
 	 * @param pageFullPath
 	 *            Page as used in tag lib or using API
 	 * @param mode
-	 *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
-	 * @param fixRelativeUrls
-	 *            defines whether relative URLs should be fixed
+	 *            ResourceFixupRenderer.ABSOLUTE or
+	 *            ResourceFixupRenderer.RELATIVE
 	 * @throws MalformedURLException
 	 */
-	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode)
-			throws MalformedURLException {
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl,
+			String pageFullPath, int mode) throws MalformedURLException {
 		this(baseUrl, visibleBaseUrl, pageFullPath, mode, true);
 	}
 
 	/**
-	 * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
-	 * baseUrl + pageFullPath.
+	 * Creates a renderer which fixes urls. The domain name and the url path are
+	 * computed from the full url made of baseUrl + pageFullPath.
 	 * 
-	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
+	 * If mode is ABSOLUTE, all relative urls will be replaced by the full urls
+	 * :
 	 * <ul>
-	 * <li>images/image.png is replaced by http://server/context/images/image.png</li>
-	 * <li>/context/images/image.png is replaced by http://server/context/images/image.png</li>
+	 * <li>images/image.png is replaced by
+	 * http://server/context/images/image.png</li>
+	 * <li>/context/images/image.png is replaced by
+	 * http://server/context/images/image.png</li>
 	 * </ul>
 	 * 
 	 * If mode is RELATIVE, context will be added to relative urls :
@@ -90,12 +101,14 @@ public class ResourceFixupRenderer implements Renderer {
 	 * @param pageFullPath
 	 *            Page as used in tag lib or using API
 	 * @param mode
-	 *            ResourceFixupRenderer.ABSOLUTE or ResourceFixupRenderer.RELATIVE
+	 *            ResourceFixupRenderer.ABSOLUTE or
+	 *            ResourceFixupRenderer.RELATIVE
 	 * @param fixRelativeUrls
 	 *            defines whether relative URLs should be fixed
 	 * @throws MalformedURLException
 	 */
-	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl, String pageFullPath, int mode, boolean fixRelativeUrls)
+	public ResourceFixupRenderer(String baseUrl, String visibleBaseUrl,
+			String pageFullPath, int mode, boolean fixRelativeUrls)
 			throws MalformedURLException {
 		this.mode = mode;
 		this.fixRelativeUrls = fixRelativeUrls;
@@ -166,12 +179,14 @@ public class ResourceFixupRenderer implements Renderer {
 		}
 
 		if (replacementUrl != null && url.startsWith(baseUrl)) {
-			url = new StringBuffer(replacementUrl).append(url.substring(baseUrl.length())).toString();
+			url = new StringBuffer(replacementUrl).append(
+					url.substring(baseUrl.length())).toString();
 			LOG.debug("fix absolute url: " + urlParam + " -> " + url);
 			return url;
 		}
 		// Keep absolute and javascript urls untouched.
-		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("#") || url.startsWith("javascript:")) {
+		if (url.startsWith("http://") || url.startsWith("https://")
+				|| url.startsWith("#") || url.startsWith("javascript:")) {
 			LOG.debug("keeping absolute url: " + url);
 			return url;
 		}
@@ -201,7 +216,8 @@ public class ResourceFixupRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String src, Writer out) throws IOException {
+	public void render(ResourceContext requestContext, String src, Writer out)
+			throws IOException {
 		out.write(replace(src).toString());
 	}
 
@@ -223,8 +239,10 @@ public class ResourceFixupRenderer implements Renderer {
 			while (m.find()) {
 				LOG.trace("found match: " + m);
 				String url = fixUrl(m.group(3));
-				url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it denotes group
-				StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");
+				url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$'
+														// as it denotes group
+				StringBuffer tagReplacement = new StringBuffer("<$1$2=\"")
+						.append(url).append("\"");
 				if (m.groupCount() > 3) {
 					tagReplacement.append("$4");
 				}

@@ -80,8 +80,8 @@ public class CookieForwardingFilter implements Filter {
 	/**
 	 * Retrieves the wrapper to the CookieStore and forwards th
 	 * 
-	 * @see net.webassembletool.filter.Filter#postRequest(net.webassembletool.http.HttpClientResponse,
-	 *      net.webassembletool.output.Output)
+	 * @see net.webassembletool.filter.Filter#postRequest(HttpClientResponse,
+	 *      ResourceContext)
 	 */
 	public void postRequest(HttpClientResponse response, ResourceContext context) {
 		// Nothing to do

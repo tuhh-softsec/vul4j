@@ -2,7 +2,6 @@ package net.webassembletool.cache;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class SerializeCacheStorageTest extends CacheStorageTest {
 								ret.getContent());
 						ObjectInputStream oin = new ObjectInputStream(is);
 						Object obj = oin.readObject();
-						if(null != obj && CacheEntry.class.isInstance(obj)){
+						if (null != obj && CacheEntry.class.isInstance(obj)) {
 							CacheEntry.class.cast(obj).setStorage(this);
 						}
 						return obj;
@@ -69,7 +68,6 @@ public class SerializeCacheStorageTest extends CacheStorageTest {
 			}
 			return null;
 		}
-
 
 		public <T> T get(String key, Class<T> clazz) {
 			Object ret = get(key);
@@ -85,8 +83,8 @@ public class SerializeCacheStorageTest extends CacheStorageTest {
 		}
 
 		private class SerializeCacheEntry {
-			private byte[] content;
-			private long ttl;
+			private final byte[] content;
+			private final long ttl;
 
 			public SerializeCacheEntry(byte[] content, long ttl) {
 				super();
@@ -104,7 +102,7 @@ public class SerializeCacheStorageTest extends CacheStorageTest {
 		}
 
 		public void init(Properties properties) {
-			
+
 		}
 
 	}

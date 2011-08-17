@@ -44,11 +44,12 @@ public class HttpErrorPage extends Exception {
 			// If we cannot render the Exception to browser, do our best to
 			// render it in the log file
 		} catch (IllegalStateException e) {
-			throw new IOException(
+			throw new ResponseException(
 					"Response already committed, unable to render exception to browser",
 					this);
 		} catch (IOException e) {
-			throw new IOException("Unable to render exception to browser", this);
+			throw new ResponseException(
+					"Unable to render exception to browser", this);
 		}
 
 	}

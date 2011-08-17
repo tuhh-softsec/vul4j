@@ -18,48 +18,24 @@ import net.webassembletool.taglib.ReplaceableTag;
 
 public class IncludeBlockComponent extends UIComponentBase implements
 		ReplaceableTag {
+	private Boolean displayErrorPage;
 	private String name;
 	private String page;
 	private String provider;
-	private Boolean displayErrorPage;
 	private Map<String, String> replaceRules = new HashMap<String, String>();
 
-	public String getName() {
-		return UIComponentUtils.getParam(this, "name", name);
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPage() {
-		return UIComponentUtils.getParam(this, "page", page);
-	}
-
-	public void setPage(String page) {
-		this.page = page;
-	}
-
-	public String getProvider() {
-		return UIComponentUtils.getParam(this, "provider", provider);
-	}
-
-	public void setProvider(String provider) {
-		this.provider = provider;
-	}
-
-	public boolean isDisplayErrorPage() {
-		return UIComponentUtils.getParam(this, "displayErrorPage",
-				displayErrorPage);
-	}
-
-	public void setDisplayErrorPage(boolean displayErrorPage) {
-		this.displayErrorPage = displayErrorPage;
-	}
-
 	@Override
-	public String getFamily() {
-		return IncludeBlockComponent.class.getPackage().toString();
+	public void encodeChildren(FacesContext context) throws IOException {
+		@SuppressWarnings("rawtypes")
+		Iterator it = getChildren().iterator();
+		while (it.hasNext()) {
+			UIComponent child = (UIComponent) it.next();
+			UIComponentUtils.renderChild(child);
+			if (child instanceof ReplaceComponent) {
+				ReplaceComponent rc = (ReplaceComponent) child;
+				replaceRules.put(rc.getExpression(), rc.getValue());
+			}
+		}
 	}
 
 	@Override
@@ -74,32 +50,41 @@ public class IncludeBlockComponent extends UIComponentBase implements
 					getName(), writer, request, response, replaceRules, null,
 					false);
 		} catch (HttpErrorPage re) {
-			if (isDisplayErrorPage())
+			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());
+			}
 		}
 	}
 
 	@Override
-	public void encodeChildren(FacesContext context) throws IOException {
-		@SuppressWarnings("unchecked")
-		Iterator it = getChildren().iterator();
-		while (it.hasNext()) {
-			UIComponent child = (UIComponent) it.next();
-			UIComponentUtils.renderChild(child);
-			if (child instanceof ReplaceComponent) {
-				ReplaceComponent rc = (ReplaceComponent) child;
-				replaceRules.put(rc.getExpression(), rc.getValue());
-			}
-		}
+	public String getFamily() {
+		return IncludeBlockComponent.class.getPackage().toString();
+	}
+
+	public String getName() {
+		return UIComponentUtils.getParam(this, "name", name);
+	}
+
+	public String getPage() {
+		return UIComponentUtils.getParam(this, "page", page);
+	}
+
+	public String getProvider() {
+		return UIComponentUtils.getParam(this, "provider", provider);
+	}
+
+	@Override
+	public boolean getRendersChildren() {
+		return true;
 	}
 
 	public Map<String, String> getReplaceRules() {
 		return replaceRules;
 	}
 
-	@Override
-	public boolean getRendersChildren() {
-		return true;
+	public boolean isDisplayErrorPage() {
+		return UIComponentUtils.getParam(this, "displayErrorPage",
+				displayErrorPage);
 	}
 
 	@Override
@@ -124,6 +109,22 @@ public class IncludeBlockComponent extends UIComponentBase implements
 		values[4] = displayErrorPage;
 		values[5] = replaceRules;
 		return values;
+	}
+
+	public void setDisplayErrorPage(boolean displayErrorPage) {
+		this.displayErrorPage = displayErrorPage;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 
 }

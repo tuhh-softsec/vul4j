@@ -65,8 +65,8 @@ public class IncludeElement implements Element {
 							new Date()))) {
 				getOut(out, stack).append(ic.getFragment());
 			} else {
-				driver.render(page, null, getOut(out, stack), esiRenderer
-						.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, getOut(out, stack),
+						esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new BlockRenderer(null, page));
 			}
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class IncludeElement implements Element {
 
 	private Appendable getOut(Appendable out, ElementStack stack) {
 		Appendable res = out;
-		TryElement tre = getTryElement(stack);
+		getTryElement(stack);
 
 		Element e3 = stack.pop();
 		if (stack.isEmpty()) {

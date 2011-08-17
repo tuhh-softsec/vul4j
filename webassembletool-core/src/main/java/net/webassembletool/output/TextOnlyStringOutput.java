@@ -17,7 +17,7 @@ import net.webassembletool.resource.ResourceUtils;
  * whether content is of type text before buffering it. If no header indicates
  * whether this input is text the output is directly forwarded to binaryOutput
  * specified in construction time. For details on how text content is detected
- * look at {@link ResourceUtils#isTextContentType(String)}. The
+ * look at {@link ResourceUtils#isTextContentType(String, List)}. The
  * {@link #hasTextBuffer()} method can be used to check whether the content has
  * been buffered. Notice that {@link #hasTextBuffer()} throws
  * IllegalStateException see its javadoc for details. Notice the nothing is done
