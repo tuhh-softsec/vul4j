@@ -439,10 +439,6 @@ public class RewriteProxyServlet extends HttpServlet {
 						+ rule + " had a none expected scheme pattern : "
 						+ conf.getSchemePattern()
 						+ " expected scheme pattern : http or https");
-
-				if (logger.isErrorEnabled()) {
-					logger.error(e.getMessage(), e);
-				}
 				throw e;
 			}
 		}
@@ -453,10 +449,6 @@ public class RewriteProxyServlet extends HttpServlet {
 						+ rule + " had a none expected rewrite scheme : "
 						+ conf.getSchemeRewrite()
 						+ " expected rewrite scheme : http or https");
-
-				if (logger.isErrorEnabled()) {
-					logger.error(e.getMessage(), e);
-				}
 				throw e;
 			}
 		}
@@ -466,10 +458,6 @@ public class RewriteProxyServlet extends HttpServlet {
 				ConfigurationException e = new ConfigurationException("Rule : "
 						+ rule + " had a none expected redirect code range : "
 						+ conf.getRedirect() + " expected range : 300-400");
-
-				if (logger.isErrorEnabled()) {
-					logger.error(e.getMessage(), e);
-				}
 				throw e;
 			}
 		}

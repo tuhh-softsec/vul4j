@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import net.webassembletool.ConfigurationException;
 import net.webassembletool.DriverConfiguration;
 import net.webassembletool.HttpErrorPage;
 import net.webassembletool.ResourceContext;
@@ -27,27 +28,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CachedHttpResourceFactory implements ResourceFactory {
-	private static final Logger log = LoggerFactory.getLogger(CachedHttpResourceFactory.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CachedHttpResourceFactory.class);
 	private final ResourceFactory httpResourceFactory;
 	private final DriverConfiguration config;
 	private final Cache cache;
 
-	public CachedHttpResourceFactory(ResourceFactory httpResourceFactory, DriverConfiguration config) {
+	public CachedHttpResourceFactory(ResourceFactory httpResourceFactory,
+			DriverConfiguration config) {
 		super();
 		this.httpResourceFactory = httpResourceFactory;
 		this.config = config;
 		this.cache = new Cache();
 		try {
-			CacheStorage cacheStorage = this.config.getCacheStorageClass().newInstance();
+			CacheStorage cacheStorage = this.config.getCacheStorageClass()
+					.newInstance();
 			cacheStorage.init(config.getProperties());
 			cache.setStorage(cacheStorage);
 		} catch (Exception e) {
-			log.error("Error during initialization CacheStorage", e);
+			throw new ConfigurationException(
+					"Error during initialization CacheStorage", e);
 		}
 	}
 
-	public Resource getResource(ResourceContext resourceContext) throws HttpErrorPage {
-		String httpUrl = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
+	public Resource getResource(ResourceContext resourceContext)
+			throws HttpErrorPage {
+		String httpUrl = ResourceUtils
+				.getHttpUrlWithQueryString(resourceContext);
 
 		ResourceProxyWithContext ret = new ResourceProxyWithContext();
 		ret.setResourceContext(resourceContext);
@@ -102,16 +109,20 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 		}
 	}
 
-	private void tryLoadFromFileSystem(ResourceProxyWithContext ret) throws IOException {
+	private void tryLoadFromFileSystem(ResourceProxyWithContext ret)
+			throws IOException {
 		// Resource could not be loaded neither from HTTP, nor from the
 		// cache, let's try from the file system
-		if (config.getLocalBase() != null && Rfc2616.isCacheable(ret.getResourceContext())) {
-			ret.setFileResource(ResourceUtils.createFileResource(config.getLocalBase(), ret.getResourceContext()));
+		if (config.getLocalBase() != null
+				&& Rfc2616.isCacheable(ret.getResourceContext())) {
+			ret.setFileResource(ResourceUtils.createFileResource(
+					config.getLocalBase(), ret.getResourceContext()));
 			if (!ret.getFileResource().isError()) {
 				// on reinitialise l'output pour ne pas ecraser le fichier
 				// stocke sur le disque
 				ret.setFileOutput(null);
-				ret.setMemoryOutput(new CacheOutput(config.getCacheMaxFileSize()));
+				ret.setMemoryOutput(new CacheOutput(config
+						.getCacheMaxFileSize()));
 				ret.setProxyResource(ret.getFileResource());
 				ret.setReady(true);
 			}
@@ -121,31 +132,40 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	private void tryLoadFromExpiredCache(ResourceProxyWithContext ret) {
 		// Resource could not be loaded from HTTP, let's use the expired
 		// cache entry if not empty and not error.
-		if (ret.getCachedResource() != null && !ret.getCachedResource().isError()) {
+		if (ret.getCachedResource() != null
+				&& !ret.getCachedResource().isError()) {
 			ret.setProxyResource(ret.getCachedResource());
 			ret.setReady(true);
 		}
 	}
 
-	private void tryLoadFromHttp(ResourceProxyWithContext ret) throws Exception, HttpErrorPage {
+	private void tryLoadFromHttp(ResourceProxyWithContext ret)
+			throws Exception, HttpErrorPage {
 		// Try to load it from HTTP
 		if (config.getBaseURL() != null) {
 			// Prepare a FileOutput to store the result on the file system
-			if (config.isPutInCache() && Rfc2616.isCacheable(ret.getResourceContext())) {
-				ret.setFileOutput(ResourceUtils.createFileOutput(config.getLocalBase(), ret.getResourceContext()));
+			if (config.isPutInCache()
+					&& Rfc2616.isCacheable(ret.getResourceContext())) {
+				ret.setFileOutput(ResourceUtils.createFileOutput(
+						config.getLocalBase(), ret.getResourceContext()));
 			}
 
-			Map<String, String> validators = cache.getValidators(ret.getResourceContext(), ret.getCachedResource());
-			// ResourceContext resourceContext = ret.getResourceContext().clone();
+			Map<String, String> validators = cache.getValidators(
+					ret.getResourceContext(), ret.getCachedResource());
+			// ResourceContext resourceContext =
+			// ret.getResourceContext().clone();
 			ResourceContext resourceContext = ret.getResourceContext();
-			Map<String, String> originalValidators = resourceContext.getValidators();
+			Map<String, String> originalValidators = resourceContext
+					.getValidators();
 			try {
 				resourceContext.setValidators(validators);
-				ret.setHttpResource(httpResourceFactory.getResource(resourceContext));
+				ret.setHttpResource(httpResourceFactory
+						.getResource(resourceContext));
 			} finally {
 				resourceContext.setValidators(originalValidators);
 			}
-			ret.setHttpResource(cache.select(ret.getResourceContext(), ret.getCachedResource(), ret.getHttpResource()));
+			ret.setHttpResource(cache.select(ret.getResourceContext(),
+					ret.getCachedResource(), ret.getHttpResource()));
 
 			// If there is an error, we will try to reuse an old cache entry
 			if (!ret.getHttpResource().isError()) {
@@ -165,20 +185,23 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 				needsValidation = false;
 				if (config.getCacheRefreshDelay() <= 0) {
 					// Auto http cache
-					if (Rfc2616.needsValidation(ret.getResourceContext(), ret.getCachedResource())) {
+					if (Rfc2616.needsValidation(ret.getResourceContext(),
+							ret.getCachedResource())) {
 						needsValidation = true;
 					}
 				} else {
 					// Forced expiration delay
 					if (Rfc2616.requiresRefresh(ret.getResourceContext())
-							|| Rfc2616.getAge(ret.getCachedResource()) > config.getCacheRefreshDelay() * 1000L) {
+							|| Rfc2616.getAge(ret.getCachedResource()) > config
+									.getCacheRefreshDelay() * 1000L) {
 						needsValidation = true;
 					}
 				}
 			}
 			if (log.isDebugEnabled()) {
 				String message = "Needs validation=" + needsValidation;
-				message += " cacheRefreshDelay=" + config.getCacheRefreshDelay();
+				message += " cacheRefreshDelay="
+						+ config.getCacheRefreshDelay();
 				if (ret.getCachedResource() != null) {
 					message += " cachedResource=" + ret.getCachedResource();
 				}
@@ -189,7 +212,8 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 				// the user (hit refresh in the browser so the browser sent
 				// a pragma:no-cache header or something similar), prepare a
 				// memoryOutput to collect the new version
-				ret.setMemoryOutput(new CacheOutput(config.getCacheMaxFileSize()));
+				ret.setMemoryOutput(new CacheOutput(config
+						.getCacheMaxFileSize()));
 			} else {
 				// Resource in cache, does not need validation, just render
 				// it

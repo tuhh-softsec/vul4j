@@ -8,18 +8,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
  * 
  * @author Stanislav Bernatskyi
  */
 public class DriverFactory {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(DriverFactory.class);
-
 	private static final String DEFAULT_INSTANCE = "default";
 	private static final Map<String, Driver> INSTANCIES = new HashMap<String, Driver>();
 
@@ -58,10 +52,7 @@ public class DriverFactory {
 
 			configure(merged);
 		} catch (IOException e) {
-			ConfigurationException ce = new ConfigurationException(
-					"Error loading configuration", e);
-			LOG.error(ce.getMessage(), ce);
-			throw ce;
+			throw new ConfigurationException("Error loading configuration", e);
 		} finally {
 			try {
 				if (inputStream != null) {
@@ -72,7 +63,7 @@ public class DriverFactory {
 					extInputStream.close();
 				}
 			} catch (IOException e) {
-				LOG.error("failed to close stream", e);
+				throw new ConfigurationException("failed to close stream", e);
 			}
 		}
 	}
@@ -159,11 +150,9 @@ public class DriverFactory {
 			}
 			Driver instance = INSTANCIES.get(effectiveInstanceName);
 			if (instance == null) {
-				ConfigurationException e = new ConfigurationException(
+				throw new ConfigurationException(
 						"No configuration properties found for factory : "
 								+ effectiveInstanceName);
-				LOG.error(e.getMessage(), e);
-				throw e;
 			}
 			return instance;
 		}
