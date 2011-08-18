@@ -19,7 +19,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
-import org.apache.http.RequestLine;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
@@ -142,20 +141,6 @@ public class HttpClientResponseTest extends TestCase {
 		String[] result = src.toArray(new String[src.size()]);
 		Arrays.sort(result);
 		return result;
-	}
-
-	public void testBuildLocation() {
-		HttpRequest request = control.createMock(HttpRequest.class);
-		RequestLine requestLine = control.createMock(RequestLine.class);
-		HttpHost host = new HttpHost("host", 123);
-
-		EasyMock.expect(request.getRequestLine()).andReturn(requestLine);
-		EasyMock.expect(requestLine.getUri()).andReturn("/some/uri");
-		control.replay();
-
-		assertEquals("http://host:123/some/uri",
-				HttpClientResponse.buildLocation(host, request));
-		control.verify();
 	}
 
 	public void testDecompressStream() throws ClientProtocolException,

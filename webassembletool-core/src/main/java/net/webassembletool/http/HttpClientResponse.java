@@ -77,7 +77,7 @@ public class HttpClientResponse {
 			} else {
 				// Calculating the URL we may have been redirected to, as
 				// automatic redirect following is activated
-				currentLocation = buildLocation(httpHost, httpRequest);
+				currentLocation = httpRequest.getRequestLine().getUri();
 			}
 			LOG.debug(" -> create: " + statusCode + ";" + currentLocation);
 			return new HttpClientResponse(httpResponse, currentLocation);
@@ -99,17 +99,6 @@ public class HttpClientResponse {
 					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error retrieving URL");
 		}
-	}
-
-	static String buildLocation(HttpHost host, HttpRequest finalRequest) {
-		StringBuffer buf = new StringBuffer();
-		buf.append(host.getSchemeName()).append("://")
-				.append(host.getHostName());
-		if (host.getPort() != -1) {
-			buf.append(':').append(host.getPort());
-		}
-		buf.append(finalRequest.getRequestLine().getUri());
-		return buf.toString();
 	}
 
 	protected HttpClientResponse(int statusCode, String statusText) {
