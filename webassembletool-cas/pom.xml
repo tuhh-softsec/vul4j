@@ -3,11 +3,11 @@
 	<groupId>net.sourceforge.webassembletool</groupId>
 	<artifactId>webassembletool-cas</artifactId>
 	<name>webassembletool-cas</name>
-	<version>2.19</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<parent>
 		<artifactId>webassembletool</artifactId>
 		<groupId>net.sourceforge.webassembletool</groupId>
-		<version>2.19</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
