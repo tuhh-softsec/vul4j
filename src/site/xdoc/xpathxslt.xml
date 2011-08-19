@@ -18,14 +18,14 @@
 			<p>
 				For other uses, you can use directly the API with
 				<a
-					href="webassembletool-core/apidocs/net/webassembletool/xml/XpathRenderer.html">XpathRenderer</a>
+					href="esigate-core/apidocs/org/esigate/xml/XpathRenderer.html">XpathRenderer</a>
 				and
 				<a
-					href="webassembletool-core/apidocs/net/webassembletool/xml/XsltRenderer.html">XsltRenderer</a>
+					href="esigate-core/apidocs/org/esigate/xml/XsltRenderer.html">XsltRenderer</a>
 				classes.
 				Example:
 <source>
-package net.webassembletool.aggregator;
+package org.esigate.aggregator;
 
 import java.io.IOException;
 
@@ -35,9 +35,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.webassembletool.DriverFactory;
-import net.webassembletool.HttpErrorPage;
-import net.webassembletool.xml.XsltRenderer;
+import org.esigate.DriverFactory;
+import org.esigate.HttpErrorPage;
+import org.esigate.xml.XsltRenderer;
 
 /**
  * This servlet retrieves pages from a provider and transforms them using an xsl

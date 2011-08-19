@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="ESIGate - ESI reverse proxy, CMS integration, Remove templating">
 	<skin>
-		<groupId>net.sourceforge.webassembletool.maven</groupId>
-		<artifactId>webassembletool-maven-skin</artifactId>
+		<groupId>org.esigate.maven</groupId>
+		<artifactId>esigate-maven-skin</artifactId>
 		<version>${project.version}</version>
 	</skin>
 	<version position="left" />
@@ -10,7 +10,7 @@
 	<bannerLeft>
 		<name>ESIGate</name>
 		<src>images/logo.jpg</src>
-		<href>http://sourceforge.net/projects/webassembletool</href>
+		<href>http://sourceforge.net/projects/esigate</href>
 		<alt>Get ESIGate at SourceForge.net. Fast, secure and Free Open Source
 			software downloads</alt>
 	</bannerLeft>

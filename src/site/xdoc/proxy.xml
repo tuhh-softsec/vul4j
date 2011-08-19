@@ -36,7 +36,7 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 &lt;web-app&gt;
 &lt;servlet&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;servlet-class&gt;net.webassembletool.ProxyServlet&lt;/servlet-class&gt;
+&lt;servlet-class&gt;org.esigate.ProxyServlet&lt;/servlet-class&gt;
 &lt;/servlet&gt;
 &lt;servlet-mapping&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
@@ -102,7 +102,7 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 &lt;web-app&gt;
 &lt;servlet&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;servlet-class&gt;net.webassembletool.RewriteProxyServlet&lt;/servlet-class&gt;
+&lt;servlet-class&gt;org.esigate.RewriteProxyServlet&lt;/servlet-class&gt;
 &lt;/servlet&gt;
 &lt;servlet-mapping&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
@@ -111,17 +111,17 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 &lt;/web-app&gt; </source>
 					
 					
-					<p>Then the proxy has to be configured in both net/webassembletool/driver.properties and net/webassembletool/rewrite-proxy.properties :</p>
+					<p>Then the proxy has to be configured in both org/esigate/driver.properties and org/esigate/rewrite-proxy.properties :</p>
 					<p>driver.properties</p>
 						<source>
-#net/webassembletool/driver.properties
+#org/esigate/driver.properties
 
 
 webapp.remoteUrlBase=http://localhost:8080/webappcontext/
 					</source>
 					<p>rewrite-proxy.properties</p>
 					<source>
-#net/webassembletool/rewrite-proxy.properties
+#org/esigate/rewrite-proxy.properties
 
 # Rule 1. (replace &lt;rulename1&gt; by the real rule name)
 &lt;rulename1&gt;.pattern=^/myurl(/?.*)$

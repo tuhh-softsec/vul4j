@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool</artifactId>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
-	<name>webassembletool</name>
+	<name>esigate</name>
 	<version>3.0-SNAPSHOT</version>
 	<ciManagement>
 		<system>continuum</system>
@@ -414,25 +414,25 @@
 	</profiles>
 	 -->
 	<modules>
-		<module>webassembletool-core</module>
-		<module>webassembletool-oscache</module>
-		<module>webassembletool-taglib</module>
-		<module>webassembletool-taglib-helper</module>
-		<module>webassembletool-jsf</module>
-		<module>webassembletool-wicket</module>
-		<module>webassembletool-cas</module>
-		<module>webassembletool-app-provider</module>
-		<module>webassembletool-app-master</module>
-		<module>webassembletool-app-aggregated1</module>
-		<module>webassembletool-app-aggregated2</module>
-		<module>webassembletool-app-aggregator</module>
-		<module>webassembletool-app-cas</module>
-		<module>webassembletool-app-casified-aggregated1</module>
-		<module>webassembletool-app-casified-aggregated2</module>
-		<module>webassembletool-app-casified-aggregator</module>
-		<module>webassembletool-app-facelet</module>
-		<module>webassembletool-distribution</module>
-		<module>webassembletool-maven</module>
+		<module>esigate-core</module>
+		<module>esigate-oscache</module>
+		<module>esigate-taglib</module>
+		<module>esigate-taglib-helper</module>
+		<module>esigate-jsf</module>
+		<module>esigate-wicket</module>
+		<module>esigate-cas</module>
+		<module>esigate-app-provider</module>
+		<module>esigate-app-master</module>
+		<module>esigate-app-aggregated1</module>
+		<module>esigate-app-aggregated2</module>
+		<module>esigate-app-aggregator</module>
+		<module>esigate-app-cas</module>
+		<module>esigate-app-casified-aggregated1</module>
+		<module>esigate-app-casified-aggregated2</module>
+		<module>esigate-app-casified-aggregator</module>
+		<module>esigate-app-facelet</module>
+		<module>esigate-distribution</module>
+		<module>esigate-maven</module>
 	</modules>
 	<repositories>
 		<repository>
@@ -476,18 +476,18 @@
 	</reporting>
 	<distributionManagement>
 		<repository>
-			<id>webassembletool-sourceforge</id>
-			<name>webassembletool Repository</name>
+			<id>esigate-sourceforge</id>
+			<name>ESIGate Repository</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/repository</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>webassembletool-sourceforge-snapshots</id>
-			<name>webassembletool Snapshot Repository</name>
+			<id>esigate-sourceforge-snapshots</id>
+			<name>ESIGate Snapshot Repository</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/snapshots</url>
 		</snapshotRepository>
 		<site>
-			<id>webassembletool-site</id>
+			<id>esigate-site</id>
 			<name>ESIGate</name>
 			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
 			<!--<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>-->			

@@ -11,13 +11,13 @@
 				functionalities of the toolkit:
 </p>
 			<ul>
-				<li>Taglib and reverse proxy: webassembletool-master and webassembletool-provider
+				<li>Taglib and reverse proxy: esigate-master and esigate-provider
 					applications</li>
-				<li>JSF: webassembletool-facelet</li>
-				<li>Aggregator: webassembletool-aggregator, webassembletool-aggregated1 and webassembletool-aggregated2
+				<li>JSF: esigate-facelet</li>
+				<li>Aggregator: esigate-aggregator, esigate-aggregated1 and esigate-aggregated2
 					applications</li>
-				<li>Aggregator with CAS SSO: webassembletool-cas, webassembletool-casified-aggregator,
-					webassembletool-casified-aggregated1 and webassembletool-casified-aggregated2 applications</li>
+				<li>Aggregator with CAS SSO: esigate-cas, esigate-casified-aggregator,
+					esigate-casified-aggregated1 and esigate-casified-aggregated2 applications</li>
 			</ul>
 		</section>
 		<section name="Building">

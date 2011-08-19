@@ -10,11 +10,11 @@
 			<p>
 				The tools default behavior is to load a configuration file from
 				the
-				classpath net/webassembletool/driver.properties
+				classpath org/esigate/driver.properties
 	</p>
 			<p>
 				Alternatively you can use method
-				<code>net.webassembletool.DriverFactory.configure(Properties)
+				<code>org.esigate.DriverFactory.configure(Properties)
 				</code>
 				.
 			</p>
@@ -153,19 +153,19 @@
                 </tr>
                 <tr>
                     <td>cookieStore</td>
-                    <td>The cookieStore to use. Must be a class that implements net.webassembletool.cookie.CustomCookieStore</td>
+                    <td>The cookieStore to use. Must be a class that implements org.esigate.cookie.CustomCookieStore</td>
                     <td>No</td>
-                    <td>net.webassembletool.cookie.SerializableBasicCookieStore</td>
+                    <td>org.esigate.cookie.SerializableBasicCookieStore</td>
                 </tr>
                 <tr>
                     <td>authenticationHandler</td>
-                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements net.webassembletool.authentication.AuthenticationHandler</td>
+                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements org.esigate.authentication.AuthenticationHandler</td>
                     <td>No</td>
-                    <td>net.webassembletool.authentication.RemoteUserAuthenticationHandler</td>
+                    <td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
                 </tr> 
 				<tr>
                     <td>filter</td>
-                    <td>The request filter to use. Must be a class that implements net.webassembletool.filter.Filter</td>
+                    <td>The request filter to use. Must be a class that implements org.esigate.filter.Filter</td>
                     <td>No</td>
                     <td></td>
                 </tr>   
@@ -194,7 +194,7 @@ appli2.uriEncoding=UTF-8
                 <section name="Variables resolver">
 			<p>
 				You can define variables in
-				classpath net/webassembletool/vars.properties
+				classpath org/esigate/vars.properties
                                 </p>
 <source>
 variable_name=variable_value

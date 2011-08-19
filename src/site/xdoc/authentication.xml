@@ -15,7 +15,7 @@
 				</ol>
 				This is made by the
 				<a
-					href="webassembletool-core/apidocs/net/webassembletool/authentication/AuthenticationHandler.html">AuthenticationHandler</a>
+					href="esigate-core/apidocs/org/esigate/authentication/AuthenticationHandler.html">AuthenticationHandler</a>
 				interface. Every provider has its own AuthenticationHandler.
 			</p>
 		</section>
@@ -23,7 +23,7 @@
 			<p>
 				The default AuthenticationHandler is
 				<a
-					href="webassembletool-core/apidocs/net/webassembletool/authentication/RemoteUserAuthenticationHandler.html">RemoteUserAuthenticationHandler</a>
+					href="esigate-core/apidocs/org/esigate/authentication/RemoteUserAuthenticationHandler.html">RemoteUserAuthenticationHandler</a>
 				implementation. This implementation tries to retrieve the user by
 				calling the
 				method request.getRemoteUser() from the container. If

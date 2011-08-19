@@ -18,7 +18,7 @@
 
 			<source><![CDATA[
 <repository>
-	<id>webassembletool-repository</id>
+	<id>esigate-repository</id>
 	<name>Website Assembling Toolkit repository</name>
 	<url>http://www.esigate.org/maven/repository</url>
 </repository>
@@ -55,8 +55,8 @@
 			</p>
 			<source><![CDATA[
 <dependency>
-	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool-core</artifactId>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate-core</artifactId>
 	<version>RELEASE</version>
 </dependency>
 ]]></source>
@@ -69,8 +69,8 @@
 			</p>
 			<source><![CDATA[
 <dependency>
-	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool-taglib</artifactId>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate-taglib</artifactId>
 	<version>RELEASE</version>
 </dependency>
 ]]></source>
@@ -79,8 +79,8 @@
 			</p>
 			<source><![CDATA[
 <dependency>
-	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool-jsf</artifactId>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate-jsf</artifactId>
 	<version>RELEASE</version>
 </dependency>
 ]]></source>
@@ -89,8 +89,8 @@
 			</p>
 			<source><![CDATA[
 <dependency>
-	<groupId>net.sourceforge.webassembletool</groupId>
-	<artifactId>webassembletool-taglib-helper</artifactId>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate-taglib-helper</artifactId>
 	<version>RELEASE</version>
 </dependency>
 ]]></source>

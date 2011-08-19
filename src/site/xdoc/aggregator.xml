@@ -36,9 +36,9 @@
 				Eg for 2 applications:
 		</p>
 <source>
-remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated1/
+remoteUrlBase=http://localhost:8080/esigate-app-aggregated1/
 uriEncoding=UTF-8
-aggregated2.remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated2/
+aggregated2.remoteUrlBase=http://localhost:8080/esigate-app-aggregated2/
 </source>
 			<p>
 				The aggregator is a servlet that has to be configured in the
@@ -51,11 +51,11 @@ aggregated2.remoteUrlBase=http://localhost:8080/webassembletool-app-aggregated2/
 &lt;web-app&gt;
 	&lt;servlet&gt;
 		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;net.webassembletool.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;servlet-class&gt;org.esigate.aggregator.AggregatorServlet&lt;/servlet-class&gt;
 	&lt;/servlet&gt;
 	&lt;servlet&gt;
 		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;net.webassembletool.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;servlet-class&gt;org.esigate.aggregator.AggregatorServlet&lt;/servlet-class&gt;
 		&lt;init-param&gt;
 			&lt;param-name&gt;provider&lt;/param-name&gt;
 			&lt;param-value&gt;aggregated2&lt;/param-value&gt;

@@ -14,11 +14,11 @@
                 Also it is possible to use
 				<a href="http://www.opensymphony.com/oscache/">OsCache</a>.
 				The OsCache as store can be enabled for a provider by setting the cacheStorageClassName
-                parameter to "net.webassembletool.oscache.OSCacheStorage" and adding webassembletool-oscache jar to the /WEB-INF/lib
+                parameter to "org.esigate.oscache.OSCacheStorage" and adding esigate-oscache jar to the /WEB-INF/lib
                 directory of your application.
 				The default cache settings for OsCache defined in the
 				oscache.properties file
-				included in the webassembletool-oscache jar can be overridden
+				included in the esigate-oscache jar can be overridden
 				simply by creating a
 				oscache.properties file in the /WEB-INF/classes
 				directory of your

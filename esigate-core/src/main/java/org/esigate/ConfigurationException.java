@@ -1,0 +1,18 @@
+package org.esigate;
+
+public class ConfigurationException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	public ConfigurationException(String message) {
+		super(message);
+	}
+
+	public ConfigurationException(Exception e) {
+		super(e);
+	}
+
+	public ConfigurationException(String message, Exception e) {
+		super(message, e);
+	}
+
+}
