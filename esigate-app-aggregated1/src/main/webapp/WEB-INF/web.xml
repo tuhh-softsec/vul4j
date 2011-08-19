@@ -13,8 +13,4 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-	<taglib>
-    	<taglib-uri>esitags.tld</taglib-uri>
-    	<taglib-location>esitags.tld</taglib-location>
-	</taglib>
 </web-app>
