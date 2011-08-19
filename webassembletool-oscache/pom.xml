@@ -3,11 +3,11 @@
 	<groupId>net.sourceforge.webassembletool</groupId>
 	<artifactId>webassembletool-oscache</artifactId>
 	<name>webassembletool-oscache</name>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0-SNAPSHOT</version>
 	<parent>
 		<artifactId>webassembletool</artifactId>
 		<groupId>net.sourceforge.webassembletool</groupId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.0-SNAPSHOT</version>
 	</parent>
 	<build>
 	</build>

@@ -4,7 +4,7 @@
 	<artifactId>webassembletool</artifactId>
 	<packaging>pom</packaging>
 	<name>webassembletool</name>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0-SNAPSHOT</version>
 	<ciManagement>
 		<system>continuum</system>
 		<url>http://java.nantes.intranet:8082/continuum/projectGroupSummary.action?projectGroupId=36</url>
