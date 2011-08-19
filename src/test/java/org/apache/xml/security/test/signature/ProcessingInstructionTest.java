@@ -20,6 +20,8 @@ package org.apache.xml.security.test.signature;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
 
 /**
  * A test-case for Bugzilla bug 45744 - "XPath transform and xml-stylesheet".
@@ -104,7 +105,7 @@ public class ProcessingInstructionTest extends org.junit.Assert {
         public XMLSignatureInput engineResolve(Attr uri, String baseURI)
             throws ResourceResolverException {
             try {
-                URI uriNew = new URI(uri.getNodeValue(), baseURI);
+                URI uriNew = getNewURI(uri.getNodeValue(), baseURI);
                 
                 FileInputStream inputStream = 
                     new FileInputStream(dir + "out.xml");
@@ -125,6 +126,23 @@ public class ProcessingInstructionTest extends org.junit.Assert {
                 return false;
             }
             return true;
+        }
+        
+        private static URI getNewURI(String uri, String baseURI) throws URISyntaxException {
+            URI newUri = null;
+            if (baseURI == null || "".equals(baseURI)) {
+                newUri = new URI(uri);
+            } else {
+                newUri = new URI(baseURI).resolve(uri);
+            }
+            
+            // if the URI contains a fragment, ignore it
+            if (newUri.getFragment() != null) {
+                URI uriNewNoFrag = 
+                    new URI(newUri.getScheme(), newUri.getSchemeSpecificPart(), null);
+                return uriNewNoFrag;
+            }
+            return newUri;
         }
     }
 

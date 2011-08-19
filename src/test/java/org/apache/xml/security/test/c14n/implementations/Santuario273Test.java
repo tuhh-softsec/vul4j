@@ -23,13 +23,14 @@ import java.io.ByteArrayInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
+import org.apache.xml.security.test.DSNamespaceContext;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -80,9 +81,13 @@ public class Santuario273Test extends org.junit.Assert {
         
         Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-        Element nscontext = createDSctx(doc, "ds", Constants.SignatureSpecNS);
 
-        Node signedInfo = XPathAPI.selectSingleNode(doc, "//ds:SignedInfo", nscontext);
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xPath = xpf.newXPath();
+        xPath.setNamespaceContext(new DSNamespaceContext());
+
+        Node signedInfo = 
+            (Node) xPath.evaluate("//ds:SignedInfo[1]", doc, XPathConstants.NODE);
         c14n.canonicalizeSubtree(signedInfo);
 
         NamedNodeMap attributes = signedInfo.getAttributes();
@@ -100,23 +105,4 @@ public class Santuario273Test extends org.junit.Assert {
         }
     }
 
-    /**
-     * Method createDSctx
-     *
-     * @param doc
-     * @param prefix
-     * @param namespace
-     * @return the element.
-     */
-    public static Element createDSctx(Document doc, String prefix, String namespace) {
-        if ((prefix == null) || (prefix.trim().length() == 0)) {
-            throw new IllegalArgumentException("You must supply a prefix");
-        }
-
-        Element ctx = doc.createElementNS(null, "namespaceContext");
-
-        ctx.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + prefix.trim(), namespace);
-
-        return ctx;
-    }
 }

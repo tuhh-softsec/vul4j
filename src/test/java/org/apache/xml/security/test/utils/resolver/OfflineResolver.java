@@ -21,13 +21,14 @@ package org.apache.xml.security.test.utils.resolver;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
 import org.w3c.dom.Attr;
 
 /**
@@ -142,16 +143,15 @@ public class OfflineResolver extends ResourceResolverSpi {
             return false;
         }
 
+        URI uriNew = null;
         try {
-            URI uriNew = new URI(new URI(BaseURI), uri.getNodeValue());
-
+            uriNew = getNewURI(uri.getNodeValue(), BaseURI);
             if (uriNew.getScheme().equals("http")) {
                 log.debug("I state that I can resolve " + uriNew.toString());
                 return true;
             }
 
-            log.debug("I state that I can't resolve " + uriNew.toString());
-        } catch (URI.MalformedURIException ex) {
+        } catch (URISyntaxException ex) {
             //
         }
 
@@ -168,6 +168,23 @@ public class OfflineResolver extends ResourceResolverSpi {
     private static void register(String URI, String filename, String MIME) {
         OfflineResolver._uriMap.put(URI, filename);
         OfflineResolver._mimeMap.put(URI, MIME);
+    }
+    
+    private static URI getNewURI(String uri, String baseURI) throws URISyntaxException {
+        URI newUri = null;
+        if (baseURI == null || "".equals(baseURI)) {
+            newUri = new URI(uri);
+        } else {
+            newUri = new URI(baseURI).resolve(uri);
+        }
+        
+        // if the URI contains a fragment, ignore it
+        if (newUri.getFragment() != null) {
+            URI uriNewNoFrag = 
+                new URI(newUri.getScheme(), newUri.getSchemeSpecificPart(), null);
+            return uriNewNoFrag;
+        }
+        return newUri;
     }
 
 }

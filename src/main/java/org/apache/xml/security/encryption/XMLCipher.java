@@ -3087,8 +3087,7 @@ public class XMLCipher {
                 } else if (target.startsWith("#")) {
                     /*
                      * This is a same document URI reference. Do not parse,
-                     * because org.apache.xml.utils.URI considers this an
-                     * illegal URI because it has no scheme.
+                     * because it has no scheme.
                      */
                     this.target = target;
                 } else {
