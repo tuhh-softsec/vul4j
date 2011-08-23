@@ -27,12 +27,5 @@
 			<artifactId>esigate-taglib-helper</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>jetty</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5-6.0.2</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>
