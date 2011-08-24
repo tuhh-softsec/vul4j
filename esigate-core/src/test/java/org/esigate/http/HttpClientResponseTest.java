@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.GZIPOutputStream;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -28,8 +28,6 @@ import org.apache.http.message.BasicStatusLine;
 import org.apache.http.protocol.HttpContext;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.esigate.http.HttpClientResponse;
-import org.esigate.http.HttpHeaders;
 
 public class HttpClientResponseTest extends TestCase {
 	private HttpClientResponse tested;
@@ -165,30 +163,23 @@ public class HttpClientResponseTest extends TestCase {
 		EasyMock.expect(httpResponse.getStatusLine()).andReturn(statusLine)
 				.anyTimes();
 		EasyMock.expect(httpResponse.getEntity()).andReturn(httpEntity);
+		EasyMock.expect(
+				httpResponse.getFirstHeader(HttpHeaders.CONTENT_ENCODING))
+				.andReturn(
+						new BasicHeader(HttpHeaders.CONTENT_ENCODING, "gzip"));
 		EasyMock.expect(httpEntity.getContent()).andReturn(
 				new ByteArrayInputStream(compressedBytes));
 
 		EasyMock.expect(httpResponse.getFirstHeader(HttpHeaders.LOCATION))
-				.andReturn(new BasicHeader("h", "value"));
-		control.replay();
+				.andReturn(new BasicHeader(HttpHeaders.LOCATION, "value"));
 
+		control.replay();
 		tested = HttpClientResponse.create(httpHost, httpRequest, httpClient,
 				cookieStore);
 		assertNotNull(tested);
-		InputStream decompressed = tested.decompressStream();
+		InputStream decompressed = tested.openStream();
 		assertNotNull(decompressed);
-
-		OutputStream out = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = decompressed.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		decompressed.close();
-		out.close();
-
-		String res = out.toString();
-
+		String res = IOUtils.toString(decompressed);
 		assertEquals(content, res);
 
 	}

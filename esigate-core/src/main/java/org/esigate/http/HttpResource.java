@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
 import org.esigate.Driver;
@@ -34,7 +33,6 @@ import org.esigate.UserContext;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.filter.Filter;
 import org.esigate.output.Output;
-import org.esigate.output.UnsupportedContentEncodingException;
 import org.esigate.resource.Resource;
 import org.esigate.resource.ResourceUtils;
 import org.esigate.util.Rfc2616;
@@ -145,18 +143,9 @@ public class HttpResource extends Resource {
 				output.write(httpClientResponse.getStatusText());
 			} else {
 				InputStream inputStream = httpClientResponse.openStream();
-				// Unzip the stream if necessary
-				String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
-				if (contentEncoding != null) {
-					if (!"gzip".equalsIgnoreCase(contentEncoding)
-							&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
-						throw new UnsupportedContentEncodingException(
-								"Content-encoding \"" + contentEncoding
-										+ "\" is not supported");
-					}
-					inputStream = httpClientResponse.decompressStream();
+				if (inputStream != null) {
+					removeSessionId(inputStream, output);
 				}
-				removeSessionId(inputStream, output);
 			}
 		} finally {
 			output.close();

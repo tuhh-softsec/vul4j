@@ -38,6 +38,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.esigate.output.UnsupportedContentEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +151,24 @@ public class HttpClientResponse {
 	}
 
 	public InputStream openStream() throws IllegalStateException, IOException {
-		content = httpEntity.getContent();
+		if (httpEntity == null) {
+			return null;
+		}
+		// Unzip the stream if necessary
+		String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
+		if (contentEncoding != null) {
+			if (!"gzip".equalsIgnoreCase(contentEncoding)
+					&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
+				throw new UnsupportedContentEncodingException(
+						"Content-encoding \"" + contentEncoding
+								+ "\" is not supported");
+			}
+			GzipDecompressingEntity compressed = new GzipDecompressingEntity(
+					httpEntity);
+			content = compressed.getContent();
+		} else {
+			content = httpEntity.getContent();
+		}
 		return content;
 	}
 
@@ -164,13 +182,6 @@ public class HttpClientResponse {
 		} else {
 			return null;
 		}
-	}
-
-	public InputStream decompressStream() throws IllegalStateException,
-			IOException {
-		GzipDecompressingEntity compressed = new GzipDecompressingEntity(
-				httpEntity);
-		return compressed.getContent();
 	}
 
 	public Collection<String> getHeaderNames() {
