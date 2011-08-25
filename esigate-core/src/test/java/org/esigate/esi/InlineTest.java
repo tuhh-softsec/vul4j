@@ -3,12 +3,13 @@ package org.esigate.esi;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.esi.EsiRenderer;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 public class InlineTest extends TestCase {
 	private MockDriver provider;
@@ -24,7 +25,10 @@ public class InlineTest extends TestCase {
 		String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
 		String page2 = "begin <esi:include src=\"someUri\" /> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getRequestURL()).andReturn(new StringBuffer());
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();

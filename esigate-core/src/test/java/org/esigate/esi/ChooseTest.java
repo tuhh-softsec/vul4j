@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.esi.EsiRenderer;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 public class ChooseTest extends TestCase {
 
@@ -26,9 +26,11 @@ public class ChooseTest extends TestCase {
 	public void testChoose() throws IOException, HttpErrorPage {
 		String page = "begin <esi:choose>inside choose</esi:choose>end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
-
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.replay(request);
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
@@ -40,9 +42,13 @@ public class ChooseTest extends TestCase {
 				+ "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Advanced'\">inside when</esi:when>"
 				+ "</esi:choose> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
-		request.setCookies(new Cookie[] { new Cookie("group", "Advanced") });
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.expect(request.getCookies()).andReturn(
+				new Cookie[] { new Cookie("group", "Advanced") });
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -56,9 +62,13 @@ public class ChooseTest extends TestCase {
 				+ "<esi:otherwise>inside otherwise</esi:otherwise>"
 				+ "</esi:choose> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
-		request.setCookies(new Cookie[] { new Cookie("group", "Advanced") });
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.expect(request.getCookies()).andReturn(
+				new Cookie[] { new Cookie("group", "Advanced") });
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();

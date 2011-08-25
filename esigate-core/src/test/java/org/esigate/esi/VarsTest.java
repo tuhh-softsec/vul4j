@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.esi.EsiRenderer;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 public class VarsTest extends TestCase {
 
@@ -26,8 +26,11 @@ public class VarsTest extends TestCase {
 	public void testHttpHost() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -40,8 +43,11 @@ public class VarsTest extends TestCase {
 				+ "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >"
 				+ "</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setCookies(new Cookie[] { new Cookie("cookieName", "value") });
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getCookies()).andReturn(
+				new Cookie[] { new Cookie("cookieName", "value") });
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -56,8 +62,11 @@ public class VarsTest extends TestCase {
 				+ "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
 				+ "</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addParameter("param1", "param1value");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getParameter("param1"))
+				.andReturn("param1value");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -71,8 +80,11 @@ public class VarsTest extends TestCase {
 		String page = "begin <esi:vars>" + "$(HTTP_REFERER)"
 				+ "</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Referer", "http://www.example.com");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Referer")).andReturn(
+				"http://www.example.com");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -84,12 +96,13 @@ public class VarsTest extends TestCase {
 		String page = "begin <esi:vars>" + "$(HTTP_USER_AGENT{os})"
 				+ "</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request
-				.addHeader(
-						"User-Agent",
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("User-Agent"))
+				.andReturn(
 						"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) "
 								+ "Gecko/20100914 Firefox/3.6.10 GTB7.1 ( .NET CLR 3.5.30729)");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -101,8 +114,11 @@ public class VarsTest extends TestCase {
 		String page = "begin <esi:vars>" + "$(HTTP_ACCEPT_LANGUAGE{en-us})"
 				+ "</esi:vars> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Accept-Language", "en-us,en;q=0.5");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn(
+				"en-us,en;q=0.5");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();

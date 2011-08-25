@@ -21,18 +21,18 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.filter.CookieForwardingFilter;
 import org.esigate.http.HttpClientRequest;
 import org.esigate.test.MockHttpClientRequest;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Nicolas Richeton
@@ -60,12 +60,16 @@ public class CookieForwardingFilterTest extends TestCase {
 
 	public void testFilter() throws IOException, HttpErrorPage {
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setCookies(new Cookie[] { new Cookie(K_FORWARD1, V_FORWARD1),
-				new Cookie(K_NO_FORWARD, V_NO_FORWARD),
-				new Cookie(K_FORWARD2, V_FORWARD2) });
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getCookies()).andReturn(
+				new Cookie[] { new Cookie(K_FORWARD1, V_FORWARD1),
+						new Cookie(K_NO_FORWARD, V_NO_FORWARD),
+						new Cookie(K_FORWARD2, V_FORWARD2) });
+		EasyMock.replay(request);
 
-		MockHttpServletResponse response = new MockHttpServletResponse();
+		HttpServletResponse response = EasyMock
+				.createNiceMock(HttpServletResponse.class);
 		Properties prop = new Properties();
 		prop.setProperty("forwardCookies", K_FORWARD1 + "   , " + K_FORWARD2);
 		String uri = "test/request.html";
@@ -91,9 +95,11 @@ public class CookieForwardingFilterTest extends TestCase {
 				request, true, true);
 		f.preRequest(clientRequest, rc);
 
-		assertNotNull(clientRequest.getCookieStore().getCookies());
-		assertFalse(clientRequest.getCookieStore().getCookies().isEmpty());
-		assertTrue(clientRequest.getCookieStore().getCookies().size() == 2);
+		List<org.apache.http.cookie.Cookie> cookies = clientRequest
+				.getCookieStore().getCookies();
+		assertNotNull(cookies);
+		assertFalse(cookies.isEmpty());
+		assertTrue(cookies.size() == 2);
 
 	}
 
@@ -104,9 +110,14 @@ public class CookieForwardingFilterTest extends TestCase {
 		Properties props = new Properties();
 		props.put("forwardCookies", "a,b,c");
 		tested.init(props);
-		MockHttpServletRequest originalRequest = new MockHttpServletRequest();
-		originalRequest.setCookies(new Cookie[] { new Cookie("a", "value a"),
-				new Cookie("c", "value c"), new Cookie("d", "value d") });
+		HttpServletRequest originalRequest = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(originalRequest.getCookies())
+				.andReturn(
+						new Cookie[] { new Cookie("a", "value a"),
+								new Cookie("c", "value c"),
+								new Cookie("d", "value d") });
+		EasyMock.replay(originalRequest);
 
 		HttpClientRequest request = new HttpClientRequest("url", null, false,
 				false);

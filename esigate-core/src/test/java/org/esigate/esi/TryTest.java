@@ -3,12 +3,13 @@ package org.esigate.esi;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.esi.EsiRenderer;
-import org.springframework.mock.web.MockHttpServletRequest;
 
 public class TryTest extends TestCase {
 
@@ -26,8 +27,11 @@ public class TryTest extends TestCase {
 				+ "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
 				+ "</esi:try> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -40,8 +44,11 @@ public class TryTest extends TestCase {
 				+ "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
 				+ "<esi:except>inside except</esi:except>" + "</esi:try> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
@@ -54,8 +61,11 @@ public class TryTest extends TestCase {
 				+ "<esi:attempt><esi:include src=\"http://www.foo2.com/test\" /></esi:attempt>"
 				+ "<esi:except>inside except</esi:except>" + "</esi:try> end";
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addHeader("Host", "http://www.foo.com");
+		HttpServletRequest request = EasyMock
+				.createNiceMock(HttpServletRequest.class);
+		EasyMock.expect(request.getHeader("Host")).andReturn(
+				"http://www.foo.com");
+		EasyMock.replay(request);
 
 		EsiRenderer tested = new EsiRenderer(request, null, provider);
 		StringWriter out = new StringWriter();
