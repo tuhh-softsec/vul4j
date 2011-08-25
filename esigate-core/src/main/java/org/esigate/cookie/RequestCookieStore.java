@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ResourceContext;
@@ -94,9 +93,10 @@ public class RequestCookieStore implements CookieStore {
 				requestHostName);
 		// Rewrite path
 		String originalPath = cookie.getPath();
-		String requestPath = resourceContext.getOriginalRequest().getPathInfo();
+		String requestPath = resourceContext.getOriginalRequest()
+				.getRequestURI();
 		String path = originalPath;
-		if (!requestPath.startsWith(originalPath)) {
+		if (requestPath == null || !requestPath.startsWith(originalPath)) {
 			path = "/";
 		}
 		// Rewrite secure
