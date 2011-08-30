@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
@@ -479,8 +478,8 @@ public class Driver {
 		}
 	}
 
-	private final void renderResource(ResourceContext resourceContext,
-			Output output) throws HttpErrorPage {
+	protected void renderResource(ResourceContext resourceContext, Output output)
+			throws HttpErrorPage {
 		Resource resource = null;
 		try {
 			resource = this.resourceFactory.getResource(resourceContext);

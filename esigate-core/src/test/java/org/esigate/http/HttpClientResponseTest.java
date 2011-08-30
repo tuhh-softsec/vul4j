@@ -167,6 +167,7 @@ public class HttpClientResponseTest extends TestCase {
 				httpResponse.getFirstHeader(HttpHeaders.CONTENT_ENCODING))
 				.andReturn(
 						new BasicHeader(HttpHeaders.CONTENT_ENCODING, "gzip"));
+		EasyMock.expect(httpEntity.isStreaming()).andReturn(true);
 		EasyMock.expect(httpEntity.getContent()).andReturn(
 				new ByteArrayInputStream(compressedBytes));
 

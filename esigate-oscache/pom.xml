@@ -15,6 +15,7 @@
 	    <dependency>
 			<groupId>opensymphony</groupId>
 			<artifactId>oscache</artifactId>
+			<version>2.4.1</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>jms</artifactId>

@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Properties;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,17 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.esigate.DriverFactory;
-import org.esigate.HttpErrorPage;
-import org.esigate.UserContext;
 
 public class DriverTest extends TestCase {
-	private static final int SERVER_PORT = 16008;
-	Server server;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -41,30 +31,6 @@ public class DriverTest extends TestCase {
 		provider.addResource(
 				"/testTemplate",
 				"abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
-
-		Handler handler = new AbstractHandler() {
-
-			public void handle(String arg0, Request arg1,
-					HttpServletRequest request, HttpServletResponse response)
-					throws IOException, ServletException {
-				response.setContentType("text/html");
-				response.setHeader("Content-Language", "en");
-				response.setHeader("Vary", "Accept-Encoding,Cookie");
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println("<h1>Hello</h1>");
-				((Request) request).setHandled(true);
-			}
-		};
-
-		server = new Server(SERVER_PORT);
-		server.setHandler(handler);
-		server.start();
-
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		server.stop();
 	}
 
 	public void testRenderBlock() throws IOException, HttpErrorPage {
@@ -130,11 +96,13 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getQueryString()).andReturn("?test=56")
 				.anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
-		EasyMock.expect(request.getMethod()).andReturn("GET");
+		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
 				.anyTimes();
-		EasyMock.expect(request.getHeaderNames()).andReturn(
-				Collections.enumeration(Collections.singleton("Host")));
+		EasyMock.expect(request.getHeaderNames())
+				.andReturn(
+						Collections.enumeration(Collections.singleton("Host")))
+				.anyTimes();
 
 		HttpServletResponse response = EasyMock
 				.createMock(HttpServletResponse.class);
@@ -152,13 +120,14 @@ public class DriverTest extends TestCase {
 
 	public void testProxy() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
+		props.setProperty("remoteUrlBase", "http://localhost:8080");
 		props.setProperty("putInCache", "true");
 		File localBase = new File("./target/localBase/");
 		localBase.mkdirs();
 		props.setProperty("localBase", localBase.getCanonicalPath());
 
-		new MockDriver("mockTestProxy", props);
+		MockDriver provider = new MockDriver("mockTestProxy", props);
+		provider.addResource("/wiki/", "<h1>Hello</h1>");
 
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
@@ -209,19 +178,20 @@ public class DriverTest extends TestCase {
 				EasyMock.eq("org.esigate.UserContext#mockTestProxy"),
 				EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
-		EasyMock.expect(request.getRemoteUser()).andReturn(null);
+		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
-		EasyMock.expect(request.getHeaderNames()).andReturn(
-				Collections.enumeration(Arrays.asList("Host", "User-Agent",
-						"If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent",
-						"If-None-Match")));
+		EasyMock.expect(request.getHeaderNames())
+				.andReturn(
+						Collections.enumeration(Arrays
+								.asList("Host", "User-Agent", "If-None-Match",
+										"Accept", "Accept-Encoding",
+										"Accept-Language", "Accept-Charset",
+										"User-Agent", "If-None-Match")))
+				.anyTimes();
 
 		HttpServletResponse response = EasyMock
 				.createMock(HttpServletResponse.class);
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
@@ -275,17 +245,18 @@ public class DriverTest extends TestCase {
 				EasyMock.eq("org.esigate.UserContext#mockTestProxy"),
 				EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
-		EasyMock.expect(request.getRemoteUser()).andReturn(null);
+		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
-		EasyMock.expect(request.getHeaderNames()).andReturn(
-				Collections.enumeration(Arrays.asList("Host", "User-Agent",
-						"If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent",
-						"If-None-Match")));
+		EasyMock.expect(request.getHeaderNames())
+				.andReturn(
+						Collections.enumeration(Arrays
+								.asList("Host", "User-Agent", "If-None-Match",
+										"Accept", "Accept-Encoding",
+										"Accept-Language", "Accept-Charset",
+										"User-Agent", "If-None-Match")))
+				.anyTimes();
 
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
@@ -298,10 +269,12 @@ public class DriverTest extends TestCase {
 
 	public void testProxyWithCacheRefreshDelay() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
+		props.setProperty("remoteUrlBase", "http://localhost:8080");
 		props.setProperty("cacheRefreshDelay", "1");
 
-		new MockDriver("mockTestProxyWithCacheRefreshDelay", props);
+		MockDriver provider = new MockDriver(
+				"mockTestProxyWithCacheRefreshDelay", props);
+		provider.addResource("/wiki/", "<h1>Hello</h1>");
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
 		ServletOutputStream out = new ServletOutputStream() {
@@ -351,19 +324,20 @@ public class DriverTest extends TestCase {
 				EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"),
 				EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
-		EasyMock.expect(request.getRemoteUser()).andReturn(null);
+		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
-		EasyMock.expect(request.getHeaderNames()).andReturn(
-				Collections.enumeration(Arrays.asList("Host", "User-Agent",
-						"If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent",
-						"If-None-Match")));
+		EasyMock.expect(request.getHeaderNames())
+				.andReturn(
+						Collections.enumeration(Arrays
+								.asList("Host", "User-Agent", "If-None-Match",
+										"Accept", "Accept-Encoding",
+										"Accept-Language", "Accept-Charset",
+										"User-Agent", "If-None-Match")))
+				.anyTimes();
 
 		HttpServletResponse response = EasyMock
 				.createMock(HttpServletResponse.class);
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
@@ -418,17 +392,18 @@ public class DriverTest extends TestCase {
 				EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"),
 				EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
-		EasyMock.expect(request.getRemoteUser()).andReturn(null);
+		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
-		EasyMock.expect(request.getHeaderNames()).andReturn(
-				Collections.enumeration(Arrays.asList("Host", "User-Agent",
-						"If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent",
-						"If-None-Match")));
+		EasyMock.expect(request.getHeaderNames())
+				.andReturn(
+						Collections.enumeration(Arrays
+								.asList("Host", "User-Agent", "If-None-Match",
+										"Accept", "Accept-Encoding",
+										"Accept-Language", "Accept-Charset",
+										"User-Agent", "If-None-Match")))
+				.anyTimes();
 
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
@@ -476,8 +451,6 @@ public class DriverTest extends TestCase {
 				.anyTimes();
 
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
@@ -490,9 +463,11 @@ public class DriverTest extends TestCase {
 
 	public void testProxyWithoutCache() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:" + SERVER_PORT);
+		props.setProperty("remoteUrlBase", "http://localhost:8080");
 		props.setProperty("useCache", "false");
 		new MockDriver("mockTestProxyWithoutCache", props);
+		MockDriver provider = new MockDriver("mockTestProxyWithoutCache", props);
+		provider.addResource("/wiki/Portal:Contents", "<h1>Hello</h1>");
 		String relUrl = "/wiki/Portal:Contents";
 		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
 		ServletOutputStream out = new ServletOutputStream() {
@@ -537,17 +512,15 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(
 				request.getAttribute("org.esigate.UserContext#mockTestProxyWithoutCache"))
 				.andReturn(null).anyTimes();
-		request.setAttribute(
-				EasyMock.eq("org.esigate.UserContext#mockTestProxyWithoutCache"),
+		request.setAttribute(EasyMock
+				.eq("org.esigate.UserContext#mockTestProxyWithoutCache"),
 				EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
-		EasyMock.expect(request.getRemoteUser()).andReturn(null);
+		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		HttpServletResponse response = EasyMock
 				.createMock(HttpServletResponse.class);
 		response.setStatus(200);
-		response.addHeader("Content-Language", "en");
-		response.addHeader("Vary", "Accept-Encoding,Cookie");
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
