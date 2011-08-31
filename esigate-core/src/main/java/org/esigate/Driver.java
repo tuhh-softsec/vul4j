@@ -49,6 +49,7 @@ import org.esigate.extension.ExtensionFactory;
 import org.esigate.filter.Filter;
 import org.esigate.http.CachedHttpResourceFactory;
 import org.esigate.http.HttpResourceFactory;
+import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResponseOutput;
 import org.esigate.http.ResponseOutputStreamException;
 import org.esigate.output.Output;
@@ -86,7 +87,7 @@ public class Driver {
 	private final ExtensionFactory extension;
 
 	public Driver(String name, Properties props) {
-		LOG.debug("Initializing instance: " + name);
+		LOG.info("Initializing instance: " + name);
 		config = new DriverConfiguration(name, props);
 		// Remote application settings
 		if (config.getBaseURL() != null) {
@@ -120,7 +121,10 @@ public class Driver {
 			HttpConnectionParams.setSoTimeout(httpParams, config.getTimeout());
 			httpParams.setBooleanParameter(
 					ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
-			httpClient = new DefaultHttpClient(connectionManager, httpParams);
+			DefaultHttpClient defaultHttpClient = new DefaultHttpClient(
+					connectionManager, httpParams);
+			defaultHttpClient.setRedirectStrategy(new RedirectStrategy());
+			httpClient = defaultHttpClient;
 		} else {
 			httpClient = null;
 		}
@@ -204,7 +208,15 @@ public class Driver {
 		UserContext context = (UserContext) request.getAttribute(key);
 		if (context != null && !context.isEmpty()) {
 			HttpSession session = request.getSession();
-			session.setAttribute(key, context);
+			Object sessionContext = session.getAttribute(key);
+			if (sessionContext == null || sessionContext != context) {
+				if (LOG.isInfoEnabled()) {
+					LOG.info("Provider=" + config.getInstanceName()
+							+ " saving context to session : "
+							+ context.toString().replaceAll("\n", ""));
+				}
+				session.setAttribute(key, context);
+			}
 		}
 	}
 
@@ -231,6 +243,8 @@ public class Driver {
 			HttpServletRequest originalRequest,
 			HttpServletResponse originalResponse) throws IOException,
 			HttpErrorPage {
+		LOG.info("renderXml provider=" + config.getInstanceName() + " source="
+				+ source + " template=" + template);
 		render(source, null, out, originalRequest, originalResponse,
 				new XsltRenderer(template, originalRequest.getSession()
 						.getServletContext()));
@@ -258,6 +272,8 @@ public class Driver {
 			HttpServletRequest originalRequest,
 			HttpServletResponse originalResponse) throws IOException,
 			HttpErrorPage {
+		LOG.info("renderXpath provider=" + config.getInstanceName()
+				+ " source=" + source + " xpath=" + xpath);
 		render(source, null, out, originalRequest, originalResponse,
 				new XpathRenderer(xpath));
 	}
@@ -295,6 +311,8 @@ public class Driver {
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws IOException,
 			HttpErrorPage {
+		LOG.info("renderBlock provider=" + config.getInstanceName() + " page="
+				+ page + " name=" + name);
 		render(page, parameters, writer, originalRequest, originalResponse,
 				new BlockRenderer(name, page),
 				new ReplaceRenderer(replaceRules));
@@ -338,6 +356,8 @@ public class Driver {
 			HttpServletResponse originalResponse, Map<String, String> params,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean propagateJsessionId) throws IOException, HttpErrorPage {
+		LOG.info("renderTemplate provider=" + config.getInstanceName()
+				+ " page=" + page + " name=" + name);
 		render(page, parameters, writer, originalRequest, originalResponse,
 				new TemplateRenderer(name, params, page), new ReplaceRenderer(
 						replaceRules));
@@ -363,6 +383,15 @@ public class Driver {
 			Appendable writer, HttpServletRequest originalRequest,
 			HttpServletResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
+		if (LOG.isInfoEnabled()) {
+			String renderersList = " renderers=";
+			for (int i = 0; i < renderers.length; i++) {
+				renderersList = renderersList
+						+ renderers[i].getClass().getName() + " ";
+			}
+			LOG.info("render provider=" + config.getInstanceName() + " page="
+					+ page + renderersList);
+		}
 		String resultingpage = VariablesResolver.replaceAllVariables(page,
 				originalRequest);
 		ResourceContext resourceContext = new ResourceContext(this,
@@ -410,6 +439,8 @@ public class Driver {
 	public final void proxy(String relUrl, HttpServletRequest request,
 			HttpServletResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
+		LOG.info("proxy provider=" + config.getInstanceName() + " relUrl="
+				+ relUrl);
 		ResourceContext resourceContext = new ResourceContext(this, relUrl,
 				null, request, response);
 		request.setCharacterEncoding(config.getUriEncoding());
@@ -487,7 +518,13 @@ public class Driver {
 				Rfc2616.renderResource(config, resource, output);
 			} catch (ResponseOutputStreamException e) {
 				if (LOG.isInfoEnabled()) {
-					LOG.info("Client or network problem, ignoring", e);
+					Throwable t = e.getCause();
+					String reason = "";
+					if (t != null) {
+						reason = ": " + t.getClass().getName() + " "
+								+ t.getMessage();
+					}
+					LOG.info("Client or network problem, ignoring" + reason);
 				}
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();

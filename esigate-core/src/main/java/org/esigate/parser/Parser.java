@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.esigate.HttpErrorPage;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Parser parses a CharSequence and finds Strings that match a certain pattern
@@ -21,6 +22,7 @@ import org.esigate.HttpErrorPage;
  * 
  */
 public class Parser {
+	private final static Logger LOG = LoggerFactory.getLogger(Parser.class);
 	private final Pattern pattern;
 	private final ElementType[] elementTypes;
 	private HttpServletRequest request;
@@ -61,6 +63,7 @@ public class Parser {
 						matcher.start());
 				if (!stack.isEmpty() && stack.peek().getType().isEndTag(tag)) {
 					// check if this is the end tag for current element
+					LOG.info("Processing end tag " + tag);
 					Element e = stack.pop();
 					if (e instanceof BodyTagElement) {
 						Appendable parent = stack.getCurrentWriter();
@@ -72,6 +75,7 @@ public class Parser {
 					e.doEndTag(tag);
 				} else {
 					// if not, it is an opening tag for a new element
+					LOG.info("Processing start tag " + tag);
 					Element newElement = null;
 					for (ElementType elementType : elementTypes) {
 						if (elementType.isStartTag(tag)) {

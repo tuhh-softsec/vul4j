@@ -14,6 +14,7 @@
  */
 package org.esigate.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketTimeoutException;
@@ -50,74 +51,88 @@ import org.slf4j.LoggerFactory;
 public class HttpClientResponse {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(HttpClientResponse.class);
-	private final HttpResponse httpResponse;
-	private final HttpEntity httpEntity;
-	private final int statusCode;
-	private final String statusText;
-	private final String currentLocation;
-	private final boolean error;
-	private CookieStore cookieStore;
+	private HttpResponse httpResponse;
+	private HttpEntity httpEntity;
+	private int statusCode;
+	private String statusText;
 	private InputStream content;
 
-	public static HttpClientResponse create(HttpHost httpHost,
-			HttpRequest httpRequest, HttpClient httpClient,
-			CookieStore cookieStore) {
+	public HttpClientResponse(HttpHost httpHost, HttpRequest httpRequest,
+			HttpClient httpClient, CookieStore cookieStore) {
+		HttpContext httpContext = new BasicHttpContext();
 		try {
-			LOG.debug(" -> create: " + httpRequest.toString());
-			HttpContext httpContext = new BasicHttpContext();
 			httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-			HttpResponse httpResponse = httpClient.execute(httpHost,
-					httpRequest, httpContext);
-			LOG.debug(" -> create: " + httpResponse.toString());
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			String currentLocation;
-			if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
-					|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-				currentLocation = httpResponse.getFirstHeader(
-						HttpHeaders.LOCATION).getValue();
+			httpResponse = httpClient.execute(httpHost, httpRequest,
+					httpContext);
+			HttpRequest lastRequest = getLastRequest(httpRequest, httpContext);
+			statusCode = httpResponse.getStatusLine().getStatusCode();
+			statusText = httpResponse.getStatusLine().getReasonPhrase();
+			httpEntity = httpResponse.getEntity();
+			if (statusCode == HttpServletResponse.SC_OK
+					|| statusCode == HttpServletResponse.SC_NOT_MODIFIED) {
+				if (LOG.isInfoEnabled()) {
+					LOG.info(lastRequest.getRequestLine() + " -> "
+							+ httpResponse.getStatusLine());
+				}
+
+			} else if (statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY
+					|| statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY) {
+				if (LOG.isInfoEnabled()) {
+					LOG.info(lastRequest.getRequestLine() + " -> "
+							+ httpResponse.getStatusLine() + " Location: "
+							+ getHeader("Location"));
+				}
 			} else {
-				// Calculating the URL we may have been redirected to, as
-				// automatic redirect following is activated
-				currentLocation = httpRequest.getRequestLine().getUri();
+				if (LOG.isWarnEnabled()) {
+					LOG.warn(lastRequest.getRequestLine() + " -> "
+							+ httpResponse.getStatusLine());
+				}
 			}
-			LOG.debug(" -> create: " + statusCode + ";" + currentLocation);
-			return new HttpClientResponse(httpResponse, currentLocation);
 		} catch (HttpHostConnectException e) {
-			return new HttpClientResponse(HttpServletResponse.SC_BAD_GATEWAY,
-					"Connection refused");
+			statusCode = HttpServletResponse.SC_BAD_GATEWAY;
+			statusText = "Connection refused";
+			logError(httpRequest, e);
 		} catch (ConnectionPoolTimeoutException e) {
-			return new HttpClientResponse(
-					HttpServletResponse.SC_GATEWAY_TIMEOUT,
-					"Connection pool timeout");
+			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusText = "Connection pool timeout";
+			logError(httpRequest, e);
 		} catch (ConnectTimeoutException e) {
-			return new HttpClientResponse(
-					HttpServletResponse.SC_GATEWAY_TIMEOUT, "Connect timeout");
+			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusText = "Connect timeout";
+			logError(httpRequest, e);
 		} catch (SocketTimeoutException e) {
-			return new HttpClientResponse(
-					HttpServletResponse.SC_GATEWAY_TIMEOUT, "Socket timeout");
+			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusText = "Socket timeout";
+			logError(httpRequest, e);
 		} catch (IOException e) {
-			return new HttpClientResponse(
-					HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error retrieving URL");
+			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			statusText = "Error retrieving URL";
+			logError(httpRequest, e);
 		}
 	}
 
-	protected HttpClientResponse(int statusCode, String statusText) {
-		this.httpResponse = null;
-		this.httpEntity = null;
-		this.currentLocation = null;
-		this.error = true;
-		this.statusCode = statusCode;
-		this.statusText = statusText;
+	private static HttpRequest getLastRequest(HttpRequest httpRequest,
+			HttpContext httpContext) {
+		HttpRequest result = httpRequest;
+		HttpRequest lastRedirectionRequest = RedirectStrategy
+				.getLastRequest(httpContext);
+		if (lastRedirectionRequest != null) {
+			result = lastRedirectionRequest;
+		}
+		return result;
 	}
 
-	HttpClientResponse(HttpResponse httpResponse, String currentLocation) {
+	private void logError(HttpRequest request, Exception e) {
+		LOG.error(request.getRequestLine() + " -> " + statusCode + " "
+				+ statusText + " " + e.getClass().getName() + " "
+				+ e.getMessage());
+	}
+
+	HttpClientResponse(HttpResponse httpResponse) {
 		this.httpResponse = httpResponse;
 		this.statusCode = httpResponse.getStatusLine().getStatusCode();
 		this.statusText = httpResponse.getStatusLine().getReasonPhrase();
 		this.httpEntity = httpResponse.getEntity();
-		this.currentLocation = currentLocation;
-		this.error = false;
 	}
 
 	public void finish() {
@@ -128,10 +143,6 @@ public class HttpClientResponse {
 				LOG.warn("Could not close response stream properly", e);
 			}
 		}
-	}
-
-	public String getCurrentLocation() {
-		return currentLocation;
 	}
 
 	public int getStatusCode() {
@@ -152,22 +163,24 @@ public class HttpClientResponse {
 
 	public InputStream openStream() throws IllegalStateException, IOException {
 		if (httpEntity == null) {
-			return null;
-		}
-		// Unzip the stream if necessary
-		String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
-		if (contentEncoding != null) {
-			if (!"gzip".equalsIgnoreCase(contentEncoding)
-					&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
-				throw new UnsupportedContentEncodingException(
-						"Content-encoding \"" + contentEncoding
-								+ "\" is not supported");
-			}
-			GzipDecompressingEntity compressed = new GzipDecompressingEntity(
-					httpEntity);
-			content = compressed.getContent();
+			content = new ByteArrayInputStream(
+					statusText.getBytes("ISO-8859-1"));
 		} else {
-			content = httpEntity.getContent();
+			// Unzip the stream if necessary
+			String contentEncoding = getHeader(HttpHeaders.CONTENT_ENCODING);
+			if (contentEncoding != null) {
+				if (!"gzip".equalsIgnoreCase(contentEncoding)
+						&& !"x-gzip".equalsIgnoreCase(contentEncoding)) {
+					throw new UnsupportedContentEncodingException(
+							"Content-encoding \"" + contentEncoding
+									+ "\" is not supported");
+				}
+				GzipDecompressingEntity compressed = new GzipDecompressingEntity(
+						httpEntity);
+				content = compressed.getContent();
+			} else {
+				content = httpEntity.getContent();
+			}
 		}
 		return content;
 	}
@@ -217,16 +230,8 @@ public class HttpClientResponse {
 		String result = statusCode + " " + statusText;
 		if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
 				|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-			result += " -> " + currentLocation;
+			result += " -> " + getHeader("Location");
 		}
 		return result;
-	}
-
-	public boolean isError() {
-		return error;
-	}
-
-	public CookieStore getCookieStore() {
-		return cookieStore;
 	}
 }

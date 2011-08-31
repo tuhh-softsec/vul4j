@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class RequestCookieStore implements CookieStore {
-	private static final Logger logger = LoggerFactory
+	private static final Logger LOG = LoggerFactory
 			.getLogger(RequestCookieStore.class);
 
 	private final Collection<String> discardCookies;
@@ -69,15 +69,44 @@ public class RequestCookieStore implements CookieStore {
 		if (discardCookies.contains(name)
 				|| (discardCookies.contains("*") && !forwardCookies
 						.contains(name))) {
-			logger.debug("Discarding cookie " + cookie.toString());
+			LOG.info("Cookie " + toString(cookie) + " -> discarding");
 		} else if (forwardCookies.contains(name)
 				|| forwardCookies.contains("*")) {
+			LOG.info("Cookie " + toString(cookie) + " -> forwarding");
 			response.addCookie(rewriteCookie(cookie, resourceContext));
 		} else {
-			logger.debug("Storing cookie to CookieStore " + cookie.toString());
+			LOG.info("Cookie " + toString(cookie) + " -> storing to context");
 			actualCookieStore.addCookie(cookie);
 		}
 
+	}
+
+	private String toString(Cookie cookie) {
+		StringBuilder result = new StringBuilder();
+		result.append(cookie.getName());
+		result.append("=");
+		result.append(cookie.getValue());
+		if (cookie.getDomain() != null) {
+			result.append(";domain=");
+			result.append(cookie.getDomain());
+		}
+		if (cookie.getPath() != null) {
+			result.append(";path=");
+			result.append(cookie.getPath());
+		}
+		if (cookie.getExpiryDate() != null) {
+			result.append(";expires=");
+			result.append(cookie.getExpiryDate());
+		}
+		if (cookie.getCommentURL() != null) {
+			result.append(";comment=");
+			result.append(cookie.getComment());
+		}
+		if (cookie.getCommentURL() != null) {
+			result.append(";comment=");
+			result.append(cookie.getCommentURL());
+		}
+		return result.toString();
 	}
 
 	static javax.servlet.http.Cookie rewriteCookie(Cookie cookie,
@@ -130,7 +159,7 @@ public class RequestCookieStore implements CookieStore {
 			}
 			cookieToForward.setMaxAge(maxAge);
 		}
-		logger.debug("Forwarding cookie " + cookie.toString() + " -> "
+		LOG.debug("Forwarding cookie " + cookie.toString() + " -> "
 				+ cookieToForward.toString());
 		return cookieToForward;
 	}

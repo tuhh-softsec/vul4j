@@ -81,7 +81,7 @@ public class HttpClientResponseTest extends TestCase {
 				.andReturn(new BasicHeader("h", "value"));
 		control.replay();
 
-		tested = HttpClientResponse.create(httpHost, httpRequest, httpClient,
+		tested = new HttpClientResponse(httpHost, httpRequest, httpClient,
 				cookieStore);
 		assertNotNull(tested);
 	}
@@ -93,14 +93,14 @@ public class HttpClientResponseTest extends TestCase {
 		EasyMock.expect(httpResponse.getStatusLine()).andReturn(statusLine)
 				.anyTimes();
 		EasyMock.expect(httpResponse.getEntity()).andReturn(null);
-		// getHeaderNames behaviour
+		// getHeaderNames behavior
 		Header[] headers = new Header[] { new BasicHeader("h1", "value 1"),
 				new BasicHeader("h1", "value 2"),
 				new BasicHeader("h2", "value 3") };
 		EasyMock.expect(httpResponse.getAllHeaders()).andReturn(headers);
 		control.replay();
 
-		tested = new HttpClientResponse(httpResponse, null);
+		tested = new HttpClientResponse(httpResponse);
 		Collection<String> actual = tested.getHeaderNames();
 
 		assertNotNull(actual);
@@ -118,7 +118,7 @@ public class HttpClientResponseTest extends TestCase {
 		EasyMock.expect(httpResponse.getStatusLine()).andReturn(statusLine)
 				.anyTimes();
 		EasyMock.expect(httpResponse.getEntity()).andReturn(null);
-		// getHeaderNames behaviour
+		// getHeaderNames behavior
 		Header[] headers = new Header[] { new BasicHeader("h1", "value 1"),
 				new BasicHeader("h1", "value 2"),
 				new BasicHeader("h2", "value 3") };
@@ -126,7 +126,7 @@ public class HttpClientResponseTest extends TestCase {
 				headers);
 		control.replay();
 
-		tested = new HttpClientResponse(httpResponse, null);
+		tested = new HttpClientResponse(httpResponse);
 		String[] actual = tested.getHeaders("header-name");
 
 		assertNotNull(actual);
@@ -175,7 +175,7 @@ public class HttpClientResponseTest extends TestCase {
 				.andReturn(new BasicHeader(HttpHeaders.LOCATION, "value"));
 
 		control.replay();
-		tested = HttpClientResponse.create(httpHost, httpRequest, httpClient,
+		tested = new HttpClientResponse(httpHost, httpRequest, httpClient,
 				cookieStore);
 		assertNotNull(tested);
 		InputStream decompressed = tested.openStream();

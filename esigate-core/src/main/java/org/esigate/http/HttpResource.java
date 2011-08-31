@@ -110,12 +110,6 @@ public class HttpResource extends Resource {
 			resourceContext.getDriver().saveUserContext(
 					resourceContext.getOriginalRequest());
 		}
-
-		if (isError()) {
-			LOG.warn("Problem retrieving URL: " + url + ": "
-					+ httpClientResponse.getStatusCode() + " "
-					+ httpClientResponse.getStatusText());
-		}
 	}
 
 	@Override
@@ -139,13 +133,9 @@ public class HttpResource extends Resource {
 		}
 		try {
 			output.open();
-			if (httpClientResponse.isError()) {
-				output.write(httpClientResponse.getStatusText());
-			} else {
-				InputStream inputStream = httpClientResponse.openStream();
-				if (inputStream != null) {
-					removeSessionId(inputStream, output);
-				}
+			InputStream inputStream = httpClientResponse.openStream();
+			if (inputStream != null) {
+				removeSessionId(inputStream, output);
 			}
 		} finally {
 			output.close();

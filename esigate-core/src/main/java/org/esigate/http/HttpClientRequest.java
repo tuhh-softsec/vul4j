@@ -105,7 +105,7 @@ public class HttpClientRequest {
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		HttpClientResponse result = HttpClientResponse.create(httpHost,
+		HttpClientResponse result = new HttpClientResponse(httpHost,
 				httpRequest, httpClient, cookieStore);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {

@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import org.esigate.ResponseException;
 
-
 public class ResponseOutputStreamException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
