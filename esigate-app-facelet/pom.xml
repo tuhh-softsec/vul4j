@@ -115,9 +115,6 @@
 						<goals>
 							<goal>start</goal>
 						</goals>
-						<configuration>
-							<wait>false</wait>
-						</configuration>
 					</execution>
 					<execution>
 						<id>stop-container</id>
@@ -137,7 +134,6 @@
 								</properties>
 							</deployable>
 						</deployables>
-						
 					</configuration>
 						<container>
 					   		<systemProperties>
