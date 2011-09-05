@@ -9,9 +9,8 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Set;
 
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
 

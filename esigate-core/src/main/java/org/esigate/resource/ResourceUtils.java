@@ -10,8 +10,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.DriverConfiguration;
 import org.esigate.ResourceContext;
 import org.esigate.file.FileOutput;

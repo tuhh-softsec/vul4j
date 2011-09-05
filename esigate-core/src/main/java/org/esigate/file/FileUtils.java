@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Internal utility class to store/retrieve data from disk.

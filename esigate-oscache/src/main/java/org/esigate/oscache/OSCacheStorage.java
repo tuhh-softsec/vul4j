@@ -2,7 +2,7 @@ package org.esigate.oscache;
 
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.cache.CacheStorage;
 
 import com.opensymphony.oscache.base.CacheEntry;
