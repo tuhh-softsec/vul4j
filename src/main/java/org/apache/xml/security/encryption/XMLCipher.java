@@ -20,8 +20,6 @@ package org.apache.xml.security.encryption;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,9 +39,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
@@ -63,13 +58,9 @@ import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * <code>XMLCipher</code> encrypts and decrypts the contents of
@@ -207,7 +198,7 @@ public class XMLCipher {
     /** Instance of factory used to create XML Encryption objects */
     private Factory factory;
     
-    /** Internal serializer class for going to/from UTF-8 */
+    /** Serializer class for going to/from UTF-8 */
     private Serializer serializer;
 
     /** Local copy of user's key */
@@ -224,6 +215,20 @@ public class XMLCipher {
     // The EncryptedData being built (part of a WRAP operation) or read
     // (part of an UNWRAP operation)
     private EncryptedData ed;
+    
+    /**
+     * Set the Serializer algorithm to use
+     */
+    public void setSerializer(Serializer serializer) {
+        this.serializer = serializer;
+    }
+    
+    /**
+     * Get the Serializer algorithm to use
+     */
+    public Serializer getSerializer() {
+        return serializer;
+    }
 
     /**
      * Creates a new <code>XMLCipher</code>.
@@ -248,7 +253,6 @@ public class XMLCipher {
         }
 
         factory = new Factory();
-        serializer = new Serializer();
 
         algorithm = transformation;
         requestedJCEProvider = provider;
@@ -266,6 +270,11 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", ice);
         }
 
+        if (serializer == null) {
+            serializer = new TransformSerializer();
+        }
+        serializer.setCanonicalizer(this.canon);
+        
         if (transformation != null) {
             try {
                 String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
@@ -1758,159 +1767,6 @@ public class XMLCipher {
     public Transforms createTransforms(Document doc) {
         return factory.newTransforms(doc);
     }
-
-    /**
-     * Converts <code>String</code>s into <code>Node</code>s and visa versa.
-     * <p>
-     * <b>NOTE:</b> For internal use only.
-     *
-     * @author  Axl Mattheus
-     */
-    private class Serializer {
-        
-        private DocumentBuilderFactory dbf;
-        
-        /**
-         * Initialize the <code>XMLSerializer</code> with the specified context
-         * <code>Document</code>.
-         * <p/>
-         * Setup OutputFormat in a way that the serialization does <b>not</b>
-         * modify the contents, that is it shall not do any pretty printing
-         * and so on. This would destroy the original content before 
-         * encryption. If that content was signed before encryption and the 
-         * serialization modifies the content the signature verification will
-         * fail.
-         */
-        Serializer() {
-        }
-
-        /**
-         * Returns a <code>String</code> representation of the specified
-         * <code>Element</code>.
-         * <p/>
-         * Refer also to comments about setup of format.
-         *
-         * @param element the <code>Element</code> to serialize.
-         * @return the <code>String</code> representation of the serilaized
-         *   <code>Element</code>.
-         * @throws Exception
-         */
-        String serialize(Element element) throws Exception {
-            return canonSerialize(element);
-        }
-
-        /**
-         * Returns a <code>String</code> representation of the specified
-         * <code>NodeList</code>.
-         * <p/>
-         * This is a special case because the NodeList may represent a
-         * <code>DocumentFragment</code>. A document fragment may be a
-         * non-valid XML document (refer to appropriate description of
-         * W3C) because it my start with a non-element node, e.g. a text
-         * node.
-         * <p/>
-         * The methods first converts the node list into a document fragment.
-         * Special care is taken to not destroy the current document, thus
-         * the method clones the nodes (deep cloning) before it appends
-         * them to the document fragment.
-         * <p/>
-         * Refer also to comments about setup of format.
-         * 
-         * @param content the <code>NodeList</code> to serialize.
-         * @return the <code>String</code> representation of the serialized
-         *   <code>NodeList</code>.
-         * @throws Exception
-         */
-        String serialize(NodeList content) throws Exception { //XMLEncryptionException {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            canon.setWriter(baos);
-            canon.notReset();
-            for (int i = 0; i < content.getLength(); i++) {                
-                canon.canonicalizeSubtree(content.item(i));                
-            }
-            String ret = baos.toString("UTF-8");
-            baos.reset();
-            return ret;
-        }
-
-        /**
-         * Use the Canonicalizer to serialize the node
-         * @param node
-         * @return the canonicalization of the node
-         * @throws Exception
-         */ 
-        String canonSerialize(Node node) throws Exception {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            canon.setWriter(baos);			
-            canon.notReset();
-            canon.canonicalizeSubtree(node);			
-            String ret = baos.toString("UTF-8");
-            baos.reset();
-            return ret;
-        }
-
-        /**
-         * @param source
-         * @param ctx
-         * @return the Node resulting from the parse of the source
-         * @throws XMLEncryptionException
-         */
-        Node deserialize(String source, Node ctx) throws XMLEncryptionException {
-            // Create the context to parse the document against
-            StringBuilder sb = new StringBuilder();
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><dummy");
-
-            // Run through each node up to the document node and find any xmlns: nodes
-            Map<String, String> storedNamespaces = new HashMap<String, String>();
-            Node wk = ctx;
-            while (wk != null) {
-                NamedNodeMap atts = wk.getAttributes();
-                if (atts != null) {
-                    for (int i = 0; i < atts.getLength(); ++i) {
-                        Node att = atts.item(i);
-                        String nodeName = att.getNodeName();
-                        if ((nodeName.equals("xmlns") || nodeName.startsWith("xmlns:"))
-                            && !storedNamespaces.containsKey(att.getNodeName())) {
-                            sb.append(" " + nodeName + "=\"" + att.getNodeValue() + "\"");
-                            storedNamespaces.put(nodeName, att.getNodeValue());
-                        }
-                    }
-                }
-                wk = wk.getParentNode();
-            }
-            sb.append(">" + source + "</dummy>");
-            String fragment = sb.toString();
-            
-            try {
-                if (dbf == null) {
-                    dbf = DocumentBuilderFactory.newInstance();
-                    dbf.setNamespaceAware(true);
-                    dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
-                    dbf.setValidating(false);
-                }
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                Document d = db.parse(new InputSource(new StringReader(fragment)));
-                
-                Element fragElt = 
-                    (Element) contextDocument.importNode(d.getDocumentElement(), true);
-                DocumentFragment result = contextDocument.createDocumentFragment();
-                Node child = fragElt.getFirstChild();
-                while (child != null) {
-                    fragElt.removeChild(child);
-                    result.appendChild(child);
-                    child = fragElt.getFirstChild();
-                }
-                return result;
-            } catch (SAXException se) {
-                throw new XMLEncryptionException("empty", se);
-            } catch (ParserConfigurationException pce) {
-                throw new XMLEncryptionException("empty", pce);
-            } catch (IOException ioe) {
-                throw new XMLEncryptionException("empty", ioe);
-            }
-        }
-    }
-
 
     /**
      *
