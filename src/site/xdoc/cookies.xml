@@ -56,16 +56,16 @@
 				cookie name "cookie3", all other cookies will be stored server side
 				(default behaviour).
 				<source>
-forwardCookie=cookie1,cookie2
-discardCookie=cookie3
+forwardCookies=cookie1,cookie2
+discardCookies=cookie3
 				</source>
 			</p>
 			<p>
 				Example 2: forward cookies named "cookie1" and "cookie2", discard
 				all other cookies.
 				<source>
-forwardCookie=cookie1,cookie2
-discardCookie=*
+forwardCookies=cookie1,cookie2
+discardCookies=*
 				</source>
 			</p>
 			<p>Note: if the name of a cookie is present in forwardCookies, it
