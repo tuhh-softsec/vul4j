@@ -20,7 +20,6 @@ package org.apache.xml.security.transforms.implementations;
 
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.XPathContext;
 import org.w3c.dom.Node;
 
