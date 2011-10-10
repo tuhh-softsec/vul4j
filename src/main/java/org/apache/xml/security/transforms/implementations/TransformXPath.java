@@ -29,7 +29,6 @@ import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.CachedXPathAPIHolder;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
@@ -86,10 +85,6 @@ public class TransformXPath extends TransformSpi {
              * The evaluation of this expression includes all of the document's nodes
              * (including comments) in the node-set representing the octet stream.
              */
-            CachedXPathAPIHolder.setDoc(transformObject.getElement().getOwnerDocument());
-
-
-
             Element xpathElement =
                 XMLUtils.selectDsNode(
                     transformObject.getElement().getFirstChild(), Constants._TAG_XPATH, 0);
@@ -126,16 +121,15 @@ public class TransformXPath extends TransformSpi {
 
     static class XPathNodeFilter implements NodeFilter {
         
-        PrefixResolverDefault prefixResolver;
-        CachedXPathFuncHereAPI xPathFuncHereAPI =
-            new CachedXPathFuncHereAPI(CachedXPathAPIHolder.getCachedXPathAPI());
+        CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI();
         Node xpathnode; 
+        Element xpathElement;
         String str;
         
         XPathNodeFilter(Element xpathElement, Node xpathnode, String str) {
             this.xpathnode = xpathnode;
             this.str = str;
-            prefixResolver = new PrefixResolverDefault(xpathElement);
+            this.xpathElement = xpathElement;
         }
 
         /**
@@ -144,8 +138,7 @@ public class TransformXPath extends TransformSpi {
         public int isNodeInclude(Node currentNode) {			
             XObject includeInResult;
             try {
-                includeInResult = 
-                    xPathFuncHereAPI.eval(currentNode, xpathnode, str, prefixResolver);
+                includeInResult = xPathFuncHereAPI.eval(currentNode, xpathnode, str, xpathElement);
                 if (includeInResult.bool()) {
                     return 1;
                 }

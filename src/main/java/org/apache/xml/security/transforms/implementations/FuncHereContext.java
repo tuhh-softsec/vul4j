@@ -69,15 +69,6 @@ public class FuncHereContext extends XPathContext {
      * Constructor FuncHereContext
      *
      * @param owner
-     */
-    public FuncHereContext(Node owner) {
-        super(owner);
-    }
-
-    /**
-     * Constructor FuncHereContext
-     *
-     * @param owner
      * @param xpathContext
      */
     public FuncHereContext(Node owner, XPathContext xpathContext) {
@@ -86,25 +77,6 @@ public class FuncHereContext extends XPathContext {
 
         try {
             super.m_dtmManager = xpathContext.getDTMManager();
-        } catch (IllegalAccessError iae) {
-            throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
-                                         + " Original message was \""
-                                         + iae.getMessage() + "\"");
-        }
-    }
-
-    /**
-     * Constructor FuncHereContext
-     *
-     * @param owner
-     * @param previouslyUsed
-     */
-    public FuncHereContext(Node owner, CachedXPathAPI previouslyUsed) {
-
-        super(owner);
-
-        try {
-            super.m_dtmManager = previouslyUsed.getXPathContext().getDTMManager();
         } catch (IllegalAccessError iae) {
             throw new IllegalAccessError(I18n.translate("endorsed.jdk1.4.0")
                                          + " Original message was \""

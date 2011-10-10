@@ -68,72 +68,11 @@ public class CachedXPathFuncHereAPI {
     }
 
     /**
-     * Method getFuncHereContext
-     * @return the context for this object
-     *
-     */
-    public FuncHereContext getFuncHereContext() {
-        return this.funcHereContext;
-    }
-
-    /**
      * Constructor CachedXPathFuncHereAPI
-     *
-     * @param existingXPathContext
      */
-    public CachedXPathFuncHereAPI(XPathContext existingXPathContext) {
-        this.dtmManager = existingXPathContext.getDTMManager();
-        this.context=existingXPathContext;
-    }
-
-    /**
-     * Constructor CachedXPathFuncHereAPI
-     *
-     * @param previouslyUsed
-     */
-    public CachedXPathFuncHereAPI(CachedXPathAPI previouslyUsed) {
-        this.dtmManager = previouslyUsed.getXPathContext().getDTMManager();
-        this.context=previouslyUsed.getXPathContext();
-    }
-
-    /**
-     * Use an XPath string to select a single node. XPath namespace
-     * prefixes are resolved from the context node, which may not
-     * be what you want (see the next method).
-     *
-     * @param contextNode The node to start searching from.
-     * @param xpathnode A Node containing a valid XPath string.
-     * @return The first node found that matches the XPath, or null.
-     *
-     * @throws TransformerException
-     */
-    public Node selectSingleNode(Node contextNode, Node xpathnode)
-    throws TransformerException {
-        return selectSingleNode(contextNode, xpathnode, contextNode);
-    }
-
-    /**
-     * Use an XPath string to select a single node.
-     * XPath namespace prefixes are resolved from the namespaceNode.
-     *
-     * @param contextNode The node to start searching from.
-     * @param xpathnode
-     * @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-     * @return The first node found that matches the XPath, or null.
-     *
-     * @throws TransformerException
-     */
-    public Node selectSingleNode(
-        Node contextNode, Node xpathnode, Node namespaceNode
-    ) throws TransformerException {
-        NodeList nl = 
-            selectNodeList(contextNode, xpathnode, getStrFromNode(xpathnode), namespaceNode);
-
-        // Return the first node, or null
-        if (nl == null) {
-            return null;
-        }
-        return nl.item(0);
+    public CachedXPathFuncHereAPI() {
+        this.context = new XPathContext();
+        this.dtmManager = context.getDTMManager();
     }
 
     /**
@@ -208,61 +147,6 @@ public class CachedXPathFuncHereAPI {
 
         // Execute the XPath, and have it return the result
         // return xpath.execute(xpathSupport, contextNode, prefixResolver);
-        int ctxtNode = this.funcHereContext.getDTMHandleFromNode(contextNode);
-
-        return xpath.execute(this.funcHereContext, ctxtNode, prefixResolver);
-    }
-
-    /**
-     *   Evaluate XPath string to an XObject.
-     *   XPath namespace prefixes are resolved from the namespaceNode.
-     *   The implementation of this is a little slow, since it creates
-     *   a number of objects each time it is called.  This could be optimized
-     *   to keep the same objects around, but then thread-safety issues would arise.
-     *
-     *   @param contextNode The node to start searching from.
-     *   @param xpathnode
-     *   @param str
-     *   @param prefixResolver Will be called if the parser encounters namespace
-     *                         prefixes, to resolve the prefixes to URLs.
-     *   @return An XObject, which can be used to obtain a string, number, nodelist, etc, 
-     *   should never be null.
-     *   @see org.apache.xpath.objects.XObject
-     *   @see org.apache.xpath.objects.XNull
-     *   @see org.apache.xpath.objects.XBoolean
-     *   @see org.apache.xpath.objects.XNumber
-     *   @see org.apache.xpath.objects.XString
-     *   @see org.apache.xpath.objects.XRTreeFrag
-     *
-     * @throws TransformerException
-     */
-    public XObject eval(
-        Node contextNode, Node xpathnode, String str, PrefixResolver prefixResolver)
-    throws TransformerException {
-        if (!str.equals(xpathStr)) {
-            if (str.indexOf("here()")>0) {
-                context.reset();
-                dtmManager=context.getDTMManager();
-            }
-            try {
-                xpath = createXPath(str, prefixResolver);
-            } catch (TransformerException ex) {
-                //Try to see if it is a problem with the classloader.
-                Throwable th= ex.getCause();
-                if (th instanceof ClassNotFoundException && th.getMessage().indexOf("FuncHere")>0) {
-                    throw new RuntimeException(I18n.translate("endorsed.jdk1.4.0")/*,*/+ex);
-                }
-                throw ex;
-            }
-            xpathStr=str;
-        }
-
-        // Execute the XPath, and have it return the result
-        if (this.funcHereContext == null) {
-            this.funcHereContext = new FuncHereContext(xpathnode,
-                                                        this.dtmManager);
-        }
-
         int ctxtNode = this.funcHereContext.getDTMHandleFromNode(contextNode);
 
         return xpath.execute(this.funcHereContext, ctxtNode, prefixResolver);
