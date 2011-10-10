@@ -48,9 +48,9 @@ remoteUrlBase=http://localhost:8080/provider/
 	</p>
 <source>
 Some HTML
-<strong>&lt;!-- $beginblock$myblock$--&gt;</strong>
+<strong>&lt;!--$beginblock$myblock$--&gt;</strong>
 	My block HTML content
-<strong>&lt;!-- $endblock$myblock$--&gt;</strong>
+<strong>&lt;!--$endblock$myblock$--&gt;</strong>
 Some other HTML
 </source>
 		</section>
