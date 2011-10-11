@@ -147,7 +147,6 @@ public class FuncHere extends Function {
      * @param vars
      * @param globalsSize
      */
-    @SuppressWarnings("unchecked")
     public void fixupVariables(java.util.Vector vars, int globalsSize) {
 
         // do nothing

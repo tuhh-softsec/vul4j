@@ -18,44 +18,35 @@
  */
 package org.apache.xml.security.utils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.security.transforms.implementations.FuncHere;
-import org.apache.xml.security.transforms.implementations.FuncHereContext;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.*;
-
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
- *
- * @author $Author$
  */
 public class CachedXPathFuncHereAPI {
 
     private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(CachedXPathFuncHereAPI.class);
-    /**
-     * XPathContext, and thus DTMManager and DTMs, persists through multiple
-     *   calls to this object.
-     */
-    FuncHereContext funcHereContext = null;
 
-    /** Field dtmManager */
     DTMManager dtmManager = null;
-
-    XPathContext context = null;
 
     String xpathStr=null;
 
@@ -71,7 +62,8 @@ public class CachedXPathFuncHereAPI {
      * Constructor CachedXPathFuncHereAPI
      */
     public CachedXPathFuncHereAPI() {
-        this.context = new XPathContext();
+        XPathContext context = new XPathContext();
+        context.setSecureProcessing(true);
         this.dtmManager = context.getDTMManager();
     }
 
@@ -88,8 +80,8 @@ public class CachedXPathFuncHereAPI {
      * @throws TransformerException
      */
     public NodeList selectNodeList(
-        Node contextNode, Node xpathnode, String str, Node namespaceNode)
-    throws TransformerException {
+        Node contextNode, Node xpathnode, String str, Node namespaceNode
+    ) throws TransformerException {
 
         // Execute the XPath, and have it return the result
         XObject list = eval(contextNode, xpathnode, str, namespaceNode);
@@ -97,33 +89,37 @@ public class CachedXPathFuncHereAPI {
         // Return a NodeList.
         return list.nodelist();
     }
+    
+    /**
+     * Evaluate an XPath string and return true if the output is to be included or not.
+     *  @param contextNode The node to start searching from.
+     *  @param xpathnode The XPath node
+     *  @param str The XPath expression
+     *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
+     */
+    public boolean evaluate(Node contextNode, Node xpathnode, String str, Node namespaceNode)
+        throws TransformerException {
+        XObject object = eval(contextNode, xpathnode, str, namespaceNode);
+        return object.bool();
+    }
 
     /**
-     *  Evaluate XPath string to an XObject.
-     *  XPath namespace prefixes are resolved from the namespaceNode.
-     *  The implementation of this is a little slow, since it creates
-     *  a number of objects each time it is called.  This could be optimized
-     *  to keep the same objects around, but then thread-safety issues would arise.
+     *  Evaluate an XPath string to an XObject. XPath namespace prefixes are resolved from the 
+     *  namespaceNode.
      *
      *  @param contextNode The node to start searching from.
-     *  @param xpathnode
-     *  @param str
+     *  @param xpathnode The XPath node
+     *  @param str The XPath expression
      *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-     *  @return An XObject, which can be used to obtain a string, number, nodelist, etc, should never be null.
-     *  @see org.apache.xpath.objects.XObject
-     *  @see org.apache.xpath.objects.XNull
-     *  @see org.apache.xpath.objects.XBoolean
-     *  @see org.apache.xpath.objects.XNumber
-     *  @see org.apache.xpath.objects.XString
-     *  @see org.apache.xpath.objects.XRTreeFrag
+     *  @return An XObject, which can be used to obtain a string, number, nodelist, etc, 
+     *  should never be null.
      *
      * @throws TransformerException
      */
-    public XObject eval(Node contextNode, Node xpathnode, String str, Node namespaceNode)
-    throws TransformerException {
-        if (this.funcHereContext == null) {
-            this.funcHereContext = new FuncHereContext(xpathnode, this.dtmManager);
-        }
+    private XObject eval(Node contextNode, Node xpathnode, String str, Node namespaceNode)
+        throws TransformerException {
+        XPathContext context = new XPathContext(xpathnode);
+        context.setSecureProcessing(true);
 
         // Create an object to resolve namespace prefixes.
         // XPath namespaces are resolved from the input context node's document element
@@ -147,9 +143,9 @@ public class CachedXPathFuncHereAPI {
 
         // Execute the XPath, and have it return the result
         // return xpath.execute(xpathSupport, contextNode, prefixResolver);
-        int ctxtNode = this.funcHereContext.getDTMHandleFromNode(contextNode);
+        int ctxtNode = context.getDTMHandleFromNode(contextNode);
 
-        return xpath.execute(this.funcHereContext, ctxtNode, prefixResolver);
+        return xpath.execute(context, ctxtNode, prefixResolver);
     }
 
     private XPath createXPath(String str, PrefixResolver prefixResolver) throws TransformerException {
@@ -169,38 +165,6 @@ public class CachedXPathFuncHereAPI {
             xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
         }
         return xpath;
-    }
-
-    /**
-     * Method getStrFromNode
-     *
-     * @param xpathnode
-     * @return the string for the node.
-     */
-    public static String getStrFromNode(Node xpathnode) {
-
-        if (xpathnode.getNodeType() == Node.TEXT_NODE) {
-
-            // we iterate over all siblings of the context node because eventually,
-            // the text is "polluted" with pi's or comments
-            StringBuffer sb = new StringBuffer();
-
-            for (Node currentSibling = xpathnode.getParentNode().getFirstChild();
-            currentSibling != null;
-            currentSibling = currentSibling.getNextSibling()) {
-                if (currentSibling.getNodeType() == Node.TEXT_NODE) {
-                    sb.append(((Text) currentSibling).getData());
-                }
-            }
-
-            return sb.toString();
-        } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
-            return ((Attr) xpathnode).getNodeValue();
-        } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            return ((ProcessingInstruction) xpathnode).getNodeValue();
-        }
-
-        return null;
     }
 
     private static void fixupFunctionTable() {

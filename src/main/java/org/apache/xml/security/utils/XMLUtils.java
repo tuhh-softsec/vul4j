@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 /**
@@ -681,6 +682,36 @@ public class XMLUtils {
         }
         return resultSet;
     }
+    
+    /**
+     * Method getStrFromNode
+     *
+     * @param xpathnode
+     * @return the string for the node.
+     */
+    public static String getStrFromNode(Node xpathnode) {
+        if (xpathnode.getNodeType() == Node.TEXT_NODE) {
+            // we iterate over all siblings of the context node because eventually,
+            // the text is "polluted" with pi's or comments
+            StringBuilder sb = new StringBuilder();
+
+            for (Node currentSibling = xpathnode.getParentNode().getFirstChild();
+                currentSibling != null;
+                currentSibling = currentSibling.getNextSibling()) {
+                if (currentSibling.getNodeType() == Node.TEXT_NODE) {
+                    sb.append(((Text) currentSibling).getData());
+                }
+            }
+
+            return sb.toString();
+        } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
+            return ((Attr) xpathnode).getNodeValue();
+        } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+            return ((ProcessingInstruction) xpathnode).getNodeValue();
+        }
+
+        return null;
+    }
 
     /**
      * Returns true if the descendantOrSelf is on the descendant-or-self axis
@@ -690,7 +721,7 @@ public class XMLUtils {
      * @param descendantOrSelf
      * @return true if the node is descendant
      */
-    static public boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
+    public static boolean isDescendantOrSelf(Node ctx, Node descendantOrSelf) {
         if (ctx == descendantOrSelf) {
             return true;
         }

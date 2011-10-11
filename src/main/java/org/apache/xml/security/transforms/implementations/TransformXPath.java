@@ -32,7 +32,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,8 +49,7 @@ import org.w3c.dom.Node;
 public class TransformXPath extends TransformSpi {
 
     /** Field implementedTransformURI */
-    public static final String implementedTransformURI =
-        Transforms.TRANSFORM_XPATH;
+    public static final String implementedTransformURI = Transforms.TRANSFORM_XPATH;
 
     /**
      * Method engineGetURI
@@ -94,8 +92,8 @@ public class TransformXPath extends TransformSpi {
                 throw new TransformationException("xml.WrongContent", exArgs);
             }
             Node xpathnode = xpathElement.getChildNodes().item(0);
-            String str = CachedXPathFuncHereAPI.getStrFromNode(xpathnode);
-            input.setNeedsToBeExpanded(needsCircunvent(str));
+            String str = XMLUtils.getStrFromNode(xpathnode);
+            input.setNeedsToBeExpanded(needsCircumvent(str));
             if (xpathnode == null) {
                 throw new DOMException(
                     DOMException.HIERARCHY_REQUEST_ERR, "Text must be in ds:Xpath"
@@ -111,10 +109,10 @@ public class TransformXPath extends TransformSpi {
     }
 
     /**
-     *  @param str
-     * @return true if needs to be circunvent for bug.
+     * @param str
+     * @return true if needs to be circumvent for bug.
      */
-    private boolean needsCircunvent(String str) {
+    private boolean needsCircumvent(String str) {
         return (str.indexOf("namespace") != -1) || (str.indexOf("name()") != -1);
     }
 
@@ -135,10 +133,10 @@ public class TransformXPath extends TransformSpi {
          * @see org.apache.xml.security.signature.NodeFilter#isNodeInclude(org.w3c.dom.Node)
          */
         public int isNodeInclude(Node currentNode) {			
-            XObject includeInResult;
             try {
-                includeInResult = xPathFuncHereAPI.eval(currentNode, xpathnode, str, xpathElement);
-                if (includeInResult.bool()) {
+                boolean include = 
+                    xPathFuncHereAPI.evaluate(currentNode, xpathnode, str, xpathElement);
+                if (include) {
                     return 1;
                 }
                 return 0;

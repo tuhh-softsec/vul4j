@@ -84,8 +84,6 @@ public class TransformXPath2Filter extends TransformSpi {
             List<NodeList> substractNodes = new ArrayList<NodeList>();
             List<NodeList> intersectNodes = new ArrayList<NodeList>();
 
-            CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI();
-
             Element[] xpathElements =
                 XMLUtils.selectNodes(
                     transformObject.getElement().getFirstChild(),
@@ -105,6 +103,7 @@ public class TransformXPath2Filter extends TransformSpi {
                 inputDoc = XMLUtils.getOwnerDocument(input.getNodeSet());
             }
 
+            CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI();
             for (int i = 0; i < xpathElements.length; i++) {
                 Element xpathElement = xpathElements[i];
                 
@@ -115,7 +114,7 @@ public class TransformXPath2Filter extends TransformSpi {
                     xPathFuncHereAPI.selectNodeList(
                         inputDoc,
                         xpathContainer.getXPathFilterTextNode(),
-                        CachedXPathFuncHereAPI.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
+                        XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
                         xpathContainer.getElement());
                 if (xpathContainer.isIntersect()) {
                     intersectNodes.add(subtreeRoots);
