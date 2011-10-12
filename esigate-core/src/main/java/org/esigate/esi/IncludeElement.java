@@ -9,8 +9,6 @@ import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
-import org.esigate.tags.BlockRenderer;
-
 
 public class IncludeElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
@@ -39,13 +37,12 @@ public class IncludeElement implements Element {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag includeTag = new Tag(tag);
 		String src = includeTag.getAttributes().get("src");
+		String fragment = includeTag.getAttributes().get("fragment");
 		closed = includeTag.isOpenClosed();
-		EsiRenderer esiRenderer = stack.findAncestorWithClass(this,
-				EsiRenderer.class);
+		EsiRenderer esiRenderer = stack.findAncestorWithClass(this, EsiRenderer.class);
 		Driver driver;
 		String page;
 		int idx = src.indexOf("$PROVIDER({");
@@ -61,23 +58,21 @@ public class IncludeElement implements Element {
 		}
 		try {
 			InlineCache ic = InlineCache.getFragment(src);
-			if (ic != null
-					&& (ic.getOutdate() == null || ic.getOutdate().after(
-							new Date()))) {
+			if (ic != null && (ic.getOutdate() == null || ic.getOutdate().after(new Date()))) {
 				getOut(out, stack).append(ic.getFragment());
+			} else if (fragment != null) {
+				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiFragmentRenderer(page, fragment), new EsiRenderer(esiRenderer.getRequest(),
+						esiRenderer.getResponse(), driver));
+
 			} else {
-				driver.render(page, null, getOut(out, stack),
-						esiRenderer.getRequest(), esiRenderer.getResponse(),
-						new BlockRenderer(null, page));
+				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
 			TryElement tre = getTryElement(stack);
 			if (tre != null) {
 				tre.setIncludeInside(true);
 			} else {
-				throw new HttpErrorPage(404, "Not found", "The page: " + src
-						+ " does not exist");
+				throw new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
 			}
 
 		}
@@ -149,8 +144,7 @@ public class IncludeElement implements Element {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}

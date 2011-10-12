@@ -1,4 +1,4 @@
-package org.esigate.tags;
+package org.esigate.esi;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -12,16 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Block renderer.<br/>
+ * Retrieves a fragment inside a page.<br />
  * 
- * Extracts data between <code>&lt;!--$beginblock$myblock$--&gt;</code> and <code>&lt;!--$endblock$myblock$--&gt;</code> separators
+ * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code> and <code>&lt;/esi:fragment&gt;</code>
  * 
- * @author Stanislav Bernatskyi
  * @author Francois-Xavier Bonnet
  */
-public class BlockRenderer implements Renderer, Appendable {
-	private final static Logger LOG = LoggerFactory.getLogger(BlockRenderer.class);
-	private final static Parser PARSER = new Parser(Pattern.compile("<!--\\$[^>]*\\$-->"), BlockElement.TYPE);
+public class EsiFragmentRenderer implements Renderer, Appendable {
+	private final static Logger LOG = LoggerFactory.getLogger(EsiFragmentRenderer.class);
+	private final static Parser PARSER = new Parser(Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)"), FragmentElement.TYPE);
 	private final String page;
 	private final String name;
 	private boolean write;
@@ -35,28 +34,20 @@ public class BlockRenderer implements Renderer, Appendable {
 		return name;
 	}
 
-	public BlockRenderer(String name, String page) {
-		this.name = name;
+	public EsiFragmentRenderer(String page, String name) {
 		this.page = page;
-		if (name == null) {
-			write = true;
-		} else {
-			write = false;
-		}
+		this.name = name;
+		write = false;
 	}
 
 	/** {@inheritDoc} */
 	public void render(ResourceContext requestContext, String content, Writer out) throws IOException, HttpErrorPage {
-		LOG.debug("Rendering block " + name + " in page " + page);
+		LOG.debug("Rendering fragment " + name + " in page " + page);
 		this.out = out;
 		if (content == null) {
 			return;
 		}
-		if (name == null) {
-			out.write(content);
-		} else {
-			PARSER.parse(content, this);
-		}
+		PARSER.parse(content, this);
 	}
 
 	public Appendable append(CharSequence csq) throws IOException {

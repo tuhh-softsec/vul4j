@@ -18,20 +18,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletResponse;
+import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.output.StringOutput;
-import org.esigate.tags.BlockRenderer;
-import org.esigate.test.MockStringOutput;
-
-import junit.framework.TestCase;
 
 public class BlockRendererTest extends TestCase {
 
 	public void testRenderBlockNull() throws IOException, HttpErrorPage {
-		final StringOutput expectedOutput = new MockStringOutput(null);
-		expectedOutput.setStatusCode(HttpServletResponse.SC_OK);
 		BlockRenderer tested = new BlockRenderer(null, null);
 		tested.render(null, null, null);
 	}
