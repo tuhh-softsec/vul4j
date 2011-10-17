@@ -148,7 +148,6 @@ public class FuncHere extends Function {
      * @param globalsSize
      */
     public void fixupVariables(java.util.Vector vars, int globalsSize) {
-
         // do nothing
     }
 }

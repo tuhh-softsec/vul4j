@@ -38,8 +38,9 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
-import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.XPathAPI;
+import org.apache.xml.security.utils.XalanXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -103,7 +104,7 @@ public class TransformXPath2Filter extends TransformSpi {
                 inputDoc = XMLUtils.getOwnerDocument(input.getNodeSet());
             }
 
-            CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI();
+            XPathAPI xPathAPI = new XalanXPathAPI();
             for (int i = 0; i < xpathElements.length; i++) {
                 Element xpathElement = xpathElements[i];
                 
@@ -111,7 +112,7 @@ public class TransformXPath2Filter extends TransformSpi {
                     XPath2FilterContainer.newInstance(xpathElement, input.getSourceURI());
 
                 NodeList subtreeRoots = 
-                    xPathFuncHereAPI.selectNodeList(
+                    xPathAPI.selectNodeList(
                         inputDoc,
                         xpathContainer.getXPathFilterTextNode(),
                         XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode()),

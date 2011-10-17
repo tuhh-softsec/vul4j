@@ -26,7 +26,6 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.security.transforms.implementations.FuncHere;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
@@ -40,31 +39,22 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * An implementation of XPathAPI using Xalan. This supports the "here()" function defined in the digital
+ * signature spec.
  */
-public class CachedXPathFuncHereAPI {
+public class XalanXPathAPI implements XPathAPI {
 
     private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(CachedXPathFuncHereAPI.class);
+        org.apache.commons.logging.LogFactory.getLog(XalanXPathAPI.class);
 
-    DTMManager dtmManager = null;
+    private String xpathStr = null;
 
-    String xpathStr=null;
+    private XPath xpath = null;
 
-    XPath xpath=null;
-
-    static FunctionTable funcTable = null;
+    private static FunctionTable funcTable = null;
 
     static {
         fixupFunctionTable();
-    }
-
-    /**
-     * Constructor CachedXPathFuncHereAPI
-     */
-    public CachedXPathFuncHereAPI() {
-        XPathContext context = new XPathContext();
-        context.setSecureProcessing(true);
-        this.dtmManager = context.getDTMManager();
     }
 
     /**
@@ -102,20 +92,15 @@ public class CachedXPathFuncHereAPI {
         XObject object = eval(contextNode, xpathnode, str, namespaceNode);
         return object.bool();
     }
-
+    
     /**
-     *  Evaluate an XPath string to an XObject. XPath namespace prefixes are resolved from the 
-     *  namespaceNode.
-     *
-     *  @param contextNode The node to start searching from.
-     *  @param xpathnode The XPath node
-     *  @param str The XPath expression
-     *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-     *  @return An XObject, which can be used to obtain a string, number, nodelist, etc, 
-     *  should never be null.
-     *
-     * @throws TransformerException
+     * Clear any context information from this object
      */
+    public void clear() {
+        xpathStr = null;
+        xpath = null;
+    }
+
     private XObject eval(Node contextNode, Node xpathnode, String str, Node namespaceNode)
         throws TransformerException {
         XPathContext context = new XPathContext(xpathnode);
@@ -125,24 +110,17 @@ public class CachedXPathFuncHereAPI {
         // XPath namespaces are resolved from the input context node's document element
         // if it is a root node, or else the current context node (for lack of a better
         // resolution space, given the simplicity of this sample code).
-        PrefixResolverDefault prefixResolver =
-            new PrefixResolverDefault((namespaceNode.getNodeType()
-                == Node.DOCUMENT_NODE)
-                ? ((Document) namespaceNode)
-                    .getDocumentElement()
-                    : namespaceNode);
+        Node resolverNode = 
+            (namespaceNode.getNodeType() == Node.DOCUMENT_NODE)
+                ? ((Document) namespaceNode).getDocumentElement() : namespaceNode;
+        PrefixResolverDefault prefixResolver = new PrefixResolverDefault(resolverNode);
 
         if (!str.equals(xpathStr)) {
-            if (str.indexOf("here()")>0) {
-                context.reset();
-                dtmManager=context.getDTMManager();
-            }
             xpath = createXPath(str, prefixResolver);
-            xpathStr=str;
+            xpathStr = str;
         }
 
         // Execute the XPath, and have it return the result
-        // return xpath.execute(xpathSupport, contextNode, prefixResolver);
         int ctxtNode = context.getDTMHandleFromNode(contextNode);
 
         return xpath.execute(context, ctxtNode, prefixResolver);
@@ -150,11 +128,12 @@ public class CachedXPathFuncHereAPI {
 
     private XPath createXPath(String str, PrefixResolver prefixResolver) throws TransformerException {
         XPath xpath = null;
-        Class[] classes = new Class[]{String.class, SourceLocator.class, PrefixResolver.class, int.class,
+        Class<?>[] classes = new Class[]{String.class, SourceLocator.class, PrefixResolver.class, int.class,
                                       ErrorListener.class, FunctionTable.class};
-        Object[] objects = new Object[]{str, null, prefixResolver, Integer.valueOf(XPath.SELECT), null, funcTable};
+        Object[] objects = 
+            new Object[]{str, null, prefixResolver, Integer.valueOf(XPath.SELECT), null, funcTable};
         try {
-            Constructor constructor = XPath.class.getConstructor(classes);
+            Constructor<?> constructor = XPath.class.getConstructor(classes);
             xpath = (XPath) constructor.newInstance(objects);
         } catch (Throwable t) {
             if (log.isDebugEnabled()) {
@@ -176,7 +155,7 @@ public class CachedXPathFuncHereAPI {
          * Try to register our here() implementation as internal function.
          */
         try {
-            Class []args = {String.class, Expression.class};
+            Class<?>[] args = {String.class, Expression.class};
             Method installFunction = FunctionTable.class.getMethod("installFunction", args);
             if ((installFunction.getModifiers() & Modifier.STATIC) != 0) {
                 Object []params = {"here", new FuncHere()};
@@ -186,10 +165,10 @@ public class CachedXPathFuncHereAPI {
         } catch (Throwable t) {
             log.debug("Error installing function using the static installFunction method", t);
         }
-        if(!installed) {
+        if (!installed) {
             try {
                 funcTable = new FunctionTable();
-                Class []args = {String.class, Class.class};
+                Class<?>[] args = {String.class, Class.class};
                 Method installFunction = FunctionTable.class.getMethod("installFunction", args);
                 Object []params = {"here", FuncHere.class};
                 installFunction.invoke(funcTable, params);

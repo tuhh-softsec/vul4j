@@ -29,9 +29,10 @@ import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.CachedXPathFuncHereAPI;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.XPathAPI;
+import org.apache.xml.security.utils.XalanXPathAPI;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -118,7 +119,7 @@ public class TransformXPath extends TransformSpi {
 
     static class XPathNodeFilter implements NodeFilter {
         
-        CachedXPathFuncHereAPI xPathFuncHereAPI = new CachedXPathFuncHereAPI();
+        XPathAPI xPathAPI = new XalanXPathAPI();
         Node xpathnode; 
         Element xpathElement;
         String str;
@@ -134,8 +135,7 @@ public class TransformXPath extends TransformSpi {
          */
         public int isNodeInclude(Node currentNode) {			
             try {
-                boolean include = 
-                    xPathFuncHereAPI.evaluate(currentNode, xpathnode, str, xpathElement);
+                boolean include = xPathAPI.evaluate(currentNode, xpathnode, str, xpathElement);
                 if (include) {
                     return 1;
                 }
