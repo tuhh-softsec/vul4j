@@ -323,16 +323,22 @@ public class Base64 {
     public static final byte[] decode(BufferedReader reader)
         throws IOException, Base64DecodingException {
 
-        UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
-        String line;
-
-        while (null != (line = reader.readLine())) {
-            byte[] bytes = decode(line);
-
-            baos.write(bytes);
+        byte[] retBytes = null;
+        UnsyncByteArrayOutputStream baos = null;
+        try {
+            baos = new UnsyncByteArrayOutputStream();
+            String line;
+    
+            while (null != (line = reader.readLine())) {
+                byte[] bytes = decode(line);
+                baos.write(bytes);
+            }
+            retBytes = baos.toByteArray();
+        } finally {
+            baos.close();
         }
 
-        return baos.toByteArray();
+        return retBytes;
     }
 
     protected static final boolean isWhiteSpace(byte octect) {

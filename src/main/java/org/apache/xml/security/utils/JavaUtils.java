@@ -54,8 +54,9 @@ public class JavaUtils {
         byte refBytes[] = null;
 
         FileInputStream fisRef = new FileInputStream(fileName);
+        UnsyncByteArrayOutputStream baos = null;
         try {
-            UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
+            baos = new UnsyncByteArrayOutputStream();
             byte buf[] = new byte[1024];
             int len;
 
@@ -66,6 +67,7 @@ public class JavaUtils {
             refBytes = baos.toByteArray();
         } finally {
             fisRef.close();
+            baos.close();
         }
 
         return refBytes;
@@ -116,14 +118,22 @@ public class JavaUtils {
      * @throws IOException
      */
     public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
-        UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
-        byte buf[] = new byte[4 * 1024];
-        int len;
-
-        while ((len = inputStream.read(buf)) > 0) {
-            baos.write(buf, 0, len);
+        UnsyncByteArrayOutputStream baos = null;
+        
+        byte[] retBytes = null;
+        try {
+            baos = new UnsyncByteArrayOutputStream();
+            byte buf[] = new byte[4 * 1024];
+            int len;
+    
+            while ((len = inputStream.read(buf)) > 0) {
+                baos.write(buf, 0, len);
+            }
+            retBytes = baos.toByteArray();
+        } finally {
+            baos.close();
         }
 
-        return baos.toByteArray();
+        return retBytes;
     }
 }
