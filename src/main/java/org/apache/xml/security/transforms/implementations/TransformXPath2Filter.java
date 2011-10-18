@@ -38,6 +38,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
+import org.apache.xml.security.utils.JDKXPathAPI;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.XPathAPI;
 import org.apache.xml.security.utils.XalanXPathAPI;
@@ -60,7 +61,7 @@ public class TransformXPath2Filter extends TransformSpi {
     /** Field implementedTransformURI */
     public static final String implementedTransformURI =
         Transforms.TRANSFORM_XPATH2FILTER;
-
+    
     /**
      * Method engineGetURI
      *
@@ -104,18 +105,24 @@ public class TransformXPath2Filter extends TransformSpi {
                 inputDoc = XMLUtils.getOwnerDocument(input.getNodeSet());
             }
 
-            XPathAPI xPathAPI = new XalanXPathAPI();
             for (int i = 0; i < xpathElements.length; i++) {
                 Element xpathElement = xpathElements[i];
                 
                 XPath2FilterContainer xpathContainer =
                     XPath2FilterContainer.newInstance(xpathElement, input.getSourceURI());
 
+                String str = 
+                    XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode());
+                XPathAPI xpathAPIInstance = new JDKXPathAPI();
+                if (str.contains("here()")) {
+                    xpathAPIInstance = new XalanXPathAPI();
+                }
+                
                 NodeList subtreeRoots = 
-                    xPathAPI.selectNodeList(
+                    xpathAPIInstance.selectNodeList(
                         inputDoc,
                         xpathContainer.getXPathFilterTextNode(),
-                        XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode()),
+                        str,
                         xpathContainer.getElement());
                 if (xpathContainer.isIntersect()) {
                     intersectNodes.add(subtreeRoots);
@@ -151,7 +158,7 @@ public class TransformXPath2Filter extends TransformSpi {
             throw new TransformationException("empty", ex);
         } catch (ParserConfigurationException ex) {
             throw new TransformationException("empty", ex);
-        } 
+        }
     }
     
     static Set<Node> convertNodeListToSet(List<NodeList> l) {

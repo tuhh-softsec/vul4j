@@ -30,6 +30,7 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.JDKXPathAPI;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.XPathAPI;
 import org.apache.xml.security.utils.XalanXPathAPI;
@@ -51,7 +52,7 @@ public class TransformXPath extends TransformSpi {
 
     /** Field implementedTransformURI */
     public static final String implementedTransformURI = Transforms.TRANSFORM_XPATH;
-
+    
     /**
      * Method engineGetURI
      *
@@ -100,13 +101,18 @@ public class TransformXPath extends TransformSpi {
                     DOMException.HIERARCHY_REQUEST_ERR, "Text must be in ds:Xpath"
                 );
             }
+            
+            XPathAPI xpathAPIInstance = new JDKXPathAPI();
+            if (str.contains("here()")) {
+                xpathAPIInstance = new XalanXPathAPI();
+            }
 
-            input.addNodeFilter(new XPathNodeFilter(xpathElement, xpathnode, str));
+            input.addNodeFilter(new XPathNodeFilter(xpathElement, xpathnode, str, xpathAPIInstance));
             input.setNodeSet(true);
             return input;
         } catch (DOMException ex) {
             throw new TransformationException("empty", ex);
-        } 
+        }
     }
 
     /**
@@ -119,15 +125,16 @@ public class TransformXPath extends TransformSpi {
 
     static class XPathNodeFilter implements NodeFilter {
         
-        XPathAPI xPathAPI = new XalanXPathAPI();
+        XPathAPI xPathAPI;
         Node xpathnode; 
         Element xpathElement;
         String str;
         
-        XPathNodeFilter(Element xpathElement, Node xpathnode, String str) {
+        XPathNodeFilter(Element xpathElement, Node xpathnode, String str, XPathAPI xPathAPI) {
             this.xpathnode = xpathnode;
             this.str = str;
             this.xpathElement = xpathElement;
+            this.xPathAPI = xPathAPI;
         }
 
         /**
