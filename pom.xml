@@ -151,34 +151,6 @@
 		</url>
 	</scm>
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0.1</version>
-				<configuration>
-					<fail>false</fail>
-					<rules>
-						<requirePluginVersions>
-							<message>Best Practice is to always define plugin versions!
-									</message>
-							<banLatest>true</banLatest>
-							<banRelease>true</banRelease>
-							<banSnapshots>true</banSnapshots>
-							<phases>clean,deploy,site</phases>
-						</requirePluginVersions>
-					</rules>
-				</configuration>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>

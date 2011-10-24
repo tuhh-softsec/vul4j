@@ -2,7 +2,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.esigate.maven</groupId>
 	<artifactId>esigate-maven-skin</artifactId>
-	<version>3.0-SNAPSHOT</version>
 	<name>esigate-maven-skin</name>
 	<description>ESIGate Site Skin</description>
 	<parent>
