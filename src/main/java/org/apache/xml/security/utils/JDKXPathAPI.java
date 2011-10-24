@@ -32,6 +32,10 @@ import org.w3c.dom.NodeList;
  */
 public class JDKXPathAPI implements XPathAPI {
     
+    private String xpathStr = null;
+
+    private XPath xpath = null;
+    
     /**
      *  Use an XPath string to select a nodelist.
      *  XPath namespace prefixes are resolved from the namespaceNode.
@@ -47,9 +51,12 @@ public class JDKXPathAPI implements XPathAPI {
     public NodeList selectNodeList(
         Node contextNode, Node xpathnode, String str, Node namespaceNode
     ) throws TransformerException {
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
+        if (!str.equals(xpathStr) || xpath == null) {
+            XPathFactory xpf = XPathFactory.newInstance();
+            xpath = xpf.newXPath();
+            xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
+            xpathStr = str;
+        }
         try {
             return (NodeList) xpath.evaluate(str, contextNode, XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
@@ -66,9 +73,12 @@ public class JDKXPathAPI implements XPathAPI {
      */
     public boolean evaluate(Node contextNode, Node xpathnode, String str, Node namespaceNode)
         throws TransformerException {
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
+        if (!str.equals(xpathStr) || xpath == null) {
+            XPathFactory xpf = XPathFactory.newInstance();
+            xpath = xpf.newXPath();
+            xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
+            xpathStr = str;
+        }
         try {
             return ((Boolean) xpath.evaluate(str, contextNode, XPathConstants.BOOLEAN)).booleanValue();
         } catch (XPathExpressionException ex) {
@@ -80,7 +90,8 @@ public class JDKXPathAPI implements XPathAPI {
      * Clear any context information from this object
      */
     public void clear() {
-        
+        xpathStr = null;
+        xpath = null;
     }
 
 }
