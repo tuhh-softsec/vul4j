@@ -31,7 +31,6 @@ import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.test.DSNamespaceContext;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -41,7 +40,7 @@ import org.w3c.dom.Node;
  * "xml:base attribute not processed correctly in C14N11 canonicalization"
  */
 public class Santuario273Test extends org.junit.Assert {
-    static String input = ""
+    public static String input = ""
         + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         + "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\" xml:base=\"http://www.acme.com/resources/\">\n"
         + "  <SignedInfo xml:base=\"subresources/\"><!-- comment inside -->\n"
@@ -62,6 +61,15 @@ public class Santuario273Test extends org.junit.Assert {
         + "  </KeyInfo>\n"
         + "</Signature>\n"
         ;
+    
+    public final static String expectedResult = "<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\" xml:base=\"http://www.acme.com/resources/subresources/\">\n"
+        + "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\"></CanonicalizationMethod>\n"
+        + "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>\n"
+        + "    <Reference URI=\"http://www.w3.org/TR/xml-stylesheet\">\n"
+        + "      <DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>\n"
+        + "      <DigestValue>60NvZvtdTB+7UnlLp/H24p7h4bs=</DigestValue>\n"
+        + "    </Reference>\n"
+        + "  </SignedInfo>";
     
     static {
         Init.init();
@@ -88,21 +96,9 @@ public class Santuario273Test extends org.junit.Assert {
 
         Node signedInfo = 
             (Node) xPath.evaluate("//ds:SignedInfo[1]", doc, XPathConstants.NODE);
-        c14n.canonicalizeSubtree(signedInfo);
+        byte[] output = c14n.canonicalizeSubtree(signedInfo);
 
-        NamedNodeMap attributes = signedInfo.getAttributes();
-        boolean foundBase = false;
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node attribute = attributes.item(i);
-            if ("base".equals(attribute.getLocalName())
-                && "http://www.acme.com/resources/subresources/".equals(attribute.getNodeValue())) {
-                foundBase = true;
-                break;
-            }
-        }
-        if (!foundBase) {
-            fail("The base attribute was not found or was incorrect");
-        }
+        assertEquals( new String(output, "UTF-8"), expectedResult);
     }
 
 }

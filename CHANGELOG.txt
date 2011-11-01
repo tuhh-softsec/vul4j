@@ -11,6 +11,13 @@ New in v1.5.0-SNAPSHOT
     Fixed SANTUARIO-254: Rework org.apache.xml.security.utils.resolver.ResourceResolver.
     Fixed SANTUARIO-248: Add support for ECDSA signature with SHA-2 message digests + enhancements in ASN.1 to XMLDSIG converter (and viceversa)
 
+New in v.1.4.6
+    Fixed SANTUARIO-284: ElementProxy#getTextFromChildElement() doesn't get all of the text if the element contains an entity like &amp;
+    Fixed SANTUARIO-283: JSR105 does not retain namespace definitions on Object element when unmarshalling
+    Fixed SANTUARIO-281: Invalid signature value when using XMLSignature in two EJB modules on AS
+    Fixed SANTUARIO-102: Private keys must be instance of RSAPrivate or have PKCS#8 encoding
+    Fixed SANTUARIO-273: xml:base attribute not processed correctly in C14N11 canonicalization.
+
 New in v1.4.5
     Fixed SANTUARIO-250: VerifyMerlinsExamplesFifteen/TwentyThree.java samples should ignore signature-enveloping-hmac-sha1-40.xml
     Fixed SANTUARIO-191: xml:id attributes are not correctly handled when using c14n11.
