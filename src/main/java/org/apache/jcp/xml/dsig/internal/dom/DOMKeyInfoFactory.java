@@ -29,6 +29,7 @@ import java.security.KeyException;
 import java.security.PublicKey;
 import java.util.List;
 import javax.xml.crypto.*;
+import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -139,9 +140,14 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
                 "support DOM Level 2 and be namespace aware");
         }
         if (tag.equals("KeyInfo")) {
-            return new DOMKeyInfo(element, null, getProvider());
+            return new DOMKeyInfo(element, new UnmarshalContext(), getProvider());
         } else {
             throw new MarshalException("invalid KeyInfo tag: " + tag);
         }
     }
+    
+    private static class UnmarshalContext extends DOMCryptoContext {
+        UnmarshalContext() {}
+    }
+
 }
