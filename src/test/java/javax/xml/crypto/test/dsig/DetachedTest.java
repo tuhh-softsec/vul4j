@@ -82,7 +82,7 @@ public class DetachedTest extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public DetachedTest() {
@@ -99,7 +99,7 @@ public class DetachedTest extends org.junit.Assert {
             // Create a factory that will be used to generate the signature 
             // structures
             XMLSignatureFactory fac = XMLSignatureFactory.getInstance
-                ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+                ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     
             // Create a Reference to an external URI that will be digested
             Reference ref = fac.newReference

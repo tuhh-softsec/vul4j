@@ -46,12 +46,12 @@ public class CreatePhaosXMLDSig3Test extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public CreatePhaosXMLDSig3Test() throws Exception {
         fac = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         db = dbf.newDocumentBuilder();

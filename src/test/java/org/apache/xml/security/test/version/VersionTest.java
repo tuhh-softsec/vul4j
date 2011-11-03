@@ -44,9 +44,9 @@ public class VersionTest extends org.junit.Assert {
 
     @org.junit.Test
     public void testVersion() throws Exception {
-        Security.addProvider(new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        Security.addProvider(new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
-        Provider provider = Security.getProvider("XMLDSig");
+        Provider provider = Security.getProvider("ApacheXMLDSig");
         assertTrue(provider != null);
 
         String version = System.getProperty("product.version");

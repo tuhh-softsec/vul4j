@@ -67,13 +67,13 @@ public class KeySelectorTest extends org.junit.Assert {
     @org.junit.Test
     public void testselect() throws Exception {
         KeyInfoFactory factory = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         X509Data obj = factory.newX509Data(Collections.singletonList("CN=foo"));
         KeyInfo info = factory.newKeyInfo(Collections.singletonList(obj));
         //@@@@@what about other types of X509Data, i.e. subject name String,
         // X509IssuerSerial objects, etc?
         XMLSignatureFactory dsigFac = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         SignatureMethod sm1 = 
             dsigFac.newSignatureMethod(SignatureMethod.DSA_SHA1, null);
         SignatureMethod sm2 = 

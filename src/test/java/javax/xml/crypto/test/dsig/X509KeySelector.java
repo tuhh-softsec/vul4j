@@ -37,7 +37,7 @@ import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.*;
 
-import org.jcp.xml.dsig.internal.dom.DOMRetrievalMethod;
+import org.apache.jcp.xml.dsig.internal.dom.DOMRetrievalMethod;
 
 /**
  * A <code>KeySelector</code> that returns {@link PublicKey}s. If the

@@ -50,12 +50,12 @@ public class TransformTest extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public TransformTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     @org.junit.Test

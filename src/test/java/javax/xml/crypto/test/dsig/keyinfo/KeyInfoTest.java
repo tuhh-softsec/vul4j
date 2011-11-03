@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import org.jcp.xml.dsig.internal.dom.DOMUtils;
+import org.apache.jcp.xml.dsig.internal.dom.DOMUtils;
 
 /**
  * Unit test for javax.xml.crypto.dsig.keyinfo.KeyInfo
@@ -42,7 +42,7 @@ public class KeyInfoTest extends org.junit.Assert {
 
     public KeyInfoTest() throws Exception { 
         fac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     @org.junit.Test

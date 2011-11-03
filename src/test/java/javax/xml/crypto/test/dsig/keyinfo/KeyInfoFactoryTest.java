@@ -40,7 +40,7 @@ public class KeyInfoFactoryTest extends org.junit.Assert {
 
     public KeyInfoFactoryTest() throws Exception { 
         factory = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     @org.junit.Test

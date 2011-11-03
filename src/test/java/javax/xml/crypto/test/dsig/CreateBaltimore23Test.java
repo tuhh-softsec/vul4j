@@ -25,6 +25,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.Certificate;
@@ -77,12 +78,12 @@ public class CreateBaltimore23Test extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public CreateBaltimore23Test() throws Exception {
         fac = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         kifac = fac.getKeyInfoFactory();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);

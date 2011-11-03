@@ -38,7 +38,7 @@ public class SignaturePropertyTest extends org.junit.Assert {
 
     public SignaturePropertyTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
     @org.junit.Test

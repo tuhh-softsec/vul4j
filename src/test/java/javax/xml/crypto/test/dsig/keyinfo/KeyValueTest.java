@@ -37,7 +37,7 @@ public class KeyValueTest extends org.junit.Assert {
 
     public KeyValueTest() throws Exception { 
         fac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         // generate PublicKey(s) and XMLStructure(s) for DSA and RSA
         keys = new PublicKey[ALGOS.length];
 

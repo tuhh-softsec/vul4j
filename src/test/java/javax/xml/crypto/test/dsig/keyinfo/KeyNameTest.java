@@ -34,7 +34,7 @@ public class KeyNameTest extends org.junit.Assert {
 
     public KeyNameTest() throws Exception { 
         fac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     @org.junit.Test

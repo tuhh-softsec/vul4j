@@ -45,7 +45,7 @@ public class Baltimore23Test extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public Baltimore23Test() {

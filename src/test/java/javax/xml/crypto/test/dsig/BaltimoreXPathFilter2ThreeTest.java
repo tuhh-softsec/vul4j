@@ -38,7 +38,7 @@ public class BaltimoreXPathFilter2ThreeTest extends org.junit.Assert {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public BaltimoreXPathFilter2ThreeTest() {

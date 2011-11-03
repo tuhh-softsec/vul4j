@@ -33,7 +33,7 @@ public class Driver {
     public void dsig() throws Exception {
 
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         long start = System.currentTimeMillis();
         for (int i = 0; i < 100; i++) {
             fac.newCanonicalizationMethod

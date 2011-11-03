@@ -48,7 +48,7 @@ public class XMLSignatureFactoryTest extends TestCase {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public XMLSignatureFactoryTest(String name) {
@@ -57,7 +57,7 @@ public class XMLSignatureFactoryTest extends TestCase {
 
     public void setUp() throws Exception { 
         factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     public void tearDown() { }

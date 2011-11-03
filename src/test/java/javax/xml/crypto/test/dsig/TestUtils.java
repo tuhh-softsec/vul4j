@@ -160,7 +160,7 @@ public class TestUtils {
             try {
                 MD = MessageDigest.getInstance("SHA");
                 XMLSignatureFactory factory = XMLSignatureFactory.getInstance
-                    ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+                    ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
                 DIG_METHOD = 
                     factory.newDigestMethod(DigestMethod.SHA1, null);
             } catch (Exception ex) {

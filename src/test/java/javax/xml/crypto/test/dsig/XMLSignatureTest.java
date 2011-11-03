@@ -59,7 +59,7 @@ public class XMLSignatureTest extends TestCase {
 
     static {
         Security.insertProviderAt
-            (new org.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
+            (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
     public XMLSignatureTest() {
@@ -72,9 +72,9 @@ public class XMLSignatureTest extends TestCase {
 
     public void setUp() throws Exception {
         fac = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         kifac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
         // set up the corresponding SignatureMethod 
         SIG_METHODS = new SignatureMethod[3];

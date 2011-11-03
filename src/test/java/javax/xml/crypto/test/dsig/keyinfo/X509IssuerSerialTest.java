@@ -37,7 +37,7 @@ public class X509IssuerSerialTest extends org.junit.Assert {
 
     public X509IssuerSerialTest() throws Exception { 
         fac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         name = "CN = Wolfgang";
     }
 

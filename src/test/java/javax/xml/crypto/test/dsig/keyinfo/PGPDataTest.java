@@ -47,7 +47,7 @@ public class PGPDataTest extends org.junit.Assert {
 
     public PGPDataTest() throws Exception { 
         fac = KeyInfoFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
     @org.junit.Test

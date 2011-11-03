@@ -79,7 +79,7 @@ public class SignatureValidator {
     public boolean validate(DOMValidateContext vc) throws Exception {
 
         XMLSignatureFactory factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         XMLSignature signature = factory.unmarshalXMLSignature(vc);
         boolean coreValidity = signature.validate(vc);
     

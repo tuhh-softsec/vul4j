@@ -138,27 +138,6 @@
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <executions>
@@ -193,12 +172,12 @@
                         <Export-Package>
                               org.apache.xml.security.*;version="${project.version}",
                               javax.xml.crypto.*;version="${project.version}",
-                              org.jcp.xml.dsig.internal.*;version="${project.version}",
+                              org.apache.jcp.xml.dsig.internal.*;version="${project.version}",
                         </Export-Package>
                         <Import-Package>
                               !org.apache.xml.security.*,
                               !javax.xml.crypto.*,
-                              !org.jcp.xml.dsig.internal.*,
+                              !org.apache.jcp.xml.dsig.internal.*,
                               org.apache.commons.logging;resolution:=optional;version="[1.1,2)",
                               org.apache.xml.dtm*;resolution:=optional;version="[2.7,3)",
                               org.apache.xml.utils*;resolution:=optional;version="[2.7,3)",
@@ -238,7 +217,6 @@
                         <useFile>false</useFile>
                         <forkMode>pertest</forkMode>
                         <childDelegation>false</childDelegation>
-                        <argLine>-Djava.endorsed.dirs=${basedir}/target</argLine>
                         <includes>
                             <include>**/*Test.java</include>
                         </includes>

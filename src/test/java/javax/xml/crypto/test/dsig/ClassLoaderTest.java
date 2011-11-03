@@ -27,7 +27,7 @@ import java.security.Provider;
 import java.security.Security;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import org.jcp.xml.dsig.internal.dom.XMLDSigRI;
+import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
 
 /**
  * This test uses more than one classloader to load a class (Driver) that

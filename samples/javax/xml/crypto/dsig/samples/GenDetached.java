@@ -92,7 +92,7 @@ public class GenDetached {
         // First, create a DOM XMLSignatureFactory that will be used to 
         // generate the XMLSignature and marshal it to DOM.
         String providerName = System.getProperty
-            ("jsr105Provider", "org.jcp.xml.dsig.internal.dom.XMLDSigRI");
+            ("jsr105Provider", "org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI");
         XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM",
             (Provider) Class.forName(providerName).newInstance());
 

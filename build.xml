@@ -27,7 +27,6 @@
     <property name="dir.build"          value="${basedir}/build" />
     <property name="dir.build.bin"      value="${dir.build}/classes" />
     <property name="dir.build.libs"     value="${dir.build}/libs" />
-    <property name="dir.build.libs2"    value="${dir.build}/libs/endorsed" />
     <property name="dir.build.test"     value="${dir.build}/test" />
     <property name="dir.build.samples"  value="${dir.build}/samples" />
     <property name="dir.build.docs"     value="${dir.build}/docs" />
@@ -165,7 +164,6 @@
         <mkdir dir="${dir.build.docs}" />
         <mkdir dir="${dir.build.test}" />
         <mkdir dir="${dir.build.libs}" />
-        <mkdir dir="${dir.build.libs2}" />
         <mkdir dir="${dir.build.dist}" />
         <mkdir dir="${dir.build.samples}" />
         <property name="has.dirs" value="true" />
@@ -226,7 +224,7 @@
             <classpath refid="id.classpath" />
             <include name="**/org/apache/xml/security/**/*.java" />
             <include name="**/javax/xml/crypto/**/*.java" />
-            <include name="**/org/jcp/xml/dsig/internal/**/*.java" />
+            <include name="**/org/apache/jcp/xml/dsig/internal/**/*.java" />
         </javac >
 
         <copy todir="${dir.build.bin}" >
@@ -297,23 +295,15 @@
 	         IBM is 'magically' included in the test ;-))
 	    -->
 	    <available file="src/test/resources/com/ibm/xss4j-20030127/enveloped-rsa.sig" property="ibm.available"/>
-        <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
-        <copy file="${jar.library}" todir="${dir.build.libs2}"/>
-        <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
 	    <junit filtertrace="true" fork="true" printsummary="on" 
 		   failureproperty="build.test.failed">
 	        <jvmarg value="-Djava.compiler=NONE"/>
 	        <sysproperty key="basedir" value="${basedir}"/>
-                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
                 <sysproperty key="proxyHost" value="${proxy.host}"/>
                 <sysproperty key="proxyPort" value="${proxy.port}"/>
                 <sysproperty key="java.util.logging.config.file" 
 			     value="${basedir}/logging.properties"/>
-	            <sysproperty key="product.version" value="${product.version}"/>
+                <sysproperty key="product.version" value="${product.version}"/>
 	        <classpath refid="id.classpath.test"/>
 	        <formatter type="xml"/>
 	        <!-- Also put output to screen -->
@@ -341,20 +331,12 @@
         <delete dir="${dir.build.junit.html}"/>
         <mkdir dir="${dir.build.junit.xml}"/>
         <mkdir dir="${dir.build.junit.html}"/>
-        <copy file="${lib.xalan.1}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.2}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.xalan.3}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.logging}" todir="${dir.build.libs2}"/>
-        <copy file="${lib.junit}" todir="${dir.build.libs2}"/>
-        <copy file="${jar.library}" todir="${dir.build.libs2}"/>
-        <copy file="${jar.tests}" todir="${dir.build.libs2}"/>
         <junit filtertrace="true" fork="true" printsummary="on" 
 	       failureproperty="build.test.failed">
             <sysproperty key="basedir" value="${basedir}"/>
             <sysproperty key="proxyHost" value="${proxy.host}"/>
 	    <sysproperty key="proxyPort" value="${proxy.port}"/>
 	    <sysproperty key="java.util.logging.config.file" value="${basedir}/logging.properties"/>
-            <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
             <classpath refid="id.classpath.test"/>
 	    <formatter type="xml"/>
 	    <!-- Also put output to screen -->
@@ -477,7 +459,6 @@
 	<echo message="Now I&apos;ll try to verify merlins example sixteen"/>
 	<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesSixteen" 
 		  fork="yes">
-                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
 		<classpath refid="id.classpath.samples"/>
 	</java>
 
@@ -485,7 +466,6 @@
 	<echo message="Now I&apos;ll try to verify merlins example twenty three"/>
 	<java classname="org.apache.xml.security.samples.signature.VerifyMerlinsExamplesTwentyThree" 
 		  fork="yes">
-                <sysproperty key="java.endorsed.dirs" value="${dir.build.libs2}"/>
 		<classpath refid="id.classpath.samples"/>
 	</java>
 
@@ -689,7 +669,7 @@
 	<!-- Main Library -->
 	<jar basedir="${dir.build.bin}"
 	     excludes="org/apache/xml/security/temp/**"
-	     includes="org/apache/**, org/jcp/**, javax/xml/crypto/**"
+	     includes="org/apache/**, javax/xml/crypto/**"
 	     destfile="${jar.library}" 
 	     manifest="${jar.manifest}">
 	  <metainf file="${dir.manifest}/*.txt"/>
@@ -719,7 +699,7 @@
 
 	<jar basedir="${dir.build.bin}" 
 	     excludes="org/apache/xml/security/temp/**"
-	     includes="**/LICENSE, **/NOTICE, org/apache/**, org/jcp/**, javax/xml/crypto/**, *.txt" 
+	     includes="**/LICENSE, **/NOTICE, org/apache/**, javax/xml/crypto/**, *.txt" 
 	     jarfile="${jar.library}" 
 	     manifest="${jar.manifest}"/>
     </target>

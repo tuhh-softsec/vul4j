@@ -49,7 +49,7 @@ public class XMLObjectTest extends TestCase {
 
     public void setUp() throws Exception {
         factory = XMLSignatureFactory.getInstance
-            ("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+            ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
     public void tearDown() {}
