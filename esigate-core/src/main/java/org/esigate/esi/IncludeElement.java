@@ -9,6 +9,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.vars.VariablesResolver;
 
 public class IncludeElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
@@ -56,6 +57,7 @@ public class IncludeElement implements Element {
 			page = src.substring(endIndex + "})".length());
 			driver = DriverFactory.getInstance(provider);
 		}
+		page = VariablesResolver.replaceAllVariables(page, esiRenderer.getRequest());
 		try {
 			InlineCache ic = InlineCache.getFragment(src);
 			if (ic != null && (ic.getOutdate() == null || ic.getOutdate().after(new Date()))) {
@@ -63,7 +65,6 @@ public class IncludeElement implements Element {
 			} else if (fragment != null) {
 				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiFragmentRenderer(page, fragment), new EsiRenderer(esiRenderer.getRequest(),
 						esiRenderer.getResponse(), driver));
-
 			} else {
 				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
@@ -74,7 +75,6 @@ public class IncludeElement implements Element {
 			} else {
 				throw new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
 			}
-
 		}
 	}
 

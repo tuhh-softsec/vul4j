@@ -50,4 +50,23 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before ---fragment content--- after", out.toString());
 	}
 
+	public void testIncludeQueryString() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"$PROVIDER({mock})/test?$(QUERY_STRING)\" /> after";
+		provider.addResource("/test?queryparameter1=test&queryparameter2=test2", "query OK");
+		request = new MockHttpServletRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before query OK after", out.toString());
+	}
+
+	public void testIncludeQueryStringParameter() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"$PROVIDER({mock})/$(QUERY_STRING{queryparameter2})\" /> after";
+		provider.addResource("/test2", "queryparameter2 OK");
+		request = new MockHttpServletRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before queryparameter2 OK after", out.toString());
+	}
 }

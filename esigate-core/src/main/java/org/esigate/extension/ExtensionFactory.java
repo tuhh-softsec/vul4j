@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory for all Wat extension classes (authenticator, filters, cookie store).
+ * Factory for all ESIGate extension classes (authenticator, filters, cookie store).
  * 
  * @author Nicolas Richeton
  * 

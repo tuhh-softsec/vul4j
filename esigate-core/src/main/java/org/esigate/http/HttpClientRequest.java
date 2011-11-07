@@ -46,8 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HttpClientRequest {
-	private final static Logger LOG = LoggerFactory
-			.getLogger(HttpClientRequest.class);
+	private final static Logger LOG = LoggerFactory.getLogger(HttpClientRequest.class);
 	private String uri;
 	private final HttpServletRequest originalRequest;
 	private final boolean proxy;
@@ -56,8 +55,7 @@ public class HttpClientRequest {
 	private boolean preserveHost = false;
 	private CookieStore cookieStore;
 
-	public HttpClientRequest(String uri, HttpServletRequest originalRequest,
-			boolean proxy, boolean preserveHost) {
+	public HttpClientRequest(String uri, HttpServletRequest originalRequest, boolean proxy, boolean preserveHost) {
 		// FIXME HTTPClient 4 uses URI class that is too much restrictive about
 		// allowed characters. We have to escape some characters like |{}[]
 		// but this may have some side effects.
@@ -68,10 +66,8 @@ public class HttpClientRequest {
 		this.preserveHost = preserveHost;
 	}
 
-	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~",
-			"[", "]", "`" };
-	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C",
-			"%5E", "%7E", "%5B", "%5D", "%60" };
+	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
+	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E", "%5B", "%5D", "%60" };
 
 	private String escapeUnsafeCharacters(String url) {
 		String result = url;
@@ -84,33 +80,26 @@ public class HttpClientRequest {
 	public HttpClientResponse execute(HttpClient httpClient) throws IOException {
 		buildHttpMethod();
 		URL url = new URL(uri);
-		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(),
-				url.getProtocol());
+		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
 		// Preserve host if required
 		if (preserveHost) {
 			// original port is -1 for default ports(80, 443),
 			// the real port otherwise
 			int originalport = -1;
-			if (originalRequest.getServerPort() != 80
-					&& originalRequest.getServerPort() != 443) {
+			if (originalRequest.getServerPort() != 80 && originalRequest.getServerPort() != 443) {
 				originalport = originalRequest.getServerPort();
 			}
-			HttpHost virtualHost = new HttpHost(
-					originalRequest.getServerName(), originalport,
-					originalRequest.getScheme());
-			ClientParamBean clientParamBean = new ClientParamBean(
-					httpRequest.getParams());
+			HttpHost virtualHost = new HttpHost(originalRequest.getServerName(), originalport, originalRequest.getScheme());
+			ClientParamBean clientParamBean = new ClientParamBean(httpRequest.getParams());
 			clientParamBean.setVirtualHost(virtualHost);
 		}
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		HttpClientResponse result = new HttpClientResponse(httpHost,
-				httpRequest, httpClient, cookieStore);
+		HttpClientResponse result = new HttpClientResponse(httpHost, httpRequest, httpClient, cookieStore);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug(toString() + " -> " + result.toString() + " ("
-					+ (end - start) + " ms)");
+			LOG.debug(toString() + " -> " + result.toString() + " (" + (end - start) + " ms)");
 		}
 
 		return result;
@@ -122,16 +111,13 @@ public class HttpClientRequest {
 	 * @throws IOException
 	 *             if problem getting the request
 	 */
-	private void copyEntity(HttpServletRequest req,
-			HttpEntityEnclosingRequest httpEntityEnclosingRequest)
-			throws IOException {
+	private void copyEntity(HttpServletRequest req, HttpEntityEnclosingRequest httpEntityEnclosingRequest) throws IOException {
 		long contentLengthLong = -1;
 		String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
 		if (contentLength != null) {
 			contentLengthLong = Long.parseLong(contentLength);
 		}
-		InputStreamEntity inputStreamEntity = new InputStreamEntity(
-				req.getInputStream(), contentLengthLong);
+		InputStreamEntity inputStreamEntity = new InputStreamEntity(req.getInputStream(), contentLengthLong);
 		String contentType = req.getContentType();
 		if (contentType != null) {
 			inputStreamEntity.setContentType(contentType);
@@ -150,40 +136,26 @@ public class HttpClientRequest {
 		} else {
 			method = "GET";
 		}
-		if ("GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method)
-				|| "OPTIONS".equalsIgnoreCase(method)
-				|| "TRACE".equalsIgnoreCase(method)
-				|| "DELETE".equalsIgnoreCase(method)) {
+		if ("GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method) || "OPTIONS".equalsIgnoreCase(method) || "TRACE".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
 			httpRequest = new BasicHttpRequest(method, uri);
-		} else if ("POST".equalsIgnoreCase(method)
-				|| "PUT".equalsIgnoreCase(method)
-				|| "PROPFIND".equalsIgnoreCase(method)
-				|| "PROPPATCH".equalsIgnoreCase(method)
-				|| "MKCOL".equalsIgnoreCase(method)
-				|| "COPY".equalsIgnoreCase(method)
-				|| "MOVE".equalsIgnoreCase(method)
-				|| "LOCK".equalsIgnoreCase(method)
-				|| "UNLOCK".equalsIgnoreCase(method)) {
-			BasicHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new BasicHttpEntityEnclosingRequest(
-					method, uri);
+		} else if ("POST".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method) || "PROPFIND".equalsIgnoreCase(method) || "PROPPATCH".equalsIgnoreCase(method) || "MKCOL".equalsIgnoreCase(method)
+				|| "COPY".equalsIgnoreCase(method) || "MOVE".equalsIgnoreCase(method) || "LOCK".equalsIgnoreCase(method) || "UNLOCK".equalsIgnoreCase(method)) {
+			BasicHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new BasicHttpEntityEnclosingRequest(method, uri);
 			copyEntity(originalRequest, genericHttpEntityEnclosingRequest);
 			httpRequest = genericHttpEntityEnclosingRequest;
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS,
-				!proxy);
+		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
-		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY,
-				CookiePolicy.BROWSER_COMPATIBILITY);
+		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
 		String userAgent = originalRequest.getHeader(HttpHeaders.USER_AGENT);
 		if (userAgent != null) {
-			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
-					userAgent);
+			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
 		}
 		copyRequestHeader(HttpHeaders.ACCEPT);
 		copyRequestHeader(HttpHeaders.ACCEPT_ENCODING);
@@ -191,6 +163,13 @@ public class HttpClientRequest {
 		copyRequestHeader(HttpHeaders.ACCEPT_CHARSET);
 		copyRequestHeader(HttpHeaders.CACHE_CONTROL);
 		copyRequestHeader(HttpHeaders.PRAGMA);
+		String xForwardedFor = originalRequest.getHeader("X-Forwarded-For");
+		if (xForwardedFor == null) {
+			xForwardedFor = originalRequest.getRemoteAddr();
+		}
+		if (xForwardedFor != null) {
+			httpRequest.addHeader("X-Forwarded-For", xForwardedFor);
+		}
 		if (headers != null) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
@@ -217,8 +196,7 @@ public class HttpClientRequest {
 	/**
 	 * Get current headers.
 	 * 
-	 * @return The map of current headers. This is NOT an internal object :
-	 *         changes are ignored.
+	 * @return The map of current headers. This is NOT an internal object : changes are ignored.
 	 */
 	public Map<String, String> getHeaders() {
 		return new HashMap<String, String>(headers);
