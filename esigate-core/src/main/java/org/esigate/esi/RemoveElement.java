@@ -9,8 +9,9 @@ import org.esigate.parser.ElementType;
 
 /**
  * <p>
- * The remove element allows for specification of non-ESI markup for output if ESI processing is not enabled. If for some reason ESI processing is not enabled, all of the elements will be passed
- * through to clients, which will ignore markup it doesn't understand.
+ * The remove element allows for specification of non-ESI markup for output if ESI processing is not enabled. If for
+ * some reason ESI processing is not enabled, all of the elements will be passed through to clients, which will ignore
+ * markup it doesn't understand.
  * </p>
  * 
  * <p>
@@ -25,11 +26,13 @@ import org.esigate.parser.ElementType;
  * </pre>
  * 
  * <p>
- * Normally, when this block is processed, the ESI Processor fetches the ad.html resource and includes it in the template while silently discarding the remove element and its contents.
+ * Normally, when this block is processed, the ESI Processor fetches the ad.html resource and includes it in the
+ * template while silently discarding the remove element and its contents.
  * </p>
  * 
  * <p>
- * With Web clients, this works because browsers ignore invalid HTML, such as &lt;esi:...&gt; and&lt;/esi:...&gt; elements, leaving the HTML a element and its content.
+ * With Web clients, this works because browsers ignore invalid HTML, such as &lt;esi:...&gt; and&lt;/esi:...&gt;
+ * elements, leaving the HTML a element and its content.
  * </p>
  * 
  * <p>
@@ -41,17 +44,8 @@ import org.esigate.parser.ElementType;
  * 
  */
 public class RemoveElement implements Element {
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:remove");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:remove");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
+		public RemoveElement newInstance() {
 			return new RemoveElement();
 		}
 

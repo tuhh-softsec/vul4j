@@ -12,17 +12,8 @@ import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
 public class IncludeElement implements Element {
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:include");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:include");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
+		public IncludeElement newInstance() {
 			return new IncludeElement();
 		}
 
@@ -63,10 +54,12 @@ public class IncludeElement implements Element {
 			if (ic != null && (ic.getOutdate() == null || ic.getOutdate().after(new Date()))) {
 				getOut(out, stack).append(ic.getFragment());
 			} else if (fragment != null) {
-				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiFragmentRenderer(page, fragment), new EsiRenderer(esiRenderer.getRequest(),
-						esiRenderer.getResponse(), driver));
+				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+						new EsiFragmentRenderer(page, fragment),
+						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else {
-				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(), new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
+				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
 		} catch (Exception e) {
 			TryElement tre = getTryElement(stack);

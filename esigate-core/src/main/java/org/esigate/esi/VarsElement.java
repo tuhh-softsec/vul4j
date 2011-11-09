@@ -6,24 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.BodyTagElement;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-
 public class VarsElement implements BodyTagElement {
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:vars");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:vars");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
+		public VarsElement newInstance() {
 			return new VarsElement();
 		}
 
@@ -44,8 +33,7 @@ public class VarsElement implements BodyTagElement {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag varsTag = new Tag(tag);
 		closed = varsTag.isOpenClosed();
 		// out.append("This is var tag");
@@ -65,14 +53,12 @@ public class VarsElement implements BodyTagElement {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}
 
-	public void doAfterBody(String body, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 
 		String result = VariablesResolver.replaceAllVariables(body, request);
 		out.append(result);

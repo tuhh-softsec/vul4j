@@ -6,24 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.BodyTagElement;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-
 public class AttemptElement implements BodyTagElement {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:attempt");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:attempt");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
+		public AttemptElement newInstance() {
 			return new AttemptElement();
 		}
 
@@ -43,8 +32,7 @@ public class AttemptElement implements BodyTagElement {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag attemptTag = new Tag(tag);
 		closed = attemptTag.isOpenClosed();
 	}
@@ -63,14 +51,12 @@ public class AttemptElement implements BodyTagElement {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}
 
-	public void doAfterBody(String body, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 
 		// Element e = stack.pop();
 		// Appendable parent = stack.getCurrentWriter();

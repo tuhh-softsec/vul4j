@@ -12,20 +12,10 @@ import org.esigate.parser.ElementType;
 import org.esigate.vars.Operations;
 import org.esigate.vars.VariablesResolver;
 
-
 public class WhenElement implements BodyTagElement {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:when");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:when");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
+		public WhenElement newInstance() {
 			return new WhenElement();
 		}
 
@@ -46,8 +36,7 @@ public class WhenElement implements BodyTagElement {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag whenTag = new Tag(tag);
 		closed = whenTag.isOpenClosed();
 		String test = whenTag.getAttributes().get("test");
@@ -57,12 +46,10 @@ public class WhenElement implements BodyTagElement {
 					if (tag.indexOf("test") == -1) {
 						return;
 					}
-					test = tag.substring(tag.indexOf('"') + 1, tag
-							.lastIndexOf('"'));
+					test = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
 					// whenTag.getAttributes().put("test", test);
-					((ChooseElement) out).setCondition(Operations
-							.processOperators(VariablesResolver
-									.replaceAllVariables(test, request)));
+					((ChooseElement) out).setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test,
+							request)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -85,31 +72,29 @@ public class WhenElement implements BodyTagElement {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}
 
-	public void doAfterBody(String body, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 
 		Element e = stack.pop();
 		Appendable parent = stack.getCurrentWriter();
-		
-		if (e instanceof ChooseElement  && ((ChooseElement) e).isCondition()) {
+
+		if (e instanceof ChooseElement && ((ChooseElement) e).isCondition()) {
 			String result = VariablesResolver.replaceAllVariables(body, request);
 			parent.append(result);
 		}
 		stack.push(e);
-		
-//		 Element parent = stack.peek();
-//		 if (parent instanceof ChooseElement
-//		 && ((ChooseElement) parent).isCondition()) {
-//		 String result = VariablesResolver
-//		 .replaceAllVariables(body, request);
-//		 out.append(result);
-//		 }
+
+		// Element parent = stack.peek();
+		// if (parent instanceof ChooseElement
+		// && ((ChooseElement) parent).isCondition()) {
+		// String result = VariablesResolver
+		// .replaceAllVariables(body, request);
+		// out.append(result);
+		// }
 	}
 
 }

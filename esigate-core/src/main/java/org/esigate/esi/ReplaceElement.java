@@ -7,19 +7,11 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
+// FIXME: [saber] NYI
 public class ReplaceElement implements Element {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:fragment");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:fragment");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
+		public ReplaceElement newInstance() {
 			return new ReplaceElement();
 		}
 
@@ -35,8 +27,7 @@ public class ReplaceElement implements Element {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		// TODO
 	}
 
@@ -54,8 +45,7 @@ public class ReplaceElement implements Element {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// TODO
 		return this;
 	}

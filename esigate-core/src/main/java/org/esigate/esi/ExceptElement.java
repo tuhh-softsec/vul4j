@@ -10,20 +10,10 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-
 public class ExceptElement implements BodyTagElement {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:except");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:except");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
+		public ExceptElement newInstance() {
 			return new ExceptElement();
 		}
 
@@ -43,8 +33,7 @@ public class ExceptElement implements BodyTagElement {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag exceptTag = new Tag(tag);
 		closed = exceptTag.isOpenClosed();
 	}
@@ -63,18 +52,15 @@ public class ExceptElement implements BodyTagElement {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}
 
-	public void doAfterBody(String body, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 
 		Element current = stack.peek();
-		if (current instanceof TryElement
-				&& ((TryElement) current).isIncludeInside()) {
+		if (current instanceof TryElement && ((TryElement) current).isIncludeInside()) {
 			Element e = stack.pop();
 			stack.getCurrentWriter().append(body);
 			stack.push(e);

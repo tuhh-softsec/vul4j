@@ -6,24 +6,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.BodyTagElement;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-
 public class InlineElement implements BodyTagElement {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:inline");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:inline");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
+		public InlineElement newInstance() {
 			return new InlineElement();
 		}
 
@@ -46,8 +35,7 @@ public class InlineElement implements BodyTagElement {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag inlineTag = new Tag(tag);
 		closed = inlineTag.isOpenClosed();
 		this.uri = inlineTag.getAttributes().get("name");
@@ -68,19 +56,16 @@ public class InlineElement implements BodyTagElement {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}
 
-	public void doAfterBody(String body, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 
 		String originalUrl = request.getRequestURL().toString();
 
-		InlineCache.storeFragment(uri, null, fetchable.indexOf("yes") != -1,
-				originalUrl, body);
+		InlineCache.storeFragment(uri, null, fetchable.indexOf("yes") != -1, originalUrl, body);
 	}
 
 }

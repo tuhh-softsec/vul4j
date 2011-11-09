@@ -7,20 +7,10 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-
 public class ChooseElement implements Element {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:choose");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:choose");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
+		public ChooseElement newInstance() {
 			return new ChooseElement();
 		}
 
@@ -38,8 +28,7 @@ public class ChooseElement implements Element {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag chooseTag = new Tag(tag);
 		closed = chooseTag.isOpenClosed();
 		condition = false;
@@ -60,8 +49,7 @@ public class ChooseElement implements Element {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}

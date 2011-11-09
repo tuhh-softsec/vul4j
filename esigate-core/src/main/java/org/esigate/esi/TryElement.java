@@ -7,20 +7,10 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-
 public class TryElement implements Element {
 
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:try");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:try");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
+		public TryElement newInstance() {
 			return new TryElement();
 		}
 
@@ -47,8 +37,7 @@ public class TryElement implements Element {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
 		Tag tryTag = new Tag(tag);
 		closed = tryTag.isOpenClosed();
 		condition = false;
@@ -69,8 +58,7 @@ public class TryElement implements Element {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 		return this;
 	}

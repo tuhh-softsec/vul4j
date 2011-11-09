@@ -8,23 +8,15 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
 public class FragmentElement implements Element {
-	private EsiFragmentRenderer esiFragmentRenderer;
-	private boolean nameMatches;
-	public final static ElementType TYPE = new ElementType() {
-
-		public boolean isStartTag(String tag) {
-			return tag.startsWith("<esi:fragment");
-		}
-
-		public boolean isEndTag(String tag) {
-			return tag.startsWith("</esi:fragment");
-		}
-
-		public Element newInstance() {
+	public final static ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
+		public FragmentElement newInstance() {
 			return new FragmentElement();
 		}
 
 	};
+
+	private EsiFragmentRenderer esiFragmentRenderer;
+	private boolean nameMatches;
 
 	public void doEndTag(String tag) {
 		// Stop writing
