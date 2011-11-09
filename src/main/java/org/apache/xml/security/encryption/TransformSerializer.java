@@ -31,7 +31,8 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 
 /**
- * Converts <code>String</code>s into <code>Node</code>s and visa versa.
+ * Converts <code>String</code>s into <code>Node</code>s and visa versa. This requires Xalan to 
+ * work properly.
  */
 public class TransformSerializer extends AbstractSerializer {
     
