@@ -30,6 +30,11 @@ public class InlineElementTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
 		assertEquals("begin end", out.toString());
+		InlineCache actual = InlineCache.getFragment("someUri");
+		assertNotNull(actual);
+		assertEquals(true, actual.isFetchable());
+		assertEquals(false, actual.isExpired());
+		assertEquals("inside inline", actual.getFragment());
 	}
 
 }

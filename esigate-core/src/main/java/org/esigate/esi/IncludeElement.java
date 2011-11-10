@@ -1,7 +1,6 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
@@ -45,7 +44,7 @@ class IncludeElement extends BaseElement {
 		page = VariablesResolver.replaceAllVariables(page, esiRenderer.getRequest());
 		try {
 			InlineCache ic = InlineCache.getFragment(src);
-			if (ic != null && (ic.getOutdate() == null || ic.getOutdate().after(new Date()))) {
+			if (ic != null && !ic.isExpired()) {
 				getOut(parent, stack).append(ic.getFragment());
 			} else if (fragment != null) {
 				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
@@ -60,7 +59,9 @@ class IncludeElement extends BaseElement {
 			if (tre != null) {
 				tre.setIncludeInside(true);
 			} else {
-				throw new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
+				HttpErrorPage httpErrorPage = new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
+				httpErrorPage.initCause(e);
+				throw httpErrorPage;
 			}
 		}
 	}
