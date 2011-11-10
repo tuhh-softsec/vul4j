@@ -4,14 +4,12 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.BodyTagElement;
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-public class OtherwiseElement implements BodyTagElement {
+public class OtherwiseElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
 		public OtherwiseElement newInstance() {
@@ -20,47 +18,19 @@ public class OtherwiseElement implements BodyTagElement {
 
 	};
 
-	private boolean closed = false;
 	private HttpServletRequest request;
 
+	OtherwiseElement() {
+		super(TYPE);
+	}
+
+	@Override
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
 
-	public boolean isClosed() {
-		return closed;
-	}
-
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag whenTag = Tag.create(tag);
-		closed = whenTag.isOpenClosed();
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-
+	@Override
+	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
 		Element e = stack.pop();
 		Appendable parent = stack.getCurrentWriter();
 

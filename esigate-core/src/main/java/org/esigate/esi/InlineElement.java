@@ -1,15 +1,11 @@
 package org.esigate.esi;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.BodyTagElement;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class InlineElement implements BodyTagElement {
+public class InlineElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
 		public InlineElement newInstance() {
@@ -18,53 +14,27 @@ public class InlineElement implements BodyTagElement {
 
 	};
 
-	private boolean closed = false;
 	private HttpServletRequest request;
 	private String uri;
 	private String fetchable;
 
+	InlineElement() {
+		super(TYPE);
+	}
+
+	@Override
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
 
-	public boolean isClosed() {
-		return closed;
+	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
+		this.uri = tag.getAttribute("name");
+		this.fetchable = tag.getAttribute("fetchable");
 	}
 
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag inlineTag = Tag.create(tag);
-		closed = inlineTag.isOpenClosed();
-		this.uri = inlineTag.getAttribute("name");
-		this.fetchable = inlineTag.getAttribute("fetchable");
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-
+	@Override
+	public void doAfterBody(String body, Appendable out, ElementStack stack) {
 		String originalUrl = request.getRequestURL().toString();
-
 		InlineCache.storeFragment(uri, null, fetchable.indexOf("yes") != -1, originalUrl, body);
 	}
 

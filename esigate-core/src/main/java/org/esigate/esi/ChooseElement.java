@@ -1,13 +1,9 @@
 package org.esigate.esi;
 
-import java.io.IOException;
-
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class ChooseElement implements Element {
+public class ChooseElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
 		public ChooseElement newInstance() {
@@ -16,42 +12,17 @@ public class ChooseElement implements Element {
 
 	};
 
-	private boolean closed = false;
 	private boolean condition;
 	private boolean hasCondition;
 
-	public boolean isClosed() {
-		return closed;
+	ChooseElement() {
+		super(TYPE);
 	}
 
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag chooseTag = Tag.create(tag);
-		closed = chooseTag.isOpenClosed();
+	@Override
+	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
 		condition = false;
 		hasCondition = false;
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
 	}
 
 	public boolean hasCondition() {

@@ -2,10 +2,11 @@ package org.esigate.esi;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
-public class InlineCache {
+class InlineCache {
 
-	private static HashMap<String, InlineCache> cache = new HashMap<String, InlineCache>();
+	private static final Map<String, InlineCache> cache = new HashMap<String, InlineCache>();
 
 	private final Date outdate;
 	private final boolean fetchable;

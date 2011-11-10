@@ -2,8 +2,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
@@ -16,7 +14,7 @@ import org.esigate.parser.ElementType;
  * @see <a href="http://www.w3.org/TR/esi-lang">ESI Language Specification 1.0</a>
  * 
  */
-public class Comment implements Element {
+public class Comment extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<!--esi", "-->") {
 		public Comment newInstance() {
 			return new Comment();
@@ -26,16 +24,12 @@ public class Comment implements Element {
 
 	private Appendable parent;
 
-	public void doEndTag(String tag) throws IOException {
-		// Nothing to do
+	Comment() {
+		super(TYPE);
 	}
 
-	public void doStartTag(String tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
+	public void doStartTag(String tag, Appendable parent, ElementStack stack) {
 		this.parent = parent;
-	}
-
-	public ElementType getType() {
-		return TYPE;
 	}
 
 	public boolean isClosed() {

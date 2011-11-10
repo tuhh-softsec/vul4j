@@ -19,8 +19,16 @@ public class CommentElementTest extends TestCase {
 		response = new MockHttpServletResponse();
 	}
 
-	public void testComment() throws IOException, HttpErrorPage {
+	public void testCommentEmpty() throws IOException, HttpErrorPage {
 		String page = "begin <esi:comment text=\"some comment\" /> end";
+		EsiRenderer tested = new EsiRenderer(request, response, null);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("begin  end", out.toString());
+	}
+
+	public void testComment() throws IOException, HttpErrorPage {
+		String page = "begin <esi:comment text=\"some comment\" > some text </esi:comment> end";
 		EsiRenderer tested = new EsiRenderer(request, response, null);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);

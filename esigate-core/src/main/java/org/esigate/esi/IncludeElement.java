@@ -11,7 +11,8 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-public class IncludeElement implements Element {
+public class IncludeElement extends BaseElement {
+
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
 		public IncludeElement newInstance() {
 			return new IncludeElement();
@@ -19,21 +20,14 @@ public class IncludeElement implements Element {
 
 	};
 
-	private boolean closed = false;
-
-	public boolean isClosed() {
-		return closed;
+	IncludeElement() {
+		super(TYPE);
 	}
 
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag includeTag = Tag.create(tag);
-		String src = includeTag.getAttribute("src");
-		String fragment = includeTag.getAttribute("fragment");
-		closed = includeTag.isOpenClosed();
+	@Override
+	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
+		String src = tag.getAttribute("src");
+		String fragment = tag.getAttribute("fragment");
 		EsiRenderer esiRenderer = stack.findAncestorWithClass(this, EsiRenderer.class);
 		Driver driver;
 		String page;
@@ -52,13 +46,13 @@ public class IncludeElement implements Element {
 		try {
 			InlineCache ic = InlineCache.getFragment(src);
 			if (ic != null && (ic.getOutdate() == null || ic.getOutdate().after(new Date()))) {
-				getOut(out, stack).append(ic.getFragment());
+				getOut(parent, stack).append(ic.getFragment());
 			} else if (fragment != null) {
-				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new EsiFragmentRenderer(page, fragment),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else {
-				driver.render(page, null, getOut(out, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
 		} catch (Exception e) {
@@ -121,25 +115,6 @@ public class IncludeElement implements Element {
 		stack.push(e1);
 		stack.push(e3);
 		return res;
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
 	}
 
 }

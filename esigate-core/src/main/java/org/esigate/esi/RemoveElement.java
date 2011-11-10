@@ -1,10 +1,5 @@
 package org.esigate.esi;
 
-import java.io.IOException;
-
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
 /**
@@ -43,7 +38,7 @@ import org.esigate.parser.ElementType;
  * @see <a href="http://www.w3.org/TR/esi-lang">ESI Language Specification 1.0</a>
  * 
  */
-public class RemoveElement implements Element {
+public class RemoveElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
 		public RemoveElement newInstance() {
 			return new RemoveElement();
@@ -51,38 +46,7 @@ public class RemoveElement implements Element {
 
 	};
 
-	private boolean closed = false;
-
-	public boolean isClosed() {
-		return closed;
+	RemoveElement() {
+		super(TYPE);
 	}
-
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag removeTag = Tag.create(tag);
-		closed = removeTag.isOpenClosed();
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
 }

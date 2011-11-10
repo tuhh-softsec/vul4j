@@ -1,13 +1,9 @@
 package org.esigate.esi;
 
-import java.io.IOException;
-
-import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class TryElement implements Element {
+public class TryElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
 		public TryElement newInstance() {
@@ -16,10 +12,13 @@ public class TryElement implements Element {
 
 	};
 
-	private boolean closed = false;
 	private boolean condition;
 	private boolean hasCondition;
 	private boolean includeInside;
+
+	TryElement() {
+		super(TYPE);
+	}
 
 	public boolean isIncludeInside() {
 		return includeInside;
@@ -29,38 +28,9 @@ public class TryElement implements Element {
 		this.includeInside = includeInside;
 	}
 
-	public boolean isClosed() {
-		return closed;
-	}
-
-	public void doEndTag(String tag) {
-		// Nothing to do
-	}
-
-	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag tryTag = Tag.create(tag);
-		closed = tryTag.isOpenClosed();
+	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
 		condition = false;
 		hasCondition = false;
-	}
-
-	public ElementType getType() {
-		return TYPE;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		// Just ignore tag body
-		return this;
 	}
 
 	public boolean hasCondition() {
