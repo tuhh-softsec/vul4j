@@ -221,6 +221,7 @@ public class XMLCipher {
      */
     public void setSerializer(Serializer serializer) {
         this.serializer = serializer;
+        serializer.setCanonicalizer(this.canon);
     }
     
     /**
