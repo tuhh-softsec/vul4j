@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
-import org.junit.Test;
 
 public class BaseElementTypeTest extends TestCase {
 	private ElementType tested;
@@ -26,7 +25,6 @@ public class BaseElementTypeTest extends TestCase {
 		assertFalse(tested.isStartTag("<startStarted somewhere here"));
 	}
 
-	@Test
 	public void testIsEndTag() {
 		assertTrue(tested.isEndTag("endStarted somewhere here"));
 
