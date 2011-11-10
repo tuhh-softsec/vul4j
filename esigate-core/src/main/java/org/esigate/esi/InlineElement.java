@@ -36,10 +36,10 @@ public class InlineElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag inlineTag = new Tag(tag);
+		Tag inlineTag = Tag.create(tag);
 		closed = inlineTag.isOpenClosed();
-		this.uri = inlineTag.getAttributes().get("name");
-		this.fetchable = inlineTag.getAttributes().get("fetchable");
+		this.uri = inlineTag.getAttribute("name");
+		this.fetchable = inlineTag.getAttribute("fetchable");
 	}
 
 	public ElementType getType() {

@@ -30,9 +30,9 @@ public class IncludeElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag includeTag = new Tag(tag);
-		String src = includeTag.getAttributes().get("src");
-		String fragment = includeTag.getAttributes().get("fragment");
+		Tag includeTag = Tag.create(tag);
+		String src = includeTag.getAttribute("src");
+		String fragment = includeTag.getAttribute("fragment");
 		closed = includeTag.isOpenClosed();
 		EsiRenderer esiRenderer = stack.findAncestorWithClass(this, EsiRenderer.class);
 		Driver driver;

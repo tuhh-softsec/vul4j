@@ -34,7 +34,7 @@ public class VarsElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag varsTag = new Tag(tag);
+		Tag varsTag = Tag.create(tag);
 		closed = varsTag.isOpenClosed();
 		// out.append("This is var tag");
 	}

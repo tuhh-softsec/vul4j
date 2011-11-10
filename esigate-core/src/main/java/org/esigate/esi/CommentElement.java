@@ -34,7 +34,7 @@ public class CommentElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag commentTag = new Tag(tag);
+		Tag commentTag = Tag.create(tag);
 		closed = commentTag.isOpenClosed();
 	}
 

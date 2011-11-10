@@ -36,7 +36,7 @@ public class OtherwiseElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag whenTag = new Tag(tag);
+		Tag whenTag = Tag.create(tag);
 		closed = whenTag.isOpenClosed();
 	}
 

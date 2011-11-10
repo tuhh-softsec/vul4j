@@ -62,7 +62,7 @@ public class RemoveElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag removeTag = new Tag(tag);
+		Tag removeTag = Tag.create(tag);
 		closed = removeTag.isOpenClosed();
 	}
 

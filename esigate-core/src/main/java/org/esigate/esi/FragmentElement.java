@@ -25,9 +25,9 @@ public class FragmentElement implements Element {
 		}
 	}
 
-	public void doStartTag(String tagString, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag tag = new Tag(tagString);
-		String name = tag.getAttributes().get("name");
+	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
+		Tag fragmentTag = Tag.create(tag);
+		String name = fragmentTag.getAttribute("name");
 		this.esiFragmentRenderer = stack.findAncestorWithClass(this, EsiFragmentRenderer.class);
 		// If name matches, start writing
 		nameMatches = name.equals(esiFragmentRenderer.getName());

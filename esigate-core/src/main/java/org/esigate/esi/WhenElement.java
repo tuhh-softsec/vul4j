@@ -37,9 +37,9 @@ public class WhenElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag whenTag = new Tag(tag);
+		Tag whenTag = Tag.create(tag);
 		closed = whenTag.isOpenClosed();
-		String test = whenTag.getAttributes().get("test");
+		String test = whenTag.getAttribute("test");
 		if (out instanceof ChooseElement) {
 			if (test == null) {
 				try {
@@ -48,8 +48,8 @@ public class WhenElement implements BodyTagElement {
 					}
 					test = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
 					// whenTag.getAttributes().put("test", test);
-					((ChooseElement) out).setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test,
-							request)));
+					((ChooseElement) out).setCondition(Operations.processOperators(
+							VariablesResolver.replaceAllVariables(test, request)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -33,7 +33,7 @@ public class AttemptElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag attemptTag = new Tag(tag);
+		Tag attemptTag = Tag.create(tag);
 		closed = attemptTag.isOpenClosed();
 	}
 

@@ -29,7 +29,7 @@ public class ChooseElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag chooseTag = new Tag(tag);
+		Tag chooseTag = Tag.create(tag);
 		closed = chooseTag.isOpenClosed();
 		condition = false;
 		hasCondition = false;

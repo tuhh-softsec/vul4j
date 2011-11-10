@@ -38,7 +38,7 @@ public class TryElement implements Element {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag tryTag = new Tag(tag);
+		Tag tryTag = Tag.create(tag);
 		closed = tryTag.isOpenClosed();
 		condition = false;
 		hasCondition = false;

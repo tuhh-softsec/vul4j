@@ -1,30 +1,27 @@
 package org.esigate.esi;
 
-import org.esigate.esi.Tag;
-
 import junit.framework.TestCase;
 
 public class TagTest extends TestCase {
-	public void testName() {
-		Tag tag = new Tag("<esi:include toto='titi' hello =  \"world\"/>");
+
+	public void testCreate() {
+		Tag tag = Tag.create("<esi:include toto='titi' hello =  \"World\"/>");
 		assertEquals("esi:include", tag.getName());
-	}
-
-	public void testAttributes() {
-		Tag tag = new Tag("<esi:include toto='titi' hello =  \"World\"/>");
-		assertEquals(2, tag.getAttributes().size());
-		assertEquals("titi", tag.getAttributes().get("toto"));
-		assertEquals("World", tag.getAttributes().get("hello"));
-	}
-
-	public void testClosing() {
-		Tag tag = new Tag("</esi:include>");
-		assertTrue(tag.isClosing());
-	}
-
-	public void testOpenClose() {
-		Tag tag = new Tag("<esi:include toto='titi' hello =  \"world\" />");
+		assertEquals("titi", tag.getAttribute("toto"));
+		assertEquals("World", tag.getAttribute("hello"));
+		assertFalse(tag.isClosing());
 		assertTrue(tag.isOpenClosed());
-	}
 
+		tag = Tag.create("<esi:include toto='titi' hello =  \"World\">");
+		assertEquals("esi:include", tag.getName());
+		assertEquals("titi", tag.getAttribute("toto"));
+		assertEquals("World", tag.getAttribute("hello"));
+		assertFalse(tag.isClosing());
+		assertFalse(tag.isOpenClosed());
+
+		tag = Tag.create("</esi:include>");
+		assertNull(tag.getName());
+		assertTrue(tag.isClosing());
+		assertFalse(tag.isOpenClosed());
+	}
 }

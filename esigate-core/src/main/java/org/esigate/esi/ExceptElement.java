@@ -34,7 +34,7 @@ public class ExceptElement implements BodyTagElement {
 	}
 
 	public void doStartTag(String tag, Appendable out, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag exceptTag = new Tag(tag);
+		Tag exceptTag = Tag.create(tag);
 		closed = exceptTag.isOpenClosed();
 	}
 
