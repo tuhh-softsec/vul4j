@@ -8,7 +8,7 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-public class VarsElement extends BaseBodyTagElement {
+class VarsElement extends BaseBodyTagElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
 		public VarsElement newInstance() {
 			return new VarsElement();

@@ -2,7 +2,7 @@ package org.esigate.esi;
 
 import org.esigate.parser.ElementType;
 
-public class AttemptElement extends BaseBodyTagElement {
+class AttemptElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
 		public AttemptElement newInstance() {

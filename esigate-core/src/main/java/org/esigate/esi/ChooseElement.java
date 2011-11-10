@@ -3,7 +3,7 @@ package org.esigate.esi;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class ChooseElement extends BaseElement {
+class ChooseElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
 		public ChooseElement newInstance() {

@@ -6,7 +6,7 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class ExceptElement extends BaseBodyTagElement {
+class ExceptElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
 		public ExceptElement newInstance() {

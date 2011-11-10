@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class InlineElement extends BaseBodyTagElement {
+class InlineElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
 		public InlineElement newInstance() {

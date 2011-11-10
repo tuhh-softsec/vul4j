@@ -38,7 +38,7 @@ import org.esigate.parser.ElementType;
  * @see <a href="http://www.w3.org/TR/esi-lang">ESI Language Specification 1.0</a>
  * 
  */
-public class RemoveElement extends BaseElement {
+class RemoveElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:remove", "</esi:remove") {
 		public RemoveElement newInstance() {
 			return new RemoveElement();

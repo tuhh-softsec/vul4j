@@ -3,7 +3,7 @@ package org.esigate.esi;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class TryElement extends BaseElement {
+class TryElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
 		public TryElement newInstance() {

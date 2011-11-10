@@ -14,7 +14,7 @@ import org.esigate.parser.ElementType;
  * @see <a href="http://www.w3.org/TR/esi-lang">ESI Language Specification 1.0</a>
  * 
  */
-public class Comment extends BaseElement {
+class Comment extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<!--esi", "-->") {
 		public Comment newInstance() {
 			return new Comment();

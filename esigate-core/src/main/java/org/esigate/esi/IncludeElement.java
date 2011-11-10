@@ -11,7 +11,7 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-public class IncludeElement extends BaseElement {
+class IncludeElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
 		public IncludeElement newInstance() {

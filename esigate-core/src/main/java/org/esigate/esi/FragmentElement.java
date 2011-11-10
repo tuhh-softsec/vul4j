@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
-public class FragmentElement extends BaseElement {
+class FragmentElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
 		public FragmentElement newInstance() {
 			return new FragmentElement();

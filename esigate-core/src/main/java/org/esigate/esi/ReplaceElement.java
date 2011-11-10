@@ -8,7 +8,7 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 
 // FIXME: [saber] NYI
-public class ReplaceElement implements Element {
+class ReplaceElement implements Element {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
 		public ReplaceElement newInstance() {

@@ -9,7 +9,7 @@ import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
 
-public class OtherwiseElement extends BaseBodyTagElement {
+class OtherwiseElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
 		public OtherwiseElement newInstance() {

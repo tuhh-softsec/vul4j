@@ -10,7 +10,7 @@ import org.esigate.parser.ElementType;
 import org.esigate.vars.Operations;
 import org.esigate.vars.VariablesResolver;
 
-public class WhenElement extends BaseBodyTagElement {
+class WhenElement extends BaseBodyTagElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
 		public WhenElement newInstance() {
