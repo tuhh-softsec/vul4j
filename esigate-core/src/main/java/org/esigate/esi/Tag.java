@@ -1,14 +1,15 @@
 package org.esigate.esi;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class Tag {
-	private final static Pattern TAG_NAME_PATTERN = Pattern.compile("<([\\S]*)\\s");
-	private final static Pattern ATTRIBUTE_PATTERN = Pattern.compile("\\s([\\S]*)[\\s]*=[\\s]*([\"|'])([^'\"]*)\\2");
-	private final static Pattern CLOSE_TAG = Pattern.compile("\\A</");
+	private final static Pattern TAG_CLOSE_PATTERN = Pattern.compile("\\A</([\\S]*)[\\s]*>\\z");
+	private final static Pattern TAG_START_PATTERN = Pattern.compile("\\A<([\\S]*)[\\s|>]");
+	private final static Pattern ATTRIBUTE_PATTERN = Pattern.compile("([^\\s=]+)\\s*=\\s*('[^<']*'|\"[^<\"]*\")");
 	private final static Pattern AUTO_CLOSE_TAG = Pattern.compile("/[\\s]*>\\z");
 
 	private final String name;
@@ -17,18 +18,33 @@ class Tag {
 	private final boolean openClosed;
 
 	public static Tag create(String tag) {
-		Matcher nameMatcher = TAG_NAME_PATTERN.matcher(tag);
-		String name = (nameMatcher.find()) ? nameMatcher.group(1) : null;
+		// check for close tag pattern firs as '/' is included into '\S' regexp in TAG_START_PATTERN
+		Matcher closeMatcher = TAG_CLOSE_PATTERN.matcher(tag);
+		if (closeMatcher.find()) {
+			String name = closeMatcher.group(1);
+			Map<String, String> attributes = Collections.emptyMap();
 
-		Map<String, String> attributes = new HashMap<String, String>();
-		Matcher attributesMatcher = ATTRIBUTE_PATTERN.matcher(tag);
-		while (attributesMatcher.find()) {
-			attributes.put(attributesMatcher.group(1), attributesMatcher.group(3));
+			return new Tag(name, true, false, attributes);
 		}
-		boolean closing = CLOSE_TAG.matcher(tag).find();
-		boolean openClosed = AUTO_CLOSE_TAG.matcher(tag).find();
 
-		return new Tag(name, closing, openClosed, attributes);
+		Matcher startMatcher = TAG_START_PATTERN.matcher(tag);
+		if (startMatcher.find()) {
+			String name = startMatcher.group(1);
+
+			Map<String, String> attributes = new HashMap<String, String>();
+			Matcher attributesMatcher = ATTRIBUTE_PATTERN.matcher(tag);
+			while (attributesMatcher.find()) {
+				// attributesMatcher.group(2) matches to the attribute value including surrounded quotes
+				attributes.put(attributesMatcher.group(1),
+						tag.substring(attributesMatcher.start(2) + 1, attributesMatcher.end(2) - 1));
+			}
+			boolean openClosed = AUTO_CLOSE_TAG.matcher(tag).find();
+
+			return new Tag(name, false, openClosed, attributes);
+		}
+
+		throw new IllegalArgumentException("invalid tag string: '" + tag + "'");
+		//return null;
 	}
 
 	Tag(String name, boolean closing, boolean openClosed, Map<String, String> attributes) {
