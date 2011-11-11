@@ -39,9 +39,10 @@ import org.esigate.parser.Parser;
  */
 public class AggregateRenderer implements Renderer, Appendable {
 	/** Generic pattern for all the tags we want to look for. */
-	private final static Parser PARSER = new Parser(Pattern
-			.compile("<!--\\$[^>]*\\$-->"), IncludeBlockElement.TYPE,
-			IncludeTemplateElement.TYPE, PutElement.TYPE);
+	private final static Pattern PATTERN = Pattern.compile("<!--\\$[^>]*\\$-->");
+
+	private final Parser parser = new Parser(PATTERN,
+			IncludeBlockElement.TYPE, IncludeTemplateElement.TYPE, PutElement.TYPE);
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private Writer out;
@@ -53,13 +54,12 @@ public class AggregateRenderer implements Renderer, Appendable {
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String content,
-			Writer out) throws IOException, HttpErrorPage {
+	public void render(ResourceContext requestContext, String content, Writer out) throws IOException, HttpErrorPage {
 		this.out = out;
 		if (content == null) {
 			return;
 		}
-		PARSER.parse(content, this);
+		parser.parse(content, this);
 	}
 
 	public HttpServletRequest getRequest() {
