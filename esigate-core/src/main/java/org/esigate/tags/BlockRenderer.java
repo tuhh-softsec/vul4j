@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
  */
 public class BlockRenderer implements Renderer, Appendable {
 	private final static Logger LOG = LoggerFactory.getLogger(BlockRenderer.class);
-	private final static Parser PARSER = new Parser(Pattern.compile("<!--\\$[^>]*\\$-->"), BlockElement.TYPE);
+	private final static Pattern PATTERN = Pattern.compile("<!--\\$[^>]*\\$-->");
+
+	private final Parser parser = new Parser(PATTERN, BlockElement.TYPE);
 	private final String page;
 	private final String name;
 	private boolean write;
@@ -55,7 +57,7 @@ public class BlockRenderer implements Renderer, Appendable {
 		if (name == null) {
 			out.write(content);
 		} else {
-			PARSER.parse(content, this);
+			parser.parse(content, this);
 		}
 	}
 

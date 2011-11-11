@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
  */
 public class EsiFragmentRenderer implements Renderer, Appendable {
 	private final static Logger LOG = LoggerFactory.getLogger(EsiFragmentRenderer.class);
-	private final static Parser PARSER = new Parser(Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)"), FragmentElement.TYPE);
+	private final static Pattern PATTERN = Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)");
+
+	private final Parser parser = new Parser(PATTERN, FragmentElement.TYPE);
 	private final String page;
 	private final String name;
 	private boolean write;
@@ -47,7 +49,7 @@ public class EsiFragmentRenderer implements Renderer, Appendable {
 		if (content == null) {
 			return;
 		}
-		PARSER.parse(content, this);
+		parser.parse(content, this);
 	}
 
 	public Appendable append(CharSequence csq) throws IOException {

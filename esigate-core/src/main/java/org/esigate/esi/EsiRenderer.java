@@ -24,33 +24,31 @@ import org.esigate.parser.Parser;
  * @author Francois-Xavier Bonnet
  */
 public class EsiRenderer implements Renderer, Appendable {
-	private final static Parser PARSER = new Parser(Pattern
-			.compile("(<esi:[^>]*>)|(</esi:[^>]*>)|(<!--esi)|(-->)"),
-			IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE,
-			RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE,
-			WhenElement.TYPE, OtherwiseElement.TYPE, TryElement.TYPE,
-			AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE);
-	private Writer out;
+	private final static Pattern PATTERN = Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)|(<!--esi)|(-->)");
+
+	private final Parser parser = new Parser(PATTERN,
+			IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE, RemoveElement.TYPE,
+			VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
+			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE);
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private final Driver driver;
+	private Writer out;
 
-	public EsiRenderer(HttpServletRequest request,
-			HttpServletResponse response, Driver driver) {
+	public EsiRenderer(HttpServletRequest request, HttpServletResponse response, Driver driver) {
 		this.request = request;
 		this.response = response;
 		this.driver = driver;
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String content,
-			Writer out) throws IOException, HttpErrorPage {
+	public void render(ResourceContext requestContext, String content, Writer out) throws IOException, HttpErrorPage {
 		this.out = out;
 		if (content == null) {
 			return;
 		}
-		PARSER.setRequest(request);
-		PARSER.parse(content, this);
+		parser.setRequest(request);
+		parser.parse(content, this);
 	}
 
 	public HttpServletRequest getRequest() {

@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
@@ -32,10 +31,9 @@ import org.slf4j.LoggerFactory;
  */
 public class TemplateRenderer implements Renderer, Appendable {
 	private final static Logger LOG = LoggerFactory.getLogger(TemplateRenderer.class);
-	private final static Parser PARSER = new Parser(Pattern
-			.compile("<!--\\$[^>]*\\$-->"), TemplateElement.TYPE,
-			ParamElement.TYPE);
+	private final static Pattern PATTERN = Pattern.compile("<!--\\$[^>]*\\$-->");
 
+	private final Parser parser = new Parser(PATTERN, TemplateElement.TYPE, ParamElement.TYPE);
 	private final String page;
 	private final String name;
 	private final Map<String, String> params;
@@ -65,7 +63,7 @@ public class TemplateRenderer implements Renderer, Appendable {
 				}
 			}
 		} else {
-			PARSER.parse(content, this);
+			parser.parse(content, this);
 		}
 	}
 
