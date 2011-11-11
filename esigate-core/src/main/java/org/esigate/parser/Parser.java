@@ -51,62 +51,53 @@ public class Parser {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void parse(CharSequence in, Appendable out) throws IOException,
-			HttpErrorPage {
+	public void parse(CharSequence in, Appendable out) throws IOException, HttpErrorPage {
 		ElementStack stack = new ElementStack(out);
 		Matcher matcher = pattern.matcher(in);
 		int currentPosition = 0;
-		while (!matcher.hitEnd()) {
-			if (matcher.find()) {
-				String tag = matcher.group();
-				stack.getCurrentWriter().append(in, currentPosition,
-						matcher.start());
-				if (!stack.isEmpty() && stack.peek().getType().isEndTag(tag)) {
-					// check if this is the end tag for current element
-					LOG.info("Processing end tag " + tag);
-					Element e = stack.pop();
-					if (e instanceof BodyTagElement) {
+		while (matcher.find()) {
+			String tag = matcher.group();
+			stack.getCurrentWriter().append(in, currentPosition, matcher.start());
+			if (!stack.isEmpty() && stack.peek().getType().isEndTag(tag)) {
+				// check if this is the end tag for current element
+				LOG.info("Processing end tag " + tag);
+				Element e = stack.pop();
+				if (e instanceof BodyTagElement) {
+					Appendable parent = stack.getCurrentWriter();
+					String body = in.subSequence(currentPosition, matcher.start()).toString();
+					((BodyTagElement) e).setRequest(request);
+					((BodyTagElement) e).doAfterBody(body, parent, stack);
+				}
+				e.doEndTag(tag);
+			} else {
+				// if not, it is an opening tag for a new element
+				LOG.info("Processing start tag " + tag);
+				Element newElement = null;
+				for (ElementType elementType : elementTypes) {
+					if (elementType.isStartTag(tag)) {
+						newElement = elementType.newInstance();
 						Appendable parent = stack.getCurrentWriter();
-						String body = in.subSequence(currentPosition,
-								matcher.start()).toString();
-						((BodyTagElement) e).setRequest(request);
-						((BodyTagElement) e).doAfterBody(body, parent, stack);
-					}
-					e.doEndTag(tag);
-				} else {
-					// if not, it is an opening tag for a new element
-					LOG.info("Processing start tag " + tag);
-					Element newElement = null;
-					for (ElementType elementType : elementTypes) {
-						if (elementType.isStartTag(tag)) {
-							newElement = elementType.newInstance();
-							Appendable parent = stack.getCurrentWriter();
-							stack.push(newElement);
-							if (newElement instanceof BodyTagElement) {
-								((BodyTagElement) newElement)
-										.setRequest(request);
-							}
-							newElement.doStartTag(tag, parent, stack);
-							if (newElement.isClosed()) {
-								newElement.doEndTag(tag);
-								stack.pop();
-							}
-							break;
+						stack.push(newElement);
+						if (newElement instanceof BodyTagElement) {
+							((BodyTagElement) newElement) .setRequest(request);
 						}
-					}
-					// if no element matches, we just ignore it and write it
-					// to the output
-					if (newElement == null) {
-						stack.getCurrentWriter().append(tag);
+						newElement.doStartTag(tag, parent, stack);
+						if (newElement.isClosed()) {
+							newElement.doEndTag(tag);
+							stack.pop();
+						}
+						break;
 					}
 				}
-				currentPosition = matcher.end();
-			} else {
-				// we reached the end of input
-				stack.getCurrentWriter().append(in, currentPosition,
-						in.length());
+				// if no element matches, we just ignore it and write it to the output
+				if (newElement == null) {
+					stack.getCurrentWriter().append(tag);
+				}
 			}
+			currentPosition = matcher.end();
 		}
+		// we reached the end of input
+		stack.getCurrentWriter().append(in, currentPosition, in.length());
 	}
 
 	public HttpServletRequest getRequest() {
