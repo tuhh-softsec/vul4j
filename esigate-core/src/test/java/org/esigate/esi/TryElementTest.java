@@ -17,7 +17,7 @@ public class TryElementTest extends TestCase {
 	private MockHttpServletResponse response;
 
 	@Override
-	protected void setUp() throws Exception {
+	protected void setUp() {
 		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
@@ -26,7 +26,9 @@ public class TryElementTest extends TestCase {
 	}
 
 	public void testTry() throws IOException, HttpErrorPage {
-		String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>" + "</esi:try> end";
+		String page = "begin <esi:try>"
+				+ "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
+				+ "</esi:try> end";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
@@ -34,7 +36,10 @@ public class TryElementTest extends TestCase {
 	}
 
 	public void testAttempt() throws IOException, HttpErrorPage {
-		String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+		String page = "begin <esi:try>"
+				+ "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
+				+ "<esi:except>inside except</esi:except>"
+				+ "</esi:try> end";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
@@ -42,7 +47,10 @@ public class TryElementTest extends TestCase {
 	}
 
 	public void testExcept() throws IOException, HttpErrorPage {
-		String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo2.com/test\" /></esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
+		String page = "begin <esi:try>"
+				+ "<esi:attempt><esi:include src=\"http://www.foo2.com/test\" /></esi:attempt>"
+				+ "<esi:except>inside except</esi:except>"
+				+ "</esi:try> end";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
