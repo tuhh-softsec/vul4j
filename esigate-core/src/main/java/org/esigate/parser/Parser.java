@@ -76,21 +76,22 @@ public class Parser {
 				for (ElementType elementType : elementTypes) {
 					if (elementType.isStartTag(tag)) {
 						newElement = elementType.newInstance();
-						Appendable parent = stack.getCurrentWriter();
-						stack.push(newElement);
-						if (newElement instanceof BodyTagElement) {
-							((BodyTagElement) newElement) .setRequest(request);
-						}
-						newElement.doStartTag(tag, parent, stack);
-						if (newElement.isClosed()) {
-							newElement.doEndTag(tag);
-							stack.pop();
-						}
 						break;
 					}
 				}
-				// if no element matches, we just ignore it and write it to the output
-				if (newElement == null) {
+				if (newElement != null) {
+					Appendable parent = stack.getCurrentWriter();
+					stack.push(newElement);
+					if (newElement instanceof BodyTagElement) {
+						((BodyTagElement) newElement).setRequest(request);
+					}
+					newElement.doStartTag(tag, parent, stack);
+					if (newElement.isClosed()) {
+						newElement.doEndTag(tag);
+						stack.pop();
+					}
+				} else {
+					// if no element matches, we just ignore it and write it to the output
 					stack.getCurrentWriter().append(tag);
 				}
 			}
