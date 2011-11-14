@@ -7,7 +7,6 @@ import java.io.Writer;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -22,7 +21,6 @@ import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
 import org.w3c.dom.Document;
@@ -40,51 +38,40 @@ import org.xml.sax.SAXException;
  */
 public class XpathRenderer implements Renderer {
 	private final static HtmlNamespaceContext HTML_NAMESPACE_CONTEXT = new HtmlNamespaceContext();
-	private final static XPathFactory X_PATH_FACTORY = XPathFactory
-			.newInstance();
-	private final static TransformerFactory TRANSFORMER_FACTORY = TransformerFactory
-			.newInstance();
+	private final static XPathFactory X_PATH_FACTORY = XPathFactory.newInstance();
+	private final static TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	private final XPathExpression expr;
-	private String outputMethod = "xml";
+	private final String outputMethod;
 
 	public XpathRenderer(String xpath) {
-		XPath xpathObj = X_PATH_FACTORY.newXPath();
-		xpathObj.setNamespaceContext(HTML_NAMESPACE_CONTEXT);
-		try {
-			expr = xpathObj.compile(xpath);
-		} catch (XPathExpressionException e) {
-			throw new ProcessingFailedException(
-					"failed to compile XPath expression", e);
-		}
+		this(xpath,  "xml");
 	}
 
 	public XpathRenderer(String xpath, String outputMethod) {
-		this(xpath);
-		this.outputMethod = outputMethod;
+		try {
+			XPath xpathObj = X_PATH_FACTORY.newXPath();
+			xpathObj.setNamespaceContext(HTML_NAMESPACE_CONTEXT);
+			this.expr = xpathObj.compile(xpath);
+			this.outputMethod = outputMethod;
+		} catch (XPathExpressionException e) {
+			throw new ProcessingFailedException("failed to compile XPath expression", e);
+		}
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out) throws IOException {
 		try {
-			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder(
-					XmlViolationPolicy.ALLOW);
-			htmlDocumentBuilder
-					.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
-			Document document = htmlDocumentBuilder.parse(new InputSource(
-					new StringReader(src)));
+			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder(XmlViolationPolicy.ALLOW);
+			htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
+			Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
 			Node xpathed = (Node) expr.evaluate(document, XPathConstants.NODE);
 			Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-					"yes");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.setOutputProperty(OutputKeys.METHOD, outputMethod);
 			Source source = new DOMSource(xpathed);
 			transformer.transform(source, new StreamResult(out));
 		} catch (XPathExpressionException e) {
-			throw new ProcessingFailedException(
-					"Failed to evaluate XPath expression", e);
-		} catch (TransformerConfigurationException e) {
-			throw new ProcessingFailedException("Unable to parse source", e);
+			throw new ProcessingFailedException("Failed to evaluate XPath expression", e);
 		} catch (TransformerException e) {
 			throw new ProcessingFailedException("Unable to parse source", e);
 		} catch (SAXException e) {

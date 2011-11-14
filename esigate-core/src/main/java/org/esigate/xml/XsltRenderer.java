@@ -20,7 +20,6 @@ import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.sax.HtmlParser;
 
 import org.apache.commons.io.IOUtils;
-import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
 import org.xml.sax.InputSource;
@@ -35,8 +34,7 @@ import org.xml.sax.InputSource;
  * @author Francois-Xavier Bonnet
  */
 public class XsltRenderer implements Renderer {
-	private final static TransformerFactory TRANSFORMER_FACTORY = TransformerFactory
-			.newInstance();
+	private final static TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	private final Transformer transformer;
 
 	/**
@@ -50,8 +48,7 @@ public class XsltRenderer implements Renderer {
 	public XsltRenderer(String template, ServletContext ctx) throws IOException {
 		InputStream templateStream = ctx.getResourceAsStream(template);
 		if (templateStream == null) {
-			throw new ProcessingFailedException("Template " + template
-					+ " not found");
+			throw new ProcessingFailedException("Template " + template + " not found");
 		}
 		transformer = createTransformer(templateStream);
 	}
@@ -67,28 +64,22 @@ public class XsltRenderer implements Renderer {
 		transformer = createTransformer(templateStream);
 	}
 
-	private Transformer createTransformer(InputStream templateStream)
-			throws IOException {
+	private static Transformer createTransformer(InputStream templateStream) throws IOException {
 		try {
-			return TRANSFORMER_FACTORY.newTransformer(new StreamSource(
-					templateStream));
+			return TRANSFORMER_FACTORY.newTransformer(new StreamSource(templateStream));
 		} catch (TransformerConfigurationException e) {
-			throw new ProcessingFailedException(
-					"Failed to create XSLT template", e);
+			throw new ProcessingFailedException("Failed to create XSLT template", e);
 		} finally {
 			templateStream.close();
 		}
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String src, Writer out)
-			throws IOException, HttpErrorPage {
+	public void render(ResourceContext requestContext, String src, Writer out) throws IOException {
 		try {
 			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
-			htmlParser
-					.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
-			Source source = new SAXSource(htmlParser, new InputSource(
-					new StringReader(src)));
+			htmlParser.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
+			Source source = new SAXSource(htmlParser, new InputSource(new StringReader(src)));
 			transformer.transform(source, new StreamResult(out));
 		} catch (TransformerException e) {
 			throw new ProcessingFailedException("Failed to transform source", e);

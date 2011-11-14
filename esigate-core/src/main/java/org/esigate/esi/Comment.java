@@ -28,24 +28,29 @@ class Comment extends BaseElement {
 		super(TYPE);
 	}
 
+	@Override
 	public void doStartTag(String tag, Appendable parent, ElementStack stack) {
 		this.parent = parent;
 	}
 
+	@Override
 	public boolean isClosed() {
 		return false;
 	}
 
+	@Override
 	public Appendable append(CharSequence csq) throws IOException {
 		parent.append(csq);
 		return this;
 	}
 
+	@Override
 	public Appendable append(char c) throws IOException {
 		parent.append(c);
 		return this;
 	}
 
+	@Override
 	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		parent.append(csq, start, end);
 		return this;
