@@ -125,16 +125,16 @@ public class JCEMapper {
             XMLSignature.ALGO_ID_MAC_HMAC_SHA512, new Algorithm("", "HmacSHA512")
         );
         algorithmsMap.put(
-            XMLCipher.TRIPLEDES, new Algorithm("DESede", "DESede/CBC/ISO10126Padding")
+            XMLCipher.TRIPLEDES, new Algorithm("DESede", "DESede/CBC/ISO10126Padding", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_128, new Algorithm("AES", "AES/CBC/ISO10126Padding")
+            XMLCipher.AES_128, new Algorithm("AES", "AES/CBC/ISO10126Padding", 128)
         );
         algorithmsMap.put(
-            XMLCipher.AES_192, new Algorithm("AES", "AES/CBC/ISO10126Padding")
+            XMLCipher.AES_192, new Algorithm("AES", "AES/CBC/ISO10126Padding", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_256, new Algorithm("AES", "AES/CBC/ISO10126Padding")
+            XMLCipher.AES_256, new Algorithm("AES", "AES/CBC/ISO10126Padding", 256)
         );
         algorithmsMap.put(
             XMLCipher.RSA_v1dot5, new Algorithm("RSA", "RSA/ECB/PKCS1Padding")
@@ -146,16 +146,16 @@ public class JCEMapper {
             XMLCipher.DIFFIE_HELLMAN, new Algorithm("", "")
         );
         algorithmsMap.put(
-            XMLCipher.TRIPLEDES_KeyWrap, new Algorithm("DESede", "DESedeWrap")
+            XMLCipher.TRIPLEDES_KeyWrap, new Algorithm("DESede", "DESedeWrap", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_128_KeyWrap, new Algorithm("AES", "AESWrap")
+            XMLCipher.AES_128_KeyWrap, new Algorithm("AES", "AESWrap", 128)
         );
         algorithmsMap.put(
-            XMLCipher.AES_192_KeyWrap, new Algorithm("AES", "AESWrap")
+            XMLCipher.AES_192_KeyWrap, new Algorithm("AES", "AESWrap", 192)
         );
         algorithmsMap.put(
-            XMLCipher.AES_256_KeyWrap, new Algorithm("AES", "AESWrap")
+            XMLCipher.AES_256_KeyWrap, new Algorithm("AES", "AESWrap", 256)
         );
     }
 
@@ -177,6 +177,23 @@ public class JCEMapper {
         return null;
     }
 
+    /**
+     * Returns the keylength in bits for a particular algorithm.
+     *
+     * @param algorithmURI
+     * @return The length of the key used in the algorithm
+     */
+    public static int getKeyLengthFromURI(String algorithmURI) {
+        if (log.isDebugEnabled()) {
+            log.debug("Request for URI " + algorithmURI);
+        }
+        Algorithm algorithm = algorithmsMap.get(algorithmURI);
+        if (algorithm != null) {
+            return algorithm.keyLength;
+        }
+        return 0;
+    }
+    
     /**
      * Method getJCEKeyAlgorithmFromURI
      *
@@ -217,6 +234,7 @@ public class JCEMapper {
         
         final String requiredKey;
         final String jceName;
+        final int keyLength;
         
         /**
          * Gets data from element
@@ -225,11 +243,21 @@ public class JCEMapper {
         public Algorithm(Element el) {
             requiredKey = el.getAttribute("RequiredKey");
             jceName = el.getAttribute("JCEName");
+            if (el.hasAttribute("KeyLength")) {
+                keyLength = Integer.parseInt(el.getAttribute("KeyLength"));
+            } else {
+                keyLength = 0;
+            }
         }
         
         public Algorithm(String requiredKey, String jceName) {
+            this(requiredKey, jceName, 0);
+        }
+        
+        public Algorithm(String requiredKey, String jceName, int keyLength) {
             this.requiredKey = requiredKey;
             this.jceName = jceName;
+            this.keyLength = keyLength;
         }
     }
     
