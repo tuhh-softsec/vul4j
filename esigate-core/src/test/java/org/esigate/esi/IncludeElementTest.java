@@ -103,4 +103,15 @@ public class IncludeElementTest extends TestCase {
 		tested.render(null, page, out);
 		assertEquals("before ---fetched inline cache item--- middle ---inline cache item--- after", out.toString());
 	}
+
+	public void testIncludeXpath() throws IOException, HttpErrorPage {
+		String page = "before "
+				+ "<esi:include src='$PROVIDER({mock})/inline-xpath' xpath='//html:body' />"
+				+ " after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		provider.addResource("/inline-xpath", "<html><body>The body<br></body></html>");
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
+	}
 }

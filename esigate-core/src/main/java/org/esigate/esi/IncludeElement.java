@@ -9,6 +9,7 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
+import org.esigate.xml.XpathRenderer;
 
 class IncludeElement extends BaseElement {
 
@@ -27,6 +28,7 @@ class IncludeElement extends BaseElement {
 	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
 		String src = tag.getAttribute("src");
 		String fragment = tag.getAttribute("fragment");
+		String xpath = tag.getAttribute("xpath");
 		EsiRenderer esiRenderer = stack.findAncestorWithClass(this, EsiRenderer.class);
 		Driver driver;
 		String page;
@@ -49,6 +51,10 @@ class IncludeElement extends BaseElement {
 			} else if (fragment != null) {
 				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new EsiFragmentRenderer(page, fragment),
+						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
+			} else if (xpath != null) {
+				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+						new XpathRenderer(xpath),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else {
 				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
