@@ -87,8 +87,8 @@ public class Parser {
 					}
 					newElement.doStartTag(tag, parent, stack);
 					if (newElement.isClosed()) {
-						newElement.doEndTag(tag);
 						stack.pop();
+						newElement.doEndTag(tag);
 					}
 				} else {
 					// if no element matches, we just ignore it and write it to the output
