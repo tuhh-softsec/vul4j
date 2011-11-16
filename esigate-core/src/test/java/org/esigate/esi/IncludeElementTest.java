@@ -106,12 +106,13 @@ public class IncludeElementTest extends TestCase {
 
 	public void testIncludeXpath() throws IOException, HttpErrorPage {
 		String page = "before "
-				+ "<esi:include src='$PROVIDER({mock})/inline-xpath' xpath='//html:body' />"
+				+ "<esi:include src='$PROVIDER({mock})/inline-xpath' xpath='//html:body/text()' />"
 				+ " after";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
-		provider.addResource("/inline-xpath", "<html><body>The body<br></body></html>");
+		provider.addResource("/inline-xpath",
+				"<html><title>The header</title><body>-the body-<br><ul><li>list item</li></ul></body></html>");
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
-		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
+		assertEquals("before -the body- after", out.toString());
 	}
 }
