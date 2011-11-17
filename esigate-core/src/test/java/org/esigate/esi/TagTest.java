@@ -28,7 +28,14 @@ public class TagTest extends TestCase {
 		assertEquals("esi:include", tag.getName());
 		assertTrue(tag.isClosing());
 		assertFalse(tag.isOpenClosed());
-	}
+
+		try {
+			Tag.create("<!--esi");
+			fail("should fail with IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			assertNotNull(e.getMessage());
+		}
+}
 
 	public void testCreateWithQuotesInside() {
 		Tag tag = Tag.create("<esi:include toto='titi \"World\"' hello =  \"World 'inside'\"/>");
