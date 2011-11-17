@@ -5,12 +5,12 @@ import java.io.IOException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 import org.esigate.tags.BlockRenderer;
 
 
-public class IncludeBlockElement implements Element {
+class IncludeBlockElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -27,49 +27,33 @@ public class IncludeBlockElement implements Element {
 
 	};
 
-	public void doEndTag(String tag) {
+	public boolean onError(Exception e, org.esigate.parser.ParserContext ctx) {
+		return false;
+	}
+
+	public void onTagEnd(String tag, org.esigate.parser.ParserContext ctx) {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		AggregateRenderer aggregateRenderer = ctx.findAncestor(AggregateRenderer.class);
 
-		ElementAttributes tagAttributes = ElementAttributesFactory
-				.createElementAttributes(tag);
-		AggregateRenderer aggregateRenderer = stack.findAncestorWithClass(this,
-				AggregateRenderer.class);
+		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
 		Driver driver = tagAttributes.getDriver();
 		String page = tagAttributes.getPage();
 		String name = tagAttributes.getName();
 
-		driver.render(page, null, out, aggregateRenderer.getRequest(),
-				aggregateRenderer.getResponse(), new BlockRenderer(name, page),
-				new AggregateRenderer(aggregateRenderer.getRequest(),
-						aggregateRenderer.getResponse()));
-	}
-
-	public ElementType getType() {
-		return TYPE;
+		driver.render(page, null, new Adapter(ctx.getCurrent()), aggregateRenderer.getRequest(), aggregateRenderer.getResponse(),
+				new BlockRenderer(name, page),
+				new AggregateRenderer(aggregateRenderer.getRequest(), aggregateRenderer.getResponse()));
 	}
 
 	public boolean isClosed() {
 		return false;
 	}
 
-	public Appendable append(CharSequence csq) throws IOException {
+	public void characters(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
-		// Just ignore tag body
-		return this;
 	}
 
 }

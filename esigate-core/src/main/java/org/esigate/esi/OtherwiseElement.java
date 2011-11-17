@@ -2,14 +2,12 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
-import org.esigate.parser.ElementType;
+import org.esigate.HttpErrorPage;
 import org.esigate.vars.VariablesResolver;
+import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
-class OtherwiseElement extends BaseBodyTagElement {
+class OtherwiseElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
 		public OtherwiseElement newInstance() {
@@ -18,27 +16,29 @@ class OtherwiseElement extends BaseBodyTagElement {
 
 	};
 
-	private HttpServletRequest request;
+	private boolean active;
+	private StringBuilder buf = new StringBuilder();
 
-	OtherwiseElement() {
-		super(TYPE);
+	OtherwiseElement() { }
+
+	@Override
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		ChooseElement parent = ctx.findAncestor(ChooseElement.class);
+		active = (parent != null) && !parent.hadConditionSet();
 	}
 
 	@Override
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	@Override
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
-		Element e = stack.pop();
-		Appendable parent = stack.getCurrentWriter();
-
-		if (e instanceof ChooseElement && !((ChooseElement) e).hasCondition()) {
-			String result = VariablesResolver.replaceAllVariables(body, request);
-			parent.append(result);
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+		if (active) {
+			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+			super.characters(result, 0, result.length());
 		}
-		stack.push(e);
 	}
 
+	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		if (active) {
+			buf.append(csq, start, end);
+		}
+	}
 }

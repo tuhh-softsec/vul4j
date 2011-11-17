@@ -2,8 +2,9 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.parser.ElementStack;
+import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 /**
  * This is a special construct to allow HTML marked up with ESI to render without processing. ESI Processors will remove
@@ -22,38 +23,11 @@ class Comment extends BaseElement {
 
 	};
 
-	private Appendable parent;
-
-	Comment() {
-		super(TYPE);
-	}
+	Comment() { }
 
 	@Override
-	public void doStartTag(String tag, Appendable parent, ElementStack stack) {
-		this.parent = parent;
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		// do not try to parse tag string
+		super.onTagStart("<esi!-->", ctx);
 	}
-
-	@Override
-	public boolean isClosed() {
-		return false;
-	}
-
-	@Override
-	public Appendable append(CharSequence csq) throws IOException {
-		parent.append(csq);
-		return this;
-	}
-
-	@Override
-	public Appendable append(char c) throws IOException {
-		parent.append(c);
-		return this;
-	}
-
-	@Override
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		parent.append(csq, start, end);
-		return this;
-	}
-
 }

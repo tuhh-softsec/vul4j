@@ -35,7 +35,7 @@ public class TagTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			assertNotNull(e.getMessage());
 		}
-}
+	}
 
 	public void testCreateWithQuotesInside() {
 		Tag tag = Tag.create("<esi:include toto='titi \"World\"' hello =  \"World 'inside'\"/>");

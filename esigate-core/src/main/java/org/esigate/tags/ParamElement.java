@@ -5,12 +5,11 @@ import java.io.IOException;
 import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregationSyntaxException;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 
-public class ParamElement implements Element {
-	private Appendable parent;
+class ParamElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -27,57 +26,42 @@ public class ParamElement implements Element {
 
 	};
 
+	private Element parent;
 	private boolean valueFound = false;
 
-	public void doEndTag(String tag) {
+	public boolean onError(Exception e, ParserContext ctx) {
+		return false;
+	}
+
+	public void onTagEnd(String tag, ParserContext ctx) {
 		// Nothing to do
 	}
 
-	public void doStartTag(String tag, Appendable parent, ElementStack stack)
-			throws IOException, HttpErrorPage {
-		this.parent = parent;
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		this.parent = ctx.getCurrent();
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4)
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
 		String name = parameters[2];
-		TemplateElement templateElement = stack.findAncestorWithClass(this,
-				TemplateElement.class);
-		TemplateRenderer templateRenderer = stack.findAncestorWithClass(this,
-				TemplateRenderer.class);
+		TemplateElement templateElement = ctx.findAncestor(TemplateElement.class);
+		TemplateRenderer templateRenderer = ctx.findAncestor(TemplateRenderer.class);
 		if (templateElement == null || templateElement.isNameMatches()) {
 			String value = templateRenderer.getParam(name);
 			if (value != null) {
-				parent.append(value);
+				parent.characters(value, 0 , value.length());
 				valueFound = true;
 			}
 		}
-	}
-
-	public ElementType getType() {
-		return TYPE;
 	}
 
 	public boolean isClosed() {
 		return false;
 	}
 
-	public Appendable append(CharSequence csq) throws IOException {
-		if (!valueFound)
-			parent.append(csq);
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		if (!valueFound)
-			parent.append(c);
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
-		if (!valueFound)
-			parent.append(csq, start, end);
-		return this;
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		if (!valueFound) {
+			parent.characters(csq, start, end);
+		}
 	}
 
 }

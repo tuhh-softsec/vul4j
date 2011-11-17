@@ -46,7 +46,10 @@ class RemoveElement extends BaseElement {
 
 	};
 
-	RemoveElement() {
-		super(TYPE);
+	RemoveElement() { }
+
+	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		// ignore element body
 	}
 }

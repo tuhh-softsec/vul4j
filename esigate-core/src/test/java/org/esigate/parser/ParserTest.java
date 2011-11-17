@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
@@ -40,10 +38,10 @@ public class ParserTest extends TestCase {
 	}
 
 	private static final ElementType SIMPLE = new MockElementType("<test:simple", "</test:simple") {
-		public Element newInstance() { return new SimpleElement(this); }
+		public Element newInstance() { return new SimpleElement(); }
 	};
 	private static final ElementType BODY = new MockElementType("<test:body", "</test:body") {
-		public Element newInstance() { return new BodyElement(this); }
+		public Element newInstance() { return new BodyElement(); }
 	};
 
 	private static abstract class MockElementType implements ElementType {
@@ -58,40 +56,38 @@ public class ParserTest extends TestCase {
 		public final boolean isStartTag(String tag) { return tag.startsWith(startTag); }
 		public final boolean isEndTag(String tag) { return tag.startsWith(endTag); }
 	}
-	private static class BodyElement extends SimpleElement implements BodyTagElement {
-		private HttpServletRequest request;
+	private static class BodyElement extends SimpleElement {
+		private final StringBuilder buf = new StringBuilder();
 
-		public BodyElement(ElementType type) { super(type); }
+		public BodyElement() { }
 
-		public void setRequest(HttpServletRequest request) { this.request = request; }
-
-		public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
-			String result = body.replaceAll("\\{request\\}", request.getParameter("request"));
-			out.append(result);
+		@Override
+		public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+			String result = buf.toString().replaceAll("\\{request\\}", ctx.getRequest().getParameter("request"));
+			ctx.getCurrent().characters(result, 0, result.length());
 		}
 
+		@Override
+		public void characters(CharSequence csq, int start, int end) {
+			buf.append(csq, start, end);
+		}
 	}
 
 	private static class SimpleElement implements Element {
-		private ElementType type;
 		private boolean closed;
 
-		public SimpleElement(ElementType type) {
-			this.type = type;
-		}
-
-		public ElementType getType() { return type; }
+		public SimpleElement() { }
 
 		public boolean isClosed() { return closed; }
 
-		public void doStartTag(String tag, Appendable parent, ElementStack stack) {
+		public void onTagStart(String tag, ParserContext ctx) {
 			closed = tag.endsWith("/>");
 		}
-		public void doEndTag(String tag) { }
+		public void onTagEnd(String tag, ParserContext ctx) throws IOException { }
 
-		public Appendable append(CharSequence csq) { return this; }
-		public Appendable append(CharSequence csq, int start, int end) { return this; }
-		public Appendable append(char c) { return this; }
+		public void characters(CharSequence csq, int start, int end) { }
+
+		public boolean onError(Exception e, ParserContext ctx) { return false; }
 
 	}
 }

@@ -1,11 +1,12 @@
 package org.esigate.esi;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
-import org.esigate.parser.ElementStack;
+import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
-class InlineElement extends BaseBodyTagElement {
+class InlineElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
 		public InlineElement newInstance() {
@@ -14,28 +15,26 @@ class InlineElement extends BaseBodyTagElement {
 
 	};
 
-	private HttpServletRequest request;
 	private String uri;
-	private String fetchable;
+	private boolean fetchable;
+	private StringBuilder buf = new StringBuilder();
 
-	InlineElement() {
-		super(TYPE);
-	}
+	InlineElement() { }
 
 	@Override
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
+	protected void parseTag(Tag tag, ParserContext ctx) {
 		this.uri = tag.getAttribute("name");
-		this.fetchable = tag.getAttribute("fetchable");
+		this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
 	}
 
 	@Override
-	public void doAfterBody(String body, Appendable out, ElementStack stack) {
-		String originalUrl = request.getRequestURL().toString();
-		InlineCache.storeFragment(uri, null, fetchable.indexOf("yes") != -1, originalUrl, body);
+	public void characters(CharSequence csq, int start, int end) {
+		buf.append(csq, start, end);
 	}
 
+	@Override
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		String originalUrl = ctx.getRequest().getRequestURL().toString();
+		InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
+	}
 }

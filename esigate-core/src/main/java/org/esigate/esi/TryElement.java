@@ -1,7 +1,7 @@
 package org.esigate.esi;
 
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 class TryElement extends BaseElement {
 
@@ -12,23 +12,22 @@ class TryElement extends BaseElement {
 
 	};
 
-	private boolean includeInside;
+	private boolean hasErrors;
 
-	TryElement() {
-		super(TYPE);
+	TryElement() { }
+
+	@Override
+	protected void parseTag(Tag tag, ParserContext ctx) {
+		this.hasErrors = false;
 	}
 
-	public boolean isIncludeInside() {
-		return includeInside;
-	}
-
-	public void setIncludeInside(boolean includeInside) {
-		this.includeInside = includeInside;
+	public boolean hasErrors() {
+		return hasErrors;
 	}
 
 	@Override
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
-		this.includeInside = false;
+	public boolean onError(Exception e, ParserContext ctx) {
+		hasErrors = true;
+		return true;
 	}
-
 }

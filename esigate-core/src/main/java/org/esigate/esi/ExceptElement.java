@@ -2,11 +2,11 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
+import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
-class ExceptElement extends BaseBodyTagElement {
+class ExceptElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
 		public ExceptElement newInstance() {
@@ -15,34 +15,21 @@ class ExceptElement extends BaseBodyTagElement {
 
 	};
 
-	ExceptElement() {
-		super(TYPE);
+	private boolean ignoreContent;
+
+	ExceptElement() { }
+
+	@Override
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		TryElement parent = ctx.findAncestor(TryElement.class);
+		ignoreContent = !parent.hasErrors();
 	}
 
 	@Override
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
-
-		Element current = stack.peek();
-		if (current instanceof TryElement && ((TryElement) current).isIncludeInside()) {
-			Element e = stack.pop();
-			stack.getCurrentWriter().append(body);
-			stack.push(e);
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		if (!ignoreContent) {
+			super.characters(csq, start, end);
 		}
-
-		// Element e1 = stack.pop();
-		// if (stack.isEmpty()) {
-		// stack.push(e1);
-		// return;
-		// }
-		// if (e1 instanceof ExceptElement) {
-		// Element e2 = stack.pop();
-		// if (e2 instanceof TryElement) {
-		// stack.getCurrentWriter().append(body);
-		// }
-		// stack.push(e2);
-		// }
-		// stack.push(e1);
-
 	}
 
 }

@@ -5,11 +5,11 @@ import java.io.IOException;
 import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregationSyntaxException;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 
-public class TemplateElement implements Element {
+class TemplateElement implements Element {
 	private TemplateRenderer templateRenderer;
 	private boolean nameMatches;
 	public final static ElementType TYPE = new ElementType() {
@@ -28,28 +28,34 @@ public class TemplateElement implements Element {
 
 	};
 
-	public void doEndTag(String tag) throws IOException {
-		// Stop writing
-		if (nameMatches)
-			templateRenderer.setWrite(false);
+	public boolean onError(Exception e, ParserContext ctx) {
+		return false; // do not handle errors
 	}
 
-	public void doStartTag(String tag, Appendable parent, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException ,HttpErrorPage {
+		// Stop writing
+		if (nameMatches) {
+			templateRenderer.setWrite(false);
+		}
+	}
+
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4)
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
 		String name = parameters[2];
-		this.templateRenderer = stack.findAncestorWithClass(this,
-				TemplateRenderer.class);
+		this.templateRenderer = ctx.findAncestor(TemplateRenderer.class);
 		// If name matches, start writing
 		nameMatches = name.equals(templateRenderer.getName());
-		if (nameMatches)
+		if (nameMatches) {
 			templateRenderer.setWrite(true);
+		}
 	}
 
-	public ElementType getType() {
-		return TYPE;
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		if (nameMatches) {
+			templateRenderer.append(csq, start, end);
+		}
 	}
 
 	public boolean isClosed() {
@@ -58,25 +64,6 @@ public class TemplateElement implements Element {
 
 	public boolean isNameMatches() {
 		return nameMatches;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		if (nameMatches)
-			templateRenderer.append(csq);
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		if (nameMatches)
-			templateRenderer.append(c);
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
-		if (nameMatches)
-			templateRenderer.append(csq, start, end);
-		return this;
 	}
 
 }

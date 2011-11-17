@@ -5,13 +5,11 @@ import java.io.IOException;
 import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregationSyntaxException;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 
-public class BlockElement implements Element {
-	private BlockRenderer blockRenderer;
-	private boolean nameMatches;
+class BlockElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
 		public boolean isStartTag(String tag) {
@@ -28,48 +26,40 @@ public class BlockElement implements Element {
 
 	};
 
-	public void doEndTag(String tag) throws IOException {
-		// Stop writing
-		if (nameMatches)
-			blockRenderer.setWrite(false);
+	private BlockRenderer blockRenderer;
+	private boolean nameMatches;
+
+	public boolean onError(Exception e, ParserContext ctx) {
+		return false;
 	}
 
-	public void doStartTag(String tag, Appendable parent, ElementStack stack)
-			throws IOException, HttpErrorPage {
+	public void onTagEnd(String tag, ParserContext ctx) {
+		// Stop writing
+		if (nameMatches) {
+			blockRenderer.setWrite(false);
+		}
+	}
+
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String[] parameters = tag.split("\\$");
-		if (parameters.length != 4)
+		if (parameters.length != 4) {
 			throw new AggregationSyntaxException("Invalid syntax: " + tag);
+		}
 		String name = parameters[2];
-		this.blockRenderer = stack.findAncestorWithClass(this,
-				BlockRenderer.class);
+		this.blockRenderer = ctx.findAncestor(BlockRenderer.class);
 		// If name matches, start writing
 		nameMatches = name.equals(blockRenderer.getName());
-		if (nameMatches)
+		if (nameMatches) {
 			blockRenderer.setWrite(true);
-	}
-
-	public ElementType getType() {
-		return TYPE;
+		}
 	}
 
 	public boolean isClosed() {
 		return false;
 	}
 
-	public Appendable append(CharSequence csq) throws IOException {
-		blockRenderer.append(csq);
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		blockRenderer.append(c);
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public void characters(CharSequence csq, int start, int end) throws IOException {
 		blockRenderer.append(csq, start, end);
-		return this;
 	}
 
 }

@@ -1,7 +1,7 @@
 package org.esigate.esi;
 
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 class ChooseElement extends BaseElement {
 
@@ -13,20 +13,18 @@ class ChooseElement extends BaseElement {
 	};
 
 	private boolean condition;
-	private boolean hasCondition;
+	private boolean hasConditionSet;
 
-	ChooseElement() {
-		super(TYPE);
-	}
+	ChooseElement() { }
 
 	@Override
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
+	protected void parseTag(Tag tag, ParserContext ctx) {
 		condition = false;
-		hasCondition = false;
+		hasConditionSet = false;
 	}
 
-	public boolean hasCondition() {
-		return hasCondition;
+	public boolean hadConditionSet() {
+		return hasConditionSet;
 	}
 
 	public boolean isCondition() {
@@ -35,7 +33,7 @@ class ChooseElement extends BaseElement {
 
 	public void setCondition(boolean condition) {
 		this.condition = condition;
-		this.hasCondition |= condition; // set to true if anyone of conditions are true
+		this.hasConditionSet |= condition; // set to true if anyone of conditions are true
 	}
 
 }

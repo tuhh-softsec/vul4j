@@ -18,7 +18,10 @@ class CommentElement extends BaseElement {
 
 	};
 
-	CommentElement() {
-		super(TYPE);
+	CommentElement() { }
+
+	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		// ignore element body
 	}
 }

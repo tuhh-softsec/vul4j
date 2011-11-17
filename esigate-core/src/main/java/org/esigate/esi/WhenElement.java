@@ -2,15 +2,13 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
-import org.esigate.parser.ElementType;
+import org.esigate.HttpErrorPage;
 import org.esigate.vars.Operations;
 import org.esigate.vars.VariablesResolver;
+import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
-class WhenElement extends BaseBodyTagElement {
+class WhenElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:when", "</esi:when") {
 		public WhenElement newInstance() {
@@ -19,45 +17,36 @@ class WhenElement extends BaseBodyTagElement {
 
 	};
 
-	private HttpServletRequest request;
+	private StringBuilder buf = new StringBuilder();
+	private boolean active = false;
 
 	WhenElement() {
-		super(TYPE);
 	}
 
 	@Override
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	@Override
-	protected void parseTag(Tag tag, Appendable out, ElementStack stack) {
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String test = tag.getAttribute("test");
-		if (test != null && out instanceof ChooseElement) {
-			((ChooseElement) out).setCondition(Operations.processOperators(
-					VariablesResolver.replaceAllVariables(test, request)));
+		ChooseElement parent = ctx.findAncestor(ChooseElement.class);
+		if (test != null && parent != null) {
+			// no other 'when' were active before
+			active = !parent.hadConditionSet();
+			parent.setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test, ctx.getRequest())));
+			active &= parent.isCondition();
 		}
-
 	}
 
 	@Override
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
-		Element e = stack.pop();
-		Appendable parent = stack.getCurrentWriter();
-
-		if (e instanceof ChooseElement && ((ChooseElement) e).isCondition()) {
-			String result = VariablesResolver.replaceAllVariables(body, request);
-			parent.append(result);
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+		if (active) {
+			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+			super.characters(result, 0, result.length());
 		}
-		stack.push(e);
-
-		// Element parent = stack.peek();
-		// if (parent instanceof ChooseElement
-		// && ((ChooseElement) parent).isCondition()) {
-		// String result = VariablesResolver
-		// .replaceAllVariables(body, request);
-		// out.append(result);
-		// }
 	}
 
+	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		if (active) {
+			buf.append(csq, start, end);
+		}
+	}
 }

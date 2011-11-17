@@ -37,7 +37,9 @@ public class VarsElementTest extends TestCase {
 	}
 
 	public void testCookie() throws IOException, HttpErrorPage {
-		String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >" + "</esi:vars> end";
+		String page = "begin <esi:vars>"
+				+ "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >"
+				+ "</esi:vars> end";
 		request.addCookie(new Cookie("cookieName", "value"));
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
@@ -46,7 +48,9 @@ public class VarsElementTest extends TestCase {
 	}
 
 	public void testQueryString() throws IOException, HttpErrorPage {
-		String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >" + "</esi:vars> end";
+		String page = "begin <esi:vars>"
+				+ "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
+				+ "</esi:vars> end";
 		request = new MockHttpServletRequest("http://localhost/?param1=param1value");
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
@@ -65,7 +69,8 @@ public class VarsElementTest extends TestCase {
 
 	public void testUserAgent() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>" + "$(HTTP_USER_AGENT{os})" + "</esi:vars> end";
-		request.setHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) " + "Gecko/20100914 Firefox/3.6.10 GTB7.1 ( .NET CLR 3.5.30729)");
+		request.setHeader("User-Agent",
+				"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.10) Gecko/20100914 Firefox/3.6.10 GTB7.1 ( .NET CLR 3.5.30729)");
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);

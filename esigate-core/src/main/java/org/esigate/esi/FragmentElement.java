@@ -2,8 +2,9 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.parser.ElementStack;
+import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 class FragmentElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
@@ -16,22 +17,19 @@ class FragmentElement extends BaseElement {
 	private EsiFragmentRenderer esiFragmentRenderer;
 	private boolean nameMatches;
 
-	FragmentElement() {
-		super(TYPE);
-	}
+	FragmentElement() { }
 
 	@Override
-	public void doEndTag(String tag) {
-		// Stop writing
+	public void onTagEnd(String tag, ParserContext ctx) {
 		if (nameMatches) {
 			esiFragmentRenderer.setWrite(false);
 		}
 	}
 
 	@Override
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) {
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String name = tag.getAttribute("name");
-		this.esiFragmentRenderer = stack.findAncestorWithClass(this, EsiFragmentRenderer.class);
+		this.esiFragmentRenderer = ctx.findAncestor(EsiFragmentRenderer.class);
 		// If name matches, start writing
 		nameMatches = name.equals(esiFragmentRenderer.getName());
 		if (nameMatches) {
@@ -40,26 +38,7 @@ class FragmentElement extends BaseElement {
 	}
 
 	@Override
-	public boolean isClosed() {
-		return false;
-	}
-
-	@Override
-	public Appendable append(CharSequence csq) throws IOException {
-		esiFragmentRenderer.append(csq);
-		return this;
-	}
-
-	@Override
-	public Appendable append(char c) throws IOException {
-		esiFragmentRenderer.append(c);
-		return this;
-	}
-
-	@Override
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
+	public void characters(CharSequence csq, int start, int end) throws IOException {
 		esiFragmentRenderer.append(csq, start, end);
-		return this;
 	}
-
 }

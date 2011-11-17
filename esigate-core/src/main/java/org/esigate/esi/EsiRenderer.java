@@ -65,8 +65,7 @@ public class EsiRenderer implements Renderer, Appendable {
 		return this;
 	}
 
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		out.append(csq, start, end);
 		return this;
 	}

@@ -4,48 +4,39 @@ import java.io.IOException;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
-import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
 abstract class BaseElement implements Element {
-	private ElementType type;
 	private boolean closed = false;
+	private Element parent = null;
 
-	protected BaseElement(ElementType type) {
-		this.type = type;
-	}
-
-	public Appendable append(CharSequence csq) throws IOException {
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		return this;
-	}
-
-	public void doStartTag(String tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
-		Tag tagObj = Tag.create(tag);
-		closed = tagObj.isOpenClosed();
-		parseTag(tagObj, parent, stack);
+	protected BaseElement() {
 	}
 
 	/** Additional tag initialization callback. */
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
-	}
-
-	public void doEndTag(String tag) throws IOException, HttpErrorPage {
-	}
-
-	public ElementType getType() {
-		return type;
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 	}
 
 	public boolean isClosed() {
 		return closed;
+	}
+
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		Tag tagObj = Tag.create(tag);
+		closed = tagObj.isOpenClosed();
+		parent = ctx.getCurrent();
+		parseTag(tagObj, ctx);
+	}
+
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	}
+
+	public boolean onError(Exception e, ParserContext ctx) {
+		return false;
+	}
+
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		parent.characters(csq, start, end);
 	}
 
 }

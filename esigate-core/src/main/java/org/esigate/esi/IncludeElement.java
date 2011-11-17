@@ -5,9 +5,8 @@ import java.io.IOException;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
 
@@ -20,16 +19,30 @@ class IncludeElement extends BaseElement {
 
 	};
 
-	IncludeElement() {
-		super(TYPE);
-	}
+	private final Appendable outAdapter = new Appendable() {
+
+		public Appendable append(CharSequence csq, int start, int end) throws IOException {
+			IncludeElement.this.characters(csq, start, end);
+			return this;
+		}
+
+		public Appendable append(char c) throws IOException {
+			return append(new StringBuilder(1).append(c), 0, 1);
+		}
+
+		public Appendable append(CharSequence csq) throws IOException {
+			return append(csq, 0, csq.length());
+		}
+	};
+
+	IncludeElement() { }
 
 	@Override
-	protected void parseTag(Tag tag, Appendable parent, ElementStack stack) throws IOException, HttpErrorPage {
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String src = tag.getAttribute("src");
 		String fragment = tag.getAttribute("fragment");
 		String xpath = tag.getAttribute("xpath");
-		EsiRenderer esiRenderer = stack.findAncestorWithClass(this, EsiRenderer.class);
+		EsiRenderer esiRenderer = ctx.findAncestor(EsiRenderer.class);
 		Driver driver;
 		String page;
 		int idx = src.indexOf("$PROVIDER({");
@@ -47,81 +60,27 @@ class IncludeElement extends BaseElement {
 		try {
 			InlineCache ic = InlineCache.getFragment(src);
 			if (ic != null && !ic.isExpired()) {
-				getOut(parent, stack).append(ic.getFragment());
+				String cache = ic.getFragment();
+				super.characters(cache, 0, cache.length());
 			} else if (fragment != null) {
-				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new EsiFragmentRenderer(page, fragment),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else if (xpath != null) {
-				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new XpathRenderer(xpath),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else {
-				driver.render(page, null, getOut(parent, stack), esiRenderer.getRequest(), esiRenderer.getResponse(),
+				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
 		} catch (Exception e) {
-			TryElement tre = getTryElement(stack);
-			if (tre != null) {
-				tre.setIncludeInside(true);
-			} else {
+			if (!ctx.reportError(e)) {
 				HttpErrorPage httpErrorPage = new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
 				httpErrorPage.initCause(e);
 				throw httpErrorPage;
 			}
 		}
-	}
-
-	private TryElement getTryElement(ElementStack stack) {
-		TryElement res = null;
-		Element e3 = stack.pop();
-		if (stack.isEmpty()) {
-			stack.push(e3);
-			return res;
-		}
-		Element e1 = stack.pop();
-		if (stack.isEmpty()) {
-			stack.push(e1);
-			stack.push(e3);
-			return res;
-		}
-		if (e1 instanceof AttemptElement) {
-			Element e2 = stack.pop();
-			if (e2 instanceof TryElement) {
-				res = (TryElement) e2;
-			}
-			stack.push(e2);
-		}
-		stack.push(e1);
-		stack.push(e3);
-		return res;
-	}
-
-	private Appendable getOut(Appendable out, ElementStack stack) {
-		Appendable res = out;
-		getTryElement(stack);
-
-		Element e3 = stack.pop();
-		if (stack.isEmpty()) {
-			stack.push(e3);
-			return res;
-		}
-		Element e1 = stack.pop();
-		if (stack.isEmpty()) {
-			stack.push(e1);
-			stack.push(e3);
-			return res;
-		}
-		if (e1 instanceof AttemptElement) {
-			Element e2 = stack.pop();
-			if (e2 instanceof TryElement) {
-				res = stack.getCurrentWriter();
-			}
-			stack.push(e2);
-		}
-		stack.push(e1);
-		stack.push(e3);
-		return res;
 	}
 
 }

@@ -7,12 +7,12 @@ import java.util.Map;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.Element;
-import org.esigate.parser.ElementStack;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 import org.esigate.tags.TemplateRenderer;
 
 
-public class IncludeTemplateElement implements Element {
+class IncludeTemplateElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 		public boolean isStartTag(String tag) {
 			return tag.startsWith("<!--$includetemplate$");
@@ -27,6 +27,7 @@ public class IncludeTemplateElement implements Element {
 		}
 
 	};
+
 	private Driver driver;
 	private String page;
 	private String name;
@@ -34,28 +35,25 @@ public class IncludeTemplateElement implements Element {
 	private AggregateRenderer aggregateRenderer;
 	private Appendable out;
 
-	public void doStartTag(String tag, Appendable out, ElementStack stack)
-			throws IOException, HttpErrorPage {
-		this.out = out;
-		aggregateRenderer = stack.findAncestorWithClass(this,
-				AggregateRenderer.class);
-		ElementAttributes tagAttributes = ElementAttributesFactory
-				.createElementAttributes(tag);
+	public boolean onError(Exception e, ParserContext ctx) {
+		return false;
+	}
+
+	public void onTagStart(String tag, ParserContext ctx) {
+		this.out = new Adapter(ctx.getCurrent());
+		this.aggregateRenderer = ctx.findAncestor(AggregateRenderer.class);
+
+		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
 		this.driver = tagAttributes.getDriver();
 		this.page = tagAttributes.getPage();
 		this.name = tagAttributes.getName();
 
 	}
 
-	public void doEndTag(String tag) throws IOException, HttpErrorPage {
-		driver.render(page, null, out, aggregateRenderer.getRequest(),
-				aggregateRenderer.getResponse(), new TemplateRenderer(name,
-						params, page), new AggregateRenderer(aggregateRenderer
-						.getRequest(), aggregateRenderer.getResponse()));
-	}
-
-	public ElementType getType() {
-		return TYPE;
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		driver.render(page, null, out, aggregateRenderer.getRequest(), aggregateRenderer.getResponse(),
+				new TemplateRenderer(name, params, page),
+				new AggregateRenderer(aggregateRenderer.getRequest(), aggregateRenderer.getResponse()));
 	}
 
 	public void addParam(String name, String value) {
@@ -66,20 +64,8 @@ public class IncludeTemplateElement implements Element {
 		return false;
 	}
 
-	public Appendable append(CharSequence csq) throws IOException {
+	public void characters(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(char c) throws IOException {
-		// Just ignore tag body
-		return this;
-	}
-
-	public Appendable append(CharSequence csq, int start, int end)
-			throws IOException {
-		// Just ignore tag body
-		return this;
 	}
 
 }

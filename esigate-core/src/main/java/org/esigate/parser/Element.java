@@ -10,7 +10,7 @@ import org.esigate.HttpErrorPage;
  * @author Francois-Xavier Bonnet
  * 
  */
-public interface Element extends Appendable {
+public interface Element {
 	/**
 	 * Method called by the parser when it finds an opening tag
 	 * 
@@ -23,8 +23,7 @@ public interface Element extends Appendable {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void doStartTag(String tag, Appendable parent, ElementStack stack)
-			throws IOException, HttpErrorPage;
+	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
 
 	/**
 	 * Method called by the parser when it finds the matching closing tag
@@ -34,16 +33,15 @@ public interface Element extends Appendable {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void doEndTag(String tag) throws IOException, HttpErrorPage;
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
 
-	/**
-	 * @return The Type for this Element
-	 */
-	public ElementType getType();
+	/** @return <code>true</code> if error has been handled by this element and it should not be propagated further. */
+	public boolean onError(Exception e, ParserContext ctx);
 
-	/**
-	 * @return Returns true if the tag is already closed, that means that it
-	 *         does not need a matching closing tag. Ex: &lt;br /&gt;
-	 */
+	/** Method called by the parser when it finds characters between starting and closing tags. */
+    void characters(CharSequence csq, int start, int end)throws IOException;
+
+	/** @return Returns true if the tag is already closed, that means that it does not need a matching closing tag.
+	 * Ex: &lt;br /&gt; */
 	public boolean isClosed();
 }

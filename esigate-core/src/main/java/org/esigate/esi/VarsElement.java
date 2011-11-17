@@ -2,13 +2,12 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.esigate.parser.ElementStack;
-import org.esigate.parser.ElementType;
 import org.esigate.vars.VariablesResolver;
+import org.esigate.HttpErrorPage;
+import org.esigate.parser.ElementType;
+import org.esigate.parser.ParserContext;
 
-class VarsElement extends BaseBodyTagElement {
+class VarsElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
 		public VarsElement newInstance() {
 			return new VarsElement();
@@ -16,21 +15,19 @@ class VarsElement extends BaseBodyTagElement {
 
 	};
 
-	private HttpServletRequest request;
+	private StringBuilder buf = new StringBuilder();
 
-	VarsElement() {
-		super(TYPE);
+	VarsElement() { }
+
+	@Override
+	public void characters(CharSequence csq, int start, int end) throws IOException {
+		buf.append(csq, start, end);
 	}
 
 	@Override
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-
-	@Override
-	public void doAfterBody(String body, Appendable out, ElementStack stack) throws IOException {
-		String result = VariablesResolver.replaceAllVariables(body, request);
-		out.append(result);
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+		ctx.getCurrent().characters(result, 0 , result.length());
 	}
 
 }
