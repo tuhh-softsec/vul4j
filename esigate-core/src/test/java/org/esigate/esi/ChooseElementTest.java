@@ -53,7 +53,7 @@ public class ChooseElementTest extends TestCase {
 		assertEquals("begin expected cookie 'Beginner' end", out.toString());
 	}
 
-	public void testMultipleWhenOtherwise() throws IOException, HttpErrorPage {
+	public void testMultipleWhenOtherwise1() throws IOException, HttpErrorPage {
 		String page = "begin <esi:choose>"
 				+ "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Advanced'\">expected cookie</esi:when>"
 				+ "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">unexpected cookie</esi:when>"
@@ -64,6 +64,19 @@ public class ChooseElementTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
 		assertEquals("begin inside otherwise end", out.toString());
+	}
+
+	public void testMultipleWhenOtherwise2() throws IOException, HttpErrorPage {
+		String page = "begin <esi:choose>"
+				+ "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Advanced'\">expected cookie '$(HTTP_COOKIE{group})'</esi:when>"
+				+ "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">unexpected cookie '$(HTTP_COOKIE{group})'</esi:when>"
+				+ "<esi:otherwise>inside otherwise</esi:otherwise>"
+				+ "</esi:choose> end";
+		request.addCookie(new Cookie("group", "Advanced"));
+		EsiRenderer tested = new EsiRenderer(request, response, null);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("begin expected cookie 'Advanced' end", out.toString());
 	}
 
 	public void testOtherwise() throws IOException, HttpErrorPage {

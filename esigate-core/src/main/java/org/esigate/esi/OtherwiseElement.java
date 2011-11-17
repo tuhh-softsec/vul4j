@@ -34,7 +34,7 @@ class OtherwiseElement extends BaseBodyTagElement {
 		Element e = stack.pop();
 		Appendable parent = stack.getCurrentWriter();
 
-		if (e instanceof ChooseElement && !((ChooseElement) e).isCondition()) {
+		if (e instanceof ChooseElement && !((ChooseElement) e).hasCondition()) {
 			String result = VariablesResolver.replaceAllVariables(body, request);
 			parent.append(result);
 		}

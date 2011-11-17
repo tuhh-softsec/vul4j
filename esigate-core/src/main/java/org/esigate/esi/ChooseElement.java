@@ -35,11 +35,7 @@ class ChooseElement extends BaseElement {
 
 	public void setCondition(boolean condition) {
 		this.condition = condition;
-		hasCondition = true;
-	}
-
-	public void setHasCondition(boolean hasCondition) {
-		this.hasCondition = hasCondition;
+		this.hasCondition |= condition; // set to true if anyone of conditions are true
 	}
 
 }
