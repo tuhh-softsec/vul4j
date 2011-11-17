@@ -143,6 +143,8 @@ public class VariablesResolver {
 		String result = null;
 		if (properties != null) {
 			result = properties.getProperty(var, processVar(var, arg, request));
+		} else {
+			result = processVar(var, arg, request);
 		}
 		LOG.debug("Resolve property $(" + var + ")=" + result);
 		return result;
