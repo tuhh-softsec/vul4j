@@ -25,8 +25,8 @@
 package javax.xml.crypto.dsig.spec;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -148,7 +148,7 @@ public class XPathType {
         if (namespaceMap == null) {
             throw new NullPointerException("namespaceMap cannot be null");
         }
-        nsMap = new HashMap(namespaceMap);
+        nsMap = unmodifiableCopyOfMap(namespaceMap);
         Iterator entries = nsMap.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry me = (Map.Entry) entries.next();
@@ -157,7 +157,11 @@ public class XPathType {
                 throw new ClassCastException("not a String");
             }
         }
-        nsMap = Collections.unmodifiableMap(nsMap);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map unmodifiableCopyOfMap(Map map) {
+        return Collections.unmodifiableMap(new HashMap(map));
     }
 
     /**

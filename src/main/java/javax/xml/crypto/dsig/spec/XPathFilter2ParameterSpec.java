@@ -59,18 +59,22 @@ public final class XPathFilter2ParameterSpec implements TransformParameterSpec {
         if (xPathList == null) {
             throw new NullPointerException("xPathList cannot be null");
         }
-        List xPathListCopy = new ArrayList(xPathList);
-        if (xPathListCopy.isEmpty()) {
+        this.xPathList = unmodifiableCopyOfList(xPathList);
+        if (this.xPathList.isEmpty()) {
             throw new IllegalArgumentException("xPathList cannot be empty");
         }
-        int size = xPathListCopy.size();
+        int size = this.xPathList.size();
         for (int i = 0; i < size; i++) {
-            if (!(xPathListCopy.get(i) instanceof XPathType)) {
+            if (!(this.xPathList.get(i) instanceof XPathType)) {
                 throw new ClassCastException
                     ("xPathList["+i+"] is not a valid type");
             }
         }
-        this.xPathList = Collections.unmodifiableList(xPathListCopy);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List unmodifiableCopyOfList(List list) {
+        return Collections.unmodifiableList(new ArrayList(list));
     }
 
     /**

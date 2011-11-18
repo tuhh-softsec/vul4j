@@ -86,13 +86,17 @@ public final class ExcC14NParameterSpec implements C14NMethodParameterSpec {
         if (prefixList == null) {
             throw new NullPointerException("prefixList cannot be null");
         }
-        this.preList = new ArrayList(prefixList);
+        this.preList = unmodifiableCopyOfList(prefixList);
         for (int i = 0, size = preList.size(); i < size; i++) {
             if (!(preList.get(i) instanceof String)) {
                 throw new ClassCastException("not a String");
             }
         }
-        preList = Collections.unmodifiableList(preList);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List unmodifiableCopyOfList(List list) {
+        return Collections.unmodifiableList(new ArrayList(list));
     }
 
     /**
