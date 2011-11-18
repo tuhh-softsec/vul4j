@@ -24,13 +24,10 @@
  */
 package javax.xml.crypto.dsig.keyinfo;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.security.AccessController;
 import java.security.KeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.Security;
@@ -105,30 +102,6 @@ public abstract class KeyInfoFactory {
     private String mechanismType;
     private Provider provider;
 
-    private static Class cl; 
-    private static final Class[] getImplParams = 
-        { String.class, String.class, Provider.class };
-    private static Method getImplMethod;
-    static {
-        try {
-            cl = Class.forName("javax.xml.crypto.dsig.XMLDSigSecurity");
-        } catch (ClassNotFoundException cnfe) {
-            // not possible
-        }
-        getImplMethod = (Method)
-            AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                Method m = null;
-                try {
-                    m = cl.getDeclaredMethod("getImpl", getImplParams);
-                    if (m != null)
-                        m.setAccessible(true);
-                } catch (NoSuchMethodException nsme) { }
-                return m;
-            }
-        });
-    }
-
     /**
      * Default constructor, for invocation by subclasses.
      */
@@ -172,27 +145,33 @@ public abstract class KeyInfoFactory {
     private static KeyInfoFactory findInstance(String mechanismType, 
         Provider provider) {
 
-        if (getImplMethod == null) {
-            throw new NoSuchMechanismException
-                ("Cannot find " + mechanismType + " mechanism type");
+        if (provider == null) {
+            provider = getProvider("KeyInfoFactory", mechanismType);
         }
-
-        Object[] objs = null;
+        Provider.Service ps = provider.getService("KeyInfoFactory",
+                                                  mechanismType);
+        if (ps == null) {
+            throw new NoSuchMechanismException("Cannot find " + mechanismType +
+                                               " mechanism type");
+        }
         try {
-            objs = (Object[]) getImplMethod.invoke(null, new Object[] 
-                {mechanismType, "KeyInfoFactory", provider});
-        } catch (IllegalAccessException iae) {
-            throw new NoSuchMechanismException
-                ("Cannot find " + mechanismType + " mechanism type", iae);
-        } catch (InvocationTargetException ite) {
-            throw new NoSuchMechanismException
-                ("Cannot find " + mechanismType + " mechanism type", ite);
+            KeyInfoFactory fac = (KeyInfoFactory)ps.newInstance(null);
+            fac.mechanismType = mechanismType;
+            fac.provider = provider;
+            return fac;
+        } catch (NoSuchAlgorithmException nsae) {
+            throw new NoSuchMechanismException("Cannot find " + mechanismType +
+                                               " mechanism type", nsae);
         }
+    }
 
-        KeyInfoFactory factory = (KeyInfoFactory) objs[0];
-        factory.mechanismType = mechanismType;
-        factory.provider = (Provider) objs[1];
-        return factory;
+    private static Provider getProvider(String engine, String mech) {
+        Provider[] providers = Security.getProviders(engine + "." + mech);
+        if (providers == null) {
+            throw new NoSuchMechanismException("Mechanism type " + mech +
+                                               " not available");
+        }
+        return providers[0];
     }
 
     /**
