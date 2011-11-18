@@ -60,8 +60,8 @@ public final class DOMSignatureProperty extends DOMStructure
      * @throws NullPointerException if <code>content</code> or 
      *    <code>target</code> is <code>null</code>
      */
-    public DOMSignatureProperty(List<XMLStructure> content, String target,
-                                String id)
+    public DOMSignatureProperty(List<? extends XMLStructure> content,
+                                String target, String id)
     {
         if (target == null) {
             throw new NullPointerException("target cannot be null");
@@ -70,15 +70,14 @@ public final class DOMSignatureProperty extends DOMStructure
         } else if (content.isEmpty()) {
             throw new IllegalArgumentException("content cannot be empty");
         } else {
-            List<XMLStructure> contentCopy =
-                new ArrayList<XMLStructure>(content);
-            for (int i = 0, size = contentCopy.size(); i < size; i++) {
-                if (!(contentCopy.get(i) instanceof XMLStructure)) {
+            this.content = Collections.unmodifiableList(
+                new ArrayList<XMLStructure>(content));
+            for (int i = 0, size = this.content.size(); i < size; i++) {
+                if (!(this.content.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
                         ("content["+i+"] is not a valid type");
                 }
             }
-            this.content = Collections.unmodifiableList(contentCopy);
         }
         this.target = target;
         this.id = id;

@@ -61,21 +61,20 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
      * @throws ClassCastException if <code>content</code> contains any
      *    entries that are not of type {@link XMLStructure}
      */
-    public DOMXMLObject(List<XMLStructure> content, String id, String mimeType,
-                        String encoding)
+    public DOMXMLObject(List<? extends XMLStructure> content, String id,
+                        String mimeType, String encoding)
     {
         if (content == null || content.isEmpty()) {
             this.content = Collections.emptyList();
         } else {
-            List<XMLStructure> contentCopy =
-                new ArrayList<XMLStructure>(content);
-            for (int i = 0, size = contentCopy.size(); i < size; i++) {
-                if (!(contentCopy.get(i) instanceof XMLStructure)) {
+            this.content = Collections.unmodifiableList(
+                new ArrayList<XMLStructure>(content));
+            for (int i = 0, size = this.content.size(); i < size; i++) {
+                if (!(this.content.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
                         ("content["+i+"] is not a valid type");
                 }
             }
-            this.content = Collections.unmodifiableList(contentCopy);
         }
         this.id = id;
         this.mimeType = mimeType;

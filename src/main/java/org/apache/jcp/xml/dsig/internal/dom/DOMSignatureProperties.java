@@ -58,22 +58,22 @@ public final class DOMSignatureProperties extends DOMStructure
      * @throws IllegalArgumentException if <code>properties</code> is empty
      * @throws NullPointerException if <code>properties</code>
      */
-    public DOMSignatureProperties(List<SignatureProperty> properties, String id)
+    public DOMSignatureProperties(List<? extends SignatureProperty> properties,
+                                  String id)
     {
         if (properties == null) {
             throw new NullPointerException("properties cannot be null");
         } else if (properties.isEmpty()) {
             throw new IllegalArgumentException("properties cannot be empty");
         } else {
-            List<SignatureProperty> propsCopy =
-                new ArrayList<SignatureProperty>(properties);
-            for (int i = 0, size = propsCopy.size(); i < size; i++) {
-                if (!(propsCopy.get(i) instanceof SignatureProperty)) {
+            this.properties = Collections.unmodifiableList(
+                new ArrayList<SignatureProperty>(properties));
+            for (int i = 0, size = this.properties.size(); i < size; i++) {
+                if (!(this.properties.get(i) instanceof SignatureProperty)) {
                     throw new ClassCastException
                         ("properties["+i+"] is not a valid type");
                 }
             }
-            this.properties = Collections.unmodifiableList(propsCopy);
         }
         this.id = id;
     }

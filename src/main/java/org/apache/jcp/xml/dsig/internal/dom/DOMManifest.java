@@ -57,22 +57,22 @@ public final class DOMManifest extends DOMStructure implements Manifest {
      * @throws ClassCastException if <code>references</code> contains any
      *    entries that are not of type {@link Reference}
      */
-    public DOMManifest(List<Reference> references, String id) {
+    public DOMManifest(List<? extends Reference> references, String id) {
         if (references == null) {
             throw new NullPointerException("references cannot be null");
         }
-        List<Reference> refCopy = new ArrayList<Reference>(references);
-        if (refCopy.isEmpty()) {
+        this.references =
+            Collections.unmodifiableList(new ArrayList<Reference>(references));
+        if (this.references.isEmpty()) {
             throw new IllegalArgumentException("list of references must " +
                 "contain at least one entry");
         }
-        for (int i = 0, size = refCopy.size(); i < size; i++) {
-            if (!(refCopy.get(i) instanceof Reference)) {
+        for (int i = 0, size = this.references.size(); i < size; i++) {
+            if (!(this.references.get(i) instanceof Reference)) {
                 throw new ClassCastException
                     ("references["+i+"] is not a valid type");
             }
         }
-        this.references = Collections.unmodifiableList(refCopy);
         this.id = id;
     }
 
