@@ -67,7 +67,7 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
      * @throws ClassCastException if <code>content</code> contains any entries
      *    that are not of one of the valid types mentioned above
      */
-    public DOMX509Data(List<Object> content) {
+    public DOMX509Data(List<?> content) {
         if (content == null) {
             throw new NullPointerException("content cannot be null");
         }
@@ -250,6 +250,7 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
         }
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

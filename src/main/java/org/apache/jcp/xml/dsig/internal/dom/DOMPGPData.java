@@ -65,21 +65,21 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
      * @throws ClassCastException if <code>other</code> contains any
      *    entries that are not of type {@link XMLStructure}
      */
-    public DOMPGPData(byte[] keyPacket, List<XMLStructure> other) {
+    public DOMPGPData(byte[] keyPacket, List<? extends XMLStructure> other) {
         if (keyPacket == null) {
             throw new NullPointerException("keyPacket cannot be null");
         }
         if (other == null || other.isEmpty()) {
             this.externalElements = Collections.emptyList();
         } else {
-            List<XMLStructure> otherCopy = new ArrayList<XMLStructure>(other);
-            for (int i = 0, size = otherCopy.size(); i < size; i++) {
-                if (!(otherCopy.get(i) instanceof XMLStructure)) {
+            this.externalElements =
+                Collections.unmodifiableList(new ArrayList<XMLStructure>(other));
+            for (int i = 0, size = this.externalElements.size(); i < size; i++) {
+                if (!(this.externalElements.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
                         ("other["+i+"] is not a valid PGPData type");
                 }
             }
-            this.externalElements = Collections.unmodifiableList(otherCopy);
         }
         this.keyPacket = (byte[])keyPacket.clone();
         checkKeyPacket(keyPacket);
@@ -106,7 +106,8 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
      * @throws ClassCastException if <code>other</code> contains any
      *    entries that are not of type {@link XMLStructure}
      */
-    public DOMPGPData(byte[] keyId, byte[] keyPacket, List<XMLStructure> other) 
+    public DOMPGPData(byte[] keyId, byte[] keyPacket,
+                      List<? extends XMLStructure> other) 
     {
         if (keyId == null) {
             throw new NullPointerException("keyId cannot be null");
@@ -118,14 +119,14 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
         if (other == null || other.isEmpty()) {
             this.externalElements = Collections.emptyList();
         } else {
-            List<XMLStructure> otherCopy = new ArrayList<XMLStructure>(other);
-            for (int i = 0, size = otherCopy.size(); i < size; i++) {
-                if (!(otherCopy.get(i) instanceof XMLStructure)) {
+            this.externalElements =
+                Collections.unmodifiableList(new ArrayList<XMLStructure>(other));
+            for (int i = 0, size = this.externalElements.size(); i < size; i++) {
+                if (!(this.externalElements.get(i) instanceof XMLStructure)) {
                     throw new ClassCastException
                         ("other["+i+"] is not a valid PGPData type");
                 }
             }
-            this.externalElements = Collections.unmodifiableList(otherCopy);
         }
         this.keyId = (byte[])keyId.clone();
         this.keyPacket = keyPacket == null ? null

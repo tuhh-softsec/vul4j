@@ -48,6 +48,7 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         return newKeyInfo(content, null);
     }
 
+    @SuppressWarnings("unchecked")
     public KeyInfo newKeyInfo(List content, String id) {
         return new DOMKeyInfo(content, id);
     }
@@ -73,10 +74,12 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         return newPGPData(keyId, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public PGPData newPGPData(byte[] keyId, byte[] keyPacket, List other) {
         return new DOMPGPData(keyId, keyPacket, other);
     }
 
+    @SuppressWarnings("unchecked")
     public PGPData newPGPData(byte[] keyPacket, List other) {
         return new DOMPGPData(keyPacket, other);
     }
@@ -85,6 +88,7 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         return newRetrievalMethod(uri, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public RetrievalMethod newRetrievalMethod(String uri, String type,
         List transforms) {
         if (uri == null) {
@@ -93,6 +97,7 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         return new DOMRetrievalMethod(uri, type, transforms);
     }
 
+    @SuppressWarnings("unchecked")
     public X509Data newX509Data(List content) {
         return new DOMX509Data(content);
     }

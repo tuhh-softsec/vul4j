@@ -79,7 +79,7 @@ public final class DOMRetrievalMethod extends DOMStructure
      *    entries that are not of type {@link Transform}
      */
     public DOMRetrievalMethod(String uri, String type,
-                              List<Transform> transforms)
+                              List<? extends Transform> transforms)
     {
         if (uri == null) {
             throw new NullPointerException("uri cannot be null");
@@ -87,15 +87,14 @@ public final class DOMRetrievalMethod extends DOMStructure
         if (transforms == null || transforms.isEmpty()) {
             this.transforms = Collections.emptyList();
         } else {
-            List<Transform> transformsCopy =
-                new ArrayList<Transform>(transforms);
-            for (int i = 0, size = transformsCopy.size(); i < size; i++) {
-                if (!(transformsCopy.get(i) instanceof Transform)) {
+            this.transforms = Collections.unmodifiableList(
+                new ArrayList<Transform>(transforms));
+            for (int i = 0, size = this.transforms.size(); i < size; i++) {
+                if (!(this.transforms.get(i) instanceof Transform)) {
                     throw new ClassCastException
                         ("transforms["+i+"] is not a valid type");
                 }
             }
-            this.transforms = Collections.unmodifiableList(transformsCopy);
         }
         this.uri = uri;
         if ((uri != null) && (!uri.equals(""))) {
