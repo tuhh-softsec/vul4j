@@ -114,54 +114,51 @@ public final class DOMReference extends DOMStructure
      *    not of type <code>Transform</code>
      */
     public DOMReference(String uri, String type, DigestMethod dm,
-                        List<Transform> transforms, String id,
+                        List<? extends Transform> transforms, String id,
                         Provider provider)
     {
         this(uri, type, dm, null, null, transforms, id, null, provider);
     }
 
     public DOMReference(String uri, String type, DigestMethod dm,
-                        List<Transform> appliedTransforms, Data result,
-                        List<Transform> transforms, String id,
-                        Provider provider)
+                        List<? extends Transform> appliedTransforms,
+                        Data result, List<? extends Transform> transforms,
+                        String id, Provider provider)
     {
         this(uri, type, dm, appliedTransforms,
              result, transforms, id, null, provider);
     }
 
     public DOMReference(String uri, String type, DigestMethod dm,
-                        List<Transform> appliedTransforms, Data result,
-                        List<Transform> transforms, String id,
-                        byte[] digestValue, Provider provider)
+                        List<? extends Transform> appliedTransforms,
+                        Data result, List<? extends Transform> transforms,
+                        String id, byte[] digestValue, Provider provider)
     {
         if (dm == null) {
             throw new NullPointerException("DigestMethod must be non-null");
         }
-        this.allTransforms = new ArrayList<Transform>();
-        if (appliedTransforms != null) {
-            List<Transform> transformsCopy =
-                new ArrayList<Transform>(appliedTransforms);
-            for (int i = 0, size = transformsCopy.size(); i < size; i++) {
-                if (!(transformsCopy.get(i) instanceof Transform)) {
+        if (appliedTransforms == null) {
+            this.allTransforms = new ArrayList<Transform>();
+        } else {
+            this.allTransforms = new ArrayList<Transform>(appliedTransforms);
+            for (int i = 0, size = this.allTransforms.size(); i < size; i++) {
+                if (!(this.allTransforms.get(i) instanceof Transform)) {
                     throw new ClassCastException
                         ("appliedTransforms["+i+"] is not a valid type");
                 }
             }
-            this.allTransforms = transformsCopy;
         }
         if (transforms == null) {
             this.transforms = Collections.emptyList();
         } else {
-            List<Transform> transformsCopy =
-                new ArrayList<Transform>(transforms);
-            for (int i = 0, size = transformsCopy.size(); i < size; i++) {
-                if (!(transformsCopy.get(i) instanceof Transform)) {
+            this.transforms = new ArrayList<Transform>(transforms);
+            for (int i = 0, size = this.transforms.size(); i < size; i++) {
+                if (!(this.transforms.get(i) instanceof Transform)) {
                     throw new ClassCastException
                         ("transforms["+i+"] is not a valid type");
                 }
             }
-            this.transforms = transformsCopy;
-            this.allTransforms.addAll(transformsCopy);
+            this.allTransforms.addAll(this.transforms);
         }
         this.digestMethod = dm;
         this.uri = uri;
@@ -551,7 +548,7 @@ public final class DOMReference extends DOMStructure
             XMLSignatureInput xsi = ad.getXMLSignatureInput();
             if (xsi.isNodeSet()) {
                 try {
-                    final Set s = xsi.getNodeSet();
+                    final Set<Node> s = xsi.getNodeSet();
                     return new NodeSetData() {
                         public Iterator iterator() { return s.iterator(); }
                     };

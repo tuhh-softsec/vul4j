@@ -93,7 +93,8 @@ public final class DOMXMLSignature extends DOMStructure
      *  omit)
      * @throws NullPointerException if <code>si</code> is <code>null</code>
      */
-    public DOMXMLSignature(SignedInfo si, KeyInfo ki, List<XMLObject> objs,
+    public DOMXMLSignature(SignedInfo si, KeyInfo ki,
+                           List<? extends XMLObject> objs,
                            String id, String signatureValueId)
     {
         if (si == null) {
@@ -105,14 +106,14 @@ public final class DOMXMLSignature extends DOMStructure
         if (objs == null) {
             this.objects = Collections.emptyList();
         } else {
-            List<XMLObject> objsCopy = new ArrayList<XMLObject>(objs);
-            for (int i = 0, size = objsCopy.size(); i < size; i++) {
-                if (!(objsCopy.get(i) instanceof XMLObject)) {
+            this.objects =
+                Collections.unmodifiableList(new ArrayList<XMLObject>(objs));
+            for (int i = 0, size = this.objects.size(); i < size; i++) {
+                if (!(this.objects.get(i) instanceof XMLObject)) {
                     throw new ClassCastException
                         ("objs["+i+"] is not an XMLObject");
                 }
             }
-            this.objects = Collections.unmodifiableList(objsCopy);
         }
         this.ki = ki;
     }

@@ -76,13 +76,14 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *    type <code>Reference</code>
      */
     public DOMSignedInfo(CanonicalizationMethod cm, SignatureMethod sm,
-                         List<Reference> references) {
+                         List<? extends Reference> references) {
         if (cm == null || sm == null || references == null) {
             throw new NullPointerException();
         }
         this.canonicalizationMethod = cm;
         this.signatureMethod = sm;
-        this.references = Collections.unmodifiableList(new ArrayList<Reference>(references));
+        this.references = Collections.unmodifiableList(
+            new ArrayList<Reference>(references));
         if (this.references.isEmpty()) {
             throw new IllegalArgumentException("list of references must " +
                 "contain at least one entry");
@@ -112,7 +113,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      *    type <code>Reference</code>
      */
     public DOMSignedInfo(CanonicalizationMethod cm, SignatureMethod sm, 
-                         List<Reference> references, String id) {
+                         List<? extends Reference> references, String id) {
         this(cm, sm, references);
         this.id = id;
     }

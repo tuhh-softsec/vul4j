@@ -66,7 +66,7 @@ public class DOMSubTreeData implements NodeSetData {
      * This is an Iterator that contains a backing node-set that is
      * not populated until the caller first attempts to advance the iterator.
      */
-    static class DelayedNodeIterator implements Iterator {
+    static class DelayedNodeIterator implements Iterator<Node> {
         private Node root;
         private List<Node> nodeSet;
         private ListIterator<Node> li;
@@ -85,7 +85,7 @@ public class DOMSubTreeData implements NodeSetData {
             return li.hasNext();
         }
 
-        public Object next() {
+        public Node next() {
             if (nodeSet == null) {
                 nodeSet = dereferenceSameDocumentURI(root);
                 li = nodeSet.listIterator();
@@ -125,6 +125,7 @@ public class DOMSubTreeData implements NodeSetData {
          * @param nodeSet the set of nodes traversed so far
          * @param the previous sibling node
          */
+        @SuppressWarnings("fallthrough")
         private void nodeSetMinusCommentNodes(Node node, List<Node> nodeSet,
                                               Node prevSibling)
         {
