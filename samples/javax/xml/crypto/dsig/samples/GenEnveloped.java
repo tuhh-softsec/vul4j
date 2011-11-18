@@ -29,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.*;
 import java.util.Collections;
-import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;

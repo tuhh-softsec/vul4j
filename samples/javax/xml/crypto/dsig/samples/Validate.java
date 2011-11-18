@@ -26,7 +26,6 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.crypto.dsig.keyinfo.*;
 import java.io.FileInputStream;
 import java.security.*;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
