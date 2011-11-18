@@ -38,10 +38,10 @@ import javax.xml.crypto.dsig.spec.XPathType;
 import javax.xml.crypto.dsig.spec.XPathFilter2ParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -143,13 +143,12 @@ public final class DOMXPathFilter2Transform extends ApacheTransform {
 
             // add namespace attributes, if necessary
             @SuppressWarnings("unchecked")
-            Iterator<Map.Entry> it =
-                xpathType.getNamespaceMap().entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = it.next();
+            Set<Map.Entry<String, String>> entries =
+                xpathType.getNamespaceMap().entrySet();
+            for (Map.Entry<String, String> entry : entries) {
                 elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
-                                    (String)entry.getKey(), 
-                                    (String)entry.getValue());
+                                    entry.getKey(), 
+                                    entry.getValue());
             }
 
             transformElem.appendChild(elem);

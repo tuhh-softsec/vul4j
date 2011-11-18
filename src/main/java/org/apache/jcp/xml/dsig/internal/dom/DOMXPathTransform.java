@@ -29,9 +29,9 @@ import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.crypto.dsig.spec.XPathFilterParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -96,12 +96,12 @@ public final class DOMXPathTransform extends ApacheTransform {
 
         // add namespace attributes, if necessary
         @SuppressWarnings("unchecked")
-        Iterator<Map.Entry> i = xp.getNamespaceMap().entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = i.next();
+        Set<Map.Entry<String, String>> entries =
+            xp.getNamespaceMap().entrySet();
+        for (Map.Entry<String, String> entry : entries) {
             xpathElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
-                                     (String)entry.getKey(),
-                                     (String)entry.getValue());
+                                     entry.getKey(),
+                                     entry.getValue());
         }
             
         transformElem.appendChild(xpathElem);
