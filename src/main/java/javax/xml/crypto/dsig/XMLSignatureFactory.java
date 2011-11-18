@@ -189,19 +189,33 @@ public abstract class XMLSignatureFactory {
     private static XMLSignatureFactory findInstance(String mechanismType,
         Provider provider) {
 
-        Object[] objs = null;
-        try {
-            objs = (Object[]) XMLDSigSecurity.getImpl
-                (mechanismType, "XMLSignatureFactory", provider);
-        } catch (NoSuchAlgorithmException nsae) {
-            throw new NoSuchMechanismException
-                ("Cannot find " + mechanismType + " mechanism type", nsae);
+        if (provider == null) {
+            provider = getProvider("XMLSignatureFactory", mechanismType);
         }
+        Provider.Service ps = provider.getService("XMLSignatureFactory",
+                                                  mechanismType);
+        if (ps == null) {
+            throw new NoSuchMechanismException("Cannot find " + mechanismType +
+                                               " mechanism type");
+        }
+        try {
+            XMLSignatureFactory fac = (XMLSignatureFactory)ps.newInstance(null);
+            fac.mechanismType = mechanismType;
+            fac.provider = provider;
+            return fac;
+        } catch (NoSuchAlgorithmException nsae) {
+            throw new NoSuchMechanismException("Cannot find " + mechanismType +
+                                               " mechanism type", nsae);
+        }
+    }
 
-        XMLSignatureFactory factory = (XMLSignatureFactory) objs[0];
-        factory.mechanismType = mechanismType;
-        factory.provider = (Provider) objs[1];
-        return factory;
+    private static Provider getProvider(String engine, String mech) {
+        Provider[] providers = Security.getProviders(engine + "." + mech);
+        if (providers == null) {
+            throw new NoSuchMechanismException("Mechanism type " + mech +
+                                               " not available");
+        }
+        return providers[0];
     }
 
     /**

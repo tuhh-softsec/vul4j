@@ -219,47 +219,44 @@ public abstract class TransformService implements Transform {
         String mechanismType, Provider provider) 
         throws NoSuchAlgorithmException {
 
-        Object[] objs = (Object[]) XMLDSigSecurity.getImpl
-            (algorithm, new MechanismMapEntry(algorithm, mechanismType),
-            "TransformService", provider);
-
-        TransformService spi = (TransformService) objs[0];
-        spi.mechanism = mechanismType;
-        spi.algorithm = algorithm;
-        spi.provider = (Provider) objs[1];
-        return spi;
+        if (provider == null) {
+            provider = getProvider("TransformService", algorithm,
+                                   mechanismType);
+        }
+        Provider.Service ps = provider.getService("TransformService",
+                                                  algorithm);
+        if (ps == null) {
+            throw new NoSuchAlgorithmException("no such algorithm: " +
+                                               algorithm + " for provider " +
+                                               provider.getName());
+        }
+        TransformService ts = (TransformService)ps.newInstance(null);
+        ts.algorithm = algorithm;
+        ts.mechanism = mechanismType;
+        ts.provider = provider;
+        return ts;
     }
 
-    private static class MechanismMapEntry implements Map.Entry {
-        private final String mechanism;
-        private final String key;
-        MechanismMapEntry(String algorithm, String mechanism) {
-            this.mechanism = mechanism;
-            this.key = "TransformService." + algorithm + " MechanismType";
-        }
-        public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry)) {
-                return false;
+    private static Provider getProvider(String engine, String alg, String mech)
+        throws NoSuchAlgorithmException
+    {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(engine + "." + alg, "");
+        map.put(engine + "." + alg + " " + "MechanismType", mech);
+        Provider[] providers = Security.getProviders(map);
+        if (providers == null) {
+            if (mech.equals("DOM")) {
+                // look for providers without MechanismType specified
+                map.clear();
+                map.put(engine + "." + alg, "");
+                providers = Security.getProviders(map);
+                if (providers != null)
+                    return providers[0];
             }
-            Map.Entry e = (Map.Entry) o;
-            return (getKey()==null ? 
-                    e.getKey()==null : getKey().equals(e.getKey())) &&
-                   (getValue()==null ?
-                    e.getValue()==null : getValue().equals(e.getValue()));
+            throw new NoSuchAlgorithmException("Algorithm type " + alg +
+                                               " not available");
         }
-        public Object getKey() {
-            return key;
-        }
-        public Object getValue() {
-            return mechanism;
-        }
-        public Object setValue(Object value) {
-            throw new UnsupportedOperationException();
-        }
-        public int hashCode() {
-            return (getKey()==null ? 0 : getKey().hashCode()) ^
-                   (getValue()==null ? 0 : getValue().hashCode());
-        }
+        return providers[0];
     }
 
     /**
