@@ -137,6 +137,12 @@ public class JCEMapper {
             XMLCipher.AES_256, new Algorithm("AES", "AES/CBC/ISO10126Padding", 256)
         );
         algorithmsMap.put(
+            XMLCipher.AES_128_GCM, new Algorithm("AES", "AES/GCM/NoPadding", 128)
+        );
+        algorithmsMap.put(
+            XMLCipher.AES_256_GCM, new Algorithm("AES", "AES/GCM/NoPadding", 256)
+        );
+        algorithmsMap.put(
             XMLCipher.RSA_v1dot5, new Algorithm("RSA", "RSA/ECB/PKCS1Padding")
         );
         algorithmsMap.put(

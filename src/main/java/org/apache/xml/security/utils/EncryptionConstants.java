@@ -137,6 +137,14 @@ public class EncryptionConstants {
     /** Block Encryption - OPTIONAL AES-192 */
     public static final String ALGO_ID_BLOCKCIPHER_AES192 = 
         EncryptionConstants.EncryptionSpecNS + "aes192-cbc";
+    
+    /** Block Encryption - OPTIONAL AES-128-GCM */
+    public static final String ALGO_ID_BLOCKCIPHER_AES128_GCM = 
+        "http://www.w3.org/2009/xmlenc11#aes128-gcm";
+    
+    /** Block Encryption - OPTIONAL AES-256-GCM */
+    public static final String ALGO_ID_BLOCKCIPHER_AES256_GCM = 
+        "http://www.w3.org/2009/xmlenc11#aes256-gcm";
 
     /** Key Transport - REQUIRED RSA-v1.5*/
     public static final String ALGO_ID_KEYTRANSPORT_RSA15 = 

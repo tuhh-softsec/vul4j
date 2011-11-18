@@ -287,7 +287,23 @@
                     KeyLength="256"
                     RequiredKey="AES"
                     JCEName="AES/CBC/ISO10126Padding"/>
+                    
+         <Algorithm URI="http://www.w3.org/2009/xmlenc11#aes128-gcm"
+                   Description="Block encryption using AES with a key length of 128 bit in GCM"
+                   AlgorithmClass="BlockEncryption"
+                   RequirementLevel="OPTIONAL"
+                   KeyLength="128"
+                   RequiredKey="AES"
+                   JCEName="AES/GCM/NoPadding"/>
 
+        <Algorithm URI="http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                   Description="Block encryption using AES with a key length of 256 bit in GCM"
+                   AlgorithmClass="BlockEncryption"
+                   RequirementLevel="OPTIONAL"
+                   KeyLength="256"
+                   RequiredKey="AES"
+                   JCEName="AES/GCM/NoPadding"/>
+         
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#rsa-1_5"
                     Description="Key Transport RSA-v1.5"
                     AlgorithmClass="KeyTransport"

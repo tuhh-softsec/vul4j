@@ -28,6 +28,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -91,6 +92,14 @@ public class XMLCipher {
     /** AES 192 Cipher */
     public static final String AES_192 =                     
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192;
+    
+    /** AES 128 GCM Cipher */
+    public static final String AES_128_GCM =
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM;
+    
+    /** AES 256 GCM Cipher */
+    public static final String AES_256_GCM = 
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256_GCM;
     
     /** RSA 1.5 Cipher */
     public static final String RSA_v1dot5 =                  
@@ -175,7 +184,8 @@ public class XMLCipher {
     private static final String ENC_ALGORITHMS = TRIPLEDES + "\n" +
     AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
     RSA_OAEP + "\n" + TRIPLEDES_KeyWrap + "\n" + AES_128_KeyWrap + "\n" +
-    AES_256_KeyWrap + "\n" + AES_192_KeyWrap+ "\n";
+    AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
+    AES_128_GCM + "\n" + AES_256_GCM + "\n";
 
     /** Cipher created during initialisation that is used for encryption */
     private Cipher contextCipher;
@@ -215,6 +225,8 @@ public class XMLCipher {
     // The EncryptedData being built (part of a WRAP operation) or read
     // (part of an UNWRAP operation)
     private EncryptedData ed;
+    
+    private SecureRandom random;
     
     /**
      * Set the Serializer algorithm to use
@@ -314,6 +326,8 @@ public class XMLCipher {
             algorithm.equals(AES_128) ||
             algorithm.equals(AES_256) ||
             algorithm.equals(AES_192) ||
+            algorithm.equals(AES_128_GCM) ||
+            algorithm.equals(AES_256_GCM) ||
             algorithm.equals(RSA_v1dot5) ||
             algorithm.equals(RSA_OAEP) ||
             algorithm.equals(TRIPLEDES_KeyWrap) ||
@@ -1022,11 +1036,23 @@ public class XMLCipher {
         // Now perform the encryption
 
         try {
-            // Should internally generate an IV
-            // todo - allow user to set an IV
-            c.init(cipherMode, key);
+            // The Spec mandates a 96-bit IV for GCM algorithms
+            if (AES_128_GCM.equals(algorithm) || AES_256_GCM.equals(algorithm)) {
+                if (random == null) {
+                    random = SecureRandom.getInstance("SHA1PRNG");
+                    random.setSeed(System.nanoTime());
+                }
+                byte[] temp = new byte[12];
+                random.nextBytes(temp);
+                IvParameterSpec paramSpec = new IvParameterSpec(temp);
+                c.init(cipherMode, key, paramSpec);
+            } else {
+                c.init(cipherMode, key);
+            }
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new XMLEncryptionException("empty", ex);
         }
 
         try {
@@ -1526,6 +1552,10 @@ public class XMLCipher {
         // This should probably be put into the JCE mapper.
 
         int ivLen = c.getBlockSize();
+        String alg = encryptedData.getEncryptionMethod().getAlgorithm();
+        if (AES_128_GCM.equals(alg) || AES_256_GCM.equals(alg)) {
+            ivLen = 12;
+        }
         byte[] ivBytes = new byte[ivLen];
 
         // You may be able to pass the entire piece in to IvParameterSpec
