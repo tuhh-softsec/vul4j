@@ -62,7 +62,7 @@ public class ApacheNodeSetData implements ApacheData, NodeSetData {
         return xi;
     }
 
-    private Set<Node> getNodeSet(List nodeFilters) {
+    private Set<Node> getNodeSet(List<NodeFilter> nodeFilters) {
         if (xi.isNeedsToBeExpanded()) {
             XMLUtils.circumventBug2650
                 (XMLUtils.getOwnerDocument(xi.getSubNode()));
@@ -73,10 +73,10 @@ public class ApacheNodeSetData implements ApacheData, NodeSetData {
                         null, !xi.isExcludeComments());
         Set<Node> nodeSet = new LinkedHashSet<Node>();
         for (Node currentNode : inputSet) {
-            Iterator it = nodeFilters.iterator();
+            Iterator<NodeFilter> it = nodeFilters.iterator();
             boolean skipNode = false;
             while (it.hasNext() && !skipNode) {
-                NodeFilter nf = (NodeFilter) it.next();
+                NodeFilter nf = it.next();
                 if (nf.isNodeInclude(currentNode) != 1) {
                     skipNode = true;
                 }
