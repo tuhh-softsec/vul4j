@@ -54,6 +54,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
         return new DOMXMLSignature(si, ki, null, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public XMLSignature newXMLSignature(SignedInfo si, KeyInfo ki,
         List objects, String id, String signatureValueId) {
         return new DOMXMLSignature(si, ki, objects, id, signatureValueId);
@@ -63,11 +64,13 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
         return newReference(uri, dm, null, null, null);
     }
 
+    @SuppressWarnings("unchecked")
     public Reference newReference(String uri, DigestMethod dm, List transforms,
         String type, String id) {
         return new DOMReference(uri, type, dm, transforms, id, getProvider());
     }
 
+    @SuppressWarnings("unchecked")
     public Reference newReference(String uri, DigestMethod dm, 
         List appliedTransforms, Data result, List transforms, String type, 
         String id) {
@@ -84,6 +87,7 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             (uri, type, dm, appliedTransforms, result, transforms, id, getProvider());
     }
 
+    @SuppressWarnings("unchecked")
     public Reference newReference(String uri, DigestMethod dm, List transforms,
         String type, String id, byte[] digestValue) {
         if (digestValue == null) {
@@ -93,34 +97,41 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
             (uri, type, dm, null, null, transforms, id, digestValue, getProvider());
     }
 
+    @SuppressWarnings("unchecked")
     public SignedInfo newSignedInfo(CanonicalizationMethod cm,
         SignatureMethod sm, List references) {
         return newSignedInfo(cm, sm, references, null);
     }
 
+    @SuppressWarnings("unchecked")
     public SignedInfo newSignedInfo(CanonicalizationMethod cm,
         SignatureMethod sm, List references, String id) {
         return new DOMSignedInfo(cm, sm, references, id);
     }
 
     // Object factory methods
+    @SuppressWarnings("unchecked")
     public XMLObject newXMLObject(List content, String id, String mimeType,
         String encoding) {
         return new DOMXMLObject(content, id, mimeType, encoding);
     }
 
+    @SuppressWarnings("unchecked")
     public Manifest newManifest(List references) {
         return newManifest(references, null);
     }
 
+    @SuppressWarnings("unchecked")
     public Manifest newManifest(List references, String id) {
         return new DOMManifest(references, id);
     }
 
+    @SuppressWarnings("unchecked")
     public SignatureProperties newSignatureProperties(List props, String id) {
         return new DOMSignatureProperties(props, id);
     }
 
+    @SuppressWarnings("unchecked")
     public SignatureProperty newSignatureProperty
         (List info, String target, String id) {
         return new DOMSignatureProperty(info, target, id);

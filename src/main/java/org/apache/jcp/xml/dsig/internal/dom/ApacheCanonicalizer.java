@@ -152,7 +152,9 @@ public abstract class ApacheCanonicalizer extends TransformService {
             } else if (data instanceof NodeSetData) {
                 NodeSetData nsd = (NodeSetData)data;
                 // convert Iterator to Set
-                nodeSet = Utils.toNodeSet(nsd.iterator());
+                @SuppressWarnings("unchecked")
+                Set<Node> ns = Utils.toNodeSet(nsd.iterator());
+                nodeSet = ns;
                 if (log.isDebugEnabled()) {
                     log.debug("Canonicalizing " + nodeSet.size() + " nodes");
                 }
@@ -218,6 +220,7 @@ public abstract class ApacheCanonicalizer extends TransformService {
                 in = new XMLSignatureInput(subTree.getRoot());
                 in.setExcludeComments(subTree.excludeComments());
             } else {
+                @SuppressWarnings("unchecked")
                 Set<Node> nodeSet =
                     Utils.toNodeSet(((NodeSetData)data).iterator());
                 in = new XMLSignatureInput(nodeSet);
