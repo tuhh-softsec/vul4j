@@ -30,6 +30,7 @@ import javax.xml.crypto.XMLCryptoContext;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import org.w3c.dom.Element;
 
 /**
@@ -43,13 +44,13 @@ import org.w3c.dom.Element;
  */
 public class DOMCryptoContext implements XMLCryptoContext {
 
-    private HashMap nsMap = new HashMap();
-    private HashMap idMap = new HashMap();
-    private HashMap objMap = new HashMap();
+    private Map<String, String> nsMap = new HashMap<String, String>();
+    private Map<String, Element> idMap = new HashMap<String, Element>();
+    private Map<Object, Object> objMap = new HashMap<Object, Object>();
+    private Map<String, Object> propMap = new HashMap<String, Object>();
     private String baseURI;
     private KeySelector ks;
     private URIDereferencer dereferencer;
-    private HashMap propMap = new HashMap();
     private String defaultPrefix;
 
     /**
@@ -69,7 +70,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
         if (namespaceURI == null) {
             throw new NullPointerException("namespaceURI cannot be null");
         }
-        String prefix = (String) nsMap.get(namespaceURI);
+        String prefix = nsMap.get(namespaceURI);
         return (prefix != null ? prefix : defaultPrefix);
     }
 
@@ -83,7 +84,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
         if (namespaceURI == null) {
             throw new NullPointerException("namespaceURI is null");
         }
-        return (String) nsMap.put(namespaceURI, prefix);
+        return nsMap.put(namespaceURI, prefix);
     }
 
     public String getDefaultNamespacePrefix() {
@@ -166,7 +167,7 @@ public class DOMCryptoContext implements XMLCryptoContext {
         if (idValue == null) {
             throw new NullPointerException("idValue is null");
         }
-        return (Element) idMap.get(idValue);
+        return idMap.get(idValue);
     }
 
     /**
