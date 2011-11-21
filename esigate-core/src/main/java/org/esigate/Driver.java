@@ -571,7 +571,38 @@ public class Driver {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * This method returns the content of an url as a String. The result
+	 * is cached into the request scope in order not to send several requests if
+	 * you need several blocks in the same page to build the final page.
+	 * 
+	 * @param page
+	 *            Address of the page containing the template
+	 * @param parameters
+	 *            parameters to be added to the request
+	 * @param originalRequest
+	 *            originating request object
+	 * @param response
+	 *            the response
+	 * @throws HttpErrorPage
+	 *             If an Exception occurs while retrieving the template
+	 * @return the content of the url
+	 * @throws HttpErrorPage
+	 */
+	public String getResourceAsString(String page, Map<String, String> parameters,
+			HttpServletRequest originalRequest,
+			HttpServletResponse response) throws HttpErrorPage{
+		ResourceContext resourceContext = new ResourceContext(this,
+				VariablesResolver.replaceAllVariables(page, originalRequest), 
+				null, originalRequest, response);
+		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
+		StringOutput stringOutput = getResourceAsString(resourceContext);
+		String currentValue = stringOutput.toString();
+		return currentValue;
+		
+	}
+	
 	private final String getContextKey() {
 		return UserContext.class.getName() + "#" + config.getInstanceName();
 	}
@@ -598,4 +629,5 @@ public class Driver {
 	public DriverConfiguration getConfiguration() {
 		return config;
 	}
+
 }

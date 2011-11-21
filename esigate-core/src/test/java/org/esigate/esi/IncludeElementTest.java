@@ -115,4 +115,50 @@ public class IncludeElementTest extends TestCase {
 		tested.render(null, page, out);
 		assertEquals("before -the body- after", out.toString());
 	}
+	
+	public void testIncludeXSLT() throws IOException, HttpErrorPage {
+		String page = "before "
+				+ "<esi:include src='$PROVIDER({mock})/inline-xslt' stylesheet=\"http://www.foo.com/test.xsl\" />"
+				+ " after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		provider.addResource("/inline-xslt",
+				"<html><body>The body<br></body></html>");
+		provider.addResource("http://www.foo.com/test.xsl", "<?xml version=\"1.0\"?>"
+				+ "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
+				+ "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\""
+				+ "<xsl:template match=\"//html:body\">"
+				+ "<xsl:copy-of select=\".\"/>"
+				+ "</xsl:template>"
+				+ "</xsl:stylesheet>");
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
+	}
+
+	public void testIncludeAlt() throws IOException, HttpErrorPage {
+		String page = "before "
+				+ "<esi:include src='$PROVIDER({mock})/notFound' alt=\"http://www.foo.com/test\" />"
+				+ " after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before test after", out.toString());
+	}
+	
+	public void testOnError() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" /> after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before The page: http://www.foo.com/test-onerror does not exist after", out.toString());
+	}
+	
+	public void testOnErrorContinue() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" onerror=\"continue\"/> after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before  after", out.toString());
+	}
+	
 }
