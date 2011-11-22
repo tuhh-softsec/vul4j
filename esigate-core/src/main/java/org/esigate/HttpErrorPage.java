@@ -36,10 +36,6 @@ public class HttpErrorPage extends Exception {
 		writer.write(errorPageContent);
 	}
 	
-	public void render(Appendable writer) throws IOException {
-		writer.append(errorPageContent);
-	}
-	
 	public void render(HttpServletResponse response) throws IOException {
 		try {
 			response.setStatus(statusCode);

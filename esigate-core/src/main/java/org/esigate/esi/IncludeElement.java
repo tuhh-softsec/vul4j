@@ -1,8 +1,6 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
@@ -43,12 +41,32 @@ class IncludeElement extends BaseElement {
 	@Override
 	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String src = tag.getAttribute("src");
+		String alt = tag.getAttribute("alt");
+		boolean ignoreError = "continue".equals(tag.getAttribute("onerror"));
+		try {
+			try {
+				processPage(src, tag, ctx);
+			} catch (Exception e) {
+				if (alt != null) {
+					processPage(alt, tag, ctx);
+				} else {
+					throw e;
+				}
+			}
+		} catch (Exception e) {
+			if (!ignoreError && !ctx.reportError(e)) {
+				HttpErrorPage httpErrorPage = new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
+				httpErrorPage.initCause(e);
+				throw httpErrorPage;
+			}
+		}
+	}
+
+	void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String fragment = tag.getAttribute("fragment");
 		String xpath = tag.getAttribute("xpath");
-		String alt = tag.getAttribute("alt");
 		String xslt = tag.getAttribute("stylesheet");
-		String onerror = tag.getAttribute("onerror") == null ? "display" : tag.getAttribute("onerror");
-		
+
 		EsiRenderer esiRenderer = ctx.findAncestor(EsiRenderer.class);
 		Driver driver;
 		String page;
@@ -64,59 +82,32 @@ class IncludeElement extends BaseElement {
 			driver = DriverFactory.getInstance(provider);
 		}
 		page = VariablesResolver.replaceAllVariables(page, esiRenderer.getRequest());
-		try {
-			
-			InlineCache ic = InlineCache.getFragment(src);
-			if (ic != null && !ic.isExpired()) {
-				String cache = ic.getFragment();
-				super.characters(cache, 0, cache.length());
-			} else if (fragment != null) {
+		InlineCache ic = InlineCache.getFragment(src);
+		if (ic != null && !ic.isExpired()) {
+			String cache = ic.getFragment();
+			super.characters(cache, 0, cache.length());
+		} else if (fragment != null) {
+			driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
+					new EsiFragmentRenderer(page, fragment),
+					new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
+		} else if (xpath != null) {
+			driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
+					new XpathRenderer(xpath),
+					new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
+		} else if (xslt != null) {
+			try {
 				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
-						new EsiFragmentRenderer(page, fragment),
-						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-			} else if (xpath != null) {
+					new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext()),
+					new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
+			} catch (Exception e) {
+				String currentValue = driver.getResourceAsString(xslt, null, esiRenderer.getRequest(), esiRenderer.getResponse());
 				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
-						new XpathRenderer(xpath),
-						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-			} else if (xslt != null) {
-				try
-				{
-					driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
-						new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext()),
-						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-				}
-				catch (Exception e) 
-				{
-					String currentValue = driver.getResourceAsString(xslt, null, esiRenderer.getRequest(), esiRenderer.getResponse());
-					driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
-							new XsltRenderer(currentValue),
-							new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-				}
-					
-			}else {
-				driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
+						new XsltRenderer(currentValue),
 						new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
-		} catch (Exception e) {
-			if (!ctx.reportError(e)) {
-				if (alt != null && !alt.isEmpty()) {
-					Map<String, String> attributes = new HashMap<String, String>() {};
-					attributes.put("src", alt);
-					attributes.put("fragment", fragment);
-					attributes.put("xpath", xpath);
-					attributes.put("stylesheet", xslt);
-					attributes.put("onerror", onerror);
-
-					Tag helpingTag = new Tag(tag.getName(), tag.isClosing(),
-							tag.isOpenClosed(), attributes);
-					parseTag(helpingTag, ctx);
-				}else{ 
-					HttpErrorPage httpErrorPage = new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
-					httpErrorPage.initCause(e);
-					if(!onerror.equals("continue"))
-						httpErrorPage.render(outAdapter);
-				}
-			}
+		}else {
+			driver.render(page, null, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
+					new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 		}
 	}
 

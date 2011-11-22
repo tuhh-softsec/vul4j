@@ -35,9 +35,23 @@ public class TryElementTest extends TestCase {
 		assertEquals("begin test end", out.toString());
 	}
 
-	public void testAttempt() throws IOException, HttpErrorPage {
+	public void testAttempt1() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>"
 				+ "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>"
+				+ "<esi:except>inside except</esi:except>"
+				+ "</esi:try> end";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("begin abc test cba end", out.toString());
+	}
+
+	public void testAttempt2() throws IOException, HttpErrorPage {
+		String page = "begin <esi:try>"
+				+ "<esi:attempt>abc "
+				+ "<esi:include src=\"http://www.foo.com/test\" />"
+				+ "<esi:include src='http://www.foo.com/not-found' onerror='continue' />"
+				+ " cba</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>"
 				+ "</esi:try> end";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);

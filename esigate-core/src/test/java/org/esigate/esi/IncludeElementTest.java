@@ -135,22 +135,37 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
 	}
 
-	public void testIncludeAlt() throws IOException, HttpErrorPage {
+	public void testIncludeAlt1() throws IOException, HttpErrorPage {
 		String page = "before "
-				+ "<esi:include src='$PROVIDER({mock})/notFound' alt=\"http://www.foo.com/test\" />"
+				+ "<esi:include src='$PROVIDER({mock})/alt-url' alt=\"http://www.foo.com/test\" />"
+				+ " after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		provider.addResource("/alt-url", "---fetched alt url---");
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before ---fetched alt url--- after", out.toString());
+	}
+
+	public void testIncludeAlt2() throws IOException, HttpErrorPage {
+		String page = "before "
+				+ "<esi:include src='$PROVIDER({mock})/not-found' alt=\"http://www.foo.com/test\" />"
 				+ " after";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
 		assertEquals("before test after", out.toString());
 	}
-	
-	public void testOnError() throws IOException, HttpErrorPage {
+
+	public void testOnError() throws IOException {
 		String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" /> after";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
-		assertEquals("before The page: http://www.foo.com/test-onerror does not exist after", out.toString());
+		try {
+			tested.render(null, page, out);
+			fail("should throw HttpErrorPage");
+		} catch (HttpErrorPage e) {
+			assertEquals(404, e.getStatusCode());
+		}
 	}
 	
 	public void testOnErrorContinue() throws IOException, HttpErrorPage {
