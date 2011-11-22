@@ -2,7 +2,6 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 
@@ -15,19 +14,25 @@ class ExceptElement extends BaseElement {
 
 	};
 
-	private boolean ignoreContent;
+	private boolean processContent;
 
 	ExceptElement() { }
 
 	@Override
-	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+	protected void parseTag(Tag tag, ParserContext ctx) {
 		TryElement parent = ctx.findAncestor(TryElement.class);
-		ignoreContent = !parent.hasErrors();
+		int code = (tag.getAttribute("code") != null) ? Integer.parseInt(tag.getAttribute("code")) : -1;
+		processContent = (parent.hasErrors() 
+				&& !parent.exceptProcessed() 
+				&& (code == -1 || code == parent.getErrorCode()));
+		if (processContent) {
+			parent.setExceptProcessed(processContent);
+		}
 	}
 
 	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
-		if (!ignoreContent) {
+		if (processContent) {
 			super.characters(csq, start, end);
 		}
 	}

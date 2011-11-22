@@ -84,4 +84,34 @@ public class TryElementTest extends TestCase {
 		assertEquals("begin inside except end", out.toString());
 	}
 
+	public void testMultipleExcept() throws IOException, HttpErrorPage {
+		String page = "begin <esi:try>"
+				+ "<esi:attempt> "
+				+ "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
+				+ "</esi:attempt>"
+				+ "<esi:except code='500'>inside incorrect except</esi:except>"
+				+ "<esi:except code='404'>inside correct except</esi:except>"
+				+ "<esi:except code='412'>inside incorrect except</esi:except>"
+				+ "<esi:except>inside default except</esi:except>"
+				+ "</esi:try> end";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("begin inside correct except end", out.toString());
+	}
+
+	public void testDefaultExcept() throws IOException, HttpErrorPage {
+		String page = "begin <esi:try>"
+				+ "<esi:attempt> "
+				+ "<esi:attempt>abc <esi:include src='http://www.foo2.com/test' /> cba</esi:attempt>"
+				+ "</esi:attempt>"
+				+ "<esi:except code='500'>inside incorrect except</esi:except>"
+				+ "<esi:except code='412'>inside incorrect except</esi:except>"
+				+ "<esi:except>inside default except</esi:except>"
+				+ "</esi:try> end";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("begin inside default except end", out.toString());
+	}
 }
