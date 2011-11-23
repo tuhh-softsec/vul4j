@@ -176,4 +176,16 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before  after", out.toString());
 	}
 	
+	public void testIncludeReplaceAbsolute() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		provider.addResource("http://www.foo.com/test-rewriteUrl", 
+				"<IMG src=\"http://www.foo.com/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"http://www.foo.com/test\">");
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before <IMG src=\"/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"/test\"> after", out.toString());
+	}
+	
 }
