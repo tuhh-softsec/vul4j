@@ -107,6 +107,7 @@ public class XMLUtils {
         getSetRec(rootNode, result, exclude, com);
     }
     
+    @SuppressWarnings("fallthrough")
     private static void getSetRec(final Node rootNode, final Set<Node> result,
                                 final Node exclude, final boolean com) {
         if (rootNode == exclude) {
@@ -479,6 +480,7 @@ public class XMLUtils {
      * @see <A HREF="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2650">
      * Namespace axis resolution is not XPath compliant </A>
      */
+    @SuppressWarnings("fallthrough")
     private static void circumventBug2650internal(Node node) {
         Node parent = null;
         Node sibling = null;
