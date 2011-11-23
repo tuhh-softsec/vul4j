@@ -34,6 +34,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.apache.xml.security.utils.IdResolver;
+
 /**
  * DOM-based implementation of Manifest.
  *
@@ -87,8 +89,7 @@ public final class DOMManifest extends DOMStructure implements Manifest {
     {
         this.id = DOMUtils.getAttributeValue(manElem, "Id");
         if (this.id != null) {
-            DOMCryptoContext dcc = (DOMCryptoContext)context;
-            dcc.setIdAttributeNS(manElem, null, "Id");
+            IdResolver.registerElementById(manElem, this.id);
         }
         Element refElem = DOMUtils.getFirstChildElement(manElem);
         List<Reference> refs = new ArrayList<Reference>();

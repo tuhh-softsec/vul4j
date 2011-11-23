@@ -35,6 +35,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.security.utils.IdResolver;
+
 /**
  * DOM-based implementation of XMLObject.
  *
@@ -95,8 +97,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
         this.encoding = DOMUtils.getAttributeValue(objElem, "Encoding");
         this.id = DOMUtils.getAttributeValue(objElem, "Id");
         if (this.id != null) {
-            DOMCryptoContext dcc = (DOMCryptoContext)context;
-            dcc.setIdAttributeNS(objElem, null, "Id");
+            IdResolver.registerElementById(objElem, this.id);
         }
         this.mimeType = DOMUtils.getAttributeValue(objElem, "MimeType");
 

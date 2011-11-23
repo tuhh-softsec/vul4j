@@ -51,6 +51,7 @@ import org.w3c.dom.Node;
 
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of XMLSignature.
@@ -495,8 +496,7 @@ public final class DOMXMLSignature extends DOMStructure
 
             id = DOMUtils.getAttributeValue(sigValueElem, "Id");
             if (id != null) {
-                DOMCryptoContext dcc = (DOMCryptoContext)context;
-                dcc.setIdAttributeNS(sigValueElem, null, "Id");
+                IdResolver.registerElementById(sigValueElem, id);
             }
             this.sigValueElem = sigValueElem;
         }

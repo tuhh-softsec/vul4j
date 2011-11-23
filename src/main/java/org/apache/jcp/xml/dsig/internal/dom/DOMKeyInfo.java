@@ -36,6 +36,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.security.utils.IdResolver;
+
 /**
  * DOM-based implementation of KeyInfo.
  *
@@ -88,8 +90,7 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
         // get Id attribute, if specified
         id = DOMUtils.getAttributeValue(kiElem, "Id");
         if (id != null) {
-            DOMCryptoContext dcc = (DOMCryptoContext)context;
-            dcc.setIdAttributeNS(kiElem, null, "Id");
+            IdResolver.registerElementById(kiElem, id);
         }
 
         // get all children nodes

@@ -50,6 +50,7 @@ import org.apache.jcp.xml.dsig.internal.DigesterOutputStream;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
@@ -217,8 +218,7 @@ public final class DOMReference extends DOMStructure
         this.uri = DOMUtils.getAttributeValue(refElem, "URI");
         this.id = DOMUtils.getAttributeValue(refElem, "Id");
         if (this.id != null) {
-            DOMCryptoContext dcc = (DOMCryptoContext)context;
-            dcc.setIdAttributeNS(refElem, null, "Id");
+            IdResolver.registerElementById(refElem, this.id);
         }
 
         this.type = DOMUtils.getAttributeValue(refElem, "Type");

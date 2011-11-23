@@ -34,6 +34,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.xml.security.utils.IdResolver;
+
 /**
  * DOM-based implementation of SignatureProperties.
  *
@@ -90,8 +92,7 @@ public final class DOMSignatureProperties extends DOMStructure
         // unmarshal attributes
         id = DOMUtils.getAttributeValue(propsElem, "Id");
         if (id != null) {
-            DOMCryptoContext dcc = (DOMCryptoContext)context;
-            dcc.setIdAttributeNS(propsElem, null, "Id");
+            IdResolver.registerElementById(propsElem, id);
         }
 
         NodeList nodes = propsElem.getChildNodes();
