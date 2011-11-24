@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
 import org.slf4j.Logger;
@@ -30,13 +29,9 @@ public class ResourceFixupRenderer implements Renderer {
 	public static final int ABSOLUTE = 0;
 	public static final int RELATIVE = 1;
 	public static final char SLASH = '/';
-	private static final Pattern URL_PATTERNS[] = new Pattern[] {
-			Pattern.compile(
-					"<([^>]+)(src|href|action|background)=\"([^\"]+)\"([^>]*)>",
-					Pattern.CASE_INSENSITIVE),
-			Pattern.compile(
-					"<([^>]+)(src|href|action|background)='([^']+)'([^>]*)>",
-					Pattern.CASE_INSENSITIVE) };
+	private static final Pattern URL_PATTERN = Pattern.compile(
+			"<([^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
+			Pattern.CASE_INSENSITIVE);
 	private String contextAdd = null;
 	private String contextRemove = null;
 	private String pagePath = null;
@@ -231,28 +226,25 @@ public class ResourceFixupRenderer implements Renderer {
 	 * @return the result of this renderer.
 	 */
 	CharSequence replace(CharSequence input) {
-		StringBuffer result = new StringBuffer(input);
-		CharSequence current = input;
-		for (Pattern pattern : URL_PATTERNS) {
-			result = new StringBuffer(current.length());
-			Matcher m = pattern.matcher(current);
-			while (m.find()) {
-				LOG.trace("found match: " + m);
-				String url = fixUrl(m.group(3));
-				url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$'
-														// as it denotes group
-				StringBuffer tagReplacement = new StringBuffer("<$1$2=\"")
-						.append(url).append("\"");
-				if (m.groupCount() > 3) {
-					tagReplacement.append("$4");
-				}
-				tagReplacement.append('>');
-				LOG.trace("replacement: " + tagReplacement);
-				m.appendReplacement(result, tagReplacement.toString());
+		StringBuffer result = new StringBuffer(input.length());
+		Matcher m = URL_PATTERN.matcher(input);
+		while (m.find()) {
+			LOG.trace("found match: " + m);
+			// m.group(3) matches to the attribute value including surrounded quotes
+			//String url = m.group(3);
+			String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
+			url = fixUrl(url);
+			url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it denotes group
+			StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");
+			if (m.groupCount() > 3) {
+				tagReplacement.append("$4");
 			}
-			m.appendTail(result);
-			current = result;
+			tagReplacement.append('>');
+			LOG.trace("replacement: " + tagReplacement);
+			m.appendReplacement(result, tagReplacement.toString());
 		}
+		m.appendTail(result);
+
 		return result;
 	}
 
