@@ -109,12 +109,14 @@ class IncludeElement extends BaseElement {
 			} else if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
+				Renderer xsltRenderer;
 				try {
-					rendererList.add(new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext()));		
+					xsltRenderer = new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext());
 				} catch (Exception e) {
 					String currentValue = driver.getResourceAsString(xslt, null, esiRenderer.getRequest(), esiRenderer.getResponse());
-					rendererList.add(new XsltRenderer(currentValue));
+					xsltRenderer = new XsltRenderer(currentValue);
 				}
+				rendererList.add(xsltRenderer);
 			}
 			rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			driver.render(page, parameters, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
