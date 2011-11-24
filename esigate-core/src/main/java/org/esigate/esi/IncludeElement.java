@@ -106,11 +106,8 @@ class IncludeElement extends BaseElement {
 		} else {
 			if (fragment != null) {
 				rendererList.add(new EsiFragmentRenderer(page, fragment));
-				rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-				
 			} else if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
-				rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			} else if (xslt != null) {
 				try {
 					rendererList.add(new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext()));		
@@ -118,10 +115,8 @@ class IncludeElement extends BaseElement {
 					String currentValue = driver.getResourceAsString(xslt, null, esiRenderer.getRequest(), esiRenderer.getResponse());
 					rendererList.add(new XsltRenderer(currentValue));
 				}
-				rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-			}else {
-				rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			}
+			rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
 			driver.render(page, parameters, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
 				rendererList.toArray(new Renderer[rendererList.size()]));
 		}
