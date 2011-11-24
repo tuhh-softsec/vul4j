@@ -22,6 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -136,10 +137,10 @@ public class TransformBase64Decode extends TransformSpi {
             try {
                 //Exceptional case there is current not text case testing this(Before it was a
                 //a common case).
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
                 Document doc =
-                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                        input.getOctetStream()
-                    );
+                    dbf.newDocumentBuilder().parse(input.getOctetStream());
 
                 Element rootNode = doc.getDocumentElement();
                 StringBuilder sb = new StringBuilder();

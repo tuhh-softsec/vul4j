@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -112,7 +113,7 @@ public class XMLSignatureInput {
     private OutputStream outputStream = null;
     
     private DocumentBuilderFactory dfactory;
-
+    
     /**
      * Construct a XMLSignatureInput from an octet array.
      * <p>
@@ -557,6 +558,7 @@ public class XMLSignatureInput {
         ParserConfigurationException, IOException, SAXException {
         if (dfactory == null) {
             dfactory = DocumentBuilderFactory.newInstance();
+            dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
             dfactory.setValidating(false);        
             dfactory.setNamespaceAware(true);
         }
@@ -582,4 +584,5 @@ public class XMLSignatureInput {
         this.inputOctetStreamProxy = null;
         this.bytes = null;
     }
+    
 }

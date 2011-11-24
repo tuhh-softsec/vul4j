@@ -20,6 +20,7 @@ package org.apache.xml.security.encryption;
 
 import java.io.StringReader;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -36,7 +37,7 @@ import org.w3c.dom.Node;
  */
 public class TransformSerializer extends AbstractSerializer {
     
-    private Transformer transformer;
+    private TransformerFactory transformerFactory;
     
     /**
      * @param source
@@ -56,9 +57,11 @@ public class TransformSerializer extends AbstractSerializer {
             }
             Source src = new StreamSource(new StringReader(fragment));
             
-            if (transformer == null) {
-                transformer = TransformerFactory.newInstance().newTransformer();
+            if (transformerFactory == null) {
+                transformerFactory = TransformerFactory.newInstance();
+                transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
             }
+            Transformer transformer = transformerFactory.newTransformer();
             
             DOMResult res = new DOMResult();
 
@@ -82,8 +85,6 @@ public class TransformSerializer extends AbstractSerializer {
                 child = dummyChild.getFirstChild();
             }
             
-            transformer.reset();
-
             return docfrag;
         } catch (Exception e) {
             throw new XMLEncryptionException("empty", e);

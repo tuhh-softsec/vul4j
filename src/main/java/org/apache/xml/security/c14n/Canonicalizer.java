@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -91,7 +92,7 @@ public class Canonicalizer {
         new ConcurrentHashMap<String, Class<? extends CanonicalizerSpi>>();
     
     private final CanonicalizerSpi canonicalizerSpi;
-
+    
     /**
      * Constructor Canonicalizer
      *
@@ -235,6 +236,7 @@ public class Canonicalizer {
         InputStream bais = new ByteArrayInputStream(inputBytes);
         InputSource in = new InputSource(bais);
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
 
         dfactory.setNamespaceAware(true);
 

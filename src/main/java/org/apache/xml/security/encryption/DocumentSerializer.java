@@ -21,6 +21,7 @@ package org.apache.xml.security.encryption;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,6 +53,7 @@ public class DocumentSerializer extends AbstractSerializer {
             if (dbf == null) {
                 dbf = DocumentBuilderFactory.newInstance();
                 dbf.setNamespaceAware(true);
+                dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
                 dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
                 dbf.setValidating(false);
             }
