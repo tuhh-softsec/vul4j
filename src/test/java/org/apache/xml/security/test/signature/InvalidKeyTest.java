@@ -26,8 +26,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.IdResolver;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -69,7 +72,17 @@ public class InvalidKeyTest extends org.junit.Assert {
         dbf.setNamespaceAware(true);
         Document e = dbf.newDocumentBuilder().parse(is);
             
-        NodeList nl = e.getFirstChild().getChildNodes();
+        Node assertion = e.getFirstChild();
+        while (!(assertion instanceof Element)) {
+            assertion = assertion.getNextSibling();
+        }
+        Attr attr = ((Element)assertion).getAttributeNodeNS(null, "AssertionID");
+        String id = (attr == null) ? null : attr.getValue();
+        if (id != null) {
+            IdResolver.registerElementById((Element)assertion, id);
+        }
+        
+        NodeList nl = assertion.getChildNodes();
         Element n = (Element)nl.item(nl.getLength()-1);
             
         XMLSignature si = new XMLSignature((Element)n,"");
