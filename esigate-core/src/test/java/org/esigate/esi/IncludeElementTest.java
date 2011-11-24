@@ -3,6 +3,7 @@ package org.esigate.esi;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -177,15 +178,46 @@ public class IncludeElementTest extends TestCase {
 	}
 	
 	public void testIncludeReplaceAbsolute() throws IOException, HttpErrorPage {
-		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";
+		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";	
+		String deafultBaseUrl = "http://www.foo.com/context/";
+		String visibleBaseURL = "http://www.foo.com/contextExt/";
+
+		Properties defaultProps = new Properties();
+		defaultProps.setProperty("remoteUrlBase", deafultBaseUrl);
+		defaultProps.setProperty("visibleUrlBase", visibleBaseURL);
+		defaultProps.setProperty("fixResources", "true");
+		
+		MockDriver provider = new MockDriver("mock", defaultProps);
+		
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", 
-				"<IMG src=\"http://www.foo.com/~miko/counter.gif?name=idocsguide\">" +
-				"<a href=\"http://www.foo.com/test\">");
+				"<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"http://www.foo.com/test\">"+
+				"<a href=\"http://www.foo.com/context/test\">");
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
-		assertEquals("before <IMG src=\"/~miko/counter.gif?name=idocsguide\">" +
-				"<a href=\"/test\"> after", out.toString());
+		assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", out.toString());
+	}
+	
+	public void testIncludeReplaceAbsoluteBaseUrl() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";	
+		String deafultBaseUrl = "http://www.foo.com/context";
+
+		Properties defaultProps = new Properties();
+		defaultProps.setProperty("remoteUrlBase", deafultBaseUrl);
+		
+		MockDriver provider = new MockDriver("mock", defaultProps);
+		
+		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		provider.addResource("http://www.foo.com/test-rewriteUrl", 
+				"<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"http://www.foo.com/test\">"+
+				"<a href=\"http://www.foo.com/context/test\">");
+		StringWriter out = new StringWriter();
+		tested.render(null, page, out);
+		assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">" +
+				"<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", out.toString());
 	}
 	
 }

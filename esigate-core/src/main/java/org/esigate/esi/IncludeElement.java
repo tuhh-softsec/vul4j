@@ -1,6 +1,7 @@
 package org.esigate.esi;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,12 +86,7 @@ class IncludeElement extends BaseElement {
 		if (idx < 0) {
 			page = src;
 			driver = esiRenderer.getDriver();
-			if (rewriteAbsoluteUrl) {
-				Map<String, String> replaceRules = new HashMap<String, String>();
-				replaceRules.put("href=(\"|')(http://.*?/)(.*)(\"|')", "href=$1/$3$4");
-				replaceRules.put("src=(\"|')(http://.*?/)(.*)(\"|')", "src=$1/$3$4");
-				rendererList.add(new ReplaceRenderer(replaceRules));
-			}
+			
 		} else {
 			int startIdx = idx + "$PROVIDER({".length();
 			int endIndex = src.indexOf("})", startIdx);
@@ -98,6 +94,33 @@ class IncludeElement extends BaseElement {
 			page = src.substring(endIndex + "})".length());
 			driver = DriverFactory.getInstance(provider);
 		}
+		
+		if(rewriteAbsoluteUrl)
+		{
+			Map<String, String> replaceRules = new HashMap<String, String>();
+			String baseUrl = driver.getConfiguration().getBaseURL();
+			String visibleBaseUrl =  driver.getConfiguration().getVisibleBaseURL();
+			
+			String contextBaseUrl;
+			String contextVisibleBaseUrl;
+			
+			if(visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)){
+				contextBaseUrl = new URL(baseUrl).getPath();
+				contextVisibleBaseUrl = new URL(visibleBaseUrl).getPath();
+				replaceRules.put("href=(\"|')"+ visibleBaseUrl +"(.*)(\"|')", "href=$1"+ contextVisibleBaseUrl +"$2$3");
+				replaceRules.put("src=(\"|')"+ visibleBaseUrl +"(.*)(\"|')", "src=$1"+ contextVisibleBaseUrl +"$2$3");
+				replaceRules.put("href=(\"|')"+ baseUrl +"(.*)(\"|')", "href=$1"+ contextBaseUrl +"$2$3");
+				replaceRules.put("src=(\"|')"+ baseUrl +"(.*)(\"|')", "src=$1"+ contextBaseUrl +"$2$3");
+			}
+			else{
+				contextBaseUrl = new URL(baseUrl).getPath();
+				replaceRules.put("href=(\"|')"+ baseUrl +"(.*)(\"|')", "href=$1"+ contextBaseUrl +"$2$3");
+				replaceRules.put("src=(\"|')"+ baseUrl +"(.*)(\"|')", "src=$1"+ contextBaseUrl +"$2$3");
+			}
+				
+			rendererList.add(new ReplaceRenderer(replaceRules));
+		}
+		
 		page = VariablesResolver.replaceAllVariables(page, esiRenderer.getRequest());
 		InlineCache ic = InlineCache.getFragment(src);
 		if (ic != null && !ic.isExpired()) {
