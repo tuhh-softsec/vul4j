@@ -73,7 +73,7 @@ class IncludeElement extends BaseElement {
 		String fragment = tag.getAttribute("fragment");
 		String xpath = tag.getAttribute("xpath");
 		String xslt = tag.getAttribute("stylesheet");
-		String rewriteAbsoluteUrl = tag.getAttribute("rewriteabsoluteurl");
+		boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 		
 		Map<String, String> parameters = null;
 		List<Renderer> rendererList = new ArrayList<Renderer>();
@@ -85,8 +85,7 @@ class IncludeElement extends BaseElement {
 		if (idx < 0) {
 			page = src;
 			driver = esiRenderer.getDriver();
-			if(rewriteAbsoluteUrl != null && rewriteAbsoluteUrl.equalsIgnoreCase("true"))
-			{
+			if (rewriteAbsoluteUrl) {
 				Map<String, String> replaceRules = new HashMap<String, String>();
 				replaceRules.put("href=(\"|')(http://.*?/)(.*)(\"|')", "href=$1/$3$4");
 				replaceRules.put("src=(\"|')(http://.*?/)(.*)(\"|')", "src=$1/$3$4");
