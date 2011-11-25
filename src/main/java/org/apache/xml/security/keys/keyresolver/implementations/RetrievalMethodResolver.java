@@ -89,7 +89,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             // Create a retrieval method over the given element
             RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
             String type = rm.getType();		   
-            XMLSignatureInput resource = resolveInput(rm,BaseURI);
+            XMLSignatureInput resource = resolveInput(rm, BaseURI);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 // a raw certificate, direct parsing is done!
                 X509Certificate cert = getRawCertificate(resource);
@@ -98,7 +98,22 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 }
                 return null;
              }
-             Element e = obtainReferenceElement(resource); 
+             Element e = obtainReferenceElement(resource);
+
+             // Check to make sure that the reference is not to another RetrievalMethod
+             // which points to this element
+             if (XMLUtils.elementIsInSignatureSpace(e, Constants._TAG_RETRIEVALMETHOD)) {
+                 RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
+                 XMLSignatureInput resource2 = resolveInput(rm2, BaseURI);
+                 Element e2 = obtainReferenceElement(resource2);
+                 if (e2 == element) {
+                     if (log.isDebugEnabled()) {
+                         log.debug("Error: Can't have RetrievalMethods pointing to each other");
+                     }
+                     return null;
+                 }
+             }
+            
              return resolveKey(e, BaseURI, storage);
          } catch (XMLSecurityException ex) {
              if (log.isDebugEnabled()) {
@@ -144,8 +159,24 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 X509Certificate cert = getRawCertificate(resource);
                 return cert;
-            } 
+            }
+            
             Element e = obtainReferenceElement(resource);
+
+            // Check to make sure that the reference is not to another RetrievalMethod
+            // which points to this element
+            if (XMLUtils.elementIsInSignatureSpace(e, Constants._TAG_RETRIEVALMETHOD)) {
+                RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
+                XMLSignatureInput resource2 = resolveInput(rm2, BaseURI);
+                Element e2 = obtainReferenceElement(resource2);
+                if (e2 == element) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Error: Can't have RetrievalMethods pointing to each other");
+                    }
+                    return null;
+                }
+            }
+            
             return resolveCertificate(e, BaseURI, storage);
         } catch (XMLSecurityException ex) {
             if (log.isDebugEnabled()) {

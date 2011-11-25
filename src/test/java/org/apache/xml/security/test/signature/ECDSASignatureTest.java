@@ -125,7 +125,7 @@ public class ECDSASignatureTest extends org.junit.Assert {
         }
         
         File file = 
-            makeDataFile("data/org/apache/xml/security/samples/input/ecdsaSignature.xml");
+            makeDataFile("src/test/resources/org/apache/xml/security/samples/input/ecdsaSignature.xml");
         InputStream is = new FileInputStream(file);
         
         doVerify(is);
@@ -137,7 +137,7 @@ public class ECDSASignatureTest extends org.junit.Assert {
             return;
         }
         
-        File file = makeDataFile("data/at/buergerkarte/testresp.xml");
+        File file = makeDataFile("src/test/resources/at/buergerkarte/testresp.xml");
         InputStream is = new FileInputStream(file);
         
         doVerify(is);
