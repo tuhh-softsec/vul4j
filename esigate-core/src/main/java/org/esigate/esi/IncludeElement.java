@@ -59,10 +59,9 @@ class IncludeElement extends BaseElement {
 
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		StringBuilder tmp = new StringBuilder(buf.length());
-
 		// apply fragment replacements
 		if (!fragmentRepacements.isEmpty()) {
+			StringBuilder tmp = new StringBuilder(buf.length());
 			Parser fragmentReplacementParser = new Parser(FRAGMENT_REPLACEMENT_PATTERN,
 					FragmentReplacementElement.createType(fragmentRepacements));
 			fragmentReplacementParser.parse(buf, tmp);
