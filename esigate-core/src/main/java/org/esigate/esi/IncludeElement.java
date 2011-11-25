@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.parser.ElementType;
+import org.esigate.parser.Parser;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.vars.VariablesResolver;
@@ -19,6 +22,7 @@ import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
 
 class IncludeElement extends BaseElement {
+	private final static Pattern FRAGMENT_REPLACEMENT_PATTERN = Pattern.compile("(<esi:fragment[^>]*>)|(</esi:fragment[^>]*>)");
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
 		public IncludeElement newInstance() {
@@ -42,11 +46,51 @@ class IncludeElement extends BaseElement {
 			return append(csq, 0, csq.length());
 		}
 	};
+	private StringBuilder buf;
+	private Map<String, CharSequence> fragmentRepacements;
+	private Map<String, CharSequence> regexpRepacements;
 
 	IncludeElement() { }
 
 	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		buf.append(csq, start, end);
+	}
+
+	@Override
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		StringBuilder tmp = new StringBuilder(buf.length());
+
+		// apply fragment replacements
+		if (!fragmentRepacements.isEmpty()) {
+			Parser fragmentReplacementParser = new Parser(FRAGMENT_REPLACEMENT_PATTERN,
+					FragmentReplacementElement.createType(fragmentRepacements));
+			fragmentReplacementParser.parse(buf, tmp);
+			buf = tmp;
+		}
+		// apply regexp replacements
+		if (!regexpRepacements.isEmpty()) {
+			for (Entry<String, CharSequence> entry : regexpRepacements.entrySet()) {
+				buf = new StringBuilder(Pattern.compile(entry.getKey())
+					.matcher(buf)
+					.replaceAll(entry.getValue().toString()));
+			}
+		}
+
+		// TODO Auto-generated method stub
+		ctx.getCurrent().characters(buf, 0, buf.length());
+
+		buf = null;
+		fragmentRepacements = null;
+		regexpRepacements = null;
+	}
+
+	@Override
 	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		buf = new StringBuilder();
+		fragmentRepacements = new HashMap<String, CharSequence>();
+		regexpRepacements = new HashMap<String, CharSequence>();
+
 		String src = tag.getAttribute("src");
 		String alt = tag.getAttribute("alt");
 		
@@ -125,13 +169,14 @@ class IncludeElement extends BaseElement {
 		InlineCache ic = InlineCache.getFragment(src);
 		if (ic != null && !ic.isExpired()) {
 			String cache = ic.getFragment();
-			super.characters(cache, 0, cache.length());
+			characters(cache, 0, cache.length());
 		} else {
 			if (fragment != null) {
 				rendererList.add(new EsiFragmentRenderer(page, fragment));
 			} else if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
+				// FIXME: need to move local/external resource loading into XsltRenderer
 				Renderer xsltRenderer;
 				try {
 					xsltRenderer = new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext());
@@ -145,6 +190,14 @@ class IncludeElement extends BaseElement {
 			driver.render(page, parameters, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
 				rendererList.toArray(new Renderer[rendererList.size()]));
 		}
+	}
+
+	void addFragmentReplacement(String fragment, CharSequence replacement) {
+		fragmentRepacements.put(fragment, replacement);
+	}
+
+	void addRegexpReplacement(String regexp, CharSequence replacement) {
+		regexpRepacements.put(regexp, replacement);
 	}
 
 }

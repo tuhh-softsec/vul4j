@@ -3,37 +3,55 @@ package org.esigate.esi;
 import java.io.IOException;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
+import org.esigate.vars.VariablesResolver;
 
-// FIXME: [saber] NYI
-abstract class ReplaceElement implements Element {
+/**
+ * Support for &lt;esi:replace&gt; element inside of parent &lt;esi:include&gt;
+ * @author <a href="stanislav.bernatskyi@smile.fr">Stanislav Bernatskyi</a>
+ */
+class ReplaceElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:replace", "</esi:replace") {
 		public ReplaceElement newInstance() {
-			return null;
-			//return new ReplaceElement();
+			return new ReplaceElement();
 		}
 
 	};
 
-	private final boolean closed = false;
+	private StringBuilder buf = null;
+	private String fragment;
+	private String regexp;
 
-	public boolean isClosed() {
-		return closed;
+	@Override
+	public void characters(CharSequence csq, int start, int end) {
+		buf.append(csq, start, end);
 	}
 
-	public void doEndTag(String tag) {
-		// Nothing to do
+	@Override
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
+		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+		if (fragment != null) {
+			parent.addFragmentReplacement(fragment, (CharSequence) result);
+		} else if (regexp != null) {
+			parent.addRegexpReplacement(regexp, (CharSequence) result);
+		} else {
+			parent.characters(result, 0, result.length());
+		}
+		parent = null;
+		buf = null;
 	}
 
-	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		// TODO
-	}
-
-	public ElementType getType() {
-		return TYPE;
+	@Override
+	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		buf = new StringBuilder();
+		fragment = tag.getAttribute("fragment");
+		regexp = tag.getAttribute("regexp");
+		if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
+			throw new IllegalArgumentException("only one of 'fragment' and 'regexp' attributes is allowed");
+		}
 	}
 
 }

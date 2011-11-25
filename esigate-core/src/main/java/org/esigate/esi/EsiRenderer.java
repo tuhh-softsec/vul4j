@@ -29,7 +29,8 @@ public class EsiRenderer implements Renderer, Appendable {
 	private final Parser parser = new Parser(PATTERN,
 			IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE, RemoveElement.TYPE,
 			VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
-			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE);
+			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE,
+			ReplaceElement.TYPE);
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private final Driver driver;
