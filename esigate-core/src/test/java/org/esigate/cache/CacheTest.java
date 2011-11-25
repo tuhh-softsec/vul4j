@@ -48,6 +48,8 @@ public class CacheTest extends TestCase{
 				headers, statusCode, statusMessage);
 		Resource newResource = new TestResource();
 		
+		assertNull(cache.get(resourceContext));
+
 		cache.put(resourceContext, cachedResponse);
 		
 		assertEquals(cachedResponse, cache.get(resourceContext));
