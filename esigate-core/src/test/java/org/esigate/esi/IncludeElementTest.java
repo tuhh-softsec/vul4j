@@ -109,14 +109,14 @@ public class IncludeElementTest extends TestCase {
 
 	public void testIncludeReplaceElementFragment() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src='$PROVIDER({mock})/include-replace' >"
-				+ "<esi:replace fragment='replaceable-fragment'>fragment replaced</esi:replace>"
+				+ "<esi:replace fragment='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:replace>"
 				+ "</esi:include> after";
 		String includedPage = "-incl-page-start"
-				+ " <esi:fragment name='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:fragment>"
+				+ " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
 				+ " <esi:fragment name='untouched-fragment' />"
 				+ " incl-page-end-";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
-		request.addCookie(new Cookie("cookieName", "replaced content"));
+		request.addCookie(new Cookie("cookieName", "fragment replaced"));
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
