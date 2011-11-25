@@ -76,7 +76,7 @@ class IncludeElement extends BaseElement {
 			}
 		}
 
-		// TODO Auto-generated method stub
+		// write accumulated data into parent
 		ctx.getCurrent().characters(buf, 0, buf.length());
 
 		buf = null;
