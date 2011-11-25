@@ -5,6 +5,8 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.servlet.http.Cookie;
+
 import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
@@ -110,10 +112,11 @@ public class IncludeElementTest extends TestCase {
 				+ "<esi:replace fragment='replaceable-fragment'>fragment replaced</esi:replace>"
 				+ "</esi:include> after";
 		String includedPage = "-incl-page-start"
-				+ " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
+				+ " <esi:fragment name='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:fragment>"
 				+ " <esi:fragment name='untouched-fragment' />"
 				+ " incl-page-end-";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		request.addCookie(new Cookie("cookieName", "replaced content"));
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
@@ -124,13 +127,14 @@ public class IncludeElementTest extends TestCase {
 
 	public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src='$PROVIDER({mock})/include-replace' >"
-				+ "<esi:replace regexp='replaceable-regexp'>regexp replaced</esi:replace>"
+				+ "<esi:replace regexp='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>"
 				+ "</esi:include> after";
 		String includedPage = "-incl-page-start"
 				+ " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
 				+ " replaceable-regexp"
 				+ " incl-page-end-";
 		EsiRenderer tested = new EsiRenderer(request, response, provider);
+		request.addCookie(new Cookie("cookieName", "regexp replaced"));
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
 		tested.render(null, page, out);
