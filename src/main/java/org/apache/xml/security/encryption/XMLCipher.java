@@ -1040,7 +1040,6 @@ public class XMLCipher {
             if (AES_128_GCM.equals(algorithm) || AES_256_GCM.equals(algorithm)) {
                 if (random == null) {
                     random = SecureRandom.getInstance("SHA1PRNG");
-                    random.setSeed(System.nanoTime());
                 }
                 byte[] temp = new byte[12];
                 random.nextBytes(temp);

@@ -19,30 +19,18 @@
 package org.apache.xml.security.utils;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.WeakHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 
 /**
  * Purpose of this class is to enable the XML Parser to keep track of ID
  * attributes. This is done by 'registering' attributes of type ID at the
- * IdResolver. This is necessary if we create a document from scratch and we
- * sign some resources with a URI using a fragment identifier...
- * <BR />
- * The problem is that if you do not validate a document, you cannot use the
- * <CODE>getElementByID</CODE> functionality. So this modules uses some implicit
- * knowledge on selected Schemas and DTDs to pick the right Element for a given
- * ID: We know that all <CODE>@Id</CODE> attributes in an Element from the XML
- * Signature namespace are of type <CODE>ID</CODE>.
- *
- * @see <A HREF="http://www.xml.com/lpt/a/2001/11/07/id.html">"Identity Crisis" on xml.com</A>
+ * IdResolver.
  */
 public class IdResolver {
 
@@ -53,22 +41,6 @@ public class IdResolver {
     private static Map<Document, Map<String, WeakReference<Element>>> docMap = 
         new WeakHashMap<Document, Map<String, WeakReference<Element>>>();
     
-    private static java.util.List<String> names;
-    private static int namesLength;
-    
-    static {
-        String namespaces[] = { 
-                             Constants.SignatureSpecNS,
-                             EncryptionConstants.EncryptionSpecNS,
-                             "http://schemas.xmlsoap.org/soap/security/2000-12",
-                             "http://www.w3.org/2002/03/xkms#",
-                             "urn:oasis:names:tc:SAML:1.0:assertion",
-                             "urn:oasis:names:tc:SAML:1.0:protocol"
-        };
-        names = Arrays.asList(namespaces);
-        namesLength = names.size();
-    }
-
     /**
      * Constructor IdResolver
      *
@@ -149,12 +121,6 @@ public class IdResolver {
             }
             return result;
         }
-        result = IdResolver.getElementBySearching(doc, id);
-
-        if (result != null) {
-            IdResolver.registerElementById(result, id);
-            return result;
-        }
 
         return null;
     }
@@ -198,112 +164,4 @@ public class IdResolver {
         return null;
     }
 
-
-    private static Element getElementBySearching(Node root, String id) {
-        Element[] els = new Element[namesLength + 1];
-        getEl(root, id, els);
-        for (int i = 0;i < els.length; i++) {
-            if (els[i] != null) {
-                return els[i];
-            }
-        }
-        return null;
-    }
-
-    private static int getEl(Node currentNode, String id, Element []els) {
-        Node sibling = null;
-        Node parentNode = null;    	
-        do {
-            switch (currentNode.getNodeType()) {    		
-            case Node.DOCUMENT_FRAGMENT_NODE :
-            case Node.DOCUMENT_NODE :
-                sibling= currentNode.getFirstChild();
-                break;
-
-            case Node.ELEMENT_NODE :
-                Element currentElement = (Element) currentNode;
-                if (isElement(currentElement, id, els) == 1) {
-                    return 1;
-                }
-                sibling = currentNode.getFirstChild(); 
-                if (sibling == null) {
-                    if (parentNode != null) {
-                        sibling = currentNode.getNextSibling();
-                    }
-                } else {
-                    parentNode = currentElement;
-                }
-                break;
-            } while (sibling == null && parentNode != null) {    		      		      			
-                sibling = parentNode.getNextSibling();
-                parentNode = parentNode.getParentNode();   
-                if (parentNode != null && Node.ELEMENT_NODE != parentNode.getNodeType()) {
-                    parentNode = null;
-                }    			
-            }      
-            if (sibling == null) {
-                return 1;
-            }
-            currentNode = sibling;      
-            sibling = currentNode.getNextSibling();  
-        } while(true);
-    }
-    
-    public static int isElement(Element el, String id, Element[] els) {
-        if (!el.hasAttributes()) {
-            return 0;
-        }
-        NamedNodeMap ns = el.getAttributes();
-        int elementIndex = names.indexOf(el.getNamespaceURI());
-        elementIndex = (elementIndex < 0) ? namesLength : elementIndex;
-        for (int length = ns.getLength(), i = 0; i<length; i++) {
-            Attr n = (Attr)ns.item(i);
-            String s = n.getNamespaceURI();
-
-            int index = s == null ? elementIndex : names.indexOf(n.getNamespaceURI());
-            index = (index < 0) ? namesLength : index;
-            String name = n.getLocalName();
-            if (name == null) { 
-                name = n.getName();
-            } 
-            if (name.length() > 2) {
-                continue;
-            }
-            String value = n.getNodeValue();
-            if (name.charAt(0) == 'I') {
-                char ch = name.charAt(1);		    
-                if (ch == 'd' && value.equals(id)) {				   		    
-                    els[index] = el;
-                    if (index == 0) {
-                        return 1;
-                    }
-                } else if (ch == 'D' && value.endsWith(id)) {
-                    if (index != 3) {
-                        index = namesLength;
-                    }
-                    els[index] = el;
-                }
-            } else if ("id".equals(name) && value.equals(id)) {
-                if (index != 2) {
-                    index = namesLength;
-                }			    				   
-                els[index] = el;
-            } 
-        }
-        //For an element namespace search for importants
-        if ((elementIndex == 3) && (
-            el.getAttribute("OriginalRequestID").equals(id) ||
-            el.getAttribute("RequestID").equals(id) ||
-            el.getAttribute("ResponseID").equals(id))) {
-            els[3] = el;				   		    
-        } else if ((elementIndex == 4)&&(
-            el.getAttribute("AssertionID").equals(id))) {
-            els[4] = el;				   
-        } else if ((elementIndex == 5)&&(
-            el.getAttribute("RequestID").equals(id) ||
-            el.getAttribute("ResponseID").equals(id))) {
-            els[5] = el;				   
-        }		
-        return 0;
-    }
 }
