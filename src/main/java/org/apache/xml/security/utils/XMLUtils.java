@@ -750,4 +750,24 @@ public class XMLUtils {
     public static boolean ignoreLineBreaks() {
         return ignoreLineBreaks;
     }
+    
+    /**
+     * Returns the attribute value for the attribute with the specified name.
+     * Returns null if there is no such attribute, or 
+     * the empty string if the attribute value is empty.
+     *
+     * <p>This works around a limitation of the DOM
+     * <code>Element.getAttributeNode</code> method, which does not distinguish
+     * between an unspecified attribute and an attribute with a value of
+     * "" (it returns "" for both cases).
+     *
+     * @param elem the element containing the attribute
+     * @param name the name of the attribute
+     * @return the attribute value (may be null if unspecified)
+     */
+    public static String getAttributeValue(Element elem, String name) {
+        Attr attr = elem.getAttributeNodeNS(null, name);
+        return (attr == null) ? null : attr.getValue();
+    }
+
 }

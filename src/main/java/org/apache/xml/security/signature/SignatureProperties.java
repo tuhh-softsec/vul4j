@@ -55,6 +55,21 @@ public class SignatureProperties extends SignatureElementProxy {
      */
     public SignatureProperties(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);
+        
+        String id = XMLUtils.getAttributeValue(element, "Id");
+        if (id != null) {
+            IdResolver.registerElementById(element, id);
+        }
+        
+        int length = getLength();
+        for (int i = 0; i < length; i++) {
+            Element propertyElem =
+                XMLUtils.selectDsNode(this.constructionElement, Constants._TAG_SIGNATUREPROPERTY, i);
+            String propertyId = XMLUtils.getAttributeValue(propertyElem, "Id");
+            if (propertyId != null) {
+                IdResolver.registerElementById(propertyElem, propertyId);
+            }
+        }
     }
 
     /**

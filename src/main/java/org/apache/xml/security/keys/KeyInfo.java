@@ -45,8 +45,8 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
@@ -133,6 +133,11 @@ public class KeyInfo extends SignatureElementProxy {
      */
     public KeyInfo(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);
+        
+        String id = XMLUtils.getAttributeValue(element, "Id");
+        if (id != null) {
+            IdResolver.registerElementById(element, id);
+        }
     }
 
     /**

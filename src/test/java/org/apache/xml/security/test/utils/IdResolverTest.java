@@ -23,8 +23,10 @@ import java.io.ByteArrayInputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.utils.IdResolver;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class IdResolverTest extends org.junit.Assert {
     
@@ -37,6 +39,14 @@ public class IdResolverTest extends org.junit.Assert {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes()));
+        
+        Node body = doc.getElementsByTagNameNS("http://www.w3.org/2001/12/soap-envelope", "Body").item(0);
+        Attr attr = 
+            ((Element)body).getAttributeNodeNS("http://schemas.xmlsoap.org/soap/security/2000-12", "id");
+        if (attr != null) {
+            IdResolver.registerElementById((Element)body, attr.getValue());
+        }
+        
         Element el = IdResolver.getElementById(doc, "Body");
         assertNotNull(el);
         assertEquals("Body", el.getLocalName());
@@ -51,6 +61,14 @@ public class IdResolverTest extends org.junit.Assert {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes()));
+        
+        Node body = doc.getElementsByTagNameNS("http://www.w3.org/2001/12/soap-envelope", "Body").item(0);
+        Attr attr = 
+            ((Element)body).getAttributeNodeNS("http://schemas.xmlsoap.org/soap/security/2000-12", "id");
+        if (attr != null) {
+            IdResolver.registerElementById((Element)body, attr.getValue());
+        }
+        
         Element el = IdResolver.getElementById(doc, "Body");
         assertNotNull(el);
         assertEquals("Body", el.getLocalName());
@@ -65,6 +83,14 @@ public class IdResolverTest extends org.junit.Assert {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(s.getBytes()));
+        
+        Node node = doc.getElementsByTagName("a").item(0);
+        Attr attr = 
+            ((Element)node).getAttributeNodeNS(null, "id");
+        if (attr != null) {
+            IdResolver.registerElementById((Element)node, attr.getValue());
+        }
+        
         Element el = IdResolver.getElementById(doc, "Body");
         assertNotNull(el);
         assertEquals("a", el.getLocalName());

@@ -90,6 +90,11 @@ public class Manifest extends SignatureElementProxy {
      */
     public Manifest(Element element, String baseURI) throws XMLSecurityException {
         super(element, baseURI);
+        
+        String id = XMLUtils.getAttributeValue(element, "Id");
+        if (id != null) {
+            IdResolver.registerElementById(element, id);
+        }
 
         // check out Reference children
         this.referencesEl = 
@@ -109,6 +114,11 @@ public class Manifest extends SignatureElementProxy {
         this.references = new ArrayList<Reference>(le);
 
         for (int i = 0; i < le; i++) {
+            Element refElem = referencesEl[i];
+            String refId = XMLUtils.getAttributeValue(refElem, "Id");
+            if (refId != null) {
+                IdResolver.registerElementById(refElem, refId);
+            }
             this.references.add(null);
         }
     }

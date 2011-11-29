@@ -34,6 +34,8 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -104,6 +106,11 @@ public class SignatureAlgorithm extends Algorithm {
     public SignatureAlgorithm(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);      
         algorithmURI = this.getURI();
+        
+        String id = XMLUtils.getAttributeValue(element, "Id");
+        if (id != null) {
+            IdResolver.registerElementById(element, id);
+        }
         
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);
         signatureAlgorithm.engineGetContextFromElement(this.constructionElement);

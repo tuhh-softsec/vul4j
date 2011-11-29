@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+
 import javax.crypto.SecretKey;
 
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
@@ -46,6 +47,8 @@ import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
@@ -345,6 +348,10 @@ public final class XMLSignature extends SignatureElementProxy {
             Object exArgs[] = { Constants._TAG_SIGNATUREVALUE, Constants._TAG_SIGNATURE };
             throw new XMLSignatureException("xml.WrongContent", exArgs);
         }
+        String signatureValueId = XMLUtils.getAttributeValue(signatureValueElement, "Id");
+        if (signatureValueId != null) {
+            IdResolver.registerElementById(signatureValueElement, signatureValueId);
+        }
 
         // <element ref="ds:KeyInfo" minOccurs="0"/>
         Element keyInfoElem = 
@@ -356,7 +363,35 @@ public final class XMLSignature extends SignatureElementProxy {
             && keyInfoElem.getLocalName().equals(Constants._TAG_KEYINFO)) {
             this.keyInfo = new KeyInfo(keyInfoElem, BaseURI);
         }
+        
+        // <element ref="ds:Object" minOccurs="0" maxOccurs="unbounded"/>
+        Element objectElem =
+            XMLUtils.getNextElement(signatureValueElement.getNextSibling());
+        while (objectElem != null) {
+            String objectId = XMLUtils.getAttributeValue(objectElem, "Id");
+            if (objectId != null) {
+                IdResolver.registerElementById(objectElem, objectId);
+            }
 
+            NodeList nodes = objectElem.getChildNodes();
+            int length = nodes.getLength();
+            // Register Ids of the Object child elements
+            for (int i = 0; i < length; i++) {
+                Node child = nodes.item(i);
+                if (child.getNodeType() == Node.ELEMENT_NODE) {
+                    Element childElem = (Element)child;
+                    String tag = childElem.getLocalName();
+                    if (tag.equals("Manifest")) {
+                        new Manifest(childElem, BaseURI);
+                    } else if (tag.equals("SignatureProperties")) {
+                        new SignatureProperties(childElem, BaseURI);
+                    }
+                }
+            }
+
+            objectElem = XMLUtils.getNextElement(objectElem.getNextSibling());
+        }
+        
         this.state = MODE_VERIFY;
     }
 

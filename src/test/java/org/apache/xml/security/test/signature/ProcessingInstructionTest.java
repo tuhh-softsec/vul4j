@@ -36,6 +36,9 @@ import org.apache.xml.security.test.DSNamespaceContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
@@ -67,6 +70,18 @@ public class ProcessingInstructionTest extends org.junit.Assert {
         DocumentBuilder db = dbf.newDocumentBuilder();
         File f = new File(signatureFileName);
         Document doc = db.parse(new java.io.FileInputStream(f));
+        
+        Node obj = 
+            doc.getElementsByTagNameNS("http://uri.etsi.org/01903/v1.3.2#", "QualifyingProperties").item(0);
+        while (obj != null) {
+            if (obj instanceof Element) {
+                String id = XMLUtils.getAttributeValue((Element)obj, "Id");
+                if (id != null) {
+                    IdResolver.registerElementById((Element)obj, id);
+                }
+            }
+            obj = obj.getFirstChild();
+        }
 
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
