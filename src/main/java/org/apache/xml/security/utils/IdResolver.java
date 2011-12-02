@@ -57,15 +57,23 @@ public class IdResolver {
      */
     public static void registerElementById(Element element, String idValue) {
         Document doc = element.getOwnerDocument();
-        Map<String, WeakReference<Element>> elementMap;
         synchronized (docMap) {
-            elementMap = docMap.get(doc);
+            Map<String, WeakReference<Element>> elementMap = docMap.get(doc);
             if (elementMap == null) {
                 elementMap = new WeakHashMap<String, WeakReference<Element>>();
                 docMap.put(doc, elementMap);
+                elementMap.put(idValue, new WeakReference<Element>(element));
+            } else {
+                WeakReference<Element> ref = elementMap.get(idValue);
+                if (ref != null) {
+                    if (!ref.get().equals(element)) {
+                        throw new IllegalArgumentException("ID is already registered");
+                    }
+                } else {
+                    elementMap.put(idValue, new WeakReference<Element>(element));
+                }
             }
         }
-        elementMap.put(idValue, new WeakReference<Element>(element));
     }
 
     /**
@@ -151,14 +159,13 @@ public class IdResolver {
         if (log.isDebugEnabled()) {
             log.debug("getElementByIdType() Search for ID " + id);
         }
-        Map<String, WeakReference<Element>> elementMap;
         synchronized (docMap) {
-            elementMap = docMap.get(doc);
-        }
-        if (elementMap != null) {
-            WeakReference<Element> weakReference = (WeakReference<Element>) elementMap.get(id);
-            if (weakReference != null) {
-                return (Element) weakReference.get();   
+            Map<String, WeakReference<Element>> elementMap = docMap.get(doc);
+            if (elementMap != null) {
+                WeakReference<Element> weakReference = elementMap.get(id);
+                if (weakReference != null) {
+                    return weakReference.get();
+                }
             }
         }
         return null;
