@@ -252,9 +252,6 @@ public final class Transform extends SignatureElementProxy {
         transformSpiHash.put(
             Transforms.TRANSFORM_XPATH2FILTER, TransformXPath2Filter.class
         );
-        transformSpiHash.put(
-            Transforms.TRANSFORM_XPATH2FILTER04, TransformXPath2Filter.class
-        );
     }
     
     /**

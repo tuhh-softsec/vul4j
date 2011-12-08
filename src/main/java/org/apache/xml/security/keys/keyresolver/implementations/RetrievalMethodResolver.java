@@ -89,7 +89,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             // Create a retrieval method over the given element
             RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
             String type = rm.getType();		   
-            XMLSignatureInput resource = resolveInput(rm, BaseURI);
+            XMLSignatureInput resource = resolveInput(rm, BaseURI, secureValidation);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 // a raw certificate, direct parsing is done!
                 X509Certificate cert = getRawCertificate(resource);
@@ -103,8 +103,16 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
              // Check to make sure that the reference is not to another RetrievalMethod
              // which points to this element
              if (XMLUtils.elementIsInSignatureSpace(e, Constants._TAG_RETRIEVALMETHOD)) {
+                 if (secureValidation) {
+                     String error = "Error: It is forbidden to have one RetrievalMethod "
+                         + "point to another with secure validation";
+                     if (log.isDebugEnabled()) {
+                         log.debug(error);
+                     }
+                     return null;
+                 }
                  RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
-                 XMLSignatureInput resource2 = resolveInput(rm2, BaseURI);
+                 XMLSignatureInput resource2 = resolveInput(rm2, BaseURI, secureValidation);
                  Element e2 = obtainReferenceElement(resource2);
                  if (e2 == element) {
                      if (log.isDebugEnabled()) {
@@ -155,7 +163,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         try {
             RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
             String type = rm.getType();		   
-            XMLSignatureInput resource = resolveInput(rm, BaseURI);
+            XMLSignatureInput resource = resolveInput(rm, BaseURI, secureValidation);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 X509Certificate cert = getRawCertificate(resource);
                 return cert;
@@ -166,8 +174,16 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             // Check to make sure that the reference is not to another RetrievalMethod
             // which points to this element
             if (XMLUtils.elementIsInSignatureSpace(e, Constants._TAG_RETRIEVALMETHOD)) {
+                if (secureValidation) {
+                    String error = "Error: It is forbidden to have one RetrievalMethod "
+                        + "point to another with secure validation";
+                    if (log.isDebugEnabled()) {
+                        log.debug(error);
+                    }
+                    return null;
+                }
                 RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
-                XMLSignatureInput resource2 = resolveInput(rm2, BaseURI);
+                XMLSignatureInput resource2 = resolveInput(rm2, BaseURI, secureValidation);
                 Element e2 = obtainReferenceElement(resource2);
                 if (e2 == element) {
                     if (log.isDebugEnabled()) {
@@ -284,12 +300,12 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @throws XMLSecurityException 
      */
     private static XMLSignatureInput resolveInput(
-        RetrievalMethod rm, String BaseURI
+        RetrievalMethod rm, String BaseURI, boolean secureValidation
     ) throws XMLSecurityException {
         Attr uri = rm.getURIAttr();
         // Apply the transforms
         Transforms transforms = rm.getTransforms();
-        ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI);
+        ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI, secureValidation);
         if (resRes != null) {
             XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
             if (transforms != null) {

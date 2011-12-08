@@ -34,7 +34,6 @@ import org.w3c.dom.NodeList;
  *
  * @author $Author$
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
- * @see <A HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 (editors copy)</A>
  */
 public class XPath2FilterContainer extends ElementProxy implements TransformParam {
 

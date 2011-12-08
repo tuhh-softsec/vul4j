@@ -45,6 +45,15 @@ public abstract class KeyResolverSpi {
 
     protected boolean globalResolver = false;
     
+    protected boolean secureValidation;
+    
+    /**
+     * Set whether secure validation is enabled or not. The default is false.
+     */
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
+    }
+    
     /**
      * This method returns whether the KeyResolverSpi is able to perform the requested action.
      *

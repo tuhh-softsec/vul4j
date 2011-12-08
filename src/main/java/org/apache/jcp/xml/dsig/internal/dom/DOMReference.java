@@ -47,6 +47,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.jcp.xml.dsig.internal.DigesterOutputStream;
+import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
@@ -61,6 +62,11 @@ import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
  */
 public final class DOMReference extends DOMStructure 
     implements Reference, DOMURIReference {
+    
+   /**
+    * The maximum number of transforms per reference, if secure validation is enabled.
+    */
+   public static final int MAXIMUM_TRANSFORM_COUNT = 5;
 
    /**
     * Look up useC14N11 system property. If true, an explicit C14N11 transform
@@ -79,7 +85,7 @@ public final class DOMReference extends DOMStructure
 
     private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(DOMReference.class);
-
+    
     private final DigestMethod digestMethod;
     private final String id;
     private final List<Transform> transforms;
@@ -189,15 +195,31 @@ public final class DOMReference extends DOMStructure
                         Provider provider)
         throws MarshalException
     {
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
+        
         // unmarshal Transforms, if specified
         Element nextSibling = DOMUtils.getFirstChildElement(refElem);
         List<Transform> transforms = new ArrayList<Transform>(5);
         if (nextSibling.getLocalName().equals("Transforms")) {
             Element transformElem = DOMUtils.getFirstChildElement(nextSibling);
+            
+            int transformCount = 0;
             while (transformElem != null) {
                 transforms.add
                     (new DOMTransform(transformElem, context, provider));
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
+                
+                transformCount++;
+                if (secVal && (transformCount > MAXIMUM_TRANSFORM_COUNT)) {
+                    String error = "A maxiumum of " + MAXIMUM_TRANSFORM_COUNT + " " 
+                        + "transforms per Reference are allowed with secure validation";
+                    throw new MarshalException(error);
+                }
             }
             nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
         }
@@ -205,6 +227,11 @@ public final class DOMReference extends DOMStructure
         // unmarshal DigestMethod
         Element dmElem = nextSibling;
         this.digestMethod = DOMDigestMethod.unmarshal(dmElem);
+        if (secVal && MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5.equals(digestMethod)) {
+            throw new MarshalException(
+                "It is forbidden to use algorithm " + digestMethod + " when secure validation is enabled"
+            );
+        }
 
         // unmarshal DigestValue
         try {

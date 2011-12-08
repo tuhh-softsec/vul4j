@@ -53,6 +53,8 @@ public class XMLCipherInput {
 
     /** MODES */
     private int mode;
+    
+    private boolean secureValidation;
 
     /**
      * Constructor for processing encrypted octets
@@ -81,6 +83,13 @@ public class XMLCipherInput {
         if (cipherData == null) {
             throw new XMLEncryptionException("CipherData is null");
         }
+    }
+    
+    /**
+     * Set whether secure validation is enabled or not. The default is false.
+     */
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
     }
 
     /**
@@ -119,7 +128,7 @@ public class XMLCipherInput {
 
             try {
                 ResourceResolver resolver = 
-                    ResourceResolver.getInstance(uriAttr, null);
+                    ResourceResolver.getInstance(uriAttr, null, secureValidation);
                 input = resolver.resolve(uriAttr, null);
             } catch (ResourceResolverException ex) {
                 throw new XMLEncryptionException("empty", ex);
@@ -144,6 +153,7 @@ public class XMLCipherInput {
                 try {
                     org.apache.xml.security.transforms.Transforms dsTransforms =
                         transforms.getDSTransforms();
+                    dsTransforms.setSecureValidation(secureValidation);
                     input = dsTransforms.performTransforms(input);
                 } catch (TransformationException ex) {
                     throw new XMLEncryptionException("empty", ex);

@@ -113,6 +113,8 @@ public class KeyInfo extends SignatureElementProxy {
      * Stores the individual (per-KeyInfo) {@link KeyResolverSpi}s
      */
     private List<KeyResolverSpi> internalKeyResolvers = new ArrayList<KeyResolverSpi>();
+    
+    private boolean secureValidation;
 
     /**
      * Constructor KeyInfo
@@ -138,6 +140,13 @@ public class KeyInfo extends SignatureElementProxy {
         if (id != null) {
             IdResolver.registerElementById(element, id);
         }
+    }
+    
+    /**
+     * Set whether secure processing is enabled or not. The default is false.
+     */
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
     }
 
     /**
@@ -735,6 +744,7 @@ public class KeyInfo extends SignatureElementProxy {
         Iterator<KeyResolverSpi> it = KeyResolver.iterator();
         while (it.hasNext()) {
             KeyResolverSpi keyResolver = it.next();
+            keyResolver.setSecureValidation(secureValidation);
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null) {       
@@ -767,7 +777,7 @@ public class KeyInfo extends SignatureElementProxy {
             if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
-
+            keyResolver.setSecureValidation(secureValidation);
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
@@ -848,6 +858,7 @@ public class KeyInfo extends SignatureElementProxy {
         Iterator<KeyResolverSpi> it = KeyResolver.iterator();
         while (it.hasNext()) {
             KeyResolverSpi keyResolver = it.next();
+            keyResolver.setSecureValidation(secureValidation);
             X509Certificate cert = applyCurrentResolver(uri, keyResolver);
             if (cert != null) {
                 return cert;
@@ -897,6 +908,7 @@ public class KeyInfo extends SignatureElementProxy {
             if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
+            keyResolver.setSecureValidation(secureValidation);
             X509Certificate cert = applyCurrentResolver(uri, keyResolver);
             if (cert != null) {        	
                 return cert;
@@ -951,6 +963,7 @@ public class KeyInfo extends SignatureElementProxy {
         Iterator<KeyResolverSpi> it = KeyResolver.iterator();
         while (it.hasNext()) {
             KeyResolverSpi keyResolver = it.next();
+            keyResolver.setSecureValidation(secureValidation);
 
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
@@ -985,7 +998,7 @@ public class KeyInfo extends SignatureElementProxy {
             if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
-
+            keyResolver.setSecureValidation(secureValidation);
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
@@ -1050,6 +1063,7 @@ public class KeyInfo extends SignatureElementProxy {
         Iterator<KeyResolverSpi> it = KeyResolver.iterator();
         while (it.hasNext()) {
             KeyResolverSpi keyResolver = it.next();
+            keyResolver.setSecureValidation(secureValidation);
 
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
@@ -1084,7 +1098,7 @@ public class KeyInfo extends SignatureElementProxy {
             if (log.isDebugEnabled()) {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
-
+            keyResolver.setSecureValidation(secureValidation);
             Node currentChild = this.constructionElement.getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null) {    

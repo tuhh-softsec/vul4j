@@ -311,19 +311,34 @@ public final class XMLSignature extends SignatureElementProxy {
         this.constructionElement.appendChild(signatureValueElement);
         XMLUtils.addReturnToElement(this.constructionElement);
     }
+    
+    /**
+     * This will parse the element and construct the Java Objects.
+     * That will allow a user to validate the signature.
+     *
+     * @param element ds:Signature element that contains the whole signature
+     * @param baseURI URI to be prepended to all relative URIs
+     * @throws XMLSecurityException
+     * @throws XMLSignatureException if the signature is badly formatted
+     */
+    public XMLSignature(Element element, String baseURI)
+        throws XMLSignatureException, XMLSecurityException {
+        this(element, baseURI, false);
+    }
 
     /**
      * This will parse the element and construct the Java Objects.
      * That will allow a user to validate the signature.
      *
      * @param element ds:Signature element that contains the whole signature
-     * @param BaseURI URI to be prepended to all relative URIs
+     * @param baseURI URI to be prepended to all relative URIs
+     * @param secureValidation whether secure secureValidation is enabled or not
      * @throws XMLSecurityException
      * @throws XMLSignatureException if the signature is badly formatted
      */
-    public XMLSignature(Element element, String BaseURI)
+    public XMLSignature(Element element, String baseURI, boolean secureValidation)
         throws XMLSignatureException, XMLSecurityException {
-        super(element, BaseURI);
+        super(element, baseURI);
 
         // check out SignedInfo child
         Element signedInfoElem = XMLUtils.getNextElement(element.getFirstChild());
@@ -335,7 +350,7 @@ public final class XMLSignature extends SignatureElementProxy {
         }
 
         // create a SignedInfo object from that element
-        this.signedInfo = new SignedInfo(signedInfoElem, BaseURI);
+        this.signedInfo = new SignedInfo(signedInfoElem, baseURI, secureValidation);
         // get signedInfoElem again in case it has changed
         signedInfoElem = XMLUtils.getNextElement(element.getFirstChild());
 
@@ -361,7 +376,8 @@ public final class XMLSignature extends SignatureElementProxy {
         if (keyInfoElem != null 
             && keyInfoElem.getNamespaceURI().equals(Constants.SignatureSpecNS) 
             && keyInfoElem.getLocalName().equals(Constants._TAG_KEYINFO)) {
-            this.keyInfo = new KeyInfo(keyInfoElem, BaseURI);
+            this.keyInfo = new KeyInfo(keyInfoElem, baseURI);
+            this.keyInfo.setSecureValidation(secureValidation);
         }
         
         // <element ref="ds:Object" minOccurs="0" maxOccurs="unbounded"/>
@@ -382,9 +398,9 @@ public final class XMLSignature extends SignatureElementProxy {
                     Element childElem = (Element)child;
                     String tag = childElem.getLocalName();
                     if (tag.equals("Manifest")) {
-                        new Manifest(childElem, BaseURI);
+                        new Manifest(childElem, baseURI);
                     } else if (tag.equals("SignatureProperties")) {
-                        new SignatureProperties(childElem, BaseURI);
+                        new SignatureProperties(childElem, baseURI);
                     }
                 }
             }

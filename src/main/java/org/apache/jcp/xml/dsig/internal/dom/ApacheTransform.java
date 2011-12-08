@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
+import org.apache.xml.security.transforms.Transforms;
 
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.DOMCryptoContext;
@@ -129,6 +130,17 @@ public abstract class ApacheTransform extends TransformService {
                 throw new TransformException("Couldn't find Transform for: " +
                                              getAlgorithm(), ex);
             } 
+        }
+        
+        Boolean secureValidation = (Boolean)
+            xc.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            String algorithm = getAlgorithm();
+            if (Transforms.TRANSFORM_XSLT.equals(algorithm)) {
+                throw new TransformException(
+                    "Transform " + algorithm + " is forbidden when secure validation is enabled"
+                );
+            }
         }
 
         XMLSignatureInput in;

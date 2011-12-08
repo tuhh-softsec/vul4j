@@ -85,10 +85,16 @@ public class DOMURIDereferencer implements URIDereferencer {
             }
         } 
 
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
         try {
             String baseURI = context.getBaseURI();
             ResourceResolver apacheResolver = 
-                ResourceResolver.getInstance(uriAttr, baseURI);
+                ResourceResolver.getInstance(uriAttr, baseURI, secVal);
             XMLSignatureInput in = apacheResolver.resolve(uriAttr, baseURI);
             if (in.isOctetStream()) {
                 return new ApacheOctetStreamData(in);

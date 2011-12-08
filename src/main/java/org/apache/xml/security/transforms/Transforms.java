@@ -93,17 +93,9 @@ public class Transforms extends SignatureElementProxy {
     public static final String TRANSFORM_XPOINTER 
         = "http://www.w3.org/TR/2001/WD-xptr-20010108";
     
-    /** Transform - XPath Filter v2.0 */
-    public static final String TRANSFORM_XPATH2FILTER04 
-        = "http://www.w3.org/2002/04/xmldsig-filter2";
-    
     /** Transform - XPath Filter */
     public static final String TRANSFORM_XPATH2FILTER 
         = "http://www.w3.org/2002/06/xmldsig-filter2";
-    
-    /** Transform - XPath Filter  CHGP private */
-    public static final String TRANSFORM_XPATHFILTERCHGP 
-        = "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
     
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
@@ -112,6 +104,8 @@ public class Transforms extends SignatureElementProxy {
     private Element[] transforms;
 
     protected Transforms() { };
+    
+    private boolean secureValidation;
 
     /**
      * Constructs {@link Transforms}.
@@ -149,6 +143,13 @@ public class Transforms extends SignatureElementProxy {
 
             throw new TransformationException("xml.WrongContent", exArgs);
         }
+    }
+    
+    /**
+     * Set whether secure validation is enabled or not. The default is false.
+     */
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
     }
 
     /**
@@ -263,13 +264,16 @@ public class Transforms extends SignatureElementProxy {
             int last = this.getLength() - 1;
             for (int i = 0; i < last; i++) {
                 Transform t = this.item(i);
+                String uri = t.getURI();
                 if (log.isDebugEnabled()) {
-                    log.debug("Perform the (" + i + ")th " + t.getURI() + " transform");
+                    log.debug("Perform the (" + i + ")th " + uri + " transform");
                 }
+                checkSecureValidation(t);
                 xmlSignatureInput = t.performTransform(xmlSignatureInput);
             }
             if (last >= 0) {
                 Transform t = this.item(last);
+                checkSecureValidation(t);
                 xmlSignatureInput = t.performTransform(xmlSignatureInput, os);
             }
 
@@ -280,6 +284,17 @@ public class Transforms extends SignatureElementProxy {
             throw new TransformationException("empty", ex);
         } catch (InvalidCanonicalizerException ex) {
             throw new TransformationException("empty", ex);
+        }
+    }
+    
+    private void checkSecureValidation(Transform transform) throws TransformationException {
+        String uri = transform.getURI();
+        if (Transforms.TRANSFORM_XSLT.equals(uri)) {
+            Object exArgs[] = { uri };
+
+            throw new TransformationException(
+                "signature.Transform.ForbiddenTransform", exArgs
+            );
         }
     }
 

@@ -104,12 +104,33 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws XMLSecurityException
      */
     public SignatureAlgorithm(Element element, String BaseURI) throws XMLSecurityException {
+        this(element, BaseURI, false);
+    }
+    
+    /**
+     * Constructor SignatureAlgorithm
+     *
+     * @param element
+     * @param BaseURI
+     * @param secureValidation
+     * @throws XMLSecurityException
+     */
+    public SignatureAlgorithm(
+        Element element, String BaseURI, boolean secureValidation
+    ) throws XMLSecurityException {
         super(element, BaseURI);      
         algorithmURI = this.getURI();
         
         String id = XMLUtils.getAttributeValue(element, "Id");
         if (id != null) {
             IdResolver.registerElementById(element, id);
+        }
+        
+        if (secureValidation && (XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(algorithmURI)
+            || XMLSignature.ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(algorithmURI))) {
+            Object exArgs[] = { algorithmURI };
+
+            throw new XMLSecurityException("signature.signatureAlgorithm", exArgs);
         }
         
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);

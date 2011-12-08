@@ -159,13 +159,31 @@ public class SignedInfo extends Manifest {
      * Answer</A>
      */
     public SignedInfo(Element element, String baseURI) throws XMLSecurityException {
+        this(element, baseURI, false);
+    }
+    
+    /**
+     * Build a {@link SignedInfo} from an {@link Element}
+     *
+     * @param element <code>SignedInfo</code>
+     * @param baseURI the URI of the resource where the XML instance was stored
+     * @param secureValidation whether secure validation is enabled or not
+     * @throws XMLSecurityException
+     * @see <A HREF="http://lists.w3.org/Archives/Public/w3c-ietf-xmldsig/2001OctDec/0033.html">
+     * Question</A>
+     * @see <A HREF="http://lists.w3.org/Archives/Public/w3c-ietf-xmldsig/2001OctDec/0054.html">
+     * Answer</A>
+     */
+    public SignedInfo(
+        Element element, String baseURI, boolean secureValidation
+    ) throws XMLSecurityException {
         // Parse the Reference children and Id attribute in the Manifest
-        super(reparseSignedInfoElem(element), baseURI);
+        super(reparseSignedInfoElem(element), baseURI, secureValidation);
 
         c14nMethod = XMLUtils.getNextElement(element.getFirstChild());
         signatureMethod = XMLUtils.getNextElement(c14nMethod.getNextSibling());
         this.signatureAlgorithm =
-            new SignatureAlgorithm(signatureMethod, this.getBaseURI());
+            new SignatureAlgorithm(signatureMethod, this.getBaseURI(), secureValidation);
     }
 
     private static Element reparseSignedInfoElem(Element element)

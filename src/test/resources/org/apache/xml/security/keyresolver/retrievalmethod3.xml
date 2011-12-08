@@ -1,0 +1,5 @@
+<dsig:KeyInfo xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+   <dsig:RetrievalMethod xml:id="r1" URI="#r2"/>
+   <dsig:RetrievalMethod xml:id="r2" URI="#r3"/>
+   <dsig:RetrievalMethod xml:id="r3" URI="#r1"/>
+</dsig:KeyInfo>

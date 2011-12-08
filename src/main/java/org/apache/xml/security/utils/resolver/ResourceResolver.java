@@ -67,6 +67,22 @@ public class ResourceResolver {
      */
     public static final ResourceResolver getInstance(Attr uri, String baseURI)
         throws ResourceResolverException {
+        return getInstance(uri, baseURI, false);
+    }
+    
+    /**
+     * Method getInstance
+     *
+     * @param uri
+     * @param baseURI
+     * @param secureValidation
+     * @return the instance
+     *
+     * @throws ResourceResolverException
+     */
+    public static final ResourceResolver getInstance(
+        Attr uri, String baseURI, boolean secureValidation
+    ) throws ResourceResolverException {
         synchronized (resolverList) {
             for (ResourceResolver resolver : resolverList) {
                 ResourceResolver resolverTmp = resolver;
@@ -88,6 +104,15 @@ public class ResourceResolver {
                 }
     
                 if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
+                    // Check to see whether the Resolver is allowed
+                    if (secureValidation 
+                        && (resolverTmp.resolverSpi instanceof ResolverLocalFilesystem
+                            || resolverTmp.resolverSpi instanceof ResolverDirectHTTP)) {
+                        Object exArgs[] = { resolverTmp.resolverSpi.getClass().getName() };
+                        throw new ResourceResolverException(
+                            "signature.Reference.ForbiddenResolver", exArgs, uri, baseURI
+                        );
+                    }
                     return resolverTmp;
                 }
             }
@@ -110,6 +135,23 @@ public class ResourceResolver {
      */
     public static ResourceResolver getInstance(
         Attr uri, String baseURI, List<ResourceResolver> individualResolvers
+    ) throws ResourceResolverException {
+        return getInstance(uri, baseURI, individualResolvers, false);
+    }
+    
+    /**
+     * Method getInstance
+     *
+     * @param uri
+     * @param baseURI
+     * @param individualResolvers
+     * @param secureValidation
+     * @return the instance
+     *
+     * @throws ResourceResolverException
+     */
+    public static ResourceResolver getInstance(
+        Attr uri, String baseURI, List<ResourceResolver> individualResolvers, boolean secureValidation
     ) throws ResourceResolverException {
         if (log.isDebugEnabled()) {
             log.debug(
@@ -136,7 +178,7 @@ public class ResourceResolver {
             }
         }
 
-        return getInstance(uri, baseURI);
+        return getInstance(uri, baseURI, secureValidation);
     }
 
     /**

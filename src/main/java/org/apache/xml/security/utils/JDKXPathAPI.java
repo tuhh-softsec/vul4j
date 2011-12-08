@@ -18,11 +18,13 @@
  */
 package org.apache.xml.security.utils;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathFactoryConfigurationException;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -32,9 +34,11 @@ import org.w3c.dom.NodeList;
  */
 public class JDKXPathAPI implements XPathAPI {
     
-    private String xpathStr = null;
+    private XPathFactory xpf;
+    
+    private String xpathStr;
 
-    private XPath xpath = null;
+    private XPath xpath;
     
     /**
      *  Use an XPath string to select a nodelist.
@@ -52,7 +56,14 @@ public class JDKXPathAPI implements XPathAPI {
         Node contextNode, Node xpathnode, String str, Node namespaceNode
     ) throws TransformerException {
         if (!str.equals(xpathStr) || xpath == null) {
-            XPathFactory xpf = XPathFactory.newInstance();
+            if (xpf == null) {
+                xpf = XPathFactory.newInstance();
+                try {
+                    xpf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                } catch (XPathFactoryConfigurationException ex) {
+                    throw new TransformerException("empty", ex);
+                }
+            }
             xpath = xpf.newXPath();
             xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
             xpathStr = str;
@@ -74,7 +85,14 @@ public class JDKXPathAPI implements XPathAPI {
     public boolean evaluate(Node contextNode, Node xpathnode, String str, Node namespaceNode)
         throws TransformerException {
         if (!str.equals(xpathStr) || xpath == null) {
-            XPathFactory xpf = XPathFactory.newInstance();
+            if (xpf == null) {
+                xpf = XPathFactory.newInstance();
+                try {
+                    xpf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+                } catch (XPathFactoryConfigurationException ex) {
+                    throw new TransformerException("empty", ex);
+                }
+            }
             xpath = xpf.newXPath();
             xpath.setNamespaceContext(new DOMNamespaceContext(namespaceNode));
             xpathStr = str;
@@ -92,6 +110,7 @@ public class JDKXPathAPI implements XPathAPI {
     public void clear() {
         xpathStr = null;
         xpath = null;
+        xpf = null;
     }
 
 }

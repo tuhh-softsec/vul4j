@@ -50,6 +50,11 @@ import org.xml.sax.SAXException;
  * <p> This element holds the <code>Reference</code> elements</p>
  */
 public class Manifest extends SignatureElementProxy {
+    
+    /**
+     * The maximum number of references per Manifest, if secure validation is enabled.
+     */
+    public static final int MAXIMUM_REFERENCE_COUNT = 30;
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
@@ -67,6 +72,8 @@ public class Manifest extends SignatureElementProxy {
 
     /** Field perManifestResolvers */
     private List<ResourceResolver> perManifestResolvers = null;
+    
+    private boolean secureValidation;
 
     /**
      * Constructs {@link Manifest}
@@ -89,12 +96,27 @@ public class Manifest extends SignatureElementProxy {
      * @throws XMLSecurityException
      */
     public Manifest(Element element, String baseURI) throws XMLSecurityException {
+        this(element, baseURI, false);
+        
+    }
+    /**
+     * Constructor Manifest
+     *
+     * @param element
+     * @param baseURI
+     * @param secureValidation
+     * @throws XMLSecurityException
+     */
+    public Manifest(
+        Element element, String baseURI, boolean secureValidation
+    ) throws XMLSecurityException {
         super(element, baseURI);
         
         String id = XMLUtils.getAttributeValue(element, "Id");
         if (id != null) {
             IdResolver.registerElementById(element, id);
         }
+        this.secureValidation = secureValidation;
 
         // check out Reference children
         this.referencesEl = 
@@ -108,6 +130,12 @@ public class Manifest extends SignatureElementProxy {
 
             throw new DOMException(DOMException.WRONG_DOCUMENT_ERR,
                                    I18n.translate("xml.WrongContent", exArgs));
+        }
+        
+        if (secureValidation && le > MAXIMUM_REFERENCE_COUNT) {
+            Object exArgs[] = { le, MAXIMUM_REFERENCE_COUNT };
+            
+            throw new XMLSecurityException("signature.tooManyReferences", exArgs);
         }
 
         // create List
@@ -199,7 +227,8 @@ public class Manifest extends SignatureElementProxy {
     public Reference item(int i) throws XMLSecurityException {
         if (this.references.get(i) == null) {
             // not yet constructed, so _we_ have to            
-            Reference ref = new Reference(referencesEl[i], this.baseURI, this);
+            Reference ref = 
+                new Reference(referencesEl[i], this.baseURI, this, secureValidation);
 
             this.references.set(i, ref);
         }
@@ -288,12 +317,17 @@ public class Manifest extends SignatureElementProxy {
         if (referencesEl.length == 0) {
             throw new XMLSecurityException("empty");
         }
+        if (secureValidation && referencesEl.length > MAXIMUM_REFERENCE_COUNT) {
+            Object exArgs[] = { referencesEl.length, MAXIMUM_REFERENCE_COUNT };
+                        
+            throw new XMLSecurityException("signature.tooManyReferences", exArgs);
+        }
 
         this.verificationResults = new boolean[referencesEl.length];
         boolean verify = true;
         for (int i = 0; i < this.referencesEl.length; i++) {
             Reference currentRef =
-                new Reference(referencesEl[i], this.baseURI, this);
+                new Reference(referencesEl[i], this.baseURI, this, secureValidation);
 
             this.references.set(i, currentRef);
 
@@ -332,7 +366,9 @@ public class Manifest extends SignatureElementProxy {
                             ) {
                                 try {
                                     referencedManifest =
-                                        new Manifest((Element) n, signedManifestNodes.getSourceURI());
+                                        new Manifest(
+                                             (Element)n, signedManifestNodes.getSourceURI(), secureValidation
+                                        );
                                     break findManifest;
                                 } catch (XMLSecurityException ex) {
                                     if (log.isDebugEnabled()) {

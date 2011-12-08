@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
@@ -49,9 +50,22 @@ import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
  * @author Sean Mullan
  */
 public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
+    
+    /**
+     * The maximum number of references per Manifest, if secure validation is enabled.
+     */
+    public static final int MAXIMUM_REFERENCE_COUNT = 30;
 
     private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(DOMSignedInfo.class);
+    
+    /** Signature - NOT Recommended RSAwithMD5 */
+    private static final String ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5 = 
+        Constants.MoreAlgorithmsSpecNS + "rsa-md5";
+    
+    /** HMAC - NOT Recommended HMAC-MD5 */
+    private static final String ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5 = 
+        Constants.MoreAlgorithmsSpecNS + "hmac-md5";
     
     private List<Reference> references;
     private CanonicalizationMethod canonicalizationMethod;
@@ -138,13 +152,36 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         // unmarshal SignatureMethod
         Element smElem = DOMUtils.getNextSiblingElement(cmElem);
         signatureMethod = DOMSignatureMethod.unmarshal(smElem);
+        
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
 
+        if (secVal && ((ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethod)
+                || ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(signatureMethod)))) {
+            throw new MarshalException(
+                "It is forbidden to use algorithm " + signatureMethod + " when secure validation is enabled"
+            );
+        }
+        
         // unmarshal References
         ArrayList<Reference> refList = new ArrayList<Reference>(5);
         Element refElem = DOMUtils.getNextSiblingElement(smElem);
+        
+        int refCount = 0;
         while (refElem != null) {
             refList.add(new DOMReference(refElem, context, provider));
             refElem = DOMUtils.getNextSiblingElement(refElem);
+            
+            refCount++;
+            if (secVal && (refCount > MAXIMUM_REFERENCE_COUNT)) {
+                String error = "A maxiumum of " + MAXIMUM_REFERENCE_COUNT + " " 
+                    + "references per Manifest are allowed with secure validation";
+                throw new MarshalException(error);
+            }
         }
         references = Collections.unmodifiableList(refList);
     }

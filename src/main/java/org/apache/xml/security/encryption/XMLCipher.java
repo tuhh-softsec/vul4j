@@ -228,6 +228,8 @@ public class XMLCipher {
     
     private SecureRandom random;
     
+    private boolean secureValidation;
+    
     /**
      * Set the Serializer algorithm to use
      */
@@ -563,6 +565,13 @@ public class XMLCipher {
 
         cipherMode = opmode;
         this.key = key;
+    }
+    
+    /**
+     * Set whether secure validation is enabled or not. The default is false.
+     */
+    public void setSecureValidation(boolean secureValidation) {
+        this.secureValidation = secureValidation;
     }
 
     /**
@@ -1309,6 +1318,7 @@ public class XMLCipher {
 
             KeyInfo ki = encryptedKey.getKeyInfo();
             if (ki != null) {
+                ki.setSecureValidation(secureValidation);
                 try {
                     String keyWrapAlg = encryptedKey.getEncryptionMethod().getAlgorithm();
                     String keyType = JCEMapper.getJCEKeyAlgorithmFromURI(keyWrapAlg);
@@ -1332,6 +1342,7 @@ public class XMLCipher {
 
         // Obtain the encrypted octets 
         XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
+        cipherInput.setSecureValidation(secureValidation);
         byte [] encryptedBytes = cipherInput.getBytes();
 
         String jceKeyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
@@ -1498,11 +1509,14 @@ public class XMLCipher {
             if (ki != null) {
                 try {
                     // Add a EncryptedKey resolver
-                    ki.registerInternalKeyResolver(
+                    EncryptedKeyResolver resolver = 
                         new EncryptedKeyResolver(
                             encryptedData.getEncryptionMethod().getAlgorithm(), kek
-                        )
-                    );
+                        );
+                    
+                    // Add a EncryptedKey resolver
+                    ki.registerInternalKeyResolver(resolver);
+                    ki.setSecureValidation(secureValidation);
                     key = ki.getSecretKey();
                 } catch (KeyResolverException kre) {
                     if (log.isDebugEnabled()) {
@@ -1521,6 +1535,7 @@ public class XMLCipher {
 
         // Obtain the encrypted octets 
         XMLCipherInput cipherInput = new XMLCipherInput(encryptedData);
+        cipherInput.setSecureValidation(secureValidation);
         byte[] encryptedBytes = cipherInput.getBytes();
 
         // Now create the working cipher
@@ -2032,7 +2047,9 @@ public class XMLCipher {
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
                 try {
-                    result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+                    KeyInfo ki = new KeyInfo(keyInfoElement, null);
+                    ki.setSecureValidation(secureValidation);
+                    result.setKeyInfo(ki);
                 } catch (XMLSecurityException xse) {
                     throw new XMLEncryptionException("Error loading Key Info", xse);
                 }
@@ -2087,7 +2104,9 @@ public class XMLCipher {
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
                 try {
-                    result.setKeyInfo(new KeyInfo(keyInfoElement, null));
+                    KeyInfo ki = new KeyInfo(keyInfoElement, null);
+                    ki.setSecureValidation(secureValidation);
+                    result.setKeyInfo(ki);
                 } catch (XMLSecurityException xse) {
                     throw new XMLEncryptionException("Error loading Key Info", xse);
                 }

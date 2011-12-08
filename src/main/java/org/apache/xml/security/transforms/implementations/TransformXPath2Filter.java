@@ -53,8 +53,6 @@ import org.xml.sax.SAXException;
  * Implements the <I>XML Signature XPath Filter v2.0</I>
  *
  * @see <A HREF="http://www.w3.org/TR/xmldsig-filter2/">XPath Filter v2.0 (TR)</A>
- * @see <a HREF="http://www.w3.org/Signature/Drafts/xmldsig-xfilter2/">XPath Filter v2.0 
- * (editors copy)</a>
  */
 public class TransformXPath2Filter extends TransformSpi {
 

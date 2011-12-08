@@ -21,7 +21,6 @@ package org.apache.xml.security.transforms.params;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
-import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.ElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -35,6 +34,9 @@ import org.w3c.dom.Node;
  * @author $Author$
  */
 public class XPathFilterCHGPContainer extends ElementProxy implements TransformParam {
+
+    public static final String TRANSFORM_XPATHFILTERCHGP = 
+        "http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/#xpathFilter";
 
     /** Field _ATT_FILTER_VALUE_INTERSECT */
     private static final String _TAG_INCLUDE_BUT_SEARCH = "IncludeButSearch";
@@ -305,6 +307,6 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
      * @inheritDoc
      */
     public final String getBaseNamespace() {
-        return Transforms.TRANSFORM_XPATHFILTERCHGP;
+        return TRANSFORM_XPATHFILTERCHGP;
     }
 }

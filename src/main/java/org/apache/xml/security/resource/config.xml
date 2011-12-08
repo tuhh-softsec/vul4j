@@ -52,9 +52,6 @@
       <TransformAlgorithm URI="http://www.w3.org/TR/1999/REC-xslt-19991116"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
       <!-- XPath version 2 -->
-      <TransformAlgorithm URI="http://www.w3.org/2002/04/xmldsig-filter2"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter" />
-      <!-- XPath version 2b -->
       <TransformAlgorithm URI="http://www.w3.org/2002/06/xmldsig-filter2"
                           JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter" />
    </TransformAlgorithms>

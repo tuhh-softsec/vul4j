@@ -125,10 +125,19 @@ public final class DOMRetrievalMethod extends DOMStructure
 
         // get here node
         here = rmElem.getAttributeNodeNS(null, "URI");
+        
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
 
         // get Transforms, if specified
         List<Transform> transforms = new ArrayList<Transform>();
         Element transformsElem = DOMUtils.getFirstChildElement(rmElem);
+        
+        int transformCount = 0;
         if (transformsElem != null) {
             Element transformElem =
                 DOMUtils.getFirstChildElement(transformsElem);
@@ -136,6 +145,13 @@ public final class DOMRetrievalMethod extends DOMStructure
                 transforms.add
                     (new DOMTransform(transformElem, context, provider));
                 transformElem = DOMUtils.getNextSiblingElement(transformElem);
+                
+                transformCount++;
+                if (secVal && (transformCount > DOMReference.MAXIMUM_TRANSFORM_COUNT)) {
+                    String error = "A maxiumum of " + DOMReference.MAXIMUM_TRANSFORM_COUNT + " " 
+                        + "transforms per Reference are allowed with secure validation";
+                    throw new MarshalException(error);
+                }
             }
         }
         if (transforms.isEmpty()) {

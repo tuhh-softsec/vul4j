@@ -87,7 +87,7 @@ public class SignatureValidator {
         if (coreValidity == false) {
             // check the validation status of each Reference
             Iterator<?> i = signature.getSignedInfo().getReferences().iterator();
-            for (int j = 0; i.hasNext(); j++) {
+            while (i.hasNext()) {
                 Reference reference = (Reference) i.next();
                 reference.validate(vc);
             }

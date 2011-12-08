@@ -100,7 +100,7 @@ public class SampleTransformXPathFilterCHGP {
 
         xpathContainer.setXPathNamespaceContext("ds", Constants.SignatureSpecNS);
         xpathContainer.setXPathNamespaceContext("x", "http://foo.bar/");
-        transforms.addTransform(Transforms.TRANSFORM_XPATHFILTERCHGP, xpathContainer.getElement());
+        transforms.addTransform(XPathFilterCHGPContainer.TRANSFORM_XPATHFILTERCHGP, xpathContainer.getElement());
         sig.addDocument("", transforms);
 
         String secretKey = "secret";

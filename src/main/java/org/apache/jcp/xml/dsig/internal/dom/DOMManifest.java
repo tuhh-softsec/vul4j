@@ -91,11 +91,28 @@ public final class DOMManifest extends DOMStructure implements Manifest {
         if (this.id != null) {
             IdResolver.registerElementById(manElem, this.id);
         }
+        
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
+        
         Element refElem = DOMUtils.getFirstChildElement(manElem);
         List<Reference> refs = new ArrayList<Reference>();
+        
+        int refCount = 0;
         while (refElem != null) {
             refs.add(new DOMReference(refElem, context, provider));
             refElem = DOMUtils.getNextSiblingElement(refElem);
+            
+            refCount++;
+            if (secVal && (refCount > DOMSignedInfo.MAXIMUM_REFERENCE_COUNT)) {
+                String error = "A maxiumum of " + DOMSignedInfo.MAXIMUM_REFERENCE_COUNT + " " 
+                    + "references per Manifest are allowed with secure validation";
+                throw new MarshalException(error);
+            }
         }
         this.references = Collections.unmodifiableList(refs);
     }
