@@ -102,9 +102,9 @@ public class TransformXPath extends TransformSpi {
                 );
             }
             
-            XPathAPI xpathAPIInstance = new JDKXPathAPI();
-            if (str.contains("here()")) {
-                xpathAPIInstance = new XalanXPathAPI();
+            XPathAPI xpathAPIInstance = new XalanXPathAPI();
+            if (!XalanXPathAPI.isInstalled()) {
+                xpathAPIInstance = new JDKXPathAPI();
             }
 
             input.addNodeFilter(new XPathNodeFilter(xpathElement, xpathnode, str, xpathAPIInstance));

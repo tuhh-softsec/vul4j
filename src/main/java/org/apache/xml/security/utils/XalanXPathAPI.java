@@ -52,10 +52,15 @@ public class XalanXPathAPI implements XPathAPI {
     private XPath xpath = null;
 
     private static FunctionTable funcTable = null;
-
+    
+    private static boolean installed;
+    
+    private XPathContext context;
+    
     static {
         fixupFunctionTable();
     }
+    
 
     /**
      *  Use an XPath string to select a nodelist.
@@ -99,12 +104,19 @@ public class XalanXPathAPI implements XPathAPI {
     public void clear() {
         xpathStr = null;
         xpath = null;
+        context = null;
+    }
+    
+    public synchronized static boolean isInstalled() {
+        return installed;
     }
 
     private XObject eval(Node contextNode, Node xpathnode, String str, Node namespaceNode)
         throws TransformerException {
-        XPathContext context = new XPathContext(xpathnode);
-        context.setSecureProcessing(true);
+        if (context == null) {
+            context = new XPathContext(xpathnode);
+            context.setSecureProcessing(true);
+        }
 
         // Create an object to resolve namespace prefixes.
         // XPath namespaces are resolved from the input context node's document element
@@ -116,6 +128,9 @@ public class XalanXPathAPI implements XPathAPI {
         PrefixResolverDefault prefixResolver = new PrefixResolverDefault(resolverNode);
 
         if (!str.equals(xpathStr)) {
+            if (str.indexOf("here()") > 0) {
+                context.reset();
+            }
             xpath = createXPath(str, prefixResolver);
             xpathStr = str;
         }
@@ -146,8 +161,8 @@ public class XalanXPathAPI implements XPathAPI {
         return xpath;
     }
 
-    private static void fixupFunctionTable() {
-        boolean installed = false;
+    private synchronized static void fixupFunctionTable() {
+        installed = false;
         if (log.isDebugEnabled()) {
             log.debug("Registering Here function");
         }
@@ -187,4 +202,5 @@ public class XalanXPathAPI implements XPathAPI {
             }
         }
     }
+    
 }
