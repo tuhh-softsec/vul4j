@@ -6,8 +6,8 @@ package org.esigate;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 
 /**
  * Represents the location of a requested resource with all the necessary
@@ -28,8 +28,8 @@ public class ResourceContext {
 	}
 
 	private final String relUrl;
-	private final HttpServletRequest originalRequest;
-	private final HttpServletResponse originalResponse;
+	private final HttpRequest originalRequest;
+	private final HttpResponse originalResponse;
 	private final Map<String, String> parameters;
 	private boolean proxy = false;
 	private boolean preserveHost = false;
@@ -49,8 +49,8 @@ public class ResourceContext {
 	}
 
 	public ResourceContext(Driver driver, String relUrl,
-			Map<String, String> parameters, HttpServletRequest originalRequest,
-			HttpServletResponse originalResponse) {
+			Map<String, String> parameters, HttpRequest originalRequest,
+			HttpResponse originalResponse) {
 		this.driver = driver;
 		this.relUrl = relUrl;
 		if (parameters != null) {
@@ -66,7 +66,7 @@ public class ResourceContext {
 		return relUrl;
 	}
 
-	public HttpServletRequest getOriginalRequest() {
+	public HttpRequest getOriginalRequest() {
 		return originalRequest;
 	}
 
@@ -90,7 +90,7 @@ public class ResourceContext {
 		this.neededForTransformation = neededForTransformation;
 	}
 
-	public HttpServletResponse getOriginalResponse() {
+	public HttpResponse getOriginalResponse() {
 		return originalResponse;
 	}
 

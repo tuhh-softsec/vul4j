@@ -34,7 +34,7 @@ class InlineElement extends BaseElement {
 
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		String originalUrl = ctx.getRequest().getRequestURL().toString();
+		String originalUrl = ctx.getResourceContext().getOriginalRequest().getRequestURL().toString();
 		InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
 	}
 }

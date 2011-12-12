@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.esigate.HttpErrorPage;
+import org.esigate.ResourceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ public class Parser {
 	private final static Logger LOG = LoggerFactory.getLogger(Parser.class);
 	private final Pattern pattern;
 	private final ElementType[] elementTypes;
-	private HttpServletRequest request;
+	private ResourceContext resourceContext;
 
 	/**
 	 * Creates a Parser with a given regular expression pattern and
@@ -41,7 +40,7 @@ public class Parser {
 	 * @throws HttpErrorPage
 	 */
 	public void parse(CharSequence in, Appendable out) throws IOException, HttpErrorPage {
-		ParserContextImpl ctx = new ParserContextImpl(out, request);
+		ParserContextImpl ctx = new ParserContextImpl(out, resourceContext);
 		Matcher matcher = pattern.matcher(in);
 		int currentPosition = 0;
 		while (matcher.find()) {
@@ -78,12 +77,8 @@ public class Parser {
 		ctx.characters(in, currentPosition, in.length());
 	}
 
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
+	public void setResourceContext(ResourceContext resourceContext) {
+		this.resourceContext = resourceContext;
 	}
 
 }

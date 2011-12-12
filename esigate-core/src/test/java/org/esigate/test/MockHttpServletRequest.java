@@ -11,6 +11,7 @@ import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -18,16 +19,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import org.esigate.api.Cookie;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpSession;
 
-public class MockHttpServletRequest implements HttpServletRequest {
+public class MockHttpServletRequest implements HttpRequest {
 	private final HashMap<String, Object> attributes = new HashMap<String, Object>();
 	private String characterEncoding;
-	private final URL url;
+	private URL url;
 	private String method = "GET";
 	private HttpSession session;
 	private final ArrayList<Cookie> cookies = new ArrayList<Cookie>();
@@ -35,22 +34,29 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	private byte[] content;
 	private boolean consumed = false;
 	private static final SimpleDateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-
+	private Long ttl;
+	private Integer maxWait;
+	private boolean noStore;
+	
 	public void setMethod(String method) {
 		this.method = method;
 	}
 
 	public MockHttpServletRequest(String url) {
+		setUrl(url);
+	}
+
+	public MockHttpServletRequest() {
+		this("http://localhost:8080");
+	}
+
+	public void setUrl(String url) {
 		try {
 			this.url = new URL(url);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
 		setHeader("Host", getServerName());
-	}
-
-	public MockHttpServletRequest() {
-		this("http://localhost:8080");
 	}
 
 	public Object getAttribute(String name) {
@@ -82,13 +88,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return getHeader("Content-type");
 	}
 
-	public ServletInputStream getInputStream() throws IOException {
+	public InputStream getInputStream() throws IOException {
 		if (consumed) {
 			throw new IllegalStateException("InputStream already obtained");
 		}
 		consumed = true;
 		final InputStream is = new ByteArrayInputStream(content);
-		return new ServletInputStream() {
+		return new InputStream() {
 			@Override
 			public int read() throws IOException {
 				return is.read();
@@ -144,7 +150,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getRemoteAddr() {
-		throw new RuntimeException("Method not implemented");
+		return null;
 	}
 
 	public String getRemoteHost() {
@@ -172,9 +178,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw new RuntimeException("Method not implemented");
 	}
 
-	public RequestDispatcher getRequestDispatcher(String path) {
-		throw new RuntimeException("Method not implemented");
-	}
+//	public RequestDispatcher getRequestDispatcher(String path) {
+//		throw new RuntimeException("Method not implemented");
+//	}
 
 	public String getRealPath(String path) {
 		throw new RuntimeException("Method not implemented");
@@ -238,9 +244,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw new RuntimeException("Method not implemented");
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Enumeration getHeaderNames() {
-		return Collections.enumeration(headers.keySet());
+	public Collection<String> getHeaderNames() {
+		return headers.keySet();
 	}
 
 	public int getIntHeader(String name) {
@@ -287,7 +292,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return url.getPath();
 	}
 
-	public StringBuffer getRequestURL() {
+	public String getRequestURL() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(url.getProtocol());
 		sb.append("://");
@@ -301,7 +306,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 			sb.append("?");
 			sb.append(url.getQuery());
 		}
-		return sb;
+		return sb.toString();
 	}
 
 	public String getServletPath() {
@@ -333,6 +338,30 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	public boolean isRequestedSessionIdFromUrl() {
 		throw new RuntimeException("Method not implemented");
+	}
+
+	public Long getResourceTtl() {
+		return ttl;
+	}
+
+	public Boolean isNoStoreResource() {
+		return noStore;
+	}
+
+	public Integer getFetchMaxWait() {
+		return maxWait;
+	}
+
+	public void setResourceTtl(Long ttl) {
+		this.ttl = ttl;
+	}
+
+	public void setNoStoreResource(boolean noStore) {
+		this.noStore = noStore;
+	}
+
+	public void setFetchMaxWait(Integer maxWait) {
+		this.maxWait = maxWait;
 	}
 
 }

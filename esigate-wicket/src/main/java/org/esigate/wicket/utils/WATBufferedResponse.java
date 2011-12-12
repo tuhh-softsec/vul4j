@@ -18,12 +18,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
+import org.apache.wicket.protocol.http.WebResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.wicket.Response;
-import org.apache.wicket.protocol.http.WebResponse;
-import org.esigate.wicket.container.WATParam;
 
 /**
  * A Wicket Response implementation used by the WATParam container. Any content
@@ -36,7 +33,8 @@ import org.esigate.wicket.container.WATParam;
  * @see Response
  */
 public class WATBufferedResponse extends WebResponse {
-	private static final Logger LOG = LoggerFactory.getLogger(WATBufferedResponse.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(WATBufferedResponse.class);
 
 	private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 

@@ -12,19 +12,17 @@
  * limitations under the License.
  *
  */
-package org.esigate.cookie;
+package org.esigate.http;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ResourceContext;
-import org.esigate.http.HttpClientRequest;
+import org.esigate.cookie.BasicClientCookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +43,8 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  * 
  */
-public class RequestCookieStore implements CookieStore {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(RequestCookieStore.class);
+class RequestCookieStore implements CookieStore {
+	private static final Logger LOG = LoggerFactory.getLogger(RequestCookieStore.class);
 
 	private final Collection<String> discardCookies;
 	private final Collection<String> forwardCookies;
@@ -64,16 +61,12 @@ public class RequestCookieStore implements CookieStore {
 	}
 
 	public void addCookie(Cookie cookie) {
-		HttpServletResponse response = resourceContext.getOriginalResponse();
 		String name = cookie.getName();
-		if (discardCookies.contains(name)
-				|| (discardCookies.contains("*") && !forwardCookies
-						.contains(name))) {
+		if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
 			LOG.info("Cookie " + toString(cookie) + " -> discarding");
-		} else if (forwardCookies.contains(name)
-				|| forwardCookies.contains("*")) {
+		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
 			LOG.info("Cookie " + toString(cookie) + " -> forwarding");
-			response.addCookie(rewriteCookie(cookie, resourceContext));
+			resourceContext.getOriginalResponse().addCookie(rewrite(cookie, resourceContext));
 		} else {
 			LOG.info("Cookie " + toString(cookie) + " -> storing to context");
 			actualCookieStore.addCookie(cookie);
@@ -109,38 +102,31 @@ public class RequestCookieStore implements CookieStore {
 		return result.toString();
 	}
 
-	static javax.servlet.http.Cookie rewriteCookie(Cookie cookie,
-			ResourceContext resourceContext) {
+	static org.esigate.api.Cookie rewrite(Cookie cookie, ResourceContext resourceContext) {
 		String name = cookie.getName();
+		// Rewrite name if JSESSIONID because it will interfere with current server session
+		if ("JSESSIONID".equalsIgnoreCase(name)) {
+			name = "_" + name;
+		}
+
 		// Rewrite domain
-		String originalDomain = cookie.getDomain();
-		String providerHostName = resourceContext.getDriver()
-				.getConfiguration().getBaseURLasURL().getHost();
-		String requestHostName = resourceContext.getOriginalRequest()
-				.getServerName();
-		String domain = rewriteDomain(originalDomain, providerHostName,
-				requestHostName);
+		String domain = rewriteDomain(
+				cookie.getDomain(),
+				resourceContext.getDriver().getConfiguration().getBaseURLasURL().getHost(),
+				resourceContext.getOriginalRequest().getServerName());
+
 		// Rewrite path
 		String originalPath = cookie.getPath();
-		String requestPath = resourceContext.getOriginalRequest()
-				.getRequestURI();
+		String requestPath = resourceContext.getOriginalRequest().getRequestURI();
 		String path = originalPath;
 		if (requestPath == null || !requestPath.startsWith(originalPath)) {
 			path = "/";
 		}
+
 		// Rewrite secure
-		boolean secure = false;
-		if (cookie.isSecure()
-				&& resourceContext.getOriginalRequest().isSecure()) {
-			secure = true;
-		}
-		// Rewrite name if JSESSIONID because it will interfere with current
-		// server session
-		if ("JSESSIONID".equalsIgnoreCase(name)) {
-			name = "_" + name;
-		}
-		javax.servlet.http.Cookie cookieToForward = new javax.servlet.http.Cookie(
-				name, cookie.getValue());
+		boolean secure = (cookie.isSecure() && resourceContext.getOriginalRequest().isSecure());
+
+		org.esigate.api.Cookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
 		if (domain != null) {
 			cookieToForward.setDomain(domain);
 		}
@@ -148,19 +134,9 @@ public class RequestCookieStore implements CookieStore {
 		cookieToForward.setSecure(secure);
 		cookieToForward.setComment(cookie.getComment());
 		cookieToForward.setVersion(cookie.getVersion());
-		Date expiryDate = cookie.getExpiryDate();
-		if (expiryDate != null) {
-			int maxAge = ((Long) ((cookie.getExpiryDate().getTime() - System
-					.currentTimeMillis()) / 1000)).intValue();
-			// According to Cookie class specification, a negative value
-			// would be considered as no value. That is not what we want!
-			if (maxAge < 0) {
-				maxAge = 0;
-			}
-			cookieToForward.setMaxAge(maxAge);
-		}
-		LOG.debug("Forwarding cookie " + cookie.toString() + " -> "
-				+ cookieToForward.toString());
+		cookieToForward.setExpiryDate(cookie.getExpiryDate());
+
+		LOG.debug("Forwarding cookie {} -> {}", cookie.toString(), cookieToForward.toString());
 		return cookieToForward;
 	}
 
@@ -196,23 +172,19 @@ public class RequestCookieStore implements CookieStore {
 		cookies.addAll(actualCookieStore.getCookies());
 		// add all the cookies from browser to be accepted by policy
 		// (should be right domain, unsecure, path /)
-		javax.servlet.http.Cookie[] requestCookies = resourceContext
-				.getOriginalRequest().getCookies();
+		org.esigate.api.Cookie[] requestCookies = resourceContext.getOriginalRequest().getCookies();
 		if (requestCookies != null) {
-			for (javax.servlet.http.Cookie cookie : requestCookies) {
+			for (org.esigate.api.Cookie cookie : requestCookies) {
 				String name = cookie.getName();
-				if (forwardCookies.contains(name)
-						|| (forwardCookies.contains("*") && !discardCookies
-								.contains(name))) {
-					cookies.add(rewriteCookie(cookie, resourceContext));
+				if (forwardCookies.contains(name) || (forwardCookies.contains("*") && !discardCookies.contains(name))) {
+					cookies.add(toApacheCookie(cookie, resourceContext));
 				}
 			}
 		}
 		return cookies;
 	}
 
-	static SerializableBasicClientCookie2 rewriteCookie(
-			javax.servlet.http.Cookie cookie, ResourceContext resourceContext) {
+	static Cookie toApacheCookie(org.esigate.api.Cookie cookie, ResourceContext resourceContext) {
 		String name = cookie.getName();
 		if ("_JSESSIONID".equalsIgnoreCase(name)) {
 			name = name.substring(1);

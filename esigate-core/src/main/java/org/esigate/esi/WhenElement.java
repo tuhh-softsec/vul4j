@@ -3,10 +3,10 @@ package org.esigate.esi;
 import java.io.IOException;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.vars.Operations;
-import org.esigate.vars.VariablesResolver;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
+import org.esigate.vars.Operations;
+import org.esigate.vars.VariablesResolver;
 
 class WhenElement extends BaseElement {
 
@@ -30,7 +30,8 @@ class WhenElement extends BaseElement {
 		if (test != null && parent != null) {
 			// no other 'when' were active before
 			active = !parent.hadConditionSet();
-			parent.setCondition(Operations.processOperators(VariablesResolver.replaceAllVariables(test, ctx.getRequest())));
+			parent.setCondition(Operations.processOperators(
+					VariablesResolver.replaceAllVariables(test, ctx.getResourceContext().getOriginalRequest())));
 			active &= parent.isCondition();
 		}
 	}
@@ -38,7 +39,7 @@ class WhenElement extends BaseElement {
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
 		if (active) {
-			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getResourceContext().getOriginalRequest());
 			super.characters(result, 0, result.length());
 		}
 	}

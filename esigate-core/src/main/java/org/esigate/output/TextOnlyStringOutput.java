@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-
+import org.esigate.api.HttpResponse;
 import org.esigate.resource.ResourceUtils;
 
 
@@ -30,14 +29,12 @@ import org.esigate.resource.ResourceUtils;
  * @author Francois-Xavier Bonnet
  */
 public class TextOnlyStringOutput extends Output {
-	private final HttpServletResponse response;
+	private final HttpResponse response;
+	private final List<String> contentTypes;
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private OutputStream outputStream;
-	private boolean text = false;
-	private final List<String> contentTypes;
 
-	public TextOnlyStringOutput(HttpServletResponse response,
-			List<String> contentTypes) {
+	public TextOnlyStringOutput(HttpResponse response, List<String> contentTypes) {
 		this.response = response;
 		this.contentTypes = contentTypes;
 	}
@@ -60,11 +57,8 @@ public class TextOnlyStringOutput extends Output {
 	@Override
 	public void open() {
 		response.setStatus(getStatusCode());
-		if (ResourceUtils.isTextContentType(getHeader("Content-Type"),
-				this.contentTypes)) {
-			text = true;
-		}
-		copyHeaders();
+		boolean text = ResourceUtils.isTextContentType(getHeader("Content-Type"), this.contentTypes);
+		copyHeaders(text);
 		try {
 			if (text) {
 				byteArrayOutputStream = new ByteArrayOutputStream();
@@ -79,7 +73,7 @@ public class TextOnlyStringOutput extends Output {
 	/**
 	 * Copy all the headers to the response
 	 */
-	private void copyHeaders() {
+	private void copyHeaders(boolean text) {
 		for (Entry<String, Set<String>> entry : getHeaders().entrySet()) {
 			// Swallow content-encoding and content-length headers for html
 			// pages as content-length may change and gzip-encoded pages will be

@@ -1,6 +1,6 @@
-package org.esigate.cookie;
+package org.esigate.http;
 
-import org.esigate.cookie.RequestCookieStore;
+import org.esigate.http.RequestCookieStore;
 
 import junit.framework.TestCase;
 

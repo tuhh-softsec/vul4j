@@ -19,10 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.http.HttpSession;
-
-
 import org.esigate.ResourceContext;
+import org.esigate.api.HttpSession;
 import org.esigate.http.HttpClientRequest;
 import org.esigate.http.HttpClientResponse;
 import org.slf4j.Logger;

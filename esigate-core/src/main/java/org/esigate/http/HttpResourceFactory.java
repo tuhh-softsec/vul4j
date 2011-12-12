@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.servlet.http.HttpServletResponse;
-
-
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
@@ -42,7 +40,7 @@ public class HttpResourceFactory implements ResourceFactory {
 			StringWriter out = new StringWriter();
 			e.printStackTrace(new PrintWriter(out));
 			HttpErrorPage httpErrorPage = new HttpErrorPage(
-					HttpServletResponse.SC_BAD_GATEWAY, e.getMessage(),
+					HttpStatus.SC_BAD_GATEWAY, e.getMessage(),
 					out.toString());
 			httpErrorPage.initCause(e);
 			throw httpErrorPage;

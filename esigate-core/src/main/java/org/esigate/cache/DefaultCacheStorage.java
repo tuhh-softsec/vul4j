@@ -7,11 +7,14 @@ import java.util.PriorityQueue;
 import java.util.Properties;
 
 public class DefaultCacheStorage implements CacheStorage {
+	private static final Comparator<CacheEntry> CACHE_ENTRY_COMPARATOR = new Comparator<CacheEntry>() {
+		public int compare(CacheEntry o1, CacheEntry o2) {
+			return (int) (o1.getTtl() - o2.getTtl());
+		}
+	};
 
-	private final Map<String, CacheEntry> cache = Collections
-			.synchronizedMap(new LRUMap<String, CacheEntry>());
-	private final PriorityQueue<CacheEntry> ttlQueue = new PriorityQueue<DefaultCacheStorage.CacheEntry>(
-			100, new CacheEntryComparator());
+	private final Map<String, CacheEntry> cache = Collections.synchronizedMap(new LRUMap<String, CacheEntry>());
+	private final PriorityQueue<CacheEntry> ttlQueue = new PriorityQueue<CacheEntry>(100, CACHE_ENTRY_COMPARATOR);
 
 	public void put(String key, Object value) {
 		removeExpiredEntries();
@@ -20,11 +23,9 @@ public class DefaultCacheStorage implements CacheStorage {
 
 	public void put(String key, Object value, long ttl) {
 		removeExpiredEntries();
-		CacheEntry cacheEntry = new CacheEntry(value, key,
-				System.currentTimeMillis() + ttl);
+		CacheEntry cacheEntry = new CacheEntry(value, key, System.currentTimeMillis() + ttl);
 		ttlQueue.add(cacheEntry);
 		cache.put(key, cacheEntry);
-
 	}
 
 	public Object get(String key) {
@@ -68,18 +69,17 @@ public class DefaultCacheStorage implements CacheStorage {
 
 	private static class CacheEntry {
 		private final Object value;
-		private long ttl = -1;
-		private String key;
+		private final long ttl;
+		private final String key;
+
+		public CacheEntry(Object value) {
+			this(value, null, -1);
+		}
 
 		public CacheEntry(Object value, String key, long ttl) {
-
 			this.value = value;
 			this.key = key;
 			this.ttl = ttl;
-		}
-
-		public CacheEntry(Object value) {
-			this.value = value;
 		}
 
 		public long getTtl() {
@@ -126,12 +126,5 @@ public class DefaultCacheStorage implements CacheStorage {
 			return true;
 		}
 
-	}
-
-	private static class CacheEntryComparator implements Comparator<CacheEntry> {
-
-		public int compare(CacheEntry o1, CacheEntry o2) {
-			return (int) (o1.getTtl() - o2.getTtl());
-		}
 	}
 }

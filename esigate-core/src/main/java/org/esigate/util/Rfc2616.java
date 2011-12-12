@@ -1,6 +1,7 @@
 package org.esigate.util;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -9,15 +10,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.cookie.DateParseException;
-import org.apache.http.impl.cookie.DateUtils;
 import org.esigate.DriverConfiguration;
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpStatusConstants;
+import org.esigate.http.DateUtils;
 import org.esigate.output.Output;
 import org.esigate.output.StringOutput;
 import org.esigate.resource.Resource;
@@ -87,9 +86,9 @@ public class Rfc2616 {
 					result.sMaxAge = Long.valueOf(-1);
 					if (token.length == 2) {
 						try {
-							result.maxAge = Long.parseLong(token[1]);
+							result.sMaxAge = Long.parseLong(token[1]);
 						} catch (NumberFormatException e) {
-							// Invalid max-age, assume -1 no cache
+							// Invalid s-max-age, assume -1 no cache
 						}
 					}
 				}
@@ -143,7 +142,7 @@ public class Rfc2616 {
 	 */
 	public final static Map<String, String> getVary(
 			ResourceContext resourceContext, Resource resource) {
-		HttpServletRequest request = resourceContext.getOriginalRequest();
+		HttpRequest request = resourceContext.getOriginalRequest();
 		String varyString = resource.getHeader("Vary");
 		if (varyString != null) {
 			Map<String, String> result = new HashMap<String, String>();
@@ -174,7 +173,7 @@ public class Rfc2616 {
 		if (vary == null) {
 			return true;
 		} else {
-			HttpServletRequest request = resourceContext.getOriginalRequest();
+			HttpRequest request = resourceContext.getOriginalRequest();
 			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
 					.iterator(); iterator.hasNext();) {
 				Entry<String, String> header = iterator.next();
@@ -224,7 +223,7 @@ public class Rfc2616 {
 		if (etag == null) {
 			return true;
 		}
-		HttpServletRequest request = resourceContext.getOriginalRequest();
+		HttpRequest request = resourceContext.getOriginalRequest();
 		String ifNoneMatch = request.getHeader("If-none-match");
 		if (ifNoneMatch == null) {
 			return true;
@@ -368,7 +367,7 @@ public class Rfc2616 {
 		if (dateString != null) {
 			try {
 				return DateUtils.parseDate(dateString);
-			} catch (DateParseException e) {
+			} catch (ParseException e) {
 				// Ignore invalid date
 				LOG.warn("Invalid date format: " + dateString);
 			}
@@ -377,7 +376,7 @@ public class Rfc2616 {
 	}
 
 	public final static boolean requiresRefresh(ResourceContext context) {
-		HttpServletRequest originalRequest = context.getOriginalRequest();
+		HttpRequest originalRequest = context.getOriginalRequest();
 		String pragma = originalRequest.getHeader("Pragma");
 		if ("no-cache".equalsIgnoreCase(pragma)) {
 			return true;
@@ -410,7 +409,7 @@ public class Rfc2616 {
 			output.close();
 			throw new HttpErrorPage(resource.getStatusCode(),
 					resource.getStatusMessage(), errorPageContent);
-		} else if (HttpServletResponse.SC_NOT_MODIFIED == resource
+		} else if (HttpStatusConstants.SC_NOT_MODIFIED == resource
 				.getStatusCode()) {
 			output.setStatusCode(resource.getStatusCode());
 			output.setStatusMessage(resource.getStatusMessage());
@@ -436,5 +435,5 @@ public class Rfc2616 {
 			}
 		}
 	}
-
+	
 }

@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 
 public class DriverTest extends TestCase {
 
@@ -111,7 +113,7 @@ public class DriverTest extends TestCase {
 
 		EasyMock.replay(request, response);
 		try {
-			DriverFactory.getInstance("mock").proxy(relUrl, request, response);
+			DriverFactory.getInstance("mock").proxy(relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
 		} catch (HttpErrorPage e) {
 			assertEquals(404, e.getStatusCode());
 		}
@@ -198,8 +200,8 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, request,
-				response);
+		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, HttpRequestImpl.wrap(request),
+				HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 
 		// Retrieve from cache
@@ -262,8 +264,8 @@ public class DriverTest extends TestCase {
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, request,
-				response);
+		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, HttpRequestImpl.wrap(request),
+				HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 	}
 
@@ -345,7 +347,7 @@ public class DriverTest extends TestCase {
 
 		EasyMock.replay(request, response);
 		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, request, response);
+				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 
 		Thread.sleep(1000);
@@ -410,7 +412,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
 		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, request, response);
+				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 
 		// Retrieve from cache
@@ -457,7 +459,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
 		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, request, response);
+				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 	}
 
@@ -528,7 +530,7 @@ public class DriverTest extends TestCase {
 
 		EasyMock.replay(request, response);
 		DriverFactory.getInstance("mockTestProxyWithoutCache").proxy(relUrl,
-				request, response);
+				HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
 		EasyMock.verify(request, response);
 	}
 }

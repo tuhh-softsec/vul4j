@@ -6,19 +6,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletResponse;
-
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
+import org.esigate.api.HttpStatusConstants;
 import org.esigate.http.HttpHeaders;
 import org.esigate.resource.Resource;
 import org.esigate.util.Rfc2616;
@@ -33,8 +32,7 @@ class CacheEntry implements Serializable {
 	private static final long serialVersionUID = 7110248280110189961L;
 	private static final Logger LOG = LoggerFactory.getLogger(CacheEntry.class);
 	private static final long CLEAN_DELAY = 15 * 60 * 1000; // 15 minutes;
-	private static final Pattern ETAG_PATTERN = Pattern
-			.compile(",?\\s*((W/)?\"[^\"]*\")");
+	private static final Pattern ETAG_PATTERN = Pattern.compile(",?\\s*((W/)?\"[^\"]*\")");
 
 	private final String url;
 	private transient CacheStorage storage;
@@ -53,7 +51,7 @@ class CacheEntry implements Serializable {
 	 * removed from this entry.
 	 * 
 	 */
-	private final List<CachedResponseSummary> responseSummaries = new CopyOnWriteArrayList<CachedResponseSummary>();
+	private final Set<CachedResponseSummary> responseSummaries = new CopyOnWriteArraySet<CachedResponseSummary>();
 
 	public String getUrl() {
 		return url;
@@ -115,10 +113,8 @@ class CacheEntry implements Serializable {
 	 *            Summary of cached response
 	 * @return CachedResponse or null if no longer in cache.
 	 */
-	private CachedResponse getCacheResponseAndClean(
-			CachedResponseSummary summary) {
-		CachedResponse cachedResponse = (CachedResponse) storage.get(summary
-				.getCacheKey());
+	private CachedResponse getCacheResponseAndClean(CachedResponseSummary summary) {
+		CachedResponse cachedResponse = storage.get(summary.getCacheKey(), CachedResponse.class);
 
 		// Handle case when resource is no longer in cache.
 		if (cachedResponse == null) {
@@ -126,10 +122,7 @@ class CacheEntry implements Serializable {
 				LOG.debug("Resource " + summary.getCacheKey()
 						+ "is no longer in cache. Removing");
 			}
-			if (responseSummaries.contains(summary)) {
-				responseSummaries.remove(summary);
-				dirty = true;
-			}
+			dirty = responseSummaries.remove(summary);
 		}
 
 		return cachedResponse;
@@ -262,7 +255,7 @@ class CacheEntry implements Serializable {
 		}
 
 		Resource result = null;
-		if (newResource.getStatusCode() == HttpServletResponse.SC_NOT_MODIFIED) {
+		if (newResource.getStatusCode() == HttpStatusConstants.SC_NOT_MODIFIED) {
 			String etag = Rfc2616.getEtag(newResource);
 			if (etag == null) {
 				// No e-tag specified by the server
@@ -311,7 +304,7 @@ class CacheEntry implements Serializable {
 						+ resourceContext.isNeededForTransformation()
 						+ " etag: " + etag);
 				throw new HttpErrorPage(
-						HttpServletResponse.SC_PRECONDITION_FAILED,
+						HttpStatusConstants.SC_PRECONDITION_FAILED,
 						"Invalid 304 response", "Invalid 304 response");
 			}
 		} else {
@@ -376,20 +369,16 @@ class CacheEntry implements Serializable {
 	public void put(ResourceContext resourceContext, CachedResponse resource) {
 		// Don't put in cache null or not modified responses
 		if (resource != null
-				&& resource.getStatusCode() != HttpServletResponse.SC_NOT_MODIFIED) {
+				&& resource.getStatusCode() != HttpStatusConstants.SC_NOT_MODIFIED) {
 
 			// Inject headers from the original request.
-			resource.setRequestHeadersFromRequest(resourceContext
-					.getOriginalRequest());
+			resource.setRequestHeadersFromRequest(resourceContext.getOriginalRequest());
 
 			String key = getCacheKey(resourceContext, resource);
 
-			CachedResponseSummary summary = resource.getSummary();
-			summary.setCacheKey(key);
+			CachedResponseSummary summary = resource.getSummary(key);
 
-			if (responseSummaries.contains(summary)) {
-				responseSummaries.remove(summary);
-			}
+			responseSummaries.remove(summary);
 			responseSummaries.add(summary);
 			storage.put(key, resource);
 			dirty = true;
@@ -415,15 +404,7 @@ class CacheEntry implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (lastClean ^ (lastClean >>> 32));
-		result = prime
-				* result
-				+ ((responseSummaries == null) ? 0 : responseSummaries
-						.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
+		return new HashCodeBuilder().append(url).toHashCode();
 	}
 
 	@Override
@@ -434,28 +415,14 @@ class CacheEntry implements Serializable {
 		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
+		if (!(obj instanceof CacheEntry)) {
 			return false;
 		}
+
 		CacheEntry other = (CacheEntry) obj;
-		if (lastClean != other.lastClean) {
-			return false;
-		}
-		if (responseSummaries == null) {
-			if (other.responseSummaries != null) {
-				return false;
-			}
-		} else if (!responseSummaries.equals(other.responseSummaries)) {
-			return false;
-		}
-		if (url == null) {
-			if (other.url != null) {
-				return false;
-			}
-		} else if (!url.equals(other.url)) {
-			return false;
-		}
-		return true;
+		return new EqualsBuilder()
+			.append(url, other.url)
+			.isEquals();
 	}
 
 	public boolean isDirty() {
@@ -467,18 +434,18 @@ class CacheEntry implements Serializable {
 	}
 
 	/**
-	 * Create a cache key depending on url, etag and Vary headers.
+	 * Create a cache key for {@linkplain CachedResponse} depending on url, etag and Vary headers.
 	 * 
 	 * @param resourceContext
 	 * @param resource
 	 * @return
 	 */
-	private String getCacheKey(ResourceContext resourceContext,
-			Resource resource) {
-		StringBuilder cacheKey = new StringBuilder();
-		cacheKey.append(url).append(" ");
-		String etag = Rfc2616.getEtag(resource);
+	private String getCacheKey(ResourceContext resourceContext, Resource resource) {
+		StringBuilder cacheKey = new StringBuilder()
+			.append(CachedResponse.class.getName()).append(" ")
+			.append(url).append(" ");
 
+		String etag = Rfc2616.getEtag(resource);
 		if (etag != null) {
 			cacheKey.append(" etag=").append(etag);
 		}
@@ -486,11 +453,11 @@ class CacheEntry implements Serializable {
 		Map<String, String> vary = Rfc2616.getVary(resourceContext, resource);
 		if (vary != null) {
 			cacheKey.append(" vary={");
-			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
-					.iterator(); iterator.hasNext();) {
-				Entry<String, String> header = iterator.next();
-				cacheKey.append(header.getKey()).append("=")
-						.append(header.getValue()).append(";");
+			for (Entry<String, String> header : vary.entrySet()) {
+				cacheKey.append(header.getKey())
+					.append("=")
+					.append(header.getValue())
+					.append(";");
 			}
 			cacheKey.append("}");
 		}

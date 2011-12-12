@@ -36,16 +36,13 @@ class IncludeBlockElement implements Element {
 	}
 
 	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		AggregateRenderer aggregateRenderer = ctx.findAncestor(AggregateRenderer.class);
-
 		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
 		Driver driver = tagAttributes.getDriver();
 		String page = tagAttributes.getPage();
 		String name = tagAttributes.getName();
 
-		driver.render(page, null, new Adapter(ctx.getCurrent()), aggregateRenderer.getRequest(), aggregateRenderer.getResponse(),
-				new BlockRenderer(name, page),
-				new AggregateRenderer(aggregateRenderer.getRequest(), aggregateRenderer.getResponse()));
+		driver.render(page, new Adapter(ctx.getCurrent()), ctx.getResourceContext(),
+				new BlockRenderer(name, page), new AggregateRenderer());
 	}
 
 	public boolean isClosed() {

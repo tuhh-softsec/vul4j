@@ -12,26 +12,26 @@
  * limitations under the License.
  *
  */
-package org.esigate.filter;
+package org.esigate.http;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.http.client.CookieStore;
 import org.easymock.EasyMock;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.http.HttpClientRequest;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
+import org.esigate.cookie.BasicClientCookie;
 import org.esigate.test.MockHttpClientRequest;
 
 /**
@@ -58,18 +58,17 @@ public class CookieForwardingFilterTest extends TestCase {
 		tested = null;
 	}
 
-	public void testFilter() throws IOException, HttpErrorPage {
+	public void testFilter() throws IOException, HttpErrorPage, NoSuchFieldException, IllegalAccessException {
 
-		HttpServletRequest request = EasyMock
-				.createNiceMock(HttpServletRequest.class);
+		HttpRequest request = EasyMock
+				.createNiceMock(HttpRequest.class);
 		EasyMock.expect(request.getCookies()).andReturn(
-				new Cookie[] { new Cookie(K_FORWARD1, V_FORWARD1),
-						new Cookie(K_NO_FORWARD, V_NO_FORWARD),
-						new Cookie(K_FORWARD2, V_FORWARD2) });
+				new BasicClientCookie[] { new BasicClientCookie(K_FORWARD1, V_FORWARD1),
+						new BasicClientCookie(K_NO_FORWARD, V_NO_FORWARD),
+						new BasicClientCookie(K_FORWARD2, V_FORWARD2) });
 		EasyMock.replay(request);
 
-		HttpServletResponse response = EasyMock
-				.createNiceMock(HttpServletResponse.class);
+		HttpResponse response = EasyMock.createNiceMock(HttpResponse.class);
 		Properties prop = new Properties();
 		prop.setProperty("forwardCookies", K_FORWARD1 + "   , " + K_FORWARD2);
 		String uri = "test/request.html";
@@ -95,28 +94,31 @@ public class CookieForwardingFilterTest extends TestCase {
 				request, true, true);
 		f.preRequest(clientRequest, rc);
 
-		List<org.apache.http.cookie.Cookie> cookies = clientRequest
-				.getCookieStore().getCookies();
+		Field cookieStoreField = HttpClientRequest.class.getDeclaredField("cookieStore");
+		cookieStoreField.setAccessible(true);
+		CookieStore cookieStore = CookieStore.class.cast(cookieStoreField.get(clientRequest));
+		
+		List<org.apache.http.cookie.Cookie> cookies = cookieStore.getCookies();
 		assertNotNull(cookies);
 		assertFalse(cookies.isEmpty());
 		assertTrue(cookies.size() == 2);
 
 	}
 
-	public void testPreRequest() {
+	public void testPreRequest() throws NoSuchFieldException, IllegalAccessException {
 		Properties driverProperties = new Properties();
 		driverProperties.setProperty("remoteUrlBase", "http://localhost:8080/");
 		MockDriver provider = new MockDriver("mock", driverProperties);
 		Properties props = new Properties();
 		props.put("forwardCookies", "a,b,c");
 		tested.init(props);
-		HttpServletRequest originalRequest = EasyMock
-				.createNiceMock(HttpServletRequest.class);
+		HttpRequest originalRequest = EasyMock
+				.createNiceMock(HttpRequest.class);
 		EasyMock.expect(originalRequest.getCookies())
 				.andReturn(
-						new Cookie[] { new Cookie("a", "value a"),
-								new Cookie("c", "value c"),
-								new Cookie("d", "value d") });
+						new BasicClientCookie[] { new BasicClientCookie("a", "value a"),
+								new BasicClientCookie("c", "value c"),
+								new BasicClientCookie("d", "value d") });
 		EasyMock.replay(originalRequest);
 
 		HttpClientRequest request = new HttpClientRequest("url", null, false,
@@ -124,8 +126,11 @@ public class CookieForwardingFilterTest extends TestCase {
 		ResourceContext context = new ResourceContext(provider, null, null,
 				originalRequest, null);
 		tested.preRequest(request, context);
-		List<org.apache.http.cookie.Cookie> cookies = request.getCookieStore()
-				.getCookies();
+
+		Field cookieStoreField = HttpClientRequest.class.getDeclaredField("cookieStore");
+		cookieStoreField.setAccessible(true);
+		CookieStore cookieStore = CookieStore.class.cast(cookieStoreField.get(request));
+		List<org.apache.http.cookie.Cookie> cookies = cookieStore.getCookies();
 		assertNotNull(cookies);
 		assertFalse(cookies.isEmpty());
 		assertEquals(2, cookies.size());

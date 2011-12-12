@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.esigate.http;
+package org.esigate;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,53 +24,53 @@ import java.io.OutputStream;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class ResponseOutputStream extends OutputStream {
-	private final OutputStream outputStream;
+class ResponseOutputStream extends OutputStream {
+	private final OutputStream parent;
 
-	public ResponseOutputStream(OutputStream outputStream) {
-		this.outputStream = outputStream;
+	public ResponseOutputStream(OutputStream parent) {
+		this.parent = parent;
 	}
 
 	@Override
-	public void write(int b) throws IOException {
+	public void write(int b) {
 		try {
-			outputStream.write(b);
+			parent.write(b);
 		} catch (IOException e) {
 			throw new ResponseOutputStreamException(e);
 		}
 	}
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		try {
-			outputStream.close();
+			parent.close();
 		} catch (IOException e) {
 			throw new ResponseOutputStreamException(e);
 		}
 	}
 
 	@Override
-	public void flush() throws IOException {
+	public void flush() {
 		try {
-			outputStream.flush();
+			parent.flush();
 		} catch (IOException e) {
 			throw new ResponseOutputStreamException(e);
 		}
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
+	public void write(byte[] b, int off, int len) {
 		try {
-			outputStream.write(b, off, len);
+			parent.write(b, off, len);
 		} catch (IOException e) {
 			throw new ResponseOutputStreamException(e);
 		}
 	}
 
 	@Override
-	public void write(byte[] b) throws IOException {
+	public void write(byte[] b) {
 		try {
-			outputStream.write(b);
+			parent.write(b);
 		} catch (IOException e) {
 			throw new ResponseOutputStreamException(e);
 		}

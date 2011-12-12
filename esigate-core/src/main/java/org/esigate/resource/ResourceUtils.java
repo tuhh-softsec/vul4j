@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
-import org.esigate.DriverConfiguration;
 import org.esigate.ResourceContext;
+import org.esigate.api.HttpSession;
 import org.esigate.file.FileOutput;
 import org.esigate.file.FileResource;
 import org.esigate.http.RewriteUtils;
@@ -25,9 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Francois-Xavier Bonnet
  */
 public class ResourceUtils {
-
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ResourceUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceUtils.class);
 
 	/**
 	 * Private constructor
@@ -51,8 +47,7 @@ public class ResourceUtils {
 				// jsessionid to the querystring. We must not forward it to
 				// included applications.
 				String jsessionid = null;
-				HttpSession session = target.getOriginalRequest().getSession(
-						false);
+				HttpSession session = target.getOriginalRequest().getSession(false);
 				if (session != null) {
 					jsessionid = session.getId();
 				}

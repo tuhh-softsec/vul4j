@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
+import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpServletRequest;
 
 public class ParserTest extends TestCase {
@@ -16,7 +17,7 @@ public class ParserTest extends TestCase {
 	protected void setUp() {
 		tested = new Parser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
 		MockHttpServletRequest request = new MockHttpServletRequest("http://a.b?request=updated");
-		tested.setRequest(request);
+		tested.setResourceContext(new ResourceContext(null, null, null, request, null));
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class ParserTest extends TestCase {
 
 		@Override
 		public void onTagEnd(String tag, ParserContext ctx) throws IOException {
-			String result = buf.toString().replaceAll("\\{request\\}", ctx.getRequest().getParameter("request"));
+			String result = buf.toString().replaceAll("\\{request\\}", ctx.getResourceContext().getOriginalRequest().getParameter("request"));
 			ctx.getCurrent().characters(result, 0, result.length());
 		}
 

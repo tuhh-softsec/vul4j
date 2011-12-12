@@ -3,9 +3,8 @@ package org.esigate.parser;
 import java.io.IOException;
 import java.util.Stack;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.esigate.HttpErrorPage;
+import org.esigate.ResourceContext;
 
 /**
  * 
@@ -16,13 +15,13 @@ import org.esigate.HttpErrorPage;
  */
 class ParserContextImpl implements ParserContext {
 	private final RootAdapter root;
-	private final HttpServletRequest request;
+	private final ResourceContext resourceContext;
 
 	private final Stack<Pair> stack = new Stack<Pair>();
 
-	ParserContextImpl(Appendable root, HttpServletRequest request) {
+	ParserContextImpl(Appendable root, ResourceContext resourceContext) {
 		this.root = new RootAdapter(root);
-		this.request = request;
+		this.resourceContext = resourceContext;
 	}
 
 	public <T> T findAncestor(Class<T> type) {
@@ -79,8 +78,8 @@ class ParserContextImpl implements ParserContext {
 	public Element getCurrent() {
 		return (!stack.isEmpty()) ? stack.peek().element : root;
 	}
-	public HttpServletRequest getRequest() {
-		return request;
+	public ResourceContext getResourceContext() {
+		return resourceContext;
 	}
 
 	private static class Pair {

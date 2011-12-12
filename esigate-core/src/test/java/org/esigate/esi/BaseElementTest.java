@@ -1,9 +1,8 @@
 package org.esigate.esi;
 
-import javax.servlet.http.HttpServletRequest;
-
 import junit.framework.TestCase;
 
+import org.esigate.ResourceContext;
 import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
@@ -62,7 +61,7 @@ public class BaseElementTest extends TestCase {
 	}
 
 	private static class MockParserContext implements ParserContext {
-		public HttpServletRequest getRequest() { return null; }
+		public ResourceContext getResourceContext() { return null; }
 
 		public boolean reportError(Exception e) { return false; }
 

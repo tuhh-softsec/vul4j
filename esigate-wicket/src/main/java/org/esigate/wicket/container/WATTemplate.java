@@ -20,17 +20,19 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.wicket.utils.ResponseWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A container for a template parameter. It encloses a block which will be inserted into the template.
+ * A container for a template parameter. It encloses a block which will be
+ * inserted into the template.
  * 
  * <p>
  * Usage :
@@ -82,7 +84,8 @@ public class WATTemplate extends AbstractWatDriverContainer {
 	}
 
 	@Override
-	public void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules) {
+	public void process(Map<String, String> blocks, Map<String, String> params,
+			Map<String, String> replaceRules) {
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
@@ -91,8 +94,10 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = getDriver();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(webResponse), request, response, blocks, replaceRules, params,
-					false);
+			driver.renderTemplate(page, name, new ResponseWriter(webResponse),
+					HttpRequestImpl.wrap(request),
+					HttpResponseImpl.wrap(response), blocks, replaceRules,
+					params, false);
 		} catch (IOException e) {
 			logger.error("io error", e);
 		} catch (HttpErrorPage e) {

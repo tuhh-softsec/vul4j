@@ -15,10 +15,8 @@
 package org.esigate;
 
 import java.io.Serializable;
-import java.util.List;
 
-
-import org.apache.http.cookie.Cookie;
+import org.esigate.api.Cookie;
 import org.esigate.cookie.CustomCookieStore;
 
 /**
@@ -44,13 +42,16 @@ public class UserContext implements Serializable {
 		this.cookieStore = cookieStore;
 	}
 
-	/**
-	 * Returns all cookies contained in this store.
-	 * 
-	 * @return all cookies
-	 */
-	public List<Cookie> getCookies() {
-		return cookieStore.getCookies();
+	/** Looks up for <code>jsessionid</code> cookie and returns its value. Returns <code>null</code> otherwise. */
+	public String getSessionId() {
+		String result = null;
+		for (Cookie cookie : cookieStore.getCookies()) {
+			if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
+				result = cookie.getValue();
+				break;
+			}
+		}
+		return result;
 	}
 
 	public String getUser() {
@@ -66,28 +67,27 @@ public class UserContext implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
-		result.append("User=");
-		result.append(user);
-		result.append(" Cookies={\n");
+		StringBuilder result = new StringBuilder()
+			.append("User=")
+			.append(user)
+			.append(" Cookies={\n");
 		for (Cookie cookie : cookieStore.getCookies()) {
-			result.append("\t");
+			result.append('\t');
 			if (cookie.isSecure()) {
 				result.append("https");
 			} else {
 				result.append("http");
 			}
-			result.append("://");
-			result.append(cookie.getDomain());
-			result.append(cookie.getPath());
-			result.append("#");
-			result.append(cookie.getName());
-			result.append("=");
-			result.append(cookie.getValue());
-			result.append("\n");
+			result.append("://")
+				.append(cookie.getDomain())
+				.append(cookie.getPath())
+				.append('#')
+				.append(cookie.getName())
+				.append('=')
+				.append(cookie.getValue())
+				.append('\n');
 		}
-		result.append("}");
-		return result.toString();
+		return result.append('}').toString();
 	}
 
 	public CustomCookieStore getCookieStore() {

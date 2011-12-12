@@ -14,8 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.taglib.ReplaceableTag;
-
 
 public class IncludeTemplateComponent extends UIComponentBase implements
 		ReplaceableTag {
@@ -54,7 +55,8 @@ public class IncludeTemplateComponent extends UIComponentBase implements
 				.getExternalContext().getResponse();
 		try {
 			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(),
-					getName(), writer, request, response, params, replaceRules,
+					getName(), writer, HttpRequestImpl.wrap(request),
+					HttpResponseImpl.wrap(response), params, replaceRules,
 					null, false);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {

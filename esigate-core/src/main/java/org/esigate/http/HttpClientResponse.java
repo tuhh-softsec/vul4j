@@ -22,13 +22,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.GzipDecompressingEntity;
@@ -68,15 +67,15 @@ public class HttpClientResponse {
 			statusCode = httpResponse.getStatusLine().getStatusCode();
 			statusText = httpResponse.getStatusLine().getReasonPhrase();
 			httpEntity = httpResponse.getEntity();
-			if (statusCode == HttpServletResponse.SC_OK
-					|| statusCode == HttpServletResponse.SC_NOT_MODIFIED) {
+			if (statusCode == HttpStatus.SC_OK
+					|| statusCode == HttpStatus.SC_NOT_MODIFIED) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(lastRequest.getRequestLine() + " -> "
 							+ httpResponse.getStatusLine());
 				}
 
-			} else if (statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY
-					|| statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY) {
+			} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY
+					|| statusCode == HttpStatus.SC_MOVED_PERMANENTLY) {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(lastRequest.getRequestLine() + " -> "
 							+ httpResponse.getStatusLine() + " Location: "
@@ -89,23 +88,23 @@ public class HttpClientResponse {
 				}
 			}
 		} catch (HttpHostConnectException e) {
-			statusCode = HttpServletResponse.SC_BAD_GATEWAY;
+			statusCode = HttpStatus.SC_BAD_GATEWAY;
 			statusText = "Connection refused";
 			logError(httpRequest, e);
 		} catch (ConnectionPoolTimeoutException e) {
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			statusText = "Connection pool timeout";
 			logError(httpRequest, e);
 		} catch (ConnectTimeoutException e) {
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			statusText = "Connect timeout";
 			logError(httpRequest, e);
 		} catch (SocketTimeoutException e) {
-			statusCode = HttpServletResponse.SC_GATEWAY_TIMEOUT;
+			statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			statusText = "Socket timeout";
 			logError(httpRequest, e);
 		} catch (IOException e) {
-			statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
 			statusText = "Error retrieving URL";
 			logError(httpRequest, e);
 		}
@@ -228,8 +227,8 @@ public class HttpClientResponse {
 	@Override
 	public String toString() {
 		String result = statusCode + " " + statusText;
-		if (statusCode == HttpServletResponse.SC_MOVED_PERMANENTLY
-				|| statusCode == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+		if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY
+				|| statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
 			result += " -> " + getHeader("Location");
 		}
 		return result;

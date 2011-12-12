@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
@@ -43,15 +40,8 @@ public class AggregateRenderer implements Renderer, Appendable {
 
 	private final Parser parser = new Parser(PATTERN,
 			IncludeBlockElement.TYPE, IncludeTemplateElement.TYPE, PutElement.TYPE);
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
 	private Writer out;
 
-	public AggregateRenderer(HttpServletRequest request,
-			HttpServletResponse response) {
-		this.request = request;
-		this.response = response;
-	}
 
 	/** {@inheritDoc} */
 	public void render(ResourceContext requestContext, String content, Writer out) throws IOException, HttpErrorPage {
@@ -59,11 +49,8 @@ public class AggregateRenderer implements Renderer, Appendable {
 		if (content == null) {
 			return;
 		}
+		parser.setResourceContext(requestContext);
 		parser.parse(content, this);
-	}
-
-	public HttpServletRequest getRequest() {
-		return request;
 	}
 
 	public Appendable append(CharSequence csq) throws IOException {
@@ -80,10 +67,6 @@ public class AggregateRenderer implements Renderer, Appendable {
 			throws IOException {
 		out.append(csq, start, end);
 		return this;
-	}
-
-	public HttpServletResponse getResponse() {
-		return response;
 	}
 
 }

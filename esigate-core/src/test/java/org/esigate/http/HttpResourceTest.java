@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
@@ -34,10 +33,8 @@ public class HttpResourceTest extends TestCase {
 
 	public void doNotTestRedirect() throws Exception {
 		HttpClient httpClient = EasyMock.createMock(HttpClient.class);
-		HttpServletRequest originalRequest = EasyMock
-				.createMock(HttpServletRequest.class);
-		HttpServletResponse originalResponse = EasyMock
-				.createMock(HttpServletResponse.class);
+		org.esigate.api.HttpRequest originalRequest = EasyMock.createMock(org.esigate.api.HttpRequest.class);
+		org.esigate.api.HttpResponse originalResponse = EasyMock.createMock(org.esigate.api.HttpResponse.class);
 		HttpResponse httpResponse = EasyMock.createMock(HttpResponse.class);
 		HttpEntity entity = EasyMock.createMock(HttpEntity.class);
 		StatusLine statusLine = EasyMock.createMock(StatusLine.class);
@@ -62,8 +59,7 @@ public class HttpResourceTest extends TestCase {
 				.anyTimes();
 		EasyMock.expect(originalRequest.getRequestURL())
 				.andReturn(
-						new StringBuffer(
-								"http://localhost:8080/esigate-app-aggregator/redirect.jsp"))
+						new String("http://localhost:8080/esigate-app-aggregator/redirect.jsp"))
 				.anyTimes();
 		EasyMock.expect(originalRequest.getSession(false)).andReturn(null)
 				.anyTimes();

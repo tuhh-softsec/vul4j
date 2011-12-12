@@ -29,33 +29,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CachedHttpResourceFactory implements ResourceFactory {
-	private static final Logger log = LoggerFactory
-			.getLogger(CachedHttpResourceFactory.class);
-	private final ResourceFactory httpResourceFactory;
+	private static final Logger log = LoggerFactory.getLogger(CachedHttpResourceFactory.class);
+
+	private final ResourceFactory parent;
 	private final DriverConfiguration config;
 	private final Cache cache;
 
-	public CachedHttpResourceFactory(ResourceFactory httpResourceFactory,
-			DriverConfiguration config) {
-		super();
-		this.httpResourceFactory = httpResourceFactory;
+	public CachedHttpResourceFactory(ResourceFactory parent, DriverConfiguration config) {
+		this.parent = parent;
 		this.config = config;
 		this.cache = new Cache();
 		try {
-			CacheStorage cacheStorage = this.config.getCacheStorageClass()
-					.newInstance();
+			CacheStorage cacheStorage = this.config.getCacheStorageClass().newInstance();
 			cacheStorage.init(config.getProperties());
 			cache.setStorage(cacheStorage);
 		} catch (Exception e) {
-			throw new ConfigurationException(
-					"Error during initialization CacheStorage", e);
+			throw new ConfigurationException("Error during initialization CacheStorage", e);
 		}
 	}
 
-	public Resource getResource(ResourceContext resourceContext)
-			throws HttpErrorPage {
-		String httpUrl = ResourceUtils
-				.getHttpUrlWithQueryString(resourceContext);
+	public Resource getResource(ResourceContext resourceContext) throws HttpErrorPage {
+		String httpUrl = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
 		ResourceProxyWithContext ret = new ResourceProxyWithContext();
 		ret.setResourceContext(resourceContext);
@@ -161,7 +155,7 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 					.getValidators();
 			try {
 				resourceContext.setValidators(validators);
-				ret.setHttpResource(httpResourceFactory
+				ret.setHttpResource(parent
 						.getResource(resourceContext));
 			} finally {
 				resourceContext.setValidators(originalValidators);
@@ -185,13 +179,7 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 			boolean needsValidation = true;
 			if (ret.getCachedResource() != null) {
 				needsValidation = false;
-				if (config.getCacheRefreshDelay() <= 0) {
-					// Auto http cache
-					if (Rfc2616.needsValidation(ret.getResourceContext(),
-							ret.getCachedResource())) {
-						needsValidation = true;
-					}
-				} else {
+				if (config.getCacheRefreshDelay() > 0) {
 					// Forced expiration delay
 					if (Rfc2616.requiresRefresh(ret.getResourceContext())
 							|| Rfc2616.getAge(ret.getCachedResource()) > config

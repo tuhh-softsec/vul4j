@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
@@ -31,16 +27,7 @@ public class EsiRenderer implements Renderer, Appendable {
 			VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
 			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE,
 			ReplaceElement.TYPE);
-	private final HttpServletRequest request;
-	private final HttpServletResponse response;
-	private final Driver driver;
 	private Writer out;
-
-	public EsiRenderer(HttpServletRequest request, HttpServletResponse response, Driver driver) {
-		this.request = request;
-		this.response = response;
-		this.driver = driver;
-	}
 
 	/** {@inheritDoc} */
 	public void render(ResourceContext requestContext, String content, Writer out) throws IOException, HttpErrorPage {
@@ -48,12 +35,8 @@ public class EsiRenderer implements Renderer, Appendable {
 		if (content == null) {
 			return;
 		}
-		parser.setRequest(request);
+		parser.setResourceContext(requestContext);
 		parser.parse(content, this);
-	}
-
-	public HttpServletRequest getRequest() {
-		return request;
 	}
 
 	public Appendable append(CharSequence csq) throws IOException {
@@ -71,11 +54,4 @@ public class EsiRenderer implements Renderer, Appendable {
 		return this;
 	}
 
-	public HttpServletResponse getResponse() {
-		return response;
-	}
-
-	public Driver getDriver() {
-		return driver;
-	}
 }

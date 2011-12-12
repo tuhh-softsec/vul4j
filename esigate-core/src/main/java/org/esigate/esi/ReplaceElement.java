@@ -32,7 +32,7 @@ class ReplaceElement extends BaseElement {
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
 		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getResourceContext().getOriginalRequest());
 		if (fragment != null) {
 			parent.addFragmentReplacement(fragment, (CharSequence) result);
 		} else if (regexp != null) {

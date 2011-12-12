@@ -14,7 +14,6 @@ import org.esigate.ResourceContext;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
 import org.esigate.test.MockHttpServletRequest;
-import org.esigate.test.MockHttpServletResponse;
 
 public class CacheTest extends TestCase{
 	
@@ -22,16 +21,13 @@ public class CacheTest extends TestCase{
 	
 	private MockDriver mockDriver;
 	private MockHttpServletRequest request;
-	private MockHttpServletResponse response;
 	private ResourceContext resourceContext;
 
 	@Override
 	protected void setUp() throws Exception {
 		mockDriver = new MockDriver("mock");
 		request = new MockHttpServletRequest();
-		response = new MockHttpServletResponse();
-		resourceContext = new ResourceContext(mockDriver,
-				"/test", null, request, response);
+		resourceContext = new ResourceContext(mockDriver, "/test", null, request, null);
 	}
 	
 	public void testPutGetSelect() throws Exception {
@@ -49,11 +45,17 @@ public class CacheTest extends TestCase{
 		Resource newResource = new TestResource();
 		
 		assertNull(cache.get(resourceContext));
-
-		cache.put(resourceContext, cachedResponse);
 		
+		// check with ttl and no-store parameters
+		request.setResourceTtl(1000L);
+		cache.put(resourceContext, cachedResponse);
 		assertEquals(cachedResponse, cache.get(resourceContext));
-		assertNull(cache.get(new ResourceContext(mockDriver,"/test-1", null, request, response)));
+		Thread.sleep(1500);
+		request.setNoStoreResource(true);
+		assertNull(cache.get(resourceContext));
+		cache.put(resourceContext, cachedResponse);
+		assertNull(cache.get(resourceContext));
+		
 		assertEquals(newResource, cache.select(resourceContext, cachedResponse, newResource));
 	}
 	

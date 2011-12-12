@@ -14,15 +14,13 @@
  */
 package org.esigate.test;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.esigate.api.HttpRequest;
 import org.esigate.http.HttpClientRequest;
-
 
 public class MockHttpClientRequest extends HttpClientRequest {
 
 	public MockHttpClientRequest(String uri,
-			HttpServletRequest originalRequest, boolean proxy,
+			HttpRequest originalRequest, boolean proxy,
 			boolean preserveHost) {
 		super(uri, originalRequest, proxy, preserveHost);
 	}

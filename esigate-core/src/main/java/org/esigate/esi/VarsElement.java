@@ -2,10 +2,10 @@ package org.esigate.esi;
 
 import java.io.IOException;
 
-import org.esigate.vars.VariablesResolver;
 import org.esigate.HttpErrorPage;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
+import org.esigate.vars.VariablesResolver;
 
 class VarsElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:vars", "</esi:vars") {
@@ -26,7 +26,7 @@ class VarsElement extends BaseElement {
 
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getResourceContext().getOriginalRequest());
 		ctx.getCurrent().characters(result, 0 , result.length());
 	}
 

@@ -1,17 +1,28 @@
 package org.esigate.test;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import org.esigate.api.Cookie;
+import org.esigate.api.HttpResponse;
 
-public class MockHttpServletResponse implements HttpServletResponse {
+public class MockHttpServletResponse implements HttpResponse {
 	private int statusCode = 200;
 	private String statusMessage;
 
+	 /**
+     * Status code (302) indicating that the resource has temporarily
+     * moved to another location, but that future references should
+     * still use the original URI to access the resource.
+     *
+     * This definition is being retained for backwards compatibility.
+     * SC_FOUND is now the preferred definition.
+     */
+    public static final int SC_MOVED_TEMPORARILY = 302;
+
+	
 	public String getCharacterEncoding() {
 		throw new RuntimeException("Method not implemented");
 	}
@@ -20,7 +31,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		throw new RuntimeException("Method not implemented");
 	}
 
-	public ServletOutputStream getOutputStream() throws IOException {
+	public OutputStream getOutputStream() throws IOException {
 		throw new RuntimeException("Method not implemented");
 	}
 
@@ -105,7 +116,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void sendRedirect(String location) throws IOException {
-		setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY, "Moved temporarily");
+		setStatus(SC_MOVED_TEMPORARILY, "Moved temporarily");
 		setHeader("Location", location);
 	}
 
@@ -149,5 +160,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		this.statusCode = sc;
 		this.statusMessage = sm;
 	}
+
 
 }

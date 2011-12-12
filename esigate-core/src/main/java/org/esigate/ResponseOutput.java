@@ -12,15 +12,14 @@
  * limitations under the License.
  *
  */
-package org.esigate.http;
+package org.esigate;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-
+import org.esigate.api.HttpResponse;
 import org.esigate.output.Output;
 import org.esigate.output.OutputException;
 
@@ -31,11 +30,11 @@ import org.esigate.output.OutputException;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class ResponseOutput extends Output {
-	private final HttpServletResponse response;
+class ResponseOutput extends Output {
+	private final HttpResponse response;
 	private OutputStream outputStream;
 
-	public ResponseOutput(HttpServletResponse response) {
+	public ResponseOutput(HttpResponse response) {
 		this.response = response;
 	}
 

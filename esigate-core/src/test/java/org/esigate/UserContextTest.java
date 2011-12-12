@@ -5,14 +5,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.http.cookie.Cookie;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
-import org.esigate.UserContext;
+import org.esigate.api.Cookie;
 import org.esigate.cookie.CustomCookieStore;
 
 public class UserContextTest extends TestCase {
-	private UserContext tested;
 	private IMocksControl control;
 	private CustomCookieStore cookieStore;
 
@@ -20,14 +18,10 @@ public class UserContextTest extends TestCase {
 	protected void setUp() {
 		control = EasyMock.createControl();
 		cookieStore = control.createMock(CustomCookieStore.class);
-
-		tested = new UserContext(cookieStore);
 	}
 
 	@Override
 	protected void tearDown() {
-		tested = null;
-
 		control = null;
 		cookieStore = null;
 	}
@@ -48,7 +42,7 @@ public class UserContextTest extends TestCase {
 				Arrays.asList(cookie));
 		control.replay();
 
-		List<Cookie> actual = tested.getCookies();
+		List<Cookie> actual = cookieStore.getCookies();
 		assertNotNull(actual);
 		assertEquals(1, actual.size());
 		assertSame(cookie, actual.get(0));

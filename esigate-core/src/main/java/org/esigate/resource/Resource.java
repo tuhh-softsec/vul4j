@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletResponse;
-
+import org.esigate.api.HttpStatusConstants;
 import org.esigate.output.Output;
 
 
@@ -49,8 +48,8 @@ public abstract class Resource {
 
 	public boolean isError() {
 		int statusCode = getStatusCode();
-		return statusCode != HttpServletResponse.SC_OK && statusCode != HttpServletResponse.SC_MOVED_TEMPORARILY
-				&& statusCode != HttpServletResponse.SC_MOVED_PERMANENTLY && statusCode != HttpServletResponse.SC_NOT_MODIFIED;
+		return statusCode != HttpStatusConstants.SC_OK && statusCode != HttpStatusConstants.SC_MOVED_TEMPORARILY
+				&& statusCode != HttpStatusConstants.SC_MOVED_PERMANENTLY && statusCode != HttpStatusConstants.SC_NOT_MODIFIED;
 	}
 
 	/**
@@ -92,8 +91,8 @@ public abstract class Resource {
 	 */
 	public boolean hasResponseBody() {
 		switch (getStatusCode()) {
-			case HttpServletResponse.SC_OK:
-			case HttpServletResponse.SC_PARTIAL_CONTENT:
+			case HttpStatusConstants.SC_OK:
+			case HttpStatusConstants.SC_PARTIAL_CONTENT:
 				return true;
 
 		}

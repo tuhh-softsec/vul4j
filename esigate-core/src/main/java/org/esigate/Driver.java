@@ -17,41 +17,20 @@ package org.esigate;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.net.ssl.SSLContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.http.HttpHost;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
+import org.esigate.api.HttpStatusConstants;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.cookie.CustomCookieStore;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.filter.Filter;
-import org.esigate.http.CachedHttpResourceFactory;
-import org.esigate.http.HttpResourceFactory;
-import org.esigate.http.RedirectStrategy;
-import org.esigate.http.ResponseOutput;
-import org.esigate.http.ResponseOutputStreamException;
+import org.esigate.http.ResourceFactoryCreator;
 import org.esigate.output.Output;
 import org.esigate.output.StringOutput;
 import org.esigate.output.TextOnlyStringOutput;
@@ -80,7 +59,6 @@ import org.slf4j.LoggerFactory;
 public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
-	private final HttpClient httpClient;
 	private final AuthenticationHandler authenticationHandler;
 	private final Filter filter;
 	private final ResourceFactory resourceFactory;
@@ -90,59 +68,9 @@ public class Driver {
 		LOG.info("Initializing instance: " + name);
 		config = new DriverConfiguration(name, props);
 		// Remote application settings
-		if (config.getBaseURL() != null) {
-			// Create and initialize scheme registry
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			try {
-				SSLContext sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(null, null, null);
-				SSLSocketFactory sslSocketFactory = new SSLSocketFactory(
-						sslContext, SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-				Scheme https = new Scheme("https", 443, sslSocketFactory);
-				schemeRegistry.register(https);
-			} catch (NoSuchAlgorithmException e) {
-				throw new ConfigurationException(e);
-			} catch (KeyManagementException e) {
-				throw new ConfigurationException(e);
-			}
-			schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory
-					.getSocketFactory()));
-			// Create an HttpClient with the ThreadSafeClientConnManager.
-			// This connection manager must be used if more than one thread will
-			// be using the HttpClient.
-			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
-					schemeRegistry);
-			connectionManager.setMaxTotal(config.getMaxConnectionsPerHost());
-			connectionManager.setDefaultMaxPerRoute(config
-					.getMaxConnectionsPerHost());
-			HttpParams httpParams = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(httpParams,
-					config.getTimeout());
-			HttpConnectionParams.setSoTimeout(httpParams, config.getTimeout());
-			httpParams.setBooleanParameter(
-					ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
-			DefaultHttpClient defaultHttpClient = new DefaultHttpClient(
-					connectionManager, httpParams);
-			defaultHttpClient.setRedirectStrategy(new RedirectStrategy());
-			httpClient = defaultHttpClient;
-		} else {
-			httpClient = null;
-		}
-		// Proxy settings
-		if (config.getProxyHost() != null) {
-			HttpHost proxy = new HttpHost(config.getProxyHost(),
-					config.getProxyPort(), "http");
-			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
-					proxy);
-		}
-		// Cache
-		if (config.isUseCache()) {
-			resourceFactory = new CachedHttpResourceFactory(
-					getHttpResourceFactory(), config);
-		} else {
-			resourceFactory = getHttpResourceFactory();
-		}
-
+		
+		this.resourceFactory = ResourceFactoryCreator.create(config);
+		
 		extension = new ExtensionFactory(config);
 
 		// Authentication handler
@@ -151,10 +79,6 @@ public class Driver {
 		// Filter
 		Filter f = extension.getExtension(Filter.class);
 		filter = (f != null) ? f : Filter.EMPTY;
-	}
-
-	protected ResourceFactory getHttpResourceFactory() {
-		return new HttpResourceFactory(httpClient);
 	}
 
 	public AuthenticationHandler getAuthenticationHandler() {
@@ -170,11 +94,11 @@ public class Driver {
 	 * 
 	 * @return UserContext
 	 */
-	public final UserContext getUserContext(HttpServletRequest request) {
+	public final UserContext getUserContext(org.esigate.api.HttpRequest request) {
 		String key = getContextKey();
 		UserContext context = (UserContext) request.getAttribute(key);
 		if (context == null) {
-			HttpSession session = request.getSession(false);
+			org.esigate.api.HttpSession session = request.getSession(false);
 			if (session != null) {
 				context = (UserContext) session.getAttribute(key);
 			}
@@ -203,11 +127,11 @@ public class Driver {
 	 * @param request
 	 *            http request.
 	 */
-	public final void saveUserContext(HttpServletRequest request) {
+	public final void saveUserContext(org.esigate.api.HttpRequest request) {
 		String key = getContextKey();
 		UserContext context = (UserContext) request.getAttribute(key);
 		if (context != null && !context.isEmpty()) {
-			HttpSession session = request.getSession();
+			org.esigate.api.HttpSession session = request.getSession(true);
 			Object sessionContext = session.getAttribute(key);
 			if (sessionContext == null || sessionContext != context) {
 				if (LOG.isInfoEnabled()) {
@@ -232,7 +156,7 @@ public class Driver {
 	 *            evaluated against current web application context
 	 * @param out
 	 *            Writer to write the block to
-	 * @param originalRequest
+	 * @param request
 	 *            original client request
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
@@ -240,14 +164,10 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXml(String source, String template, Appendable out,
-			HttpServletRequest originalRequest,
-			HttpServletResponse originalResponse) throws IOException,
-			HttpErrorPage {
-		LOG.info("renderXml provider=" + config.getInstanceName() + " source="
-				+ source + " template=" + template);
-		render(source, null, out, originalRequest, originalResponse,
-				new XsltRenderer(template, originalRequest.getSession()
-						.getServletContext()));
+			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
+		LOG.info("renderXml provider=" + config.getInstanceName() + " source=" + source + " template=" + template);
+		render(source, null, out, request, response,
+				new XsltRenderer(template, request));
 	}
 
 	/**
@@ -261,7 +181,7 @@ public class Driver {
 	 *            XPath expression (may be <code>null</code>)
 	 * @param out
 	 *            Writer to write the block to
-	 * @param originalRequest
+	 * @param request
 	 *            original client request
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
@@ -269,12 +189,10 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXpath(String source, String xpath, Appendable out,
-			HttpServletRequest originalRequest,
-			HttpServletResponse originalResponse) throws IOException,
-			HttpErrorPage {
+			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
 		LOG.info("renderXpath provider=" + config.getInstanceName()
 				+ " source=" + source + " xpath=" + xpath);
-		render(source, null, out, originalRequest, originalResponse,
+		render(source, null, out,request, response,
 				new XpathRenderer(xpath));
 	}
 
@@ -291,7 +209,7 @@ public class Driver {
 	 *            Name of the block
 	 * @param writer
 	 *            Writer to write the block to
-	 * @param originalRequest
+	 * @param request
 	 *            original client request
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
@@ -306,16 +224,14 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderBlock(String page, String name, Appendable writer,
-			HttpServletRequest originalRequest,
-			HttpServletResponse originalResponse,
+			HttpRequest request,
+			HttpResponse response,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws IOException,
 			HttpErrorPage {
-		LOG.info("renderBlock provider=" + config.getInstanceName() + " page="
-				+ page + " name=" + name);
-		render(page, parameters, writer, originalRequest, originalResponse,
-				new BlockRenderer(name, page),
-				new ReplaceRenderer(replaceRules));
+		LOG.info("renderBlock provider=" + config.getInstanceName() + " page=" + page + " name=" + name);
+		render(page, parameters, writer, request, response,
+				new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
@@ -335,7 +251,7 @@ public class Driver {
 	 *            Template name
 	 * @param writer
 	 *            Writer where to write the result
-	 * @param originalRequest
+	 * @param request
 	 *            originating request object
 	 * @param params
 	 *            Blocks to replace inside the template
@@ -352,17 +268,25 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the template
 	 */
 	public final void renderTemplate(String page, String name,
-			Appendable writer, HttpServletRequest originalRequest,
-			HttpServletResponse originalResponse, Map<String, String> params,
+			Appendable writer, HttpRequest request,
+			HttpResponse response, Map<String, String> params,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean propagateJsessionId) throws IOException, HttpErrorPage {
 		LOG.info("renderTemplate provider=" + config.getInstanceName()
 				+ " page=" + page + " name=" + name);
-		render(page, parameters, writer, originalRequest, originalResponse,
-				new TemplateRenderer(name, params, page), new ReplaceRenderer(
-						replaceRules));
+		render(page, parameters, writer, request, response,
+				new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 	}
 
+	public final void renderEsi(String page, Appendable writer,
+			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
+		render(page, null, writer, request, response);
+	}
+
+	public final void render(String page, Appendable writer, ResourceContext parent, Renderer... renderers)
+			throws IOException, HttpErrorPage {
+		render(page, parent.getParameters(), writer, parent.getOriginalRequest(), parent.getOriginalResponse(), renderers);
+	}
 	/**
 	 * @param page
 	 *            Address of the page containing the template
@@ -370,7 +294,7 @@ public class Driver {
 	 *            parameters to be added to the request
 	 * @param writer
 	 *            Writer where to write the result
-	 * @param originalRequest
+	 * @param request
 	 *            originating request object
 	 * @param renderers
 	 *            the renderers to use to transform the output
@@ -379,9 +303,8 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void render(String page, Map<String, String> parameters,
-			Appendable writer, HttpServletRequest originalRequest,
-			HttpServletResponse response, Renderer... renderers)
+	protected final void render(String page, Map<String, String> parameters,
+			Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
 			String renderersList = " renderers=";
@@ -392,10 +315,9 @@ public class Driver {
 			LOG.info("render provider=" + config.getInstanceName() + " page="
 					+ page + renderersList);
 		}
-		String resultingpage = VariablesResolver.replaceAllVariables(page,
-				originalRequest);
+		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
 		ResourceContext resourceContext = new ResourceContext(this,
-				resultingpage, parameters, originalRequest, response);
+				resultingpage, parameters, request, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
@@ -425,7 +347,7 @@ public class Driver {
 	 * 
 	 * @param relUrl
 	 *            the relative URL to the resource
-	 * @param request
+	 * @param servletRequest
 	 *            the request
 	 * @param response
 	 *            the response
@@ -436,13 +358,12 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public final void proxy(String relUrl, HttpServletRequest request,
-			HttpServletResponse response, Renderer... renderers)
-			throws IOException, HttpErrorPage {
-		LOG.info("proxy provider=" + config.getInstanceName() + " relUrl="
-				+ relUrl);
-		ResourceContext resourceContext = new ResourceContext(this, relUrl,
-				null, request, response);
+	public final void proxy(String relUrl,
+			HttpRequest request, HttpResponse response,
+			Renderer... renderers) throws IOException, HttpErrorPage {
+		LOG.info("proxy provider={} relUrl={}", config.getInstanceName(), relUrl);
+
+		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
 		request.setCharacterEncoding(config.getUriEncoding());
 		resourceContext.setProxy(true);
 		resourceContext.setPreserveHost(config.isPreserveHost());
@@ -519,18 +440,13 @@ public class Driver {
 			} catch (ResponseOutputStreamException e) {
 				if (LOG.isInfoEnabled()) {
 					Throwable t = e.getCause();
-					String reason = "";
-					if (t != null) {
-						reason = ": " + t.getClass().getName() + " "
-								+ t.getMessage();
-					}
-					LOG.info("Client or network problem, ignoring" + reason);
+					LOG.info("Client or network problem, ignoring: {} {}", t.getClass().getName(), t.getMessage());
 				}
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));
 				HttpErrorPage httpErrorPage = new HttpErrorPage(
-						HttpServletResponse.SC_BAD_GATEWAY, e.getMessage(),
+						HttpStatusConstants.SC_BAD_GATEWAY, e.getMessage(),
 						out.toString());
 				httpErrorPage.initCause(e);
 				throw httpErrorPage;
@@ -553,11 +469,10 @@ public class Driver {
 	 * @return the content of the url
 	 * @throws HttpErrorPage
 	 */
-	protected StringOutput getResourceAsString(ResourceContext target)
-			throws HttpErrorPage {
+	protected StringOutput getResourceAsString(ResourceContext target) throws HttpErrorPage {
 		StringOutput result = null;
 		String url = ResourceUtils.getHttpUrlWithQueryString(target);
-		HttpServletRequest request = target.getOriginalRequest();
+		org.esigate.api.HttpRequest request = target.getOriginalRequest();
 		boolean cacheable = Rfc2616.isCacheable(target);
 		if (cacheable) {
 			result = (StringOutput) request.getAttribute(url);
@@ -590,12 +505,10 @@ public class Driver {
 	 * @return the content of the url
 	 * @throws HttpErrorPage
 	 */
-	public String getResourceAsString(String page, Map<String, String> parameters,
-			HttpServletRequest originalRequest,
-			HttpServletResponse response) throws HttpErrorPage{
-		ResourceContext resourceContext = new ResourceContext(this,
-				VariablesResolver.replaceAllVariables(page, originalRequest), 
-				null, originalRequest, response);
+	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage{
+		String actualPage = VariablesResolver.replaceAllVariables(page, ctx.getOriginalRequest());
+		ResourceContext resourceContext = new ResourceContext(this, actualPage, 
+				null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
 		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();

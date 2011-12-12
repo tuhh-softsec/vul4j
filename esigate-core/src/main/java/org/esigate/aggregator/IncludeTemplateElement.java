@@ -32,7 +32,6 @@ class IncludeTemplateElement implements Element {
 	private String page;
 	private String name;
 	private final Map<String, String> params = new HashMap<String, String>();
-	private AggregateRenderer aggregateRenderer;
 	private Appendable out;
 
 	public boolean onError(Exception e, ParserContext ctx) {
@@ -41,7 +40,6 @@ class IncludeTemplateElement implements Element {
 
 	public void onTagStart(String tag, ParserContext ctx) {
 		this.out = new Adapter(ctx.getCurrent());
-		this.aggregateRenderer = ctx.findAncestor(AggregateRenderer.class);
 
 		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
 		this.driver = tagAttributes.getDriver();
@@ -51,9 +49,8 @@ class IncludeTemplateElement implements Element {
 	}
 
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		driver.render(page, null, out, aggregateRenderer.getRequest(), aggregateRenderer.getResponse(),
-				new TemplateRenderer(name, params, page),
-				new AggregateRenderer(aggregateRenderer.getRequest(), aggregateRenderer.getResponse()));
+		driver.render(page, out, ctx.getResourceContext(),
+				new TemplateRenderer(name, params, page), new AggregateRenderer());
 	}
 
 	public void addParam(String name, String value) {

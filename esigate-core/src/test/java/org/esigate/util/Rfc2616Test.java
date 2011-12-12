@@ -7,10 +7,9 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
-import org.apache.http.impl.cookie.DateUtils;
+import org.esigate.http.DateUtils;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
-import org.esigate.util.Rfc2616;
 import org.junit.Assert;
 
 /**

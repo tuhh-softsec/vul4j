@@ -3,9 +3,9 @@ package org.esigate.esi;
 import java.io.IOException;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.vars.VariablesResolver;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
+import org.esigate.vars.VariablesResolver;
 
 class OtherwiseElement extends BaseElement {
 
@@ -30,7 +30,7 @@ class OtherwiseElement extends BaseElement {
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
 		if (active) {
-			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getRequest());
+			String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getResourceContext().getOriginalRequest());
 			super.characters(result, 0, result.length());
 		}
 	}

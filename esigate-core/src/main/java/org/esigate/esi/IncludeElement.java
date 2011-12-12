@@ -13,6 +13,7 @@ import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
+import org.esigate.ResourceContext;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.Parser;
 import org.esigate.parser.ParserContext;
@@ -117,19 +118,58 @@ class IncludeElement extends BaseElement {
 		String fragment = tag.getAttribute("fragment");
 		String xpath = tag.getAttribute("xpath");
 		String xslt = tag.getAttribute("stylesheet");
+		boolean noStore = "on".equalsIgnoreCase(tag.getAttribute("no-store"));
+		String ttl = tag.getAttribute("ttl");
+		String maxWait = tag.getAttribute("maxwait");
 		boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 		
-		Map<String, String> parameters = null;
+		ResourceContext resourceContext = ctx.getResourceContext();
 		List<Renderer> rendererList = new ArrayList<Renderer>();
-		EsiRenderer esiRenderer = ctx.findAncestor(EsiRenderer.class);
 		Driver driver;
 		String page;
+		
+		if(maxWait!=null){
+			try{
+				resourceContext.getOriginalRequest().setFetchMaxWait(Integer.parseInt(maxWait));
+			}catch (NumberFormatException e) {
+				//invalid maxwait value
+			}
+		}
+		
+		if(resourceContext != null)
+		{
+			resourceContext.getOriginalRequest().setNoStoreResource(noStore);
 			
+			if(!noStore && ttl != null)
+			{
+				String timePeriod = ttl.substring(ttl.length() - 1);
+				Long time = null;
+				try {
+					time = Long.parseLong(ttl.substring(0, ttl.length() - 1));
+					//convert time to milliseconds
+					if(timePeriod.equalsIgnoreCase("d")){
+						time = time * 86400000;
+					}
+					else if(timePeriod.equalsIgnoreCase("h")){
+						time = time * 3600000;
+					}
+					else if(timePeriod.equalsIgnoreCase("m")){
+						time = time * 60000;
+					}
+					else if(timePeriod.equalsIgnoreCase("s")){
+						time = time * 1000;
+					}
+				} catch (NumberFormatException e) {
+					// Invalid time, ttl is null
+				}
+				resourceContext.getOriginalRequest().setResourceTtl(time);
+			}
+		}
+		
 		int idx = src.indexOf("$PROVIDER({");
 		if (idx < 0) {
 			page = src;
-			driver = esiRenderer.getDriver();
-			
+			driver = ctx.getResourceContext().getDriver();
 		} else {
 			int startIdx = idx + "$PROVIDER({".length();
 			int endIndex = src.indexOf("})", startIdx);
@@ -164,7 +204,7 @@ class IncludeElement extends BaseElement {
 			rendererList.add(new ReplaceRenderer(replaceRules));
 		}
 		
-		page = VariablesResolver.replaceAllVariables(page, esiRenderer.getRequest());
+		page = VariablesResolver.replaceAllVariables(page, resourceContext.getOriginalRequest());
 		InlineCache ic = InlineCache.getFragment(src);
 		if (ic != null && !ic.isExpired()) {
 			String cache = ic.getFragment();
@@ -175,19 +215,12 @@ class IncludeElement extends BaseElement {
 			} else if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
-				// FIXME: need to move local/external resource loading into XsltRenderer
-				Renderer xsltRenderer;
-				try {
-					xsltRenderer = new XsltRenderer(xslt , esiRenderer.getRequest().getSession().getServletContext());
-				} catch (Exception e) {
-					String currentValue = driver.getResourceAsString(xslt, null, esiRenderer.getRequest(), esiRenderer.getResponse());
-					xsltRenderer = new XsltRenderer(currentValue);
-				}
-				rendererList.add(xsltRenderer);
+				rendererList.add(new XsltRenderer(xslt , driver, resourceContext));
 			}
-			rendererList.add(new EsiRenderer(esiRenderer.getRequest(), esiRenderer.getResponse(), driver));
-			driver.render(page, parameters, outAdapter, esiRenderer.getRequest(), esiRenderer.getResponse(),
-				rendererList.toArray(new Renderer[rendererList.size()]));
+			rendererList.add(new EsiRenderer());
+			
+			driver.render(page, outAdapter, resourceContext,
+					rendererList.toArray(new Renderer[rendererList.size()]));
 		}
 	}
 

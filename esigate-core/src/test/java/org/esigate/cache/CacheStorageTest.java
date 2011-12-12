@@ -7,18 +7,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.cache.CacheEntry;
-import org.esigate.cache.CacheStorage;
-import org.esigate.cache.CachedResponse;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 
 public abstract class CacheStorageTest extends TestCase {
 
@@ -120,10 +116,9 @@ public abstract class CacheStorageTest extends TestCase {
 		CachedResponse cachedResponse = new CachedResponse(byteArray, "utf-8",
 				headers, statusCode, statusMessage);
 
-		HttpServletRequest originalRequest = EasyMock
-				.createMock(HttpServletRequest.class);
-		HttpServletResponse originalResponse = EasyMock
-				.createMock(HttpServletResponse.class);
+		HttpRequest originalRequest = EasyMock
+				.createMock(HttpRequest.class);
+		HttpResponse originalResponse = EasyMock.createMock(HttpResponse.class);
 
 		final Map<String, String> requestHeaders = new HashMap<String, String>();
 		requestHeaders.put("Host", "google.com");
@@ -144,7 +139,7 @@ public abstract class CacheStorageTest extends TestCase {
 
 		EasyMock.expect(originalRequest.getHeaderNames())
 				.andReturn(
-						new Vector<String>(requestHeaders.keySet()).elements())
+						new Vector<String>(requestHeaders.keySet()))
 				.anyTimes();
 		EasyMock.expect(
 				originalRequest.getHeader((String) EasyMock.anyObject()))

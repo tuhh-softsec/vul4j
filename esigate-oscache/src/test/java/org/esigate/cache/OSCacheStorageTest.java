@@ -24,6 +24,8 @@ import org.esigate.cache.CacheStorage;
 import org.esigate.cache.CachedResponse;
 import org.esigate.oscache.OSCacheStorage;
 import org.esigate.output.StringOutput;
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 
 
 public class OSCacheStorageTest extends TestCase{
@@ -149,7 +151,8 @@ public class OSCacheStorageTest extends TestCase{
 		EasyMock.replay(originalRequest, originalResponse);
 		
 		MockDriver mockDriver = new MockDriver("test");
-		ResourceContext resourceContext = new ResourceContext(mockDriver, "/test", null, originalRequest, originalResponse);
+		ResourceContext resourceContext = new ResourceContext(mockDriver, "/test", null, HttpRequestImpl.wrap(originalRequest),
+				HttpResponseImpl.wrap(originalResponse));
 		
 		cacheEntry.put(resourceContext, cachedResponse);
 		cache.put(key, cacheEntry);

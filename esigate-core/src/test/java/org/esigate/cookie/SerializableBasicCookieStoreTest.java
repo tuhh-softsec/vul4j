@@ -2,10 +2,7 @@ package org.esigate.cookie;
 
 import junit.framework.TestCase;
 
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.esigate.cookie.SerializableBasicClientCookie2;
-import org.esigate.cookie.SerializableBasicCookieStore;
+import org.esigate.api.Cookie;
 
 public class SerializableBasicCookieStoreTest extends TestCase {
 	private SerializableBasicCookieStore tested;
@@ -29,7 +26,7 @@ public class SerializableBasicCookieStoreTest extends TestCase {
 		assertNotNull(cookie);
 		assertEquals("a", cookie.getName());
 		assertEquals("value", cookie.getValue());
-		assertEquals(SerializableBasicClientCookie2.class, cookie.getClass());
+		assertEquals(BasicClientCookie.class, cookie.getClass());
 	}
 
 }

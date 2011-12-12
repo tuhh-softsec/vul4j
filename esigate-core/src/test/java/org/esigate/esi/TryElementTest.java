@@ -7,31 +7,32 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
+import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpServletRequest;
-import org.esigate.test.MockHttpServletResponse;
 
 public class TryElementTest extends TestCase {
 
-	private MockDriver provider;
-	private MockHttpServletRequest request;
-	private MockHttpServletResponse response;
+	private ResourceContext ctx;
+	private EsiRenderer tested;
 
 	@Override
 	protected void setUp() {
-		provider = new MockDriver("mock");
+		MockDriver provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-		request = new MockHttpServletRequest();
-		response = new MockHttpServletResponse();
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+
+		ctx = new ResourceContext(provider, null, null, request, null);
+		tested = new EsiRenderer();
 	}
 
 	public void testTry() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>"
 				+ "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin test end", out.toString());
 	}
 
@@ -40,9 +41,8 @@ public class TryElementTest extends TestCase {
 				+ "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin abc test cba end", out.toString());
 	}
 
@@ -54,9 +54,8 @@ public class TryElementTest extends TestCase {
 				+ " cba</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin abc test cba end", out.toString());
 	}
 
@@ -65,9 +64,8 @@ public class TryElementTest extends TestCase {
 				+ "<esi:attempt>abc <esi:include src=\"http://www.foo2.com/test\" /> cba</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin inside except end", out.toString());
 	}
 
@@ -78,9 +76,8 @@ public class TryElementTest extends TestCase {
 				+ "</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin inside except end", out.toString());
 	}
 
@@ -94,9 +91,8 @@ public class TryElementTest extends TestCase {
 				+ "<esi:except code='412'>inside incorrect except</esi:except>"
 				+ "<esi:except>inside default except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin inside correct except end", out.toString());
 	}
 
@@ -109,9 +105,8 @@ public class TryElementTest extends TestCase {
 				+ "<esi:except code='412'>inside incorrect except</esi:except>"
 				+ "<esi:except>inside default except</esi:except>"
 				+ "</esi:try> end";
-		EsiRenderer tested = new EsiRenderer(request, response, provider);
 		StringWriter out = new StringWriter();
-		tested.render(null, page, out);
+		tested.render(ctx, page, out);
 		assertEquals("begin inside default except end", out.toString());
 	}
 }

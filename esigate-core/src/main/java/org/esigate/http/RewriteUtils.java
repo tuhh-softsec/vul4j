@@ -16,8 +16,6 @@ package org.esigate.http;
 
 import java.util.regex.Pattern;
 
-
-import org.apache.http.cookie.Cookie;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
 
@@ -32,16 +30,9 @@ public class RewriteUtils {
 	}
 
 	public final static String getSessionId(ResourceContext resourceContext) {
-		String jsessionid = null;
 		UserContext userContext = resourceContext.getUserContext();
-		if (userContext != null) {
-			for (Cookie cookie : userContext.getCookies()) {
-				if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
-					jsessionid = cookie.getValue();
-					break;
-				}
-			}
-		}
+		String jsessionid = (userContext != null) ? userContext.getSessionId(): null;
+
 		return jsessionid;
 	}
 

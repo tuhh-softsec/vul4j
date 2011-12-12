@@ -12,19 +12,13 @@
  * limitations under the License.
  *
  */
-package org.esigate.cookie;
+package org.esigate.http;
 
 import java.io.Serializable;
 
-import org.apache.http.cookie.Cookie;
-import org.apache.http.cookie.SetCookie2;
 import org.apache.http.impl.cookie.BasicClientCookie2;
+import org.esigate.api.Cookie;
 
-/**
- * Serializable implementation of {@link SetCookie2}.
- * 
- * @author Nicolas Richeton 
- */
 public class SerializableBasicClientCookie2 extends BasicClientCookie2
 		implements Serializable {
 

@@ -2,15 +2,14 @@ package org.esigate.cache;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.esigate.api.HttpRequest;
 import org.esigate.output.Output;
 import org.esigate.util.Rfc2616;
 
@@ -199,26 +198,22 @@ public class CachedResponse extends BaseCachedResource {
 	 * 
 	 * @param request
 	 */
-	public void setRequestHeadersFromRequest(HttpServletRequest request) {
-		@SuppressWarnings("unchecked")
-		Enumeration<String> e = request.getHeaderNames();
-		if (e != null && e.hasMoreElements()) {
+	public void setRequestHeadersFromRequest(HttpRequest request) {
+		Collection<String> e = request.getHeaderNames();
+		if (e != null && !e.isEmpty()) {
 			HashMap<String, String> headers = new HashMap<String, String>();
-			while (e.hasMoreElements()) {
-				String name = e.nextElement();
+			for (String name : e) {
 				headers.put(name, request.getHeader(name));
 			}
-
 			this.requestHeaders = headers;
 		} else {
 			this.requestHeaders = null;
 		}
 	}
 
-	public CachedResponseSummary getSummary() {
-		CachedResponseSummary s = new CachedResponseSummary(
-				new HashMap<String, Set<String>>(headers), statusCode,
-				statusMessage);
+	public CachedResponseSummary getSummary(String key) {
+		CachedResponseSummary s = new CachedResponseSummary(key, new HashMap<String, Set<String>>(headers),
+				statusCode, statusMessage);
 		s.setResponseBody(this.hasResponseBody());
 		s.setLocalDate(localDate);
 		// Copy Request headers

@@ -2,15 +2,13 @@ package org.esigate.resource;
 
 import java.util.Properties;
 
-import javax.servlet.http.HttpServletRequest;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.esigate.Driver;
 import org.esigate.DriverConfiguration;
 import org.esigate.ResourceContext;
-import org.esigate.resource.ResourceUtils;
+import org.esigate.api.HttpRequest;
 
 public class ResourceUtilsTest extends TestCase {
 
@@ -19,8 +17,8 @@ public class ResourceUtilsTest extends TestCase {
 		props.put("remoteUrlBase", "http://www.foo.com/");
 		props.put("localBase", "/temp/");
 		Driver driver = new Driver("test", props);
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		HttpRequest request = EasyMock
+				.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andStubReturn(
 				"ISO-8859-1");
 		EasyMock.expect(request.getQueryString()).andReturn(null);
@@ -38,8 +36,8 @@ public class ResourceUtilsTest extends TestCase {
 		props.put("remoteUrlBase", "http://www.foo.com/");
 		props.put("localBase", "/temp/");
 		Driver driver = new Driver("test", props);
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		HttpRequest request = EasyMock
+				.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andStubReturn(
 				"ISO-8859-1");
 		EasyMock.expect(request.getQueryString()).andReturn(null);

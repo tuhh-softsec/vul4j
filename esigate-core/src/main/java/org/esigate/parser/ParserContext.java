@@ -1,11 +1,11 @@
 package org.esigate.parser;
 
-import javax.servlet.http.HttpServletRequest;
+import org.esigate.ResourceContext;
 
 public interface ParserContext {
 
-	/** @return {@linkplain HttpServletRequest} associated with current processing. */
-	HttpServletRequest getRequest();
+	/** @return {@linkplain ResourceContext} associated with current processing. */
+	ResourceContext getResourceContext();
 
 	/** @return <code>true</code> if error has been handled by this element and it should not be propagated further. */
 	boolean reportError(Exception e);

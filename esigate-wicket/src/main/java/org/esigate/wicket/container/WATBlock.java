@@ -21,11 +21,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.wicket.utils.ResponseWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +140,9 @@ public class WATBlock extends AbstractWatDriverContainer {
 		// Render Block
 		try {
 			driver.renderBlock(page, blockName,
-					new ResponseWriter(webResponse), request, response,
+					new ResponseWriter(webResponse),
+					HttpRequestImpl.wrap(request),
+					HttpResponseImpl.wrap(response),
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
 		} catch (IOException e) {

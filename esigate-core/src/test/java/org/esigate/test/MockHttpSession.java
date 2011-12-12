@@ -1,13 +1,11 @@
 package org.esigate.test;
 
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
+import org.esigate.api.HttpSession;
 
-@SuppressWarnings("deprecation")
 public class MockHttpSession implements HttpSession {
 
 	private final HashMap<String, Object> attributes = new HashMap<String, Object>();
@@ -24,9 +22,9 @@ public class MockHttpSession implements HttpSession {
 		throw new RuntimeException("Method not implemented");
 	}
 
-	public ServletContext getServletContext() {
-		throw new RuntimeException("Method not implemented");
-	}
+//	public ServletContext getServletContext() {
+//		throw new RuntimeException("Method not implemented");
+//	}
 
 	public void setMaxInactiveInterval(int interval) {
 		throw new RuntimeException("Method not implemented");
@@ -36,9 +34,9 @@ public class MockHttpSession implements HttpSession {
 		throw new RuntimeException("Method not implemented");
 	}
 
-	public HttpSessionContext getSessionContext() {
-		throw new RuntimeException("Method not implemented");
-	}
+//	public HttpSessionContext getSessionContext() {
+//		throw new RuntimeException("Method not implemented");
+//	}
 
 	public Object getAttribute(String name) {
 		return attributes.get(name);
@@ -78,6 +76,10 @@ public class MockHttpSession implements HttpSession {
 	}
 
 	public boolean isNew() {
+		throw new RuntimeException("Method not implemented");
+	}
+
+	public InputStream getResourceTemplate(String template) {
 		throw new RuntimeException("Method not implemented");
 	}
 

@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.client.CookieStore;
@@ -34,6 +32,8 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.esigate.api.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +48,14 @@ import org.slf4j.LoggerFactory;
 public class HttpClientRequest {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpClientRequest.class);
 	private String uri;
-	private final HttpServletRequest originalRequest;
+	private final HttpRequest originalRequest;
 	private final boolean proxy;
 	private BasicHttpRequest httpRequest;
 	private HashMap<String, String> headers;
 	private boolean preserveHost = false;
 	private CookieStore cookieStore;
 
-	public HttpClientRequest(String uri, HttpServletRequest originalRequest, boolean proxy, boolean preserveHost) {
+	public HttpClientRequest(String uri, HttpRequest originalRequest, boolean proxy, boolean preserveHost) {
 		// FIXME HTTPClient 4 uses URI class that is too much restrictive about
 		// allowed characters. We have to escape some characters like |{}[]
 		// but this may have some side effects.
@@ -111,7 +111,7 @@ public class HttpClientRequest {
 	 * @throws IOException
 	 *             if problem getting the request
 	 */
-	private void copyEntity(HttpServletRequest req, HttpEntityEnclosingRequest httpEntityEnclosingRequest) throws IOException {
+	private void copyEntity(HttpRequest req, HttpEntityEnclosingRequest httpEntityEnclosingRequest) throws IOException {
 		long contentLengthLong = -1;
 		String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
 		if (contentLength != null) {
@@ -157,6 +157,11 @@ public class HttpClientRequest {
 		if (userAgent != null) {
 			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
 		}
+		
+		Integer maxWait = originalRequest.getFetchMaxWait();
+		if(maxWait!=null)
+			HttpConnectionParams.setSoTimeout(httpRequest.getParams(), maxWait);
+		
 		copyRequestHeader(HttpHeaders.ACCEPT);
 		copyRequestHeader(HttpHeaders.ACCEPT_ENCODING);
 		copyRequestHeader(HttpHeaders.ACCEPT_LANGUAGE);
@@ -221,10 +226,6 @@ public class HttpClientRequest {
 
 	public void setUri(String uri) {
 		this.uri = uri;
-	}
-
-	public CookieStore getCookieStore() {
-		return cookieStore;
 	}
 
 	public void setCookieStore(CookieStore cookieStore) {

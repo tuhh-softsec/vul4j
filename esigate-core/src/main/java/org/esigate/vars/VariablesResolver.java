@@ -18,16 +18,14 @@ package org.esigate.vars;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
+import org.esigate.api.Cookie;
+import org.esigate.api.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +57,8 @@ public class VariablesResolver {
 	public final static void configure() {
 		InputStream inputStream = null;
 		try {
+			LOG.debug("Loading vars.properties file {}", Driver.class.getResource("vars.properties"));
 			inputStream = Driver.class.getResourceAsStream("vars.properties");
-			URL url = Driver.class.getResource("vars.properties");
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Loading vars.properties file " + url);
-			}
 			if (inputStream != null) {
 				properties = new Properties();
 				properties.load(inputStream);
@@ -114,7 +109,7 @@ public class VariablesResolver {
 	 *            a String containing variables.
 	 * @return The resulting String
 	 */
-	public static String replaceAllVariables(String strVars, HttpServletRequest request) {
+	public static String replaceAllVariables(String strVars, HttpRequest request) {
 		String result = strVars;
 		if (VariablesResolver.containsVariable(strVars)) {
 			Matcher matcher = VAR_PATTERN.matcher(strVars);
@@ -139,18 +134,16 @@ public class VariablesResolver {
 		return result;
 	}
 
-	private static String getProperty(String var, String arg, HttpServletRequest request) {
-		String result = null;
+	private static String getProperty(String var, String arg, HttpRequest request) {
+		String result = processVar(var, arg, request);
 		if (properties != null) {
-			result = properties.getProperty(var, processVar(var, arg, request));
-		} else {
-			result = processVar(var, arg, request);
+			result = properties.getProperty(var, result);
 		}
 		LOG.debug("Resolve property $(" + var + ")=" + result);
 		return result;
 	}
 
-	private static String processVar(String var, String arg, HttpServletRequest request) {
+	private static String processVar(String var, String arg, HttpRequest request) {
 		String res = null;
 		if (var.indexOf("QUERY_STRING") != -1) {
 			if (arg == null) {

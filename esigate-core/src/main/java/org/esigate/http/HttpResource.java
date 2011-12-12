@@ -23,13 +23,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
 import org.esigate.Driver;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.filter.Filter;
 import org.esigate.output.Output;
@@ -46,8 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class HttpResource extends Resource {
-	private final static Logger LOG = LoggerFactory
-			.getLogger(HttpResource.class);
+	private final static Logger LOG = LoggerFactory.getLogger(HttpResource.class);
 	private HttpClientResponse httpClientResponse;
 	private final ResourceContext target;
 	private final String url;
@@ -58,7 +56,7 @@ public class HttpResource extends Resource {
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
 		Driver driver = resourceContext.getDriver();
-		HttpServletRequest originalRequest = resourceContext
+		HttpRequest originalRequest = resourceContext
 				.getOriginalRequest();
 
 		// Retrieve session and other cookies
@@ -69,7 +67,7 @@ public class HttpResource extends Resource {
 		boolean preserveHost = resourceContext.isPreserveHost();
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
 				originalRequest, proxy, preserveHost);
-		httpClientRequest.setCookieStore(userContext.getCookieStore());
+		httpClientRequest.setCookieStore(CookieAdapter.convertCookieStore(userContext.getCookieStore()));
 		if (resourceContext.getValidators() != null) {
 			for (Entry<String, String> header : resourceContext.getValidators()
 					.entrySet()) {
@@ -146,9 +144,9 @@ public class HttpResource extends Resource {
 			throws MalformedURLException {
 		location = new URL(new URL(url), location).toString();
 		// Location header rewriting
-		HttpServletRequest request = target.getOriginalRequest();
+		HttpRequest request = target.getOriginalRequest();
 
-		String originalBase = request.getRequestURL().toString();
+		String originalBase = request.getRequestURL();
 
 		// Note: this code was rewritten for 2.6. While the new code seems
 		// better suited for all cases, it may change the behavior of client

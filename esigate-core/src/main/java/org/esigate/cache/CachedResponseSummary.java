@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.esigate.output.Output;
 
 
@@ -18,23 +20,39 @@ import org.esigate.output.Output;
  */
 public class CachedResponseSummary extends BaseCachedResource {
 	private static final long serialVersionUID = 5229420665779140066L;
+
+	private final String cacheKey;
 	private Map<String, String> requestHeaders;
 	private boolean responseBody;
-	private String cacheKey;
 	private Date localDate;
 
-	public CachedResponseSummary(Map<String, Set<String>> headers,
+	public CachedResponseSummary(String cacheKey, Map<String, Set<String>> headers,
 			int statusCode, String statusMessage) {
 		super(headers, statusCode, statusMessage);
+		this.cacheKey = cacheKey;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(cacheKey).toHashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CachedResponseSummary && cacheKey != null) {
-			CachedResponseSummary crs = (CachedResponseSummary) obj;
-			return cacheKey.equals(crs.getCacheKey());
+		if(obj == this) {
+			return true;
 		}
-		return false;
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof CachedResponseSummary)) {
+			return false;
+		}
+
+		CachedResponseSummary other = (CachedResponseSummary) obj;
+		return new EqualsBuilder()
+			.append(cacheKey, other.cacheKey)
+			.isEquals();
 	}
 
 	@Override
@@ -48,10 +66,6 @@ public class CachedResponseSummary extends BaseCachedResource {
 
 	public String getCacheKey() {
 		return cacheKey;
-	}
-
-	public void setCacheKey(String cacheKey) {
-		this.cacheKey = cacheKey;
 	}
 
 	@Override
