@@ -111,9 +111,10 @@ public class TransformXPath2Filter extends TransformSpi {
 
                 String str = 
                     XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode());
-                XPathAPI xpathAPIInstance = new JDKXPathAPI();
-                if (str.contains("here()")) {
-                    xpathAPIInstance = new XalanXPathAPI();
+                
+                XPathAPI xpathAPIInstance = new XalanXPathAPI();
+                if (!XalanXPathAPI.isInstalled()) {
+                    xpathAPIInstance = new JDKXPathAPI();
                 }
                 
                 NodeList subtreeRoots = 
