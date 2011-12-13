@@ -10,7 +10,6 @@ import org.esigate.extension.Extension;
 /**
  * Interface for Cookie Store.
  * 
- * @see CookieStore
  * @see Extension
  * 
  * @author Nicolas Richeton

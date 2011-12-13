@@ -8,7 +8,7 @@ import java.util.Locale;
 import org.esigate.api.Cookie;
 import org.esigate.api.HttpResponse;
 
-public class MockHttpServletResponse implements HttpResponse {
+public class MockHttpResponse implements HttpResponse {
 	private int statusCode = 200;
 	private String statusMessage;
 

@@ -13,21 +13,24 @@ import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockResource;
 
 public class CacheTest extends TestCase{
 	
 	protected CacheStorage storage = new DefaultCacheStorage();
 	
 	private MockDriver mockDriver;
-	private MockHttpServletRequest request;
+	private MockHttpRequest request;
 	private ResourceContext resourceContext;
-
+	private MockResource newResource;
+	
 	@Override
 	protected void setUp() throws Exception {
 		mockDriver = new MockDriver("mock");
-		request = new MockHttpServletRequest();
+		request = new MockHttpRequest();
 		resourceContext = new ResourceContext(mockDriver, "/test", null, request, null);
+		newResource = new MockResource();
 	}
 	
 	public void testPutGetSelect() throws Exception {
@@ -42,7 +45,6 @@ public class CacheTest extends TestCase{
 
 		CachedResponse cachedResponse = new CachedResponse(byteArray, "utf-8",
 				headers, statusCode, statusMessage);
-		Resource newResource = new TestResource();
 		
 		assertNull(cache.get(resourceContext));
 		

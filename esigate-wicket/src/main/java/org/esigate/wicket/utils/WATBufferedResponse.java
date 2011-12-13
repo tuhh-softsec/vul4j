@@ -18,7 +18,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.wicket.Response;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.esigate.wicket.container.WATParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

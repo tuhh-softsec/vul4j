@@ -23,7 +23,7 @@ import org.esigate.api.Cookie;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 
-public class MockHttpServletRequest implements HttpRequest {
+public class MockHttpRequest implements HttpRequest {
 	private final HashMap<String, Object> attributes = new HashMap<String, Object>();
 	private String characterEncoding;
 	private URL url;
@@ -42,11 +42,11 @@ public class MockHttpServletRequest implements HttpRequest {
 		this.method = method;
 	}
 
-	public MockHttpServletRequest(String url) {
+	public MockHttpRequest(String url) {
 		setUrl(url);
 	}
 
-	public MockHttpServletRequest() {
+	public MockHttpRequest() {
 		this("http://localhost:8080");
 	}
 

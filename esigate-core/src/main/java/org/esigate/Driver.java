@@ -94,7 +94,7 @@ public class Driver {
 	 * 
 	 * @return UserContext
 	 */
-	public final UserContext getUserContext(org.esigate.api.HttpRequest request) {
+	public final UserContext getUserContext(HttpRequest request) {
 		String key = getContextKey();
 		UserContext context = (UserContext) request.getAttribute(key);
 		if (context == null) {
@@ -127,7 +127,7 @@ public class Driver {
 	 * @param request
 	 *            http request.
 	 */
-	public final void saveUserContext(org.esigate.api.HttpRequest request) {
+	public final void saveUserContext(HttpRequest request) {
 		String key = getContextKey();
 		UserContext context = (UserContext) request.getAttribute(key);
 		if (context != null && !context.isEmpty()) {
@@ -347,7 +347,7 @@ public class Driver {
 	 * 
 	 * @param relUrl
 	 *            the relative URL to the resource
-	 * @param servletRequest
+	 * @param request
 	 *            the request
 	 * @param response
 	 *            the response
@@ -494,12 +494,8 @@ public class Driver {
 	 * 
 	 * @param page
 	 *            Address of the page containing the template
-	 * @param parameters
-	 *            parameters to be added to the request
-	 * @param originalRequest
-	 *            originating request object
-	 * @param response
-	 *            the response
+	 * @param ctx
+	 *           target resource
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 * @return the content of the url

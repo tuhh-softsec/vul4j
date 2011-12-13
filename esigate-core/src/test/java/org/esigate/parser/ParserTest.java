@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class ParserTest extends TestCase {
 	private Parser tested;
@@ -16,7 +16,7 @@ public class ParserTest extends TestCase {
 	@Override
 	protected void setUp() {
 		tested = new Parser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
-		MockHttpServletRequest request = new MockHttpServletRequest("http://a.b?request=updated");
+		MockHttpRequest request = new MockHttpRequest("http://a.b?request=updated");
 		tested.setResourceContext(new ResourceContext(null, null, null, request, null));
 	}
 

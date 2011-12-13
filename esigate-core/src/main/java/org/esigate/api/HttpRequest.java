@@ -23,17 +23,13 @@ public interface HttpRequest {
      * are extra information sent with the request.  For HTTP servlets,
      * parameters are contained in the query string or posted form data.
      *
-     * <p>You should only use this method when you are sure the
-     * parameter has only one value. If the parameter might have
-     * more than one value, use {@link #getParameterValues}.
-     *
      * <p>If you use this method with a multivalued
      * parameter, the value returned is equal to the first value
      * in the array returned by <code>getParameterValues</code>.
      *
      * <p>If the parameter data was sent in the request body, such as occurs
      * with an HTTP POST request, then reading the body directly via {@link
-     * #getInputStream} or {@link #getReader} can interfere
+     * #getInputStream} can interfere
      * with the execution of this method.
      *
      * @param name a <code>String</code> specifying the
@@ -42,7 +38,6 @@ public interface HttpRequest {
      * @return a <code>String</code> representing the
      * single value of the parameter
      *
-     * @see #getParameterValues
      */
     public String getParameter(String name);
 
@@ -144,14 +139,11 @@ public interface HttpRequest {
 
     /**
      * Retrieves the body of the request as binary data using
-     * a {@link InputStream}.  Either this method or
-     * {@link #getReader} may be called to read the body, not both.
+     * a {@link InputStream}. This method may be called to read 
+     * the body, not both.
      *
      * @return a {@link InputStream} object containing
      * the body of the request
-     *
-     * @exception IllegalStateException if the {@link #getReader} method
-     * has already been called for this request
      *
      * @exception IOException if an input or output exception occurred
      */
@@ -238,10 +230,7 @@ public interface HttpRequest {
      *
      * <p> Attributes can be set two ways.  The servlet container may set
      * attributes to make available custom information about a request.
-     * For example, for requests made using HTTPS, the attribute
-     * <code>javax.servlet.request.X509Certificate</code> can be used to
-     * retrieve information on the certificate of the client.  Attributes
-     * can also be set programatically using
+     * Attributes can also be set programatically using
      * {@link #setAttribute}.  This allows information to be
      * embedded into a request before a <code>RequestDispatcher</code> call.
      *
@@ -266,8 +255,6 @@ public interface HttpRequest {
      * package names. Names beginning with <code>java.*</code>,
      * <code>javax.*</code>, and <code>com.sun.*</code>, are
      * reserved for use by Sun Microsystems.
-     *<br> If the object passed in is null, the effect is the same as
-     * calling {@link #removeAttribute}.
      *
      * @param name a <code>String</code> specifying the name of the attribute
      *
@@ -329,7 +316,7 @@ public interface HttpRequest {
     /**
      * Returns maximum time for fetching resources in milliseconds
      *
-     * @return <code>Long</code> maxWait value
+     * @return <code>Integer</code> maxWait value
      *
      */
     public Integer getFetchMaxWait();
@@ -337,7 +324,7 @@ public interface HttpRequest {
     /**
      * Store time to live for resources in milliseconds
      *
-     * @return <code>Long</code> ttl value or <code>null</code>
+     * @param ttl the <code>Long</code> time to live value or <code>null</code>
      *
      */
     public void setResourceTtl(Long ttl);
@@ -345,7 +332,7 @@ public interface HttpRequest {
     /**
      * Store indicator for storing resources in cache 
      *
-     * @return <code>Boolean</code> indicator for storing resources in cache 
+     * @param noStore the <code>boolean</code> indicator for storing resources in cache 
      *
      */
     public void setNoStoreResource(boolean noStore);
@@ -353,7 +340,7 @@ public interface HttpRequest {
     /**
      * Store maximum time for fetching resources in milliseconds
      *
-     * @param <code>Long</code> maxWait value
+     * @param maxWait <code>Integer</code> value
      *
      */
     public void setFetchMaxWait(Integer maxWait);

@@ -16,10 +16,8 @@ public interface Element {
 	 * 
 	 * @param tag
 	 *            The tag
-	 * @param parent
-	 *            The parent tag or document to write to
-	 * @param stack
-	 *            The current stack of Elements
+	 * @param ctx
+	 *            The parser context
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */

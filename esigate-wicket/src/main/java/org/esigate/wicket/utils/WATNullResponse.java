@@ -19,7 +19,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.wicket.Response;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.esigate.wicket.container.WATTemplate;
 
 /**
  * This response drops all output and can store content from param blocks.

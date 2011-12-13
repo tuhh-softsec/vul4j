@@ -11,7 +11,7 @@ import org.esigate.api.Cookie;
 
 
 /**
- * Serializable implementation of {@link CookieStore}.
+ * Serializable implementation of {@link CustomCookieStore}.
  * 
  * @author Nicolas Richeton
  */
@@ -40,8 +40,6 @@ public class SerializableBasicCookieStore implements CustomCookieStore {
      * values will still be removed.
      *
      * @param cookie the {@link Cookie cookie} to be added
-     *
-     * @see #addCookies(Cookie[])
      *
      */
     public synchronized void addCookie(Cookie cookie) {

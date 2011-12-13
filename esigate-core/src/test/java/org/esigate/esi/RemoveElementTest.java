@@ -8,16 +8,16 @@ import junit.framework.TestCase;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class RemoveElementTest extends TestCase {
 	private MockDriver provider;
-	private MockHttpServletRequest request;
+	private MockHttpRequest request;
 
 	@Override
 	protected void setUp() throws Exception {
 		provider = new MockDriver("mock");
-		request = new MockHttpServletRequest();
+		request = new MockHttpRequest();
 	}
 
 	public void testRemove() throws IOException, HttpErrorPage {

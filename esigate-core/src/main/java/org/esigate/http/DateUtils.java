@@ -1,6 +1,7 @@
 package org.esigate.http;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.http.impl.cookie.DateParseException;
@@ -71,7 +72,6 @@ public final class DateUtils {
      * @param date The date to format.
      * @return An RFC 1123 formatted date string.
      *
-     * @see org.apache.http.impl.cookie.DateUtils.PATTERN_RFC1123
      */
     public static String formatDate(Date date) {
         return org.apache.http.impl.cookie.DateUtils.formatDate(date);

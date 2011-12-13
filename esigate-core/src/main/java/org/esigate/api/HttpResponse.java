@@ -2,6 +2,7 @@ package org.esigate.api;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 public interface HttpResponse {
@@ -25,7 +26,6 @@ public interface HttpResponse {
      *
      * @param sc the status code
      *
-     * @see #sendError
      */
     public void setStatus(int sc);
 
@@ -53,8 +53,6 @@ public interface HttpResponse {
     /**
      * Returns a <code>Writer</code> object that
      * can send character text to the client.
-     * The <code>Writer</code> uses the character
-     * encoding returned by {@link #getCharacterEncoding}.
      * If the response's character encoding has not been
      * specified as described in <code>getCharacterEncoding</code>
      * (i.e., the method just returns the default value
@@ -90,7 +88,6 @@ public interface HttpResponse {
      * it should be encoded according to RFC 2047
      * (http://www.ietf.org/rfc/rfc2047.txt)
      *
-     * @see #setHeader
      */
     public void addHeader(String name, String value);
 
@@ -98,8 +95,7 @@ public interface HttpResponse {
      * Sets the character encoding (MIME charset) of the response
      * being sent to the client, for example, to UTF-8.
      * If the character encoding has already been set by
-     * {@link #setContentType} or {@link #setLocale},
-     * this method overrides it.
+     * {@link #setContentType}, this method overrides it.
      * Calling {@link #setContentType} with the <code>String</code>
      * of <code>text/html</code> and calling
      * this method with the <code>String</code> of <code>UTF-8</code>
@@ -125,7 +121,6 @@ public interface HttpResponse {
      * (http://www.iana.org/assignments/character-sets)
      *
      * @see #setContentType
-     * @see #setLocale
      *
      * @since Servlet 2.4
      */
@@ -163,7 +158,6 @@ public interface HttpResponse {
      * @param type a <code>String</code> specifying the MIME
      * type of the content
      *
-     * @see #setLocale
      * @see #setCharacterEncoding
      * @see #getOutputStream
      * @see #getWriter

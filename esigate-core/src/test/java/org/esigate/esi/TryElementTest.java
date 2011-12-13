@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class TryElementTest extends TestCase {
 
@@ -21,7 +21,7 @@ public class TryElementTest extends TestCase {
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpRequest request = new MockHttpRequest();
 
 		ctx = new ResourceContext(provider, null, null, request, null);
 		tested = new EsiRenderer();

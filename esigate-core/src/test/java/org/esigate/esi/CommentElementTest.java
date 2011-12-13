@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class CommentElementTest extends TestCase {
 	private ResourceContext ctx;
@@ -15,7 +15,7 @@ public class CommentElementTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpRequest request = new MockHttpRequest();
 
 		ctx = new ResourceContext(null, null, null, request, null);
 		tested = new EsiRenderer();

@@ -69,8 +69,7 @@ public class ResourceUtils {
 
 	/**
 	 * Check whether the given content-type value corresponds to "parsable"
-	 * text. Content types parsable are
-	 * {@link DriverConfiguration#getParsableContentTypes()}
+	 * text.
 	 * 
 	 * @param contentType
 	 *            the value of http header Content-Type

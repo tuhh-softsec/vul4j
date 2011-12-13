@@ -8,18 +8,18 @@ import junit.framework.TestCase;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class InlineElementTest extends TestCase {
 	private MockDriver provider;
-	private MockHttpServletRequest request;
+	private MockHttpRequest request;
 
 	@Override
 	protected void setUp() throws Exception {
 		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-		request = new MockHttpServletRequest();
+		request = new MockHttpRequest();
 	}
 
 	public void testInlineElement() throws IOException, HttpErrorPage {

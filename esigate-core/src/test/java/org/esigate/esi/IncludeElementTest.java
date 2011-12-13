@@ -11,12 +11,12 @@ import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
 import org.esigate.cookie.BasicClientCookie;
-import org.esigate.test.MockHttpServletRequest;
+import org.esigate.test.MockHttpRequest;
 
 public class IncludeElementTest extends TestCase {
 
 	private MockDriver provider;
-	private MockHttpServletRequest request;
+	private MockHttpRequest request;
 
 	private ResourceContext ctx;
 	private EsiRenderer tested;
@@ -26,7 +26,7 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-		request = new MockHttpServletRequest();
+		request = new MockHttpRequest();
 
 		ctx = new ResourceContext(provider, null, null, request, null);
 		tested = new EsiRenderer();
