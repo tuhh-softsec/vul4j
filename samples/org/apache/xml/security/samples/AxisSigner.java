@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
 public class AxisSigner {
 
     /** Field AXIS_SIGNATURE_FILENAME           */
-    public static final String AXIS_SIGNATURE_FILENAME = "axisSignature.xml";
+    public static final String AXIS_SIGNATURE_FILENAME = "build/axisSignature.xml";
 
     /**
      * Method main
@@ -97,7 +97,7 @@ public class AxisSigner {
         );
 
         bodyElem.setAttributeNS(SOAPSECNS, "SOAP-SEC:id", "Body");
-        IdResolver.registerElementById(bodyElem, "id");
+        IdResolver.registerElementById(bodyElem, "Body");
 
         Element soapSignatureElem = doc.createElementNS(SOAPSECNS, "SOAP-SEC:Signature");
 

@@ -74,7 +74,7 @@ public class ResolverFragment extends ResourceResolverSpi {
              * Identifies a node-set containing the element with ID attribute
              * value 'chapter1' of the XML resource containing the signature.
              * XML Signature (and its applications) modify this node-set to
-             * include the element plus all descendents including namespaces and
+             * include the element plus all descendants including namespaces and
              * attributes -- but not comments.
              */
             String id = uriNodeValue.substring(1);

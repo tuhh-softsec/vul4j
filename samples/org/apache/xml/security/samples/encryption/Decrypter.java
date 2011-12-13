@@ -57,7 +57,7 @@ public class Decrypter {
     }
 
     private static Document loadEncryptionDocument() throws Exception {
-        String fileName = "encryptedInfo.xml";
+        String fileName = "build/encryptedInfo.xml";
         File encryptionFile = new File(fileName);
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -71,7 +71,7 @@ public class Decrypter {
     }
 
     private static SecretKey loadKeyEncryptionKey() throws Exception {
-        String fileName = "kek";
+        String fileName = "build/kek";
         String jceAlgorithmName = "DESede";
 
         File kekFile = new File(fileName);
@@ -135,6 +135,6 @@ public class Decrypter {
          */
         xmlCipher.doFinal(document, encryptedDataElement);
 
-        outputDocToFile(document, "decryptedInfo.xml");
+        outputDocToFile(document, "build/decryptedInfo.xml");
     }
 }

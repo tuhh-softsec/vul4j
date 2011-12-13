@@ -130,15 +130,17 @@
     <!-- P A T T E R N S E T S -->
     <patternset id="id.patternset.distFiles">
 	<include name="build.xml"/>
-	<include name="KEYS"/>
+	<include name="pom.xml"/>
 	<include name="LICENSE"/>
 	<include name="NOTICE"/>
-	<include name="Readme.html"/>
-	<include name="TODO"/>
     </patternset>
 
     <patternset id="id.patternset.srcFiles">
 	<include name="src/**/*"/>
+    </patternset>
+    
+    <patternset id="id.patternset.sampleFiles">
+	<include name="samples/**/*"/>
     </patternset>
 	
     <!-- T A R G E T S -->
@@ -365,8 +367,8 @@
     <target name="encrypt"
 	    depends="build.samples"
 	    description="encrypts xml data">
-	<delete file="encryptedInfo.xml"/>
-	<delete file="kek"/>
+	<delete file="build/encryptedInfo.xml"/>
+	<delete file="build/kek"/>
 	<java classname="org.apache.xml.security.samples.encryption.Encrypter" 
 		  failonerror="true" 
 		  fork="yes" 
@@ -378,7 +380,7 @@
     <target name="decrypt"
 	    depends="build.samples" 
 	    description="decrypts xml data">
-	<delete file="decryptedInfo.xml"/>
+	<delete file="build/decryptedInfo.xml"/>
 	<java classname="org.apache.xml.security.samples.encryption.Decrypter" 
 		  failonerror="true" 
 		  fork="yes" 
@@ -396,7 +398,7 @@
     <target name="sign"
 	    depends="build.samples" 
 	    description="creates a signature" >
-	<delete file="signature.xml"/>
+	<delete file="build/signature.xml"/>
 	<java classname="org.apache.xml.security.samples.signature.CreateSignature" 
 		  failonerror="true" 
 		  fork="yes" 
@@ -555,6 +557,7 @@
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
 		<patternset refid="id.patternset.srcFiles"/>
+		<patternset refid="id.patternset.sampleFiles"/>
 				
 		<include name="ant/**/*"/>
 	    </fileset>
@@ -576,6 +579,8 @@
 	<copy todir="${dir.build.bindist}">
 	    <fileset dir=".">
 		<patternset refid="id.patternset.distFiles"/>
+		<patternset refid="id.patternset.srcFiles"/>
+		<patternset refid="id.patternset.sampleFiles"/>
 				
 		<include name="ant/**/*"/>
 	    </fileset>
@@ -760,8 +765,6 @@
 	<echo message=""/>
 	<echo message="------------- Signature Samples ----------------"/>
 	<echo message=""/>
-	<echo message="generate-keys      - generates new keys to be used by other"/>
-	<echo message="                     examples"/>
 	<echo message="sign               - runs CreateSignature sample"/>
 	<echo message="verify             - runs signature verification sample"/>
 	<echo message="signAndVerify      - runs sign and then verify"/>

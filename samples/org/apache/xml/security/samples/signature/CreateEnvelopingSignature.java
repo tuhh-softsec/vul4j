@@ -58,7 +58,7 @@ public class CreateEnvelopingSignature {
         String privateKeyAlias = "test";
         String privateKeyPass = "xmlsecurity";
         String certificateAlias = "test";
-        File signatureFile = new File("signature.xml");
+        File signatureFile = new File("build/signature.xml");
 
         KeyStore ks = KeyStore.getInstance(keystoreType);
         FileInputStream fis = new FileInputStream(keystoreFile);

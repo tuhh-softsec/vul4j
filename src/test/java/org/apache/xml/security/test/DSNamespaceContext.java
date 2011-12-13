@@ -44,6 +44,10 @@ public class DSNamespaceContext implements NamespaceContext {
     public String getNamespaceURI(String arg0) {
         return namespaceMap.get(arg0);
     }
+    
+    public void putPrefix(String prefix, String namespace) {
+        namespaceMap.put(prefix, namespace);
+    }
 
     public String getPrefix(String arg0) {
         for (String key : namespaceMap.keySet()) {

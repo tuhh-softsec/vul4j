@@ -55,7 +55,7 @@ public class VerifySignature {
 
         boolean schemaValidate = false;
         final String signatureSchemaFile = "samples/data/xmldsig-core-schema.xsd";
-        String signatureFileName = "signature.xml";
+        String signatureFileName = "build/signature.xml";
 
         if (schemaValidate) {
             System.out.println("We do schema-validation");

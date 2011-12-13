@@ -99,11 +99,11 @@ public class Encrypter {
         SecretKey kek = keyGenerator.generateKey();
 
         byte[] keyBytes = kek.getEncoded();
-        File kekFile = new File("kek");
+        File kekFile = new File("build/kek");
         FileOutputStream f = new FileOutputStream(kekFile);
         f.write(keyBytes);
         f.close();
-        System.out.println("Key encryption key stored in " + kekFile.toURL().toString());
+        System.out.println("Key encryption key stored in " + kekFile.toURI().toURL().toString());
 
         return kek;
     }
@@ -189,6 +189,6 @@ public class Encrypter {
          * Output the document containing the encrypted information into
          * a file.
          */
-        outputDocToFile(document, "encryptedInfo.xml");
+        outputDocToFile(document, "build/encryptedInfo.xml");
     }
 }

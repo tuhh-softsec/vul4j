@@ -27,6 +27,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.IdResolver;
 import org.w3c.dom.Element;
 
 /**
@@ -56,11 +57,18 @@ public class AxisVerifier {
 
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DSNamespaceContext());
+        DSNamespaceContext context = new DSNamespaceContext();
+        xpath.setNamespaceContext(context);
 
         String expression = "//ds:Signature[1]";
         Element sigElement = 
             (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
+        expression = "//env:Body[1]";
+        context.putPrefix("env", "http://www.w3.org/2001/12/soap-envelope");
+        Element bodyElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        IdResolver.registerElementById(bodyElement, "Body");
         
         XMLSignature sig = new XMLSignature(sigElement, BaseURI);
         boolean verify = sig.checkSignatureValue(sig.getKeyInfo().getPublicKey());
