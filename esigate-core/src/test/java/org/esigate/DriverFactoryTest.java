@@ -6,16 +6,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.esigate.ConfigurationException;
-import org.esigate.Driver;
-import org.esigate.DriverFactory;
-
 import junit.framework.TestCase;
 
 public class DriverFactoryTest extends TestCase {
 
 	@Override
 	protected void setUp() {
+		DriverFactory.configure(new Properties());
 		DriverFactory.configure("some", new Properties());
 	}
 
