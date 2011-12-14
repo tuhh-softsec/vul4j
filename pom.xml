@@ -4,7 +4,7 @@
 	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
 	<name>esigate</name>
-	<version>3.0</version>
+	<version>3.1-SNAPSHOT</version>
 	<ciManagement>
 		<system>continuum</system>
 		<!-- There's no public access to the CI platform -->
@@ -142,11 +142,11 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/tags/esigate-3.0
+		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk
 		</connection>
-		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/tags/esigate-3.0
+		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk
 		</developerConnection>
-		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/tags/esigate-3.0
+		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk/
 		</url>
 	</scm>
 	<build>
