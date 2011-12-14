@@ -204,7 +204,7 @@ public final class Transform extends SignatureElementProxy {
      * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI 
      * is already registered
      */
-    public static void register(String algorithmURI, Class<TransformSpi> implementingClass)
+    public static void register(String algorithmURI, Class<? extends TransformSpi> implementingClass)
         throws AlgorithmAlreadyRegisteredException {
         // are we already registered?
         Class<? extends TransformSpi> transformSpi = transformSpiHash.get(algorithmURI);

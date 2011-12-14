@@ -79,7 +79,7 @@ public class CreateMerlinsExampleTwentyThree {
         String privateKeyAlias = "test";
         String privateKeyPass = "xmlsecurity";
         String certificateAlias = "test";
-        File signatureFile = new File("merlinsTwentyThreeRecreatedNoRetrievalMethod.xml");
+        File signatureFile = new File("build/merlinsTwentyThreeRecreatedNoRetrievalMethod.xml");
 
         KeyStore ks = KeyStore.getInstance(keystoreType);
         FileInputStream fis = new FileInputStream(keystoreFile);
@@ -400,7 +400,7 @@ public class CreateMerlinsExampleTwentyThree {
         SignedInfo s = sig.getSignedInfo();
         for (int i = 0; i < s.getLength(); i++) {
             Reference r = s.item(i);
-            String fn = "merlin16_"+i+".html";
+            String fn = "build/merlin16_"+i+".html";
             System.out.println("Wrote Reference " + i + " to file " + fn);
             JavaUtils.writeBytesToFilename(fn, r.getHTMLRepresentation().getBytes());
         }

@@ -388,7 +388,7 @@
 		<classpath refid="id.classpath.samples"/>
 	</java>
     </target>
-
+    
     <target name="encryptAndDecrypt"
 	    depends="encrypt, decrypt" 
 	    description="encrypts and decrypts an element's contents" />

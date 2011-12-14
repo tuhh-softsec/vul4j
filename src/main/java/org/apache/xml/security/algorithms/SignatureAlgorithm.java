@@ -356,7 +356,7 @@ public class SignatureAlgorithm extends Algorithm {
      * @throws AlgorithmAlreadyRegisteredException if specified algorithmURI is already registered
      * @throws XMLSignatureException 
      */
-    public static void register(String algorithmURI, Class<SignatureAlgorithmSpi> implementingClass)
+    public static void register(String algorithmURI, Class<? extends SignatureAlgorithmSpi> implementingClass)
        throws AlgorithmAlreadyRegisteredException, ClassNotFoundException, 
            XMLSignatureException {
         if (log.isDebugEnabled()) {

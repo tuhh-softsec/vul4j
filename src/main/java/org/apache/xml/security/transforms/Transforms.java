@@ -289,7 +289,7 @@ public class Transforms extends SignatureElementProxy {
     
     private void checkSecureValidation(Transform transform) throws TransformationException {
         String uri = transform.getURI();
-        if (Transforms.TRANSFORM_XSLT.equals(uri)) {
+        if (secureValidation && Transforms.TRANSFORM_XSLT.equals(uri)) {
             Object exArgs[] = { uri };
 
             throw new TransformationException(

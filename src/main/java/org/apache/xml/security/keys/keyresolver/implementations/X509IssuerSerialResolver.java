@@ -78,13 +78,6 @@ public class X509IssuerSerialResolver extends KeyResolverSpi {
             return null;
         }
 
-        if (x509data == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("I can't");
-            }
-            return null;
-        }
-
         if (!x509data.containsIssuerSerial()) {
             return null;
         }

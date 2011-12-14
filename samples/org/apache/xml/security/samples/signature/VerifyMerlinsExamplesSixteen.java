@@ -132,8 +132,7 @@ public class VerifyMerlinsExamplesSixteen {
 
                     if (systemId.endsWith("xmldsig-core-schema.xsd")) {
                         try {
-                            return new org.xml.sax
-                            .InputSource(new FileInputStream(signatureSchemaFile));
+                            return new org.xml.sax.InputSource(new FileInputStream(signatureSchemaFile));
                         } catch (FileNotFoundException ex) {
                             throw new org.xml.sax.SAXException(ex);
                         }

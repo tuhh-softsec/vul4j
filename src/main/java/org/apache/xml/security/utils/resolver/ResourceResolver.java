@@ -221,7 +221,7 @@ public class ResourceResolver {
      * @param className
      * @param start
      */
-    public static void register(Class<ResourceResolverSpi> className, boolean start) {
+    public static void register(Class<? extends ResourceResolverSpi> className, boolean start) {
         try {
             ResourceResolverSpi resourceResolverSpi = className.newInstance();
             register(resourceResolverSpi, start);
