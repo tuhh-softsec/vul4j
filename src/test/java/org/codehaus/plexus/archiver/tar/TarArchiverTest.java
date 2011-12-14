@@ -231,6 +231,20 @@ public class TarArchiverTest
         }
     }
 
+
+    public void testUnicode() throws Exception {
+        File tmpDir = getTestFile( "src/test/resources/utf8" );
+        TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+        File tarFile = getTestFile( "target/output/tar-with-longFileName.tar" );
+        archiver.setDestFile(tarFile);
+        TarLongFileMode mode = new TarLongFileMode();
+        mode.setValue( TarLongFileMode.GNU);
+        archiver.setLongfile(mode);
+        archiver.addDirectory( tmpDir );
+        archiver.createArchive();
+        assertTrue( tarFile.exists() );
+    }
+
     private void writeFile( File dir, String fname, int mode )
         throws IOException, ArchiverException
     {

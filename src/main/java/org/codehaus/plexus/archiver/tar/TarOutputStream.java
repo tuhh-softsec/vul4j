@@ -165,7 +165,8 @@ public class TarOutputStream
     public void putNextEntry( TarEntry entry )
         throws IOException
     {
-        if ( entry.getName().length() >= TarConstants.NAMELEN )
+        byte[] entryName = entry.getName().getBytes();
+        if ( entryName.length >= TarConstants.NAMELEN )
         {
 
             if ( longFileMode == LONGFILE_GNU )
@@ -174,9 +175,9 @@ public class TarOutputStream
                 // of which are the entry's name
                 TarEntry longLinkEntry = new TarEntry( TarConstants.GNU_LONGLINK, TarConstants.LF_GNUTYPE_LONGNAME );
 
-                longLinkEntry.setSize( entry.getName().length() + 1 );
+                longLinkEntry.setSize( entryName.length + 1 );
                 putNextEntry( longLinkEntry );
-                write( entry.getName().getBytes() );
+                write( entryName);
                 write( 0 );
                 closeEntry();
             }
