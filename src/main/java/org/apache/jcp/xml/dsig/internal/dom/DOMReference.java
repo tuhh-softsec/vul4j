@@ -482,11 +482,14 @@ public final class DOMReference extends DOMStructure
                         (((OctetStreamData)data).getOctetStream());
                 } else if (data instanceof NodeSetData) {
                     TransformService spi = null;
-                    try {
+                    if (provider == null) {
                         spi = TransformService.getInstance(c14nalg, "DOM");
-                    } catch (NoSuchAlgorithmException nsae) {
-                        spi = TransformService.getInstance(c14nalg,
-                                                           "DOM", provider);
+                    } else {
+                        try {
+                            spi = TransformService.getInstance(c14nalg, "DOM", provider);
+                        } catch (NoSuchAlgorithmException nsae) {
+                            spi = TransformService.getInstance(c14nalg, "DOM");
+                        }
                     }
                     data = spi.transform(data, context);
                     xi = new XMLSignatureInput
@@ -496,8 +499,18 @@ public final class DOMReference extends DOMStructure
                 }
                 if (context instanceof XMLSignContext && c14n11
                     && !xi.isOctetStream() && !xi.isOutputStreamSet()) {
-                    DOMTransform t = new DOMTransform
-                        (TransformService.getInstance(c14nalg, "DOM"));
+                    TransformService spi = null;
+                    if (provider == null) {
+                        spi = TransformService.getInstance(c14nalg, "DOM");
+                    } else {
+                        try {
+                            spi = TransformService.getInstance(c14nalg, "DOM", provider);
+                        } catch (NoSuchAlgorithmException nsae) {
+                            spi = TransformService.getInstance(c14nalg, "DOM");
+                        }
+                    }
+                    
+                    DOMTransform t = new DOMTransform(spi);
                     Element transformsElem = null;
                     String dsPrefix = DOMUtils.getSignaturePrefix(context);
                     if (allTransforms.isEmpty()) {

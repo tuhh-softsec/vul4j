@@ -69,13 +69,22 @@ public class DOMTransform extends DOMStructure implements Transform {
         throws MarshalException
     {
         String algorithm = DOMUtils.getAttributeValue(transElem, "Algorithm");
-        try {
-            spi = TransformService.getInstance(algorithm, "DOM");
-        } catch (NoSuchAlgorithmException e1) {
+        
+        if (provider == null) {
+            try {
+                spi = TransformService.getInstance(algorithm, "DOM");
+            } catch (NoSuchAlgorithmException e1) {
+                throw new MarshalException(e1);
+            }
+        } else {
             try {
                 spi = TransformService.getInstance(algorithm, "DOM", provider);
-            } catch (NoSuchAlgorithmException e2) {
-                throw new MarshalException(e2);
+            } catch (NoSuchAlgorithmException nsae) {
+                try {
+                    spi = TransformService.getInstance(algorithm, "DOM");
+                } catch (NoSuchAlgorithmException e2) {
+                    throw new MarshalException(e2);
+                }
             }
         }
         try {
