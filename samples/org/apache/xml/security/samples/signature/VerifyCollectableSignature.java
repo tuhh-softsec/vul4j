@@ -63,7 +63,7 @@ public class VerifyCollectableSignature {
         dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
 
         try {
-            File signatureFile = new File("collectableSignature.xml");
+            File signatureFile = new File("build/collectableSignature.xml");
             String BaseURI = signatureFile.toURI().toURL().toString();
 
             System.out.println("Try to verify "

@@ -59,7 +59,7 @@ public class ThreeSignerContractVerify {
         try {
 
             //File signatureFile = new File("collectableSignature.xml");
-            File signatureFile = new File("threeSignerContract.xml");
+            File signatureFile = new File("build/threeSignerContract.xml");
             String BaseURI = signatureFile.toURI().toURL().toString();
 
             System.out.println("Try to verify "

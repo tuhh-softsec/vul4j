@@ -73,6 +73,8 @@ public class SampleTransformEnvelopedSignature {
             + "   </Signature>" + "\n"
             + "</Document>" + "\n"
             ;
+        
+        org.apache.xml.security.Init.init();
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
 

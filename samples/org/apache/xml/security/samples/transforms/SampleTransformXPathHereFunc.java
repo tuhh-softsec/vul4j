@@ -70,6 +70,8 @@ public class SampleTransformXPathHereFunc {
             + "   </Signature>"
             + "</Document>"
             ;
+        
+        org.apache.xml.security.Init.init();
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
 

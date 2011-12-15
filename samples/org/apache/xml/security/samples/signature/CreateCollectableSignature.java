@@ -63,7 +63,7 @@ public class CreateCollectableSignature {
      * @throws Exception
      */
     public static void main(String unused[]) throws Exception {
-        File signatureFile = new File("collectableSignature.xml");
+        File signatureFile = new File("build/collectableSignature.xml");
         String BaseURI = signatureFile.toURI().toURL().toString();
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();

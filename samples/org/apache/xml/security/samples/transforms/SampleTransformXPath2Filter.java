@@ -57,15 +57,15 @@ public class SampleTransformXPath2Filter {
 
         boolean verbose = true;
 
-        create("withComments.xml", true, verbose);
+        create("build/withComments.xml", true, verbose);
         System.out.println();
         System.out.println();
         System.out.println();
-        create("omitComments.xml", false, verbose);
+        create("build/omitComments.xml", false, verbose);
         System.out.println();
         System.out.println();
         System.out.println();
-        check("withComments.xml");
+        check("build/withComments.xml");
     }
 
     /**
@@ -169,7 +169,7 @@ public class SampleTransformXPath2Filter {
         }
 
         JavaUtils.writeBytesToFilename(
-            "xfilter2.html", sig.getSignedInfo().item(0).getHTMLRepresentation().getBytes()
+            "build/xfilter2.html", sig.getSignedInfo().item(0).getHTMLRepresentation().getBytes()
         );
     }
 

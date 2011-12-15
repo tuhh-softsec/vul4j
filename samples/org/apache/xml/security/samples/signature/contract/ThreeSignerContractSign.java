@@ -66,7 +66,7 @@ public class ThreeSignerContractSign {
      * @throws Exception
      */
     public static void main(String unused[]) throws Exception {
-        File signatureFile = new File("threeSignerContract.xml");
+        File signatureFile = new File("build/threeSignerContract.xml");
         String BaseURI = signatureFile.toURI().toURL().toString();
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();

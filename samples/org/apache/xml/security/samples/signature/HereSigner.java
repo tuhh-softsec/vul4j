@@ -62,7 +62,7 @@ public class HereSigner {
         String privateKeyAlias = "test";
         String privateKeyPass = "xmlsecurity";
         String certificateAlias = "test";
-        File signatureFile = new File("hereSignature.xml");
+        File signatureFile = new File("build/hereSignature.xml");
 
         KeyStore ks = KeyStore.getInstance(keystoreType);
         FileInputStream fis = new FileInputStream(keystoreFile);
