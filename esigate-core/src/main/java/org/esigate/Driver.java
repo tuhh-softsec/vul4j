@@ -307,13 +307,11 @@ public class Driver {
 			Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
-			String renderersList = " renderers=";
-			for (int i = 0; i < renderers.length; i++) {
-				renderersList = renderersList
-						+ renderers[i].getClass().getName() + " ";
+			List<String> rendererNames = new ArrayList<String>(renderers.length);
+			for (Renderer renderer : renderers) {
+				rendererNames.add(renderer.getClass().getName());
 			}
-			LOG.info("render provider=" + config.getInstanceName() + " page="
-					+ page + renderersList);
+			LOG.info("render provider={} page= {} renderers={}", new Object[] { config.getInstanceName(), page, rendererNames});
 		}
 		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
 		ResourceContext resourceContext = new ResourceContext(this,
