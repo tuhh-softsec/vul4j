@@ -2,6 +2,7 @@ package org.esigate.cache;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,6 +31,7 @@ public class CachedResponseSummary extends BaseCachedResource {
 			int statusCode, String statusMessage) {
 		super(headers, statusCode, statusMessage);
 		this.cacheKey = cacheKey;
+		this.requestHeaders = new HashMap<String, String>();
 	}
 
 	@Override
@@ -99,8 +101,8 @@ public class CachedResponseSummary extends BaseCachedResource {
 	@Override
 	public String getRequestHeader(String key) {
 		for (Entry<String, String> entry : requestHeaders.entrySet()) {
-			if (key.equalsIgnoreCase(entry.getKey().toString())) {
-				return entry.getValue().toString();
+			if (key.equalsIgnoreCase(entry.getKey())) {
+				return entry.getValue();
 			}
 		}
 

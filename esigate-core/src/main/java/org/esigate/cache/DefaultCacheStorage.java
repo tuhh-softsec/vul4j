@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Properties;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class DefaultCacheStorage implements CacheStorage {
 	private static final Comparator<CacheEntry> CACHE_ENTRY_COMPARATOR = new Comparator<CacheEntry>() {
 		public int compare(CacheEntry o1, CacheEntry o2) {
@@ -95,6 +98,14 @@ public class DefaultCacheStorage implements CacheStorage {
 		}
 
 		@Override
+		public int hashCode() {
+			return new HashCodeBuilder()
+				.append(key)
+				.append(ttl)
+				.toHashCode();
+		}
+
+		@Override
 		public boolean equals(Object obj) {
 			if (this == obj) {
 				return true;
@@ -102,28 +113,16 @@ public class DefaultCacheStorage implements CacheStorage {
 			if (obj == null) {
 				return false;
 			}
-			if (getClass() != obj.getClass()) {
+			if (!(obj instanceof CacheEntry)) {
 				return false;
 			}
+
 			CacheEntry other = (CacheEntry) obj;
-			if (key == null) {
-				if (other.key != null) {
-					return false;
-				}
-			} else if (!key.equals(other.key)) {
-				return false;
-			}
-			if (ttl != other.ttl) {
-				return false;
-			}
-			if (value == null) {
-				if (other.value != null) {
-					return false;
-				}
-			} else if (!value.equals(other.value)) {
-				return false;
-			}
-			return true;
+			return new EqualsBuilder()
+				.append(key, other.key)
+				.append(ttl, other.ttl)
+				.append(value, other.value)
+				.isEquals();
 		}
 
 	}

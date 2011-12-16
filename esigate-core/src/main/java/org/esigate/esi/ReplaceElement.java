@@ -40,7 +40,7 @@ class ReplaceElement extends BaseElement {
 		} else {
 			parent.characters(result, 0, result.length());
 		}
-		parent = null;
+
 		buf = null;
 	}
 

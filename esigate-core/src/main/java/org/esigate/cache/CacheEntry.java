@@ -388,16 +388,14 @@ class CacheEntry implements Serializable {
 		}
 
 		// Cleanup
-		if (System.currentTimeMillis() - lastClean > CLEAN_DELAY) {
-			// Ensure only a single thread starts cleaning.
-			synchronized (this) {
-				if (System.currentTimeMillis() - lastClean > CLEAN_DELAY) {
-					for (CachedResponseSummary summary : responseSummaries) {
-						// Delete no longer existing responses.
-						getCacheResponseAndClean(summary);
-					}
-					lastClean = System.currentTimeMillis();
+		// Ensure only a single thread starts cleaning.
+		synchronized (this) {
+			if (System.currentTimeMillis() - lastClean > CLEAN_DELAY) {
+				for (CachedResponseSummary summary : responseSummaries) {
+					// Delete no longer existing responses.
+					getCacheResponseAndClean(summary);
 				}
+				lastClean = System.currentTimeMillis();
 			}
 		}
 	}

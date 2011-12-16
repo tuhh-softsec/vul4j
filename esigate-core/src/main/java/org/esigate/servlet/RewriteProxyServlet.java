@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -218,10 +219,10 @@ public class RewriteProxyServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		TreeMap<String, ReverseConfiguration> confTree = new TreeMap<String, ReverseConfiguration>();
+		InputStream propertiesInput = null;
 		try {
 			// Open configuration file.
-			InputStream propertiesInput = RewriteProxyServlet.class
-					.getResourceAsStream("/org/esigate/rewrite-proxy.properties");
+			propertiesInput = RewriteProxyServlet.class.getResourceAsStream("/org/esigate/rewrite-proxy.properties");
 
 			// Load properties
 			Properties properties = new Properties();
@@ -229,13 +230,14 @@ public class RewriteProxyServlet extends HttpServlet {
 			propertiesInput.close();
 
 			// Loop on properties.
-			for (Object key : properties.keySet()) {
+			for (Entry<Object, Object> entry : properties.entrySet()) {
 
+				String key = (String) entry.getKey();
 				// Get line content.
-				String[] keySplitted = ((String) key).split("\\.");
+				String[] keySplitted = key.split("\\.");
 				String rule = keySplitted[0];
 				String attribute = keySplitted[1];
-				String value = properties.getProperty((String) key);
+				String value = (String) entry.getValue();
 
 				// Create configuration instance if necessary.
 				ReverseConfiguration currentConf = confTree.get(rule);
@@ -276,6 +278,14 @@ public class RewriteProxyServlet extends HttpServlet {
 			configuration.addAll(confTree.values());
 		} catch (IOException e) {
 			throw new ServletException(e);
+		} finally {
+			if (propertiesInput != null) {
+				try {
+					propertiesInput.close();
+				} catch (IOException e) {
+					LOG.error("failed to close stream", e);
+				}
+			}
 		}
 	}
 

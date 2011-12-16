@@ -115,7 +115,7 @@ public class CacheOutput extends Output {
 		 * 
 		 * @return true if content size exceeds maxSize
 		 */
-		public boolean isTooBig() {
+		public synchronized boolean isTooBig() {
 			return tooBig;
 		}
 
