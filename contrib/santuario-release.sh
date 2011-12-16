@@ -45,7 +45,9 @@ cp -r ${M2_REPO}/org/apache/santuario/xmlsec/${SANTUARIO_VERSION} ${SANTUARIO_ST
 #
 # Build and stage the distribution using ant
 #
-ant clean
+ant clean compile
+ant build.jar
+cp -r ${M2_REPO}/org/apache/santuario/xmlsec/${SANTUARIO_VERSION}/xmlsec-${SANTUARIO_VERSION}.jar build
 ant dist || exit 1
 cp -r build/*.zip ${SANTUARIO_STAGE_ROOT}/dist
 

@@ -1,6 +1,8 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.0-SNAPSHOT
+    Fixed SANTUARIO-290: Add a secure validation switch for signature processing
+    Fixed SANTUARIO-255: Port JSR 105 code to JDK 1.5.
     Fixed SANTUARIO-288: Add support for GCM algorithms via a third-party Crypto provider.
     Fixed SANTUARIO-287: Rename org.jcp package in the 1.5 release.
     Fixed SANTUARIO-284: ElementProxy#getTextFromChildElement() doesn't get all of the text if the element contains an entity like &amp;

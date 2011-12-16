@@ -548,7 +548,6 @@
 	    depends="build.srcdist,build.bindist" />
 
     <target name="build.srcdist" 
-	    depends="clean"
 	description="Creates the source distribution" >
 		
 	<mkdir dir="${dir.build.srcdist}"/>
@@ -571,7 +570,7 @@
     </target>
 
     <target name="build.bindist"
-	    depends="clean,build.src,build.jar,build.docs" 
+	    depends="build.src,build.docs" 
 	    description="Creates the binary distribution">
 
 	<mkdir dir="${dir.build.bindist}"/>
