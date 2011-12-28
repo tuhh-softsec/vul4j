@@ -46,16 +46,18 @@
 			<p>
 				It is possible to configure ESIGate to forward all cookies or
 				specific cookies to the browser and also discard all or specific
-				cookies. This is done using the properties "forwardCookies" and
-				"discardCookies" in the configuration file. Values for these
-				properties should be a coma separated list of cookie names or the
-				single value "*".
+				cookies. This is done by specifying setting "filter" property to 
+                "org.esigate.filter.CookieForwardingFilter" and using the properties
+                "forwardCookies" and "discardCookies" in the configuration file.
+                Values for these properties should be a coma separated list of cookie
+                names or the single value "*".
 			</p>
 			<p>
 				Example 1: forward cookies named "cookie1" and "cookie2", discard
 				cookie name "cookie3", all other cookies will be stored server side
 				(default behaviour).
 				<source>
+filter=org.esigate.filter.CookieForwardingFilter
 forwardCookies=cookie1,cookie2
 discardCookies=cookie3
 				</source>
@@ -64,6 +66,7 @@ discardCookies=cookie3
 				Example 2: forward cookies named "cookie1" and "cookie2", discard
 				all other cookies.
 				<source>
+filter=org.esigate.filter.CookieForwardingFilter
 forwardCookies=cookie1,cookie2
 discardCookies=*
 				</source>
