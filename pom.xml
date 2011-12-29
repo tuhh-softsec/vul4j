@@ -380,11 +380,6 @@
 	</modules>
 	<repositories>
 		<repository>
-			<id>jasig-repository</id>
-			<name>JA-SIG Maven2 Repository</name>
-			<url>http://developer.jasig.org/repo/content/repositories/m2</url>
-		</repository>
-		<repository>
 			<id>esigate-repository</id>
 			<name>ESIGate repository</name>
 			<url>http://www.esigate.org/maven/repository</url>
