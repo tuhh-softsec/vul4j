@@ -29,8 +29,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Properties;
 
-import sun.awt.windows.ThemeReader;
-
 /**
  * This is used to test FileUtils for correctness.
  *

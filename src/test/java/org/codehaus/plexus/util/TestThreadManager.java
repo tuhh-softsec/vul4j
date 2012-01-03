@@ -99,7 +99,7 @@ public class TestThreadManager
 
     public boolean hasFailedThreads()
     {
-        if ( failedThreads.size() == 0 )
+        if ( failedThreads.isEmpty() )
         {
             return false;
         }

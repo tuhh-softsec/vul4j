@@ -698,14 +698,11 @@ public class FileUtils
     {
         File file = new File( dir );
 
-        if ( Os.isFamily( Os.FAMILY_WINDOWS ) )
+        if ( Os.isFamily( Os.FAMILY_WINDOWS ) && !isValidWindowsFileName( file ) )
         {
-            if ( !isValidWindowsFileName( file ) )
-            {
                 throw new IllegalArgumentException( "The file (" + dir
                     + ") cannot contain any of the following characters: \n"
                     + StringUtils.join( INVALID_CHARACTERS_FOR_WINDOWS_FILE_NAME, " " ) );
-            }
         }
 
         if ( !file.exists() )

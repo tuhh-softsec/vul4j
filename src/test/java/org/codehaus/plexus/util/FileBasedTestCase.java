@@ -32,7 +32,6 @@ import java.util.Arrays;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Base class for testcases doing tests with files.
