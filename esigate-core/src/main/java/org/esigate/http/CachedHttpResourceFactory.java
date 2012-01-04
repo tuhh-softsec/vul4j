@@ -3,9 +3,9 @@ package org.esigate.http;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.esigate.ConfigurationException;
 import org.esigate.DriverConfiguration;
@@ -172,64 +172,53 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	}
 
 	private void tryLoadFromCache(ResourceProxyWithContext ret) {
-		if (Rfc2616.isCacheable(ret.getResourceContext())) {
-			// Try to load the resource from cache
+		if (!Rfc2616.isCacheable(ret.getResourceContext())) {
+			return;
+		}
 
-			ret.setCachedResource(cache.get(ret.getResourceContext()));
-			boolean needsValidation = true;
-			if (ret.getCachedResource() != null) {
-				needsValidation = false;
-				if (config.getCacheRefreshDelay() > 0) {
-					// Forced expiration delay
-					if (Rfc2616.requiresRefresh(ret.getResourceContext())
-							|| Rfc2616.getAge(ret.getCachedResource()) > config
-									.getCacheRefreshDelay() * 1000L) {
-						needsValidation = true;
+		// Try to load the resource from cache
+		ret.setCachedResource(cache.get(ret.getResourceContext()));
+		boolean needsValidation = true;
+		if (ret.getCachedResource() != null) {
+			needsValidation = false;
+			if (config.getCacheRefreshDelay() > 0) {
+				// Forced expiration delay
+				needsValidation = (Rfc2616.requiresRefresh(ret.getResourceContext())
+						|| Rfc2616.getAge(ret.getCachedResource()) > config.getCacheRefreshDelay() * 1000L);
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Needs validation={} cacheRefreshDelay={} cachedResource={}",
+					new Object[] {needsValidation, config.getCacheRefreshDelay(), ret.getCachedResource()});
+		}
+		if (needsValidation) {
+			// Resource not in cache or stale, or refresh was forced by
+			// the user (hit refresh in the browser so the browser sent
+			// a pragma:no-cache header or something similar), prepare a
+			// memoryOutput to collect the new version
+			ret.setMemoryOutput(new CacheOutput(config.getCacheMaxFileSize()));
+			if (log.isInfoEnabled()) {
+				if (ret.getCachedResource() == null) {
+					log.info("Not in cache: " + ret.getHttpUrl());
+				} else {
+					StringBuilder validators = new StringBuilder();
+					Set<Entry<String, String>> entrySet = cache.getValidators(
+							ret.getResourceContext(), ret.getCachedResource()).entrySet();
+					for (Entry<String, String> validator : entrySet) {
+						validators.append(validator.getKey())
+								.append(": ")
+								.append(validator.getValue())
+								.append(";");
 					}
+					log.info("Cache entry needs validation: {}; validators: {}", ret.getHttpUrl(), validators);
 				}
 			}
-			if (log.isDebugEnabled()) {
-				String message = "Needs validation=" + needsValidation;
-				message += " cacheRefreshDelay="
-						+ config.getCacheRefreshDelay();
-				if (ret.getCachedResource() != null) {
-					message += " cachedResource=" + ret.getCachedResource();
-				}
-				log.debug(message);
-			}
-			if (needsValidation) {
-				// Resource not in cache or stale, or refresh was forced by
-				// the user (hit refresh in the browser so the browser sent
-				// a pragma:no-cache header or something similar), prepare a
-				// memoryOutput to collect the new version
-				ret.setMemoryOutput(new CacheOutput(config
-						.getCacheMaxFileSize()));
-				if (log.isInfoEnabled()) {
-					if (ret.getCachedResource() == null) {
-						log.info("Not in cache: " + ret.getHttpUrl());
-					} else {
-						StringBuilder validators = new StringBuilder();
-						for (Iterator<Entry<String, String>> iterator = cache
-								.getValidators(ret.getResourceContext(),
-										ret.getCachedResource()).entrySet()
-								.iterator(); iterator.hasNext();) {
-							Entry<String, String> validator = iterator.next();
-							validators.append(validator.getKey());
-							validators.append(": ");
-							validators.append(validator.getValue());
-						}
-						log.info("Cache entry needs validation: "
-								+ ret.getHttpUrl() + " validators:"
-								+ validators);
-					}
-				}
-			} else {
-				// Resource in cache, does not need validation, just render
-				// it
-				log.info("Reusing cache entry for: " + ret.getHttpUrl());
-				ret.setProxyResource(ret.getCachedResource());
-				ret.setReady(true);
-			}
+		} else {
+			// Resource in cache, does not need validation, just render
+			// it
+			log.info("Reusing cache entry for: " + ret.getHttpUrl());
+			ret.setProxyResource(ret.getCachedResource());
+			ret.setReady(true);
 		}
 	}
 
