@@ -129,7 +129,14 @@ public abstract class AbstractArchiver
 
     public final void setFileMode( final int mode )
     {
-        fileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
+        if ( mode >= 0 )
+        {
+            fileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
+        }
+        else
+        {
+            fileMode = -1;
+        }
     }
 
     public final void setDefaultFileMode( final int mode )
@@ -172,7 +179,14 @@ public abstract class AbstractArchiver
 
     public final void setDirectoryMode( final int mode )
     {
-        directoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
+        if ( mode >= 0 )
+        {
+            directoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
+        }
+        else
+        {
+            directoryMode = -1;
+        }
     }
 
     public final void setDefaultDirectoryMode( final int mode )
