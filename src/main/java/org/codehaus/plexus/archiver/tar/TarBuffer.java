@@ -25,6 +25,7 @@ package org.codehaus.plexus.archiver.tar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * The TarBuffer class implements the tar archive concept
@@ -273,6 +274,19 @@ public class TarBuffer
             //
             if ( numBytes == -1 )
             {
+                if (offset == 0) {
+                    // Ensure that we do not read gigabytes of zeros
+                    // for a corrupt tar file.
+                    // See http://issues.apache.org/bugzilla/show_bug.cgi?id=39924
+                    return false;
+                }
+                // However, just leaving the unread portion of the buffer dirty does
+                // cause problems in some cases.  This problem is described in
+                // http://issues.apache.org/bugzilla/show_bug.cgi?id=29877
+                //
+                // The solution is to fill the unused portion of the buffer with zeros.
+
+                Arrays.fill(blockBuffer, offset, offset + bytesNeeded, (byte) 0);
                 break;
             }
 
