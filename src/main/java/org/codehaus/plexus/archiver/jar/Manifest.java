@@ -112,7 +112,7 @@ public class Manifest
         /**
          * The attribute's value
          */
-        private Vector values = new Vector();
+        private Vector<String> values = new Vector<String>();
 
         /**
          * For multivalued attributes, this is the index of the attribute
@@ -191,11 +191,7 @@ public class Manifest
                 return false;
             }
 
-            if ( rhsAttribute.values == null )
-            {
-                return false;
-            }
-            return values.equals( rhsAttribute.values );
+            return rhsAttribute.values != null && values.equals(rhsAttribute.values);
         }
 
         /**
@@ -323,7 +319,7 @@ public class Manifest
          */
         public void addContinuation( String line )
         {
-            String currentValue = (String) values.elementAt( currentIndex );
+            String currentValue = values.elementAt( currentIndex );
             setValue( currentValue + line.substring( 1 ) );
         }
 
@@ -377,6 +373,7 @@ public class Manifest
          *
          * @param writer the Writer to which the attribute is written
          * @param line   the manifest line to be written
+         * @throws java.io.IOException when Io excepts
          */
         private void writeLine( PrintWriter writer, String line )
             throws IOException
@@ -413,7 +410,7 @@ public class Manifest
         /**
          * Warnings for this section
          */
-        private Vector warnings = new Vector();
+        private Vector<String> warnings = new Vector<String>();
 
         /**
          * The section's name if any. The main section in a
@@ -424,12 +421,12 @@ public class Manifest
         /**
          * The section's attributes.
          */
-        private Hashtable attributes = new Hashtable();
+        private Hashtable<String, Attribute> attributes = new Hashtable<String, Attribute>();
 
         /**
          * Index used to retain the attribute ordering
          */
-        private Vector attributeIndex = new Vector();
+        private Vector<String> attributeIndex = new Vector<String>();
 
         /**
          * The name of the section; optional -default is the main section.
@@ -559,7 +556,7 @@ public class Manifest
             }
 
             // add in the warnings
-            Enumeration warnEnum = section.warnings.elements();
+            Enumeration<String> warnEnum = section.warnings.elements();
             while ( warnEnum.hasMoreElements() )
             {
                 warnings.addElement( warnEnum.nextElement() );
@@ -600,7 +597,7 @@ public class Manifest
          */
         public Attribute getAttribute( String attributeName )
         {
-            return (Attribute) attributes.get( attributeName.toLowerCase() );
+            return attributes.get( attributeName.toLowerCase() );
         }
 
         /**
@@ -698,8 +695,7 @@ public class Manifest
                 String attributeKey = attribute.getKey();
                 if ( attributeKey.equalsIgnoreCase( ATTRIBUTE_CLASSPATH ) )
                 {
-                    Attribute classpathAttribute =
-                        (Attribute) attributes.get( attributeKey );
+                    Attribute classpathAttribute = attributes.get(attributeKey );
 
                     if ( classpathAttribute == null )
                     {
@@ -778,7 +774,7 @@ public class Manifest
          *
          * @return an Enumeration of warning strings.
          */
-        public Enumeration getWarnings()
+        public Enumeration<String> getWarnings()
         {
             return warnings.elements();
         }
@@ -838,12 +834,12 @@ public class Manifest
     /**
      * The named sections of this manifest
      */
-    private Hashtable sections = new Hashtable();
+    private Hashtable<String, Section> sections = new Hashtable<String, Section>();
 
     /**
      * Index of sections - used to retain order of sections in manifest
      */
-    private Vector sectionIndex = new Vector();
+    private Vector<String> sectionIndex = new Vector<String>();
 
     /**
      * Construct a manifest from Ant's default manifest file.
@@ -1043,8 +1039,8 @@ public class Manifest
             while ( e.hasMoreElements() )
             {
                 String sectionName = (String) e.nextElement();
-                Section ourSection = (Section) sections.get( sectionName );
-                Section otherSection = (Section) other.sections.get( sectionName );
+                Section ourSection = sections.get( sectionName );
+                Section otherSection = other.sections.get( sectionName );
                 if ( ourSection == null )
                 {
                     if ( otherSection != null )
@@ -1128,20 +1124,20 @@ public class Manifest
      */
     public Enumeration getWarnings()
     {
-        Vector warnings = new Vector();
+        Vector<String> warnings = new Vector<String>();
 
-        Enumeration warnEnum = mainSection.getWarnings();
+        Enumeration<String> warnEnum = mainSection.getWarnings();
         while ( warnEnum.hasMoreElements() )
         {
             warnings.addElement( warnEnum.nextElement() );
         }
 
         // create a vector and add in the warnings for all the sections
-        Enumeration e = sections.elements();
+        Enumeration<Section> e = sections.elements();
         while ( e.hasMoreElements() )
         {
-            Section section = (Section) e.nextElement();
-            Enumeration e2 = section.getWarnings();
+            Section section = e.nextElement();
+            Enumeration<String> e2 = section.getWarnings();
             while ( e2.hasMoreElements() )
             {
                 warnings.addElement( e2.nextElement() );
@@ -1237,7 +1233,7 @@ public class Manifest
      */
     public Section getSection( String name )
     {
-        return (Section) sections.get( name );
+        return sections.get( name );
     }
 
     /**
