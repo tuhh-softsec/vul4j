@@ -23,6 +23,8 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.archiver.zip.ZipEntry;
 import org.codehaus.plexus.archiver.zip.ZipFile;
 import org.codehaus.plexus.archiver.zip.ZipOutputStream;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.*;
@@ -770,50 +772,64 @@ public class JarArchiver
      * @param file .
      * @param files .
      * @param dirs .
-     * @throws java.io.IOException .
+     * @throws java.io.IOException
      */
     protected static void grabFilesAndDirs( String file, List<String> dirs, List<String> files )
         throws IOException
     {
-        ZipFile zf = null;
-        try
+        File zipFile = new File(file);
+        if (!zipFile.exists())
         {
-            zf = new ZipFile( file, "utf-8" );
-            Enumeration entries = zf.getEntries();
-            HashSet<String> dirSet = new HashSet<String>();
-            while ( entries.hasMoreElements() )
+            Logger logger = new ConsoleLogger( Logger.LEVEL_INFO, "console" );
+            logger.error("JarArchive skipping non-existing file: " + zipFile.getAbsolutePath());
+        }
+        else if (zipFile.isDirectory())
+        {
+            Logger logger = new ConsoleLogger( Logger.LEVEL_INFO, "console" );
+            logger.info("JarArchiver skipping indexJar " + zipFile + " because it is not a jar");
+        }
+        else
+        {
+            ZipFile zf = null;
+            try
             {
-                ZipEntry ze = (ZipEntry) entries.nextElement();
-                String name = ze.getName();
-                // avoid index for manifest-only jars.
-                if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' )
-                        && !name.equals( INDEX_NAME ) && !name.equals( MANIFEST_NAME ) )
+                zf = new ZipFile( file, "utf-8" );
+                Enumeration<ZipEntry> entries = zf.getEntries();
+                HashSet<String> dirSet = new HashSet<String>();
+                while ( entries.hasMoreElements() )
                 {
-                    if ( ze.isDirectory() )
+                    ZipEntry ze = entries.nextElement();
+                    String name = ze.getName();
+                    // avoid index for manifest-only jars.
+                    if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' )
+                            && !name.equals( INDEX_NAME ) && !name.equals( MANIFEST_NAME ) )
                     {
-                        dirSet.add( name );
-                    }
-                    else if (!name.contains("/"))
-                    {
-                        files.add( name );
-                    }
-                    else
-                    {
-                        // a file, not in the root
-                        // since the jar may be one without directory
-                        // entries, add the parent dir of this file as
-                        // well.
-                        dirSet.add( name.substring( 0, name.lastIndexOf( "/" ) + 1 ) );
+                        if ( ze.isDirectory() )
+                        {
+                            dirSet.add( name );
+                        }
+                        else if (!name.contains("/"))
+                        {
+                            files.add( name );
+                        }
+                        else
+                        {
+                            // a file, not in the root
+                            // since the jar may be one without directory
+                            // entries, add the parent dir of this file as
+                            // well.
+                            dirSet.add( name.substring( 0, name.lastIndexOf( "/" ) + 1 ) );
+                        }
                     }
                 }
+                dirs.addAll( dirSet );
             }
-            dirs.addAll( dirSet );
-        }
-        finally
-        {
-            if ( zf != null )
+            finally
             {
-                zf.close();
+                if ( zf != null )
+                {
+                    zf.close();
+                }
             }
         }
     }

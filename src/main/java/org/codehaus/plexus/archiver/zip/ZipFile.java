@@ -61,6 +61,7 @@ import org.codehaus.plexus.archiver.ArchiveFile;
  * @version $Revision$ $Date$
  *          from org.apache.ant.tools.zip.ZipFile v1.13
  */
+@SuppressWarnings("JavaDoc")
 public class ZipFile
     implements ArchiveFile
 {
@@ -69,17 +70,17 @@ public class ZipFile
      * Maps ZipEntrys to Longs, recording the offsets of the local
      * file headers.
      */
-    private Hashtable entries = new Hashtable();
+    private final Hashtable<ZipEntry, Long> entries = new Hashtable<ZipEntry, Long>();
 
     /**
      * Maps String to ZipEntrys, name -> actual entry.
      */
-    private Hashtable nameMap = new Hashtable();
+    private final Hashtable<String, ZipEntry> nameMap = new Hashtable<String, ZipEntry>();
 
     /**
      * Maps ZipEntrys to Longs, recording the offsets of the actual file data.
      */
-    private Hashtable dataOffsets = new Hashtable();
+    private final Hashtable<ZipEntry, Long> dataOffsets = new Hashtable<ZipEntry, Long>();
 
     /**
      * The encoding to use for filenames and the file comment.
@@ -93,7 +94,7 @@ public class ZipFile
     /**
      * The actual data source.
      */
-    private RandomAccessFile archive;
+    private final RandomAccessFile archive;
 
     /**
      * Opens the given file for reading, assuming the platform's
@@ -178,7 +179,7 @@ public class ZipFile
      *
      * @return all entries as {@link ZipEntry} instances
      */
-    public Enumeration getEntries()
+    public Enumeration<ZipEntry> getEntries()
     {
         return entries.keys();
     }
@@ -193,7 +194,7 @@ public class ZipFile
      */
     public ZipEntry getEntry( String name )
     {
-        return (ZipEntry) nameMap.get( name );
+        return nameMap.get( name );
     }
 
     public InputStream getInputStream( ArchiveFile.Entry entry )
@@ -209,14 +210,13 @@ public class ZipFile
      * @return a stream to read the entry from.
      */
     public InputStream getInputStream( ZipEntry ze )
-        throws IOException, ZipException
-    {
-        Long start = (Long) dataOffsets.get( ze );
+        throws IOException {
+        Long start = dataOffsets.get( ze );
         if ( start == null )
         {
             return null;
         }
-        BoundedInputStream bis = new BoundedInputStream( start.longValue(), ze.getCompressedSize() );
+        BoundedInputStream bis = new BoundedInputStream(start, ze.getCompressedSize() );
         switch ( ze.getMethod() )
         {
             case ZipEntry.STORED:
@@ -318,7 +318,7 @@ public class ZipFile
             off += 4;
 
             // LFH offset
-            entries.put( ze, new Long( ( new ZipLong( cfh, off ) ).getValue() ) );
+            entries.put( ze, (new ZipLong(cfh, off)).getValue());
 
             byte[] fileName = new byte[fileNameLen];
             archive.readFully( fileName );
@@ -437,7 +437,7 @@ public class ZipFile
         while ( e.hasMoreElements() )
         {
             ZipEntry ze = (ZipEntry) e.nextElement();
-            long offset = ( (Long) entries.get( ze ) ).longValue();
+            long offset = entries.get(ze);
             archive.seek( offset + LFH_OFFSET_FOR_FILENAME_LENGTH );
             byte[] b = new byte[2];
             archive.readFully( b );
@@ -449,8 +449,8 @@ public class ZipFile
             archive.readFully( localExtraData );
             ze.setExtra( localExtraData );
             dataOffsets.put( ze,
-                             new Long( offset + LFH_OFFSET_FOR_FILENAME_LENGTH
-                                       + 2 + 2 + fileNameLen + extraFieldLen ) );
+                    offset + LFH_OFFSET_FOR_FILENAME_LENGTH
+                            + 2 + 2 + fileNameLen + extraFieldLen);
         }
     }
 
