@@ -21,16 +21,23 @@ package org.apache.xml.security.test.interop;
 import java.io.File;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.Iterator;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.reference.ReferenceData;
+import org.apache.xml.security.signature.reference.ReferenceNodeSetData;
+import org.apache.xml.security.signature.reference.ReferenceOctetStreamData;
 import org.apache.xml.security.test.DSNamespaceContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class InteropTestBase extends org.junit.Assert {
 
@@ -133,6 +140,7 @@ public class InteropTestBase extends org.junit.Assert {
                     "Did not find a public key, so I can't check the signature");
                 }
             }
+            checkReferences(signature);
         } else {
             throw new RuntimeException("Did not find a KeyInfo");
         }
@@ -148,10 +156,38 @@ public class InteropTestBase extends org.junit.Assert {
                     log.debug("Reference " + i + " was not OK");
                 }
             }
+            checkReferences(signature);
             //throw new RuntimeException("Falle:"+sb.toString());
         }
 
         return result;
+    }
+    
+    private void checkReferences(XMLSignature xmlSignature) throws Exception {
+        SignedInfo signedInfo = xmlSignature.getSignedInfo();
+        assertTrue(signedInfo.getLength() > 0);
+        for (int i = 0; i < signedInfo.getLength(); i++) {
+            Reference reference = signedInfo.item(i);
+            assertNotNull(reference);
+            ReferenceData referenceData = reference.getReferenceData();
+            assertNotNull(referenceData);
+            
+            if (referenceData instanceof ReferenceNodeSetData) {
+                Iterator<Node> iter = ((ReferenceNodeSetData)referenceData).iterator();
+                assertTrue(iter.hasNext());
+                boolean found = false;
+                while (iter.hasNext()) {
+                    Node n = (Node)iter.next();
+                    if (n instanceof Element) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue(found);
+            } else if (referenceData instanceof ReferenceOctetStreamData) {
+                assertNotNull(((ReferenceOctetStreamData)referenceData).getOctetStream());
+            }
+        }
     }
     
 }

@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
@@ -30,6 +31,10 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.reference.ReferenceData;
+import org.apache.xml.security.signature.reference.ReferenceNodeSetData;
+import org.apache.xml.security.signature.reference.ReferenceOctetStreamData;
+import org.apache.xml.security.signature.reference.ReferenceSubTreeData;
 import org.apache.xml.security.transforms.InvalidTransformException;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.TransformationException;
@@ -104,9 +109,6 @@ public class Reference extends SignatureElementProxy {
     /** Field MANIFEST_URI */
     public static final String MANIFEST_URI = Constants.SignatureSpecNS + Constants._TAG_MANIFEST;
     
-    /** Field CacheSignedNodes */
-    public static final boolean CacheSignedNodes = false;
-    
     /**
      * The maximum number of transforms per reference, if secure validation is enabled.
      */
@@ -138,6 +140,8 @@ public class Reference extends SignatureElementProxy {
     private Element digestMethodElem;
 
     private Element digestValueElement;
+    
+    private ReferenceData referenceData;
 
     /**
      * Constructor Reference
@@ -472,6 +476,7 @@ public class Reference extends SignatureElementProxy {
     public XMLSignatureInput getContentsAfterTransformation()
         throws XMLSignatureException {
         XMLSignatureInput input = this.getContentsBeforeTransformation();
+        cacheDereferencedElement(input);
 
         return this.getContentsAfterTransformation(input, null);
     }
@@ -487,6 +492,7 @@ public class Reference extends SignatureElementProxy {
         throws XMLSignatureException {
         try {
             XMLSignatureInput input = this.getContentsBeforeTransformation();
+            cacheDereferencedElement(input);
             XMLSignatureInput output = input;
             Transforms transforms = this.getTransforms();
 
@@ -585,6 +591,14 @@ public class Reference extends SignatureElementProxy {
     public XMLSignatureInput getTransformsOutput() {
         return this.transformsOutput;
     }
+    
+    /**
+     * Get the ReferenceData that corresponds to the cached representation of the dereferenced
+     * object before transformation.
+     */
+    public ReferenceData getReferenceData() {
+        return referenceData;
+    }
 
     /**
      * This method returns the {@link XMLSignatureInput} which is referenced by the
@@ -599,21 +613,42 @@ public class Reference extends SignatureElementProxy {
         throws XMLSignatureException {
         try {
             XMLSignatureInput input = this.getContentsBeforeTransformation();
+            cacheDereferencedElement(input);
+            
             XMLSignatureInput output = this.getContentsAfterTransformation(input, os);
-
-            /* at this stage, this._transformsInput and this.transformsOutput
-             * contain a huge amount of nodes. When we do not cache these nodes
-             * but only preserve the octets, the memory footprint is dramatically
-             * reduced.
-             */
-            if (!Reference.CacheSignedNodes) {
-                this.transformsOutput = output;//new XMLSignatureInput(output.getBytes());
-
-                //this.transformsOutput.setSourceURI(output.getSourceURI());
-            }
+            this.transformsOutput = output;
             return output;
         } catch (XMLSecurityException ex) {
             throw new ReferenceNotInitializedException("empty", ex);
+        }
+    }
+    
+    /**
+     * Store the dereferenced Element(s) so that it/they can be retrieved later.
+     */
+    private void cacheDereferencedElement(XMLSignatureInput input) {
+        if (input.isNodeSet()) {
+            try {
+                final Set<Node> s = input.getNodeSet();
+                referenceData = new ReferenceNodeSetData() {
+                    public Iterator<Node> iterator() { return s.iterator(); }
+                };
+            } catch (Exception e) {
+                // log a warning
+                log.warn("cannot cache dereferenced data: " + e);
+            }
+        } else if (input.isElement()) {
+            referenceData = new ReferenceSubTreeData
+                (input.getSubNode(), input.isExcludeComments());
+        } else if (input.isOctetStream() || input.isByteArray()) {
+            try {
+                referenceData = new ReferenceOctetStreamData
+                    (input.getOctetStream(), input.getSourceURI(),
+                        input.getMIMEType());
+            } catch (IOException ioe) {
+                // log a warning
+                log.warn("cannot cache dereferenced data: " + ioe);
+            }
         }
     }
 

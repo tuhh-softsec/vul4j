@@ -292,7 +292,7 @@ public class XMLSignatureInput {
     /**
      * Determines if the object has been set up with an Element
      *
-     * @return true if the object has been set up with a Node set
+     * @return true if the object has been set up with an Element
      */
     public boolean isElement() {
         return (inputOctetStreamProxy == null && subNode != null
