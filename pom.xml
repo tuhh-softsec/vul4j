@@ -1,5 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
 	<groupId>org.esigate</groupId>
 	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
@@ -142,12 +149,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk
-		</connection>
-		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk
-		</developerConnection>
-		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk/
-		</url>
+		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
+		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</developerConnection>
+		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk</url>
 	</scm>
 	<build>
 		<pluginManagement>
@@ -242,31 +246,175 @@
 	</build>
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
-			</dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-taglib</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-taglib-helper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-jsf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-wicket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-cas</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-provider</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-master</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-aggregated1</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-aggregated2</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-aggregator</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-cas</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-casified-aggregated1</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-casified-aggregated2</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-casified-aggregator</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.esigate</groupId>
+                <artifactId>esigate-app-facelet</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.faces</groupId>
+                <artifactId>jsf-api</artifactId>
+                <version>1.1_02</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>el-api</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>el-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>4.1.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
 				<version>4.1.3</version>
 			</dependency>
+
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.8.2</version>
+                <scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>3.0</version>
+                <scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>junit-addons</groupId>
+				<artifactId>junit-addons</artifactId>
+				<version>1.4</version>
+                <scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>httpunit</groupId>
+				<artifactId>httpunit</artifactId>
+				<version>1.6.2</version>
+                <scope>test</scope>
+			</dependency>
+            <dependency>
+                <groupId>rhino</groupId>
+                <artifactId>js</artifactId>
+                <version>1.7R2</version>
+                <scope>test</scope>
+            </dependency>
+
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
@@ -286,47 +434,106 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
 				<version>1.6.2</version>
+                <scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-nop</artifactId>
 				<version>1.6.2</version>
+                <scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.16</version>
-			</dependency>
-			<dependency>
-				<groupId>junit-addons</groupId>
-				<artifactId>junit-addons</artifactId>
-				<version>1.4</version>
+                <scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>1.6.2</version>
-			</dependency>
-			<dependency>
-				<groupId>httpunit</groupId>
-				<artifactId>httpunit</artifactId>
-				<version>1.6.2</version>
-			</dependency>
-			<dependency>
-				<groupId>rhino</groupId>
-				<artifactId>js</artifactId>
-				<version>1.7R2</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet.jsp</groupId>
-				<artifactId>jsp-api</artifactId>
-				<version>2.0</version>
+                <scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.0.1</version>
 			</dependency>
+            <dependency>
+                <groupId>org.jasig.cas</groupId>
+                <artifactId>cas-client-core</artifactId>
+                <version>3.1.8</version>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.wicket</groupId>
+                <artifactId>wicket</artifactId>
+                <version>1.4.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>opensymphony</groupId>
+                <artifactId>oscache</artifactId>
+                <version>2.4.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.jms</groupId>
+                        <artifactId>jms</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.10.0</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.facelets</groupId>
+                <artifactId>jsf-facelets</artifactId>
+                <version>1.1.14</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.el</groupId>
+                <artifactId>el-ri</artifactId>
+                <version>1.0</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.myfaces.core</groupId>
+                <artifactId>myfaces-api</artifactId>
+                <version>1.2.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.myfaces.core</groupId>
+                <artifactId>myfaces-impl</artifactId>
+                <version>1.2.7</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jasig.cas</groupId>
+                <artifactId>cas-server-webapp</artifactId>
+                <version>3.3.1</version>
+                <type>war</type>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<profiles>
@@ -378,24 +585,6 @@
 		<module>esigate-distribution</module>
 		<module>esigate-maven</module>
 	</modules>
-	<repositories>
-		<repository>
-			<id>esigate-repository</id>
-			<name>ESIGate repository</name>
-			<url>http://www.esigate.org/maven/repository</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>esigate-snapshots</id>
-			<name>ESIGate snapshots repository</name>
-			<url>http://www.esigate.org/maven/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-	</repositories>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -432,17 +621,6 @@
 		</plugins>
 	</reporting>
 	<distributionManagement>
-		<repository>
-			<id>esigate-sourceforge</id>
-			<name>ESIGate Repository</name>
-			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/repository</url>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>esigate-sourceforge-snapshots</id>
-			<name>ESIGate Snapshot Repository</name>
-			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs/maven/snapshots</url>
-		</snapshotRepository>
 		<site>
 			<id>esigate-site</id>
 			<name>ESIGate</name>
@@ -455,4 +633,3 @@
 		<currentVersion>${project.version}</currentVersion>
 	</properties>
 </project>
-

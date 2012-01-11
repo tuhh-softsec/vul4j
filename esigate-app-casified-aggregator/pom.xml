@@ -9,66 +9,55 @@
 		<version>3.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit-addons</groupId>
-			<artifactId>junit-addons</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>httpunit</groupId>
-			<artifactId>httpunit</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-cas</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-cas</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-casified-aggregated1</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-casified-aggregated2</artifactId>
-			<version>${project.version}</version>
-			<type>war</type>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.esigate</groupId>
+            <artifactId>esigate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.esigate</groupId>
+            <artifactId>esigate-cas</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.esigate</groupId>
+            <artifactId>esigate-app-cas</artifactId>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.esigate</groupId>
+            <artifactId>esigate-app-casified-aggregated1</artifactId>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.esigate</groupId>
+            <artifactId>esigate-app-casified-aggregated2</artifactId>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <scope>runtime</scope>
         </dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit-addons</groupId>
+			<artifactId>junit-addons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>httpunit</groupId>
+			<artifactId>httpunit</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>esigate-app-casified-aggregator</finalName>
@@ -144,8 +133,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-		</dependencies>
-	</dependencyManagement>
 </project>

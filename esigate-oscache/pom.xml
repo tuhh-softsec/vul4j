@@ -7,28 +7,17 @@
 		<groupId>org.esigate</groupId>
 		<version>3.1-SNAPSHOT</version>
 	</parent>
-	<build>
-	</build>
 	<dependencies>
 	    <dependency>
 			<groupId>opensymphony</groupId>
 			<artifactId>oscache</artifactId>
-			<version>2.4.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jms</artifactId>
-					<groupId>javax.jms</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>servlet-api</artifactId>
-					<groupId>javax.servlet</groupId>
-				</exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.esigate</groupId>
+			<artifactId>esigate-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 	    <dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -37,18 +26,10 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-core</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<reporting>

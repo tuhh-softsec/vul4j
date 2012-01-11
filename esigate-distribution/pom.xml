@@ -12,91 +12,75 @@
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-core</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-taglib</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-taglib-helper</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-jsf</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-wicket</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-cas</artifactId>
-			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-provider</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-master</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-aggregated1</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-aggregated2</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-aggregator</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-cas</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-casified-aggregated1</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-casified-aggregated2</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-casified-aggregator</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-facelet</artifactId>
-			<version>3.1-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 	</dependencies>
