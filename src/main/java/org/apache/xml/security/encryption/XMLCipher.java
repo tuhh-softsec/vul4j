@@ -29,6 +29,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.spec.MGF1ParameterSpec;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -40,11 +41,14 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
+import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
@@ -97,6 +101,10 @@ public class XMLCipher {
     public static final String AES_128_GCM =
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM;
     
+    /** AES 192 GCM Cipher */
+    public static final String AES_192_GCM =
+        EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192_GCM;
+    
     /** AES 256 GCM Cipher */
     public static final String AES_256_GCM = 
         EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256_GCM;
@@ -108,6 +116,10 @@ public class XMLCipher {
     /** RSA OAEP Cipher */
     public static final String RSA_OAEP =                    
         EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP;
+    
+    /** RSA OAEP Cipher */
+    public static final String RSA_OAEP_11 = 
+        EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP_11;
     
     /** DIFFIE_HELLMAN Cipher */
     public static final String DIFFIE_HELLMAN =              
@@ -183,9 +195,9 @@ public class XMLCipher {
 
     private static final String ENC_ALGORITHMS = TRIPLEDES + "\n" +
     AES_128 + "\n" + AES_256 + "\n" + AES_192 + "\n" + RSA_v1dot5 + "\n" +
-    RSA_OAEP + "\n" + TRIPLEDES_KeyWrap + "\n" + AES_128_KeyWrap + "\n" +
-    AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
-    AES_128_GCM + "\n" + AES_256_GCM + "\n";
+    RSA_OAEP + "\n" + RSA_OAEP_11 + "\n" + TRIPLEDES_KeyWrap + "\n" + 
+    AES_128_KeyWrap + "\n" + AES_256_KeyWrap + "\n" + AES_192_KeyWrap + "\n" +
+    AES_128_GCM + "\n" + AES_192_GCM + "\n" + AES_256_GCM + "\n";
 
     /** Cipher created during initialisation that is used for encryption */
     private Cipher contextCipher;
@@ -329,9 +341,11 @@ public class XMLCipher {
             algorithm.equals(AES_256) ||
             algorithm.equals(AES_192) ||
             algorithm.equals(AES_128_GCM) ||
+            algorithm.equals(AES_192_GCM) ||
             algorithm.equals(AES_256_GCM) ||
             algorithm.equals(RSA_v1dot5) ||
             algorithm.equals(RSA_OAEP) ||
+            algorithm.equals(RSA_OAEP_11) ||
             algorithm.equals(TRIPLEDES_KeyWrap) ||
             algorithm.equals(AES_128_KeyWrap) ||
             algorithm.equals(AES_256_KeyWrap) ||
@@ -1046,7 +1060,8 @@ public class XMLCipher {
 
         try {
             // The Spec mandates a 96-bit IV for GCM algorithms
-            if (AES_128_GCM.equals(algorithm) || AES_256_GCM.equals(algorithm)) {
+            if (AES_128_GCM.equals(algorithm) || AES_192_GCM.equals(algorithm) 
+                || AES_256_GCM.equals(algorithm)) {
                 if (random == null) {
                     random = SecureRandom.getInstance("SHA1PRNG");
                 }
@@ -1233,6 +1248,7 @@ public class XMLCipher {
         byte[] encryptedBytes = null;
         Cipher c;
 
+        OAEPParameterSpec oaepParameters = null;
         if (contextCipher == null) {
             // Now create the working cipher
 
@@ -1254,6 +1270,11 @@ public class XMLCipher {
             } catch (NoSuchPaddingException nspae) {
                 throw new XMLEncryptionException("empty", nspae);
             }
+            
+            if (XMLCipher.RSA_OAEP.equals(algorithm)) {
+                oaepParameters = 
+                    new OAEPParameterSpec("SHA-1", "MGF1", MGF1ParameterSpec.SHA1, PSource.PSpecified.DEFAULT);
+            }
         } else {
             c = contextCipher;
         }
@@ -1262,12 +1283,18 @@ public class XMLCipher {
         try {
             // Should internally generate an IV
             // todo - allow user to set an IV
-            c.init(Cipher.WRAP_MODE, this.key);
+            if (oaepParameters == null) {
+                c.init(Cipher.WRAP_MODE, this.key);
+            } else {
+                c.init(Cipher.WRAP_MODE, this.key, oaepParameters);
+            }
             encryptedBytes = c.wrap(key);
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
         } catch (IllegalBlockSizeException ibse) {
             throw new XMLEncryptionException("empty", ibse);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new XMLEncryptionException("empty", e);
         }
 
         String base64EncodedEncryptedOctets = Base64.encode(encryptedBytes);
@@ -1343,7 +1370,7 @@ public class XMLCipher {
         // Obtain the encrypted octets 
         XMLCipherInput cipherInput = new XMLCipherInput(encryptedKey);
         cipherInput.setSecureValidation(secureValidation);
-        byte [] encryptedBytes = cipherInput.getBytes();
+        byte[] encryptedBytes = cipherInput.getBytes();
 
         String jceKeyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
         if (log.isDebugEnabled()) {
@@ -1351,6 +1378,7 @@ public class XMLCipher {
         }
 
         Cipher c;
+        OAEPParameterSpec oaepParameters = null;
         if (contextCipher == null) {
             // Now create the working cipher
 
@@ -1367,31 +1395,94 @@ public class XMLCipher {
                     c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
                 }
             } catch (NoSuchAlgorithmException nsae) {
-                throw new XMLEncryptionException("empty", nsae);
+                // Check to see if an RSA OAEP MGF-1 with SHA-1 algorithm was requested
+                // Some JDKs don't support RSA/ECB/OAEPPadding
+                String digestMethod = encryptedKey.getEncryptionMethod().getDigestAlgorithm();
+                if (XMLCipher.RSA_OAEP.equals(encryptedKey.getEncryptionMethod().getAlgorithm())
+                    && (digestMethod == null 
+                        || MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1.equals(digestMethod))) {
+                    try {
+                        if (requestedJCEProvider == null) {
+                            c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
+                        } else {
+                            c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding", requestedJCEProvider);
+                        }
+                    } catch (Exception ex) {
+                        throw new XMLEncryptionException("empty", ex);
+                    }
+                } else {
+                    throw new XMLEncryptionException("empty", nsae);
+                }
             } catch (NoSuchProviderException nspre) {
                 throw new XMLEncryptionException("empty", nspre);
             } catch (NoSuchPaddingException nspae) {
                 throw new XMLEncryptionException("empty", nspae);
             }
+            
+            oaepParameters = constructOAEPParameters(encryptedKey.getEncryptionMethod());
         } else {
             c = contextCipher;
         }
 
         Key ret;
-
-        try {		
-            c.init(Cipher.UNWRAP_MODE, key);
+        
+        try {
+            if (oaepParameters == null) {
+                c.init(Cipher.UNWRAP_MODE, key);
+            } else {
+                c.init(Cipher.UNWRAP_MODE, key, oaepParameters);
+            }
             ret = c.unwrap(encryptedBytes, jceKeyAlgorithm, Cipher.SECRET_KEY);
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
         } catch (NoSuchAlgorithmException nsae) {
             throw new XMLEncryptionException("empty", nsae);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new XMLEncryptionException("empty", e);
         }
         if (log.isDebugEnabled()) {
             log.debug("Decryption of key type " + algorithm + " OK");
         }
 
         return ret;
+    }
+    
+    /**
+     * Construt an OAEPParameterSpec object from an EncryptionMethod
+     */
+    private OAEPParameterSpec constructOAEPParameters(
+        EncryptionMethod encryptionMethod
+    ) {
+        if (XMLCipher.RSA_OAEP.equals(encryptionMethod.getAlgorithm())
+            || XMLCipher.RSA_OAEP_11.equals(encryptionMethod.getAlgorithm())) {
+            
+            String digestAlgorithm = encryptionMethod.getDigestAlgorithm();
+            String jceDigestAlgorithm = "SHA-1";
+            if (digestAlgorithm != null) {
+                jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestAlgorithm);
+            }
+            
+            PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
+            if (encryptionMethod.getOAEPparams() != null) {
+                pSource = new PSource.PSpecified(encryptionMethod.getOAEPparams());
+            }
+            
+            MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
+            if (XMLCipher.RSA_OAEP_11.equals(encryptionMethod.getAlgorithm())) {
+                String mgfAlgorithm = encryptionMethod.getMGFAlgorithm();
+                if (EncryptionConstants.MGF1_SHA256.equals(mgfAlgorithm)) {
+                    mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
+                } else if (EncryptionConstants.MGF1_SHA384.equals(mgfAlgorithm)) {
+                    mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
+                } else if (EncryptionConstants.MGF1_SHA512.equals(mgfAlgorithm)) {
+                    mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
+                }
+            }
+            
+            return new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
+        }
+        
+        return null;
     }
 
     /**
@@ -1567,7 +1658,7 @@ public class XMLCipher {
 
         int ivLen = c.getBlockSize();
         String alg = encryptedData.getEncryptionMethod().getAlgorithm();
-        if (AES_128_GCM.equals(alg) || AES_256_GCM.equals(alg)) {
+        if (AES_128_GCM.equals(alg) || AES_192_GCM.equals(alg) || AES_256_GCM.equals(alg)) {
             ivLen = 12;
         }
         byte[] ivBytes = new byte[ivLen];
@@ -2166,11 +2257,29 @@ public class XMLCipher {
                     EncryptionConstants._TAG_OAEPPARAMS).item(0);
             if (null != oaepParamsElement) {
                 try {
-                    result.setOAEPparams(
-                    oaepParamsElement.getNodeValue().getBytes("UTF-8"));
+                    String oaepParams = oaepParamsElement.getFirstChild().getNodeValue();
+                    result.setOAEPparams(Base64.decode(oaepParams.getBytes("UTF-8")));
                 } catch(UnsupportedEncodingException e) {
                     throw new RuntimeException("UTF-8 not supported", e);
+                } catch (Base64DecodingException e) {
+                    throw new RuntimeException("BASE-64 decoding error", e);
                 }
+            }
+            
+            Element digestElement = 
+                (Element) element.getElementsByTagNameNS(
+                    Constants.SignatureSpecNS, Constants._TAG_DIGESTMETHOD).item(0);
+            if (digestElement != null) {
+                String digestAlgorithm = digestElement.getAttributeNS(null, "Algorithm");
+                result.setDigestAlgorithm(digestAlgorithm);
+            }
+            
+            Element mgfElement = 
+                (Element) element.getElementsByTagNameNS(
+                    EncryptionConstants.EncryptionSpec11NS, EncryptionConstants._TAG_MGF).item(0);
+            if (mgfElement != null && !XMLCipher.RSA_OAEP.equals(algorithm)) {
+                String mgfAlgorithm = mgfElement.getAttributeNS(null, "Algorithm");
+                result.setMGFAlgorithm(mgfAlgorithm);
             }
 
             // TODO: Make this mess work
@@ -2824,6 +2933,8 @@ public class XMLCipher {
             private int keySize = Integer.MIN_VALUE;
             private byte[] oaepParams = null;
             private List<Element> encryptionMethodInformation = null;
+            private String digestAlgorithm = null;
+            private String mgfAlgorithm = null;
             
             /**
              * Constructor.
@@ -2867,6 +2978,26 @@ public class XMLCipher {
             }
             
             /** @inheritDoc */
+            public void setDigestAlgorithm(String digestAlgorithm) {
+                this.digestAlgorithm = digestAlgorithm;
+            }
+            
+            /** @inheritDoc */
+            public String getDigestAlgorithm() {
+                return digestAlgorithm;
+            }
+            
+            /** @inheritDoc */
+            public void setMGFAlgorithm(String mgfAlgorithm) {
+                this.mgfAlgorithm = mgfAlgorithm;
+            }
+            
+            /** @inheritDoc */
+            public String getMGFAlgorithm() {
+                return mgfAlgorithm;
+            }
+            
+            /** @inheritDoc */
             public Iterator<Element> getEncryptionMethodInformation() {
                 return encryptionMethodInformation.iterator();
             }
@@ -2904,6 +3035,12 @@ public class XMLCipher {
                     } catch(UnsupportedEncodingException e) {
                         throw new RuntimeException("UTF-8 not supported", e);
                     }
+                }
+                if (digestAlgorithm != null) {
+                    Element digestElement = 
+                        XMLUtils.createElementInSignatureSpace(contextDocument, Constants._TAG_DIGESTMETHOD);
+                    digestElement.setAttributeNS(null, "Algorithm", digestAlgorithm);
+                    result.appendChild(digestElement);
                 }
                 Iterator<Element> itr = encryptionMethodInformation.iterator();
                 while (itr.hasNext()) {

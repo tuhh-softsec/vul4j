@@ -167,6 +167,10 @@ public class JCEMapper {
             new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 128)
         );
         algorithmsMap.put(
+            XMLCipher.AES_192_GCM, 
+            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 192)
+        );
+        algorithmsMap.put(
             XMLCipher.AES_256_GCM, 
             new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 256)
         );
@@ -176,7 +180,11 @@ public class JCEMapper {
         );
         algorithmsMap.put(
             XMLCipher.RSA_OAEP, 
-            new Algorithm("RSA", "RSA/ECB/OAEPWithSHA1AndMGF1Padding", "KeyTransport")
+            new Algorithm("RSA", "RSA/ECB/OAEPPadding", "KeyTransport")
+        );
+        algorithmsMap.put(
+            XMLCipher.RSA_OAEP_11, 
+            new Algorithm("RSA", "RSA/ECB/OAEPPadding", "KeyTransport")
         );
         algorithmsMap.put(
             XMLCipher.DIFFIE_HELLMAN, 

@@ -292,8 +292,16 @@
                    KeyLength="128"
                    RequiredKey="AES"
                    JCEName="AES/GCM/NoPadding"/>
+                   
+         <Algorithm URI="http://www.w3.org/2009/xmlenc11#aes192-gcm"
+                   Description="Block encryption using AES with a key length of 192 bit in GCM"
+                   AlgorithmClass="BlockEncryption"
+                   RequirementLevel="OPTIONAL"
+                   KeyLength="192"
+                   RequiredKey="AES"
+                   JCEName="AES/GCM/NoPadding"/>
 
-        <Algorithm URI="http://www.w3.org/2009/xmlenc11#aes256-gcm"
+         <Algorithm URI="http://www.w3.org/2009/xmlenc11#aes256-gcm"
                    Description="Block encryption using AES with a key length of 256 bit in GCM"
                    AlgorithmClass="BlockEncryption"
                    RequirementLevel="OPTIONAL"
@@ -313,7 +321,14 @@
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED"
                     RequiredKey="RSA"
-                    JCEName="RSA/ECB/OAEPWithSHA1AndMGF1Padding"/>
+                    JCEName="RSA/ECB/OAEPPadding"/>
+                    
+         <Algorithm URI="http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                    Description="Key Transport RSA-OAEP"
+                    AlgorithmClass="KeyTransport"
+                    RequirementLevel="OPTIONAL"
+                    RequiredKey="RSA"
+                    JCEName="RSA/ECB/OAEPPadding"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"
                     Description="Key Agreement Diffie-Hellman"

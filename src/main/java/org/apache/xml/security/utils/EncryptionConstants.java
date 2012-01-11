@@ -84,6 +84,9 @@ public class EncryptionConstants {
     /** Tag of Element OAEPparams **/
     public static final String _TAG_OAEPPARAMS             = "OAEPparams";
     
+    /** Tag of Element MGF **/
+    public static final String _TAG_MGF                    = "MGF";
+    
     /** Tag of Element ReferenceList **/
     public static final String _TAG_REFERENCELIST          = "ReferenceList";
     
@@ -111,6 +114,12 @@ public class EncryptionConstants {
      * XML Encryption Syntax and Processing</A> */
     public static final String EncryptionSpecNS = 
         "http://www.w3.org/2001/04/xmlenc#";
+    
+    /**
+     * The namespace of the XML Encryption 1.1 specification
+     */
+    public static final String EncryptionSpec11NS = 
+        "http://www.w3.org/2009/xmlenc11#";
 
     /** URI for content*/
     public static final String TYPE_CONTENT                = EncryptionSpecNS + "Content";
@@ -142,6 +151,10 @@ public class EncryptionConstants {
     public static final String ALGO_ID_BLOCKCIPHER_AES128_GCM = 
         "http://www.w3.org/2009/xmlenc11#aes128-gcm";
     
+    /** Block Encryption - OPTIONAL AES-192-GCM */
+    public static final String ALGO_ID_BLOCKCIPHER_AES192_GCM = 
+        "http://www.w3.org/2009/xmlenc11#aes192-gcm";
+    
     /** Block Encryption - OPTIONAL AES-256-GCM */
     public static final String ALGO_ID_BLOCKCIPHER_AES256_GCM = 
         "http://www.w3.org/2009/xmlenc11#aes256-gcm";
@@ -153,6 +166,10 @@ public class EncryptionConstants {
     /** Key Transport - REQUIRED RSA-OAEP */
     public static final String ALGO_ID_KEYTRANSPORT_RSAOAEP = 
         EncryptionConstants.EncryptionSpecNS + "rsa-oaep-mgf1p";
+    
+    /** Key Transport - OPTIONAL RSA-OAEP_11 */
+    public static final String ALGO_ID_KEYTRANSPORT_RSAOAEP_11 = 
+        EncryptionConstants.EncryptionSpec11NS + "rsa-oaep";
 
     /** Key Agreement - OPTIONAL Diffie-Hellman */
     public static final String ALGO_ID_KEYAGREEMENT_DH = 
@@ -189,6 +206,27 @@ public class EncryptionConstants {
     /** Encoding - REQUIRED base64 */
     public static final String ALGO_ID_ENCODING_BASE64 = 
         "http://www.w3.org/2000/09/xmldsig#base64";
+    
+    /** MGF1 with SHA-1 */
+    public static final String MGF1_SHA1 =
+        EncryptionConstants.EncryptionSpec11NS + "mgf1sha1";
+    
+    /** MGF1 with SHA-224 */
+    public static final String MGF1_SHA224 =
+        EncryptionConstants.EncryptionSpec11NS + "mgf1sha224";
+    
+    /** MGF1 with SHA-256 */
+    public static final String MGF1_SHA256 =
+        EncryptionConstants.EncryptionSpec11NS + "mgf1sha256";
+    
+    /** MGF1 with SHA-384 */
+    public static final String MGF1_SHA384 =
+        EncryptionConstants.EncryptionSpec11NS + "mgf1sha384";
+    
+    /** MGF1 with SHA-512 */
+    public static final String MGF1_SHA512 =
+        EncryptionConstants.EncryptionSpec11NS + "mgf1sha512";
+
 
     private EncryptionConstants() {
         // we don't allow instantiation

@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.0-SNAPSHOT
+    Fixed SANTUARIO-293: Support XML Encryption 1.1 Key Wrapping test-cases.
     Fixed SANTUARIO-292: Add the ability to access the dereferenced Elements after signature validation in the non-JSR-105 API.
     Fixed SANTUARIO-290: Add a secure validation switch for signature processing
     Fixed SANTUARIO-255: Port JSR 105 code to JDK 1.5.
