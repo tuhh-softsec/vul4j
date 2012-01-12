@@ -17,6 +17,15 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Date;
+import java.util.Enumeration;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -24,11 +33,6 @@ import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-
-import java.io.*;
-import java.net.URL;
-import java.util.Date;
-import java.util.Enumeration;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -143,7 +147,7 @@ public abstract class AbstractZipUnArchiver
                 }
                 InputStream in = zf.getInputStream( ze );
                 extractFileIfIncluded( getSourceFile(), getDestDirectory(), in, ze.getName(),
-                                       new Date( ze.getTime() ), ze.isDirectory(), null );
+                                       new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode() );
                 in.close();
             }
 
@@ -229,9 +233,9 @@ public abstract class AbstractZipUnArchiver
 
             f.setLastModified( entryDate.getTime() );
 
-            if ( !isIgnorePermissions() && mode != null )
+            if ( !isIgnorePermissions() && mode != null && !isDirectory)
             {
-                ArchiveEntryUtils.chmod( f, mode.intValue(), getLogger(), isUseJvmChmod() );
+                ArchiveEntryUtils.chmod( f, mode, getLogger(), isUseJvmChmod() );
             }
         }
         catch ( final FileNotFoundException ex )
@@ -262,8 +266,10 @@ public abstract class AbstractZipUnArchiver
 
                 if ( ze.getName().startsWith( path ) )
                 {
-                    extractFileIfIncluded( getSourceFile(), outputDirectory, zipFile.getInputStream( ze ),
-                                           ze.getName(), new Date( ze.getTime() ), ze.isDirectory(), null );
+                    final InputStream inputStream = zipFile.getInputStream( ze );
+                    extractFileIfIncluded( getSourceFile(), outputDirectory, inputStream,
+                                           ze.getName(), new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode() );
+                    inputStream.close();
                 }
             }
         }
