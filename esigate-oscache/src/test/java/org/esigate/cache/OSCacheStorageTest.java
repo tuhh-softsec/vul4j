@@ -8,9 +8,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
@@ -24,8 +21,8 @@ import org.esigate.cache.CacheStorage;
 import org.esigate.cache.CachedResponse;
 import org.esigate.oscache.OSCacheStorage;
 import org.esigate.output.StringOutput;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 
 
 public class OSCacheStorageTest extends TestCase{
@@ -125,8 +122,8 @@ public class OSCacheStorageTest extends TestCase{
 		
 		CachedResponse cachedResponse = new CachedResponse(byteArray, "utf-8", createHeaders(headers), statusCode, statusMessage);
 		
-		HttpServletRequest originalRequest = EasyMock.createMock(HttpServletRequest.class);
-		HttpServletResponse originalResponse = EasyMock.createMock(HttpServletResponse.class);
+		HttpRequest originalRequest = EasyMock.createMock(HttpRequest.class);
+		HttpResponse originalResponse = EasyMock.createMock(HttpResponse.class);
 		
 		final Map<String, String> requestHeaders = new HashMap<String, String>();
 		requestHeaders.put("Host", "google.com");
@@ -139,7 +136,7 @@ public class OSCacheStorageTest extends TestCase{
 		requestHeaders.put("Connection", "keep-alive");
 		requestHeaders.put("Cache-Control", "max-age=0");
 		
-		EasyMock.expect(originalRequest.getHeaderNames()).andReturn(Collections.enumeration(requestHeaders.keySet())).anyTimes();
+		EasyMock.expect(originalRequest.getHeaderNames()).andReturn(requestHeaders.keySet()).anyTimes();
 		EasyMock.expect(originalRequest.getHeader((String)EasyMock.anyObject())).andAnswer(new IAnswer<String>() {
 
 			public String answer() throws Throwable {
@@ -151,8 +148,7 @@ public class OSCacheStorageTest extends TestCase{
 		EasyMock.replay(originalRequest, originalResponse);
 		
 		MockDriver mockDriver = new MockDriver("test");
-		ResourceContext resourceContext = new ResourceContext(mockDriver, "/test", null, HttpRequestImpl.wrap(originalRequest),
-				HttpResponseImpl.wrap(originalResponse));
+		ResourceContext resourceContext = new ResourceContext(mockDriver, "/test", null, originalRequest, originalResponse);
 		
 		cacheEntry.put(resourceContext, cachedResponse);
 		cache.put(key, cacheEntry);

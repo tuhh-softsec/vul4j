@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.api.Cookie;
 import org.esigate.api.HttpResponse;
 
-class HttpResponseImpl implements HttpResponse{
+public class HttpResponseImpl implements HttpResponse{
 	private final HttpServletResponse parent;
 
 	private HttpResponseImpl(HttpServletResponse parent) {
