@@ -95,6 +95,9 @@ public abstract class AbstractArchiver
 
     private String duplicateBehavior = Archiver.DUPLICATES_SKIP;
 
+    // On lunix-like systems, we replace windows backslashes with forward slashes
+    private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
+
     /**
      * @since 1.1
      */
@@ -265,6 +268,8 @@ public abstract class AbstractArchiver
             throw new ArchiverException( directory.getAbsolutePath() + " isn't a directory." );
         }
 
+        // The PlexusIoFileResourceCollection contains platform-specific File.separatorChar which
+        // is an interesting cause of grief, see PLXCOMP-192
         final PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection( getLogger() );
 
         collection.setIncludes( fileSet.getIncludes() );
@@ -358,7 +363,10 @@ public abstract class AbstractArchiver
 
         InputStream in = null;
 
-        destFileName = destFileName.replace( '\\', '/' );
+        if (replacePathSlashesToJavaPaths)
+        {
+            destFileName = destFileName.replace( '\\', '/' );
+        }
 
         if ( permissions < 0 )
         {

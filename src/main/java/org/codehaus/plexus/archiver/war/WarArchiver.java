@@ -84,7 +84,7 @@ public class WarArchiver
             throw new ArchiverException( "Deployment descriptor: " + deploymentDescriptor + " does not exist." );
         }
 
-        addFile( descr, "WEB-INF/web.xml" );
+        addFile( descr, "WEB-INF" + File.separatorChar + "web.xml" );
     }
 
     /**

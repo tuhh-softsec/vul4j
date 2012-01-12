@@ -49,7 +49,8 @@ public class ArchiveEntry
     private PlexusIoResourceAttributes attributes;
 
     /**
-     * @param name     the filename as it will appear in the archive
+     * @param name     the filename as it will appear in the archive. This is platform-specific
+     *                 normalized with File.separatorChar
      * @param original original filename
      * @param type     FILE or DIRECTORY
      * @param mode     octal unix style permissions

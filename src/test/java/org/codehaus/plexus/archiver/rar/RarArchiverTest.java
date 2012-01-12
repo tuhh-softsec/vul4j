@@ -31,7 +31,7 @@ public class RarArchiverTest
     extends BasePlexusArchiverTest
 {
 
-    public File getTargetRarFolfer()
+    public File getTargetRarFolder()
     {
         return new File( getBasedir(), "/target/rartest/" );
     }
@@ -41,9 +41,9 @@ public class RarArchiverTest
     {
         super.setUp();
         // clean output directory and re create it
-        if ( getTargetRarFolfer().exists() )
+        if ( getTargetRarFolder().exists() )
         {
-            FileUtils.deleteDirectory( getTargetRarFolfer() );
+            FileUtils.deleteDirectory( getTargetRarFolder() );
         }
     }
 
@@ -51,21 +51,21 @@ public class RarArchiverTest
         throws Exception
     {
         Archiver archiver = (Archiver) lookup( Archiver.ROLE, "rar" );
-        archiver.setDestFile( new File( getTargetRarFolfer(), "test.rar" ) );
+        archiver.setDestFile( new File( getTargetRarFolder(), "test.rar" ) );
         //archiver.addDirectory( , "manifests" );
         archiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), "manifests/manifest1.mf" );
 
         archiver.createArchive();
-        assertTrue( new File( getTargetRarFolfer(), "test.rar" ).exists() );
+        assertTrue( new File( getTargetRarFolder(), "test.rar" ).exists() );
 
         UnArchiver unArchiver = (UnArchiver) lookup( UnArchiver.ROLE, "rar" );
-        unArchiver.setSourceFile( new File( getTargetRarFolfer(), "test.rar" ) );
-        unArchiver.setDestDirectory( getTargetRarFolfer() );
+        unArchiver.setSourceFile( new File( getTargetRarFolder(), "test.rar" ) );
+        unArchiver.setDestDirectory( getTargetRarFolder() );
         unArchiver.extract();
-        File manifestsDir = new File( getTargetRarFolfer(), "/manifests" );
+        File manifestsDir = new File( getTargetRarFolder(), "/manifests" );
         assertTrue( manifestsDir.exists() );
 
-        File manifestsFile = new File( getTargetRarFolfer(), "/manifests/manifest1.mf" );
+        File manifestsFile = new File( getTargetRarFolder(), "/manifests/manifest1.mf" );
         assertTrue( manifestsFile.exists() );
     }
 
@@ -77,11 +77,11 @@ public class RarArchiverTest
         File rarFile = new File( getBasedir() + "/src/test/jars/test.rar" );
         assertTrue( rarFile.exists() );
         unArchiver.setSourceFile( rarFile );
-        unArchiver.setDestDirectory( getTargetRarFolfer() );
-        getTargetRarFolfer().mkdir();
+        unArchiver.setDestDirectory( getTargetRarFolder() );
+        getTargetRarFolder().mkdir();
         unArchiver.extract();
 
-        File dirExtract = new File( getTargetRarFolfer(), "META-INF" );
+        File dirExtract = new File( getTargetRarFolder(), "META-INF" );
         assertTrue( dirExtract.exists() );
         assertTrue( dirExtract.isDirectory() );
 
