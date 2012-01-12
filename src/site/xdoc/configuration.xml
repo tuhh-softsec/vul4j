@@ -69,7 +69,7 @@
                     <code>blackListedHeaders=Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie</code>
                     </td>
                     <td>No</td>
-                    <td>Content-Length,Content-Encoding,Transfer-Encoding</td>
+                    <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie</td>
                 </tr>
 				<tr>
 					<td>timeout</td>
