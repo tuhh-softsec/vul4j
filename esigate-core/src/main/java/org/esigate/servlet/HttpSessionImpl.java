@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import org.esigate.api.HttpSession;
 
-public class HttpSessionImpl implements HttpSession {
+class HttpSessionImpl implements HttpSession {
 
 	private final javax.servlet.http.HttpSession parent;
 

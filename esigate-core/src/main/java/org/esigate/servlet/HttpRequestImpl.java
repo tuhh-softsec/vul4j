@@ -14,7 +14,7 @@ import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 import org.esigate.cookie.BasicClientCookie;
 
-public class HttpRequestImpl implements HttpRequest {
+class HttpRequestImpl implements HttpRequest {
 
 	private final HttpServletRequest parent;
 	private Long ttl;

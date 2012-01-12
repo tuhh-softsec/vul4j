@@ -10,15 +10,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Properties;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 
 public class DriverTest extends TestCase {
 
@@ -83,15 +79,8 @@ public class DriverTest extends TestCase {
 
 	public void testProxyEmpty() throws Exception {
 		String relUrl = "/test.html";
-		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
-		ServletOutputStream out = new ServletOutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				outByte.write(b);
-			}
-		};
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
 				.anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
@@ -102,18 +91,16 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
 				.anyTimes();
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(
-						Collections.enumeration(Collections.singleton("Host")))
+				.andReturn(Collections.singleton("Host"))
 				.anyTimes();
 
-		HttpServletResponse response = EasyMock
-				.createMock(HttpServletResponse.class);
+		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(404);
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
 		EasyMock.replay(request, response);
 		try {
-			DriverFactory.getInstance("mock").proxy(relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+			DriverFactory.getInstance("mock").proxy(relUrl, request, response);
 		} catch (HttpErrorPage e) {
 			assertEquals(404, e.getStatusCode());
 		}
@@ -132,15 +119,8 @@ public class DriverTest extends TestCase {
 		provider.addResource("/wiki/", "<h1>Hello</h1>");
 
 		String relUrl = "/wiki/";
-		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
-		ServletOutputStream out = new ServletOutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				outByte.write(b);
-			}
-		};
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
 				.anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
@@ -183,16 +163,12 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(
-						Collections.enumeration(Arrays
-								.asList("Host", "User-Agent", "If-None-Match",
-										"Accept", "Accept-Encoding",
-										"Accept-Language", "Accept-Charset",
-										"User-Agent", "If-None-Match")))
+				.andReturn(Arrays.asList(
+						"Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language",
+						"Accept-Charset", "User-Agent", "If-None-Match"))
 				.anyTimes();
 
-		HttpServletResponse response = EasyMock
-				.createMock(HttpServletResponse.class);
+		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
@@ -200,8 +176,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, HttpRequestImpl.wrap(request),
-				HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 
 		// Retrieve from cache
@@ -250,12 +225,8 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(
-						Collections.enumeration(Arrays
-								.asList("Host", "User-Agent", "If-None-Match",
-										"Accept", "Accept-Encoding",
-										"Accept-Language", "Accept-Charset",
-										"User-Agent", "If-None-Match")))
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
+						"Accept-Language", "Accept-Charset","User-Agent", "If-None-Match"))
 				.anyTimes();
 
 		response.setStatus(200);
@@ -264,8 +235,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, HttpRequestImpl.wrap(request),
-				HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxy").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 	}
 
@@ -278,15 +248,8 @@ public class DriverTest extends TestCase {
 				"mockTestProxyWithCacheRefreshDelay", props);
 		provider.addResource("/wiki/", "<h1>Hello</h1>");
 		String relUrl = "/wiki/";
-		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
-		ServletOutputStream out = new ServletOutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				outByte.write(b);
-			}
-		};
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
 				.anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
@@ -329,16 +292,11 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(
-						Collections.enumeration(Arrays
-								.asList("Host", "User-Agent", "If-None-Match",
-										"Accept", "Accept-Encoding",
-										"Accept-Language", "Accept-Charset",
-										"User-Agent", "If-None-Match")))
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
+						"Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match"))
 				.anyTimes();
 
-		HttpServletResponse response = EasyMock
-				.createMock(HttpServletResponse.class);
+		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
@@ -346,8 +304,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 
 		Thread.sleep(1000);
@@ -397,12 +354,8 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(
-						Collections.enumeration(Arrays
-								.asList("Host", "User-Agent", "If-None-Match",
-										"Accept", "Accept-Encoding",
-										"Accept-Language", "Accept-Charset",
-										"User-Agent", "If-None-Match")))
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
+						"Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match"))
 				.anyTimes();
 
 		response.setStatus(200);
@@ -411,8 +364,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 
 		// Retrieve from cache
@@ -458,8 +410,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(
-				relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxyWithCacheRefreshDelay").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 	}
 
@@ -471,15 +422,8 @@ public class DriverTest extends TestCase {
 		MockDriver provider = new MockDriver("mockTestProxyWithoutCache", props);
 		provider.addResource("/wiki/Portal:Contents", "<h1>Hello</h1>");
 		String relUrl = "/wiki/Portal:Contents";
-		final ByteArrayOutputStream outByte = new ByteArrayOutputStream();
-		ServletOutputStream out = new ServletOutputStream() {
-			@Override
-			public void write(int b) throws IOException {
-				outByte.write(b);
-			}
-		};
-		HttpServletRequest request = EasyMock
-				.createMock(HttpServletRequest.class);
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
 				.anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
@@ -520,8 +464,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
-		HttpServletResponse response = EasyMock
-				.createMock(HttpServletResponse.class);
+		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
 		response.addHeader(EasyMock.isA(String.class),
 				EasyMock.isA(String.class));
@@ -529,8 +472,7 @@ public class DriverTest extends TestCase {
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
 		EasyMock.replay(request, response);
-		DriverFactory.getInstance("mockTestProxyWithoutCache").proxy(relUrl,
-				HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+		DriverFactory.getInstance("mockTestProxyWithoutCache").proxy(relUrl, request, response);
 		EasyMock.verify(request, response);
 	}
 }
