@@ -490,6 +490,7 @@ public abstract class ElementProxy {
     public static void registerDefaultPrefixes() throws XMLSecurityException {
         setDefaultPrefix("http://www.w3.org/2000/09/xmldsig#", "ds");
         setDefaultPrefix("http://www.w3.org/2001/04/xmlenc#", "xenc");
+        setDefaultPrefix("http://www.w3.org/2009/xmlenc11#", "xenc11");
         setDefaultPrefix("http://www.xmlsecurity.org/experimental#", "experimental");
         setDefaultPrefix("http://www.w3.org/2002/04/xmldsig-filter2", "dsig-xpath-old");
         setDefaultPrefix("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-xpath");

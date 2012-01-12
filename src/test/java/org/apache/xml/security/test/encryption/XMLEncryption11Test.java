@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,6 +49,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
 import org.apache.xml.security.test.DSNamespaceContext;
+import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.EncryptionConstants;
 // import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -184,6 +186,75 @@ public class XMLEncryption11Test extends org.junit.Assert {
      * rsa-oaep-mgf1p, Digest:SHA256, MGF:SHA1, PSource: None
      */
     @org.junit.Test
+    public void testKeyWrappingRSA2048EncryptDecrypt() throws Exception {
+        if (haveISOPadding) {
+            String keystore = 
+                "src/test/resources/org/w3c/www/interop/xmlenc-core-11/RSA-2048_SHA256WithRSA.jks";
+            String basedir = System.getProperty("basedir");
+            if (basedir != null && !"".equals(basedir)) {
+                keystore = basedir + "/" + keystore;
+            }
+            
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            keyStore.load(new java.io.FileInputStream(keystore), "passwd".toCharArray());
+            
+            Certificate cert = keyStore.getCertificate("importkey");
+            
+            KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+                keyStore.getEntry("importkey", new KeyStore.PasswordProtection("passwd".toCharArray()));
+            PrivateKey rsaKey = pkEntry.getPrivateKey();
+
+            // Perform encryption
+            String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
+            javax.xml.parsers.DocumentBuilderFactory dbf =
+                javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+            if (basedir != null && !"".equals(basedir)) {
+                filename = basedir + "/" + filename;
+            }
+            File f = new File(filename);
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new java.io.FileInputStream(f));
+
+            Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes128-gcm");
+            EncryptedKey encryptedKey = 
+                createEncryptedKey(
+                    doc, 
+                    (X509Certificate)cert,
+                    sessionKey,
+                    "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p",
+                    "http://www.w3.org/2000/09/xmldsig#sha1",
+                    null,
+                    null
+                );
+            
+            doc = 
+                encryptDocument(
+                    doc, 
+                    encryptedKey,
+                    sessionKey, 
+                    "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+                );
+            // XMLUtils.outputDOM(doc.getFirstChild(), System.out);
+            
+            // Perform decryption
+            Document dd = decryptElement(doc, rsaKey, (X509Certificate)cert);
+            // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
+            checkDecryptedDoc(dd, true);
+        } else {
+            log.warn(
+                "Skipping testRSA2048 as necessary "
+                + "crypto algorithms are not available"
+            );
+        }
+    }
+    
+    /**
+     * rsa-oaep-mgf1p, Digest:SHA256, MGF:SHA1, PSource: None
+     */
+    @org.junit.Test
     public void testKeyWrappingRSA3072() throws Exception {
         if (haveISOPadding) {
             String keystore = 
@@ -207,6 +278,75 @@ public class XMLEncryption11Test extends org.junit.Assert {
                 + "cipherText__RSA-3072__aes192-gcm__rsa-oaep-mgf1p__Sha256.xml";
 
             Document dd = decryptElement(filename, rsaKey, (X509Certificate)cert);
+            // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
+            checkDecryptedDoc(dd, true);
+        } else {
+            log.warn(
+                "Skipping testRSA3072 as necessary "
+                + "crypto algorithms are not available"
+            );
+        }
+    }
+    
+    /**
+     * rsa-oaep-mgf1p, Digest:SHA256, MGF:SHA1, PSource: None
+     */
+    @org.junit.Test
+    public void testKeyWrappingRSA3072EncryptDecrypt() throws Exception {
+        if (haveISOPadding) {
+            String keystore = 
+                "src/test/resources/org/w3c/www/interop/xmlenc-core-11/RSA-3072_SHA256WithRSA.jks";
+            String basedir = System.getProperty("basedir");
+            if (basedir != null && !"".equals(basedir)) {
+                keystore = basedir + "/" + keystore;
+            }
+            
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            keyStore.load(new java.io.FileInputStream(keystore), "passwd".toCharArray());
+            
+            Certificate cert = keyStore.getCertificate("importkey");
+            
+            KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+                keyStore.getEntry("importkey", new KeyStore.PasswordProtection("passwd".toCharArray()));
+            PrivateKey rsaKey = pkEntry.getPrivateKey();
+
+            // Perform encryption
+            String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
+            javax.xml.parsers.DocumentBuilderFactory dbf =
+                javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+            if (basedir != null && !"".equals(basedir)) {
+                filename = basedir + "/" + filename;
+            }
+            File f = new File(filename);
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new java.io.FileInputStream(f));
+
+            Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes192-gcm");
+            EncryptedKey encryptedKey = 
+                createEncryptedKey(
+                    doc, 
+                    (X509Certificate)cert,
+                    sessionKey,
+                    "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p",
+                    "http://www.w3.org/2001/04/xmlenc#sha256",
+                    null,
+                    null
+                );
+            
+            doc = 
+                encryptDocument(
+                    doc, 
+                    encryptedKey,
+                    sessionKey, 
+                    "http://www.w3.org/2009/xmlenc11#aes192-gcm"
+                );
+            // XMLUtils.outputDOM(doc.getFirstChild(), System.out);
+            
+            // Perform decryption
+            Document dd = decryptElement(doc, rsaKey, (X509Certificate)cert);
             // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
             checkDecryptedDoc(dd, true);
         } else {
@@ -255,6 +395,75 @@ public class XMLEncryption11Test extends org.junit.Assert {
     }
     
     /**
+     * rsa-oaep, Digest:SHA384, MGF:SHA1, PSource: None
+     */
+    @org.junit.Test
+    public void testKeyWrappingRSA3072OAEPEncryptDecrypt() throws Exception {
+        if (haveISOPadding) {
+            String keystore = 
+                "src/test/resources/org/w3c/www/interop/xmlenc-core-11/RSA-3072_SHA256WithRSA.jks";
+            String basedir = System.getProperty("basedir");
+            if (basedir != null && !"".equals(basedir)) {
+                keystore = basedir + "/" + keystore;
+            }
+            
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            keyStore.load(new java.io.FileInputStream(keystore), "passwd".toCharArray());
+            
+            Certificate cert = keyStore.getCertificate("importkey");
+            
+            KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+                keyStore.getEntry("importkey", new KeyStore.PasswordProtection("passwd".toCharArray()));
+            PrivateKey rsaKey = pkEntry.getPrivateKey();
+
+            // Perform encryption
+            String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
+            javax.xml.parsers.DocumentBuilderFactory dbf =
+                javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+            if (basedir != null && !"".equals(basedir)) {
+                filename = basedir + "/" + filename;
+            }
+            File f = new File(filename);
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new java.io.FileInputStream(f));
+
+            Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes256-gcm");
+            EncryptedKey encryptedKey = 
+                createEncryptedKey(
+                    doc, 
+                    (X509Certificate)cert,
+                    sessionKey,
+                    "http://www.w3.org/2009/xmlenc11#rsa-oaep",
+                    "http://www.w3.org/2001/04/xmldsig-more#sha384",
+                    "http://www.w3.org/2009/xmlenc11#mgf1sha1",
+                    null
+                );
+            
+            doc = 
+                encryptDocument(
+                    doc, 
+                    encryptedKey,
+                    sessionKey, 
+                    "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                );
+            // XMLUtils.outputDOM(doc.getFirstChild(), System.out);
+            
+            // Perform decryption
+            Document dd = decryptElement(doc, rsaKey, (X509Certificate)cert);
+            // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
+            checkDecryptedDoc(dd, true);
+        } else {
+            log.warn(
+                "Skipping testRSA2048 as necessary "
+                + "crypto algorithms are not available"
+            );
+        }
+    }
+    
+    /**
      * rsa-oaep, Digest:SHA512, MGF:SHA1, PSource: Specified 8 bytes
      */
     @org.junit.Test
@@ -292,6 +501,75 @@ public class XMLEncryption11Test extends org.junit.Assert {
     }
 
     /**
+     * rsa-oaep, Digest:SHA512, MGF:SHA1, PSource: Specified 8 bytes
+     */
+    @org.junit.Test
+    public void testKeyWrappingRSA4096EncryptDecrypt() throws Exception {
+        if (haveISOPadding) {
+            String keystore = 
+                "src/test/resources/org/w3c/www/interop/xmlenc-core-11/RSA-4096_SHA256WithRSA.jks";
+            String basedir = System.getProperty("basedir");
+            if (basedir != null && !"".equals(basedir)) {
+                keystore = basedir + "/" + keystore;
+            }
+            
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            keyStore.load(new java.io.FileInputStream(keystore), "passwd".toCharArray());
+            
+            Certificate cert = keyStore.getCertificate("importkey");
+            
+            KeyStore.PrivateKeyEntry pkEntry = (KeyStore.PrivateKeyEntry)
+                keyStore.getEntry("importkey", new KeyStore.PasswordProtection("passwd".toCharArray()));
+            PrivateKey rsaKey = pkEntry.getPrivateKey();
+
+            // Perform encryption
+            String filename = "src/test/resources/org/w3c/www/interop/xmlenc-core-11/plaintext.xml";
+            javax.xml.parsers.DocumentBuilderFactory dbf =
+                javax.xml.parsers.DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+            if (basedir != null && !"".equals(basedir)) {
+                filename = basedir + "/" + filename;
+            }
+            File f = new File(filename);
+
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new java.io.FileInputStream(f));
+
+            Key sessionKey = getSessionKey("http://www.w3.org/2009/xmlenc11#aes256-gcm");
+            EncryptedKey encryptedKey = 
+                createEncryptedKey(
+                    doc, 
+                    (X509Certificate)cert,
+                    sessionKey,
+                    "http://www.w3.org/2009/xmlenc11#rsa-oaep",
+                    "http://www.w3.org/2001/04/xmlenc#sha512",
+                    "http://www.w3.org/2009/xmlenc11#mgf1sha1",
+                    Base64.decode("ZHVtbXkxMjM=".getBytes("UTF-8"))
+                );
+            
+            doc = 
+                encryptDocument(
+                    doc, 
+                    encryptedKey,
+                    sessionKey, 
+                    "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                );
+            // XMLUtils.outputDOM(doc.getFirstChild(), System.out);
+            
+            // Perform decryption
+            Document dd = decryptElement(doc, rsaKey, (X509Certificate)cert);
+            // XMLUtils.outputDOM(dd.getFirstChild(), System.out);
+            checkDecryptedDoc(dd, true);
+        } else {
+            log.warn(
+                "Skipping testRSA2048 as necessary "
+                + "crypto algorithms are not available"
+            );
+        }
+    }
+    
+    /**
      * Method decryptElement
      *
      * Take a key, encryption type and a file, find an encrypted element
@@ -301,10 +579,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
      * @param key The Key to use for decryption
      */
     private Document decryptElement(String filename, Key rsaKey, X509Certificate rsaCert) throws Exception {
-        XMLCipher cipher;
-
         // Parse the document in question
-
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
@@ -317,9 +592,22 @@ public class XMLEncryption11Test extends org.junit.Assert {
 
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(new java.io.FileInputStream(f));
-
+        
+        return decryptElement(doc, rsaKey, rsaCert);
+    }
+    
+    /**
+     * Method decryptElement
+     *
+     * Take a key, encryption type and a document, find an encrypted element
+     * decrypt it and return the resulting document
+     *
+     * @param filename File to decrypt from
+     * @param key The Key to use for decryption
+     */
+    private Document decryptElement(Document doc, Key rsaKey, X509Certificate rsaCert) throws Exception {
         // Create the XMLCipher element
-        cipher = XMLCipher.getInstance();
+        XMLCipher cipher = XMLCipher.getInstance();
         
         // Need to pre-load the Encrypted Data so we can get the key info
         Element ee = 
@@ -350,6 +638,80 @@ public class XMLEncryption11Test extends org.junit.Assert {
         return dd;
     }
 
+    /**
+     * Create an EncryptedKey object using the given parameters.
+     */
+    private EncryptedKey createEncryptedKey(
+        Document doc,
+        X509Certificate rsaCert,
+        Key sessionKey,
+        String encryptionMethod,
+        String digestMethod,
+        String mgfAlgorithm,
+        byte[] oaepParams
+    ) throws Exception {
+        // Create the XMLCipher element
+        XMLCipher cipher = XMLCipher.getInstance(encryptionMethod, null, digestMethod);
+        
+        cipher.init(XMLCipher.WRAP_MODE, rsaCert.getPublicKey());
+        EncryptedKey encryptedKey = cipher.encryptKey(doc, sessionKey, mgfAlgorithm, oaepParams);
+        
+        KeyInfo builderKeyInfo = encryptedKey.getKeyInfo();
+        if (builderKeyInfo == null) {
+            builderKeyInfo = new KeyInfo(doc);
+            encryptedKey.setKeyInfo(builderKeyInfo);
+        }
+
+        X509Data x509Data = new X509Data(doc);
+        x509Data.addCertificate(rsaCert);
+        builderKeyInfo.add(x509Data);
+        
+        return encryptedKey;
+    }
+    
+    /**
+     * Generate a session key using the given algorithm
+     */
+    private Key getSessionKey(String encryptionMethod) throws Exception {
+        // Generate a session key
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        if (encryptionMethod.contains("128")) {
+            keyGen.init(128);
+        } else if (encryptionMethod.contains("192")) {
+            keyGen.init(192);
+        } else if (encryptionMethod.contains("256")) {
+            keyGen.init(256);
+        }
+        return keyGen.generateKey();
+    }
+    
+    /**
+     * Encrypt a Document using the given parameters.
+     */
+    private Document encryptDocument(
+        Document doc,
+        EncryptedKey encryptedKey,
+        Key sessionKey,
+        String encryptionMethod
+    ) throws Exception {
+        // Create the XMLCipher element
+        XMLCipher cipher = XMLCipher.getInstance(encryptionMethod);
+        
+        cipher.init(XMLCipher.ENCRYPT_MODE, sessionKey);
+        EncryptedData builder = cipher.getEncryptedData();
+
+        KeyInfo builderKeyInfo = builder.getKeyInfo();
+        if (builderKeyInfo == null) {
+            builderKeyInfo = new KeyInfo(doc);
+            builder.setKeyInfo(builderKeyInfo);
+        }
+
+        builderKeyInfo.add(encryptedKey);
+        
+        return cipher.doFinal(doc, doc.getDocumentElement());
+    }
+
+    
     /**
      * Method countNodes
      *

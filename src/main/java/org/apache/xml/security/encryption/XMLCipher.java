@@ -242,6 +242,8 @@ public class XMLCipher {
     
     private boolean secureValidation;
     
+    private String digestAlg;
+    
     /**
      * Set the Serializer algorithm to use
      */
@@ -260,21 +262,22 @@ public class XMLCipher {
     /**
      * Creates a new <code>XMLCipher</code>.
      *
-     * @param transformation    the name of the transformation, e.g.,
-     *                          <code>XMLCipher.TRIPLEDES</code> which is 
-     *                          shorthand for
-     *                  &quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
-     *                          if null the XMLCipher can only be used for decrypt or
-     *                          unwrap operations where the encryption method is
-     *                          defined in the <code>EncryptionMethod</code> element.
+     * @param transformation    the name of the transformation, e.g., 
+     *                          <code>XMLCipher.TRIPLEDES</code>. If null the XMLCipher can only 
+     *                          be used for decrypt or unwrap operations where the encryption method
+     *                          is defined in the <code>EncryptionMethod</code> element.
      * @param provider          the JCE provider that supplies the transformation,
      *                          if null use the default provider.
      * @param canon             the name of the c14n algorithm, if
-     *                          <code>null</code> use standard serializer 
-     * @since 1.0.
+     *                          <code>null</code> use standard serializer
+     * @param digestMethod      An optional digestMethod to use. 
      */
-    private XMLCipher(String transformation, String provider, String canon)
-        throws XMLEncryptionException {
+    private XMLCipher(
+        String transformation, 
+        String provider, 
+        String canon,
+        String digestMethod
+    ) throws XMLEncryptionException {
         if (log.isDebugEnabled()) {
             log.debug("Constructing XMLCipher...");
         }
@@ -283,6 +286,7 @@ public class XMLCipher {
 
         algorithm = transformation;
         requestedJCEProvider = provider;
+        digestAlg = digestMethod;
 
         // Create a canonicalizer - used when serializing DOM to octets
         // prior to encryption (and for the reverse)
@@ -303,27 +307,7 @@ public class XMLCipher {
         serializer.setCanonicalizer(this.canon);
         
         if (transformation != null) {
-            try {
-                String jceAlgorithm = JCEMapper.translateURItoJCEID(transformation);
-                if (log.isDebugEnabled()) {
-                    log.debug("cipher.algorithm = " + jceAlgorithm);
-                }
-
-                if (provider == null) {
-                    contextCipher = Cipher.getInstance(jceAlgorithm);
-                } else {
-                    if (log.isDebugEnabled()) {
-                        log.debug("provider.name = " + provider);
-                    }
-                    contextCipher = Cipher.getInstance(jceAlgorithm, provider);
-                }
-            } catch (NoSuchAlgorithmException nsae) {
-                throw new XMLEncryptionException("empty", nsae);
-            } catch (NoSuchProviderException nspre) {
-                throw new XMLEncryptionException("empty", nspre);
-            } catch (NoSuchPaddingException nspe) {
-                throw new XMLEncryptionException("empty", nspe);
-            }
+            contextCipher = constructCipher(transformation, digestMethod);
         }
     }
 
@@ -402,7 +386,7 @@ public class XMLCipher {
             log.debug("Getting XMLCipher with transformation");
         }
         validateTransformation(transformation);
-        return new XMLCipher(transformation, null, null);
+        return new XMLCipher(transformation, null, null, null);
     }
 
     /**
@@ -412,12 +396,9 @@ public class XMLCipher {
      * encrypts the document.
      * <p>
      * 
-     * @param transformation	the name of the transformation, e.g.,
-     *   						<code>XMLCipher.TRIPLEDES</code> which is 
-     * 							shorthand for
-     *   				&quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
-     * @param canon				the name of the c14n algorithm, if
-     * 							<code>null</code> use standard serializer 
+     * @param transformation	the name of the transformation
+     * @param canon		the name of the c14n algorithm, if <code>null</code> use 
+     *                          standard serializer 
      * @return the XMLCipher
      * @throws XMLEncryptionException
      */
@@ -427,16 +408,37 @@ public class XMLCipher {
             log.debug("Getting XMLCipher with transformation and c14n algorithm");
         }
         validateTransformation(transformation);
-        return new XMLCipher(transformation, null, canon);
+        return new XMLCipher(transformation, null, canon, null);
+    }
+    
+    /**
+     * Returns an <code>XMLCipher</code> that implements the specified
+     * transformation, operates on the specified context document and serializes
+     * the document with the specified canonicalization algorithm before it
+     * encrypts the document.
+     * <p>
+     * 
+     * @param transformation    the name of the transformation
+     * @param canon             the name of the c14n algorithm, if <code>null</code> use 
+     *                          standard serializer
+     * @param digestMethod      An optional digestMethod to use 
+     * @return the XMLCipher
+     * @throws XMLEncryptionException
+     */
+    public static XMLCipher getInstance(String transformation, String canon, String digestMethod)
+        throws XMLEncryptionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation and c14n algorithm");
+        }
+        validateTransformation(transformation);
+        return new XMLCipher(transformation, null, canon, digestMethod);
     }
 
     /**
      * Returns an <code>XMLCipher</code> that implements the specified
      * transformation and operates on the specified context document.
      *
-     * @param transformation the name of the transformation, e.g.,
-     *   <code>XMLCipher.TRIPLEDES</code> which is shorthand for
-     *   &quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
+     * @param transformation    the name of the transformation
      * @param provider          the JCE provider that supplies the transformation
      * @return the XMLCipher
      * @throws XMLEncryptionException
@@ -450,7 +452,7 @@ public class XMLCipher {
             throw new NullPointerException("Provider unexpectedly null..");
         }
         validateTransformation(transformation);
-        return new XMLCipher(transformation, provider, null);
+        return new XMLCipher(transformation, provider, null, null);
     }
 
     /**
@@ -460,13 +462,10 @@ public class XMLCipher {
      * encrypts the document.
      * <p>
      * 
-     * @param transformation	the name of the transformation, e.g.,
-     *   						<code>XMLCipher.TRIPLEDES</code> which is 
-     * 							shorthand for
-     *   				&quot;http://www.w3.org/2001/04/xmlenc#tripledes-cbc&quot;
+     * @param transformation	the name of the transformation
      * @param provider          the JCE provider that supplies the transformation
-     * @param canon				the name of the c14n algorithm, if
-     * 							<code>null</code> use standard serializer 
+     * @param canon		the name of the c14n algorithm, if <code>null</code> use standard
+     *                          serializer 
      * @return the XMLCipher
      * @throws XMLEncryptionException
      */
@@ -480,7 +479,35 @@ public class XMLCipher {
             throw new NullPointerException("Provider unexpectedly null..");
         }
         validateTransformation(transformation);
-        return new XMLCipher(transformation, provider, canon);
+        return new XMLCipher(transformation, provider, canon, null);
+    }
+    
+    /**
+     * Returns an <code>XMLCipher</code> that implements the specified
+     * transformation, operates on the specified context document and serializes
+     * the document with the specified canonicalization algorithm before it
+     * encrypts the document.
+     * <p>
+     * 
+     * @param transformation    the name of the transformation
+     * @param provider          the JCE provider that supplies the transformation
+     * @param canon             the name of the c14n algorithm, if <code>null</code> use standard 
+     *                          serializer
+     * @param digestMethod      An optional digestMethod to use 
+     * @return the XMLCipher
+     * @throws XMLEncryptionException
+     */
+    public static XMLCipher getProviderInstance(
+        String transformation, String provider, String canon, String digestMethod
+    ) throws XMLEncryptionException {
+        if (log.isDebugEnabled()) {
+            log.debug("Getting XMLCipher with transformation, provider and c14n algorithm");
+        }
+        if (null == provider) {
+            throw new NullPointerException("Provider unexpectedly null..");
+        }
+        validateTransformation(transformation);
+        return new XMLCipher(transformation, provider, canon, digestMethod);
     }
 
     /**
@@ -496,7 +523,7 @@ public class XMLCipher {
         if (log.isDebugEnabled()) {
             log.debug("Getting XMLCipher with no arguments");
         }
-        return new XMLCipher(null, null, null);
+        return new XMLCipher(null, null, null, null);
     }
 
     /**
@@ -516,7 +543,7 @@ public class XMLCipher {
         if (log.isDebugEnabled()) {
             log.debug("Getting XMLCipher with provider");
         }
-        return new XMLCipher(null, provider, null);
+        return new XMLCipher(null, provider, null, null);
     }
 
     /**
@@ -1035,24 +1062,7 @@ public class XMLCipher {
         // Now create the working cipher if none was created already
         Cipher c;
         if (contextCipher == null) {
-            String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
-            if (log.isDebugEnabled()) {
-                log.debug("alg = " + jceAlgorithm);
-            }
-
-            try {
-                if (requestedJCEProvider == null) {
-                    c = Cipher.getInstance(jceAlgorithm);
-                } else {
-                    c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
-                }
-            } catch (NoSuchAlgorithmException nsae) {
-                throw new XMLEncryptionException("empty", nsae);
-            } catch (NoSuchProviderException nspre) {
-                throw new XMLEncryptionException("empty", nspre);
-            } catch (NoSuchPaddingException nspae) {
-                throw new XMLEncryptionException("empty", nspae);
-            }
+            c = constructCipher(algorithm, null);
         } else {
             c = contextCipher;
         }
@@ -1134,6 +1144,7 @@ public class XMLCipher {
             }
             EncryptionMethod method =
                 factory.newEncryptionMethod(new URI(algorithm).toString());
+            method.setDigestAlgorithm(digestAlg);
             ed.setEncryptionMethod(method);
         } catch (URISyntaxException ex) {
             throw new XMLEncryptionException("empty", ex);
@@ -1218,7 +1229,7 @@ public class XMLCipher {
     public EncryptedKey loadEncryptedKey(Element element) throws XMLEncryptionException {
         return loadEncryptedKey(element.getOwnerDocument(), element);
     }
-
+    
     /**
      * Encrypts a key to an EncryptedKey structure
      *
@@ -1229,6 +1240,26 @@ public class XMLCipher {
      * @throws XMLEncryptionException
      */
     public EncryptedKey encryptKey(Document doc, Key key) throws XMLEncryptionException {
+        return encryptKey(doc, key, null, null);
+    }
+
+    /**
+     * Encrypts a key to an EncryptedKey structure
+     *
+     * @param doc the Context document that will be used to general DOM
+     * @param key Key to encrypt (will use previously set KEK to 
+     * perform encryption
+     * @param mgfAlgorithm The xenc11 MGF Algorithm to use
+     * @param oaepParams The OAEPParams to use
+     * @return the <code>EncryptedKey</code>
+     * @throws XMLEncryptionException
+     */
+    public EncryptedKey encryptKey(
+        Document doc, 
+        Key key,
+        String mgfAlgorithm,
+        byte[] oaepParams
+    ) throws XMLEncryptionException {
         if (log.isDebugEnabled()) {
             log.debug("Encrypting key ...");
         }
@@ -1248,33 +1279,9 @@ public class XMLCipher {
         byte[] encryptedBytes = null;
         Cipher c;
 
-        OAEPParameterSpec oaepParameters = null;
         if (contextCipher == null) {
             // Now create the working cipher
-
-            String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
-            if (log.isDebugEnabled()) {
-                log.debug("alg = " + jceAlgorithm);
-            }
-
-            try {
-                if (requestedJCEProvider == null) {
-                    c = Cipher.getInstance(jceAlgorithm);
-                } else {
-                    c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
-                }
-            } catch (NoSuchAlgorithmException nsae) {
-                throw new XMLEncryptionException("empty", nsae);
-            } catch (NoSuchProviderException nspre) {
-                throw new XMLEncryptionException("empty", nspre);
-            } catch (NoSuchPaddingException nspae) {
-                throw new XMLEncryptionException("empty", nspae);
-            }
-            
-            if (XMLCipher.RSA_OAEP.equals(algorithm)) {
-                oaepParameters = 
-                    new OAEPParameterSpec("SHA-1", "MGF1", MGF1ParameterSpec.SHA1, PSource.PSpecified.DEFAULT);
-            }
+            c = constructCipher(algorithm, null);
         } else {
             c = contextCipher;
         }
@@ -1283,6 +1290,10 @@ public class XMLCipher {
         try {
             // Should internally generate an IV
             // todo - allow user to set an IV
+            OAEPParameterSpec oaepParameters = 
+                constructOAEPParameters(
+                    algorithm, digestAlg, mgfAlgorithm, oaepParams
+                );
             if (oaepParameters == null) {
                 c.init(Cipher.WRAP_MODE, this.key);
             } else {
@@ -1308,6 +1319,9 @@ public class XMLCipher {
 
         try {
             EncryptionMethod method = factory.newEncryptionMethod(new URI(algorithm).toString());
+            method.setDigestAlgorithm(digestAlg);
+            method.setMGFAlgorithm(mgfAlgorithm);
+            method.setOAEPparams(oaepParams);
             ek.setEncryptionMethod(method);
         } catch (URISyntaxException ex) {
             throw new XMLEncryptionException("empty", ex);
@@ -1378,48 +1392,13 @@ public class XMLCipher {
         }
 
         Cipher c;
-        OAEPParameterSpec oaepParameters = null;
         if (contextCipher == null) {
             // Now create the working cipher
-
-            String jceAlgorithm =
-                JCEMapper.translateURItoJCEID(encryptedKey.getEncryptionMethod().getAlgorithm());
-            if (log.isDebugEnabled()) {
-                log.debug("JCE Algorithm = " + jceAlgorithm);
-            }
-
-            try {
-                if (requestedJCEProvider == null) {
-                    c = Cipher.getInstance(jceAlgorithm);
-                } else {
-                    c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
-                }
-            } catch (NoSuchAlgorithmException nsae) {
-                // Check to see if an RSA OAEP MGF-1 with SHA-1 algorithm was requested
-                // Some JDKs don't support RSA/ECB/OAEPPadding
-                String digestMethod = encryptedKey.getEncryptionMethod().getDigestAlgorithm();
-                if (XMLCipher.RSA_OAEP.equals(encryptedKey.getEncryptionMethod().getAlgorithm())
-                    && (digestMethod == null 
-                        || MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1.equals(digestMethod))) {
-                    try {
-                        if (requestedJCEProvider == null) {
-                            c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
-                        } else {
-                            c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding", requestedJCEProvider);
-                        }
-                    } catch (Exception ex) {
-                        throw new XMLEncryptionException("empty", ex);
-                    }
-                } else {
-                    throw new XMLEncryptionException("empty", nsae);
-                }
-            } catch (NoSuchProviderException nspre) {
-                throw new XMLEncryptionException("empty", nspre);
-            } catch (NoSuchPaddingException nspae) {
-                throw new XMLEncryptionException("empty", nspae);
-            }
-            
-            oaepParameters = constructOAEPParameters(encryptedKey.getEncryptionMethod());
+            c = 
+                constructCipher(
+                    encryptedKey.getEncryptionMethod().getAlgorithm(),
+                    encryptedKey.getEncryptionMethod().getDigestAlgorithm()
+                );
         } else {
             c = contextCipher;
         }
@@ -1427,6 +1406,12 @@ public class XMLCipher {
         Key ret;
         
         try {
+            EncryptionMethod encMethod = encryptedKey.getEncryptionMethod();
+            OAEPParameterSpec oaepParameters = 
+                constructOAEPParameters(
+                    encMethod.getAlgorithm(), encMethod.getDigestAlgorithm(),
+                    encMethod.getMGFAlgorithm(), encMethod.getOAEPparams()
+                );
             if (oaepParameters == null) {
                 c.init(Cipher.UNWRAP_MODE, key);
             } else {
@@ -1448,28 +1433,29 @@ public class XMLCipher {
     }
     
     /**
-     * Construt an OAEPParameterSpec object from an EncryptionMethod
+     * Construct an OAEPParameterSpec object from the given parameters
      */
     private OAEPParameterSpec constructOAEPParameters(
-        EncryptionMethod encryptionMethod
+        String encryptionAlgorithm,
+        String digestAlgorithm,
+        String mgfAlgorithm,
+        byte[] oaepParams
     ) {
-        if (XMLCipher.RSA_OAEP.equals(encryptionMethod.getAlgorithm())
-            || XMLCipher.RSA_OAEP_11.equals(encryptionMethod.getAlgorithm())) {
+        if (XMLCipher.RSA_OAEP.equals(encryptionAlgorithm)
+            || XMLCipher.RSA_OAEP_11.equals(encryptionAlgorithm)) {
             
-            String digestAlgorithm = encryptionMethod.getDigestAlgorithm();
             String jceDigestAlgorithm = "SHA-1";
             if (digestAlgorithm != null) {
                 jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestAlgorithm);
             }
             
             PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
-            if (encryptionMethod.getOAEPparams() != null) {
-                pSource = new PSource.PSpecified(encryptionMethod.getOAEPparams());
+            if (oaepParams != null) {
+                pSource = new PSource.PSpecified(oaepParams);
             }
             
             MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
-            if (XMLCipher.RSA_OAEP_11.equals(encryptionMethod.getAlgorithm())) {
-                String mgfAlgorithm = encryptionMethod.getMGFAlgorithm();
+            if (XMLCipher.RSA_OAEP_11.equals(encryptionAlgorithm)) {
                 if (EncryptionConstants.MGF1_SHA256.equals(mgfAlgorithm)) {
                     mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
                 } else if (EncryptionConstants.MGF1_SHA384.equals(mgfAlgorithm)) {
@@ -1478,11 +1464,53 @@ public class XMLCipher {
                     mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
                 }
             }
-            
             return new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
         }
         
         return null;
+    }
+    
+    /**
+     * Construct a Cipher object
+     */
+    private Cipher constructCipher(String algorithm, String digestAlgorithm) throws XMLEncryptionException {
+        String jceAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
+        if (log.isDebugEnabled()) {
+            log.debug("JCE Algorithm = " + jceAlgorithm);
+        }
+
+        Cipher c;
+        try {
+            if (requestedJCEProvider == null) {
+                c = Cipher.getInstance(jceAlgorithm);
+            } else {
+                c = Cipher.getInstance(jceAlgorithm, requestedJCEProvider);
+            }
+        } catch (NoSuchAlgorithmException nsae) {
+            // Check to see if an RSA OAEP MGF-1 with SHA-1 algorithm was requested
+            // Some JDKs don't support RSA/ECB/OAEPPadding
+            if (XMLCipher.RSA_OAEP.equals(algorithm)
+                && (digestAlgorithm == null 
+                    || MessageDigestAlgorithm.ALGO_ID_DIGEST_SHA1.equals(digestAlgorithm))) {
+                try {
+                    if (requestedJCEProvider == null) {
+                        c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
+                    } else {
+                        c = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding", requestedJCEProvider);
+                    }
+                } catch (Exception ex) {
+                    throw new XMLEncryptionException("empty", ex);
+                }
+            } else {
+                throw new XMLEncryptionException("empty", nsae);
+            }
+        } catch (NoSuchProviderException nspre) {
+            throw new XMLEncryptionException("empty", nspre);
+        } catch (NoSuchPaddingException nspae) {
+            throw new XMLEncryptionException("empty", nspae);
+        }
+        
+        return c;
     }
 
     /**
@@ -3025,22 +3053,31 @@ public class XMLCipher {
                     ).appendChild(contextDocument.createTextNode(String.valueOf(keySize))));
                 }
                 if (null != oaepParams) {
-                    try {
-                        result.appendChild(
-                            XMLUtils.createElementInEncryptionSpace(
-                                contextDocument, EncryptionConstants._TAG_OAEPPARAMS
-                            ).appendChild(contextDocument.createTextNode(
-                                new String(oaepParams, "UTF-8")
-                            )));
-                    } catch(UnsupportedEncodingException e) {
-                        throw new RuntimeException("UTF-8 not supported", e);
-                    }
+                    Element oaepElement = 
+                        XMLUtils.createElementInEncryptionSpace(
+                            contextDocument, EncryptionConstants._TAG_OAEPPARAMS
+                        );
+                    oaepElement.appendChild(contextDocument.createTextNode(Base64.encode(oaepParams)));
+                    result.appendChild(oaepElement);
                 }
                 if (digestAlgorithm != null) {
                     Element digestElement = 
                         XMLUtils.createElementInSignatureSpace(contextDocument, Constants._TAG_DIGESTMETHOD);
                     digestElement.setAttributeNS(null, "Algorithm", digestAlgorithm);
                     result.appendChild(digestElement);
+                }
+                if (mgfAlgorithm != null) {
+                    Element mgfElement = 
+                        XMLUtils.createElementInEncryption11Space(
+                            contextDocument, EncryptionConstants._TAG_MGF
+                        );
+                    mgfElement.setAttributeNS(null, "Algorithm", mgfAlgorithm);
+                    mgfElement.setAttributeNS(
+                        Constants.NamespaceSpecNS, 
+                        "xmlns:" + ElementProxy.getDefaultPrefix(EncryptionConstants.EncryptionSpec11NS), 
+                        EncryptionConstants.EncryptionSpec11NS
+                    );
+                    result.appendChild(mgfElement);
                 }
                 Iterator<Element> itr = encryptionMethodInformation.iterator();
                 while (itr.hasNext()) {

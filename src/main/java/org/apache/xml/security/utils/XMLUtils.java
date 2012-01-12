@@ -57,6 +57,7 @@ public class XMLUtils {
     
     private static volatile String dsPrefix = "ds";
     private static volatile String xencPrefix = "xenc";
+    private static volatile String xenc11Prefix = "xenc11";
     
     /** {@link org.apache.commons.logging} logging facility */
     private static final org.apache.commons.logging.Log log = 
@@ -85,6 +86,14 @@ public class XMLUtils {
      */
     public static void setXencPrefix(String prefix) {
         xencPrefix = prefix;
+    }
+    
+    /**
+     * Set the prefix for the encryption namespace 1.1
+     * @param prefix the new prefix for the encryption namespace 1.1
+     */
+    public static void setXenc11Prefix(String prefix) {
+        xenc11Prefix = prefix;
     }
     
     public static Element getNextElement(Node el) {
@@ -291,6 +300,27 @@ public class XMLUtils {
                 EncryptionConstants.EncryptionSpecNS, xencPrefix + ":" + elementName
             );
     }
+    
+    /**
+     * Creates an Element in the XML Encryption 1.1 specification namespace.
+     *
+     * @param doc the factory Document
+     * @param elementName the local name of the Element
+     * @return the Element
+     */
+    public static Element createElementInEncryption11Space(Document doc, String elementName) {
+        if (doc == null) {
+            throw new RuntimeException("Document is null");
+        }
+
+        if ((xenc11Prefix == null) || (xenc11Prefix.length() == 0)) {
+            return doc.createElementNS(EncryptionConstants.EncryptionSpec11NS, elementName);
+        }
+        return 
+            doc.createElementNS(
+                EncryptionConstants.EncryptionSpec11NS, xenc11Prefix + ":" + elementName
+            );
+    }
 
     /**
      * Returns true if the element is in XML Signature namespace and the local
@@ -324,6 +354,23 @@ public class XMLUtils {
             return false;
         }
         return EncryptionConstants.EncryptionSpecNS.equals(element.getNamespaceURI()) 
+            && element.getLocalName().equals(localName);
+    }
+    
+    /**
+     * Returns true if the element is in XML Encryption 1.1 namespace and the local
+     * name equals the supplied one.
+     *
+     * @param element
+     * @param localName
+     * @return true if the element is in XML Encryption 1.1 namespace and the local name 
+     * equals the supplied one
+     */
+    public static boolean elementIsInEncryption11Space(Element element, String localName) {
+        if (element == null){
+            return false;
+        }
+        return EncryptionConstants.EncryptionSpec11NS.equals(element.getNamespaceURI()) 
             && element.getLocalName().equals(localName);
     }
 
