@@ -421,6 +421,7 @@ public class TarBuffer
 
         this.currRecIdx = 0;
         this.currBlkIdx++;
+        Arrays.fill(blockBuffer, (byte) 0);
     }
 
     /**
