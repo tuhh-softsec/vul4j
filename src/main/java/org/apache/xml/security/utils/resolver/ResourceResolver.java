@@ -103,6 +103,7 @@ public class ResourceResolver {
                     );
                 }
     
+                resolverTmp.resolverSpi.secureValidation = secureValidation;
                 if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
                     // Check to see whether the Resolver is allowed
                     if (secureValidation 
@@ -171,6 +172,7 @@ public class ResourceResolver {
                         log.debug("check resolvability by class " + currentClass);
                     }
 
+                    resolver.resolverSpi.secureValidation = secureValidation;
                     if (resolver.canResolve(uri, baseURI)) {
                         return resolver;
                     }

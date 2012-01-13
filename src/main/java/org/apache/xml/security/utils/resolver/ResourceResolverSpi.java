@@ -37,6 +37,8 @@ public abstract class ResourceResolverSpi {
 
     /** Field properties */
     protected java.util.Map<String, String> properties = null;
+    
+    protected boolean secureValidation;
 
     /**
      * This is the workhorse method used to resolve resources.

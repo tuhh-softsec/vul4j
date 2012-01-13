@@ -29,12 +29,12 @@ import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
 import java.util.*;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of SignatureProperties.
@@ -90,9 +90,12 @@ public final class DOMSignatureProperties extends DOMStructure
         throws MarshalException
     {
         // unmarshal attributes
-        id = DOMUtils.getAttributeValue(propsElem, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(propsElem, id);
+        Attr attr = propsElem.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            id = attr.getValue();
+            propsElem.setIdAttributeNode(attr, true);
+        } else {
+            id = null;
         }
 
         NodeList nodes = propsElem.getChildNodes();

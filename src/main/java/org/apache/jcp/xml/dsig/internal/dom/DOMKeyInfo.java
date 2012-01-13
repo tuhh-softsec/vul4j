@@ -31,12 +31,12 @@ import javax.xml.crypto.dom.*;
 
 import java.security.Provider;
 import java.util.*;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of KeyInfo.
@@ -88,9 +88,12 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
         throws MarshalException
     {
         // get Id attribute, if specified
-        id = DOMUtils.getAttributeValue(kiElem, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(kiElem, id);
+        Attr attr = kiElem.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            id = attr.getValue();
+            kiElem.setIdAttributeNode(attr, true);
+        } else {
+            id = null;
         }
 
         // get all children nodes

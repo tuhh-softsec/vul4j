@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xml.security.Init;
-import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.signature.XMLSignatureInput;
 
@@ -65,8 +65,16 @@ public class DOMURIDereferencer implements URIDereferencer {
         Attr uriAttr = (Attr) domRef.getHere();
         String uri = uriRef.getURI();
         DOMCryptoContext dcc = (DOMCryptoContext) context;
-
-        // Check if same-document URI and register ID
+        String baseURI = context.getBaseURI();
+        
+        Boolean secureValidation = (Boolean)
+            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
+        boolean secVal = false;
+        if (secureValidation != null && secureValidation.booleanValue()) {
+            secVal = true;
+        }
+        
+        // Check if same-document URI and already registered on the context
         if (uri != null && uri.length() != 0 && uri.charAt(0) == '#') {
             String id = uri.substring(1);
 
@@ -76,23 +84,32 @@ public class DOMURIDereferencer implements URIDereferencer {
                 id = id.substring(i1+1, i2);
             }
 
-            // this is a bit of a hack to check for registered 
-            // IDRefs and manually register them with Apache's IdResolver 
-            // map which includes builtin schema knowledge of DSig/Enc IDs
             Node referencedElem = dcc.getElementById(id);
             if (referencedElem != null) {
-                IdResolver.registerElementById((Element) referencedElem, id);
+                if (secVal) {
+                    Element start = referencedElem.getOwnerDocument().getDocumentElement();
+                    if (!XMLUtils.protectAgainstWrappingAttack(start, (Element)referencedElem, id)) {
+                        String error = "Multiple Elements with the same ID " + id + " were detected";
+                        throw new URIReferenceException(error);
+                    }
+                }
+                
+                XMLSignatureInput result = new XMLSignatureInput(referencedElem);
+                if (!uri.substring(1).startsWith("xpointer(id(")) {
+                    result.setExcludeComments(true);
+                }
+
+                result.setMIMEType("text/xml");
+                if (baseURI != null && baseURI.length() > 0) {
+                    result.setSourceURI(baseURI.concat(uriAttr.getNodeValue()));      
+                } else {
+                    result.setSourceURI(uriAttr.getNodeValue());      
+                }
+                return new ApacheNodeSetData(result);
             }
         } 
 
-        Boolean secureValidation = (Boolean)
-            context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        boolean secVal = false;
-        if (secureValidation != null && secureValidation.booleanValue()) {
-            secVal = true;
-        }
         try {
-            String baseURI = context.getBaseURI();
             ResourceResolver apacheResolver = 
                 ResourceResolver.getInstance(uriAttr, baseURI, secVal);
             XMLSignatureInput in = apacheResolver.resolve(uriAttr, baseURI);

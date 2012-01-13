@@ -51,7 +51,6 @@ import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 
 /**
@@ -243,9 +242,13 @@ public final class DOMReference extends DOMStructure
 
         // unmarshal attributes
         this.uri = DOMUtils.getAttributeValue(refElem, "URI");
-        this.id = DOMUtils.getAttributeValue(refElem, "Id");
-        if (this.id != null) {
-            IdResolver.registerElementById(refElem, this.id);
+        
+        Attr attr = refElem.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            this.id = attr.getValue();
+            refElem.setIdAttributeNode(attr, true);
+        } else {
+            this.id = null;
         }
 
         this.type = DOMUtils.getAttributeValue(refElem, "Type");

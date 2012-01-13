@@ -816,5 +816,120 @@ public class XMLUtils {
         Attr attr = elem.getAttributeNodeNS(null, name);
         return (attr == null) ? null : attr.getValue();
     }
+    
+    /**
+     * This method is a tree-search to help prevent against wrapping attacks. It checks that no
+     * two Elements have ID Attributes that match the "value" argument, if this is the case then
+     * "false" is returned. Note that a return value of "true" does not necessarily mean that
+     * a matching Element has been found, just that no wrapping attack has been detected.
+     */
+    public static boolean protectAgainstWrappingAttack(Node startNode, String value) {
+        Node startParent = startNode.getParentNode();
+        Node processedNode = null;
+        Element foundElement = null;
+        
+        String id = value.trim();
+        if (id.charAt(0) == '#') {
+            id = id.substring(1);
+        }
+
+        while (startNode != null) {
+            if (startNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element se = (Element) startNode;
+                
+                NamedNodeMap attributes = se.getAttributes();
+                if (attributes != null) {
+                    for (int i = 0; i < attributes.getLength(); i++) {
+                        Attr attr = (Attr)attributes.item(i);
+                        if (attr.isId() && id.equals(attr.getValue())) {
+                            if (foundElement == null) {
+                                // Continue searching to find duplicates
+                                foundElement = attr.getOwnerElement();
+                            } else {
+                                log.debug("Multiple elements with the same 'Id' attribute value!");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            processedNode = startNode;
+            startNode = startNode.getFirstChild();
+
+            // no child, this node is done.
+            if (startNode == null) {
+                // close node processing, get sibling
+                startNode = processedNode.getNextSibling();
+            }
+            
+            // no more siblings, get parent, all children
+            // of parent are processed.
+            while (startNode == null) {
+                processedNode = processedNode.getParentNode();
+                if (processedNode == startParent) {
+                    return true;
+                }
+                // close parent node processing (processed node now)
+                startNode = processedNode.getNextSibling();
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * This method is a tree-search to help prevent against wrapping attacks. It checks that no other
+     * Element than the given "knownElement" argument has an ID attribute that matches the "value" 
+     * argument, which is the ID value of "knownElement". If this is the case then "false" is returned.
+     */
+    public static boolean protectAgainstWrappingAttack(
+        Node startNode, Element knownElement, String value
+    ) {
+        Node startParent = startNode.getParentNode();
+        Node processedNode = null;
+        
+        String id = value.trim();
+        if (id.charAt(0) == '#') {
+            id = id.substring(1);
+        }
+
+        while (startNode != null) {
+            if (startNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element se = (Element) startNode;
+                
+                NamedNodeMap attributes = se.getAttributes();
+                if (attributes != null) {
+                    for (int i = 0; i < attributes.getLength(); i++) {
+                        Attr attr = (Attr)attributes.item(i);
+                        if (attr.isId() && id.equals(attr.getValue()) && se != knownElement) {
+                            log.debug("Multiple elements with the same 'Id' attribute value!");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            processedNode = startNode;
+            startNode = startNode.getFirstChild();
+
+            // no child, this node is done.
+            if (startNode == null) {
+                // close node processing, get sibling
+                startNode = processedNode.getNextSibling();
+            }
+            
+            // no more siblings, get parent, all children
+            // of parent are processed.
+            while (startNode == null) {
+                processedNode = processedNode.getParentNode();
+                if (processedNode == startParent) {
+                    return true;
+                }
+                // close parent node processing (processed node now)
+                startNode = processedNode.getNextSibling();
+            }
+        }
+        return true;
+    }
 
 }

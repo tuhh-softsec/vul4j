@@ -45,13 +45,14 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of XMLSignature.
@@ -494,9 +495,12 @@ public final class DOMXMLSignature extends DOMStructure
                 throw new MarshalException(bde);
             }
 
-            id = DOMUtils.getAttributeValue(sigValueElem, "Id");
-            if (id != null) {
-                IdResolver.registerElementById(sigValueElem, id);
+            Attr attr = sigValueElem.getAttributeNodeNS(null, "Id");
+            if (attr != null) {
+                id = attr.getValue();
+                sigValueElem.setIdAttributeNode(attr, true);
+            } else {
+                id = null;
             }
             this.sigValueElem = sigValueElem;
         }

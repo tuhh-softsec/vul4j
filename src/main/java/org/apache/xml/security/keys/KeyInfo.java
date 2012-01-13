@@ -47,9 +47,9 @@ import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.EncryptionConstants;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -136,9 +136,9 @@ public class KeyInfo extends SignatureElementProxy {
     public KeyInfo(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);
         
-        String id = XMLUtils.getAttributeValue(element, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(element, id);
+        Attr attr = element.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            element.setIdAttributeNode(attr, true);
         }
     }
     
@@ -157,7 +157,7 @@ public class KeyInfo extends SignatureElementProxy {
     public void setId(String Id) {
         if (Id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            IdResolver.registerElementById(this.constructionElement, Id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

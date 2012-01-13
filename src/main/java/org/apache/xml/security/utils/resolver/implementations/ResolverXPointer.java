@@ -19,11 +19,12 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -69,7 +70,17 @@ public class ResolverXPointer extends ResourceResolverSpi {
             resultNode = doc;
         } else if (isXPointerId(uriStr)) {
             String id = getXPointerId(uriStr);
-            resultNode = IdResolver.getElementById(doc, id);
+            resultNode = doc.getElementById(id);
+            
+            if (secureValidation) {
+                Element start = uri.getOwnerDocument().getDocumentElement();
+                if (!XMLUtils.protectAgainstWrappingAttack(start, id)) {
+                    Object exArgs[] = { id };
+                    throw new ResourceResolverException(
+                        "signature.Verification.MultipleIDs", exArgs, uri, baseURI
+                    );
+                }
+            }
 
             if (resultNode == null) {
                 Object exArgs[] = { id };

@@ -38,13 +38,13 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.SignerOutputStream;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -363,9 +363,9 @@ public final class XMLSignature extends SignatureElementProxy {
             Object exArgs[] = { Constants._TAG_SIGNATUREVALUE, Constants._TAG_SIGNATURE };
             throw new XMLSignatureException("xml.WrongContent", exArgs);
         }
-        String signatureValueId = XMLUtils.getAttributeValue(signatureValueElement, "Id");
-        if (signatureValueId != null) {
-            IdResolver.registerElementById(signatureValueElement, signatureValueId);
+        Attr signatureValueAttr = signatureValueElement.getAttributeNodeNS(null, "Id");
+        if (signatureValueAttr != null) {
+            signatureValueElement.setIdAttributeNode(signatureValueAttr, true);
         }
 
         // <element ref="ds:KeyInfo" minOccurs="0"/>
@@ -384,9 +384,9 @@ public final class XMLSignature extends SignatureElementProxy {
         Element objectElem =
             XMLUtils.getNextElement(signatureValueElement.getNextSibling());
         while (objectElem != null) {
-            String objectId = XMLUtils.getAttributeValue(objectElem, "Id");
-            if (objectId != null) {
-                IdResolver.registerElementById(objectElem, objectId);
+            Attr objectAttr = objectElem.getAttributeNodeNS(null, "Id");
+            if (objectAttr != null) {
+                objectElem.setIdAttributeNode(objectAttr, true);
             }
 
             NodeList nodes = objectElem.getChildNodes();
@@ -419,7 +419,7 @@ public final class XMLSignature extends SignatureElementProxy {
     public void setId(String id) {
         if (id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            IdResolver.registerElementById(this.constructionElement, id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

@@ -34,11 +34,11 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -112,9 +112,9 @@ public class Manifest extends SignatureElementProxy {
     ) throws XMLSecurityException {
         super(element, baseURI);
         
-        String id = XMLUtils.getAttributeValue(element, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(element, id);
+        Attr attr = element.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            element.setIdAttributeNode(attr, true);
         }
         this.secureValidation = secureValidation;
 
@@ -143,9 +143,9 @@ public class Manifest extends SignatureElementProxy {
 
         for (int i = 0; i < le; i++) {
             Element refElem = referencesEl[i];
-            String refId = XMLUtils.getAttributeValue(refElem, "Id");
-            if (refId != null) {
-                IdResolver.registerElementById(refElem, refId);
+            Attr refAttr = refElem.getAttributeNodeNS(null, "Id");
+            if (refAttr != null) {
+                refElem.setIdAttributeNode(refAttr, true);
             }
             this.references.add(null);
         }
@@ -244,7 +244,7 @@ public class Manifest extends SignatureElementProxy {
     public void setId(String Id) {
         if (Id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            IdResolver.registerElementById(this.constructionElement, Id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

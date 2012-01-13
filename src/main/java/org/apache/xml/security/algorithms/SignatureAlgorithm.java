@@ -34,8 +34,7 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.ClassLoaderUtils;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.IdResolver;
-import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -121,9 +120,9 @@ public class SignatureAlgorithm extends Algorithm {
         super(element, BaseURI);      
         algorithmURI = this.getURI();
         
-        String id = XMLUtils.getAttributeValue(element, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(element, id);
+        Attr attr = element.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            element.setIdAttributeNode(attr, true);
         }
         
         if (secureValidation && (XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(algorithmURI)

@@ -19,11 +19,12 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.utils.IdResolver;
+import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -79,12 +80,21 @@ public class ResolverFragment extends ResourceResolverSpi {
              */
             String id = uriNodeValue.substring(1);
 
-            selectedElem = IdResolver.getElementById(doc, id);
+            selectedElem = doc.getElementById(id);
             if (selectedElem == null) {
                 Object exArgs[] = { id };
                 throw new ResourceResolverException(
                     "signature.Verification.MissingID", exArgs, uri, baseURI
                 );
+            }
+            if (secureValidation) {
+                Element start = uri.getOwnerDocument().getDocumentElement();
+                if (!XMLUtils.protectAgainstWrappingAttack(start, id)) {
+                    Object exArgs[] = { id };
+                    throw new ResourceResolverException(
+                        "signature.Verification.MultipleIDs", exArgs, uri, baseURI
+                    );
+                }
             }
             if (log.isDebugEnabled()) {
                 log.debug(

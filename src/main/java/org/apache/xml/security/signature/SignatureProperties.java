@@ -20,9 +20,9 @@ package org.apache.xml.security.signature;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,18 +56,18 @@ public class SignatureProperties extends SignatureElementProxy {
     public SignatureProperties(Element element, String BaseURI) throws XMLSecurityException {
         super(element, BaseURI);
         
-        String id = XMLUtils.getAttributeValue(element, "Id");
-        if (id != null) {
-            IdResolver.registerElementById(element, id);
+        Attr attr = element.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            element.setIdAttributeNode(attr, true);
         }
         
         int length = getLength();
         for (int i = 0; i < length; i++) {
             Element propertyElem =
                 XMLUtils.selectDsNode(this.constructionElement, Constants._TAG_SIGNATUREPROPERTY, i);
-            String propertyId = XMLUtils.getAttributeValue(propertyElem, "Id");
-            if (propertyId != null) {
-                IdResolver.registerElementById(propertyElem, propertyId);
+            Attr propertyAttr = propertyElem.getAttributeNodeNS(null, "Id");
+            if (propertyAttr != null) {
+                propertyElem.setIdAttributeNode(propertyAttr, true);
             }
         }
     }
@@ -114,7 +114,7 @@ public class SignatureProperties extends SignatureElementProxy {
     public void setId(String Id) {
         if (Id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            IdResolver.registerElementById(this.constructionElement, Id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

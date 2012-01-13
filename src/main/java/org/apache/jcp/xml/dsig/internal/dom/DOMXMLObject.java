@@ -30,12 +30,12 @@ import javax.xml.crypto.dsig.*;
 
 import java.security.Provider;
 import java.util.*;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of XMLObject.
@@ -95,9 +95,13 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
     {
         // unmarshal attributes
         this.encoding = DOMUtils.getAttributeValue(objElem, "Encoding");
-        this.id = DOMUtils.getAttributeValue(objElem, "Id");
-        if (this.id != null) {
-            IdResolver.registerElementById(objElem, this.id);
+        
+        Attr attr = objElem.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            this.id = attr.getValue();
+            objElem.setIdAttributeNode(attr, true);
+        } else {
+            this.id = null;
         }
         this.mimeType = DOMUtils.getAttributeValue(objElem, "MimeType");
 

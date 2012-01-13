@@ -43,7 +43,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -138,7 +137,7 @@ public class CreateMerlinsExampleSixteen {
 
         Notaries.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", "");
         Notaries.setAttributeNS(null, "Id", "notaries");
-        IdResolver.registerElementById(Notaries, "Id");
+        Notaries.setIdAttributeNS(null, "Id", true);
 
         {
             Element Notary = doc.createElementNS(null, "Notary");

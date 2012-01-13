@@ -43,7 +43,6 @@ import org.apache.xml.security.transforms.params.InclusiveNamespaces;
 import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.DigesterOutputStream;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.UnsyncBufferedOutputStream;
 import org.apache.xml.security.utils.XMLUtils;
@@ -297,7 +296,7 @@ public class Reference extends SignatureElementProxy {
     public void setId(String Id) {
         if (Id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            IdResolver.registerElementById(this.constructionElement, Id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

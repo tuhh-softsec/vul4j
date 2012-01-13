@@ -104,6 +104,7 @@ public class Bug45961Test extends org.junit.Assert {
         object = new ObjectContainer(document);
         object.appendChild(root2);
         object.setId(OBJECT_ID);
+        root.appendChild(object.getElement());
 
         signature.addDocument("#" + OBJECT_ID);
         signature.addDocument("", getTransforms(document));

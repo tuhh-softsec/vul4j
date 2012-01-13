@@ -85,6 +85,7 @@ public class CreateSignatureTest extends org.junit.Assert {
 
         XMLSignature sig = 
             new XMLSignature(doc, null, XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        envelope.appendChild(sig.getElement());
 
         ObjectContainer object1 = new ObjectContainer(doc);
         object1.setId("object-1");

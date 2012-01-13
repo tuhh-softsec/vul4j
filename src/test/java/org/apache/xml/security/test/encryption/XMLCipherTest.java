@@ -47,7 +47,6 @@ import org.apache.xml.security.encryption.EncryptionMethod;
 import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.EncryptionConstants;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -614,7 +613,7 @@ public class XMLCipherTest extends org.junit.Assert {
             // Add the cipher text
             Element encryptedElement = d.createElement("CipherText");
             encryptedElement.setAttributeNS(null, "Id", "CipherTextId");
-            IdResolver.registerElementById(encryptedElement, "CipherTextId");
+            encryptedElement.setIdAttributeNS(null, "Id", true);
             encryptedElement.appendChild(d.createTextNode(tstBase64EncodedString));
             docElement.appendChild(encryptedElement);
             // dump(d);

@@ -27,7 +27,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Element;
 
@@ -97,7 +96,7 @@ public class AxisSigner {
         );
 
         bodyElem.setAttributeNS(SOAPSECNS, "SOAP-SEC:id", "Body");
-        IdResolver.registerElementById(bodyElem, "Body");
+        bodyElem.setIdAttributeNS(SOAPSECNS, "id", true);
 
         Element soapSignatureElem = doc.createElementNS(SOAPSECNS, "SOAP-SEC:Signature");
 

@@ -20,7 +20,6 @@ package org.apache.xml.security.signature;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.IdResolver;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -80,7 +79,7 @@ public class SignatureProperty extends SignatureElementProxy {
     public void setId(String Id) {
         if (Id != null) {
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            IdResolver.registerElementById(this.constructionElement, Id);
+            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 

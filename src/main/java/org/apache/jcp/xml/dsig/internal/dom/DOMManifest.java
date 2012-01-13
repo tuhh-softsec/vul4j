@@ -30,11 +30,11 @@ import javax.xml.crypto.dsig.*;
 
 import java.security.Provider;
 import java.util.*;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import org.apache.xml.security.utils.IdResolver;
 
 /**
  * DOM-based implementation of Manifest.
@@ -87,9 +87,12 @@ public final class DOMManifest extends DOMStructure implements Manifest {
                        Provider provider)
         throws MarshalException
     {
-        this.id = DOMUtils.getAttributeValue(manElem, "Id");
-        if (this.id != null) {
-            IdResolver.registerElementById(manElem, this.id);
+        Attr attr = manElem.getAttributeNodeNS(null, "Id");
+        if (attr != null) {
+            this.id = attr.getValue();
+            manElem.setIdAttributeNode(attr, true);
+        } else {
+            this.id = null;
         }
         
         Boolean secureValidation = (Boolean)

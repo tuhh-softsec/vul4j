@@ -26,7 +26,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.IdResolver;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,9 +76,8 @@ public class InvalidKeyTest extends org.junit.Assert {
             assertion = assertion.getNextSibling();
         }
         Attr attr = ((Element)assertion).getAttributeNodeNS(null, "AssertionID");
-        String id = (attr == null) ? null : attr.getValue();
-        if (id != null) {
-            IdResolver.registerElementById((Element)assertion, id);
+        if (attr != null) {
+            ((Element)assertion).setIdAttributeNode(attr, true);
         }
         
         NodeList nl = assertion.getChildNodes();
