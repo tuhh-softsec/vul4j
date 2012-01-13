@@ -65,20 +65,17 @@ public class HttpResource extends Resource {
 		// Proceed with request
 		boolean proxy = resourceContext.isProxy();
 		boolean preserveHost = resourceContext.isPreserveHost();
-		HttpClientRequest httpClientRequest = new HttpClientRequest(url,
-				originalRequest, proxy, preserveHost);
+		HttpClientRequest httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
 		httpClientRequest.setCookieStore(CookieAdapter.convertCookieStore(userContext.getCookieStore()));
+		httpClientRequest.setConfiguration(driver.getConfiguration());
 		if (resourceContext.getValidators() != null) {
-			for (Entry<String, String> header : resourceContext.getValidators()
-					.entrySet()) {
-				LOG.debug("Adding validator: " + header.getKey() + ": "
-						+ header.getValue());
+			for (Entry<String, String> header : resourceContext.getValidators().entrySet()) {
+				LOG.debug("Adding validator: {}: {}", header.getKey(), header.getValue());
 				httpClientRequest.addHeader(header.getKey(), header.getValue());
 			}
 		}
 		// Auth handler
-		AuthenticationHandler authenticationHandler = driver
-				.getAuthenticationHandler();
+		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
 
 		// Filter
@@ -87,8 +84,7 @@ public class HttpResource extends Resource {
 
 		httpClientResponse = httpClientRequest.execute(httpClient);
 		// Save the cookies to session if necessary
-		resourceContext.getDriver().saveUserContext(
-				resourceContext.getOriginalRequest());
+		resourceContext.getDriver().saveUserContext(resourceContext.getOriginalRequest());
 
 		while (authenticationHandler.needsNewRequest(httpClientResponse,
 				resourceContext)) {

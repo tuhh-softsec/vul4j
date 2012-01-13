@@ -16,9 +16,13 @@ package org.esigate.http;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -33,6 +37,7 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
+import org.esigate.DriverConfiguration;
 import org.esigate.api.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +55,11 @@ public class HttpClientRequest {
 	private String uri;
 	private final HttpRequest originalRequest;
 	private final boolean proxy;
-	private BasicHttpRequest httpRequest;
+	private org.apache.http.HttpRequest httpRequest;
 	private HashMap<String, String> headers;
 	private boolean preserveHost = false;
 	private CookieStore cookieStore;
+	private DriverConfiguration configuration;
 
 	public HttpClientRequest(String uri, HttpRequest originalRequest, boolean proxy, boolean preserveHost) {
 		// FIXME HTTPClient 4 uses URI class that is too much restrictive about
@@ -69,7 +75,7 @@ public class HttpClientRequest {
 	private static final String[] UNSAFE = { "{", "}", "|", "\\", "^", "~", "[", "]", "`" };
 	private static final String[] ESCAPED = { "%7B", "%7D", "%7C", "%5C", "%5E", "%7E", "%5B", "%5D", "%60" };
 
-	private String escapeUnsafeCharacters(String url) {
+	private static String escapeUnsafeCharacters(String url) {
 		String result = url;
 		for (int i = 0; i < UNSAFE.length; i++) {
 			result = result.replaceAll(Pattern.quote(UNSAFE[i]), ESCAPED[i]);
@@ -105,47 +111,44 @@ public class HttpClientRequest {
 		return result;
 	}
 
-	/**
-	 * This method copies the body of the request without modification.
-	 * 
-	 * @throws IOException
-	 *             if problem getting the request
-	 */
-	private void copyEntity(HttpRequest req, HttpEntityEnclosingRequest httpEntityEnclosingRequest) throws IOException {
-		long contentLengthLong = -1;
-		String contentLength = req.getHeader(HttpHeaders.CONTENT_LENGTH);
-		if (contentLength != null) {
-			contentLengthLong = Long.parseLong(contentLength);
+	/** This method copies the body of the request without modification. */
+	private static void copyEntity(HttpRequest src, HttpEntityEnclosingRequest dest) throws IOException {
+		long contentLength = (src.getHeader(HttpHeaders.CONTENT_LENGTH) != null)
+				? Long.parseLong(src.getHeader(HttpHeaders.CONTENT_LENGTH))
+				: -1;
+		InputStreamEntity inputStreamEntity = new InputStreamEntity(src.getInputStream(), contentLength);
+		if (src.getContentType() != null) {
+			inputStreamEntity.setContentType(src.getContentType());
 		}
-		InputStreamEntity inputStreamEntity = new InputStreamEntity(req.getInputStream(), contentLengthLong);
-		String contentType = req.getContentType();
-		if (contentType != null) {
-			inputStreamEntity.setContentType(contentType);
+		if (src.getHeader(HttpHeaders.CONTENT_ENCODING) != null) {
+			inputStreamEntity.setContentEncoding(src.getHeader(HttpHeaders.CONTENT_ENCODING));
 		}
-		String contentEncoding = req.getHeader(HttpHeaders.CONTENT_ENCODING);
-		if (contentEncoding != null) {
-			inputStreamEntity.setContentEncoding(contentEncoding);
-		}
-		httpEntityEnclosingRequest.setEntity(inputStreamEntity);
+		dest.setEntity(inputStreamEntity);
 	}
 
-	private void buildHttpMethod() throws IOException {
-		String method;
-		if (proxy) {
-			method = originalRequest.getMethod();
-		} else {
-			method = "GET";
-		}
-		if ("GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method) || "OPTIONS".equalsIgnoreCase(method) || "TRACE".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
-			httpRequest = new BasicHttpRequest(method, uri);
-		} else if ("POST".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method) || "PROPFIND".equalsIgnoreCase(method) || "PROPPATCH".equalsIgnoreCase(method) || "MKCOL".equalsIgnoreCase(method)
-				|| "COPY".equalsIgnoreCase(method) || "MOVE".equalsIgnoreCase(method) || "LOCK".equalsIgnoreCase(method) || "UNLOCK".equalsIgnoreCase(method)) {
-			BasicHttpEntityEnclosingRequest genericHttpEntityEnclosingRequest = new BasicHttpEntityEnclosingRequest(method, uri);
-			copyEntity(originalRequest, genericHttpEntityEnclosingRequest);
-			httpRequest = genericHttpEntityEnclosingRequest;
+	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(
+			Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
+	private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(
+			Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
+
+	/** Method creates appropriate apache http request object for request method provided and fills request body if it should exist. */
+	private static org.apache.http.HttpRequest createRequestObject(String uri, String method, HttpRequest originalRequest)
+			throws IOException {
+		if (SIMPLE_METHODS.contains(method)) {
+			return new BasicHttpRequest(method, uri);
+		} else if (ENTITY_METHODS.contains(method)) {
+			HttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(method, uri);
+			copyEntity(originalRequest, result);
+			return result;
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
+	}
+
+	private void buildHttpMethod() throws IOException {
+		String method = (proxy) ? originalRequest.getMethod().toUpperCase() : "GET";
+		httpRequest = createRequestObject(uri, method, originalRequest);
+
 		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
@@ -159,34 +162,29 @@ public class HttpClientRequest {
 		}
 		
 		Integer maxWait = originalRequest.getFetchMaxWait();
-		if(maxWait!=null)
+		if (maxWait != null) {
 			HttpConnectionParams.setSoTimeout(httpRequest.getParams(), maxWait);
+		}
 		
-		copyRequestHeader(HttpHeaders.ACCEPT);
-		copyRequestHeader(HttpHeaders.ACCEPT_ENCODING);
-		copyRequestHeader(HttpHeaders.ACCEPT_LANGUAGE);
-		copyRequestHeader(HttpHeaders.ACCEPT_CHARSET);
-		copyRequestHeader(HttpHeaders.CACHE_CONTROL);
-		copyRequestHeader(HttpHeaders.PRAGMA);
-		String xForwardedFor = originalRequest.getHeader("X-Forwarded-For");
-		if (xForwardedFor == null) {
-			xForwardedFor = originalRequest.getRemoteAddr();
+		// process request headers
+		for (String name : originalRequest.getHeaderNames()) {
+			if (configuration == null || !configuration.isBlackListed(name)) {
+				String value = originalRequest.getHeader(name);
+				if (value != null) {
+					httpRequest.addHeader(name, value);
+				}
+			}
 		}
-		if (xForwardedFor != null) {
-			httpRequest.addHeader("X-Forwarded-For", xForwardedFor);
+		// process X-Forwarded-For header (is missing in request and not blacklisted) -> use remote address instead
+		if (originalRequest.getHeader("X-Forwarded-For") == null 
+				&& (configuration == null || !configuration.isBlackListed("X-Forwarded-For"))
+				&& originalRequest.getRemoteAddr() != null) {
+			httpRequest.addHeader("X-Forwarded-For", originalRequest.getRemoteAddr());
 		}
+		// process other headers
 		if (headers != null) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
-			}
-		}
-	}
-
-	private void copyRequestHeader(String name) {
-		if (originalRequest != null) {
-			String value = originalRequest.getHeader(name);
-			if (value != null) {
-				httpRequest.setHeader(name, value);
 			}
 		}
 	}
@@ -230,5 +228,9 @@ public class HttpClientRequest {
 
 	public void setCookieStore(CookieStore cookieStore) {
 		this.cookieStore = cookieStore;
+	}
+
+	public void setConfiguration(DriverConfiguration configuration) {
+		this.configuration = configuration;
 	}
 }

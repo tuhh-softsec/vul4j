@@ -2,8 +2,6 @@ package org.esigate;
 
 import java.util.Properties;
 
-import org.esigate.DriverConfiguration;
-
 import junit.framework.TestCase;
 
 /**
@@ -75,46 +73,43 @@ public class DriverConfigurationTest extends TestCase {
 	}
 
 	public void testIsBlackListed() {
-		// by default only 'Content-Length,Content-Encoding,Transfer-Encoding'
-		// is blacklisted
+		// by default only 'Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie' are blacklisted
 		Properties properties = new Properties();
 		DriverConfiguration config = new DriverConfiguration("test-parsable",
 				properties);
 
-		assertTrue("null header should be blacklisted",
-				config.isBlackListed(null));
-		assertTrue("empty header should be blacklisted",
-				config.isBlackListed(""));
+		validateHeader(config, null, true);
+		validateHeader(config, "", true);
 
-		assertTrue("'Content-Length' header should be blacklisted",
-				config.isBlackListed("Content-Length"));
-		assertTrue(
-				"'Content-Length' header should be blacklisted ignoring case",
-				config.isBlackListed("Content-Length".toUpperCase()));
-		assertTrue(
-				"'Content-Length' header should be blacklisted ignoring case",
-				config.isBlackListed("Content-Length".toLowerCase()));
-		assertTrue("'Content-Encoding' header should be blacklisted",
-				config.isBlackListed("Content-Encoding"));
-		assertTrue("'Transfer-Encoding' header should be blacklisted",
-				config.isBlackListed("Transfer-Encoding"));
-		assertTrue("'Set-Cookie' header should be blacklisted",
-				config.isBlackListed("Set-Cookie"));
+		validateHeader(config, "Content-Length", true);
+		validateHeader(config, "Content-Length".toUpperCase(), true);
+		validateHeader(config, "Content-Length".toLowerCase(), true);
+		validateHeader(config, "Content-Encoding", true);
+		validateHeader(config, "Transfer-Encoding", true);
+		validateHeader(config, "Set-Cookie", true);
+		validateHeader(config, "Cookie", true);
+		validateHeader(config, "Connection", true);
+		validateHeader(config, "Keep-Alive", true);
+		validateHeader(config, "Proxy-Authenticate", true);
+		validateHeader(config, "Proxy-Authorization", true);
+		validateHeader(config, "TE", true);
+		validateHeader(config, "Trailers", true);
+		validateHeader(config, "Upgrade", true);
 
 		// blacklisted headers are specified via 'blackListedHeaders' property
 		properties = new Properties();
 		properties.setProperty("blackListedHeaders", "header");
 		config = new DriverConfiguration("test-parsable", properties);
 
-		assertTrue("null header should be blacklisted",
-				config.isBlackListed(null));
-		assertTrue("empty header should be blacklisted",
-				config.isBlackListed(""));
-		assertFalse("'Content-Length' header should not be blacklisted",
-				config.isBlackListed("Content-Length"));
-		assertTrue("'header' header should be blacklisted",
-				config.isBlackListed("header"));
-		assertTrue("'header' header should be blacklisted ignoring cas",
-				config.isBlackListed("header".toUpperCase()));
+		validateHeader(config, null, true);
+		validateHeader(config, "", true);
+		validateHeader(config, "Content-Length", false);
+		validateHeader(config, "header", true);
+		validateHeader(config, "header".toUpperCase(), true);
+	}
+
+	private void validateHeader(DriverConfiguration config, String header, boolean blacklisted) {
+		assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
+				config.isBlackListed(header), blacklisted);
 	}
 }

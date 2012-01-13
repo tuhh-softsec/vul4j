@@ -64,12 +64,20 @@
                 </tr>
                 <tr>
                     <td>blackListedHeaders</td>
-                    <td>List of comma separated headers which will be removed from server's response before returning to the client. By default, ignored headers are Content-Length, Content-Encoding and Transfer-Encoding.
+                    <td>List of comma separated headers which will be removed from client request before sending it to the server.
+                    Also these headers will be removed from server's response before returning to the client.
+                    Such headers are also known as 'hop-by-hop' headers (see part 13.5.1 of
+                    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</a>)
+                    By default, ignored headers are Content-Length, Content-Encoding, Transfer-Encoding, Set-Cookie, Cookie,
+                    Connection, Keep-Alive, Proxy-Authenticate, Proxy-Authorization, TE, Trailers, Upgrade.
                     Use this syntax to set ignored headers :
-                    <code>blackListedHeaders=Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie</code>
+                    <code>blackListedHeaders=Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</code>
+                    Please note that Content-Length and Content-Encoding headers are copied from client request to the server
+                    as they are required for correct request processing. However due to the possibility of having different response encodings
+                    and subsequent response processing those headers are removed from servers' response before returning it to the client.
                     </td>
                     <td>No</td>
-                    <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie</td>
+                    <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</td>
                 </tr>
 				<tr>
 					<td>timeout</td>

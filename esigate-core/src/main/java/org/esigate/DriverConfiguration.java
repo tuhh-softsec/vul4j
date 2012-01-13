@@ -64,7 +64,8 @@ public class DriverConfiguration {
 	private final Set<String> blackListedHeaders;
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
-	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie";
+	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,"
+			+ "Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade";
 
 	private URL baseURLasURL = null;
 
@@ -187,8 +188,7 @@ public class DriverConfiguration {
 
 		// populate headers black list
 		blackListedHeaders = new HashSet<String>();
-		String headers = props.getProperty("blackListedHeaders",
-				DEFAULT_BLACK_LISTED_HEADERS);
+		String headers = props.getProperty("blackListedHeaders", DEFAULT_BLACK_LISTED_HEADERS);
 		String[] split = headers.split(",");
 		for (String header : split) {
 			blackListedHeaders.add(header.toLowerCase());
