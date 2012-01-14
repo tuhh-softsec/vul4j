@@ -1,6 +1,7 @@
 package org.codehaus.plexus.archiver.zip;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
@@ -29,7 +30,18 @@ public class ZipUnArchiverTest
         zu.extract( "", outputDirectory );
         File testScript = new File( outputDirectory, "test.sh" );
 
-        assertTrue( testScript.canExecute() );
+        final Method canExecute;
+        try
+        {
+            canExecute = File.class.getMethod( "canExecute" );
+            canExecute.invoke( testScript );
+            assertTrue( (Boolean) canExecute.invoke( testScript ) );
+        }
+        catch ( NoSuchMethodException ignore )
+        {
+
+            return;
+        }
     }
 
     private void runUnarchiver( String path, FileSelector[] selectors, boolean[] results )
