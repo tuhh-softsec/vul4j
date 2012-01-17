@@ -7,49 +7,15 @@
 	</properties>
 	<body>
 	<h1>Maven</h1>
-		<section name="Using the Website Assembling Toolkit in a Maven project">
+		<section name="Using ESIGate in a Maven project">
 			<p>
-				The Website Assembling Toolkit has not been deployed yet on Maven
-				central
-				repository. You have to add the Website Assembling Toolkit repository to
-				your
-				pom.xml
+				Esigate is deployed on Maven	central repository.
 			</p>
 
-			<source><![CDATA[
-<repository>
-	<id>esigate-repository</id>
-	<name>Website Assembling Toolkit repository</name>
-	<url>http://www.esigate.org/maven/repository</url>
-</repository>
-]]></source>
 		</section>
 
-		<section name="Repositories">
-			<table>
-				<tr>
-					<th>Type</th>
-					<th>URL</th>
-					<th>Description</th>
-				</tr>
-				<tr>
-					<td>Release</td>
-					<td>
-						<a href="http://www.esigate.org/maven/repository/">http://www.esigate.org/maven/repository/</a>
-					</td>
-					<td>Official releases of ESIGate, usable on production.</td>
-				</tr>
-				<tr>
-					<td>Snapshots</td>
-					<td>
-						<a href="http://www.esigate.org/maven/snapshots/">http://www.esigate.org/maven/snapshots/</a>
-					</td>
-					<td>Development builds of ESIGate, usable for compatibility tests and beta testing.</td>
-				</tr>
-			</table>
-		</section>
 
-		<section name="Adding dependency on ESI Gate">
+		<section name="Adding dependency on ESIGate">
 			<p>
 				Then you can add the dependency. For the core API:
 			</p>

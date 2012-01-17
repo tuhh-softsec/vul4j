@@ -44,9 +44,7 @@
 			</section>
 			<section name="ESI 1.0 specification support">
 				<p>
-					In addition to its native syntax using HTML comments, the Website Assembling
-					Toolkit partially supports ESI specification (for now, only esi:include and
-					esi comments are supported).
+					In addition to its native syntax using HTML comments, ESIGate partially supports <a href="esi.html">ESI</a> specification.
 	</p>
 			</section>
 			<section name="Xpath expressions and XSLT">

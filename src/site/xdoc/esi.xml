@@ -9,8 +9,7 @@
 		<section name="Edge Side Include (ESI)">
 			<p>
 				Currently aggregator servlet supports all features, according with
-				<a href="http://www.w3.org/TR/esi-lang">ESI language specification</a>, 
-				excluding Inline tag. 
+				<a href="http://www.w3.org/TR/esi-lang">ESI language specification</a>,	excluding Inline tag. 
 			</p>
 		</section>
 	</body>
