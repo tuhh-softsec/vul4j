@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+From: Jack
+Bar: 001
+
+Name: Fudz
+Bar: 002
+
+Name: Redz
+Baz: 002

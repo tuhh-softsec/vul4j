@@ -17,13 +17,12 @@ package org.codehaus.plexus.archiver.jar;
  *
  */
 
-import org.codehaus.plexus.PlexusTestCase;
-
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Enumeration;
+import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author Emmanuel Venisse
@@ -134,16 +133,25 @@ public class ManifestTest
         attr.setValue( longLineOfChars );
         attr.write( new PrintWriter( writer ) );
         writer.flush();
-        assertEquals( "should be multiline", 
+        assertEquals( "should be multiline",
                       "test: 123456789 123456789 123456789 123456789 123456789 123456789 1234" + Manifest.EOL +
                        " 56789 123456789 123456789 123456789 " + Manifest.EOL,
                       writer.toString() );
     }
-    
+
+
+    public void testDualClassPath()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestWithDualClassPath.mf" );
+        final Manifest.Attribute attribute = manifest.getMainSection().getAttribute( "Class-Path" );
+        assertEquals( "../config/ classes12.jar baz", attribute.getValue() );
+    }
+
     public void testAttributeMultiLineValue()
         throws Exception
     {
-        checkMultiLineAttribute( 
+        checkMultiLineAttribute(
              "123456789" + Manifest.EOL + "123456789",
              "123456789" + Manifest.EOL + " 123456789" + Manifest.EOL );
     }
@@ -151,7 +159,7 @@ public class ManifestTest
     public void testAttributeDifferentLineEndings()
         throws Exception
     {
-        checkMultiLineAttribute( 
+        checkMultiLineAttribute(
             "\tA\rB\n\t C\r\n \tD\n\r",
             "\tA" + Manifest.EOL +
                 " B" + Manifest.EOL +
@@ -174,7 +182,7 @@ public class ManifestTest
         // so in case of failure you can see what went wrong.
         System.err.println( "String: " + dumpString( writer.toString() ) );
 
-        assertEquals( "should be indented multiline", 
+        assertEquals( "should be indented multiline",
                       "test: " + expected, writer.toString() );
     }
 

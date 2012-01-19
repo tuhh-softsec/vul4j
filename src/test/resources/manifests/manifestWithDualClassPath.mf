@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: ../config/
+  classes12.jar
+From: Jack
+Ape: Fud
+Class-Path: baz
