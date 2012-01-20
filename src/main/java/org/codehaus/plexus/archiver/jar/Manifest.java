@@ -602,7 +602,7 @@ public class Manifest
          * @return an Enumeration of Strings, each string being the lower case
          *         key of an attribute of the section.
          */
-        public Enumeration getAttributeKeys()
+        public Enumeration<String> getAttributeKeys()
         {
             return attributeIndex.elements();
         }

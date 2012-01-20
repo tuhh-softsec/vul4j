@@ -49,8 +49,8 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            if ( me.getMessage().indexOf(
-                "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
+            if ( !me.getMessage().contains(
+                "is not valid as it does not contain a name and a value separated by ': '" ) )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
@@ -67,8 +67,8 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            if ( me.getMessage().indexOf(
-                "is not valid as it does not contain a name and a value separated by ': '" ) == -1 )
+            if ( !me.getMessage().contains(
+                "is not valid as it does not contain a name and a value separated by ': '" ) )
             {
                 fail( "Manifest isn't well formed. It must generate an exception." );
             }
@@ -83,7 +83,7 @@ public class ManifestTest
         assertTrue( warnings.hasMoreElements() );
         String warn = (String) warnings.nextElement();
         assertFalse( warnings.hasMoreElements() );
-        boolean hasWarning = warn.indexOf( "\"Name\" attributes should not occur in the main section" ) != -1;
+        boolean hasWarning = warn.contains( "\"Name\" attributes should not occur in the main section" );
         assertEquals( "Expected warning about Name in main section", true, hasWarning );
     }
 
@@ -97,8 +97,7 @@ public class ManifestTest
         }
         catch ( ManifestException me )
         {
-            boolean hasWarning = me.getMessage().indexOf(
-                "Manifest sections should start with a \"Name\" attribute" ) != -1;
+            boolean hasWarning = me.getMessage().contains( "Manifest sections should start with a \"Name\" attribute" );
             assertEquals( "Expected warning about section not starting with Name: attribute", true, hasWarning );
         }
     }
@@ -111,7 +110,7 @@ public class ManifestTest
         assertTrue( warnings.hasMoreElements() );
         String warn = (String) warnings.nextElement();
         assertFalse( warnings.hasMoreElements() );
-        boolean hasWarning = warn.indexOf( "Manifest attributes should not start with \"From\"" ) != -1;
+        boolean hasWarning = warn.contains( "Manifest attributes should not start with \"From\"" );
         assertEquals( "Expected warning about From: attribute", true, hasWarning );
     }
 
@@ -166,6 +165,16 @@ public class ManifestTest
                 " \t C" + Manifest.EOL +
                 "  \tD" + Manifest.EOL );
     }
+    
+    public void testIterators()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        String key = manifest.getMainSection().getAttributeKeys().nextElement();
+        // Unsure if we can assert on the value here. Maps and ordering and all that
+        assertEquals( "bar", key );
+        
+    }
 
     public void testDefaultBehaviour()
     {
@@ -201,21 +210,25 @@ public class ManifestTest
 
         char [] chars = in.toCharArray();
 
-        for ( int i = 0; i < chars.length; i ++ )
+        for ( char aChar : chars )
         {
-            switch ( chars[i] )
+            switch ( aChar )
             {
-                case '\t': out+="\\t";
-                       break;
-                case '\r': out+="\\r";
-                       break;
-                case '\n': out+="\\n";
-                       break;
-                case ' ': out+="\\s";
-                      break;
+                case '\t':
+                    out += "\\t";
+                    break;
+                case '\r':
+                    out += "\\r";
+                    break;
+                case '\n':
+                    out += "\\n";
+                    break;
+                case ' ':
+                    out += "\\s";
+                    break;
                 default:
-                      out+= chars[i];
-                      break;
+                    out += aChar;
+                    break;
             }
         }
 
@@ -225,6 +238,10 @@ public class ManifestTest
 
     /**
      * Reads a Manifest file.
+     * @param filename the file
+     * @return a manifest
+     * @throws java.io.IOException .
+     * @throws ManifestException .
      */
     private Manifest getManifest( String filename )
         throws IOException, ManifestException
