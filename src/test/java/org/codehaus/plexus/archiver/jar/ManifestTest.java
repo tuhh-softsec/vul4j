@@ -167,6 +167,15 @@ public class ManifestTest
                 "  \tD" + Manifest.EOL );
     }
 
+    public void testDefaultBehaviour()
+    {
+        Manifest manifest = new Manifest(  );
+        Manifest.Section mainSection = manifest.getMainSection();
+        assertNotNull( mainSection );
+        Manifest.Attribute bar = mainSection.getAttribute( "Bar" );
+        assertNull( bar);
+        assertNull( manifest.getSection( "Fud" ) );
+    }
 
     public void checkMultiLineAttribute( String in, String expected )
         throws Exception
