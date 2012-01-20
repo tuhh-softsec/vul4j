@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Enumeration;
+import java.util.jar.Attributes;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
@@ -47,13 +48,8 @@ public class ManifestTest
             getManifest( "src/test/resources/manifests/manifest2.mf" );
             fail( "Manifest isn't well formed. It must be generate an exception." );
         }
-        catch ( ManifestException me )
+        catch ( IOException ignore )
         {
-            if ( !me.getMessage().contains(
-                "is not valid as it does not contain a name and a value separated by ': '" ) )
-            {
-                fail( "Manifest isn't well formed. It must generate an exception." );
-            }
         }
     }
 
@@ -65,26 +61,9 @@ public class ManifestTest
             getManifest( "src/test/resources/manifests/manifest3.mf" );
             fail( "Manifest isn't well formed. It must be generate an exception." );
         }
-        catch ( ManifestException me )
+        catch ( IOException ignore )
         {
-            if ( !me.getMessage().contains(
-                "is not valid as it does not contain a name and a value separated by ': '" ) )
-            {
-                fail( "Manifest isn't well formed. It must generate an exception." );
-            }
         }
-    }
-
-    public void testManifestReader4()
-        throws Exception
-    {
-        Manifest manifest = getManifest( "src/test/resources/manifests/manifest4.mf" );
-        Enumeration warnings = manifest.getWarnings();
-        assertTrue( warnings.hasMoreElements() );
-        String warn = (String) warnings.nextElement();
-        assertFalse( warnings.hasMoreElements() );
-        boolean hasWarning = warn.contains( "\"Name\" attributes should not occur in the main section" );
-        assertEquals( "Expected warning about Name in main section", true, hasWarning );
     }
 
     public void testManifestReader5()
@@ -95,35 +74,20 @@ public class ManifestTest
             getManifest( "src/test/resources/manifests/manifest5.mf" );
             fail();
         }
-        catch ( ManifestException me )
+        catch ( IOException ignore )
         {
-            boolean hasWarning = me.getMessage().contains( "Manifest sections should start with a \"Name\" attribute" );
-            assertEquals( "Expected warning about section not starting with Name: attribute", true, hasWarning );
         }
     }
 
-    public void testManifestReader6()
-        throws Exception
+    public void testAddConfiguredSection()
+        throws ManifestException
     {
-        Manifest manifest = getManifest( "src/test/resources/manifests/manifest6.mf" );
-        Enumeration warnings = manifest.getWarnings();
-        assertTrue( warnings.hasMoreElements() );
-        String warn = (String) warnings.nextElement();
-        assertFalse( warnings.hasMoreElements() );
-        boolean hasWarning = warn.contains( "Manifest attributes should not start with \"From\"" );
-        assertEquals( "Expected warning about From: attribute", true, hasWarning );
-    }
-
-    public void testGetDefaultManifest()
-        throws Exception
-    {
-        Manifest mf = Manifest.getDefaultManifest();
-        StringWriter writer = new StringWriter();
-        mf.write( new PrintWriter( writer ) );
-        String s = writer.toString();
-        assertTrue( s.contains( "Manifest-Version" )  );
-        assertTrue( s.contains( "Created-By" )  );
-        assertTrue( s.contains( "Archiver-Version" )  );
+        Manifest manifest = new Manifest();
+        Manifest.Section section = new Manifest.Section();
+        section.setName( "fud" );
+        section.addConfiguredAttribute( new Manifest.Attribute( "bar", "baz" ) );
+        manifest.addConfiguredSection( section );
+        assertEquals( "baz", manifest.getAttributes( "fud" ).getValue( "bar" ) );
     }
 
     public void testAttributeLongLineWrite()
@@ -131,8 +95,9 @@ public class ManifestTest
     {
         StringWriter writer = new StringWriter();
         Manifest.Attribute attr = new Manifest.Attribute();
-        String longLineOfChars = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 " +
-                                 "123456789 123456789 123456789 ";
+        String longLineOfChars =
+            "123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
+                + "123456789 123456789 123456789 ";
         attr.setName( "test" );
         attr.setValue( longLineOfChars );
         attr.write( new PrintWriter( writer ) );
@@ -148,9 +113,11 @@ public class ManifestTest
     public void testDualClassPath()
         throws ManifestException, IOException
     {
-        Manifest manifest = getManifest( "src/test/resources/manifests/manifestWithDualClassPath.mf" );
-        final Manifest.Attribute attribute = manifest.getMainSection().getAttribute( "Class-Path" );
-        assertEquals( "../config/ classes12.jar baz", attribute.getValue() );
+        Manifest manifest =
+            getManifest( "src/test/resources/manifests/manifestWithDualClassPath.mf" );
+        final String attribute = manifest.getMainSection().getAttributeValue( "Class-Path" );
+        // According to discussions, we drop support for duplicate class-path attribute
+        assertEquals( "baz", attribute );
     }
 
     public void testAttributeMultiLineValue()
@@ -163,32 +130,90 @@ public class ManifestTest
     public void testAttributeDifferentLineEndings()
         throws Exception
     {
-        checkMultiLineAttribute(
-            "\tA\rB\n\t C\r\n \tD\n\r",
-            "\tA" + Manifest.EOL +
-                " B" + Manifest.EOL +
-                " \t C" + Manifest.EOL +
-                "  \tD" + Manifest.EOL );
+        checkMultiLineAttribute( "\tA\rB\n\t C\r\n \tD\n\r", "\tA" + Manifest.EOL +
+            " B" + Manifest.EOL +
+            " \t C" + Manifest.EOL +
+            "  \tD" + Manifest.EOL );
     }
-    
+
     public void testIterators()
         throws ManifestException, IOException
     {
+        PlexusManifest plexusManifest =
+            getPlexusManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        Enumeration<String> attributeKeys = plexusManifest.getMainSection().getAttributeKeys();
+        assertNotNull( attributeKeys.nextElement() );
+
         Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
-        String key = manifest.getMainSection().getAttributeKeys().nextElement();
-        // Unsure if we can assert on the value here. Maps and ordering and all that
-        assertEquals( "bar", key );
+        String key = manifest.getMainSection().iterator().next();
+        assertNotNull( key );
     }
+
+    public void testAddAttributes()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        Manifest.ExistingSection fudz = manifest.getSection( "Fudz" );
+        fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
+        assertEquals( "bzz", fudz.getAttribute( "boz" ).getValue());
+        assertEquals( "bzz", manifest.getSection( "Fudz" ).getAttributeValue( "boz" ) );
+    }
+
+    public void testRemoveAttributes()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        Manifest.ExistingSection fudz = manifest.getSection( "Fudz" );
+        fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
+        assertEquals( "bzz", fudz.getAttributeValue( "boz" ) );
+        fudz.removeAttribute( "boz" );
+        assertNull( fudz.getAttributeValue( "boz" ) );
+    }
+
+    public void testAttributeSerialization()
+        throws IOException, ManifestException
+    {
+        Manifest manifest = new Manifest(  );
+        manifest.getMainAttributes().putValue( "mfa1", "fud1" );
+        manifest.getMainSection().addAttributeAndCheck( new Manifest.Attribute( "mfa2", "fud2" ) );
+        Attributes attributes = new Attributes(  );
+        attributes.putValue( "attA", "baz" );
+        manifest.getEntries().put( "sub", attributes );
+        manifest.getSection( "sub" ).addAttributeAndCheck( new Manifest.Attribute( "attB", "caB" ) );
+        StringWriter writer = new StringWriter();
+        manifest.write(  new PrintWriter( writer )  );
+        String s = writer.toString();
+        assertTrue( s.contains( "mfa1: fud1" ) );
+        assertTrue( s.contains( "mfa2: fud2" ) );
+        assertTrue( s.contains( "attA: baz" ) );
+        assertTrue( s.contains( "attB: caB" ) );
+    }
+
 
     public void testDefaultBehaviour()
     {
-        Manifest manifest = new Manifest(  );
-        Manifest.Section mainSection = manifest.getMainSection();
+        Manifest manifest = new Manifest();
+        Manifest.ExistingSection mainSection = manifest.getMainSection();
         assertNotNull( mainSection );
-        Manifest.Attribute bar = mainSection.getAttribute( "Bar" );
-        assertNull( bar);
+        String bar = mainSection.getAttributeValue( "Bar" );
+        assertNull( bar );
         assertNull( manifest.getSection( "Fud" ) );
     }
+
+    public void testGetDefaultManifest()
+        throws Exception
+    {
+        java.util.jar.Manifest mf = Manifest.getDefaultManifest();
+        java.util.jar.Attributes mainAttributes = mf.getMainAttributes();
+        assertEquals( 3, mainAttributes.size() );
+        assertTrue(
+            mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Manifest-Version" ) ) );
+        assertTrue(
+            mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Created-By" ) ) );
+        assertTrue(
+            mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Archiver-Version" ) ) );
+    }
+
 
     public void checkMultiLineAttribute( String in, String expected )
         throws Exception
@@ -204,15 +229,14 @@ public class ManifestTest
         // so in case of failure you can see what went wrong.
         System.err.println( "String: " + dumpString( writer.toString() ) );
 
-        assertEquals( "should be indented multiline",
-                      "test: " + expected, writer.toString() );
+        assertEquals( "should be indented multiline", "test: " + expected, writer.toString() );
     }
 
     private static String dumpString( String in )
     {
         String out = "";
 
-        char [] chars = in.toCharArray();
+        char[] chars = in.toCharArray();
 
         for ( char aChar : chars )
         {
@@ -243,7 +267,7 @@ public class ManifestTest
         throws ManifestException, IOException
     {
         Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
-        Manifest.Section fudz = manifest.getSection( "Fudz" );
+        Manifest.ExistingSection fudz = manifest.getSection( "Fudz" );
         fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
         assertEquals( "bzz", manifest.getSection( "Fudz" ).getAttributeValue( "boz" ) );
     }
@@ -252,7 +276,7 @@ public class ManifestTest
         throws ManifestException, IOException
     {
         Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
-        Manifest.Section fudz = manifest.getSection( "Fudz" );
+        Manifest.ExistingSection fudz = manifest.getSection( "Fudz" );
         fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
         assertEquals( "bzz", fudz.getAttributeValue( "boz" ) );
         fudz.removeAttribute( "boz" );
@@ -299,15 +323,16 @@ public class ManifestTest
         section.setName( "fud" );
         section.addConfiguredAttribute( new Manifest.Attribute( "bar", "baz" ) );
         manifest.addConfiguredSection( section );
-        assertEquals( "baz", manifest.getSection( "fud" ).getAttribute( "bar" ).getValue() );
+        assertEquals( "baz", manifest.getSection( "fud" ).getAttributeValue( "bar" ));
     }
 
     /**
      * Reads a Manifest file.
+     *
      * @param filename the file
      * @return a manifest
      * @throws java.io.IOException .
-     * @throws ManifestException .
+     * @throws ManifestException   .
      */
     private Manifest getManifest( String filename )
         throws IOException, ManifestException
@@ -323,4 +348,20 @@ public class ManifestTest
             r.close();
         }
     }
+
+    private PlexusManifest getPlexusManifest( String filename )
+        throws IOException, ManifestException
+    {
+        FileReader r = new FileReader( getTestFile( filename ) );
+
+        try
+        {
+            return new PlexusManifest( r );
+        }
+        finally
+        {
+            r.close();
+        }
+    }
+
 }

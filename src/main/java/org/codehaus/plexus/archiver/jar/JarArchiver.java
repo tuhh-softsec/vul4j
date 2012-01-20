@@ -24,11 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -114,11 +111,6 @@ public class JarArchiver
     private Manifest manifest;
 
     /**
-     * The encoding to use when reading in a manifest file
-     */
-    private String manifestEncoding;
-
-    /**
      * The file found from the 'manifest' attribute.  This can be
      * either the location of a manifest, or the name of a jar added
      * through a fileset.  If its the name of an added jar, the
@@ -173,14 +165,10 @@ public class JarArchiver
         index = flag;
     }
 
-    /**
-     * Set whether or not to create an index list for classes.
-     * This may speed up classloading in some cases.
-     */
     @SuppressWarnings( { "JavaDoc", "UnusedDeclaration" } )
+    @Deprecated // Useless method. Manifests should be UTF-8 by convention. Calling this setter does nothing
     public void setManifestEncoding( String manifestEncoding )
     {
-        this.manifestEncoding = manifestEncoding;
     }
 
     /**
@@ -199,7 +187,7 @@ public class JarArchiver
         }
         else
         {
-            configuredManifest.merge( newManifest );
+            JdkManifestFactory.merge( configuredManifest, newManifest, false );
         }
         savedConfiguredManifest = configuredManifest;
     }
@@ -231,20 +219,7 @@ public class JarArchiver
         try
         {
             in = new FileInputStream( manifestFile );
-            Reader reader;
-            if ( manifestEncoding == null )
-            {
-                reader = new InputStreamReader( in );
-            }
-            else
-            {
-                reader = new InputStreamReader( in, manifestEncoding );
-            }
-            return getManifest( reader );
-        }
-        catch ( UnsupportedEncodingException e )
-        {
-            throw new ArchiverException( "Unsupported encoding while reading manifest: " + e.getMessage(), e );
+            return getManifest( in );
         }
         catch ( IOException e )
         {
@@ -257,17 +232,12 @@ public class JarArchiver
         }
     }
 
-    private Manifest getManifest( Reader r )
+    private Manifest getManifest( InputStream is )
         throws ArchiverException
     {
         try
         {
-            return new Manifest( r );
-        }
-        catch ( ManifestException e )
-        {
-            getLogger().error( "Manifest is invalid: " + e.getMessage() );
-            throw new ArchiverException( "Invalid Manifest: " + manifestFile, e );
+            return new Manifest( is );
         }
         catch ( IOException e )
         {
@@ -335,8 +305,6 @@ public class JarArchiver
     private Manifest createManifest()
         throws ArchiverException
     {
-        try
-        {
             Manifest finalManifest = Manifest.getDefaultManifest();
 
             if ( ( manifest == null ) && ( manifestFile != null ) )
@@ -346,29 +314,23 @@ public class JarArchiver
                 manifest = getManifest( manifestFile );
             }
 
-            /*
-             * Precedence: manifestFile wins over inline manifest,
-             * over manifests read from the filesets over the original
-             * manifest.
-             *
-             * merge with null argument is a no-op
-             */
+        /*
+        * Precedence: manifestFile wins over inline manifest,
+        * over manifests read from the filesets over the original
+        * manifest.
+        *
+        * merge with null argument is a no-op
+        */
 
-            if ( isInUpdateMode() )
-            {
-                finalManifest.merge( originalManifest );
-            }
-            finalManifest.merge( filesetManifest );
-            finalManifest.merge( configuredManifest );
-            finalManifest.merge( manifest, !mergeManifestsMain );
-
-            return finalManifest;
-        }
-        catch ( ManifestException e )
+        if ( isInUpdateMode() )
         {
-            getLogger().error( "Manifest is invalid: " + e.getMessage() );
-            throw new ArchiverException( "Invalid Manifest", e );
+            JdkManifestFactory.merge( finalManifest, originalManifest, false );
         }
+        JdkManifestFactory.merge( finalManifest, filesetManifest, false );
+        JdkManifestFactory.merge( finalManifest, configuredManifest, false );
+        JdkManifestFactory.merge( finalManifest, manifest, !mergeManifestsMain );
+
+        return finalManifest;
     }
 
     private void writeManifest( ZipOutputStream zOut, Manifest manifest )
@@ -382,10 +344,7 @@ public class JarArchiver
         zipDir( null, zOut, "META-INF/", DEFAULT_DIR_MODE );
         // time to write the manifest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter( baos, "UTF-8" );
-        PrintWriter writer = new PrintWriter( osw );
-        manifest.write( writer );
-        writer.flush();
+        manifest.write( baos );
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE );
@@ -453,12 +412,12 @@ public class JarArchiver
 
         if ( indexJars != null )
         {
-            Manifest mf = createManifest();
-            Manifest.Attribute classpath = mf.getMainSection().getAttribute( Manifest.ATTRIBUTE_CLASSPATH );
+            java.util.jar.Manifest mf = createManifest();
+            String classpath = mf.getMainAttributes().getValue( ManifestConstants.ATTRIBUTE_CLASSPATH );
             String[] cpEntries = null;
             if ( classpath != null )
             {
-                StringTokenizer tok = new StringTokenizer( classpath.getValue(), " " );
+                StringTokenizer tok = new StringTokenizer( classpath, " " );
                 cpEntries = new String[tok.countTokens()];
                 int c = 0;
                 while ( tok.hasMoreTokens() )
@@ -529,29 +488,13 @@ public class JarArchiver
             // If this is the same name specified in 'manifest', this
             // is the manifest to use
             getLogger().debug( "Found manifest " + file );
-            try
+            if ( is != null )
             {
-                if ( is != null )
-                {
-                    Reader reader;
-                    if ( manifestEncoding == null )
-                    {
-                        reader = new InputStreamReader( is );
-                    }
-                    else
-                    {
-                        reader = new InputStreamReader( is, manifestEncoding );
-                    }
-                    manifest = getManifest( reader );
-                }
-                else
-                {
-                    manifest = getManifest( file );
-                }
+                manifest = getManifest( is );
             }
-            catch ( UnsupportedEncodingException e )
+            else
             {
-                throw new ArchiverException( "Unsupported encoding while reading " + "manifest: " + e.getMessage(), e );
+                manifest = getManifest( file );
             }
         }
         else if ( ( filesetManifestConfig != null ) && !filesetManifestConfig.getValue().equals( "skip" ) )
@@ -559,44 +502,23 @@ public class JarArchiver
             // we add this to our group of fileset manifests
             getLogger().debug( "Found manifest to merge in file " + file );
 
-            try
+            Manifest newManifest;
+            if ( is != null )
             {
-                Manifest newManifest;
-                if ( is != null )
-                {
-                    Reader reader;
-                    if ( manifestEncoding == null )
-                    {
-                        reader = new InputStreamReader( is );
-                    }
-                    else
-                    {
-                        reader = new InputStreamReader( is, manifestEncoding );
-                    }
-                    newManifest = getManifest( reader );
-                }
-                else
-                {
-                    newManifest = getManifest( file );
-                }
+                newManifest = getManifest( is );
+            }
+            else
+            {
+                newManifest = getManifest( file );
+            }
 
-                if ( filesetManifest == null )
-                {
-                    filesetManifest = newManifest;
-                }
-                else
-                {
-                    filesetManifest.merge( newManifest );
-                }
-            }
-            catch ( UnsupportedEncodingException e )
+            if ( filesetManifest == null )
             {
-                throw new ArchiverException( "Unsupported encoding while reading manifest: " + e.getMessage(), e );
+                filesetManifest = newManifest;
             }
-            catch ( ManifestException e )
+            else
             {
-                getLogger().error( "Manifest in file " + file + " is invalid: " + e.getMessage() );
-                throw new ArchiverException( "Invalid Manifest", e );
+                JdkManifestFactory.merge( filesetManifest, newManifest, false );
             }
         }
     }
