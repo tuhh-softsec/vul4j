@@ -18,8 +18,6 @@ package org.codehaus.plexus.archiver.jar;
  */
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,7 +47,7 @@ import org.codehaus.plexus.util.IOUtil;
  *
  * @since Ant 1.4
  */
-public class Manifest extends java.util.jar.Manifest
+public class Manifest
 {
     /**
      * The standard manifest version header
@@ -184,13 +182,13 @@ public class Manifest extends java.util.jar.Manifest
             Attribute rhsAttribute = (Attribute) rhs;
             String lhsKey = getKey();
             String rhsKey = rhsAttribute.getKey();
-            if ( ( lhsKey == null && rhsKey != null ) || ( lhsKey != null && rhsKey == null )
-                || !lhsKey.equals( rhsKey ) )
+            if ( ( lhsKey == null && rhsKey != null ) || ( lhsKey != null && rhsKey == null ) || !lhsKey.equals(
+                rhsKey ) )
             {
                 return false;
             }
 
-            return rhsAttribute.values != null && values.equals(rhsAttribute.values);
+            return rhsAttribute.values != null && values.equals( rhsAttribute.values );
         }
 
         /**
@@ -207,7 +205,7 @@ public class Manifest extends java.util.jar.Manifest
             if ( index == -1 )
             {
                 throw new ManifestException( "Manifest line \"" + line + "\" is not valid as it does not "
-                    + "contain a name and a value separated by ': ' " );
+                                                 + "contain a name and a value separated by ': ' " );
             }
             name = line.substring( 0, index );
             setValue( line.substring( index + 2 ) );
@@ -851,15 +849,13 @@ public class Manifest extends java.util.jar.Manifest
             InputStream in = Manifest.class.getResourceAsStream( defManifest );
             if ( in == null )
             {
-                throw new ArchiverException( "Could not find default manifest: "
-                                             + defManifest );
+                throw new ArchiverException( "Could not find default manifest: " + defManifest );
             }
             try
             {
                 Manifest defaultManifest = new Manifest( new InputStreamReader( in, "UTF-8" ) );
-                Attribute createdBy = new Attribute( "Created-By",
-                                                     System.getProperty( "java.vm.version" ) + " ("
-                                                     + System.getProperty( "java.vm.vendor" ) + ")" );
+                Attribute createdBy = new Attribute( "Created-By", System.getProperty( "java.vm.version" ) + " ("
+                    + System.getProperty( "java.vm.vendor" ) + ")" );
                 defaultManifest.getMainSection().storeAttribute( createdBy );
                 return defaultManifest;
             }
@@ -924,8 +920,9 @@ public class Manifest extends java.util.jar.Manifest
                 Attribute sectionName = new Attribute( line );
                 if ( !sectionName.getName().equalsIgnoreCase( ATTRIBUTE_NAME ) )
                 {
-                    throw new ManifestException( "Manifest sections should start with a \"" + ATTRIBUTE_NAME
-                        + "\" attribute and not \"" + sectionName.getName() + "\"" );
+                    throw new ManifestException(
+                        "Manifest sections should start with a \"" + ATTRIBUTE_NAME + "\" attribute and not \""
+                            + sectionName.getName() + "\"" );
                 }
                 nextSectionName = sectionName.getValue();
             }

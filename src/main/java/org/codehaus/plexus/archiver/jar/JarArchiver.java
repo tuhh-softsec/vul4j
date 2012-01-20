@@ -165,6 +165,7 @@ public class JarArchiver
     /**
      * Set whether or not to create an index list for classes.
      * This may speed up classloading in some cases.
+     *
      * @param flag true to create an index
      */
     public void setIndex( boolean flag )
@@ -176,7 +177,7 @@ public class JarArchiver
      * Set whether or not to create an index list for classes.
      * This may speed up classloading in some cases.
      */
-    @SuppressWarnings({"JavaDoc", "UnusedDeclaration"})
+    @SuppressWarnings( { "JavaDoc", "UnusedDeclaration" } )
     public void setManifestEncoding( String manifestEncoding )
     {
         this.manifestEncoding = manifestEncoding;
@@ -206,11 +207,12 @@ public class JarArchiver
     /**
      * The manifest file to use. This can be either the location of a manifest, or the name of a jar added through a
      * fileset. If its the name of an added jar, the task expects the manifest to be in the jar at META-INF/MANIFEST.MF.
-     * 
+     *
      * @param manifestFile the manifest file to use.
-     * @throws org.codehaus.plexus.archiver.ArchiverException .
+     * @throws org.codehaus.plexus.archiver.ArchiverException
+     *          .
      */
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setManifest( File manifestFile )
         throws ArchiverException
     {
@@ -432,10 +434,11 @@ public class JarArchiver
         if ( filteredDirs.contains( META_INF_NAME + '/' ) )
         {
             boolean add = false;
-            for (String entry : entries.keySet()) {
-                if (entry.startsWith(META_INF_NAME + '/')
-                    && !entry.equals(INDEX_NAME)
-                    && !entry.equals(MANIFEST_NAME)) {
+            for ( String entry : entries.keySet() )
+            {
+                if ( entry.startsWith( META_INF_NAME + '/' ) && !entry.equals( INDEX_NAME ) && !entry.equals(
+                    MANIFEST_NAME ) )
+                {
                     add = true;
                     break;
                 }
@@ -460,19 +463,22 @@ public class JarArchiver
                 int c = 0;
                 while ( tok.hasMoreTokens() )
                 {
-                    cpEntries[ c++ ] = tok.nextToken();
+                    cpEntries[c++] = tok.nextToken();
                 }
             }
 
-            for (String indexJar : indexJars) {
-                String name = findJarName(indexJar, cpEntries);
-                if (name != null) {
+            for ( String indexJar : indexJars )
+            {
+                String name = findJarName( indexJar, cpEntries );
+                if ( name != null )
+                {
                     ArrayList<String> dirs = new ArrayList<String>();
                     ArrayList<String> files = new ArrayList<String>();
-                    grabFilesAndDirs(indexJar, dirs, files);
-                    if (dirs.size() + files.size() > 0) {
-                        writer.println(name);
-                        writeIndexLikeList(dirs, files, writer);
+                    grabFilesAndDirs( indexJar, dirs, files );
+                    if ( dirs.size() + files.size() > 0 )
+                    {
+                        writer.println( name );
+                        writeIndexLikeList( dirs, files, writer );
                         writer.println();
                     }
                 }
@@ -507,7 +513,7 @@ public class JarArchiver
         }
         else
         {
-            if ( index && (!vPath.contains("/")) )
+            if ( index && ( !vPath.contains( "/" ) ) )
             {
                 rootEntries.addElement( vPath );
             }
@@ -545,12 +551,10 @@ public class JarArchiver
             }
             catch ( UnsupportedEncodingException e )
             {
-                throw new ArchiverException( "Unsupported encoding while reading "
-                                             + "manifest: " + e.getMessage(), e );
+                throw new ArchiverException( "Unsupported encoding while reading " + "manifest: " + e.getMessage(), e );
             }
         }
-        else if ( ( filesetManifestConfig != null )
-                  && !filesetManifestConfig.getValue().equals( "skip" ) )
+        else if ( ( filesetManifestConfig != null ) && !filesetManifestConfig.getValue().equals( "skip" ) )
         {
             // we add this to our group of fileset manifests
             getLogger().debug( "Found manifest to merge in file " + file );
