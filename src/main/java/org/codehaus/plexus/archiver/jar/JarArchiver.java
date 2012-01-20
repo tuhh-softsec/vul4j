@@ -17,6 +17,30 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.Vector;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -27,15 +51,12 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
 
-import java.io.*;
-import java.util.*;
-
 /**
  * Base class for tasks that build archives in JAR file format.
  *
  * @version $Revision$ $Date$
  */
-@SuppressWarnings({"NullableProblems"})
+@SuppressWarnings( { "NullableProblems" } )
 public class JarArchiver
     extends ZipArchiver
 {
@@ -265,7 +286,7 @@ public class JarArchiver
      *
      * @param config setting for found manifest behavior.
      */
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings( { "UnusedDeclaration" } )
     public void setFilesetmanifest( FilesetManifestConfig config )
     {
         filesetManifestConfig = config;
@@ -279,7 +300,6 @@ public class JarArchiver
     }
 
     /**
-     *
      * @param indexJar The indexjar
      */
     public void addConfiguredIndexJars( File indexJar )
@@ -388,7 +408,8 @@ public class JarArchiver
      * @param zOut the zip stream representing the jar being built.
      * @throws IOException thrown if there is an error while creating the
      *                     index and adding it to the zip stream.
-     * @throws org.codehaus.plexus.archiver.ArchiverException .
+     * @throws org.codehaus.plexus.archiver.ArchiverException
+     *                     .
      */
     private void createIndexList( ZipOutputStream zOut )
         throws IOException, ArchiverException
@@ -665,8 +686,9 @@ public class JarArchiver
     /**
      * Writes the directory entries from the first and the filenames
      * from the second list to the given writer, one entry per line.
-     * @param dirs The directories
-     * @param files The files
+     *
+     * @param dirs   The directories
+     * @param files  The files
      * @param writer The printwriter ;)
      */
     protected final void writeIndexLikeList( List<String> dirs, List<String> files, PrintWriter writer )
@@ -722,11 +744,12 @@ public class JarArchiver
      * <p/>
      * <p>if there is a classpath and the given file doesn't match any
      * of its entries, return null.</p>
-     * @param fileName .
+     *
+     * @param fileName  .
      * @param classpath .
      * @return The guessed name
      */
-    protected static  String findJarName( String fileName, String[] classpath )
+    protected static String findJarName( String fileName, String[] classpath )
     {
         if ( classpath == null )
         {
@@ -738,55 +761,62 @@ public class JarArchiver
             // longest match comes first
             public int compare( String o1, String o2 )
             {
-                if ( (o1 != null) && (o2 != null) )
+                if ( ( o1 != null ) && ( o2 != null ) )
                 {
-                    return o2 .length() - o1.length();
+                    return o2.length() - o1.length();
                 }
                 return 0;
             }
         } );
 
-        for (String aClasspath : classpath) {
-            if (fileName.endsWith(aClasspath)) {
-                matches.put(aClasspath, aClasspath);
-            } else {
-                int slash = aClasspath.indexOf("/");
+        for ( String aClasspath : classpath )
+        {
+            if ( fileName.endsWith( aClasspath ) )
+            {
+                matches.put( aClasspath, aClasspath );
+            }
+            else
+            {
+                int slash = aClasspath.indexOf( "/" );
                 String candidate = aClasspath;
-                while (slash > -1) {
-                    candidate = candidate.substring(slash + 1);
-                    if (fileName.endsWith(candidate)) {
-                        matches.put(candidate, aClasspath);
+                while ( slash > -1 )
+                {
+                    candidate = candidate.substring( slash + 1 );
+                    if ( fileName.endsWith( candidate ) )
+                    {
+                        matches.put( candidate, aClasspath );
                         break;
                     }
-                    slash = candidate.indexOf("/");
+                    slash = candidate.indexOf( "/" );
                 }
             }
         }
 
-        return matches.size() == 0 ? null :  matches.get( matches.firstKey() );
+        return matches.size() == 0 ? null : matches.get( matches.firstKey() );
     }
 
     /**
      * Grab lists of all root-level files and all directories
      * contained in the given archive.
-     * @param file .
+     *
+     * @param file  .
      * @param files .
-     * @param dirs .
-     * @throws java.io.IOException
+     * @param dirs  .
+     * @throws java.io.IOException .
      */
     protected static void grabFilesAndDirs( String file, List<String> dirs, List<String> files )
         throws IOException
     {
-        File zipFile = new File(file);
-        if (!zipFile.exists())
+        File zipFile = new File( file );
+        if ( !zipFile.exists() )
         {
             Logger logger = new ConsoleLogger( Logger.LEVEL_INFO, "console" );
-            logger.error("JarArchive skipping non-existing file: " + zipFile.getAbsolutePath());
+            logger.error( "JarArchive skipping non-existing file: " + zipFile.getAbsolutePath() );
         }
-        else if (zipFile.isDirectory())
+        else if ( zipFile.isDirectory() )
         {
             Logger logger = new ConsoleLogger( Logger.LEVEL_INFO, "console" );
-            logger.info("JarArchiver skipping indexJar " + zipFile + " because it is not a jar");
+            logger.info( "JarArchiver skipping indexJar " + zipFile + " because it is not a jar" );
         }
         else
         {
@@ -801,14 +831,14 @@ public class JarArchiver
                     ZipEntry ze = entries.nextElement();
                     String name = ze.getName();
                     // avoid index for manifest-only jars.
-                    if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' )
-                            && !name.equals( INDEX_NAME ) && !name.equals( MANIFEST_NAME ) )
+                    if ( !name.equals( META_INF_NAME ) && !name.equals( META_INF_NAME + '/' ) && !name.equals(
+                        INDEX_NAME ) && !name.equals( MANIFEST_NAME ) )
                     {
                         if ( ze.isDirectory() )
                         {
                             dirSet.add( name );
                         }
-                        else if (!name.contains("/"))
+                        else if ( !name.contains( "/" ) )
                         {
                             files.add( name );
                         }
