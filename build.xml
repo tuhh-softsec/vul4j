@@ -9,13 +9,13 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="5"/>
-    <property name="product.version.level" value="0"/>
+    <property name="product.version.level" value="1"/>
     <property name='product.version.qualifier' value='-SNAPSHOT'/>
     <property name="product.version" 
 	  value="${product.version.major}.${product.version.minor}.${product.version.level}${product.version.qualifier}"/>
     <property name="product_version" 
 	  value="${product.version.major}_${product.version.minor}_${product.version.level}${product.version.qualifier}"/>
-    <property name="year" value="2000-2010"/>
+    <property name="year" value="2000-2012"/>
     <property name="copyright" 
 			  value="Copyright © ${year} Apache XML Project. All Rights Reserved."/>
 
