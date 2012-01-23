@@ -39,11 +39,38 @@ public class ZipUnArchiverTest
         }
         catch ( NoSuchMethodException ignore )
         {
-
-            return;
         }
     }
 
+    public void testZeroFileModeInZip()
+        throws Exception
+    {
+
+        String s = "target/zip-unarchiver-filemode-tests";
+        File testZip = new File( getBasedir(), "src/test/resources/zeroFileMode/foobar.zip" );
+        File outputDirectory = new File( getBasedir(), s );
+
+        FileUtils.deleteDirectory( outputDirectory );
+
+        ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
+        zu.setSourceFile( testZip );
+        zu.setIgnorePermissions( false );
+        zu.extract( "", outputDirectory );
+
+
+        File testScript = new File( outputDirectory, "foo.txt" );
+
+        final Method canRead;
+        try
+        {
+            canRead = File.class.getMethod( "canRead" );
+            canRead.invoke( testScript );
+            assertTrue( (Boolean) canRead.invoke( testScript ) );
+        }
+        catch ( NoSuchMethodException ignore )
+        {
+        }
+    }
     private void runUnarchiver( String path, FileSelector[] selectors, boolean[] results )
         throws Exception
     {

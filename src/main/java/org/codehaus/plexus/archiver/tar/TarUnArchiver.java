@@ -91,7 +91,7 @@ public class TarUnArchiver
             while ( ( te = tis.getNextEntry() ) != null )
             {
                 extractFile( getSourceFile(), getDestDirectory(), tis, te.getName(), te.getModTime(),
-                             te.isDirectory(), new Integer( te.getMode() ) );
+                             te.isDirectory(), te.getMode() != 0 ? te.getMode() : null);
             }
             getLogger().debug( "expand complete" );
 

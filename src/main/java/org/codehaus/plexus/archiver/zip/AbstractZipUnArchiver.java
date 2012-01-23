@@ -147,7 +147,7 @@ public abstract class AbstractZipUnArchiver
                 }
                 InputStream in = zf.getInputStream( ze );
                 extractFileIfIncluded( getSourceFile(), getDestDirectory(), in, ze.getName(),
-                                       new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode() );
+                                       new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode()!= 0 ? ze.getUnixMode() : null );
                 in.close();
             }
 
@@ -268,7 +268,8 @@ public abstract class AbstractZipUnArchiver
                 {
                     final InputStream inputStream = zipFile.getInputStream( ze );
                     extractFileIfIncluded( getSourceFile(), outputDirectory, inputStream,
-                                           ze.getName(), new Date( ze.getTime() ), ze.isDirectory(), ze.getUnixMode() );
+                                           ze.getName(), new Date( ze.getTime() ), ze.isDirectory(),
+                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null );
                     inputStream.close();
                 }
             }
