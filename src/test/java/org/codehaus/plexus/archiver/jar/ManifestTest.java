@@ -118,9 +118,14 @@ public class ManifestTest
         throws Exception
     {
         Manifest mf = Manifest.getDefaultManifest();
-        assertNotNull( mf );
+        StringWriter writer = new StringWriter();
+        mf.write( new PrintWriter( writer ) );
+        String s = writer.toString();
+        assertTrue( s.contains( "Manifest-Version" )  );
+        assertTrue( s.contains( "Created-By" )  );
+        assertTrue( s.contains( "Archiver-Version" )  );
     }
-    
+
     public void testAttributeLongLineWrite()
         throws Exception
     {
@@ -133,8 +138,9 @@ public class ManifestTest
         attr.write( new PrintWriter( writer ) );
         writer.flush();
         assertEquals( "should be multiline",
-                      "test: 123456789 123456789 123456789 123456789 123456789 123456789 1234" + Manifest.EOL +
-                       " 56789 123456789 123456789 123456789 " + Manifest.EOL,
+                      "test: 123456789 123456789 123456789 123456789 123456789 123456789 1234"
+                          + Manifest.EOL +
+                          " 56789 123456789 123456789 123456789 " + Manifest.EOL,
                       writer.toString() );
     }
 
@@ -150,9 +156,8 @@ public class ManifestTest
     public void testAttributeMultiLineValue()
         throws Exception
     {
-        checkMultiLineAttribute(
-             "123456789" + Manifest.EOL + "123456789",
-             "123456789" + Manifest.EOL + " 123456789" + Manifest.EOL );
+        checkMultiLineAttribute( "123456789" + Manifest.EOL + "123456789",
+                                 "123456789" + Manifest.EOL + " 123456789" + Manifest.EOL );
     }
 
     public void testAttributeDifferentLineEndings()
@@ -173,7 +178,6 @@ public class ManifestTest
         String key = manifest.getMainSection().getAttributeKeys().nextElement();
         // Unsure if we can assert on the value here. Maps and ordering and all that
         assertEquals( "bar", key );
-        
     }
 
     public void testDefaultBehaviour()
@@ -235,6 +239,68 @@ public class ManifestTest
         return out;
     }
 
+    public void testAddAttributesPlexusManifest()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        Manifest.Section fudz = manifest.getSection( "Fudz" );
+        fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
+        assertEquals( "bzz", manifest.getSection( "Fudz" ).getAttributeValue( "boz" ) );
+    }
+
+    public void testRemoveAttributesPlexusManifest()
+        throws ManifestException, IOException
+    {
+        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
+        Manifest.Section fudz = manifest.getSection( "Fudz" );
+        fudz.addConfiguredAttribute( new Manifest.Attribute( "boz", "bzz" ) );
+        assertEquals( "bzz", fudz.getAttributeValue( "boz" ) );
+        fudz.removeAttribute( "boz" );
+        assertNull( fudz.getAttributeValue( "boz" ) );
+    }
+
+    public void testAttributeSerializationPlexusManifest()
+        throws IOException, ManifestException
+    {
+        Manifest manifest = new Manifest(  );
+        manifest.getMainSection().addConfiguredAttribute( new Manifest.Attribute( "mfa1", "fud1" ) );
+        manifest.getMainSection().addConfiguredAttribute( new Manifest.Attribute( "mfa2", "fud2" ) );
+        Manifest.Section attributes = new Manifest.Section(  );
+        attributes.setName( "TestSection" );
+        attributes.addConfiguredAttribute( new Manifest.Attribute( "attA", "baz" ) );
+        attributes.addConfiguredAttribute( new Manifest.Attribute( "attB", "caB" ) );
+        manifest.addConfiguredSection(  attributes );
+        StringWriter writer = new StringWriter();
+        manifest.write(  new PrintWriter( writer )  );
+        String s = writer.toString();
+        assertTrue( s.contains( "mfa1: fud1" ) );
+        assertTrue( s.contains( "mfa2: fud2" ) );
+        assertTrue( s.contains( "attA: baz" ) );
+        assertTrue( s.contains( "attB: caB" ) );
+    }
+
+    public void testClassPathPlexusManifest()
+        throws ManifestException
+    {
+        Manifest manifest = new Manifest();
+        manifest.addConfiguredAttribute(
+            new Manifest.Attribute( ManifestConstants.ATTRIBUTE_CLASSPATH, "fud" ) );
+        manifest.addConfiguredAttribute(
+            new Manifest.Attribute( ManifestConstants.ATTRIBUTE_CLASSPATH, "duf" ) );
+        assertEquals( "fud duf", manifest.getMainSection().getAttributeValue(
+            ManifestConstants.ATTRIBUTE_CLASSPATH ) );
+    }
+
+    public void testAddConfiguredSectionPlexusManifest()
+        throws ManifestException
+    {
+        Manifest manifest = new Manifest();
+        Manifest.Section section = new Manifest.Section();
+        section.setName( "fud" );
+        section.addConfiguredAttribute( new Manifest.Attribute( "bar", "baz" ) );
+        manifest.addConfiguredSection( section );
+        assertEquals( "baz", manifest.getSection( "fud" ).getAttribute( "bar" ).getValue() );
+    }
 
     /**
      * Reads a Manifest file.
