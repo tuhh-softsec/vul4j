@@ -46,19 +46,14 @@ public class ResourceFactoryCreator {
 			// Create an HttpClient with the ThreadSafeClientConnManager.
 			// This connection manager must be used if more than one thread will
 			// be using the HttpClient.
-			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(
-					schemeRegistry);
+			ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(schemeRegistry);
 			connectionManager.setMaxTotal(config.getMaxConnectionsPerHost());
-			connectionManager.setDefaultMaxPerRoute(config
-					.getMaxConnectionsPerHost());
+			connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());
 			HttpParams httpParams = new BasicHttpParams();
-			HttpConnectionParams.setConnectionTimeout(httpParams,
-					config.getTimeout());
-			HttpConnectionParams.setSoTimeout(httpParams, config.getTimeout());
-			httpParams.setBooleanParameter(
-					ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
-			DefaultHttpClient defaultHttpClient = new DefaultHttpClient(
-					connectionManager, httpParams);
+			HttpConnectionParams.setConnectionTimeout(httpParams, config.getConnectTimeout());
+			HttpConnectionParams.setSoTimeout(httpParams, config.getSocketTimeout());
+			httpParams.setBooleanParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
+			DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionManager, httpParams);
 			defaultHttpClient.setRedirectStrategy(new RedirectStrategy());
 			httpClient = defaultHttpClient;
 

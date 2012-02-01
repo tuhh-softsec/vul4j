@@ -79,14 +79,32 @@
                     <td>No</td>
                     <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</td>
                 </tr>
-				<tr>
-					<td>timeout</td>
-					<td>Timeout while establishing a connection with the server
-						(connect time out) or while waiting for data (socket timeout)
-						</td>
-					<td>No</td>
-					<td>1000</td>
-				</tr>
+                <tr>
+                    <td>timeout</td>
+                    <td><b>Deprecated property.</b> Defines timeout while establishing a connection with the server (connect time out)
+                    and timeout waiting for data (socket timeout) if appropriate properties aren't defined.
+                    In case when 'connectTimeout' property isn't defined then connect timeout is equal to the value of that property.
+                    In case when 'socketTimeout' property isn't defined then socket timeout is equal to the ten (10x) values of that property.
+                    </td>
+                    <td>No</td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <td>connectTimeout</td>
+                    <td>Defines timeout while establishing a connection with the server (connect time out).
+                    In case when 'connectTimeout' property isn't defined then 'timeout' property value may be used instead.
+                    </td>
+                    <td>No</td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <td>socketTimeout</td>
+                    <td>Defines timeout waiting for data (socket timeout) after connection to the server has been opened.
+                    In case when 'socketTimeout' property isn't defined then ten (10x) values of 'timeout' property may be used instead.
+                    </td>
+                    <td>No</td>
+                    <td>10000</td>
+                </tr>
 				<tr>
 					<td>useCache</td>
 					<td>

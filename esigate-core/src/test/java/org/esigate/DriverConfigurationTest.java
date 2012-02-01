@@ -1,5 +1,6 @@
 package org.esigate;
 
+import java.util.Collection;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -12,25 +13,12 @@ import junit.framework.TestCase;
  */
 public class DriverConfigurationTest extends TestCase {
 
-	DriverConfiguration defaultConfig;
 
-	@Override
-	protected void setUp() throws Exception {
-		defaultConfig = new DriverConfiguration("test", new Properties());
-	}
-
-	/**
-	 * Test default configuration
-	 */
+	/** Test default configuration */
 	public void testDefaultConfig() {
+		DriverConfiguration defaultConfig = new DriverConfiguration("test", new Properties());
 		// Parsable contentTypes
-		assertTrue("text/html is not in default parsable cotent-types",
-				defaultConfig.getParsableContentTypes().contains("text/html"));
-		assertTrue(
-				"application/xhtml+xml is not in default parsable cotent-types",
-				defaultConfig.getParsableContentTypes().contains(
-						"application/xhtml+xml"));
-
+		validateParsableContentTypes(defaultConfig.getParsableContentTypes(), "text/html", "application/xhtml+xml");
 	}
 
 	/**
@@ -39,44 +27,62 @@ public class DriverConfigurationTest extends TestCase {
 	public void testParsableContentTypes() {
 		Properties properties = new Properties();
 		properties.put("parsableContentTypes", "text/plain");
-		DriverConfiguration config = new DriverConfiguration("test-parsable",
-				properties);
-		assertEquals("parsableContentTypes should contains only 1 element", 1,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
+		DriverConfiguration config = new DriverConfiguration("test-parsable", properties);
+		validateParsableContentTypes(config.getParsableContentTypes(), "text/plain");
 
 		properties = new Properties();
 		properties.put("parsableContentTypes", "text/plain, text/html");
 		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("parsableContentTypes should contains only 2 elements", 2,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
-
-		assertEquals("parsableContentTypes should contains text/html",
-				"text/html", config.getParsableContentTypes().get(1));
+		validateParsableContentTypes(config.getParsableContentTypes(), "text/plain", "text/html");
 
 		properties = new Properties();
-		properties.put("parsableContentTypes",
-				"text/plain, text/html,application/x");
+		properties.put("parsableContentTypes", "text/plain, text/html,application/x");
 		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("parsableContentTypes should contains only 3 elements", 3,
-				config.getParsableContentTypes().size());
-		assertEquals("parsableContentTypes should contains text/plain",
-				"text/plain", config.getParsableContentTypes().get(0));
-		assertEquals("parsableContentTypes should contains text/html",
-				"text/html", config.getParsableContentTypes().get(1));
-		assertEquals("parsableContentTypes should contains application/x",
-				"application/x", config.getParsableContentTypes().get(2));
+		validateParsableContentTypes(config.getParsableContentTypes(), "text/plain", "text/html", "application/x");
+	}
 
+	private void validateParsableContentTypes(Collection<String> actual, String ... expected) {
+		assertNotNull("parsableContentTypes should not be null", actual);
+		assertEquals("parsableContentTypes should contains only " + expected.length + " element(s)", expected.length, actual.size());
+		for (String value : expected) {
+			assertTrue("parsableContentTypes should contain " + value, actual.contains(value));
+		}
+	}
+
+	public void testGetTimeout() {
+		// default setup (1000 and 10000)
+		Properties properties = new Properties();
+		DriverConfiguration config = new DriverConfiguration("test-parsable", properties);
+		assertEquals("default connectTimeout should be 1000", 1000, config.getConnectTimeout());
+		assertEquals("default socketTimeout should be 10000", 1000 * 10, config.getSocketTimeout());
+		
+		// timeout property with no other ones
+		properties = new Properties();
+		properties.setProperty("timeout", "5000");
+		config = new DriverConfiguration("test-parsable", properties);
+		assertEquals("connectTimeout should be same as 'timeout' value", 5000, config.getConnectTimeout());
+		assertEquals("socketTimeout should be 10x of 'timeout' value", 5000 * 10, config.getSocketTimeout());
+
+		// connect only 
+		properties = new Properties();
+		properties.setProperty("connectTimeout", "3000");
+		config = new DriverConfiguration("test-parsable", properties);
+		assertEquals("connectTimeout should be 3000", 3000, config.getConnectTimeout());
+		assertEquals("default socketTimeout should be 10000", 1000 * 10, config.getSocketTimeout());
+
+		// timeout+connect
+		properties = new Properties();
+		properties.setProperty("connectTimeout", "3000");
+		properties.setProperty("timeout", "5000");
+		config = new DriverConfiguration("test-parsable", properties);
+		assertEquals("connectTimeout should be 3000", 3000, config.getConnectTimeout());
+		assertEquals("socketTimeout should be 10x of 'timeout' value", 5000 * 10, config.getSocketTimeout());
 	}
 
 	public void testIsBlackListed() {
-		// by default only 'Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie' are blacklisted
+		// by default only DriverConfiguration#DEFAULT_BLACK_LISTED_HEADERS are blacklisted
 		Properties properties = new Properties();
-		DriverConfiguration config = new DriverConfiguration("test-parsable",
-				properties);
+		DriverConfiguration config = new DriverConfiguration("test-parsable", properties);
 
 		validateHeader(config, null, true);
 		validateHeader(config, "", true);

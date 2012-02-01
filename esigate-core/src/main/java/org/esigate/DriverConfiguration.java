@@ -17,6 +17,7 @@ package org.esigate;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -44,7 +45,8 @@ public class DriverConfiguration {
 	private String visibleBaseURL = null;
 	private int fixMode = ResourceFixupRenderer.RELATIVE;
 	private int maxConnectionsPerHost = 20;
-	private int timeout = 1000;
+	private int connectTimeout = 1000;
+	private int socketTimeout = 10000;
 	private boolean useCache = true;
 	private int cacheRefreshDelay = 0;
 	private int cacheMaxFileSize = 0;
@@ -54,8 +56,7 @@ public class DriverConfiguration {
 	private String proxyHost;
 	private int proxyPort = 0;
 	private boolean filterJsessionid = true;
-	private String authenticationHandler = RemoteUserAuthenticationHandler.class
-			.getName();
+	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
 	private final Properties properties;
 	private boolean preserveHost = false;
 	private String cookieStore = SerializableBasicCookieStore.class.getName();
@@ -72,36 +73,25 @@ public class DriverConfiguration {
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
-		baseURL = props.getProperty("remoteUrlBase");
+		baseURL = getPropertyValue(props, "remoteUrlBase", null);
 		try {
 			if (baseURL != null) {
 				baseURLasURL = new URL(baseURL);
 			}
-		} catch (MalformedURLException e1) {
-			throw new ConfigurationException(e1);
+		} catch (MalformedURLException e) {
+			throw new ConfigurationException(e);
 		}
-		if (props.getProperty("uriEncoding") != null) {
-			uriEncoding = props.getProperty("uriEncoding");
-		}
-		if (props.getProperty("maxConnectionsPerHost") != null) {
-			maxConnectionsPerHost = Integer.parseInt(props
-					.getProperty("maxConnectionsPerHost"));
-		}
-		if (props.getProperty("timeout") != null) {
-			timeout = Integer.parseInt(props.getProperty("timeout"));
-		}
+		uriEncoding = getPropertyValue(props, "uriEncoding", uriEncoding);
+		maxConnectionsPerHost = getPropertyValue(props, "maxConnectionsPerHost", maxConnectionsPerHost);
+		int timeout = getPropertyValue(props, "timeout", 1000);
+		connectTimeout = getPropertyValue(props, "connectTimeout", timeout);
+		socketTimeout = getPropertyValue(props, "socketTimeout", timeout * 10);
+
 		// Cache settings
-		if (props.getProperty("cacheRefreshDelay") != null) {
-			cacheRefreshDelay = Integer.parseInt(props
-					.getProperty("cacheRefreshDelay"));
-		}
-		if (props.getProperty("cacheMaxFileSize") != null) {
-			cacheMaxFileSize = Integer.parseInt(props
-					.getProperty("cacheMaxFileSize"));
-		}
+		cacheRefreshDelay = getPropertyValue(props, "cacheRefreshDelay", cacheRefreshDelay);
+		cacheMaxFileSize = getPropertyValue(props, "cacheMaxFileSize", cacheMaxFileSize);
 		if (props.getProperty("cacheStorageClassName") != null) {
-			String cacheStorageClassName = props
-					.getProperty("cacheStorageClassName");
+			String cacheStorageClassName = props.getProperty("cacheStorageClassName");
 			try {
 				@SuppressWarnings("unchecked")
 				Class<? extends CacheStorage> cacheStorageClass = (Class<? extends CacheStorage>) this
@@ -111,56 +101,40 @@ public class DriverConfiguration {
 					this.cacheStorageClass = cacheStorageClass;
 				}
 			} catch (Exception e) {
-				throw new RuntimeException(
-						"Cashestorage insatnce can not be loaded", e);
+				throw new RuntimeException("Cachestorage instance can not be loaded", e);
 			}
 		}
 		if (null == this.cacheStorageClass) {
 			this.cacheStorageClass = DefaultCacheStorage.class;
 		}
+
 		// Local file system settings
-		localBase = props.getProperty("localBase");
-		if (props.getProperty("putInCache") != null) {
-			putInCache = Boolean.parseBoolean(props.getProperty("putInCache"));
-		}
+		localBase = getPropertyValue(props, "localBase", null);
+		putInCache = getPropertyValue(props, "putInCache", putInCache);
+
 		// proxy settings
 		if (props.getProperty("proxyHost") != null
 				&& props.getProperty("proxyPort") != null) {
-			proxyHost = props.getProperty("proxyHost");
-			proxyPort = Integer.parseInt(props.getProperty("proxyPort"));
+			proxyHost = getPropertyValue(props, "proxyHost", null);
+			proxyPort = getPropertyValue(props, "proxyPort", 0);
 		}
-		if (props.getProperty("useCache") != null) {
-			useCache = Boolean.parseBoolean(props.getProperty("useCache"));
-		}
-		if (props.getProperty("filterJsessionid") != null) {
-			filterJsessionid = Boolean.parseBoolean(props
-					.getProperty("filterJsessionid"));
-		}
+		useCache = getPropertyValue(props, "useCache", useCache);
+		filterJsessionid = getPropertyValue(props, "filterJsessionid", filterJsessionid);
 
 		// Authentification handler
-		if (props.getProperty("authenticationHandler") != null) {
-			authenticationHandler = props.getProperty("authenticationHandler");
-		}
+		authenticationHandler = getPropertyValue(props, "authenticationHandler", authenticationHandler);
 
 		// Cookie Store
-		if (props.getProperty("cookieStore") != null) {
-			cookieStore = props.getProperty("cookieStore");
-		}
+		cookieStore = getPropertyValue(props, "cookieStore", cookieStore);
 
 		// Wat Filter
-		if (props.getProperty("filter") != null) {
-			filter = props.getProperty("filter");
-		}
+		filter = getPropertyValue(props, "filter", filter);
 
-		if (props.getProperty("preserveHost") != null) {
-			preserveHost = Boolean.parseBoolean(props
-					.getProperty("preserveHost"));
-		}
+		preserveHost = getPropertyValue(props, "preserveHost", preserveHost);
 
 		// Fix resources
 		if (props.getProperty("fixResources") != null) {
-			fixResources = Boolean.parseBoolean(props
-					.getProperty("fixResources"));
+			fixResources = getPropertyValue(props, "fixResources", fixResources);
 			// Fix resources mode
 			if (props.getProperty("fixMode") != null) {
 				if ("absolute".equalsIgnoreCase(props.getProperty("fixMode"))) {
@@ -168,15 +142,11 @@ public class DriverConfiguration {
 				}
 			}
 			// Visible base url
-			if (props.getProperty("visibleUrlBase") != null) {
-				visibleBaseURL = props.getProperty("visibleUrlBase");
-			} else {
-				visibleBaseURL = baseURL;
-			}
+			visibleBaseURL = getPropertyValue(props, "visibleUrlBase", baseURL);
 		}
+
 		// Parsable content types
-		String strContentTypes = props.getProperty("parsableContentTypes",
-				DEFAULT_PARSABLE_CONTENT_TYPES);
+		String strContentTypes = getPropertyValue(props, "parsableContentTypes", DEFAULT_PARSABLE_CONTENT_TYPES);
 		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
 		String contentType;
 		parsableContentTypes = new ArrayList<String>();
@@ -188,13 +158,25 @@ public class DriverConfiguration {
 
 		// populate headers black list
 		blackListedHeaders = new HashSet<String>();
-		String headers = props.getProperty("blackListedHeaders", DEFAULT_BLACK_LISTED_HEADERS);
+		String headers = getPropertyValue(props, "blackListedHeaders", DEFAULT_BLACK_LISTED_HEADERS);
 		String[] split = headers.split(",");
 		for (String header : split) {
 			blackListedHeaders.add(header.toLowerCase());
 		}
 
 		properties = props;
+	}
+
+	private static int getPropertyValue(Properties props, String name, int defaultValue) {
+		String value = props.getProperty(name);
+		return value != null ? Integer.parseInt(value) : defaultValue;
+	}
+	private static boolean getPropertyValue(Properties props, String name, boolean defaultValue) {
+		String value = props.getProperty(name);
+		return value != null ? Boolean.parseBoolean(value) : defaultValue;
+	}
+	private static String getPropertyValue(Properties props, String name, String defaultValue) {
+		return props.getProperty(name, defaultValue);
 	}
 
 	public boolean isBlackListed(String headerName) {
@@ -236,8 +218,12 @@ public class DriverConfiguration {
 		return maxConnectionsPerHost;
 	}
 
-	public int getTimeout() {
-		return timeout;
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	public int getSocketTimeout() {
+		return socketTimeout;
 	}
 
 	public boolean isUseCache() {
@@ -302,7 +288,7 @@ public class DriverConfiguration {
 	 * 
 	 * @return List of parsable content types.
 	 */
-	public List<String> getParsableContentTypes() {
+	public Collection<String> getParsableContentTypes() {
 		return parsableContentTypes;
 	}
 

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,11 +31,11 @@ import org.esigate.resource.ResourceUtils;
  */
 public class TextOnlyStringOutput extends Output {
 	private final HttpResponse response;
-	private final List<String> contentTypes;
+	private final Collection<String> contentTypes;
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private OutputStream outputStream;
 
-	public TextOnlyStringOutput(HttpResponse response, List<String> contentTypes) {
+	public TextOnlyStringOutput(HttpResponse response, Collection<String> contentTypes) {
 		this.response = response;
 		this.contentTypes = contentTypes;
 	}

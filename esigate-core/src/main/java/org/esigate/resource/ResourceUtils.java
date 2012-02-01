@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -75,8 +75,7 @@ public class ResourceUtils {
 	 *            the value of http header Content-Type
 	 * @return true if this represents text or false if not
 	 */
-	public static boolean isTextContentType(String contentType,
-			List<String> textContentTypes) {
+	public static boolean isTextContentType(String contentType, Collection<String> textContentTypes) {
 		boolean isText = false;
 
 		if (contentType != null) {
