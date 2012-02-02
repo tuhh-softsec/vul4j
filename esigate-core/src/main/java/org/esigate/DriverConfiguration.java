@@ -158,10 +158,14 @@ public class DriverConfiguration {
 
 		// populate headers black list
 		blackListedHeaders = new HashSet<String>();
-		String headers = getPropertyValue(props, "blackListedHeaders", DEFAULT_BLACK_LISTED_HEADERS);
-		String[] split = headers.split(",");
-		for (String header : split) {
+		for (String header : DEFAULT_BLACK_LISTED_HEADERS.split(",")) {
 			blackListedHeaders.add(header.toLowerCase());
+		}
+		String headers = getPropertyValue(props, "blackListedHeaders", null);
+		if (headers != null) {
+			for (String header : headers.split(",")) {
+				blackListedHeaders.add(header.toLowerCase());
+			}
 		}
 
 		properties = props;

@@ -102,14 +102,27 @@ public class DriverConfigurationTest extends TestCase {
 		validateHeader(config, "Trailers", true);
 		validateHeader(config, "Upgrade", true);
 
-		// blacklisted headers are specified via 'blackListedHeaders' property
+		// blacklisted headers are specified via 'blackListedHeaders' property -> they are merged with default
 		properties = new Properties();
 		properties.setProperty("blackListedHeaders", "header");
 		config = new DriverConfiguration("test-parsable", properties);
 
 		validateHeader(config, null, true);
 		validateHeader(config, "", true);
-		validateHeader(config, "Content-Length", false);
+		validateHeader(config, "Content-Length", true);
+		validateHeader(config, "Content-Length".toUpperCase(), true);
+		validateHeader(config, "Content-Length".toLowerCase(), true);
+		validateHeader(config, "Content-Encoding", true);
+		validateHeader(config, "Transfer-Encoding", true);
+		validateHeader(config, "Set-Cookie", true);
+		validateHeader(config, "Cookie", true);
+		validateHeader(config, "Connection", true);
+		validateHeader(config, "Keep-Alive", true);
+		validateHeader(config, "Proxy-Authenticate", true);
+		validateHeader(config, "Proxy-Authorization", true);
+		validateHeader(config, "TE", true);
+		validateHeader(config, "Trailers", true);
+		validateHeader(config, "Upgrade", true);
 		validateHeader(config, "header", true);
 		validateHeader(config, "header".toUpperCase(), true);
 	}
