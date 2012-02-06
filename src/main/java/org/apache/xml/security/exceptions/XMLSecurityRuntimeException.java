@@ -61,9 +61,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
     
     private static final long serialVersionUID = 1L;
 
-    /** Field originalException */
-    protected Exception originalException = null;
-
     /** Field msgID */
     protected String msgID;
 
@@ -75,7 +72,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
         super("Missing message string");
 
         this.msgID = null;
-        this.originalException = null;
     }
 
     /**
@@ -87,7 +83,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
         super(I18n.getExceptionMessage(msgID));
 
         this.msgID = msgID;
-        this.originalException = null;
     }
 
     /**
@@ -100,7 +95,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
         super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
         this.msgID = msgID;
-        this.originalException = null;
     }
 
     /**
@@ -113,9 +107,7 @@ public class XMLSecurityRuntimeException extends RuntimeException {
               + Constants.exceptionMessagesResourceBundleBase
               + "\". Original Exception was a "
               + originalException.getClass().getName() + " and message "
-              + originalException.getMessage());
-
-        this.originalException = originalException;
+              + originalException.getMessage(), originalException);
     }
 
     /**
@@ -125,10 +117,9 @@ public class XMLSecurityRuntimeException extends RuntimeException {
      * @param originalException
      */
     public XMLSecurityRuntimeException(String msgID, Exception originalException) {
-        super(I18n.getExceptionMessage(msgID, originalException));
+        super(I18n.getExceptionMessage(msgID, originalException), originalException);
 
         this.msgID = msgID;
-        this.originalException = originalException;
     }
 
     /**
@@ -142,7 +133,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
         super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
         this.msgID = msgID;
-        this.originalException = originalException;
     }
 
     /**
@@ -168,8 +158,8 @@ public class XMLSecurityRuntimeException extends RuntimeException {
             message = s;
         }
 
-        if (originalException != null) {
-            message = message + "\nOriginal Exception was " + originalException.toString();
+        if (this.getCause() != null) {
+            message = message + "\nOriginal Exception was " + this.getCause().toString();
         }
 
         return message;
@@ -182,10 +172,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
     public void printStackTrace() {
         synchronized (System.err) {
             super.printStackTrace(System.err);
-
-            if (this.originalException != null) {
-                this.originalException.printStackTrace(System.err);
-            }
         }
     }
 
@@ -196,10 +182,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
      */
     public void printStackTrace(PrintWriter printwriter) {
         super.printStackTrace(printwriter);
-
-        if (this.originalException != null) {
-            this.originalException.printStackTrace(printwriter);
-        }
     }
 
     /**
@@ -209,10 +191,6 @@ public class XMLSecurityRuntimeException extends RuntimeException {
      */
     public void printStackTrace(PrintStream printstream) {
         super.printStackTrace(printstream);
-
-        if (this.originalException != null) {
-            this.originalException.printStackTrace(printstream);
-        }
     }
 
     /**
@@ -221,7 +199,10 @@ public class XMLSecurityRuntimeException extends RuntimeException {
      * @return the original exception
      */
     public Exception getOriginalException() {
-        return originalException;
+        if (this.getCause() instanceof Exception) {
+            return (Exception)this.getCause();
+        }
+        return null;
     }
     
 }
