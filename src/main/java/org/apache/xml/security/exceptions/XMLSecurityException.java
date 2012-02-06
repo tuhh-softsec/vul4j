@@ -64,9 +64,6 @@ public class XMLSecurityException extends Exception {
      */
     private static final long serialVersionUID = 1L;
 
-    /** Field originalException */
-    protected Exception originalException = null;
-
     /** Field msgID */
     protected String msgID;
 
@@ -78,7 +75,6 @@ public class XMLSecurityException extends Exception {
         super("Missing message string");
 
         this.msgID = null;
-        this.originalException = null;
     }
 
     /**
@@ -90,7 +86,6 @@ public class XMLSecurityException extends Exception {
         super(I18n.getExceptionMessage(msgID));
 
         this.msgID = msgID;
-        this.originalException = null;
     }
 
     /**
@@ -104,7 +99,6 @@ public class XMLSecurityException extends Exception {
         super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
         this.msgID = msgID;
-        this.originalException = null;
     }
 
     /**
@@ -118,9 +112,7 @@ public class XMLSecurityException extends Exception {
               + Constants.exceptionMessagesResourceBundleBase
               + "\". Original Exception was a "
               + originalException.getClass().getName() + " and message "
-              + originalException.getMessage());
-
-        this.originalException = originalException;
+              + originalException.getMessage(), originalException);
     }
 
     /**
@@ -130,10 +122,9 @@ public class XMLSecurityException extends Exception {
      * @param originalException
      */
     public XMLSecurityException(String msgID, Exception originalException) {
-        super(I18n.getExceptionMessage(msgID, originalException));
+        super(I18n.getExceptionMessage(msgID, originalException), originalException);
 
         this.msgID = msgID;
-        this.originalException = originalException;
     }
 
     /**
@@ -144,10 +135,9 @@ public class XMLSecurityException extends Exception {
      * @param originalException
      */
     public XMLSecurityException(String msgID, Object exArgs[], Exception originalException) {
-        super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
+        super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs), originalException);
 
         this.msgID = msgID;
-        this.originalException = originalException;
     }
 
     /**
@@ -173,8 +163,8 @@ public class XMLSecurityException extends Exception {
             message = s;
         }
 
-        if (originalException != null) {
-            message = message + "\nOriginal Exception was " + originalException.toString();
+        if (super.getCause() != null) {
+            message = message + "\nOriginal Exception was " + super.getCause().toString();
         }
 
         return message;
@@ -187,10 +177,6 @@ public class XMLSecurityException extends Exception {
     public void printStackTrace() {
         synchronized (System.err) {
             super.printStackTrace(System.err);
-
-            if (this.originalException != null) {
-                this.originalException.printStackTrace(System.err);
-            }
         }
     }
 
@@ -201,10 +187,6 @@ public class XMLSecurityException extends Exception {
      */
     public void printStackTrace(PrintWriter printwriter) {
         super.printStackTrace(printwriter);
-
-        if (this.originalException != null) {
-            this.originalException.printStackTrace(printwriter);
-        }
     }
 
     /**
@@ -214,10 +196,6 @@ public class XMLSecurityException extends Exception {
      */
     public void printStackTrace(PrintStream printstream) {
         super.printStackTrace(printstream);
-
-        if (this.originalException != null) {
-            this.originalException.printStackTrace(printstream);
-        }
     }
 
     /**
@@ -226,6 +204,9 @@ public class XMLSecurityException extends Exception {
      * @return the original exception
      */
     public Exception getOriginalException() {
-        return originalException;
+        if (this.getCause() instanceof Exception) {
+            return (Exception)this.getCause();
+        }
+        return null;
     }
 }
