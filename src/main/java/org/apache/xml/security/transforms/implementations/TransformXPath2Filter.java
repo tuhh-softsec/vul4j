@@ -38,10 +38,9 @@ import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.transforms.params.XPath2FilterContainer;
-import org.apache.xml.security.utils.JDKXPathAPI;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.XPathAPI;
-import org.apache.xml.security.utils.XalanXPathAPI;
+import org.apache.xml.security.utils.XPathFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -112,10 +111,8 @@ public class TransformXPath2Filter extends TransformSpi {
                 String str = 
                     XMLUtils.getStrFromNode(xpathContainer.getXPathFilterTextNode());
                 
-                XPathAPI xpathAPIInstance = new XalanXPathAPI();
-                if (!XalanXPathAPI.isInstalled()) {
-                    xpathAPIInstance = new JDKXPathAPI();
-                }
+                XPathFactory xpathFactory = XPathFactory.newInstance();
+                XPathAPI xpathAPIInstance = xpathFactory.newXPathAPI();
                 
                 NodeList subtreeRoots = 
                     xpathAPIInstance.selectNodeList(
