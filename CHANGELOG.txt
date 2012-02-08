@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.1-SNAPSHOT:
+    Fixed SANTUARIO-299 - StringIndexOutOfBoundsException is thrown during reference verification (if URI = "#")
     Fixed SANTUARIO-297 - Exceptions should use a JDK exception cause mechanism
 
 New in v1.5.0:

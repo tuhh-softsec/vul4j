@@ -131,8 +131,7 @@ public class ResolverFragment extends ResourceResolverSpi {
 
         String uriNodeValue = uri.getNodeValue();
         if (uriNodeValue.equals("") || 
-            ((uriNodeValue.charAt(0) == '#') 
-                && !((uriNodeValue.charAt(1) == 'x') && uriNodeValue.startsWith("#xpointer(")))
+            ((uriNodeValue.charAt(0) == '#') && !uriNodeValue.startsWith("#xpointer("))
         ) {
             if (log.isDebugEnabled()) {
                 log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
