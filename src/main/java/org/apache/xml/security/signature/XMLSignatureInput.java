@@ -238,9 +238,6 @@ public class XMLSignatureInput {
      */
     public InputStream getOctetStream() throws IOException  {
         if (inputOctetStreamProxy != null) {
-            if (inputOctetStreamProxy.markSupported()) {
-                inputOctetStreamProxy.reset();
-            }
             return inputOctetStreamProxy;
         }
 
@@ -488,9 +485,6 @@ public class XMLSignatureInput {
             c14nizer.setWriter(diOs);
             c14nizer.engineCanonicalize(this); 
         } else {
-            if (inputOctetStreamProxy.markSupported()) {
-                inputOctetStreamProxy.reset();
-            }
             byte[] buffer = new byte[4 * 1024];
             int bytesread = 0;
             while ((bytesread = inputOctetStreamProxy.read(buffer)) != -1) {
@@ -513,15 +507,9 @@ public class XMLSignatureInput {
         if (inputOctetStreamProxy == null) {
             return null;
         }
-        if (inputOctetStreamProxy.markSupported()) {
-            inputOctetStreamProxy.reset();       
-            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
-            return bytes;
-        } else {
-            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
-            inputOctetStreamProxy.close();
-            return bytes;
-        }
+        bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
+        inputOctetStreamProxy.close();
+        return bytes;
     }
         
     /**
