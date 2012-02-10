@@ -495,7 +495,7 @@ public abstract class AbstractArchiver
                     if ( Archiver.DUPLICATES_PRESERVE.equals( duplicateBehavior )
                                     || Archiver.DUPLICATES_SKIP.equals( duplicateBehavior ) )
                     {
-                        if ( !path.endsWith( File.separator ) )
+                        if ( nextEntry.getType() == ArchiveEntry.FILE )
                         {
                             getLogger().info( path + " already added, skipping" );
                         }
