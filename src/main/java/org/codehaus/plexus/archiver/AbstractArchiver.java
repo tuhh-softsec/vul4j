@@ -216,7 +216,14 @@ public abstract class AbstractArchiver
 
     public final int getDefaultDirectoryMode()
     {
-        return defaultDirectoryMode;
+        if (defaultDirectoryMode < 0)
+        {
+            return DEFAULT_DIR_MODE;
+        }
+        else
+        {
+            return defaultDirectoryMode;
+        }
     }
 
     /**

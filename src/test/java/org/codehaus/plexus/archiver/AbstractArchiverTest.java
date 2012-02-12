@@ -35,7 +35,7 @@ public class AbstractArchiverTest extends TestCase
         assertEquals(-1, archiver.getDefaultFileMode());
         assertEquals(-1, archiver.getOverrideFileMode());
 
-        assertEquals(-1, archiver.getDefaultDirectoryMode());
+        assertEquals(Archiver.DEFAULT_DIR_MODE, archiver.getDefaultDirectoryMode());
         assertEquals(-1, archiver.getOverrideDirectoryMode());
     }
 
