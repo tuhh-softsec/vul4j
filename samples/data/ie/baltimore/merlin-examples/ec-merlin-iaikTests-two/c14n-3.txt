@@ -1,3 +1,0 @@
-<Parent>
-    <GrandChild></GrandChild>
-  </Parent>

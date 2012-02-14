@@ -1,3 +1,0 @@
-<Parent xml:foo="bar" xml:fool="barbar">
-    <GrandChild xml:space="preserve"></GrandChild>
-  </Parent>

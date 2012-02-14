@@ -1,3 +1,0 @@
-<Envelopes="http:urn:envelope">
-  
-</Envelope>

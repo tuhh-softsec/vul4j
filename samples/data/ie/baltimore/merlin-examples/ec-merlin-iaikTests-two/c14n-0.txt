@@ -1,3 +1,0 @@
-<Parent xml:foo="bar" xml:fool="barbar" xml:lang="en" xml:space="default">
-    <GrandChild xml:foo="barbarossa" xml:fool="barbar" xml:lang="ge" xml:space="preserve"></GrandChild>
-  </Parent>
