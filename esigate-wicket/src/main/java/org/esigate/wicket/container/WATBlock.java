@@ -25,6 +25,7 @@ import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.ResourceContext;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.wicket.utils.ResponseWriter;
@@ -124,35 +125,34 @@ public class WATBlock extends AbstractWatDriverContainer {
 		// Create driver
 		Driver driver = getDriver();
 
-		if (parseAbsoluteUrl) {
-
-			String baseUrl = driver.getConfiguration().getBaseURL();
-			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
-			if (baseUrlEnd > 0) {
-				baseUrl = baseUrl.substring(0, baseUrlEnd);
-			}
-			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
-					+ "/$2$3");
-			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
-					+ "/$2$3");
-		}
-
 		// Render Block
 		try {
-			driver.renderBlock(page, blockName,
-					new ResponseWriter(webResponse),
+			ResourceContext resourceContext = driver.renderBlock(page,
+					blockName, new ResponseWriter(webResponse),
 					HttpRequestImpl.wrap(request),
 					HttpResponseImpl.wrap(response),
 					new HashMap<String, String>(),
 					new HashMap<String, String>(), false);
+			if (parseAbsoluteUrl) {
+
+				String baseUrl = resourceContext.getBaseURL();
+				int baseUrlEnd = baseUrl
+						.indexOf('/', baseUrl.indexOf("//") + 2);
+				if (baseUrlEnd > 0) {
+					baseUrl = baseUrl.substring(0, baseUrlEnd);
+				}
+				replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
+						+ "/$2$3");
+				replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
+						+ "/$2$3");
+			}
 		} catch (IOException e) {
 			this.sendErrorContent(blocks, webResponse, null);
 			LOG.error(e.getMessage(), e);
 		} catch (HttpErrorPage e) {
 			// Insert default content
 			this.sendErrorContent(blocks, webResponse, e.getStatusCode());
-			LOG.warn(e.getMessage() + ": "
-					+ driver.getConfiguration().getBaseURL() + page);
+			LOG.warn(e.getMessage() + ": " + page);
 		}
 
 	}

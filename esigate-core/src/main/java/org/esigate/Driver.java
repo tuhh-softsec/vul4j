@@ -218,19 +218,20 @@ public class Driver {
 	 * @param copyOriginalRequestParameters
 	 *            indicates whether the original request parameters should be
 	 *            copied in the new request
+	 * @return {@link ResourceContext}
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderBlock(String page, String name, Appendable writer,
+	public final ResourceContext renderBlock(String page, String name, Appendable writer,
 			HttpRequest request,
 			HttpResponse response,
 			Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws IOException,
 			HttpErrorPage {
 		LOG.info("renderBlock provider=" + config.getInstanceName() + " page=" + page + " name=" + name);
-		render(page, parameters, writer, request, response,
+		return render(page, parameters, writer, request, response,
 				new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
 	}
 
@@ -298,12 +299,13 @@ public class Driver {
 	 *            originating request object
 	 * @param renderers
 	 *            the renderers to use to transform the output
+	 * @return {@link ResourceContext}
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	protected final void render(String page, Map<String, String> parameters,
+	protected final ResourceContext render(String page, Map<String, String> parameters,
 			Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers)
 			throws IOException, HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
@@ -323,7 +325,7 @@ public class Driver {
 		// Fix resources
 		if (config.isFixResources()) {
 			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-					config.getBaseURL(), config.getVisibleBaseURL(), page,
+					resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()), page,
 					config.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(resourceContext, currentValue, stringWriter);
@@ -337,6 +339,7 @@ public class Driver {
 			currentValue = stringWriter.toString();
 		}
 		writer.append(currentValue);
+		return resourceContext;
 	}
 
 	/**
@@ -395,7 +398,7 @@ public class Driver {
 					renderers.length + 1);
 			if (config.isFixResources()) {
 				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-						config.getBaseURL(), config.getVisibleBaseURL(),
+						resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()),
 						relUrl, config.getFixMode());
 				listOfRenderers.add(fixup);
 			}

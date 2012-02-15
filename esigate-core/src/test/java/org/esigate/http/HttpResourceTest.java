@@ -154,7 +154,7 @@ public class HttpResourceTest extends TestCase {
 		} catch (IOException e) {
 			assertNotNull(e);
 			assertTrue(e.getMessage().contains(
-					driver.getConfiguration().getBaseURL()));
+					resourceContext.getBaseURL()));
 		}
 
 	}

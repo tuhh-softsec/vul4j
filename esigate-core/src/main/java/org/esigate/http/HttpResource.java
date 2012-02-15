@@ -151,8 +151,7 @@ public class HttpResource extends Resource {
 		// Look for the relUrl starting from the end of the url
 		int pos = originalBase.lastIndexOf(target.getRelUrl());
 
-		String driverBaseUrl = target.getDriver().getConfiguration()
-				.getBaseURL();
+		String driverBaseUrl = target.getBaseURL();
 		if (pos >= 0) {
 			// Remove relUrl from originalBase.
 			originalBase = originalBase.substring(0, pos);

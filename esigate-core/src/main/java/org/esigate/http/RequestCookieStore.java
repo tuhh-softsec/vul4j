@@ -108,11 +108,11 @@ class RequestCookieStore implements CookieStore {
 		if ("JSESSIONID".equalsIgnoreCase(name)) {
 			name = "_" + name;
 		}
-
+		
 		// Rewrite domain
 		String domain = rewriteDomain(
 				cookie.getDomain(),
-				resourceContext.getDriver().getConfiguration().getBaseURLasURL().getHost(),
+				resourceContext.getBaseURLasURL().getHost(),
 				resourceContext.getOriginalRequest().getServerName());
 
 		// Rewrite path
@@ -196,8 +196,7 @@ class RequestCookieStore implements CookieStore {
 		if (resourceContext.getDriver().getConfiguration().isPreserveHost()) {
 			domain = resourceContext.getOriginalRequest().getServerName();
 		} else {
-			domain = resourceContext.getDriver().getConfiguration()
-					.getBaseURLasURL().getHost();
+			domain = resourceContext.getBaseURLasURL().getHost();
 		}
 		httpClientCookie.setDomain(domain);
 		httpClientCookie.setPath("/");

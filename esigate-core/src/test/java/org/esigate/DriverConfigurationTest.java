@@ -5,6 +5,11 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
+import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
+import org.esigate.url.SingleBaseUrlRetrieveStrategy;
+import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
+
 /**
  * DriverConfiguration test case.
  * 
@@ -125,6 +130,66 @@ public class DriverConfigurationTest extends TestCase {
 		validateHeader(config, "Upgrade", true);
 		validateHeader(config, "header", true);
 		validateHeader(config, "header".toUpperCase(), true);
+	}
+	
+	public void testBaseUrl() {
+		Properties properties = new Properties();
+
+		DriverConfiguration config = new DriverConfiguration("test-baseurl",
+				properties);
+
+		assertEquals(null, config.getBaseUrlRetrieveStrategy());
+
+		properties.setProperty("remoteUrlBase", "http://example.com");
+		config = new DriverConfiguration("test-baseurl", properties);
+		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof SingleBaseUrlRetrieveStrategy);
+
+		properties.setProperty("remoteUrlBase",
+				"http://example.com, http://example1.com");
+		config = new DriverConfiguration("test-baseurl", properties);
+		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
+
+		properties.setProperty("remoteUrlBase",
+				"http://example.com, http://example1.com");
+		properties.setProperty("remoteUrlBaseStrategy", "roundrobin");
+		config = new DriverConfiguration("test-baseurl", properties);
+		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
+
+		properties.setProperty("remoteUrlBase",
+				"http://example.com, http://example1.com");
+		properties.setProperty("remoteUrlBaseStrategy", "iphash");
+		config = new DriverConfiguration("test-baseurl", properties);
+		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof IpHashBaseUrlRetrieveStrategy);
+
+		properties.setProperty("remoteUrlBase",
+				"http://example.com, http://example1.com");
+		properties.setProperty("remoteUrlBaseStrategy", "stickysession");
+		config = new DriverConfiguration("test-baseurl", properties);
+		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof StickySessionBaseUrlRetrieveStrategy);
+
+		try {
+			properties.setProperty("remoteUrlBase",
+					"http://example.com, http://example1.com");
+			properties.setProperty("remoteUrlBaseStrategy", "invalid_strategy");
+			config = new DriverConfiguration("test-baseurl", properties);
+			fail();
+		} catch (ConfigurationException e) {
+			assertTrue(e.getMessage().contains("invalid_strategy"));
+		} catch (Exception e) {
+			fail();
+		}
+
+		try {
+			properties.setProperty("remoteUrlBase",
+					"http://example.com, ://1.com");
+			config = new DriverConfiguration("test-baseurl", properties);
+			fail();
+		} catch (ConfigurationException e) {
+
+		} catch (Exception e) {
+			fail();
+		}
+
 	}
 
 	private void validateHeader(DriverConfiguration config, String header, boolean blacklisted) {

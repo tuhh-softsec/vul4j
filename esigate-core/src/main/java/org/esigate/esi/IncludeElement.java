@@ -181,8 +181,8 @@ class IncludeElement extends BaseElement {
 		if(rewriteAbsoluteUrl)
 		{
 			Map<String, String> replaceRules = new HashMap<String, String>();
-			String baseUrl = driver.getConfiguration().getBaseURL();
-			String visibleBaseUrl =  driver.getConfiguration().getVisibleBaseURL();
+			String baseUrl = resourceContext.getBaseURL();
+			String visibleBaseUrl =  driver.getConfiguration().getVisibleBaseURL(baseUrl);
 			
 			String contextBaseUrl;
 			String contextVisibleBaseUrl;

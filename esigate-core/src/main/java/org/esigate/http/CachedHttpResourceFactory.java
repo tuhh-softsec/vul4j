@@ -138,7 +138,7 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 	private void tryLoadFromHttp(ResourceProxyWithContext ret)
 			throws Exception, HttpErrorPage {
 		// Try to load it from HTTP
-		if (config.getBaseURL() != null) {
+		if (config.getBaseUrlRetrieveStrategy() != null) {
 			// Prepare a FileOutput to store the result on the file system
 			if (config.isPutInCache()
 					&& Rfc2616.isCacheable(ret.getResourceContext())) {

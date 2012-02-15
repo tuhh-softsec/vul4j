@@ -207,9 +207,8 @@ public class ResourceUtils {
 		String url = target.getRelUrl();
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			// Relative URL, we need to add the driver base url
-			if (target.getDriver().getConfiguration().getBaseURL() != null) {
-				url = concatUrl(target.getDriver().getConfiguration()
-						.getBaseURL(), url);
+			if (target.getBaseURL() != null) {
+				url = concatUrl(target.getBaseURL(), url);
 			}
 		}
 		String queryString = ResourceUtils.buildQueryString(target);

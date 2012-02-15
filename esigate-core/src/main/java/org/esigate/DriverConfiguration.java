@@ -24,11 +24,17 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
+import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.CacheStorage;
 import org.esigate.cache.DefaultCacheStorage;
 import org.esigate.cookie.SerializableBasicCookieStore;
 import org.esigate.renderers.ResourceFixupRenderer;
+import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
+import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
+import org.esigate.url.SingleBaseUrlRetrieveStrategy;
+import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
 
 
 /**
@@ -38,8 +44,11 @@ import org.esigate.renderers.ResourceFixupRenderer;
  * @contributor Nicolas Richeton
  */
 public class DriverConfiguration {
+	private static final String STICKYSESSION = "stickysession";
+	private static final String IPHASH = "iphash";
+	private static final String ROUNDROBIN = "roundrobin";
+	
 	private final String instanceName;
-	private final String baseURL;
 	private String uriEncoding = "ISO-8859-1";
 	private boolean fixResources = false;
 	private String visibleBaseURL = null;
@@ -63,24 +72,19 @@ public class DriverConfiguration {
 	private String filter = null;
 	private final List<String> parsableContentTypes;
 	private final Set<String> blackListedHeaders;
+	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
+	private boolean isVisibleBaseURLEmpty = true;
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,"
 			+ "Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade";
 
-	private URL baseURLasURL = null;
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
-		baseURL = getPropertyValue(props, "remoteUrlBase", null);
-		try {
-			if (baseURL != null) {
-				baseURLasURL = new URL(baseURL);
-			}
-		} catch (MalformedURLException e) {
-			throw new ConfigurationException(e);
-		}
+		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
+		
 		uriEncoding = getPropertyValue(props, "uriEncoding", uriEncoding);
 		maxConnectionsPerHost = getPropertyValue(props, "maxConnectionsPerHost", maxConnectionsPerHost);
 		int timeout = getPropertyValue(props, "timeout", 1000);
@@ -142,7 +146,8 @@ public class DriverConfiguration {
 				}
 			}
 			// Visible base url
-			visibleBaseURL = getPropertyValue(props, "visibleUrlBase", baseURL);
+			visibleBaseURL = getPropertyValue(props, "visibleUrlBase", null);
+			isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
 		}
 
 		// Parsable content types
@@ -169,6 +174,42 @@ public class DriverConfiguration {
 		}
 
 		properties = props;
+	}
+
+	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
+		BaseUrlRetrieveStrategy urlStrategy = null;
+		String baseURLs = getPropertyValue(props, "remoteUrlBase", null);
+		try {
+			if (!StringUtils.isEmpty(baseURLs)) {
+				String[] urls = StringUtils.split(baseURLs, ",");
+				if(1 == urls.length){
+					String baseURL = StringUtils.trimToEmpty(urls[0]);
+					new URL(baseURL);
+					urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
+				}else if(urls.length > 0){
+					String[] urlArr = new String[urls.length];
+					for(int i = 0; i < urls.length; i++){
+						String baseURL = StringUtils.trimToEmpty(urls[i]);
+						new URL(baseURL);
+						urlArr[i] = baseURL;
+					}
+					String strategy = StringUtils.trimToEmpty(getPropertyValue(props, "remoteUrlBaseStrategy", ROUNDROBIN));
+					if(ROUNDROBIN.equalsIgnoreCase(strategy)){
+						urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
+					}else if(IPHASH.equalsIgnoreCase(strategy)){
+						urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
+					}else if(STICKYSESSION.equalsIgnoreCase(strategy)){
+						urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
+					}else{
+						throw new ConfigurationException("No such BaseUrlRetrieveStrategy '"+ strategy+"'");
+					}
+					
+				}
+			}
+		} catch (MalformedURLException e) {
+			throw new ConfigurationException(e);
+		}
+		return urlStrategy;
 	}
 
 	private static int getPropertyValue(Properties props, String name, int defaultValue) {
@@ -202,8 +243,8 @@ public class DriverConfiguration {
 		return fixResources;
 	}
 
-	public String getVisibleBaseURL() {
-		return visibleBaseURL;
+	public String getVisibleBaseURL(String currentBaseUrl) {
+		return isVisibleBaseURLEmpty ? currentBaseUrl : visibleBaseURL;
 	}
 
 	public boolean isPreserveHost() {
@@ -214,9 +255,7 @@ public class DriverConfiguration {
 		return instanceName;
 	}
 
-	public String getBaseURL() {
-		return baseURL;
-	}
+	
 
 	public int getMaxConnectionsPerHost() {
 		return maxConnectionsPerHost;
@@ -296,8 +335,8 @@ public class DriverConfiguration {
 		return parsableContentTypes;
 	}
 
-	public URL getBaseURLasURL() {
-		return baseURLasURL;
+	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
+		return baseUrlRetrieveStrategy;
 	}
 
 }

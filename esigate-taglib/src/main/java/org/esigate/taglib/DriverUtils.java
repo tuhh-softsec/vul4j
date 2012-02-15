@@ -14,6 +14,9 @@ import javax.servlet.jsp.PageContext;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
 
@@ -23,9 +26,13 @@ import org.esigate.servlet.HttpResponseImpl;
  * @author Francois-Xavier Bonnet
  */
 public class DriverUtils {
-	public final static String getBaseUrl(String provider) {
-		return DriverFactory.getInstance(provider).getConfiguration()
-				.getBaseURL();
+
+	public final static String getBaseUrl(String provider, HttpRequest request,
+			HttpResponse responce) {
+		BaseUrlRetrieveStrategy baseUrlRetrieveStrategy = DriverFactory
+				.getInstance(provider).getConfiguration()
+				.getBaseUrlRetrieveStrategy();
+		return baseUrlRetrieveStrategy.getBaseURL(request, responce);
 	}
 
 	public final static void renderBlock(String provider, String page,

@@ -26,7 +26,7 @@ public class ResourceFactoryCreator {
 	
 	public static ResourceFactory create(DriverConfiguration config) {
 		HttpClient httpClient = null;
-		if (config.getBaseURL() != null) {
+		if (config.getBaseUrlRetrieveStrategy() != null) {
 			// Create and initialize scheme registry
 			SchemeRegistry schemeRegistry = new SchemeRegistry();
 			try {

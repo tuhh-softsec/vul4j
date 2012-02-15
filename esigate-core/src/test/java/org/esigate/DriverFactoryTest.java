@@ -8,6 +8,9 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
+import org.esigate.api.HttpRequest;
+
 public class DriverFactoryTest extends TestCase {
 
 	@Override
@@ -32,8 +35,12 @@ public class DriverFactoryTest extends TestCase {
 		DriverFactory.configure(id, props);
 		Driver instance = DriverFactory.getInstance(id);
 		assertNotNull(instance);
-		assertEquals("http://base.url", instance.getConfiguration()
-				.getBaseURL());
+		
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
+		ResourceContext resourceContext = new ResourceContext(instance, "/test",
+				null, request, null);
+		
+		assertEquals("http://base.url", resourceContext.getBaseURL());
 	}
 
 	public void testConfigureStringProperties2() {
@@ -51,8 +58,12 @@ public class DriverFactoryTest extends TestCase {
 		DriverFactory.configure(null, props);
 		Driver instance = DriverFactory.getInstance();
 		assertNotNull(instance);
-		assertEquals("http://base.url", instance.getConfiguration()
-				.getBaseURL());
+		
+		HttpRequest request = EasyMock.createMock(HttpRequest.class);
+		ResourceContext resourceContext = new ResourceContext(instance, "/test",
+				null, request, null);
+		
+		assertEquals("http://base.url", resourceContext.getBaseURL());
 	}
 
 	public void testMergeProperties() {
@@ -99,8 +110,11 @@ public class DriverFactoryTest extends TestCase {
 			DriverFactory.configure();
 			Driver driver = DriverFactory.getInstance();
 
-			assertEquals(extendedBaseUrl, driver.getConfiguration()
-					.getBaseURL());
+			HttpRequest request = EasyMock.createMock(HttpRequest.class);
+			ResourceContext resourceContext = new ResourceContext(driver, "/test",
+					null, request, null);
+			
+			assertEquals(extendedBaseUrl, resourceContext.getBaseURL());
 
 			assertEquals("org.esigate.filter.CookieForwardingFilter",
 					driver.getFilter().getClass().getCanonicalName());

@@ -4,13 +4,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 
-import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-
+import org.esigate.servlet.HttpRequestImpl;
+import org.esigate.servlet.HttpResponseImpl;
 
 /**
  * Retrieves an HTML fragment from the provider application and inserts it into
@@ -35,12 +37,15 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 
 	@Override
 	public int doEndTag() throws JspException {
+
 		if (parseAbsoluteUrl) {
+			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl
+					.wrap((HttpServletRequest) pageContext.getRequest()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext
+							.getResponse()));
 			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
 			}
-			String baseUrl = DriverFactory.getInstance(provider)
-					.getConfiguration().getBaseURL();
 			int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
 			if (baseUrlEnd > 0) {
 				baseUrl = baseUrl.substring(0, baseUrlEnd);
@@ -53,6 +58,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 		try {
 			DriverUtils.renderBlock(provider, page, name, pageContext,
 					replaceRules, parameters, addQuery);
+
 		} catch (HttpErrorPage re) {
 			if (displayErrorPage) {
 				try {
