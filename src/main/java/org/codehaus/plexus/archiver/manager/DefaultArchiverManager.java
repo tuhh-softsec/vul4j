@@ -19,7 +19,7 @@ package org.codehaus.plexus.archiver.manager;
 
 
 import java.io.File;
-
+import java.util.Locale;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;
@@ -95,13 +95,13 @@ public class DefaultArchiverManager
     {
         String path = file.getAbsolutePath();
         
-        String archiveExt = FileUtils.getExtension( path ).toLowerCase();
+        String archiveExt = FileUtils.getExtension( path ).toLowerCase( Locale.ENGLISH );
         
         if ( "gz".equals( archiveExt ) || "bz2".equals( archiveExt ) )
         {
             String [] tokens = StringUtils.split( path, "." );
             
-            if ( tokens.length > 2  && "tar".equals( tokens[tokens.length -2].toLowerCase() ) )
+            if ( tokens.length > 2  && "tar".equals( tokens[tokens.length -2].toLowerCase( Locale.ENGLISH ) ) )
             {
                 archiveExt = "tar." + archiveExt;
             }

@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.Attributes;
@@ -231,11 +232,21 @@ public class Manifest
          */
         public String getKey()
         {
+            return getKey (name );
+        }
+
+        /**
+         * Get the key for the specified attribute name - its name in lower case.
+         *
+         * @return the attribute's key.
+         */
+        private static String getKey( String name )
+        {
             if ( name == null )
             {
                 return null;
             }
-            return name.toLowerCase();
+            return name.toLowerCase( Locale.ENGLISH );
         }
 
         /**
@@ -531,7 +542,7 @@ public class Manifest
                 return attribute.getValue();
             }
 
-            if ( attribute.getKey().startsWith( ATTRIBUTE_FROM.toLowerCase() ) )
+            if ( attribute.getKey().startsWith( Attribute.getKey( ATTRIBUTE_FROM ) ) )
             {
                 warnings.addElement( "Manifest attributes should not start " + "with \"" + ATTRIBUTE_FROM + "\" in \""
                                          + attribute.getName() + ": " + attribute.getValue() + "\"" );
