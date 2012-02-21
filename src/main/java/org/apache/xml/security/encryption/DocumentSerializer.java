@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.encryption;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -39,6 +40,17 @@ import org.xml.sax.SAXException;
 public class DocumentSerializer extends AbstractSerializer {
     
     protected DocumentBuilderFactory dbf;
+
+    /**
+     * @param source
+     * @param ctx
+     * @return the Node resulting from the parse of the source
+     * @throws XMLEncryptionException
+     */
+    public Node deserialize(byte[] source, Node ctx) throws XMLEncryptionException {
+        byte[] fragment = createContext(source, ctx);
+        return deserialize(ctx, new InputSource(new ByteArrayInputStream(fragment)));
+    }
     
     /**
      * @param source
@@ -48,7 +60,16 @@ public class DocumentSerializer extends AbstractSerializer {
      */
     public Node deserialize(String source, Node ctx) throws XMLEncryptionException {
         String fragment = createContext(source, ctx);
-        
+        return deserialize(ctx, new InputSource(new StringReader(fragment)));
+    }
+    
+    /**
+     * @param ctx
+     * @param inputSource
+     * @return the Node resulting from the parse of the source
+     * @throws XMLEncryptionException
+     */
+    private Node deserialize(Node ctx, InputSource inputSource) throws XMLEncryptionException {
         try {
             if (dbf == null) {
                 dbf = DocumentBuilderFactory.newInstance();
@@ -58,17 +79,17 @@ public class DocumentSerializer extends AbstractSerializer {
                 dbf.setValidating(false);
             }
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document d = db.parse(new InputSource(new StringReader(fragment)));
-            
+            Document d = db.parse(inputSource);
+
             Document contextDocument = null;
             if (Node.DOCUMENT_NODE == ctx.getNodeType()) {
                 contextDocument = (Document)ctx;
             } else {
                 contextDocument = ctx.getOwnerDocument();
             }
-            
-            Element fragElt = 
-                (Element) contextDocument.importNode(d.getDocumentElement(), true);
+
+            Element fragElt =
+                    (Element) contextDocument.importNode(d.getDocumentElement(), true);
             DocumentFragment result = contextDocument.createDocumentFragment();
             Node child = fragElt.getFirstChild();
             while (child != null) {

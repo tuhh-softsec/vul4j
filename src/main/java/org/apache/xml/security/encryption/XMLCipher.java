@@ -1039,18 +1039,18 @@ public class XMLCipher {
             throw new XMLEncryptionException("XMLCipher instance without transformation specified");
         }
 
-        String serializedOctets = null;
+        byte[] serializedOctets = null;
         if (serializedData == null) {
             if (type.equals(EncryptionConstants.TYPE_CONTENT)) {
                 NodeList children = element.getChildNodes();
                 if (null != children) {
-                    serializedOctets = serializer.serialize(children);
+                    serializedOctets = serializer.serializeToByteArray(children);
                 } else {
                     Object exArgs[] = { "Element has no content." };
                     throw new XMLEncryptionException("empty", exArgs);
                 }
             } else {
-                serializedOctets = serializer.serialize(element);
+                serializedOctets = serializer.serializeToByteArray(element);
             }
             if (log.isDebugEnabled()) {
                 log.debug("Serialized octets:\n" + serializedOctets);
@@ -1100,10 +1100,10 @@ public class XMLCipher {
                 baos.write(c.doFinal());
                 encryptedBytes = baos.toByteArray();
             } else {
-                encryptedBytes = c.doFinal(serializedOctets.getBytes("UTF-8"));
+                encryptedBytes = c.doFinal(serializedOctets);
                 if (log.isDebugEnabled()) {
                     log.debug("Expected cipher.outputSize = " +
-                        Integer.toString(c.getOutputSize(serializedOctets.getBytes("UTF-8").length)));
+                        Integer.toString(c.getOutputSize(serializedOctets.length)));
                 }
             }
             if (log.isDebugEnabled()) {
@@ -1555,12 +1555,7 @@ public class XMLCipher {
             log.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
-        String octets;
-        try {
-            octets = new String(decryptToByteArray(element), "UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            throw new XMLEncryptionException("empty", uee);
-        }
+        byte[] octets = decryptToByteArray(element);
 
         if (log.isDebugEnabled()) {
             log.debug("Decrypted octets:\n" + octets);

@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.encryption;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 
 import javax.xml.XMLConstants;
@@ -38,6 +39,17 @@ import org.w3c.dom.Node;
 public class TransformSerializer extends AbstractSerializer {
     
     private TransformerFactory transformerFactory;
+
+    /**
+     * @param source
+     * @param ctx
+     * @return the Node resulting from the parse of the source
+     * @throws XMLEncryptionException
+     */
+    public Node deserialize(byte[] source, Node ctx) throws XMLEncryptionException {
+        byte[] fragment = createContext(source, ctx);
+        return deserialize(ctx, new StreamSource(new ByteArrayInputStream(fragment)));
+    }
     
     /**
      * @param source
@@ -47,7 +59,16 @@ public class TransformSerializer extends AbstractSerializer {
      */
     public Node deserialize(String source, Node ctx) throws XMLEncryptionException {
         String fragment = createContext(source, ctx);
-        
+        return deserialize(ctx, new StreamSource(new StringReader(fragment)));
+    }
+    
+    /**
+     * @param ctx
+     * @param source
+     * @return the Node resulting from the parse of the source
+     * @throws XMLEncryptionException
+     */
+    private Node deserialize(Node ctx, Source source) throws XMLEncryptionException {
         try {
             Document contextDocument = null;
             if (Node.DOCUMENT_NODE == ctx.getNodeType()) {
@@ -55,7 +76,6 @@ public class TransformSerializer extends AbstractSerializer {
             } else {
                 contextDocument = ctx.getOwnerDocument();
             }
-            Source src = new StreamSource(new StringReader(fragment));
             
             if (transformerFactory == null) {
                 transformerFactory = TransformerFactory.newInstance();
@@ -68,7 +88,7 @@ public class TransformSerializer extends AbstractSerializer {
             Node placeholder = contextDocument.createDocumentFragment();
             res.setNode(placeholder);
 
-            transformer.transform(src, res);
+            transformer.transform(source, res);
 
             // Skip dummy element
             Node dummyChild = placeholder.getFirstChild();
