@@ -9,7 +9,7 @@
 
     <property name="product.version.major" value="1"/>
     <property name="product.version.minor" value="5"/>
-    <property name="product.version.level" value="1"/>
+    <property name="product.version.level" value="2"/>
     <property name='product.version.qualifier' value='-SNAPSHOT'/>
     <property name="product.version" 
 	  value="${product.version.major}.${product.version.minor}.${product.version.level}${product.version.qualifier}"/>

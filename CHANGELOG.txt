@@ -1,6 +1,8 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
-New in v1.5.1-SNAPSHOT:
+New in v1.5.2-SNAPSHOT:
+
+New in v1.5.1:
     Fixed SANTUARIO-300 - decryption/encryption optimization.
     Fixed SANTUARIO-296 - XMLSignatureInput fails with an IOException if constructed on a BufferedInputStream
     Fixed SANTUARIO-298 - Xalan is still a required dependency
