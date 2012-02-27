@@ -11,7 +11,7 @@
 	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
 	<name>esigate</name>
-	<version>3.3-SNAPSHOT</version>
+	<version>3.2-SNAPSHOT</version>
 	<ciManagement>
 		<system>continuum</system>
 		<!-- There's no public access to the CI platform -->
