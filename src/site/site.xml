@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="ESIGate - ESI reverse proxy, CMS integration, Remove templating">
-	<skin>
-		<groupId>org.esigate.maven</groupId>
-		<artifactId>esigate-maven-skin</artifactId>
-		<version>${project.version}</version>
-	</skin>
-	<version position="left" />
-
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+  name="ESIGate - ESI reverse proxy, CMS integration, Remote templating">
 	<bannerLeft>
 		<name>ESIGate</name>
 		<src>images/logo.jpg</src>
@@ -14,6 +9,17 @@
 		<alt>Get ESIGate at SourceForge.net. Fast, secure and Free Open Source
 			software downloads</alt>
 	</bannerLeft>
+	<version position="left" />
+	<poweredBy>
+	  <logo href="http://sourceforge.net/projects/webassembletool" width="80" height="15"
+	    name="Hosted by SourceForge" img="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&amp;type=8"
+	    alt="Get Website assembling toolkit at SourceForge.net. Fast, secure and Free Open Source software downloads" />
+	</poweredBy>
+	<skin>
+		<groupId>org.esigate.maven</groupId>
+		<artifactId>esigate-maven-skin</artifactId>
+		<version>${project.version}</version>
+	</skin>
 	<body>
 		<head>
 			<script type="text/javascript">
@@ -32,8 +38,6 @@
 		</head>
 
 		<links>
-			<item name="Maven repo"
-				href="http://www.esigate.org/maven/repository/" />
 			<item name="Change log"
 				href="https://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php" />
 			<item name="Roadmap"
@@ -80,5 +84,6 @@
 		<menu ref="reports" />
 
 		<menu ref="modules" />
+
 	</body>
 </project>
