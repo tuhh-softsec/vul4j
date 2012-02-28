@@ -32,6 +32,8 @@ import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
 
+import org.codehaus.plexus.util.IOUtil;
+
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l </a>
  * @version $Id$
@@ -366,6 +368,10 @@ public abstract class CommandLineUtils
         {
             if ( p != null )
             {
+                IOUtil.close( p.getOutputStream() );
+                IOUtil.close( p.getErrorStream() );
+                IOUtil.close( p.getInputStream() );
+
                 p.destroy();
             }
         }
