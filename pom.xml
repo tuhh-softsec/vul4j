@@ -26,9 +26,8 @@
 			</notifier>
 			<notifier>
 				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
 				<configuration>
-					<address>fxbonnet@users.sourceforge.net</address>
+					<address>francois-xavier.bonnet@centraliens.net</address>
 				</configuration>
 			</notifier>
 			<notifier>
@@ -50,20 +49,6 @@
 				<sendOnWarning>false</sendOnWarning>
 				<configuration>
 					<address>andreii.lebedinskiy@smile-ukraine.com</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>tatyana.hordynskaya@smile-ukraine.com</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>ishutin.andrii@smile-ukraine.com</address>
 				</configuration>
 			</notifier>
 		</notifiers>
@@ -110,7 +95,7 @@
 		<developer>
 			<id>fxbonnet</id>
 			<name>Francois-Xavier Bonnet</name>
-			<email>fxbonnet@users.sourceforge.net</email>
+			<email>francois-xavier.bonnet@centraliens.net</email>
 		</developer>
 		<developer>
 			<id>cedric_brandes</id>
