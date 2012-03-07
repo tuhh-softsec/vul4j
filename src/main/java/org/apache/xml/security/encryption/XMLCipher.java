@@ -1558,7 +1558,7 @@ public class XMLCipher {
         byte[] octets = decryptToByteArray(element);
 
         if (log.isDebugEnabled()) {
-            log.debug("Decrypted octets:\n" + octets);
+            log.debug("Decrypted octets:\n" + new String(octets));
         }
 
         Node sourceParent = element.getParentNode();
