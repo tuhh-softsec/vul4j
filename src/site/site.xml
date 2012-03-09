@@ -68,6 +68,7 @@
 			<item href="cache.html" name="Cache" />
 			<item href="httpheaders.html" name="HTTP headers support" />
 			<item href="errors.html" name="Errors management" />
+			<item href="clustering.html" name="Load balancing" />
 			<item href="cas.html" name="Single Sign On with CAS" />
 			<item href="sample.html" name="Sample applications" />
 			<item href="maven.html" name="Maven" />

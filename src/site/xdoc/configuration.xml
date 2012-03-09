@@ -2,7 +2,7 @@
 <document>
 	<properties>
 		<title>Configuration</title>
-		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
 		<h1>Configuration</h1>
@@ -34,7 +34,7 @@
 						<code>remoteUrlBase=http://localhost:8080/provider/
 						</code>
 						If not defined, local file system will be used (see localBase
-						directive)
+						directive). When <a href="clustering.html">clustering</a> (remote application runs on several servers), use a coma-separated list.
 					</td>
 					<td>No</td>
 					<td>-</td>
@@ -81,7 +81,7 @@
                     <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</td>
                 </tr>
                 <tr>
-                    <td>timeout</td>
+                    <td><strike>timeout</strike></td>
                     <td><b>Deprecated property.</b> Defines timeout while establishing a connection with the server (connect time out)
                     and timeout waiting for data (socket timeout) if appropriate properties aren't defined.
                     In case when 'connectTimeout' property isn't defined then connect timeout is equal to the value of that property.
@@ -196,6 +196,36 @@
                     <td>No</td>
                     <td></td>
                 </tr>   
+				<tr>
+                    <td>fixResources</td>
+                    <td>Fix links to resources, images and pages in the pages retrieved (parse the pages to find &lt;a href=...&gt; or &lt;img src=...&gt; ...)</td>
+                    <td>No</td>
+                    <td>false</td>
+                </tr>   
+				<tr>
+                    <td>fixMode</td>
+                    <td>If "relative" the generated URLs will be relative to the root of the server (ie starting with "/"). If "absolute" generated URLs will be absolute (ie starting with "http://")</td>
+                    <td>No</td>
+                    <td>relative</td>
+                </tr>   
+				<tr>
+                    <td>visibleUrlBase</td>
+                    <td>The base URL to use while rewriting URLs for links or resources if different from remoteUrlBase</td>
+                    <td>No</td>
+                    <td>same value as remoteUrlBase</td>
+                </tr>
+				<tr>
+					<td>remoteUrlBaseStrategy</td>
+					<td>
+						The strategy to use if load balancing (ie remoteUrlBase has been
+						defined as a comma-separated list). Value can be "roundrobin",
+						"iphash" or "stickysession". See
+						<a href="clustering.html">clustering</a>
+						for details
+					</td>
+					<td>No</td>
+					<td>roundrobin</td>
+				</tr>
 			</table>
 
 		</section>

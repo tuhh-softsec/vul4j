@@ -2,7 +2,7 @@
 <document>
 	<properties>
 		<title>Errors management</title>
-		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
 		While retrieving a page or resource from a distant server, a lot of

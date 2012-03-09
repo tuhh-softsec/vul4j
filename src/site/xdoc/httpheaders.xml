@@ -2,7 +2,7 @@
 <document>
 	<properties>
 		<title>HTTP headers support</title>
-		<author email="fxbonnet@users.sourceforge.net">Francois-Xavier Bonnet</author>
+		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
 	<h1>HTTP headers support</h1>
