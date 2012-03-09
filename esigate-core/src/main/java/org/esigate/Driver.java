@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * depending on the needs.
  * 
  * @author Francois-Xavier Bonnet
- * @contributor Nicolas Richeton
+ * @author Nicolas Richeton
  */
 public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);

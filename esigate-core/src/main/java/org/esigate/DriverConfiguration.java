@@ -41,7 +41,7 @@ import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
  * Driver configuration parameters
  * 
  * @author Francois-Xavier Bonnet
- * @contributor Nicolas Richeton
+ * @author Nicolas Richeton
  */
 public class DriverConfiguration {
 	private static final String STICKYSESSION = "stickysession";

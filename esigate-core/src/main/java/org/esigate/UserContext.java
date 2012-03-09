@@ -25,7 +25,7 @@ import org.esigate.cookie.CustomCookieStore;
  * There is one instance of user context associated with each session.
  * 
  * @author Francois-Xavier Bonnet
- * @contributor Nicolas Richeton
+ * @author Nicolas Richeton
  * 
  */
 public class UserContext implements Serializable {

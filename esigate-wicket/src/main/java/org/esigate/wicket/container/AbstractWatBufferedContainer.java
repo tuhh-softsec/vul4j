@@ -15,7 +15,7 @@
 
 package org.esigate.wicket.container;
 
-
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
@@ -60,8 +60,7 @@ public abstract class AbstractWatBufferedContainer extends WebMarkupContainer {
 
 	/**
 	 * 
-	 * @see org.apache.wicket.MarkupContainer#onComponentTagBody(org.apache.wicket
-	 *      .markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
+	 * @see MarkupContainer#onComponentTagBody(MarkupStream, ComponentTag)
 	 */
 	@Override
 	protected void onComponentTagBody(MarkupStream markupStream,

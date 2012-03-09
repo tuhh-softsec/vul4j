@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ import org.esigate.resource.ResourceUtils;
  * whether content is of type text before buffering it. If no header indicates
  * whether this input is text the output is directly forwarded to binaryOutput
  * specified in construction time. For details on how text content is detected
- * look at {@link ResourceUtils#isTextContentType(String, List)}. The
+ * look at {@link ResourceUtils#isTextContentType(String, Collection)}. The
  * {@link #hasTextBuffer()} method can be used to check whether the content has
  * been buffered. Notice that {@link #hasTextBuffer()} throws
  * IllegalStateException see its javadoc for details. Notice the nothing is done
