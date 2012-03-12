@@ -7,7 +7,8 @@
 	<tag>
 		<name>include-xml</name>
 		<tag-class>org.esigate.taglib.IncludeXmlTag</tag-class>
-        <body-content>empty</body-content>
+		<tei-class>org.esigate.taglib.IncludeXmlTEI</tei-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>source</name>
             <required>true</required>
@@ -22,6 +23,12 @@
             <name>template</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>parseAbsoluteUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
 	</tag>
     <tag>
