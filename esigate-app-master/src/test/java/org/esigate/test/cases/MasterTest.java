@@ -114,6 +114,10 @@ public class MasterTest extends TestCase {
 		doSimpleTest("replacetemplate.jsp");
 	}
 
+	public void testReplaceXml() throws Exception {
+		doSimpleTest("replaceXml.jsp");
+	}
+
 	public void testTemplate() throws Exception {
 		doSimpleTest("template.jsp");
 	}

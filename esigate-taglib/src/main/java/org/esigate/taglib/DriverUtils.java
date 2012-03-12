@@ -24,6 +24,7 @@ import org.esigate.servlet.HttpResponseImpl;
  * Utility class used by all tags to access to the Driver
  * 
  * @author Francois-Xavier Bonnet
+ * @author Sylvain Sicard
  */
 public class DriverUtils {
 
@@ -86,7 +87,8 @@ public class DriverUtils {
 	}
 
 	public final static void renderXml(String provider, String source,
-			String template, PageContext pageContext) throws JspException,
+			String template, PageContext pageContext,
+			Map<String, String> replaceRules) throws JspException,
 			HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
@@ -94,14 +96,15 @@ public class DriverUtils {
 					HttpRequestImpl.wrap((HttpServletRequest) pageContext
 							.getRequest()), HttpResponseImpl
 							.wrap((HttpServletResponse) pageContext
-									.getResponse()));
+									.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 	}
 
 	public final static void renderXpath(String provider, String source,
-			String xpath, PageContext pageContext) throws JspException,
+			String xpath, PageContext pageContext,
+			Map<String, String> replaceRules) throws JspException,
 			HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
@@ -109,7 +112,7 @@ public class DriverUtils {
 					HttpRequestImpl.wrap((HttpServletRequest) pageContext
 							.getRequest()), HttpResponseImpl
 							.wrap((HttpServletResponse) pageContext
-									.getResponse()));
+									.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
