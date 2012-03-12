@@ -62,8 +62,10 @@ public class DriverConfiguration {
 	private Class<? extends CacheStorage> cacheStorageClass;
 	private final String localBase;
 	private boolean putInCache = false;
-	private String proxyHost;
+	private String proxyHost = null;
 	private int proxyPort = 0;
+	private String proxyUser = null;
+	private String proxyPassword = null;
 	private boolean filterJsessionid = true;
 	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
 	private final Properties properties;
@@ -121,6 +123,11 @@ public class DriverConfiguration {
 				&& props.getProperty("proxyPort") != null) {
 			proxyHost = getPropertyValue(props, "proxyHost", null);
 			proxyPort = getPropertyValue(props, "proxyPort", 0);
+			if (props.getProperty("proxyUser") != null
+					&& props.getProperty("proxyPassword") != null) {
+				proxyUser = getPropertyValue(props, "proxyUser", null);
+				proxyPassword = getPropertyValue(props, "proxyPassword", null);
+			}
 		}
 		useCache = getPropertyValue(props, "useCache", useCache);
 		filterJsessionid = getPropertyValue(props, "filterJsessionid", filterJsessionid);
@@ -295,6 +302,14 @@ public class DriverConfiguration {
 
 	public int getProxyPort() {
 		return proxyPort;
+	}
+	
+	public String getProxyUser(){
+		return proxyUser;
+	}
+	
+	public String getProxyPassword(){
+		return proxyPassword;
 	}
 
 	public String getUriEncoding() {

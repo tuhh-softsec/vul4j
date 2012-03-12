@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -59,6 +61,12 @@ public class ResourceFactoryCreator {
 
 			// Proxy settings
 			if (config.getProxyHost() != null) {
+				if(config.getProxyUser() != null){
+					defaultHttpClient.getCredentialsProvider().setCredentials(
+		                    new AuthScope(config.getProxyHost(), config.getProxyPort()),
+		                    new UsernamePasswordCredentials(config.getProxyUser(), 
+		                    		config.getProxyPassword()));
+				}
 				HttpHost proxy = new HttpHost(config.getProxyHost(), config.getProxyPort(), "http");
 				httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 			}

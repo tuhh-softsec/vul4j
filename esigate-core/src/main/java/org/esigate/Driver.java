@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
+ * @author Sylvain Sicard
  */
 public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
@@ -158,16 +159,18 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
+	 * @param replaceRules 
+	 *            the replace rules to be applied on the block
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXml(String source, String template, Appendable out,
-			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
+			HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
 		LOG.info("renderXml provider=" + config.getInstanceName() + " source=" + source + " template=" + template);
 		render(source, null, out, request, response,
-				new XsltRenderer(template, request));
+				new XsltRenderer(template, request), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
@@ -183,17 +186,19 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
+	 * @param replaceRules 
+	 *            the replace rules to be applied on the block
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
 	public final void renderXpath(String source, String xpath, Appendable out,
-			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
+			HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
 		LOG.info("renderXpath provider=" + config.getInstanceName()
 				+ " source=" + source + " xpath=" + xpath);
 		render(source, null, out,request, response,
-				new XpathRenderer(xpath));
+				new XpathRenderer(xpath), new ReplaceRenderer(replaceRules));
 	}
 
 	/**

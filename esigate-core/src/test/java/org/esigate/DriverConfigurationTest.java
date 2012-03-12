@@ -192,6 +192,19 @@ public class DriverConfigurationTest extends TestCase {
 
 	}
 
+	public void testProxy(){
+		Properties properties = new Properties();
+		properties.setProperty("proxyHost", "www-cache");
+		properties.setProperty("proxyPort", "3128");
+		properties.setProperty("proxyUser", "username");
+		properties.setProperty("proxyPassword", "password");
+		DriverConfiguration config = new DriverConfiguration("test-proxy", properties);
+		assertEquals("proxyHost should be www-cache", "www-cache", config.getProxyHost());
+		assertEquals("proxyPort should be 3128", 3128, config.getProxyPort());
+		assertEquals("proxyUser should be username", "username", config.getProxyUser());
+		assertEquals("proxyPassword should be 3128", "password", config.getProxyPassword());
+	}
+
 	private void validateHeader(DriverConfiguration config, String header, boolean blacklisted) {
 		assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
 				config.isBlackListed(header), blacklisted);
