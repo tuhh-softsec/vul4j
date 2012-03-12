@@ -164,6 +164,18 @@
 					<td>No</td>
 					<td>-</td>
 				</tr>
+				<tr>
+					<td>proxyUser</td>
+					<td>Username used by the driver for proxy authentication. Leave blank if no authentication is required by the proxy.</td>
+					<td>No</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>proxyPassword</td>
+					<td>Proxy password</td>
+					<td>No</td>
+					<td>-</td>
+				</tr>
                 <tr>
                     <td>filterJsessionid</td>
                     <td>Instructs driver to replace all <code>jsessionid</code>
