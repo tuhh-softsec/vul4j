@@ -118,7 +118,7 @@ or
 						<td>replace</td>
 						<td>Replace a regular expression by its own content. This
 							tag
-							can only be used inside a includeBlock or includeTemplate tag</td>
+							can only be used inside includeBlock, includeTemplate and include-xml tags</td>
 					</tr>
 					<tr>
 						<td>parameter</td>
