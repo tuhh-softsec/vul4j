@@ -731,6 +731,40 @@ public class XMLCipher {
         contextDocument = context;
         return factory.toElement(encryptedKey);
     }
+    
+    /**
+     * Martial a ReferenceList
+     *
+     * Takes a ReferenceList object and returns a DOM Element that
+     * represents the appropriate <code>ReferenceList</code>
+     *
+     * <p>
+     * <b>Note:</b> This should only be used in cases where the context
+     * document has been passed in via a call to doFinal.
+     *
+     * @param referenceList ReferenceList object to martial
+     * @return the DOM <code>Element</code> representing the passed in
+     * object 
+     */
+    public Element martial(ReferenceList referenceList) {
+        return factory.toElement(referenceList);
+    }
+
+    /**
+     * Martial a ReferenceList
+     *
+     * Takes a ReferenceList object and returns a DOM Element that
+     * represents the appropriate <code>ReferenceList</code>
+     *
+     * @param context The document that will own the created nodes
+     * @param referenceList ReferenceList object to martial
+     * @return the DOM <code>Element</code> representing the passed in
+     * object 
+     */
+    public Element martial(Document context, ReferenceList referenceList) {
+        contextDocument = context;
+        return factory.toElement(referenceList);
+    }
 
     /**
      * Encrypts an <code>Element</code> and replaces it with its encrypted
@@ -2409,6 +2443,14 @@ public class XMLCipher {
          */
         Element toElement(EncryptedKey encryptedKey) {
             return ((EncryptedKeyImpl) encryptedKey).toElement();
+        }
+        
+        /**
+         * @param referenceList
+         * @return the XML Element form of that ReferenceList
+         */
+        Element toElement(ReferenceList referenceList) {
+            return ((ReferenceListImpl) referenceList).toElement();
         }
 
         private class AgreementMethodImpl implements AgreementMethod {
