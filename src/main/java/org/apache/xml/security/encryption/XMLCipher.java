@@ -3426,6 +3426,9 @@ public class XMLCipher {
                 }
                 
                 /** @inheritDoc */
+                public abstract String getType();
+                
+                /** @inheritDoc */
                 public String getURI() {
                     return uri;
                 }
@@ -3453,9 +3456,8 @@ public class XMLCipher {
                 /**
                  * @return the XML Element form of that Reference
                  */
-                public abstract Element toElement();
-
-                Element toElement(String tagName) {
+                public Element toElement() {
+                    String tagName = getType();
                     Element result = 
                         ElementProxy.createElementForFamily(
                             contextDocument,
@@ -3479,23 +3481,22 @@ public class XMLCipher {
                 }
                 
                 /** @inheritDoc */
-                public Element toElement() {
-                    return super.toElement(EncryptionConstants._TAG_DATAREFERENCE);
+                public String getType() {
+                    return EncryptionConstants._TAG_DATAREFERENCE;
                 }
             }
 
             private class KeyReference extends ReferenceImpl {
                 
                 KeyReference(String uri) {
-                    super (uri);
+                    super(uri);
                 }
                 
                 /** @inheritDoc */
-                public Element toElement() {
-                    return super.toElement(EncryptionConstants._TAG_KEYREFERENCE);
+                public String getType() {
+                    return EncryptionConstants._TAG_KEYREFERENCE;
                 }
             }
-            
         }
     }
 }

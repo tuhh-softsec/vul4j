@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.2-SNAPSHOT:
+    Fixed SANTUARIO-304 - No way to distinguish DataReference from a KeyReference when iterating a ReferenceList
     Fixed SANTUARIO-302 - Need API to martial an independent ReferenceList.
     Fixed SANTUARIO-301 - Missing KeyInfo element when encrypting multiple elements.
 

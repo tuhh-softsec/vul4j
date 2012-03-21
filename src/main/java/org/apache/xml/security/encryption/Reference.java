@@ -41,6 +41,13 @@ import org.w3c.dom.Element;
  */
 public interface Reference {
     /**
+     * Returns the <code>Element</code> tag name for this <code>Reference</code>.
+     *
+     * @return the tag name of this <code>Reference</code>.
+     */
+    String getType();
+
+    /**
      * Returns a <code>URI</code> that points to an <code>Element</code> that
      * were encrypted using the key defined in the enclosing
      * <code>EncryptedKey</code> element.
