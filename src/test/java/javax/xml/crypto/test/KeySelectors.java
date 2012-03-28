@@ -103,7 +103,7 @@ public class KeySelectors {
                     Object[] entries = xd.getContent().toArray();
                     X509CRL crl = null;
                     // Looking for CRL before finding certificates
-                    for (int i = 0; (i < entries.length && crl != null); i++) {
+                    for (int i = 0; (i < entries.length && crl == null); i++) {
                         if (entries[i] instanceof X509CRL) {
                             crl = (X509CRL) entries[i];
                         }
@@ -281,7 +281,7 @@ public class KeySelectors {
                         }
                         return new SimpleKSResult(pk);
                     } else if (xmlStructure instanceof RetrievalMethod) {
-                        // Lookup the public key using the retrievel method.
+                        // Lookup the public key using the retrieval method.
                         // NOTE: only X509Certificate type is supported.
                         RetrievalMethod rm = (RetrievalMethod) xmlStructure;
                         String type = rm.getType();
