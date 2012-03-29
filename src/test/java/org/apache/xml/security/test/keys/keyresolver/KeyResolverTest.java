@@ -151,16 +151,32 @@ public class KeyResolverTest extends org.junit.Assert {
         Element encryptedDataElement = (Element) rootElement.getFirstChild();
         assertEquals("EncryptedData", encryptedDataElement.getLocalName());
 
-        // Register a KeyResolver for the PrivateKey
+        // Decrypt the data by resolving the private key used as the KEK
+        // First test with an internal KeyResolver
         MyPrivateKeyResolver.pk = privKey;
         MyPrivateKeyResolver.pkName = keyName;
+        
+        decryptDocument(document, new MyPrivateKeyResolver());
+
+        // Now test with a static KeyResolver
         KeyResolver.registerAtStart(MyPrivateKeyResolver.class.getName(), false);
         KeyResolverSpi resolver = (KeyResolverSpi)KeyResolver.iterator().next();
         assertEquals(MyPrivateKeyResolver.class.getName(), resolver.getClass().getName());
 
-        // Decrypt the data by resolving the private key used as the KEK
+        decryptDocument(document, null);
+    }
+    
+    private void decryptDocument(Document docSource, KeyResolverSpi internalResolver) throws Exception
+    {
+        Document document = (Document)docSource.cloneNode(true);
+        Element rootElement = document.getDocumentElement();
+        Element encryptedDataElement = (Element)rootElement.getFirstChild();
+
         XMLCipher decryptCipher = XMLCipher.getInstance();
         decryptCipher.init(XMLCipher.DECRYPT_MODE, null);
+        if (internalResolver != null) {
+            decryptCipher.registerInternalKeyResolver(internalResolver);
+        }
         decryptCipher.doFinal(document, encryptedDataElement);
 
         Element decryptedElement = (Element) rootElement.getFirstChild();
@@ -193,5 +209,4 @@ public class KeyResolverTest extends org.junit.Assert {
             return null;
         }
     }
-    
 }

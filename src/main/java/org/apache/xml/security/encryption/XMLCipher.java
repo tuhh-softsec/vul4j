@@ -30,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.spec.MGF1ParameterSpec;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,6 +53,7 @@ import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.keyresolver.implementations.EncryptedKeyResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.InvalidTransformException;
@@ -243,6 +245,9 @@ public class XMLCipher {
     private boolean secureValidation;
     
     private String digestAlg;
+    
+    /** List of internal KeyResolvers for DECRYPT and UNWRAP modes. */
+    private List<KeyResolverSpi> internalKeyResolvers;
     
     /**
      * Set the Serializer algorithm to use
@@ -614,10 +619,24 @@ public class XMLCipher {
     public void setSecureValidation(boolean secureValidation) {
         this.secureValidation = secureValidation;
     }
+    
+    /**
+     * This method is used to add a custom {@link KeyResolverSpi} to an XMLCipher.
+     * These KeyResolvers are used in KeyInfo objects in DECRYPT and
+     * UNWRAP modes.
+     *
+     * @param keyResolver
+     */
+    public void registerInternalKeyResolver(KeyResolverSpi keyResolver) {
+    	if (internalKeyResolvers == null) {
+    	    internalKeyResolvers = new ArrayList<KeyResolverSpi>();
+    	}
+        internalKeyResolvers.add(keyResolver);
+    }
 
     /**
-     * Get the EncryptedData being build
-     *
+     * Get the EncryptedData being built
+     * <p>
      * Returns the EncryptedData being built during an ENCRYPT operation.
      * This can then be used by applications to add KeyInfo elements and
      * set other parameters.
@@ -630,7 +649,6 @@ public class XMLCipher {
             log.debug("Returning EncryptedData");
         }
         return ed;
-
     }
 
     /**
@@ -683,6 +701,22 @@ public class XMLCipher {
     }
 
     /**
+     * Martial an EncryptedData
+     *
+     * Takes an EncryptedData object and returns a DOM Element that
+     * represents the appropriate <code>EncryptedData</code>
+     *
+     * @param context The document that will own the returned nodes
+     * @param encryptedData EncryptedData object to martial
+     * @return the DOM <code>Element</code> representing the passed in
+     * object 
+     */
+    public Element martial(Document context, EncryptedData encryptedData) {
+        contextDocument = context;
+        return factory.toElement(encryptedData);
+    }
+
+    /**
      * Martial an EncryptedKey
      *
      * Takes an EncryptedKey object and returns a DOM Element that
@@ -698,22 +732,6 @@ public class XMLCipher {
      */
     public Element martial(EncryptedKey encryptedKey) {
         return factory.toElement(encryptedKey);
-    }
-
-    /**
-     * Martial an EncryptedData
-     *
-     * Takes an EncryptedData object and returns a DOM Element that
-     * represents the appropriate <code>EncryptedData</code>
-     *
-     * @param context The document that will own the returned nodes
-     * @param encryptedData EncryptedData object to martial
-     * @return the DOM <code>Element</code> representing the passed in
-     * object 
-     */
-    public Element martial(Document context, EncryptedData encryptedData) {
-        contextDocument = context;
-        return factory.toElement (encryptedData);
     }
 
     /**
@@ -982,7 +1000,7 @@ public class XMLCipher {
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
      *
-     * this does not change the source document in any way.
+     * This does not change the source document in any way.
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be encrypted.
@@ -1032,7 +1050,7 @@ public class XMLCipher {
      * you want to have full control over the contents of the
      * <code>EncryptedData</code> structure.
      *
-     * this does not change the source document in any way.
+     * This does not change the source document in any way.
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be encrypted.
@@ -1189,7 +1207,7 @@ public class XMLCipher {
     /**
      * Returns an <code>EncryptedData</code> interface. Use this operation if
      * you want to load an <code>EncryptedData</code> structure from a DOM 
-     * structure and manipulate the contents 
+     * structure and manipulate the contents. 
      *
      * @param context the context <code>Document</code>.
      * @param element the <code>Element</code> that will be loaded
@@ -1631,12 +1649,12 @@ public class XMLCipher {
     }
 
     /**
-     * Decrypt an EncryptedData element to a byte array
+     * Decrypt an EncryptedData element to a byte array.
      *
      * When passed in an EncryptedData node, returns the decryption
      * as a byte array.
      *
-     * Does not modify the source document
+     * Does not modify the source document.
      * @param element
      * @return the bytes resulting from the decryption
      * @throws XMLEncryptionException
@@ -1656,13 +1674,15 @@ public class XMLCipher {
             KeyInfo ki = encryptedData.getKeyInfo();
             if (ki != null) {
                 try {
-                    // Add a EncryptedKey resolver
-                    EncryptedKeyResolver resolver = 
-                        new EncryptedKeyResolver(
-                            encryptedData.getEncryptionMethod().getAlgorithm(), kek
-                        );
-                    
-                    // Add a EncryptedKey resolver
+                    // Add an EncryptedKey resolver
+                    String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
+                    EncryptedKeyResolver resolver = new EncryptedKeyResolver(algorithm, kek);
+                    if (internalKeyResolvers != null) {
+	                int size = internalKeyResolvers.size();
+	                for (int i = 0; i < size; i++) {
+	                    resolver.registerInternalKeyResolver(internalKeyResolvers.get(i));
+	                }
+                    }
                     ki.registerInternalKeyResolver(resolver);
                     ki.setSecureValidation(secureValidation);
                     key = ki.getSecretKey();
@@ -2194,13 +2214,8 @@ public class XMLCipher {
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-                try {
-                    KeyInfo ki = new KeyInfo(keyInfoElement, null);
-                    ki.setSecureValidation(secureValidation);
-                    result.setKeyInfo(ki);
-                } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException("Error loading Key Info", xse);
-                }
+                KeyInfo ki = newKeyInfo(keyInfoElement);
+                result.setKeyInfo(ki);
             }
 
             // TODO: Implement
@@ -2251,13 +2266,8 @@ public class XMLCipher {
                 (Element) element.getElementsByTagNameNS(
                     Constants.SignatureSpecNS, Constants._TAG_KEYINFO).item(0);
             if (null != keyInfoElement) {
-                try {
-                    KeyInfo ki = new KeyInfo(keyInfoElement, null);
-                    ki.setSecureValidation(secureValidation);
-                    result.setKeyInfo(ki);
-                } catch (XMLSecurityException xse) {
-                    throw new XMLEncryptionException("Error loading Key Info", xse);
-                }
+                KeyInfo ki = newKeyInfo(keyInfoElement);
+                result.setKeyInfo(ki);
             }
 
             // TODO: Implement
@@ -2290,6 +2300,27 @@ public class XMLCipher {
             return result;
         }
 
+        /**
+         * @param element
+         * @return a new KeyInfo
+         * @throws XMLEncryptionException
+         */
+        KeyInfo newKeyInfo(Element element) throws XMLEncryptionException {
+            try {
+                KeyInfo ki = new KeyInfo(element, null);
+                ki.setSecureValidation(secureValidation);
+                if (internalKeyResolvers != null) {
+                    int size = internalKeyResolvers.size();
+                    for (int i = 0; i < size; i++) {
+                        ki.registerInternalKeyResolver(internalKeyResolvers.get(i));
+                    }
+                }
+                return ki;
+            } catch (XMLSecurityException xse) {
+                throw new XMLEncryptionException("Error loading Key Info", xse);
+            }
+        }
+        
         /**
          * @param element
          * @return a new EncryptionMethod

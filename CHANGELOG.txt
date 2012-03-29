@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.2-SNAPSHOT:
+    Fixed SANTUARIO-305 - No way to register internal key resolvers in DECRYPT_MODE.
     Fixed SANTUARIO-306 - KeySelectors loop
     Fixed SANTUARIO-304 - No way to distinguish DataReference from a KeyReference when iterating a ReferenceList
     Fixed SANTUARIO-302 - Need API to martial an independent ReferenceList.

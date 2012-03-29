@@ -21,6 +21,8 @@ package org.apache.xml.security.keys.keyresolver.implementations;
 import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 
@@ -53,6 +55,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
 
     private Key kek;
     private String algorithm;
+    private List<KeyResolverSpi> internalKeyResolvers;
 
     /**
      * Constructor for use when a KEK needs to be derived from a KeyInfo
@@ -72,6 +75,19 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
     public EncryptedKeyResolver(String algorithm, Key kek) {		
         this.algorithm = algorithm;
         this.kek = kek;
+    }
+
+    /**
+     * This method is used to add a custom {@link KeyResolverSpi} to help
+     * resolve the KEK.
+     *
+     * @param realKeyResolver
+     */
+    public void registerInternalKeyResolver(KeyResolverSpi realKeyResolver) {
+        if (internalKeyResolvers == null) {
+            internalKeyResolvers = new ArrayList<KeyResolverSpi>();
+        }
+        internalKeyResolvers.add(realKeyResolver);
     }
 
     /** @inheritDoc */
@@ -110,6 +126,12 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
             try {
                 XMLCipher cipher = XMLCipher.getInstance();
                 cipher.init(XMLCipher.UNWRAP_MODE, kek);
+                if (internalKeyResolvers != null) {
+                    int size = internalKeyResolvers.size();
+                    for (int i = 0; i < size; i++) {
+                        cipher.registerInternalKeyResolver(internalKeyResolvers.get(i));
+                    }
+                }
                 EncryptedKey ek = cipher.loadEncryptedKey(element);
                 key = (SecretKey) cipher.decryptKey(ek, algorithm);
             } catch (XMLEncryptionException e) {
