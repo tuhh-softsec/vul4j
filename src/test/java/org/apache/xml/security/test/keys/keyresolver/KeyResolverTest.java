@@ -18,10 +18,14 @@
  */
 package org.apache.xml.security.test.keys.keyresolver;
 
+import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.security.KeyFactory;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
@@ -29,6 +33,7 @@ import java.security.spec.RSAPublicKeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,10 +43,19 @@ import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.X509Data;
+import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
+import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
+import org.apache.xml.security.keys.content.x509.XMLX509SKI;
+import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
+import org.apache.xml.security.keys.keyresolver.implementations.PrivateKeyResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.SecretKeyResolver;
+import org.apache.xml.security.keys.keyresolver.implementations.SingleKeyResolver;
 import org.apache.xml.security.keys.storage.StorageResolver;
+import org.apache.xml.security.keys.storage.implementations.KeyStoreResolver;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,10 +66,119 @@ import org.w3c.dom.Text;
  */
 public class KeyResolverTest extends org.junit.Assert {
 
+    private static final String BASEDIR = System.getProperty("basedir");
+    private static final String SEP = System.getProperty("file.separator");
+
     public KeyResolverTest() {
         org.apache.xml.security.Init.init();
     }
 
+    /**
+     * Test key resolvers through a KeyInfo.
+     */
+    @org.junit.Test
+    public void testKeyResolvers() throws Exception {
+        char[] pwd = "secret".toCharArray();
+        KeyStore ks = KeyStore.getInstance("JCEKS");
+        FileInputStream fis = null;
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
+            fis = new FileInputStream(BASEDIR + SEP + "src/test/resources/test.jceks");
+        } else {
+            fis = new FileInputStream("src/test/resources/test.jceks");
+        }
+        ks.load(fis, pwd);
+
+        X509Certificate cert = (X509Certificate)ks.getCertificate("rsakey");
+        PublicKey publicKey = cert.getPublicKey();
+        PrivateKey privateKey = (PrivateKey) ks.getKey("rsakey", pwd);
+        SecretKey secretKey = (SecretKey) ks.getKey("des3key", pwd);
+
+        StorageResolver storage = new StorageResolver(new KeyStoreResolver(ks));
+        KeyResolverSpi privateKeyResolver = new PrivateKeyResolver(ks, pwd);
+        KeyResolverSpi secretKeyResolver = new SecretKeyResolver(ks, pwd);
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.newDocument();
+
+        KeyInfo ki;
+        X509Data x509data;
+
+        // X509Certificate hint
+        ki = new KeyInfo(doc);
+        ki.addStorageResolver(storage);
+        x509data = new X509Data(doc);
+        x509data.add(new XMLX509Certificate(doc, cert));
+        ki.add(x509data);
+        assertEquals(publicKey, ki.getPublicKey());
+
+        assertNull(ki.getPrivateKey());
+        ki.registerInternalKeyResolver(privateKeyResolver);
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        // Issuer/Serial hint
+        ki = new KeyInfo(doc);
+        ki.addStorageResolver(storage);
+        x509data = new X509Data(doc);
+        x509data.add(new XMLX509IssuerSerial(doc, cert.getIssuerX500Principal().getName(), cert.getSerialNumber()));
+        ki.add(x509data);
+        assertEquals(publicKey, ki.getPublicKey());
+
+        ki.registerInternalKeyResolver(privateKeyResolver);
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        // SubjectName hint
+        ki = new KeyInfo(doc);
+        ki.addStorageResolver(storage);
+        x509data = new X509Data(doc);
+        x509data.add(new XMLX509SubjectName(doc, cert.getSubjectX500Principal().getName()));
+        ki.add(x509data);
+        assertEquals(publicKey, ki.getPublicKey());
+
+        ki.registerInternalKeyResolver(privateKeyResolver);
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        // SKI hint
+        ki = new KeyInfo(doc);
+        ki.addStorageResolver(storage);
+        x509data = new X509Data(doc);
+        x509data.add(new XMLX509SKI(doc, cert));
+        ki.add(x509data);
+        assertEquals(publicKey, ki.getPublicKey());
+
+        ki.registerInternalKeyResolver(privateKeyResolver);
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        // KeyName hint
+        String rsaKeyName = "rsakey";
+        ki = new KeyInfo(doc);
+        ki.addKeyName(rsaKeyName);
+        ki.registerInternalKeyResolver(new SingleKeyResolver(rsaKeyName, publicKey));
+        assertEquals(publicKey, ki.getPublicKey());
+
+        ki = new KeyInfo(doc);
+        ki.addKeyName(rsaKeyName);
+        ki.registerInternalKeyResolver(privateKeyResolver);
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        ki = new KeyInfo(doc);
+        ki.addKeyName(rsaKeyName);
+        ki.registerInternalKeyResolver(new SingleKeyResolver(rsaKeyName, privateKey));
+        assertEquals(privateKey, ki.getPrivateKey());
+
+        String des3KeyName = "des3key";
+        ki = new KeyInfo(doc);
+        ki.addKeyName(des3KeyName);
+        ki.registerInternalKeyResolver(secretKeyResolver);
+        assertEquals(secretKey, ki.getSecretKey());
+
+        ki = new KeyInfo(doc);
+        ki.addKeyName(des3KeyName);
+        ki.registerInternalKeyResolver(new SingleKeyResolver(des3KeyName, secretKey));
+        assertEquals(secretKey, ki.getSecretKey());
+    }
+    
     /**
      * Encrypt some data, embedded the data encryption key
      * in the message using the key transport algorithm rsa-1_5.
