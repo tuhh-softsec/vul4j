@@ -28,30 +28,19 @@ import java.security.*;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.XMLValidateContext
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class XMLValidateContextTest extends TestCase {
+public class XMLValidateContextTest extends org.junit.Assert {
 
     private XMLValidateContext defContext;
     private Key[] KEYS;
     private KeySelector[] KEY_SELECTORS;
 
-    public XMLValidateContextTest() {
-        super("XMLValidateContextTest");
-    }
-
-    public XMLValidateContextTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
-
+    public XMLValidateContextTest() throws Exception {
         // set up the validatingKeys
         KEYS = new Key[3];
         KEYS[0] = TestUtils.getPublicKey("DSA");
@@ -67,8 +56,7 @@ public class XMLValidateContextTest extends TestCase {
         KEY_SELECTORS[0] = KeySelector.singletonKeySelector(sk);
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testsetngetKeySelector() throws Exception {
         defContext.setKeySelector(null);
         assertNull(defContext.getKeySelector());
@@ -79,6 +67,7 @@ public class XMLValidateContextTest extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testsetngetBaseURI() throws Exception {
         assertNull(defContext.getBaseURI());
 
@@ -89,6 +78,7 @@ public class XMLValidateContextTest extends TestCase {
         assertNull(defContext.getBaseURI());
     }
 
+    @org.junit.Test
     public void testsetngetProperty() throws Exception {
         String name = "key";
         assertNull(defContext.getProperty(name));
@@ -109,6 +99,7 @@ public class XMLValidateContextTest extends TestCase {
         assertNull(defContext.getProperty(name));
     }
 
+    @org.junit.Test
     public void testsetngetURIDereferencer() throws Exception {
         assertNull(defContext.getURIDereferencer());
         byte[] data = "simpleDereferencer".getBytes();

@@ -30,29 +30,19 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.w3c.dom.Document;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.XMLSignContext
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class XMLSignContextTest extends TestCase {
+public class XMLSignContextTest extends org.junit.Assert {
 
     private XMLSignContext defContext;
     private Key[] KEYS;
     private Document doc;
 
-    public XMLSignContextTest() {
-        super("XMLSignContextTest");
-    }
-
-    public XMLSignContextTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public XMLSignContextTest() throws Exception {
         // set up the signingKeys
         KEYS = new Key[3];
         KEYS[0] = TestUtils.getPrivateKey("DSA");
@@ -64,8 +54,7 @@ public class XMLSignContextTest extends TestCase {
         defContext = new DOMSignContext(sk, doc);
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testsetngetBaseURI() throws Exception {
         assertNull(defContext.getBaseURI());
 
@@ -77,6 +66,7 @@ public class XMLSignContextTest extends TestCase {
     }
 
 
+    @org.junit.Test
     public void testsetngetProperty() throws Exception {
         String name = "key";
         assertNull(defContext.getProperty(name));
@@ -97,6 +87,7 @@ public class XMLSignContextTest extends TestCase {
         assertNull(defContext.getProperty(name));
     }
 
+    @org.junit.Test
     public void testsetngetURIDereferencer() throws Exception {
         assertNull(defContext.getURIDereferencer());
         byte[] data = "simpleDereferencer".getBytes();
@@ -108,6 +99,7 @@ public class XMLSignContextTest extends TestCase {
         assertNull(defContext.getURIDereferencer());
     }
 
+    @org.junit.Test
     public void testsetngetKeySelector() throws Exception {
         defContext.setKeySelector(null);
         assertNull(defContext.getKeySelector());

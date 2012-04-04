@@ -34,15 +34,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.XMLSignatureFactory
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class XMLSignatureFactoryTest extends TestCase {
+public class XMLSignatureFactoryTest extends org.junit.Assert {
 
     XMLSignatureFactory factory;
 
@@ -51,17 +49,12 @@ public class XMLSignatureFactoryTest extends TestCase {
             (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public XMLSignatureFactoryTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception { 
+    public XMLSignatureFactoryTest() throws Exception { 
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
 
-    public void tearDown() { }
-
+    @org.junit.Test
     public void testgetInstance() {
         try {
             XMLSignatureFactory.getInstance("non-existent");
@@ -94,11 +87,13 @@ public class XMLSignatureFactoryTest extends TestCase {
         } catch (NullPointerException npe) {}
     }
 
+    @org.junit.Test
     public void testgetMechanismType() {
         assertNotNull(factory);
         assertEquals("DOM", factory.getMechanismType());
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
         try {
             factory.isFeatureSupported(null); 
@@ -108,12 +103,14 @@ public class XMLSignatureFactoryTest extends TestCase {
         assertTrue(!factory.isFeatureSupported("not supported"));
     }
 
+    @org.junit.Test
     public void testgetKeyInfoFactory() throws Exception {
         KeyInfoFactory kifac = factory.getKeyInfoFactory();
         assertEquals(kifac.getMechanismType(), factory.getMechanismType());
         assertEquals(kifac.getProvider(), factory.getProvider());
     }
 
+    @org.junit.Test
     public void testunmarshalXMLSignature() throws Exception {
         XMLSignature stuff;
         try {
@@ -182,11 +179,4 @@ public class XMLSignatureFactoryTest extends TestCase {
         }
     }
 
-    // for debugging purposes
-    public static void main(String[] args) throws Exception {
-        XMLSignatureFactoryTest test = 
-            new XMLSignatureFactoryTest("XMLSignatureFactoryTest");
-        test.setUp();
-        test.testunmarshalXMLSignature();
-    }
 }

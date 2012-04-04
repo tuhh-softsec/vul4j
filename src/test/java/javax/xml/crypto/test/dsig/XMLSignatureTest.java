@@ -36,15 +36,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.w3c.dom.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.XMLSignature
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class XMLSignatureTest extends TestCase {
+public class XMLSignatureTest extends org.junit.Assert {
     private XMLSignatureFactory fac;
     private KeyInfoFactory kifac;
     private SignedInfo defSi;
@@ -62,15 +60,7 @@ public class XMLSignatureTest extends TestCase {
             (new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI(), 1);
     }
 
-    public XMLSignatureTest() {
-        super("XMLSignatureTest");
-    }
-
-    public XMLSignatureTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public XMLSignatureTest() throws Exception {
         fac = XMLSignatureFactory.getInstance
             ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
         kifac = KeyInfoFactory.getInstance
@@ -99,8 +89,7 @@ public class XMLSignatureTest extends TestCase {
         ud = new LocalHttpCacheURIDereferencer();
     }
 
-    public void tearDown() {}
-
+    @org.junit.Test
     public void testConstructor() throws Exception {
         XMLSignature sig = null;
         // test  XMLSignatureFactory.newXMLSignature(SignedInfo, KeyInfo)
@@ -150,6 +139,7 @@ public class XMLSignatureTest extends TestCase {
         assertEquals(sig.getSignedInfo(), defSi);
     }
     
+    @org.junit.Test
     public void testisFeatureSupported() throws Exception {
 
         XMLSignature sig = fac.newXMLSignature(defSi, null);
@@ -162,6 +152,7 @@ public class XMLSignatureTest extends TestCase {
         assertTrue(!sig.isFeatureSupported("not supported"));
     }
 
+    @org.junit.Test
     public void testsignANDvalidate() throws Exception {
         XMLSignature sig;
         SignedInfo si;
@@ -194,6 +185,7 @@ public class XMLSignatureTest extends TestCase {
         assertTrue(status);
     }
 
+    @org.junit.Test
     public void testsignWithProvider() throws Exception {
         XMLSignature sig;
         SignedInfo si;
@@ -226,6 +218,7 @@ public class XMLSignatureTest extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testSignWithEmptyNSPrefix() throws Exception {
         SignedInfo si = createSignedInfo(SIG_METHODS[1]);
         KeyInfo	ki = kifac.newKeyInfo(Collections.singletonList
@@ -243,6 +236,7 @@ public class XMLSignatureTest extends TestCase {
 */
     }
 
+    @org.junit.Test
     public void testSignWithReferenceManifestDependencies() throws Exception {
         // create references
         DigestMethod dm = fac.newDigestMethod(DigestMethod.SHA1, null);
@@ -298,6 +292,7 @@ public class XMLSignatureTest extends TestCase {
         }
     }
 
+    @org.junit.Test
     public void testSignTemplateWithObjectNSDefs() throws Exception {
         String base = System.getProperty("basedir") == null ? "./"
                       : System.getProperty("basedir");

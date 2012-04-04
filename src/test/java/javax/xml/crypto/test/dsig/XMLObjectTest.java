@@ -24,37 +24,26 @@ package javax.xml.crypto.test.dsig;
 import java.util.*;
 import javax.xml.crypto.dsig.*;
 
-import junit.framework.*;
-
 /**
  * Unit test for javax.xml.crypto.dsig.XMLObject
  *
  * @version $Id$
  * @author Valerie Peng
  */
-public class XMLObjectTest extends TestCase {
+public class XMLObjectTest extends org.junit.Assert {
 
     private XMLSignatureFactory factory;
     private String id = "id";
     private String mimeType = "mime";
     private String encoding = "encoding";
 
-    public XMLObjectTest() {
-        super("XMLObjectTest");
-    }
-
-    public XMLObjectTest(String name) {
-        super(name);
-    }
-
-    public void setUp() throws Exception {
+    public XMLObjectTest() throws Exception {
         factory = XMLSignatureFactory.getInstance
             ("DOM", new org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI());
     }
     
-    public void tearDown() {}
-    
     @SuppressWarnings("unchecked")
+    @org.junit.Test
     public void testConstructor() {
         // test XMLSignatureFactory.newXMLObject(List, String, String, String) 
         XMLObject obj;
@@ -95,6 +84,7 @@ public class XMLObjectTest extends TestCase {
         assertTrue(Arrays.equals(unmodifiable.toArray(), list.toArray()));
     }
 
+    @org.junit.Test
     public void testisFeatureSupported() {
         List<Object> list = new Vector<Object>();
         list.add(new TestUtils.MyOwnXMLStructure());
