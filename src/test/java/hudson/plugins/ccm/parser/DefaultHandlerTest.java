@@ -1,6 +1,5 @@
 package hudson.plugins.ccm.parser;
 
-import hudson.plugins.ccm.model.Metric;
 import junit.framework.TestCase;
 
 /**

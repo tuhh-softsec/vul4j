@@ -1,5 +1,8 @@
 package hudson.plugins.ccm.model;
 
+import hudson.plugins.ccm.parser.Ccm;
+import hudson.plugins.ccm.parser.Metric;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +17,12 @@ import junit.framework.TestCase;
 public class CCMTest 
 extends TestCase 
 {
-	CCM ccm;
+	Ccm ccm;
 	Metric metric;
 	
 	public void testCCM()
 	{
-		ccm = new CCM();
+		ccm = new Ccm();
 		
 		List<Metric> metricList = new ArrayList<Metric>();
 		

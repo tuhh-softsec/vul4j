@@ -23,8 +23,8 @@
  */
 package hudson.plugins.ccm;
 
-import hudson.plugins.ccm.model.CCMReport;
-import hudson.plugins.ccm.model.Metric;
+import hudson.plugins.ccm.parser.CCMReport;
+import hudson.plugins.ccm.parser.Metric;
 import hudson.plugins.ccm.util.Messages;
 
 import java.text.DecimalFormat;

@@ -1,14 +1,10 @@
 package hudson.plugins.ccm.parser;
 
-import hudson.plugins.ccm.CCMBuildAction;
-import hudson.plugins.ccm.CCMResult;
-import hudson.plugins.ccm.model.CCMReport;
-import hudson.plugins.ccm.model.Metric;
-import hudson.plugins.ccm.parser.CCMParser;
+import hudson.plugins.analysis.util.model.FileAnnotation;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 import junit.framework.TestCase;
 
@@ -28,34 +24,20 @@ extends TestCase
 	 */
 	public void testParser()
 	{
-		CCMParser parser = new CCMParser(System.out);
+		CcmParser parser = new CcmParser();
 		
-		CCMReport report = null;
+		Collection<FileAnnotation> annotations = null;
 		
 		try 
 		{
 			String sFile = this.getClass().getResource("ccm.result.xml").getFile();
-			report = parser.invoke(new File(sFile).getParentFile(), null);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (InterruptedException e) {
+			annotations = parser.parse(new File(sFile), "ccm");
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
-		assertNotNull(report);
-		
-		List<Metric> metrics = report.getMetrics();
-		
-		assertNotNull(metrics);
-		
-		report.updateNumbers();
-		
-		CCMResult result = new CCMResult(report, null);
-		CCMBuildAction buildAction = new CCMBuildAction(null, result);
-		
-		assertTrue(buildAction.getResult().getReport().getAverageComplexityPerMethod() > 0 );
+		assertNotNull(annotations);
 		
 	}
 	

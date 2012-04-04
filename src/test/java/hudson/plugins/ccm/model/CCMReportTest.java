@@ -1,5 +1,8 @@
 package hudson.plugins.ccm.model;
 
+import hudson.plugins.ccm.parser.CCMReport;
+import hudson.plugins.ccm.parser.Metric;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -25,7 +25,7 @@ package hudson.plugins.ccm;
 
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
-import hudson.plugins.ccm.model.CCMReport;
+import hudson.plugins.ccm.parser.CCMReport;
 
 import java.io.Serializable;
 

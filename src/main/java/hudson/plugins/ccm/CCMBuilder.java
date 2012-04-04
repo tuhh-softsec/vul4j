@@ -34,9 +34,9 @@ import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.plugins.ccm.config.CCMConfigCallable;
 import hudson.plugins.ccm.config.CCMResultCallable;
-import hudson.plugins.ccm.model.CCM;
-import hudson.plugins.ccm.model.CCMReport;
+import hudson.plugins.ccm.parser.Ccm;
 import hudson.plugins.ccm.parser.CCMParser;
+import hudson.plugins.ccm.parser.CCMReport;
 import hudson.plugins.ccm.util.Messages;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
@@ -66,7 +66,7 @@ implements Serializable
 {
 
 	/**
-	 * Identifies {@link CCM} to be used.
+	 * Identifies {@link Ccm} to be used.
 	 */
     private final String ccmName;
     /**
