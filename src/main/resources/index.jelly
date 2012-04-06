@@ -1,8 +1,4 @@
-<!--
-  This view is used to render the plugin list page.
-
-  Since we don't really have anything dynamic here, let's just use static HTML. 
--->
 <div>
-  This plugin is a CCM Builder for scanning for Cyclomatic Complexity in class source-code files.
+  This plug-in collects the <a href="http://www.blunck.info/ccm.html">CCM</a> analysis
+  results of the project modules and visualizes the found warnings.
 </div>

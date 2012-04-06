@@ -1,0 +1,10 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util">
+  <f:entry title="${%CCM results}" field="pattern"
+           description="${%description.pattern('http://ant.apache.org/manual/Types/fileset.html')}">
+	<f:textbox />
+  </f:entry>
+  <f:advanced>
+    <u:advanced id="ccm"/>
+  </f:advanced>
+</j:jelly>

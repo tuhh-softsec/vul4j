@@ -23,42 +23,37 @@
  */
 package hudson.plugins.ccm;
 
-import hudson.Extension;
-import hudson.plugins.analysis.core.PluginDescriptor;
+import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.ParserResult;
+import hudson.plugins.analysis.core.ResultAction;
 
 /**
- * Descriptor for {@link CcmPublisher}. Used as a singleton. The
- * class is marked as public so that it can be accessed from views.
+ * Represents the aggregated results of the CCM analysis in m2 jobs.
  * 
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 3.0
  */
-@Extension(ordinal = 100)
-public class CcmDescriptor extends PluginDescriptor {
-	/** Plug-in name. */
-    static final String PLUGIN_NAME = "ccm";
-    /** Icon to use for the result and project action. */
-    static final String ICON_URL = "/plugin/ccm/icons/ccm-24x24.png";
-	
+public class CcmReporterResult extends CcmResult {
+
+	private static final long serialVersionUID = -1387233070118447562L;
+
 	/**
-	 * @param clazz
+	 * @param build
+	 * @param defaultEncoding
+	 * @param result
 	 */
-	public CcmDescriptor() {
-		super(CcmPublisher.class);
+	public CcmReporterResult(AbstractBuild<?, ?> build, String defaultEncoding,
+			ParserResult result) {
+		super(build, defaultEncoding, result);
+	}
+	
+	/* (non-Javadoc)
+	 * @see hudson.plugins.ccm.CcmResult#getResultActionType()
+	 */
+	@Override
+	protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
+		return CcmMavenResultAction.class;
 	}
 
-	@Override
-    public String getDisplayName() {
-        return Messages.CCM_Publisher_Name();
-    }
-
-    @Override
-    public String getPluginName() {
-        return PLUGIN_NAME;
-    }
-
-    @Override
-    public String getIconUrl() {
-        return ICON_URL;
-    }
 }

@@ -29,7 +29,7 @@ import hudson.Plugin;
  * CCM Plug-in.
  * 
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
- * @since 0.1
+ * @since 3.0
  */
 public class CcmPlugin extends Plugin {
 

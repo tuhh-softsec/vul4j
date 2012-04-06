@@ -1,0 +1,8 @@
+<j:jelly xmlns:j="jelly:core">
+
+  <dt>$${CCM_RESULT}</dt>
+  <dd>
+    Expands to the build result of the CCM plug-in.
+  </dd>
+
+</j:jelly>

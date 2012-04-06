@@ -42,8 +42,22 @@ public class CcmProjectAction extends AbstractProjectAction<ResultAction<CcmResu
      * @param project
      *            the project that owns this action
      */
-    public CcmProjectAction(final AbstractProject<?, ?> project, PluginDescriptor plugin) {
-        this(project, CcmResultAction.class, plugin);
+    public CcmProjectAction(final AbstractProject<?, ?> project) {
+        this(project, CcmResultAction.class);
+        
+    }
+    
+    /**
+     * Instantiates a new {@link PmdProjectAction}.
+     *
+     * @param project
+     *            the project that owns this action
+     * @param type
+     *            the result action type
+     */
+    public CcmProjectAction(final AbstractProject<?, ?> project,
+            final Class<? extends ResultAction<CcmResult>> type) {
+        super(project, type, new CcmDescriptor());
     }
     
     /**

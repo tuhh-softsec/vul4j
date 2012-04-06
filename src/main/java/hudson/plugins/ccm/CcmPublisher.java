@@ -89,7 +89,7 @@ public class CcmPublisher extends HealthAwarePublisher {
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new CcmProjectAction(project, getDescriptor());
+        return new CcmProjectAction(project);
     }
 
     /** {@inheritDoc} */
