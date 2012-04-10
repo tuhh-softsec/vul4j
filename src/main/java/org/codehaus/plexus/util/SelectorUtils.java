@@ -253,6 +253,11 @@ public final class SelectorUtils
     public static boolean matchPath( String pattern, String str,
                                      boolean isCaseSensitive )
     {
+        return matchPath( pattern, str, File.separator, isCaseSensitive );
+    }
+
+    public static boolean matchPath( String pattern, String str, String separator, boolean isCaseSensitive )
+    {
         if ( pattern.length() > ( REGEX_HANDLER_PREFIX.length() + PATTERN_HANDLER_SUFFIX.length() + 1 )
             && pattern.startsWith( REGEX_HANDLER_PREFIX ) && pattern.endsWith( PATTERN_HANDLER_SUFFIX ) )
         {
@@ -270,24 +275,24 @@ public final class SelectorUtils
                     pattern.substring( ANT_HANDLER_PREFIX.length(), pattern.length() - PATTERN_HANDLER_SUFFIX.length() );
             }
             
-            return matchAntPathPattern( pattern, str, isCaseSensitive );
+            return matchAntPathPattern( pattern, str, separator, isCaseSensitive );
         }
     }
 
-    private static boolean matchAntPathPattern( String pattern, String str, boolean isCaseSensitive )
+    private static boolean matchAntPathPattern( String pattern, String str, String separator, boolean isCaseSensitive )
     {
-        // When str starts with a File.separator, pattern has to start with a
-        // File.separator.
-        // When pattern starts with a File.separator, str has to start with a
-        // File.separator.
-        if ( str.startsWith( File.separator ) !=
-            pattern.startsWith( File.separator ) )
+        // When str starts with a separator, pattern has to start with a
+        // separator.
+        // When pattern starts with a separator, str has to start with a
+        // separator.
+        if ( str.startsWith( separator ) !=
+            pattern.startsWith( separator ) )
         {
             return false;
         }
 
-        Vector patDirs = tokenizePath( pattern, File.separator );
-        Vector strDirs = tokenizePath( str, File.separator );
+        Vector patDirs = tokenizePath( pattern, separator );
+        Vector strDirs = tokenizePath( str, separator );
 
         int patIdxStart = 0;
         int patIdxEnd = patDirs.size() - 1;
