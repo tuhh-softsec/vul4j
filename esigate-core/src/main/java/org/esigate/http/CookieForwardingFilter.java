@@ -53,9 +53,9 @@ public class CookieForwardingFilter implements Filter {
 	 */
 	public void init(Properties properties) {
 		// Cookies to forward
-		forwardCookies = PropertiesUtil.parseListedProperty(properties, "forwardCookies");
+		forwardCookies = PropertiesUtil.getPropertyValueAsList(properties, "forwardCookies");
 		// Cookies to discard
-		discardCookies = PropertiesUtil.parseListedProperty(properties, "discardCookies");
+		discardCookies = PropertiesUtil.getPropertyValueAsList(properties, "discardCookies");
 		if (forwardCookies.contains("*") && forwardCookies.size() > 1) {
 			throw new ConfigurationException("forwardCookies must be a list of cookie names OR *");
 		}

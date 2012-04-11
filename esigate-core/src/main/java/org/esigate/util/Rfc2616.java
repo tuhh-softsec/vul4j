@@ -99,17 +99,13 @@ public class Rfc2616 {
 	}
 
 	/**
-	 * Create a map of all headers and their values which are mentioned in the
-	 * Vary header of "resource".
+	 * Create a map of all headers and their values which are mentioned in the Vary header of "resource".
 	 * 
 	 * <p>
-	 * This method is used to get the headers from an existing cached resource.
-	 * (Cache side)
+	 * This method is used to get the headers from an existing cached resource. (Cache side)
 	 * 
 	 * <p>
-	 * When doing a new request on this resource, the cached resource can be
-	 * used if all headers values contained in the returned map are exactly the
-	 * same than the ones in the new request.
+	 * When doing a new request on this resource, the cached resource can be used if all headers values contained in the returned map are exactly the same than the ones in the new request.
 	 * 
 	 * @param resource
 	 */
@@ -130,18 +126,14 @@ public class Rfc2616 {
 	}
 
 	/**
-	 * Create a map of all headers and their values in
-	 * resourceContext#getOriginalRequest() which are mentioned in the Vary
-	 * header of "resource".
+	 * Create a map of all headers and their values in resourceContext#getOriginalRequest() which are mentioned in the Vary header of "resource".
 	 * 
 	 * <p>
-	 * This method is used to get the headers from a new, upcoming request.
-	 * (Client side)
+	 * This method is used to get the headers from a new, upcoming request. (Client side)
 	 * 
 	 * @param resource
 	 */
-	public final static Map<String, String> getVary(
-			ResourceContext resourceContext, Resource resource) {
+	public final static Map<String, String> getVary(ResourceContext resourceContext, Resource resource) {
 		HttpRequest request = resourceContext.getOriginalRequest();
 		String varyString = resource.getHeader("Vary");
 		if (varyString != null) {
@@ -160,22 +152,19 @@ public class Rfc2616 {
 	}
 
 	/**
-	 * Ensure that "resourceContext" matches "resource" according to the Vary
-	 * header of "resource". "resource" is usually a cached resource.
+	 * Ensure that "resourceContext" matches "resource" according to the Vary header of "resource". "resource" is usually a cached resource.
 	 * 
 	 * @param resourceContext
 	 * @param resource
 	 * @return true if resource matches according to "Vary"
 	 */
-	public final static boolean varyMatches(ResourceContext resourceContext,
-			Resource resource) {
+	public final static boolean varyMatches(ResourceContext resourceContext, Resource resource) {
 		Map<String, String> vary = getVary(resource);
 		if (vary == null) {
 			return true;
 		} else {
 			HttpRequest request = resourceContext.getOriginalRequest();
-			for (Iterator<Entry<String, String>> iterator = vary.entrySet()
-					.iterator(); iterator.hasNext();) {
+			for (Iterator<Entry<String, String>> iterator = vary.entrySet().iterator(); iterator.hasNext();) {
 				Entry<String, String> header = iterator.next();
 				String key = header.getKey();
 				String value = header.getValue();
@@ -188,8 +177,7 @@ public class Rfc2616 {
 		}
 	}
 
-	public final static boolean needsValidation(
-			ResourceContext resourceContext, Resource resource) {
+	public final static boolean needsValidation(ResourceContext resourceContext, Resource resource) {
 		if (resource == null) {
 			return true;
 		}
@@ -217,8 +205,7 @@ public class Rfc2616 {
 		return resource.getHeader("ETag");
 	}
 
-	public final static boolean etagMatches(ResourceContext resourceContext,
-			Resource resource) {
+	public final static boolean etagMatches(ResourceContext resourceContext, Resource resource) {
 		String etag = getEtag(resource);
 		if (etag == null) {
 			return true;
@@ -240,8 +227,7 @@ public class Rfc2616 {
 	public final static Date getExpiration(Resource resource) {
 		Date date = getDate(resource);
 		Long maxAge = null;
-		CacheControlResponseHeader cacheControl = CacheControlResponseHeader
-				.parse(resource);
+		CacheControlResponseHeader cacheControl = CacheControlResponseHeader.parse(resource);
 		if (cacheControl != null) {
 			if (cacheControl.maxAge != null) {
 				maxAge = cacheControl.maxAge;
@@ -288,8 +274,7 @@ public class Rfc2616 {
 		// expiration value SHOULD be no more than some fraction of the interval
 		// since that time. A typical setting of this fraction might be 10%.
 		if (lastModified != null) {
-			return new Date(date.getTime()
-					+ (date.getTime() - lastModified.getTime()) / 10);
+			return new Date(date.getTime() + (date.getTime() - lastModified.getTime()) / 10);
 		}
 		return null;
 	}
@@ -299,47 +284,38 @@ public class Rfc2616 {
 	}
 
 	public final static boolean isCacheable(Resource resource) {
-		CacheControlResponseHeader cacheControl = CacheControlResponseHeader
-				.parse(resource);
+		CacheControlResponseHeader cacheControl = CacheControlResponseHeader.parse(resource);
 		if (cacheControl == null) {
 			// Check expire header, if not a valid date, assume no cache
-			if (resource.getHeader("Expires") != null
-					&& getDateHeader(resource, "Expires") == null) {
+			if (resource.getHeader("Expires") != null && getDateHeader(resource, "Expires") == null) {
 				return false;
 			}
 		}
 		if (cacheControl._public) {
 			return true;
 		}
-		if (cacheControl._private || cacheControl.noCache
-				|| cacheControl.noStore || cacheControl.mustRevalidate
-				|| cacheControl.proxyRevalidate || cacheControl.maxAge <= 0) {
+		if (cacheControl._private || cacheControl.noCache || cacheControl.noStore || cacheControl.mustRevalidate || cacheControl.proxyRevalidate || cacheControl.maxAge <= 0) {
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * A Resource is cacheable if the HTTP method is GET or HEAD according to
-	 * HTTP specification. Additionnaly, if we are not in proxy mode, the driver
-	 * will send a GET method as we are not proxying the original request but
-	 * only including an element. In that case, the response is cacheable.
+	 * A Resource is cacheable if the HTTP method is GET or HEAD according to HTTP specification. Additionnaly, if we are not in proxy mode, the driver will send a GET method as we are not proxying
+	 * the original request but only including an element. In that case, the response is cacheable.
 	 * 
 	 * @param context
 	 * @return true if the resource is cacheable
 	 */
 	public final static boolean isCacheable(ResourceContext context) {
 		String method = context.getOriginalRequest().getMethod();
-		return !context.isProxy() || "GET".equalsIgnoreCase(method)
-				|| "HEAD".equalsIgnoreCase(method);
+		return !context.isProxy() || "GET".equalsIgnoreCase(method) || "HEAD".equalsIgnoreCase(method);
 	}
 
-	public final static boolean matches(ResourceContext resourceContext,
-			Resource cachedResponse) {
+	public final static boolean matches(ResourceContext resourceContext, Resource cachedResponse) {
 		String method = resourceContext.getOriginalRequest().getMethod();
 
-		if (!"HEAD".equalsIgnoreCase(method)
-				&& !cachedResponse.hasResponseBody()) {
+		if (!"HEAD".equalsIgnoreCase(method) && !cachedResponse.hasResponseBody()) {
 			return false;
 		}
 		if (!etagMatches(resourceContext, cachedResponse)) {
@@ -356,10 +332,8 @@ public class Rfc2616 {
 		return convertDate(dateString);
 	}
 
-	public final static Date getDateHeader(ResourceContext resourceContext,
-			String name) {
-		String dateString = resourceContext.getOriginalRequest()
-				.getHeader(name);
+	public final static Date getDateHeader(ResourceContext resourceContext, String name) {
+		String dateString = resourceContext.getOriginalRequest().getHeader(name);
 		return convertDate(dateString);
 	}
 
@@ -384,18 +358,14 @@ public class Rfc2616 {
 		String cacheControl = originalRequest.getHeader("Cache-control");
 		if (cacheControl != null) {
 			cacheControl = cacheControl.toLowerCase();
-			if (cacheControl.contains("no-cache")
-					|| cacheControl.contains("no-store")
-					|| cacheControl.contains("must-revalidate")
-					|| cacheControl.contains("max-age=0")) {
+			if (cacheControl.contains("no-cache") || cacheControl.contains("no-store") || cacheControl.contains("must-revalidate") || cacheControl.contains("max-age=0")) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public final static void renderResource(DriverConfiguration config,
-			Resource resource, Output output) throws IOException, HttpErrorPage {
+	public final static void renderResource(DriverConfiguration config, Resource resource, Output output) throws IOException, HttpErrorPage {
 		if (resource.isError()) {
 			String errorPageContent;
 			StringOutput stringOutput = new StringOutput();
@@ -407,10 +377,8 @@ public class Rfc2616 {
 			output.open();
 			output.write(errorPageContent);
 			output.close();
-			throw new HttpErrorPage(resource.getStatusCode(),
-					resource.getStatusMessage(), errorPageContent);
-		} else if (HttpStatusConstants.SC_NOT_MODIFIED == resource
-				.getStatusCode()) {
+			throw new HttpErrorPage(resource.getStatusCode(), resource.getStatusMessage(), errorPageContent);
+		} else if (HttpStatusConstants.SC_NOT_MODIFIED == resource.getStatusCode()) {
 			output.setStatusCode(resource.getStatusCode());
 			output.setStatusMessage(resource.getStatusMessage());
 			copyHeaders(config, resource, output);
@@ -424,10 +392,9 @@ public class Rfc2616 {
 	}
 
 	/** Copies end-to-end headers from a resource to an output. */
-	public final static void copyHeaders(DriverConfiguration config,
-			Resource resource, Output output) {
+	public final static void copyHeaders(DriverConfiguration config, Resource resource, Output output) {
 		for (String headerName : resource.getHeaderNames()) {
-			if (!config.isBlackListed(headerName)) {
+			if (config.isForwardedResponseHeader(headerName)) {
 				Collection<String> values = resource.getHeaders(headerName);
 				for (String value : values) {
 					output.addHeader(headerName, value);
@@ -435,5 +402,5 @@ public class Rfc2616 {
 			}
 		}
 	}
-	
+
 }

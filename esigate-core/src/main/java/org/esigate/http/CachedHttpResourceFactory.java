@@ -82,6 +82,7 @@ public class CachedHttpResourceFactory implements ResourceFactory {
 			if (ret.getFileOutput() != null) {
 				ret.getFileOutput().delete();
 			}
+			if(t instanceof HttpErrorPage) throw (HttpErrorPage) t;
 			throw new ResponseException(httpUrl + " could not be retrieved", t);
 		}
 	}

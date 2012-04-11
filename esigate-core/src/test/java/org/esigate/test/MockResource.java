@@ -17,14 +17,12 @@ public class MockResource extends Resource {
 	
 	@Override
 	public void render(Output output) throws IOException {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 
 	@Override
 	public void release() {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 
 	@Override
@@ -53,7 +51,6 @@ public class MockResource extends Resource {
 
 	@Override
 	public Collection<String> getHeaderNames() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

@@ -14,8 +14,11 @@
  */
 package org.esigate.http;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
 
@@ -31,9 +34,30 @@ public class RewriteUtils {
 
 	public final static String getSessionId(ResourceContext resourceContext) {
 		UserContext userContext = resourceContext.getUserContext();
-		String jsessionid = (userContext != null) ? userContext.getSessionId(): null;
+		String jsessionid = (userContext != null) ? userContext.getSessionId() : null;
 
 		return jsessionid;
 	}
 
+	/**
+	 * Translates an URL by replacing the beginning like in the example passed as parameters
+	 * 
+	 * @param sourceUrl
+	 * @param sourceContext
+	 * @param targetContext
+	 * @return The translated URL
+	 * @throws MalformedURLException 
+	 */
+	public final static String translateUrl(String sourceUrl, String sourceContext, String targetContext) throws MalformedURLException {
+		// Find what has been replaced at the beginning of sourceContext to transform it to targetContext
+		String commonSuffix = StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext), StringUtils.reverse(targetContext)));
+		String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
+		String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);
+		// Make the source url absolute
+		String absoluteSourceUrl = new URL(new URL(sourceContext), sourceUrl).toString();
+		if (absoluteSourceUrl.startsWith(sourcePrefix))
+			return targetPrefix + StringUtils.removeStart(absoluteSourceUrl, sourcePrefix);
+		else
+			return absoluteSourceUrl;
+	}
 }

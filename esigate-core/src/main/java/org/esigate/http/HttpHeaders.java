@@ -21,12 +21,13 @@ public interface HttpHeaders {
 	String CONTENT_ENCODING = "Content-Encoding";
 	String CONTENT_LANGUAGE = "Content-Language";
 	String CONTENT_LENGTH = "Content-Length";
-	String CONTENT_LOCATION = "Location";
+	String CONTENT_LOCATION = "Content-Location";
 	String CONTENT_TYPE = "Content-Type";
 	String COOKIE = "Cookie";
 	String DATE = "Date";
 	String ETAG = "ETag";
 	String EXPIRES = "Expires";
+	String EXPECT = "Expect";
 	String HOST = "Host";
 	String IF_MATCH = "If-Match";
 	String IF_MODIFIED_SINCE = "If-Modified-Since";
@@ -39,4 +40,7 @@ public interface HttpHeaders {
 	String VARY = "Vary";
 	String PRAGMA = "Pragma";
 	String WWW_AUTHENTICATE = "WWW-Authenticate";
+	String REFERER = "Referer";
+	String LINK = "Link";
+	String P3P = "P3P";
 }

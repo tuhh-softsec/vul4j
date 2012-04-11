@@ -33,26 +33,55 @@
 						<td>Forwarded</td>
 					</tr>
 					<tr>
-						<td>Accept-Ranges</td>
-						<td>Ignored (Ranges not supported)</td>
-					</tr>
-					<tr>
 						<td>Authorization</td>
 						<td>
-							Default ignored, see
+							Not forwarded. See 
 							<a href="authentication.html">authentication</a>
 						</td>
 					</tr>
 					<tr>
 						<td>Cache-control</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Connection</td>
+						<td>Not forwarded. The value will always be "keep-alive" as managed by the HTTP client</td>
+					</tr>
+					<tr>
+						<td>Content-Encoding</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Length</td>
+						<td>Not forwarded. Managed automatically by the HTTP client. Usually chunked content encoding will be used (see <a href="http://hc.apache.org/httpcomponents-core-ga/httpcore/apidocs/org/apache/http/entity/AbstractHttpEntity.html#setChunked%28boolean%29">HttpEntity.setChunked</a></td>
+					</tr>
+					<tr>
+						<td>Content-MD5</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Range</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Type</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Cookie</td>
+						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="cookies.html">Cookies</a>)</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Expect</td>
-						<td>Replies with a 417 (Expectation Failed)</td>
+						<td>Not supported: replies with a 417 (Expectation Failed) as required by HTTP specification</td>
 					</tr>
 					<tr>
 						<td>From</td>
@@ -64,48 +93,45 @@
 					</tr>
 					<tr>
 						<td>If-Match</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>If-Modified-Since</td>
 						<td>
-							See
-							<a href="cache.html">Cache</a>
+							All cache validator are recalculated by the cache (see
+							<a href="cache.html">Cache</a>)
 						</td>
 					</tr>
 					<tr>
 						<td>If-None-Match</td>
 						<td>
-							See
-							<a href="cache.html">Cache</a>
+							All cache validator are recalculated by the cache (see
+							<a href="cache.html">Cache</a>)
 						</td>
 					</tr>
 					<tr>
 						<td>If-Range</td>
-						<td>Ignored (Ranges not supported)</td>
+						<td>Not forwarded (Ranges not supported)</td>
 					</tr>
 					<tr>
 						<td>If-Unmodified-Since</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>Max-Forwards</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>Pragma</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Proxy-Authorization</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>Range</td>
-						<td>Ignored (Ranges not supported)</td>
+						<td>Not forwarded (Ranges not supported)</td>
 					</tr>
 					<tr>
 						<td>Referer</td>
@@ -113,15 +139,31 @@
 					</tr>
 					<tr>
 						<td>TE</td>
-						<td>Ignored (chunked encoding managed by the container)</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Trailer</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Transfer-Encoding</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
 					</tr>
 					<tr>
 						<td>Upgrade</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>User-Agent</td>
 						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Warning</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>X-Forwarded-For</td>
+						<td>Forwarded or created if not present.</td>
 					</tr>
 				</table>
 			</p>
@@ -141,10 +183,7 @@
 					</tr>
 					<tr>
 						<td>Age</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>Allow</td>
@@ -152,14 +191,11 @@
 					</tr>
 					<tr>
 						<td>Cache-control</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Connection</td>
-						<td>Ignored (keep-alive managed by the servlet container)</td>
+						<td>Not forwarded (keep-alive managed by the servlet container)</td>
 					</tr>
 					<tr>
 						<td>Content-Disposition</td>
@@ -167,7 +203,7 @@
 					</tr>
 					<tr>
 						<td>Content-Encoding</td>
-						<td>Forwarded only for unparsed responses</td>
+						<td>Not forwarded (gzip responses are decompressed by HTTP client)</td>
 					</tr>
 					<tr>
 						<td>Content-Language</td>
@@ -175,7 +211,7 @@
 					</tr>
 					<tr>
 						<td>Content-Length</td>
-						<td>Recalculated and sent in the response</td>
+						<td>Recalculated by the servlet container (usually set if content length is less than the buffer size)</td>
 					</tr>
 					<tr>
 						<td>Content-Location</td>
@@ -183,11 +219,11 @@
 					</tr>
 					<tr>
 						<td>Content-MD5</td>
-						<td>Ignored</td>
+						<td>Not forwarded</td>
 					</tr>
 					<tr>
 						<td>Content-Range</td>
-						<td>Ignored</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Content-Type</td>
@@ -195,39 +231,46 @@
 					</tr>
 					<tr>
 						<td>Date</td>
-						<td>Forwarded</td>
+						<td>Set automatically by the servlet container</td>
 					</tr>
 					<tr>
 						<td>Expires</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>E-tag</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Keep-Alive</td>
+						<td>Not forwarded (managed by the servlet container)</td>
 					</tr>
 					<tr>
 						<td>Last-modified</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Location</td>
 						<td>Rewritten</td>
 					</tr>
 					<tr>
+						<td>Link</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>P3p</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
 						<td>Proxy-Authenticate</td>
 						<td>
-							Default ignored, see
+							Not forwarded, see
 							<a href="authentication.html">authentication</a>
 						</td>
+					</tr>
+					<tr>
+						<td>Refresh</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Retry-After</td>
@@ -235,22 +278,23 @@
 					</tr>
 					<tr>
 						<td>Server</td>
-						<td>Ignored (managed by the container)</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Set-Cookie</td>
+						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="cookies.html">Cookies</a>)</td>
 					</tr>
 					<tr>
 						<td>Trailer</td>
-						<td>Ignored (chunked encoding managed by the container)</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
 					</tr>
 					<tr>
 						<td>Transfer-Encoding</td>
-						<td>Ignored (chunked encoding managed by the container)</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
 					</tr>
 					<tr>
 						<td>Vary</td>
-						<td>
-							See
-							<a href="cache.html">Cache</a>
-						</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Via</td>
@@ -263,7 +307,7 @@
 					<tr>
 						<td>WWW-Authenticate</td>
 						<td>
-							Default ignored, see
+							Not forwarded, see
 							<a href="authentication.html">authentication</a>
 						</td>
 					</tr>

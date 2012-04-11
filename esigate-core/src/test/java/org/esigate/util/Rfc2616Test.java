@@ -93,19 +93,16 @@ public class Rfc2616Test extends TestCase {
 
 			@Override
 			public void render(Output output) throws IOException {
-				// TODO Auto-generated method stub
-
+				// Do nothing
 			}
 
 			@Override
 			public void release() {
-				// TODO Auto-generated method stub
-
+				// Do nothing
 			}
 
 			@Override
 			public int getStatusCode() {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 
@@ -126,7 +123,6 @@ public class Rfc2616Test extends TestCase {
 
 			@Override
 			public String getStatusMessage() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};

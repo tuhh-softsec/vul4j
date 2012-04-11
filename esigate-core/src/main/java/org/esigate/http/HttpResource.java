@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
 import org.esigate.Driver;
+import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
@@ -50,14 +51,12 @@ public class HttpResource extends Resource {
 	private final ResourceContext target;
 	private final String url;
 
-	public HttpResource(HttpClient httpClient, ResourceContext resourceContext)
-			throws IOException {
+	public HttpResource(HttpClient httpClient, ResourceContext resourceContext) throws IOException, HttpErrorPage {
 		this.target = resourceContext;
 		this.url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
 
 		Driver driver = resourceContext.getDriver();
-		HttpRequest originalRequest = resourceContext
-				.getOriginalRequest();
+		HttpRequest originalRequest = resourceContext.getOriginalRequest();
 
 		// Retrieve session and other cookies
 		UserContext userContext = resourceContext.getUserContext();
@@ -86,41 +85,35 @@ public class HttpResource extends Resource {
 		// Save the cookies to session if necessary
 		resourceContext.getDriver().saveUserContext(resourceContext.getOriginalRequest());
 
-		while (authenticationHandler.needsNewRequest(httpClientResponse,
-				resourceContext)) {
+		while (authenticationHandler.needsNewRequest(httpClientResponse, resourceContext)) {
 			// We must first ensure that the connection is always released, if
 			// not the connection manager's pool may be exhausted soon !
 			httpClientResponse.finish();
-			httpClientRequest = new HttpClientRequest(url, originalRequest,
-					proxy, preserveHost);
+			httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
+			httpClientRequest.setCookieStore(CookieAdapter.convertCookieStore(userContext.getCookieStore()));
+			httpClientRequest.setConfiguration(driver.getConfiguration());
 			// Auth handler
-			authenticationHandler
-					.preRequest(httpClientRequest, resourceContext);
+			authenticationHandler.preRequest(httpClientRequest, resourceContext);
 			// Filter
 			filter.preRequest(httpClientRequest, resourceContext);
 			httpClientResponse = httpClientRequest.execute(httpClient);
 
 			// Save the cookies to session if necessary
-			resourceContext.getDriver().saveUserContext(
-					resourceContext.getOriginalRequest());
+			resourceContext.getDriver().saveUserContext(resourceContext.getOriginalRequest());
 		}
 	}
 
 	@Override
 	public void render(Output output) throws IOException {
-		output.setStatus(httpClientResponse.getStatusCode(),
-				httpClientResponse.getStatusText());
+		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
 		Rfc2616.copyHeaders(target.getDriver().getConfiguration(), this, output);
 		target.getDriver().getFilter().postRequest(httpClientResponse, target);
-		String location = httpClientResponse.getHeader(HttpHeaders.LOCATION);
-		if (location != null) {
-			// In case of a redirect, we need to rewrite the location header to
-			// match
-			// provider application and remove any jsessionid in the URL
-			location = rewriteLocation(location);
-			location = removeSessionId(location);
-			output.setHeader(HttpHeaders.LOCATION, location);
-		}
+		// In case of a redirect, we need to rewrite the location header to
+		// match provider application and remove any jsessionid in the URL
+		copyHeaderAndRewriteUri(HttpHeaders.LOCATION, output);
+		copyHeaderAndRewriteUri(HttpHeaders.CONTENT_LOCATION, output);
+		copyHeaderAndRewriteUri(HttpHeaders.LINK, output);
+		copyHeaderAndRewriteUri(HttpHeaders.P3P, output);
 		String charset = httpClientResponse.getContentCharset();
 		if (charset != null) {
 			output.setCharsetName(charset);
@@ -136,42 +129,50 @@ public class HttpResource extends Resource {
 		}
 	}
 
-	private String rewriteLocation(String location)
-			throws MalformedURLException {
+	private void copyHeaderAndRewriteUri(String headerName, Output output) throws MalformedURLException {
+		String headerValue = httpClientResponse.getHeader(headerName);
+		if (headerValue != null) {
+			headerValue = rewriteLocation(headerValue);
+			headerValue = removeSessionId(headerValue);
+			output.setHeader(headerName, headerValue);
+		}
+	}
+
+	/**
+	 * Location header rewriting
+	 * @param location
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private String rewriteLocation(String location) throws MalformedURLException {
+		// TODO Check that this method works for relative URI or URI starting with /
+		// TODO refactor with URI rewriting in request headers
+
+		// Make the url absolute
 		location = new URL(new URL(url), location).toString();
-		// Location header rewriting
+
 		HttpRequest request = target.getOriginalRequest();
-
-		String originalBase = request.getRequestURL();
-
-		// Note: this code was rewritten for 2.6. While the new code seems
-		// better suited for all cases, it may change the behavior of client
-		// application.
+		String originalRequestURL = request.getRequestURL();
 
 		// Look for the relUrl starting from the end of the url
-		int pos = originalBase.lastIndexOf(target.getRelUrl());
+		int pos = originalRequestURL.lastIndexOf(target.getRelUrl());
 
 		String driverBaseUrl = target.getBaseURL();
 		if (pos >= 0) {
 			// Remove relUrl from originalBase.
-			originalBase = originalBase.substring(0, pos);
+			originalRequestURL = originalRequestURL.substring(0, pos);
 			// Add '/' at the end if absent
-			if (originalBase.charAt(originalBase.length() - 1) != '/'
-					&& driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
-				originalBase += "/";
+			if (originalRequestURL.charAt(originalRequestURL.length() - 1) != '/' && driverBaseUrl.charAt(driverBaseUrl.length() - 1) == '/') {
+				originalRequestURL += "/";
 			}
 		}
 
-		return location.replaceFirst(driverBaseUrl, originalBase);
+		return location.replaceFirst(driverBaseUrl, originalRequestURL);
 	}
 
-	private void removeSessionId(InputStream inputStream, Output output)
-			throws IOException {
+	private void removeSessionId(InputStream inputStream, Output output) throws IOException {
 		String jsessionid = RewriteUtils.getSessionId(target);
-		boolean textContentType = ResourceUtils.isTextContentType(
-				httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE), target
-						.getDriver().getConfiguration()
-						.getParsableContentTypes());
+		boolean textContentType = ResourceUtils.isTextContentType(httpClientResponse.getHeader(HttpHeaders.CONTENT_TYPE), target.getDriver().getConfiguration().getParsableContentTypes());
 		if (jsessionid == null || !textContentType) {
 			IOUtils.copy(inputStream, output.getOutputStream());
 		} else {
@@ -182,8 +183,7 @@ public class HttpResource extends Resource {
 			String content = IOUtils.toString(inputStream, charset);
 			content = removeSessionId(jsessionid, content);
 			if (output.getHeader(HttpHeaders.CONTENT_LENGTH) != null) {
-				output.setHeader(HttpHeaders.CONTENT_LENGTH,
-						Integer.toString(content.length()));
+				output.setHeader(HttpHeaders.CONTENT_LENGTH, Integer.toString(content.length()));
 			}
 			OutputStream outputStream = output.getOutputStream();
 			IOUtils.write(content, outputStream, charset);

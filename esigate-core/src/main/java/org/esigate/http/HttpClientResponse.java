@@ -79,7 +79,7 @@ public class HttpClientResponse {
 				if (LOG.isInfoEnabled()) {
 					LOG.info(lastRequest.getRequestLine() + " -> "
 							+ httpResponse.getStatusLine() + " Location: "
-							+ getHeader("Location"));
+							+ getHeader(HttpHeaders.LOCATION));
 				}
 			} else {
 				if (LOG.isWarnEnabled()) {
@@ -123,8 +123,7 @@ public class HttpClientResponse {
 
 	private void logError(HttpRequest request, Exception e) {
 		LOG.error(request.getRequestLine() + " -> " + statusCode + " "
-				+ statusText + " " + e.getClass().getName() + " "
-				+ e.getMessage());
+				+ statusText, e);
 	}
 
 	HttpClientResponse(HttpResponse httpResponse) {
@@ -229,7 +228,7 @@ public class HttpClientResponse {
 		String result = statusCode + " " + statusText;
 		if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY
 				|| statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-			result += " -> " + getHeader("Location");
+			result += " -> " + getHeader(HttpHeaders.LOCATION);
 		}
 		return result;
 	}

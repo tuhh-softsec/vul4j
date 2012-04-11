@@ -37,7 +37,7 @@ public class AggregatorServlet extends HttpServlet {
 			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response), new AggregateRenderer(), new EsiRenderer());
 		} catch (HttpErrorPage e) {
 			response.setStatus(e.getStatusCode());
-			response.getWriter().write(e.getErrorPageContent());
+			response.getOutputStream().print(e.getErrorPageContent());
 		}
 	}
 

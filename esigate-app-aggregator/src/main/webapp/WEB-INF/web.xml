@@ -29,6 +29,14 @@
 			<param-value>rawhttpserver</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>preservehostaggregator</servlet-name>
+		<servlet-class>org.esigate.aggregator.AggregatorServlet</servlet-class>
+		<init-param>
+			<param-name>provider</param-name>
+			<param-value>preservehostaggregated1</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>aggregator1</servlet-name>
 		<url-pattern>/*</url-pattern>
@@ -44,5 +52,9 @@
 	<servlet-mapping>
 		<servlet-name>rawhttpserver</servlet-name>
 		<url-pattern>/raw/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>preservehostaggregator</servlet-name>
+		<url-pattern>/preservehost/*</url-pattern>
 	</servlet-mapping>
 </web-app>

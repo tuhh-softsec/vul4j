@@ -18,10 +18,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +34,10 @@ import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
 import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
 import org.esigate.url.SingleBaseUrlRetrieveStrategy;
 import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
-
+import org.esigate.util.FilterList;
+import org.esigate.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Driver configuration parameters
@@ -44,10 +46,12 @@ import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
  * @author Nicolas Richeton
  */
 public class DriverConfiguration {
+	private static final Logger LOG = LoggerFactory.getLogger(DriverConfiguration.class);
+
 	private static final String STICKYSESSION = "stickysession";
 	private static final String IPHASH = "iphash";
 	private static final String ROUNDROBIN = "roundrobin";
-	
+
 	private final String instanceName;
 	private String uriEncoding = "ISO-8859-1";
 	private boolean fixResources = false;
@@ -73,36 +77,39 @@ public class DriverConfiguration {
 	private String cookieStore = SerializableBasicCookieStore.class.getName();
 	private String filter = null;
 	private final List<String> parsableContentTypes;
-	private final Set<String> blackListedHeaders;
+	private final FilterList requestHeadersFilterList;
+	private final FilterList responseHeadersFilterList;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
 	private boolean isVisibleBaseURLEmpty = true;
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
-	private static final String DEFAULT_BLACK_LISTED_HEADERS = "Content-Length,Content-Encoding,Transfer-Encoding,"
-			+ "Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade";
-
+	private static final String DEFAULT_BLACK_LISTED_REQUEST_HEADERS = "Authorization,Connection,"
+			+ "Content-Length,Cookie,Expect,Host,If-Match,If-Modified-Since,If-None-Match,If-Range,"
+			+ "If-Unmodified-Since,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,"
+			+ "Transfer-Encoding,Upgrade";
+	private static final String DEFAULT_BLACK_LISTED_RESPONSE_HEADERS = "Age,Connection,Content-Encoding,"
+			+ "Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,"
+			+ "Trailer,Transfer-Encoding,WWW-Authenticate";
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
 		// Remote application settings
 		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
-		
-		uriEncoding = getPropertyValue(props, "uriEncoding", uriEncoding);
-		maxConnectionsPerHost = getPropertyValue(props, "maxConnectionsPerHost", maxConnectionsPerHost);
-		int timeout = getPropertyValue(props, "timeout", 1000);
-		connectTimeout = getPropertyValue(props, "connectTimeout", timeout);
-		socketTimeout = getPropertyValue(props, "socketTimeout", timeout * 10);
+
+		uriEncoding = PropertiesUtil.getPropertyValue(props, "uriEncoding", uriEncoding);
+		maxConnectionsPerHost = PropertiesUtil.getPropertyValue(props, "maxConnectionsPerHost", maxConnectionsPerHost);
+		int timeout = PropertiesUtil.getPropertyValue(props, "timeout", 1000);
+		connectTimeout = PropertiesUtil.getPropertyValue(props, "connectTimeout", timeout);
+		socketTimeout = PropertiesUtil.getPropertyValue(props, "socketTimeout", timeout * 10);
 
 		// Cache settings
-		cacheRefreshDelay = getPropertyValue(props, "cacheRefreshDelay", cacheRefreshDelay);
-		cacheMaxFileSize = getPropertyValue(props, "cacheMaxFileSize", cacheMaxFileSize);
+		cacheRefreshDelay = PropertiesUtil.getPropertyValue(props, "cacheRefreshDelay", cacheRefreshDelay);
+		cacheMaxFileSize = PropertiesUtil.getPropertyValue(props, "cacheMaxFileSize", cacheMaxFileSize);
 		if (props.getProperty("cacheStorageClassName") != null) {
 			String cacheStorageClassName = props.getProperty("cacheStorageClassName");
 			try {
 				@SuppressWarnings("unchecked")
-				Class<? extends CacheStorage> cacheStorageClass = (Class<? extends CacheStorage>) this
-						.getClass().getClassLoader()
-						.loadClass(cacheStorageClassName);
+				Class<? extends CacheStorage> cacheStorageClass = (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(cacheStorageClassName);
 				if (cacheStorageClass != null) {
 					this.cacheStorageClass = cacheStorageClass;
 				}
@@ -115,37 +122,35 @@ public class DriverConfiguration {
 		}
 
 		// Local file system settings
-		localBase = getPropertyValue(props, "localBase", null);
-		putInCache = getPropertyValue(props, "putInCache", putInCache);
+		localBase = PropertiesUtil.getPropertyValue(props, "localBase", null);
+		putInCache = PropertiesUtil.getPropertyValue(props, "putInCache", putInCache);
 
 		// proxy settings
-		if (props.getProperty("proxyHost") != null
-				&& props.getProperty("proxyPort") != null) {
-			proxyHost = getPropertyValue(props, "proxyHost", null);
-			proxyPort = getPropertyValue(props, "proxyPort", 0);
-			if (props.getProperty("proxyUser") != null
-					&& props.getProperty("proxyPassword") != null) {
-				proxyUser = getPropertyValue(props, "proxyUser", null);
-				proxyPassword = getPropertyValue(props, "proxyPassword", null);
+		if (props.getProperty("proxyHost") != null && props.getProperty("proxyPort") != null) {
+			proxyHost = PropertiesUtil.getPropertyValue(props, "proxyHost", null);
+			proxyPort = PropertiesUtil.getPropertyValue(props, "proxyPort", 0);
+			if (props.getProperty("proxyUser") != null && props.getProperty("proxyPassword") != null) {
+				proxyUser = PropertiesUtil.getPropertyValue(props, "proxyUser", null);
+				proxyPassword = PropertiesUtil.getPropertyValue(props, "proxyPassword", null);
 			}
 		}
-		useCache = getPropertyValue(props, "useCache", useCache);
-		filterJsessionid = getPropertyValue(props, "filterJsessionid", filterJsessionid);
+		useCache = PropertiesUtil.getPropertyValue(props, "useCache", useCache);
+		filterJsessionid = PropertiesUtil.getPropertyValue(props, "filterJsessionid", filterJsessionid);
 
 		// Authentification handler
-		authenticationHandler = getPropertyValue(props, "authenticationHandler", authenticationHandler);
+		authenticationHandler = PropertiesUtil.getPropertyValue(props, "authenticationHandler", authenticationHandler);
 
 		// Cookie Store
-		cookieStore = getPropertyValue(props, "cookieStore", cookieStore);
+		cookieStore = PropertiesUtil.getPropertyValue(props, "cookieStore", cookieStore);
 
 		// Wat Filter
-		filter = getPropertyValue(props, "filter", filter);
+		filter = PropertiesUtil.getPropertyValue(props, "filter", filter);
 
-		preserveHost = getPropertyValue(props, "preserveHost", preserveHost);
+		preserveHost = PropertiesUtil.getPropertyValue(props, "preserveHost", preserveHost);
 
 		// Fix resources
 		if (props.getProperty("fixResources") != null) {
-			fixResources = getPropertyValue(props, "fixResources", fixResources);
+			fixResources = PropertiesUtil.getPropertyValue(props, "fixResources", fixResources);
 			// Fix resources mode
 			if (props.getProperty("fixMode") != null) {
 				if ("absolute".equalsIgnoreCase(props.getProperty("fixMode"))) {
@@ -153,12 +158,12 @@ public class DriverConfiguration {
 				}
 			}
 			// Visible base url
-			visibleBaseURL = getPropertyValue(props, "visibleUrlBase", null);
+			visibleBaseURL = PropertiesUtil.getPropertyValue(props, "visibleUrlBase", null);
 			isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
 		}
 
 		// Parsable content types
-		String strContentTypes = getPropertyValue(props, "parsableContentTypes", DEFAULT_PARSABLE_CONTENT_TYPES);
+		String strContentTypes = PropertiesUtil.getPropertyValue(props, "parsableContentTypes", DEFAULT_PARSABLE_CONTENT_TYPES);
 		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
 		String contentType;
 		parsableContentTypes = new ArrayList<String>();
@@ -168,74 +173,58 @@ public class DriverConfiguration {
 			parsableContentTypes.add(contentType);
 		}
 
-		// populate headers black list
-		blackListedHeaders = new HashSet<String>();
-		for (String header : DEFAULT_BLACK_LISTED_HEADERS.split(",")) {
-			blackListedHeaders.add(header.toLowerCase());
+		// Populate headers filter lists
+		requestHeadersFilterList = new FilterList();
+		responseHeadersFilterList = new FilterList();
+		// By default all headers are forwarded
+		requestHeadersFilterList.add(Collections.singletonList("*"));
+		responseHeadersFilterList.add(Collections.singletonList("*"));
+		if (props.get("blackListedHeaders") != null) {
+			LOG.warn("Property 'blackListedHeaders' is deprecated");
+			Collection<String> blackListedHeadersList = PropertiesUtil.getPropertyValueAsList(props, "blackListedHeaders");
+			requestHeadersFilterList.remove(blackListedHeadersList);
+			responseHeadersFilterList.remove(blackListedHeadersList);
 		}
-		String headers = getPropertyValue(props, "blackListedHeaders", null);
-		if (headers != null) {
-			for (String header : headers.split(",")) {
-				blackListedHeaders.add(header.toLowerCase());
-			}
-		}
+		PropertiesUtil.populate(requestHeadersFilterList, props, "forwardRequestHeaders", "discardRequestHeaders", "", DEFAULT_BLACK_LISTED_REQUEST_HEADERS);
+		PropertiesUtil.populate(responseHeadersFilterList, props, "forwardResponseHeaders", "discardResponseHeaders", "", DEFAULT_BLACK_LISTED_RESPONSE_HEADERS);
 
 		properties = props;
 	}
 
 	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
 		BaseUrlRetrieveStrategy urlStrategy = null;
-		String baseURLs = getPropertyValue(props, "remoteUrlBase", null);
+		String baseURLs = PropertiesUtil.getPropertyValue(props, "remoteUrlBase", null);
 		try {
 			if (!StringUtils.isEmpty(baseURLs)) {
 				String[] urls = StringUtils.split(baseURLs, ",");
-				if(1 == urls.length){
+				if (1 == urls.length) {
 					String baseURL = StringUtils.trimToEmpty(urls[0]);
 					new URL(baseURL);
 					urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
-				}else if(urls.length > 0){
+				} else if (urls.length > 0) {
 					String[] urlArr = new String[urls.length];
-					for(int i = 0; i < urls.length; i++){
+					for (int i = 0; i < urls.length; i++) {
 						String baseURL = StringUtils.trimToEmpty(urls[i]);
 						new URL(baseURL);
 						urlArr[i] = baseURL;
 					}
-					String strategy = StringUtils.trimToEmpty(getPropertyValue(props, "remoteUrlBaseStrategy", ROUNDROBIN));
-					if(ROUNDROBIN.equalsIgnoreCase(strategy)){
+					String strategy = StringUtils.trimToEmpty(PropertiesUtil.getPropertyValue(props, "remoteUrlBaseStrategy", ROUNDROBIN));
+					if (ROUNDROBIN.equalsIgnoreCase(strategy)) {
 						urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
-					}else if(IPHASH.equalsIgnoreCase(strategy)){
+					} else if (IPHASH.equalsIgnoreCase(strategy)) {
 						urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
-					}else if(STICKYSESSION.equalsIgnoreCase(strategy)){
+					} else if (STICKYSESSION.equalsIgnoreCase(strategy)) {
 						urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
-					}else{
-						throw new ConfigurationException("No such BaseUrlRetrieveStrategy '"+ strategy+"'");
+					} else {
+						throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
 					}
-					
+
 				}
 			}
 		} catch (MalformedURLException e) {
 			throw new ConfigurationException(e);
 		}
 		return urlStrategy;
-	}
-
-	private static int getPropertyValue(Properties props, String name, int defaultValue) {
-		String value = props.getProperty(name);
-		return value != null ? Integer.parseInt(value) : defaultValue;
-	}
-	private static boolean getPropertyValue(Properties props, String name, boolean defaultValue) {
-		String value = props.getProperty(name);
-		return value != null ? Boolean.parseBoolean(value) : defaultValue;
-	}
-	private static String getPropertyValue(Properties props, String name, String defaultValue) {
-		return props.getProperty(name, defaultValue);
-	}
-
-	public boolean isBlackListed(String headerName) {
-		if (headerName == null || headerName.length() == 0) {
-			return true;
-		}
-		return blackListedHeaders.contains(headerName.toLowerCase());
 	}
 
 	public String getFilter() {
@@ -261,8 +250,6 @@ public class DriverConfiguration {
 	public String getInstanceName() {
 		return instanceName;
 	}
-
-	
 
 	public int getMaxConnectionsPerHost() {
 		return maxConnectionsPerHost;
@@ -303,12 +290,12 @@ public class DriverConfiguration {
 	public int getProxyPort() {
 		return proxyPort;
 	}
-	
-	public String getProxyUser(){
+
+	public String getProxyUser() {
 		return proxyUser;
 	}
-	
-	public String getProxyPassword(){
+
+	public String getProxyPassword() {
 		return proxyPassword;
 	}
 
@@ -341,8 +328,7 @@ public class DriverConfiguration {
 	}
 
 	/**
-	 * List of parsable content types. Default is text/html,
-	 * application/xhtml+xml
+	 * List of parsable content types. Default is text/html, application/xhtml+xml
 	 * 
 	 * @return List of parsable content types.
 	 */
@@ -352,6 +338,14 @@ public class DriverConfiguration {
 
 	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
 		return baseUrlRetrieveStrategy;
+	}
+
+	public boolean isForwardedRequestHeader(String headerName) {
+		return requestHeadersFilterList.contains(headerName);
+	}
+
+	public boolean isForwardedResponseHeader(String headerName) {
+		return responseHeadersFilterList.contains(headerName);
 	}
 
 }

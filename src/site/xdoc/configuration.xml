@@ -63,22 +63,48 @@
                     <td>text/html,application/xhtml+xml</td>
                 </tr>
                 <tr>
-                    <td>blackListedHeaders</td>
-                    <td>List of comma separated headers which will be removed from client request before sending it to the server
-                    in addition to the default ones.
-                    Also these headers will be removed from server's response before returning to the client in addition to the default ones.
-                    Such headers are also known as 'hop-by-hop' headers (see part 13.5.1 of
-                    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html</a>)
-                    By default, ignored headers are Content-Length, Content-Encoding, Transfer-Encoding, Set-Cookie, Cookie,
-                    Connection, Keep-Alive, Proxy-Authenticate, Proxy-Authorization, TE, Trailers, Upgrade.
-                    Use this syntax to add ignored headers to default ones :
-                    <code>blackListedHeaders=Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</code>
-                    Please note that Content-Length and Content-Encoding headers are copied from client request to the server
-                    as they are required for correct request processing. However due to the possibility of having different response encodings
-                    and subsequent response processing those headers are removed from servers' response before returning it to the client.
+                    <td><strike>blackListedHeaders</strike></td>
+                    <td><b>Deprecated property.</b> Comma separated list of HTTP request or response headers which will not be forwarded from server to client or from client
+                    to server. Use forwardRequestHeaders, discardRequestHeaders, forwardResponseHeaders, discardResponseHeaders instead.
                     </td>
                     <td>No</td>
-                    <td>Content-Length,Content-Encoding,Transfer-Encoding,Set-Cookie,Cookie,Connection,Keep-Alive,Proxy-Authenticate,Proxy-Authorization,TE,Trailers,Upgrade</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>discardRequestHeaders</td>
+                    <td>Comma separated list of HTTP request headers which will not be forwarded from client
+                    to server. By default, any other request header will be forwarded.
+                    See <a href="httpheaders.html">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td>Authorization,Connection,Content-Length,Cookie,Expect,Host,If-Match,If-Modified-Since,If-None-Match,If-Range,If-Unmodified-Since,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,Transfer-Encoding,Upgrade</td>
+                </tr>
+                <tr>
+                    <td>forwardRequestHeaders</td>
+                    <td>Comma separated list of HTTP request headers which are discarded by default but have to be forwarded from client
+                    to server.
+                    See <a href="httpheaders.html">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>discardResponseHeaders</td>
+                    <td>Comma separated list of HTTP request headers which will not be forwarded from server
+                    to client . By default, any other response header will be forwarded.
+                    See <a href="httpheaders.html">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td>Age,Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
+                </tr>
+                <tr>
+                    <td>forwardResponseHeaders</td>
+                    <td>Comma separated list of HTTP response headers which are discarded by default but have to be forwarded from server
+                    to client.
+                    See <a href="httpheaders.html">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td><strike>timeout</strike></td>
@@ -131,6 +157,12 @@
 						directive can be used to avoid excessive memory usage</td>
 					<td>No</td>
 					<td>0</td>
+				</tr>
+				<tr>
+					<td>cacheStorageClassName</td>
+					<td>Implementation of org.esigate.cache.CacheStorage to use</td>
+					<td>No</td>
+					<td>org.esigate.cache.DefaultCacheStorage</td>
 				</tr>
 				<tr>
 					<td>localBase</td>

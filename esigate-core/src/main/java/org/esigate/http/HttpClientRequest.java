@@ -38,6 +38,7 @@ import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.esigate.DriverConfiguration;
+import org.esigate.HttpErrorPage;
 import org.esigate.api.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class HttpClientRequest {
 		return result;
 	}
 
-	public HttpClientResponse execute(HttpClient httpClient) throws IOException {
+	public HttpClientResponse execute(HttpClient httpClient) throws IOException, HttpErrorPage {
 		buildHttpMethod();
 		URL url = new URL(uri);
 		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
@@ -113,9 +114,7 @@ public class HttpClientRequest {
 
 	/** This method copies the body of the request without modification. */
 	private static void copyEntity(HttpRequest src, HttpEntityEnclosingRequest dest) throws IOException {
-		long contentLength = (src.getHeader(HttpHeaders.CONTENT_LENGTH) != null)
-				? Long.parseLong(src.getHeader(HttpHeaders.CONTENT_LENGTH))
-				: -1;
+		long contentLength = (src.getHeader(HttpHeaders.CONTENT_LENGTH) != null) ? Long.parseLong(src.getHeader(HttpHeaders.CONTENT_LENGTH)) : -1;
 		InputStreamEntity inputStreamEntity = new InputStreamEntity(src.getInputStream(), contentLength);
 		if (src.getContentType() != null) {
 			inputStreamEntity.setContentType(src.getContentType());
@@ -126,14 +125,12 @@ public class HttpClientRequest {
 		dest.setEntity(inputStreamEntity);
 	}
 
-	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(
-			Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
-	private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(
-			Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
+	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
+	private static final Set<String> ENTITY_METHODS = Collections
+			.unmodifiableSet(new HashSet<String>(Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
 
 	/** Method creates appropriate apache http request object for request method provided and fills request body if it should exist. */
-	private static org.apache.http.HttpRequest createRequestObject(String uri, String method, HttpRequest originalRequest)
-			throws IOException {
+	private static org.apache.http.HttpRequest createRequestObject(String uri, String method, HttpRequest originalRequest) throws IOException {
 		if (SIMPLE_METHODS.contains(method)) {
 			return new BasicHttpRequest(method, uri);
 		} else if (ENTITY_METHODS.contains(method)) {
@@ -145,7 +142,7 @@ public class HttpClientRequest {
 		}
 	}
 
-	private void buildHttpMethod() throws IOException {
+	private void buildHttpMethod() throws IOException, HttpErrorPage {
 		String method = (proxy) ? originalRequest.getMethod().toUpperCase() : "GET";
 		httpRequest = createRequestObject(uri, method, originalRequest);
 
@@ -156,19 +153,27 @@ public class HttpClientRequest {
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
-		String userAgent = originalRequest.getHeader(HttpHeaders.USER_AGENT);
-		if (userAgent != null) {
-			httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
-		}
-		
+
 		Integer maxWait = originalRequest.getFetchMaxWait();
 		if (maxWait != null) {
 			HttpConnectionParams.setSoTimeout(httpRequest.getParams(), maxWait);
 		}
-		
+
 		// process request headers
 		for (String name : originalRequest.getHeaderNames()) {
-			if (configuration == null || !configuration.isBlackListed(name)) {
+			// Special headers
+			if (HttpHeaders.USER_AGENT.equalsIgnoreCase(name) && configuration.isForwardedRequestHeader(HttpHeaders.USER_AGENT))
+				httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, originalRequest.getHeader(name));
+			else if (HttpHeaders.EXPECT.equalsIgnoreCase(name))
+				throw new HttpErrorPage(417, "Expection failed", "This server does not support 'Expect' HTTP header.");
+			else if (HttpHeaders.REFERER.equalsIgnoreCase(name)) {
+				String value = originalRequest.getHeader(name);
+				String originalUrlWithQueryString = originalRequest.getRequestURL();
+				if (originalRequest.getQueryString() != null)
+					originalUrlWithQueryString += "?" + originalRequest.getQueryString();
+				value = RewriteUtils.translateUrl(value, originalUrlWithQueryString, uri);
+				httpRequest.addHeader(name, value);
+			} else if (configuration.isForwardedRequestHeader(name)) {
 				String value = originalRequest.getHeader(name);
 				if (value != null) {
 					httpRequest.addHeader(name, value);
@@ -176,12 +181,10 @@ public class HttpClientRequest {
 			}
 		}
 		// process X-Forwarded-For header (is missing in request and not blacklisted) -> use remote address instead
-		if (originalRequest.getHeader("X-Forwarded-For") == null 
-				&& (configuration == null || !configuration.isBlackListed("X-Forwarded-For"))
-				&& originalRequest.getRemoteAddr() != null) {
+		if (originalRequest.getHeader("X-Forwarded-For") == null && (configuration == null || configuration.isForwardedRequestHeader("X-Forwarded-For")) && originalRequest.getRemoteAddr() != null) {
 			httpRequest.addHeader("X-Forwarded-For", originalRequest.getRemoteAddr());
 		}
-		// process other headers
+		// process added headers
 		if (headers != null) {
 			for (Entry<String, String> entry : headers.entrySet()) {
 				httpRequest.addHeader(entry.getKey(), entry.getValue());
