@@ -3,6 +3,7 @@ package org.esigate.output;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,8 +29,11 @@ public abstract class Output {
 	private String charsetName;
 	private int statusCode;
 	private String statusMessage;
-	private final Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
-
+	
+	// This map has to be synchronized, because headers are updated by multiple threads
+	// see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=84
+	private final Map<String, Set<String>> headers = Collections
+		    .synchronizedMap(new HashMap<String, Set<String>>());
 	/**
 	 * Sets the HTTP status code of the response
 	 * 
@@ -106,7 +110,10 @@ public abstract class Output {
 			}
 		}
 		if (values == null) {
-			values = new TreeSet<String>();
+			// This set has to be synchronized, because headers are updated by multiple threads
+			// see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=84
+			values = Collections.synchronizedSortedSet(new TreeSet<String>());
+
 			headers.put(name, values);
 		}
 		values.add(value);
