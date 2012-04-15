@@ -27,7 +27,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Forward session and/or request attributes as request headers.
+ * Forward session and/or request attributes as HTTP request headers. Best when ESIGate is used in embedded mode. 
+ * <p>
+ * Example : 
+ * Forward the "username" session attribute as "X-ATTR-username" in the request fetching remote content.
+ * <p>
+ * Configuration uses the following attributes from driver.properties :
+ * <p>
+ * <ul>
+ * <li>
+ * <b>forwardSessionAttributes</b>: comma separated list of session attributes which will be forwarded.
+ * </li>
+ * <li>
+ * <b>forwardRequestAttributes</b>: comma separated list of request attributes which will be forwarded.
+ * </li>
+ * <li><b>headerPrefix</b> : header prefix. Default is "X-ATTR-"
+ * </li>
+ * </ul>
+ * <p>
+ * 
+ * 
  * 
  * @author Nicolas Richeton
  */
