@@ -75,12 +75,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     private static final byte[] END_TAG = {'<','/'};
     private static final byte[] AMP = {'&','a','m','p',';'};
     private static final byte[] equalsStr = {'=','\"'};
-    private static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
-    private static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
-    private static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
+    
+    protected static final int NODE_BEFORE_DOCUMENT_ELEMENT = -1;
+    protected static final int NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT = 0;
+    protected static final int NODE_AFTER_DOCUMENT_ELEMENT = 1;
     
     static {
-        // The null xmlns definiton.
+        // The null xmlns definition.
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             nullNode = documentBuilder.newDocument().createAttributeNS(Constants.NamespaceSpecNS, XMLNS);
@@ -737,7 +738,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer where to write the things
      * @throws IOException
      */
-    protected static final void outputPItoWriter(
+    protected void outputPItoWriter(
         ProcessingInstruction currentPI, OutputStream writer, int position
     ) throws IOException {   	  
         if (position == NODE_AFTER_DOCUMENT_ELEMENT) {
@@ -791,7 +792,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * @param writer writer where to write the things
      * @throws IOException
      */
-    protected static final void outputCommentToWriter(
+    protected void outputCommentToWriter(
         Comment currentComment, OutputStream writer, int position
     ) throws IOException {   	  
         if (position == NODE_AFTER_DOCUMENT_ELEMENT) {

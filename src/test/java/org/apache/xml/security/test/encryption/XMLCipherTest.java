@@ -48,6 +48,7 @@ import org.apache.xml.security.encryption.CipherData;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.utils.EncryptionConstants;
 import org.apache.xml.security.keys.KeyInfo;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,7 +62,7 @@ import org.w3c.dom.NodeList;
 public class XMLCipherTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(XMLCipherTest.class.getName());
     
     static {
@@ -166,8 +167,7 @@ public class XMLCipherTest extends org.junit.Assert {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testAES128ElementAES192KWCipherUsingKEK skipped as "
@@ -238,10 +238,7 @@ public class XMLCipherTest extends org.junit.Assert {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-            log.debug("Output document");
-            log.debug(target);
-
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testAES128ElementRSAKWCipherUsingKEK skipped as "
@@ -328,8 +325,7 @@ public class XMLCipherTest extends org.junit.Assert {
             dd = cipher3.doFinal(ed, ee);
 
             target = toString(dd);
-
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testAES192ElementAES256KWCipher skipped as "
@@ -369,11 +365,11 @@ public class XMLCipherTest extends org.junit.Assert {
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
             EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
             String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-            assert(XMLCipher.TRIPLEDES.equals(algorithm));
+            assertEquals(XMLCipher.TRIPLEDES, algorithm);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testTripleDesElementCipher skipped as necessary algorithms not available"
@@ -413,11 +409,11 @@ public class XMLCipherTest extends org.junit.Assert {
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
             EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
             String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-            assert(XMLCipher.AES_128.equals(algorithm));
+            assertEquals(XMLCipher.AES_128, algorithm);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testAes128ElementCipher skipped as necessary algorithms not available"
@@ -459,11 +455,11 @@ public class XMLCipherTest extends org.junit.Assert {
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
             EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
             String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-            assert(XMLCipher.AES_192.equals(algorithm));
+            assertEquals(XMLCipher.AES_192, algorithm);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn("Test testAes192ElementCipher skipped as necessary algorithms not available");
         }
@@ -505,11 +501,11 @@ public class XMLCipherTest extends org.junit.Assert {
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
             EncryptedData encryptedData = cipher.loadEncryptedData(ed, ee);
             String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-            assert(XMLCipher.AES_256.equals(algorithm));
+            assertEquals(XMLCipher.AES_256, algorithm);
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn("Test testAes265ElementCipher skipped as necessary algorithms not available");
         }
@@ -551,8 +547,7 @@ public class XMLCipherTest extends org.junit.Assert {
             dd = cipher.doFinal(ed, ee);
 
             target = toString(dd);
-
-            assert source.equals(target);
+            assertEquals(source, target);
         } else {
             log.warn(
                 "Test testTripleDesDocumentCipher skipped as "
@@ -625,11 +620,114 @@ public class XMLCipherTest extends org.junit.Assert {
             cipherDecrypt.init(XMLCipher.DECRYPT_MODE, key);
             byte[] decryptBytes = cipherDecrypt.decryptToByteArray(ee);
 
-            assert (new String(decryptBytes, "ASCII")).equals(
-                new String("A test encrypted secret"));
+            assertEquals("A test encrypted secret",
+            		new String(decryptBytes, "ASCII")); 
         } else {
             log.warn(
                 "Test testSameDocumentCipherReference skipped as "
+                + "necessary algorithms not available"
+            );
+        }
+    }
+
+    /*
+     * Test physical representation of decrypted element, see SANTUARIO-309
+     */
+    @org.junit.Test
+    public void testPhysicalRepresentation() throws Exception {
+
+        if (haveISOPadding) {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
+            DESedeKeySpec keySpec = new DESedeKeySpec(bits192);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
+            SecretKey secretKey = keyFactory.generateSecret(keySpec);
+
+            // Test inherited namespaces don't add extra attributes
+            // Test unused namespaces are preserved
+            final String DATA1 = "<ns:root xmlns:ns=\"ns.com\"><ns:elem xmlns:ns2=\"ns2.com\">11</ns:elem></ns:root>";
+            Document doc = db.parse(new ByteArrayInputStream(DATA1.getBytes("UTF8")));
+            Element elem = (Element)doc.getDocumentElement().getFirstChild();
+
+            XMLCipher dataCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            dataCipher.init(XMLCipher.ENCRYPT_MODE, secretKey);
+            dataCipher.doFinal(doc, elem);
+            
+            Element encrElem = (Element)doc.getDocumentElement().getFirstChild();
+            assertEquals("EncryptedData", encrElem.getLocalName());
+
+            XMLCipher deCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            deCipher.init(XMLCipher.DECRYPT_MODE, secretKey);
+            deCipher.doFinal(doc, encrElem);
+
+            Element decrElem = (Element)doc.getDocumentElement().getFirstChild();
+            assertEquals("ns:elem", decrElem.getNodeName());
+            assertEquals("ns.com", decrElem.getNamespaceURI());
+            assertEquals(1, decrElem.getAttributes().getLength());
+            Attr attr = (Attr)decrElem.getAttributes().item(0);
+            assertEquals("xmlns:ns2", attr.getName());
+            assertEquals("ns2.com", attr.getValue());
+
+            // Test default namespace undeclaration is preserved
+            final String DATA2 = "<ns:root xmlns=\"defns.com\" xmlns:ns=\"ns.com\"><elem xmlns=\"\">11</elem></ns:root>";
+            doc = db.parse(new ByteArrayInputStream(DATA2.getBytes("UTF8")));
+            elem = (Element)doc.getDocumentElement().getFirstChild();
+
+            dataCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            dataCipher.init(XMLCipher.ENCRYPT_MODE, secretKey);
+            dataCipher.doFinal(doc, elem);
+            
+            encrElem = (Element)doc.getDocumentElement().getFirstChild();
+            assertEquals("EncryptedData", encrElem.getLocalName());
+
+            deCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            deCipher.init(XMLCipher.DECRYPT_MODE, secretKey);
+            deCipher.doFinal(doc, encrElem);
+
+            decrElem = (Element)doc.getDocumentElement().getFirstChild();
+            assertEquals("elem", decrElem.getNodeName());
+            assertNull(decrElem.getNamespaceURI());
+            assertEquals(1, decrElem.getAttributes().getLength());
+            attr = (Attr)decrElem.getAttributes().item(0);
+            assertEquals("xmlns", attr.getName());
+            assertEquals("", attr.getValue());
+            
+            // Test comments and PIs are not treated specially when serializing element content.
+            // Other c14n algorithms add a newline after comments and PIs, when they are before or after the document element.
+            final String DATA3 = "<root><!--comment1--><?pi1 target1?><elem/><!--comment2--><?pi2 target2?></root>";
+            doc = db.parse(new ByteArrayInputStream(DATA3.getBytes("UTF8")));
+            elem = (Element)doc.getDocumentElement();
+
+            dataCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            dataCipher.init(XMLCipher.ENCRYPT_MODE, secretKey);
+            dataCipher.doFinal(doc, elem, true);
+            
+            encrElem = (Element)elem.getFirstChild();
+            assertEquals("EncryptedData", encrElem.getLocalName());
+            assertNull(encrElem.getNextSibling());
+
+            deCipher = XMLCipher.getInstance(XMLCipher.TRIPLEDES);
+            deCipher.init(XMLCipher.DECRYPT_MODE, secretKey);
+            deCipher.doFinal(doc, encrElem);
+
+            Node n = elem.getFirstChild();
+            assertEquals(Node.COMMENT_NODE, n.getNodeType());
+            n = n.getNextSibling();
+            assertEquals(Node.PROCESSING_INSTRUCTION_NODE, n.getNodeType());
+            n = n.getNextSibling();
+            assertEquals(Node.ELEMENT_NODE, n.getNodeType());
+            n = n.getNextSibling();
+            assertEquals(Node.COMMENT_NODE, n.getNodeType());
+            n = n.getNextSibling();
+            assertEquals(Node.PROCESSING_INSTRUCTION_NODE, n.getNodeType());
+            n = n.getNextSibling();
+            assertNull(n);
+        } else {
+            log.warn(
+                "Test testPhysicalRepresentation skipped as "
                 + "necessary algorithms not available"
             );
         }
@@ -676,10 +774,10 @@ public class XMLCipherTest extends org.junit.Assert {
         XMLCipher dcipher = XMLCipher.getInstance(XMLCipher.AES_128);
         dcipher.init(XMLCipher.DECRYPT_MODE, key);
         String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-        assert(XMLCipher.AES_128.equals(algorithm));
+        assertEquals(XMLCipher.AES_128, algorithm);
         byte[] bytes = dcipher.decryptToByteArray(dcipher.martial(encryptedData));
         String after = new String(bytes, "UTF-8");
-        assert before.equals(after);
+        assertEquals(before, after);
 
         // test with null type
         encryptedData = cipher.encryptData(d, null, new ByteArrayInputStream(serialized));

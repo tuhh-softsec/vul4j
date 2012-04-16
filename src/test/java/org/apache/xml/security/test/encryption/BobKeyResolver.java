@@ -40,10 +40,10 @@ import org.w3c.dom.Element;
 public class BobKeyResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
+    private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(BobKeyResolver.class.getName());
 
-    KeyName _kn = null;
+    private KeyName _kn = null;
 
     /**
      * Method engineCanResolve

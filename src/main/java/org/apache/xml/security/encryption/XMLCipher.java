@@ -179,6 +179,10 @@ public class XMLCipher {
     public static final String EXCL_XML_N14C_WITH_COMMENTS = 
         Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS;
     
+    /** N14C_PHYSICAL preserve the physical representation*/
+    public static final String PHYSICAL_XML_N14C = 
+        Canonicalizer.ALGO_ID_C14N_PHYSICAL;
+    
     /** Base64 encoding */
     public static final String BASE64_ENCODING =             
         org.apache.xml.security.transforms.Transforms.TRANSFORM_BASE64_DECODE;
@@ -297,7 +301,8 @@ public class XMLCipher {
         // prior to encryption (and for the reverse)
 
         if (canon == null) {
-            canon = Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS;
+        	// The default is to preserve the physical representation.
+            canon = Canonicalizer.ALGO_ID_C14N_PHYSICAL;
         }
 
         try {

@@ -633,6 +633,6 @@ public class BaltimoreEncTest extends org.junit.Assert {
      */
     private void checkDecryptedData(byte[] data) throws Exception {
         String input = new String(data, "ASCII");
-        assert testDecryptString.equals(input);
+        assertEquals(testDecryptString, input);
     }
 }
