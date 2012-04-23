@@ -1,6 +1,7 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v1.5.2-SNAPSHOT:
+    Fixed SANTUARIO-313 - Javadocs warnings.
     Fixed SANTUARIO-309 - Default XMLCipher canonicalizer may decrypt element to the wrong namespace.
     Fixed SANTUARIO-308 - Canonicalizer error when encrypting multiple elements.
     Fixed SANTUARIO-310 - Implement KeyResolvers for PrivateKeys and SecretKeys.

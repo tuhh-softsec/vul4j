@@ -51,7 +51,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
      * @param element
      * @param BaseURI
      * @param storage
-     * @return
+     * @return whether the KeyResolverSpi is able to perform the requested action.
      */
     public boolean engineCanResolve(Element element, String BaseURI, StorageResolver storage) {
         if (XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_X509DATA) 
@@ -111,7 +111,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
      * Method engineResolvePrivateKey
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return resolved PrivateKey key or null if no {@link PrivateKey} could be obtained
      * @throws KeyResolverException

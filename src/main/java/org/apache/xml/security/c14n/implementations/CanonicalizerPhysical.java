@@ -54,8 +54,6 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
 
     /**
      * Constructor Canonicalizer20010315
-     *
-     * @param includeComments
      */
     public CanonicalizerPhysical() {
         super(true);
