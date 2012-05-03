@@ -119,7 +119,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not add certificate from file " + filename, ex);
                 }
-            }catch (CertificateNotYetValidException ex) {
+            } catch (CertificateNotYetValidException ex) {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not add certificate from file " + filename, ex);
                 }
@@ -133,7 +133,9 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                 }
             } finally {
                 try {
-                    fis.close();
+                    if (fis != null) {
+                        fis.close();
+                    }
                 } catch (IOException ex) {
                     if (log.isDebugEnabled()) {
                         log.debug("Could not add certificate from file " + filename, ex);

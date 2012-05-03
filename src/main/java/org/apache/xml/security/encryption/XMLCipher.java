@@ -1107,7 +1107,7 @@ public class XMLCipher {
                 serializedOctets = serializer.serializeToByteArray(element);
             }
             if (log.isDebugEnabled()) {
-                log.debug("Serialized octets:\n" + serializedOctets);
+                log.debug("Serialized octets:\n" + new String(serializedOctets, "UTF-8"));
             }
         }
 

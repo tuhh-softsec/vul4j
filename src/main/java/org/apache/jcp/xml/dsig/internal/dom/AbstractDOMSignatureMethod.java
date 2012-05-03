@@ -188,6 +188,21 @@ abstract class AbstractDOMSignatureMethod extends DOMStructure
         return (getAlgorithm().equals(osm.getAlgorithm()) &&
             paramsEqual(osm.getParameterSpec()));
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        String algorithm = getAlgorithm();
+        if (algorithm != null) {
+            result = 31 * result + algorithm.hashCode();
+        }
+        AlgorithmParameterSpec spec = getParameterSpec();
+        if (spec != null) {
+            result = 31 * result + spec.hashCode();
+        }
+        
+        return result;
+    }
 
     /**
      * Returns true if parameters are equal; false otherwise.

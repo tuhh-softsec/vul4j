@@ -67,8 +67,12 @@ public class JavaUtils {
 
             refBytes = baos.toByteArray();
         } finally {
-            fisRef.close();
-            baos.close();
+            if (fisRef != null) {
+                fisRef.close();
+            }
+            if (baos != null) {
+                baos.close();
+            }
         }
 
         return refBytes;
