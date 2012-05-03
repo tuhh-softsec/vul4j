@@ -41,10 +41,10 @@ import java.util.Comparator;
  */
 public class AttrCompare implements Comparator<Attr>, Serializable {
 
-    private final static long serialVersionUID = -7113259629930576230L;
-    private final static int ATTR0_BEFORE_ATTR1 = -1;
-    private final static int ATTR1_BEFORE_ATTR0 = 1;
-    private final static String XMLNS = Constants.NamespaceSpecNS;
+    private static final long serialVersionUID = -7113259629930576230L;
+    private static final int ATTR0_BEFORE_ATTR1 = -1;
+    private static final int ATTR1_BEFORE_ATTR0 = 1;
+    private static final String XMLNS = Constants.NamespaceSpecNS;
 
     /**
      * Compares two attributes based on the C14n specification.

@@ -164,8 +164,8 @@ public final class XMLSignature extends SignatureElementProxy {
 
     private Element signatureValueElement;
 
-    private final static int MODE_SIGN = 0;
-    private final static int MODE_VERIFY = 1;
+    private static final int MODE_SIGN = 0;
+    private static final int MODE_VERIFY = 1;
     private int state = MODE_SIGN;
 
     /**

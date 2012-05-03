@@ -213,4 +213,17 @@ public final class DOMKeyInfo extends DOMStructure implements KeyInfo {
 
         return (keyInfoTypes.equals(oki.getContent()) && idsEqual);
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (keyInfoTypes != null) {
+            result = 31 * result + keyInfoTypes.hashCode();
+        }
+        
+        return result;
+    }
 }

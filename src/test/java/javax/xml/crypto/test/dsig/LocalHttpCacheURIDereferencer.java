@@ -37,8 +37,8 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 public class LocalHttpCacheURIDereferencer implements URIDereferencer {
 
     private final URIDereferencer ud;
-    private final static String FS = System.getProperty("file.separator");
-    private final static String BASEDIR = System.getProperty("basedir");
+    private static final String FS = System.getProperty("file.separator");
+    private static final String BASEDIR = System.getProperty("basedir");
     private final Map<String, File> uriMap;
 
     public LocalHttpCacheURIDereferencer() {

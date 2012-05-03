@@ -170,6 +170,12 @@ public final class DOMSignatureProperty extends DOMStructure
         return (equalsContent(ospContent) &&
                 target.equals(osp.getTarget()) && idsEqual);
     }
+    
+    @Override
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42; // any arbitrary constant will do 
+    }
 
     private boolean equalsContent(List<XMLStructure> otherContent) {
         int osize = otherContent.size();

@@ -553,8 +553,9 @@ public class XMLUtils {
 
                         for (int i = 0; i < attributesLength; i++) {
                             Attr currentAttr = (Attr) attributes.item(i); 
-                            if (!namespaceNs.equals(currentAttr.getNamespaceURI()))
+                            if (!namespaceNs.equals(currentAttr.getNamespaceURI())) {
                                 continue;
+                            }
                             if (childElement.hasAttributeNS(namespaceNs, 
                                                             currentAttr.getLocalName())) {
                                 continue;
@@ -566,9 +567,6 @@ public class XMLUtils {
                     }            
                 }
             case Node.ENTITY_REFERENCE_NODE :
-                parent = node;
-                sibling = node.getFirstChild();
-                break;
             case Node.DOCUMENT_NODE :
                 parent = node;
                 sibling = node.getFirstChild();

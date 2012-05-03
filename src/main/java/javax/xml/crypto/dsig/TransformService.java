@@ -250,8 +250,9 @@ public abstract class TransformService implements Transform {
                 map.clear();
                 map.put(engine + "." + alg, "");
                 providers = Security.getProviders(map);
-                if (providers != null)
+                if (providers != null) {
                     return providers[0];
+                }
             }
             throw new NoSuchAlgorithmException("Algorithm type " + alg +
                                                " not available");

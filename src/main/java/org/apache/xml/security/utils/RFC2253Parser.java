@@ -80,7 +80,7 @@ public class RFC2253Parser {
             int k;
 
             //for name component
-            for (int j = 0; (k = DN.indexOf(",", j)) >= 0; j = k + 1) {
+            for (int j = 0; (k = DN.indexOf(',', j)) >= 0; j = k + 1) {
                 l += countQuotes(DN, j, k);
 
                 if ((k > 0) && (DN.charAt(k - 1) != '\\') && (l % 2) == 0) {
@@ -113,7 +113,7 @@ public class RFC2253Parser {
         int l = 0;
         int k;
 
-        for (int j = 0; (k = str.indexOf("+", j)) >= 0; j = k + 1) {
+        for (int j = 0; (k = str.indexOf('+', j)) >= 0; j = k + 1) {
             l += countQuotes(str, j, k);
 
             if ((k > 0) && (str.charAt(k - 1) != '\\') && (l % 2) == 0) {
@@ -138,7 +138,7 @@ public class RFC2253Parser {
      * @throws IOException
      */
     static String parseATAV(String str, boolean toXml) throws IOException {
-        int i = str.indexOf("=");
+        int i = str.indexOf('=');
 
         if ((i == -1) || ((i > 0) && (str.charAt(i - 1) == '\\'))) {
             return str;

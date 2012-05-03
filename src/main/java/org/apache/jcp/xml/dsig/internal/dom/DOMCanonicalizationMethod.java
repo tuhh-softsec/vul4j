@@ -105,4 +105,10 @@ public class DOMCanonicalizationMethod extends DOMTransform
         return (getAlgorithm().equals(ocm.getAlgorithm()) &&
             DOMUtils.paramsEqual(getParameterSpec(), ocm.getParameterSpec()));
     }
+    
+    @Override
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42; // any arbitrary constant will do 
+    }
 }

@@ -43,7 +43,7 @@ public class JavaUtils {
      * Method getBytesFromFile
      *
      * @param fileName
-     * @return the bytes readed from the file
+     * @return the bytes read from the file
      *
      * @throws FileNotFoundException
      * @throws IOException
@@ -53,9 +53,10 @@ public class JavaUtils {
 
         byte refBytes[] = null;
 
-        FileInputStream fisRef = new FileInputStream(fileName);
+        FileInputStream fisRef = null;
         UnsyncByteArrayOutputStream baos = null;
         try {
+            fisRef = new FileInputStream(fileName);
             baos = new UnsyncByteArrayOutputStream();
             byte buf[] = new byte[1024];
             int len;

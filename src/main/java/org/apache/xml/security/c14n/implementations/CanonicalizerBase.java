@@ -250,10 +250,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         do {
             switch (currentNode.getNodeType()) {
 
-            case Node.DOCUMENT_TYPE_NODE :
-            default :
-                break;
-
             case Node.ENTITY_NODE :
             case Node.NOTATION_NODE :
             case Node.ATTRIBUTE_NODE :
@@ -316,6 +312,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                     parentNode = currentElement;
                 }
                 break;
+                
+            case Node.DOCUMENT_TYPE_NODE :
+            default :
+                break;
             }
             while (sibling == null && parentNode != null) {    		      		      			
                 writer.write(END_TAG);
@@ -337,7 +337,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 return;
             }
             currentNode = sibling;      
-            sibling = currentNode.getNextSibling();  
+            sibling = currentNode.getNextSibling();
         } while(true);
     }
 
@@ -397,10 +397,6 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         Map<String, byte[]> cache = new HashMap<String, byte[]>();
         do {
             switch (currentNode.getNodeType()) {
-
-            case Node.DOCUMENT_TYPE_NODE :
-            default :
-                break;
 
             case Node.ENTITY_NODE :
             case Node.NOTATION_NODE :
@@ -490,6 +486,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 } else {
                     parentNode = currentElement;
                 }			
+                break;
+                
+            case Node.DOCUMENT_TYPE_NODE :
+            default :
                 break;
             }
             while (sibling == null && parentNode != null) {    

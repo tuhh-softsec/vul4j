@@ -54,11 +54,11 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
         org.apache.commons.logging.LogFactory.getLog(DOMHMACSignatureMethod.class);
 
     // see RFC 4051 for these algorithm definitions
-    final static String HMAC_SHA256 =
+    static final String HMAC_SHA256 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
-    final static String HMAC_SHA384 =
+    static final String HMAC_SHA384 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha384";
-    final static String HMAC_SHA512 =
+    static final String HMAC_SHA512 =
         "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
 
     private Mac hmac;
@@ -119,8 +119,7 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     SignatureMethodParameterSpec unmarshalParams(Element paramsElem)
         throws MarshalException
     {
-        outputLength = new Integer
-            (paramsElem.getFirstChild().getNodeValue()).intValue();
+        outputLength = Integer.valueOf(paramsElem.getFirstChild().getNodeValue()).intValue();
         outputLengthSet = true;
         if (log.isDebugEnabled()) {
             log.debug("unmarshalled outputLength: " + outputLength);

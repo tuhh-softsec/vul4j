@@ -226,7 +226,9 @@ public final class DOMReference extends DOMStructure
         // unmarshal DigestMethod
         Element dmElem = nextSibling;
         this.digestMethod = DOMDigestMethod.unmarshal(dmElem);
-        if (secVal && MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5.equals(digestMethod)) {
+        String digestMethodAlgorithm = this.digestMethod.getAlgorithm();
+        if (secVal 
+            && MessageDigestAlgorithm.ALGO_ID_DIGEST_NOT_RECOMMENDED_MD5.equals(digestMethodAlgorithm)) {
             throw new MarshalException(
                 "It is forbidden to use algorithm " + digestMethod + " when secure validation is enabled"
             );
@@ -438,7 +440,7 @@ public final class DOMReference extends DOMStructure
         DigesterOutputStream dos;
         Boolean cache = (Boolean)
             context.getProperty("javax.xml.crypto.dsig.cacheReference");
-        if (cache != null && cache.booleanValue() == true) {
+        if (cache != null && cache.booleanValue()) {
             this.derefData = copyDerefData(dereferencedData);
             dos = new DigesterOutputStream(md, true);
         } else {
@@ -470,7 +472,7 @@ public final class DOMReference extends DOMStructure
                     if (!c14n11) {
                         Boolean prop = (Boolean)context.getProperty
                             ("org.apache.xml.security.useC14N11");
-                        c14n11 = (prop != null && prop.booleanValue() == true);
+                        c14n11 = (prop != null && prop.booleanValue());
                         if (c14n11) {
                             c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
                         }
@@ -534,7 +536,7 @@ public final class DOMReference extends DOMStructure
                 }
             }
             os.flush();
-            if (cache != null && cache.booleanValue() == true) {
+            if (cache != null && cache.booleanValue()) {
                 this.dis = dos.getInputStream();
             }
             return dos.getDigestValue();
@@ -578,6 +580,31 @@ public final class DOMReference extends DOMStructure
         return digestMethod.equals(oref.getDigestMethod()) && idsEqual &&
             urisEqual && typesEqual && 
             allTransforms.equals(oref.getTransforms()) && digestValuesEqual;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (uri != null) {
+            result = 31 * result + uri.hashCode();
+        }
+        if (type != null) {
+            result = 31 * result + type.hashCode();
+        }
+        if (digestValue != null) {
+            result = 31 * result + Arrays.hashCode(digestValue);
+        }
+        if (digestMethod != null) {
+            result = 31 * result + digestMethod.hashCode();
+        }
+        if (allTransforms != null) {
+            result = 31 * result + allTransforms.hashCode();
+        }
+        
+        return result;
     }
 
     boolean isDigested() {

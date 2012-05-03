@@ -118,8 +118,9 @@ public class NameSpaceSymbTable {
             symb = (SymbMap)ob;
             if (size == 0) {
                 cloned = false;   
-            } else
+            } else {
                 cloned = (level.get(size - 1) != symb);
+            }
         } else {
             cloned = false;
         }

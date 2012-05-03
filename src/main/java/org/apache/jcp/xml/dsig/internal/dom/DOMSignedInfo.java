@@ -160,8 +160,9 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             secVal = true;
         }
 
-        if (secVal && ((ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethod)
-                || ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(signatureMethod)))) {
+        String signatureMethodAlgorithm = signatureMethod.getAlgorithm();
+        if (secVal && ((ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5.equals(signatureMethodAlgorithm)
+                || ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5.equals(signatureMethodAlgorithm)))) {
             throw new MarshalException(
                 "It is forbidden to use algorithm " + signatureMethod + " when secure validation is enabled"
             );
@@ -291,5 +292,24 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
         return (canonicalizationMethod.equals(osi.getCanonicalizationMethod()) 
                 && signatureMethod.equals(osi.getSignatureMethod()) && 
                 references.equals(osi.getReferences()) && idEqual);
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (canonicalizationMethod != null) {
+            result = 31 * result + canonicalizationMethod.hashCode();
+        }
+        if (signatureMethod != null) {
+            result = 31 * result + signatureMethod.hashCode();
+        }
+        if (references != null) {
+            result = 31 * result + references.hashCode();
+        }
+        
+        return result;
     }
 }

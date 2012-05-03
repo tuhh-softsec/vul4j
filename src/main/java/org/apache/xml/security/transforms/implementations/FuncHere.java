@@ -106,16 +106,9 @@ public class FuncHere extends Function {
 
             switch (dtm.getNodeType(xpathOwnerNodeDTM)) {
 
-            case Node.ATTRIBUTE_NODE : {
-                // returns a node-set containing the attribute
-                hereNode = xpathOwnerNodeDTM;
-
-                nodeSet.addNode(hereNode);
-
-                break;
-            }
+            case Node.ATTRIBUTE_NODE :
             case Node.PROCESSING_INSTRUCTION_NODE : {
-                // returns a node-set containing the processing instruction node
+                // returns a node-set containing the attribute /  processing instruction node
                 hereNode = xpathOwnerNodeDTM;
 
                 nodeSet.addNode(hereNode);

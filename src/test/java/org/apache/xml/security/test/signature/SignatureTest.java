@@ -39,13 +39,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class SignatureTest extends org.junit.Assert {
-    public final static String DS_NS = "http://www.w3.org/2000/09/xmldsig#";
+    public static final String DS_NS = "http://www.w3.org/2000/09/xmldsig#";
 
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
-    public final static String KEYSTORE_DIRECTORY = BASEDIR + "/src/test/resources/";
-    public final static String KEYSTORE_PASSWORD_STRING = "changeit";
-    public final static char[] KEYSTORE_PASSWORD = KEYSTORE_PASSWORD_STRING.toCharArray();
+    public static final String KEYSTORE_DIRECTORY = BASEDIR + "/src/test/resources/";
+    public static final String KEYSTORE_PASSWORD_STRING = "changeit";
+    public static final char[] KEYSTORE_PASSWORD = KEYSTORE_PASSWORD_STRING.toCharArray();
 
     public SignatureTest() throws Exception {
         Init.init();

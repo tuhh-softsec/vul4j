@@ -626,8 +626,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                 input = "";
                 printStep("2D", output.toString(), input);
             } else if (input.equals("..")) {
-                if (!output.toString().equals("/"))
+                if (!output.toString().equals("/")) {
                     output.append("..");
+                }
                 input = "";
                 printStep("2D", output.toString(), input);
                 // 2E. move the first path segment (if any) in the input buffer

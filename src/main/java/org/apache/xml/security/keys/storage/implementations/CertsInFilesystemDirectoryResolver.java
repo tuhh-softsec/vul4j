@@ -103,12 +103,11 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
             boolean added = false;
             String dn = null;
 
+            FileInputStream fis = null;
             try {
-                FileInputStream fis = new FileInputStream(file);
+                fis = new FileInputStream(file);
                 X509Certificate cert =
                     (X509Certificate) cf.generateCertificate(fis);
-
-                fis.close();
 
                 //add to ArrayList
                 cert.checkValidity();
@@ -120,11 +119,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not add certificate from file " + filename, ex);
                 }
-            } catch (IOException ex) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Could not add certificate from file " + filename, ex);
-                }
-            } catch (CertificateNotYetValidException ex) {
+            }catch (CertificateNotYetValidException ex) {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not add certificate from file " + filename, ex);
                 }
@@ -136,6 +131,14 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                 if (log.isDebugEnabled()) {
                     log.debug("Could not add certificate from file " + filename, ex);
                 }
+            } finally {
+                try {
+                    fis.close();
+                } catch (IOException ex) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Could not add certificate from file " + filename, ex);
+                    }
+                } 
             }
 
             if (added && log.isDebugEnabled()) {

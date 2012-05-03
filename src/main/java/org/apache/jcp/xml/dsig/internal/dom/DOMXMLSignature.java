@@ -326,10 +326,8 @@ public final class DOMXMLSignature extends DOMStructure
             throw new NullPointerException("signContext cannot be null");
         }
         DOMSignContext context = (DOMSignContext)signContext;
-        if (context != null) {
-            marshal(context.getParent(), context.getNextSibling(),
-                    DOMUtils.getSignaturePrefix(context), context);
-        }
+        marshal(context.getParent(), context.getNextSibling(),
+                DOMUtils.getSignaturePrefix(context), context);
 
         // generate references and signature value
         List<Reference> allReferences = new ArrayList<Reference>();
@@ -428,6 +426,12 @@ public final class DOMXMLSignature extends DOMStructure
                 sv.equals(osig.getSignatureValue()) &&
                 si.equals(osig.getSignedInfo()) &&
                 objects.equals(osig.getObjects()));
+    }
+    
+    @Override
+    public int hashCode() {
+        assert false : "hashCode not designed";
+        return 42; // any arbitrary constant will do 
     }
 
     private void digestReference(DOMReference ref, XMLSignContext signContext)
@@ -570,6 +574,12 @@ public final class DOMXMLSignature extends DOMStructure
 
             //XXX compare signature values?
             return idEqual;
+        }
+        
+        @Override
+        public int hashCode() {
+            assert false : "hashCode not designed";
+            return 42; // any arbitrary constant will do 
         }
 
         public void marshal(Node parent, String dsPrefix,

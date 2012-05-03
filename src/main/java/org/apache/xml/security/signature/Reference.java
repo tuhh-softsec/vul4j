@@ -407,32 +407,15 @@ public class Reference extends SignatureElementProxy {
         try {
             Attr URIAttr = 
                 this.constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
-            String URI;
-            if (URIAttr == null) {
-                URI = null;
-            } else {
-                URI = URIAttr.getNodeValue();
-            }
 
             ResourceResolver resolver = 
                 ResourceResolver.getInstance(
                     URIAttr, this.baseURI, this.manifest.getPerManifestResolvers(), secureValidation
                 );
-
-            if (resolver == null) {
-                Object exArgs[] = { URI };
-
-                throw new ReferenceNotInitializedException(
-                    "signature.Verification.Reference.NoInput", exArgs
-                );
-            }
-
             resolver.addProperties(this.manifest.getResolverProperties());
 
             return resolver.resolve(URIAttr, this.baseURI);
         }  catch (ResourceResolverException ex) {
-            throw new ReferenceNotInitializedException("empty", ex);
-        } catch (XMLSecurityException ex) {
             throw new ReferenceNotInitializedException("empty", ex);
         }
     }

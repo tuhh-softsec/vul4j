@@ -161,4 +161,17 @@ public final class DOMSignatureProperties extends DOMStructure
 
         return (properties.equals(osp.getProperties()) && idsEqual);
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (properties != null) {
+            result = 31 * result + properties.hashCode();
+        }
+        
+        return result;
+    }
 }

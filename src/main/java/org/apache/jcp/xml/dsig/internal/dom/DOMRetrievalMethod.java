@@ -99,7 +99,7 @@ public final class DOMRetrievalMethod extends DOMStructure
             }
         }
         this.uri = uri;
-        if ((uri != null) && (!uri.equals(""))) {
+        if (!uri.equals("")) {
             try {
                 new URI(uri);
             } catch (URISyntaxException e) {
@@ -273,5 +273,21 @@ public final class DOMRetrievalMethod extends DOMStructure
 
         return (uri.equals(orm.getURI()) &&
             transforms.equals(orm.getTransforms()) && typesEqual);
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (type != null) {
+            result = 31 * result + type.hashCode();
+        }
+        if (uri != null) {
+            result = 31 * result + uri.hashCode();
+        }
+        if (transforms != null) {
+            result = 31 * result + transforms.hashCode();
+        }
+        
+        return result;
     }
 }

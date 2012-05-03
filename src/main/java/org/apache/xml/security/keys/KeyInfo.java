@@ -1071,10 +1071,9 @@ public class KeyInfo extends SignatureElementProxy {
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
                     // not using StorageResolvers at the moment
                     // since they cannot return private keys
-                    StorageResolver storage = null;
                     PrivateKey pk = 
                         keyResolver.engineLookupAndResolvePrivateKey(
-                            (Element) currentChild, uri, storage
+                            (Element) currentChild, uri, null
                         );
 
                     if (pk != null) {
@@ -1105,10 +1104,9 @@ public class KeyInfo extends SignatureElementProxy {
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
                     // not using StorageResolvers at the moment
                     // since they cannot return private keys
-                    StorageResolver storage = null;
                     PrivateKey pk = 
                         keyResolver.engineLookupAndResolvePrivateKey(
-                            (Element) currentChild, uri, storage
+                            (Element) currentChild, uri, null
                         );
 
                     if (pk != null) {

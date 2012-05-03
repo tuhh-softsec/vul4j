@@ -62,7 +62,7 @@ public class Santuario273Test extends org.junit.Assert {
         + "</Signature>\n"
         ;
     
-    public final static String expectedResult = "<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\" xml:base=\"http://www.acme.com/resources/subresources/\">\n"
+    public static final String expectedResult = "<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\" xml:base=\"http://www.acme.com/resources/subresources/\">\n"
         + "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/TR/2001/REC-xml-c14n-20010315\"></CanonicalizationMethod>\n"
         + "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>\n"
         + "    <Reference URI=\"http://www.w3.org/TR/xml-stylesheet\">\n"

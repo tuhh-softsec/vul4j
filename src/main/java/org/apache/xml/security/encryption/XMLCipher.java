@@ -894,7 +894,6 @@ public class XMLCipher {
             result = encryptElement(source.getDocumentElement());
             break;
         case UNWRAP_MODE:
-            break;
         case WRAP_MODE:
             break;
         default:
@@ -936,7 +935,6 @@ public class XMLCipher {
             result = encryptElement(element);
             break;
         case UNWRAP_MODE:
-            break;
         case WRAP_MODE:
             break;
         default:
@@ -990,7 +988,6 @@ public class XMLCipher {
             }
             break;
         case UNWRAP_MODE:
-            break;
         case WRAP_MODE:
             break;
         default:

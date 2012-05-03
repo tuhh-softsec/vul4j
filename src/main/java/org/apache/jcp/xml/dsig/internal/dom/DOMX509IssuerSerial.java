@@ -121,4 +121,17 @@ public final class DOMX509IssuerSerial extends DOMStructure
         return (issuerName.equals(ois.getIssuerName()) &&
                 serialNumber.equals(ois.getSerialNumber()));
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (issuerName != null) {
+            result = 31 * result + issuerName.hashCode();
+        }
+        if (serialNumber != null) {
+            result = 31 * result + serialNumber.hashCode();
+        }
+        
+        return result;
+    }
 }

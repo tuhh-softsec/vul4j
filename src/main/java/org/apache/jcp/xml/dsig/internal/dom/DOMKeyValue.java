@@ -159,6 +159,16 @@ public abstract class DOMKeyValue extends DOMStructure implements KeyValue {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (publicKey != null) {
+            result = 31 * result + publicKey.hashCode();
+        }
+        
+        return result;
+    }
+    
     static final class RSA extends DOMKeyValue {
         // RSAKeyValue CryptoBinaries
         private DOMCryptoBinary modulus, exponent;
@@ -287,7 +297,7 @@ public abstract class DOMKeyValue extends DOMStructure implements KeyValue {
             curElem = DOMUtils.getNextSiblingElement(curElem);
             if (curElem != null && curElem.getLocalName().equals("J")) {
                 j = new DOMCryptoBinary(curElem.getFirstChild());
-                curElem = DOMUtils.getNextSiblingElement(curElem);
+                // curElem = DOMUtils.getNextSiblingElement(curElem);
             }
             /*
             if (curElem != null) {

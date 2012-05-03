@@ -160,4 +160,17 @@ public final class DOMManifest extends DOMStructure implements Manifest {
 
         return (idsEqual && references.equals(oman.getReferences()));
     }
+    
+    @Override
+    public int hashCode() {
+        int result = 17;
+        if (id != null) {
+            result = 31 * result + id.hashCode();
+        }
+        if (references != null) {
+            result = 31 * result + references.hashCode();
+        }
+        
+        return result;
+    }
 }

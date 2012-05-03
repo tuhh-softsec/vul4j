@@ -86,7 +86,9 @@ public class DOMUtils {
      * @param value the attribute value. If null, no attribute is set. 
      */
     public static void setAttribute(Element elem, String name, String value) {
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         elem.setAttributeNS(null, name, value);
     }
 
@@ -101,7 +103,9 @@ public class DOMUtils {
      * @param value the attribute value. If null, no attribute is set. 
      */
     public static void setAttributeID(Element elem, String name, String value) {
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         elem.setAttributeNS(null, name, value);
         elem.setIdAttributeNS(null, name, true);
     }

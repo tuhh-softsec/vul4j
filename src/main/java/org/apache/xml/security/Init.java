@@ -65,7 +65,7 @@ public class Init {
      * Method isInitialized
      * @return true if the library is already initialized.     
      */
-    public synchronized static final boolean isInitialized() {
+    public static synchronized final boolean isInitialized() {
         return Init.alreadyInitialized;
     }
 
@@ -73,7 +73,7 @@ public class Init {
      * Method init
      *
      */
-    public synchronized static void init() {
+    public static synchronized void init() {
         if (alreadyInitialized) {
             return;
         }
@@ -179,7 +179,7 @@ public class Init {
                 return;
             }
             for (Node el = config.getFirstChild(); el != null; el = el.getNextSibling()) {
-                if (el == null || Node.ELEMENT_NODE != el.getNodeType()) {
+                if (Node.ELEMENT_NODE != el.getNodeType()) {
                     continue;
                 }
                 String tag = el.getLocalName();

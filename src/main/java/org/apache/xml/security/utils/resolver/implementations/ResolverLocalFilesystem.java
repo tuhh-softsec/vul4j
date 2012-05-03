@@ -33,13 +33,13 @@ import org.w3c.dom.Attr;
  * @author $Author$
  */
 public class ResolverLocalFilesystem extends ResourceResolverSpi {
+    
+    private static final int FILE_URI_LENGTH = "file:/".length();
 
     /** {@link org.apache.commons.logging} logging facility */
     private static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(ResolverLocalFilesystem.class);
     
-    private static int FILE_URI_LENGTH = "file:/".length();
-
     @Override
     public boolean engineIsThreadSafe() {
         return true;

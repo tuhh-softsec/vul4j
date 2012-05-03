@@ -138,8 +138,15 @@ public class DOMSubTreeData implements NodeSetData {
                         }
                     }
                     nodeSet.add(node);
-                case Node.DOCUMENT_NODE :
                     Node pSibling = null;
+                    for (Node child = node.getFirstChild(); child != null;
+                        child = child.getNextSibling()) {
+                        nodeSetMinusCommentNodes(child, nodeSet, pSibling);
+                        pSibling = child;
+                    }
+                    break;
+                case Node.DOCUMENT_NODE :
+                    pSibling = null;
                     for (Node child = node.getFirstChild(); child != null;
                         child = child.getNextSibling()) {
                         nodeSetMinusCommentNodes(child, nodeSet, pSibling);
@@ -155,6 +162,8 @@ public class DOMSubTreeData implements NodeSetData {
                          prevSibling.getNodeType() == Node.CDATA_SECTION_NODE)) {
                         return;
                     }
+                    nodeSet.add(node);
+                    break;
                 case Node.PROCESSING_INSTRUCTION_NODE :
                     nodeSet.add(node);
                     break;

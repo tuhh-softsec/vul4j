@@ -83,12 +83,11 @@ public class SingleKeyResolver extends KeyResolverSpi
             log.debug("Can I resolve " + element.getTagName() + "?");
         }
 
-        if (publicKey != null) {
-            if (XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
-                String name = element.getFirstChild().getNodeValue();
-                if (keyName.equals(name)) {
-                    return publicKey;
-                }
+        if (publicKey != null 
+            && XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
+            String name = element.getFirstChild().getNodeValue();
+            if (keyName.equals(name)) {
+                return publicKey;
             }
         }
 
@@ -127,12 +126,11 @@ public class SingleKeyResolver extends KeyResolverSpi
             log.debug("Can I resolve " + element.getTagName() + "?");
         }
 
-        if (secretKey != null) {
-            if (XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
-                String name = element.getFirstChild().getNodeValue();
-                if (keyName.equals(name)) {
-                    return secretKey;
-                }
+        if (secretKey != null
+            && XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
+            String name = element.getFirstChild().getNodeValue();
+            if (keyName.equals(name)) {
+                return secretKey;
             }
         }
 
@@ -156,12 +154,11 @@ public class SingleKeyResolver extends KeyResolverSpi
             log.debug("Can I resolve " + element.getTagName() + "?");
         }
 
-        if (privateKey != null) {
-            if (XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
-                String name = element.getFirstChild().getNodeValue();
-                if (keyName.equals(name)) {
-                    return privateKey;
-                }
+        if (privateKey != null
+            && XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME)) {
+            String name = element.getFirstChild().getNodeValue();
+            if (keyName.equals(name)) {
+                return privateKey;
             }
         }
 

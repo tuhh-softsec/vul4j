@@ -43,7 +43,7 @@ import org.w3c.dom.Node;
 public abstract class DOMDigestMethod extends DOMStructure 
     implements DigestMethod {
 
-    final static String SHA384 =
+    static final String SHA384 =
         "http://www.w3.org/2001/04/xmldsig-more#sha384"; // see RFC 4051
     private DigestMethodParameterSpec params;
 

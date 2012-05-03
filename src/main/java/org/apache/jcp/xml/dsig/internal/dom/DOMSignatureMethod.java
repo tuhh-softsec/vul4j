@@ -46,24 +46,24 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
     private static org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(DOMSignatureMethod.class);
 
-    // see RFC 4051 for these algorithm definitions
-    final static String RSA_SHA256 =
-        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
-    final static String RSA_SHA384 =
-        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
-    final static String RSA_SHA512 =
-        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
-    final static String ECDSA_SHA1 =
-        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1";
-    final static String ECDSA_SHA256 =
-        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
-    final static String ECDSA_SHA384 =
-        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384";
-    final static String ECDSA_SHA512 =
-        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
-
     private SignatureMethodParameterSpec params;
     private Signature signature;
+    
+    // see RFC 4051 for these algorithm definitions
+    static final String RSA_SHA256 =
+        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
+    static final String RSA_SHA384 =
+        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
+    static final String RSA_SHA512 =
+        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
+    static final String ECDSA_SHA1 =
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1";
+    static final String ECDSA_SHA256 =
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
+    static final String ECDSA_SHA384 =
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384";
+    static final String ECDSA_SHA512 =
+        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
 
     /**
      * Creates a <code>DOMSignatureMethod</code>.

@@ -165,8 +165,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
             String type = rm.getType();		   
             XMLSignatureInput resource = resolveInput(rm, BaseURI, secureValidation);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
-                X509Certificate cert = getRawCertificate(resource);
-                return cert;
+                return getRawCertificate(resource);
             }
             
             Element e = obtainReferenceElement(resource);
@@ -306,17 +305,14 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         // Apply the transforms
         Transforms transforms = rm.getTransforms();
         ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI, secureValidation);
-        if (resRes != null) {
-            XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
-            if (transforms != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("We have Transforms");
-                }
-                resource = transforms.performTransforms(resource);
-            }		  
-            return resource;
-        }
-        return null;
+        XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
+        if (transforms != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("We have Transforms");
+            }
+            resource = transforms.performTransforms(resource);
+        }		  
+        return resource;
     }
    
     /**

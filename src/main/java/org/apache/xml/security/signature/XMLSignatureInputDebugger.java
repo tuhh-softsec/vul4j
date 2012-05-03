@@ -182,9 +182,6 @@ public class XMLSignatureInputDebugger {
         int currentNodeType = currentNode.getNodeType();
         switch (currentNodeType) {
 
-        case Node.DOCUMENT_TYPE_NODE:
-        default:
-            break;
 
         case Node.ENTITY_NODE:
         case Node.NOTATION_NODE:
@@ -355,6 +352,10 @@ public class XMLSignatureInputDebugger {
             this.writer.write("&gt;");
 
             this.writer.write(HTMLIncludeOrExcludeSuffix);
+            break;
+            
+        case Node.DOCUMENT_TYPE_NODE:
+        default:
             break;
         }
     }
