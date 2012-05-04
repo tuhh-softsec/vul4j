@@ -20,8 +20,6 @@ package org.apache.xml.security.algorithms;
 
 import java.security.MessageDigest;
 import java.security.NoSuchProviderException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.utils.Constants;
@@ -58,14 +56,6 @@ public class MessageDigestAlgorithm extends Algorithm {
     /** Field algorithm stores the actual {@link java.security.MessageDigest} */
     private final MessageDigest algorithm;
     
-    private static ThreadLocal<Map<String, MessageDigest>> instances = 
-        new ThreadLocal<Map<String, MessageDigest>>() {
-        
-        protected Map<String, MessageDigest> initialValue() {
-            return new HashMap<String, MessageDigest>();
-        };
-    };
-
     /**
      * Constructor for the brave who pass their own message digest algorithms and the 
      * corresponding URI.
@@ -94,11 +84,6 @@ public class MessageDigestAlgorithm extends Algorithm {
     }
 
     private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
-        Map<String, MessageDigest> digestMap = instances.get();
-        MessageDigest result = digestMap.get(algorithmURI);
-        if (result != null) {
-            return result;
-        }
         String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
         if (algorithmID == null) {
@@ -123,7 +108,6 @@ public class MessageDigestAlgorithm extends Algorithm {
 
             throw new XMLSignatureException("algorithms.NoSuchAlgorithm", exArgs);
         }
-        digestMap.put(algorithmURI, md);
         
         return md;
     }

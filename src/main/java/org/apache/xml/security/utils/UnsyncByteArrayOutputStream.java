@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.utils;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -77,12 +78,18 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
 
     public void reset() {
         pos = 0;
+        bufCache.remove();
+    }
+    
+    @Override
+    public void close() throws IOException {
+        bufCache.remove();
     }
 
     private void expandSize(int newPos) {
         int newSize = size;
         while (newPos > newSize) {
-            newSize = newSize<<2;
+            newSize = newSize << 2;
         }
         byte newBuf[] = new byte[newSize];
         System.arraycopy(buf, 0, newBuf, 0, pos);

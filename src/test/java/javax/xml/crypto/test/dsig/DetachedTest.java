@@ -172,7 +172,7 @@ public class DetachedTest extends org.junit.Assert {
             signature = fac.unmarshalXMLSignature(vc);
             coreValidity = signature.validate(vc);
             assertTrue("Core validity of unmarshalled XMLSignature is false", coreValidity);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             fail("Exception: " + ex);
         }
     }

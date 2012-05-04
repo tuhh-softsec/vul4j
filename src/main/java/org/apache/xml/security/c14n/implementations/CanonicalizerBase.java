@@ -94,13 +94,13 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
     private List<NodeFilter> nodeFilter;
 
     private boolean includeComments;  
-    private Set<Node> xpathNodeSet = null;
+    private Set<Node> xpathNodeSet;
     /**
      * The node to be skipped/excluded from the DOM tree 
      * in subtree canonicalizations.
      */
-    private Node excludeNode =null;
-    private OutputStream writer = new UnsyncByteArrayOutputStream();
+    private Node excludeNode;
+    private OutputStream writer = new ByteArrayOutputStream();
 
     /**
      * Constructor CanonicalizerBase
@@ -184,9 +184,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
      * Canonicalizes a Subtree node.
      * 
      * @param rootNode
-     *            the root of the subtree to canicalize
+     *            the root of the subtree to canonicalize
      * @param excludeNode
-     *            a node to be excluded from the canicalize operation
+     *            a node to be excluded from the canonicalize operation
      * @return The canonicalize stream.
      * @throws CanonicalizationException
      */
@@ -202,19 +202,25 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
                 nodeLevel = NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
             }         
             this.canonicalizeSubTree(rootNode, ns, rootNode, nodeLevel);
-            this.writer.close();
+            this.writer.flush();
             if (this.writer instanceof ByteArrayOutputStream) {
                 byte[] result = ((ByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((ByteArrayOutputStream)this.writer).reset();        
+                } else {
+                    this.writer.close();
                 }
                 return result;
             } else if (this.writer instanceof UnsyncByteArrayOutputStream) {
                 byte[] result = ((UnsyncByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((UnsyncByteArrayOutputStream)this.writer).reset();        
+                } else {
+                    this.writer.close();
                 }
                 return result;
+            } else {
+                this.writer.close();
             }
             return null;
 
@@ -346,19 +352,25 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         throws CanonicalizationException {   
         try { 
             this.canonicalizeXPathNodeSet(doc, doc);
-            this.writer.close();
+            this.writer.flush();
             if (this.writer instanceof ByteArrayOutputStream) {
                 byte[] sol = ((ByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((ByteArrayOutputStream)this.writer).reset();
+                } else {
+                    this.writer.close();
                 }
                 return sol;
             } else if (this.writer instanceof UnsyncByteArrayOutputStream) {
                 byte[] result = ((UnsyncByteArrayOutputStream)this.writer).toByteArray();
                 if (reset) {
                     ((UnsyncByteArrayOutputStream)this.writer).reset();        
+                } else {
+                    this.writer.close();
                 }
                 return result;
+            } else {
+                this.writer.close();
             }
             return null;
         } catch (UnsupportedEncodingException ex) {

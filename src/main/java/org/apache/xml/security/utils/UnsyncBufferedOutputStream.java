@@ -93,7 +93,8 @@ public class UnsyncBufferedOutputStream extends OutputStream {
 
     /** @inheritDoc */
     public void close() throws IOException {
-        flush();				
+        flush();
+        bufCache.remove();
     }
 
 }

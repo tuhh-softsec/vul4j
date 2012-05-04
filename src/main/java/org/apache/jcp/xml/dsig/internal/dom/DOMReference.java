@@ -446,22 +446,19 @@ public final class DOMReference extends DOMStructure
         } else {
             dos = new DigesterOutputStream(md);
         }
-        OutputStream os = new UnsyncBufferedOutputStream(dos);
+        OutputStream os = null;
         Data data = dereferencedData;
-        for (int i = 0, size = transforms.size(); i < size; i++) {
-            DOMTransform transform = (DOMTransform)transforms.get(i);
-            try {
+        try {
+            os = new UnsyncBufferedOutputStream(dos);
+            for (int i = 0, size = transforms.size(); i < size; i++) {
+                DOMTransform transform = (DOMTransform)transforms.get(i);
                 if (i < size - 1) {
                     data = transform.transform(data, context);
                 } else {
                     data = transform.transform(data, context, os);
                 }
-            } catch (TransformException te) {
-                throw new XMLSignatureException(te);
             }
-        }
         
-        try {
             if (data != null) {
                 XMLSignatureInput xi;
                 // explicitly use C14N 1.1 when generating signature
@@ -550,6 +547,21 @@ public final class DOMReference extends DOMStructure
             throw new XMLSignatureException(e);
         } catch (org.apache.xml.security.c14n.CanonicalizationException e) {
             throw new XMLSignatureException(e);
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    throw new XMLSignatureException(e);
+                } 
+            }
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (IOException e) {
+                    throw new XMLSignatureException(e);
+                } 
+            }
         }
     }
 

@@ -25,6 +25,7 @@
 package org.apache.jcp.xml.dsig.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
@@ -110,6 +111,13 @@ public class DigesterOutputStream extends OutputStream {
             return new ByteArrayInputStream(bos.toByteArray());
         } else {
             return null;
+        }
+    }
+    
+    @Override
+    public void close() throws IOException {
+        if (buffer) {
+            bos.close();
         }
     }
 }
