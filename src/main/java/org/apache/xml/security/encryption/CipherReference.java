@@ -68,7 +68,7 @@ public interface CipherReference {
      * with the XMLSignature ResourceResolvers
      * @return the URI as an Attribute node
      */
-    public Attr getURIAsAttr();
+    Attr getURIAsAttr();
 
     /**
      * Returns the <code>Transforms</code> that specifies how to transform the

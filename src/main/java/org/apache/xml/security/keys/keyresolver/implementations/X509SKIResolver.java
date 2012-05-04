@@ -44,17 +44,17 @@ public class X509SKIResolver extends KeyResolverSpi {
      * Method engineResolvePublicKey
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return null if no {@link PublicKey} could be obtained
      * @throws KeyResolverException
      */
     public PublicKey engineLookupAndResolvePublicKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
 
         X509Certificate cert = 
-            this.engineLookupResolveX509Certificate(element, BaseURI, storage);
+            this.engineLookupResolveX509Certificate(element, baseURI, storage);
 
         if (cert != null) {
             return cert.getPublicKey();
@@ -67,13 +67,13 @@ public class X509SKIResolver extends KeyResolverSpi {
      * Method engineResolveX509Certificate
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      *
      * @throws KeyResolverException
      */
     public X509Certificate engineLookupResolveX509Certificate(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug("Can I resolve " + element.getTagName() + "?");
@@ -112,7 +112,7 @@ public class X509SKIResolver extends KeyResolverSpi {
             x509childObject = new XMLX509SKI[x509childNodes.length];
 
             for (int i = 0; i < x509childNodes.length; i++) {
-                x509childObject[i] = new XMLX509SKI(x509childNodes[i], BaseURI);
+                x509childObject[i] = new XMLX509SKI(x509childNodes[i], baseURI);
             }
 
             Iterator<Certificate> storageIterator = storage.getIterator();
@@ -141,12 +141,12 @@ public class X509SKIResolver extends KeyResolverSpi {
      * Method engineResolveSecretKey
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      *
      */
     public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) {
         return null;
     }

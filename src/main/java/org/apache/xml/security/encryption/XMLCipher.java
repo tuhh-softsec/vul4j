@@ -284,7 +284,7 @@ public class XMLCipher {
     private XMLCipher(
         String transformation, 
         String provider, 
-        String canon,
+        String canonAlg,
         String digestMethod
     ) throws XMLEncryptionException {
         if (log.isDebugEnabled()) {
@@ -300,13 +300,13 @@ public class XMLCipher {
         // Create a canonicalizer - used when serializing DOM to octets
         // prior to encryption (and for the reverse)
 
-        if (canon == null) {
-        	// The default is to preserve the physical representation.
-            canon = Canonicalizer.ALGO_ID_C14N_PHYSICAL;
-        }
-
         try {
-            this.canon = Canonicalizer.getInstance(canon);
+            if (canonAlg == null) {
+                // The default is to preserve the physical representation.
+                this.canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_PHYSICAL);
+            } else {
+                this.canon = Canonicalizer.getInstance(canonAlg);
+            }
         } catch (InvalidCanonicalizerException ice) {
             throw new XMLEncryptionException("empty", ice);
         }
@@ -1677,8 +1677,8 @@ public class XMLCipher {
             if (ki != null) {
                 try {
                     // Add an EncryptedKey resolver
-                    String algorithm = encryptedData.getEncryptionMethod().getAlgorithm();
-                    EncryptedKeyResolver resolver = new EncryptedKeyResolver(algorithm, kek);
+                    String encMethodAlgorithm = encryptedData.getEncryptionMethod().getAlgorithm();
+                    EncryptedKeyResolver resolver = new EncryptedKeyResolver(encMethodAlgorithm, kek);
                     if (internalKeyResolvers != null) {
 	                int size = internalKeyResolvers.size();
 	                for (int i = 0; i < size; i++) {
@@ -2135,9 +2135,9 @@ public class XMLCipher {
          */
         CipherReference newCipherReference(Element element) throws XMLEncryptionException {
 
-            Attr URIAttr = 
+            Attr uriAttr = 
                 element.getAttributeNodeNS(null, EncryptionConstants._ATT_URI);
-            CipherReference result = new CipherReferenceImpl(URIAttr);
+            CipherReference result = new CipherReferenceImpl(uriAttr);
 
             // Find any Transforms
             NodeList transformsElements = 
@@ -2328,8 +2328,8 @@ public class XMLCipher {
          * @return a new EncryptionMethod
          */
         EncryptionMethod newEncryptionMethod(Element element) {
-            String algorithm = element.getAttributeNS(null, EncryptionConstants._ATT_ALGORITHM);
-            EncryptionMethod result = newEncryptionMethod(algorithm);
+            String encAlgorithm = element.getAttributeNS(null, EncryptionConstants._ATT_ALGORITHM);
+            EncryptionMethod result = newEncryptionMethod(encAlgorithm);
 
             Element keySizeElement =
                 (Element) element.getElementsByTagNameNS(

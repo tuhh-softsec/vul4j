@@ -40,7 +40,7 @@ public interface XPathAPI {
      *
      * @throws TransformerException
      */
-    public NodeList selectNodeList(
+    NodeList selectNodeList(
         Node contextNode, Node xpathnode, String str, Node namespaceNode
     ) throws TransformerException;
     
@@ -51,12 +51,12 @@ public interface XPathAPI {
      *  @param str The XPath expression
      *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
      */
-    public boolean evaluate(Node contextNode, Node xpathnode, String str, Node namespaceNode)
+    boolean evaluate(Node contextNode, Node xpathnode, String str, Node namespaceNode)
         throws TransformerException;
     
     /**
      * Clear any context information from this object
      */
-    public void clear();
+    void clear();
 
 }

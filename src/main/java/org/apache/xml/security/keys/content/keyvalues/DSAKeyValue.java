@@ -41,11 +41,11 @@ public class DSAKeyValue extends SignatureElementProxy implements KeyValueConten
      * Constructor DSAKeyValue
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @throws XMLSecurityException
      */
-    public DSAKeyValue(Element element, String BaseURI) throws XMLSecurityException {
-        super(element, BaseURI);
+    public DSAKeyValue(Element element, String baseURI) throws XMLSecurityException {
+        super(element, baseURI);
     }
 
     /**

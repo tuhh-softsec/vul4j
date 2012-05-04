@@ -29,8 +29,8 @@ public interface ElementChecker {
      *
      * @throws XMLSecurityException
      */
-    public void guaranteeThatElementInCorrectSpace(ElementProxy expected, Element actual)
+    void guaranteeThatElementInCorrectSpace(ElementProxy expected, Element actual)
         throws XMLSecurityException;
 
-    public boolean isNamespaceElement(Node el, String type, String ns);
+    boolean isNamespaceElement(Node el, String type, String ns);
 }

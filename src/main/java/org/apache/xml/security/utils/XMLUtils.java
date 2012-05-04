@@ -97,10 +97,11 @@ public class XMLUtils {
     }
     
     public static Element getNextElement(Node el) {
-        while ((el != null) && (el.getNodeType() != Node.ELEMENT_NODE)) {
-            el = el.getNextSibling();
+        Node node = el;
+        while ((node != null) && (node.getNodeType() != Node.ELEMENT_NODE)) {
+            node = node.getNextSibling();
         }
-        return (Element)el;
+        return (Element)node;
     }
 
     /**
@@ -197,12 +198,10 @@ public class XMLUtils {
             if (log.isDebugEnabled()) {
                 log.debug(ex);
             }
-            ex.printStackTrace();
         } catch (CanonicalizationException ex) {
             if (log.isDebugEnabled()) {
                 log.debug(ex);
             }
-            ex.printStackTrace();
         }
     }
 

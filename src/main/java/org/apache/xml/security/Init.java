@@ -200,16 +200,16 @@ public class Init {
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "CanonicalizationMethod");               
 
                     for (int i = 0; i < list.length; i++) {
-                        String URI = list[i].getAttributeNS(null, "URI");
-                        String JAVACLASS =
+                        String uri = list[i].getAttributeNS(null, "URI");
+                        String javaClass =
                             list[i].getAttributeNS(null, "JAVACLASS");
                         try {
-                            Canonicalizer.register(URI, JAVACLASS);
+                            Canonicalizer.register(uri, javaClass);
                             if (log.isDebugEnabled()) {
-                                log.debug("Canonicalizer.register(" + URI + ", " + JAVACLASS + ")");
+                                log.debug("Canonicalizer.register(" + uri + ", " + javaClass + ")");
                             }
                         } catch (ClassNotFoundException e) {
-                            Object exArgs[] = { URI, JAVACLASS };
+                            Object exArgs[] = { uri, javaClass };
                             log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         }
                     }
@@ -220,16 +220,16 @@ public class Init {
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "TransformAlgorithm");
 
                     for (int i = 0; i < tranElem.length; i++) {
-                        String URI = tranElem[i].getAttributeNS(null, "URI");
-                        String JAVACLASS =
+                        String uri = tranElem[i].getAttributeNS(null, "URI");
+                        String javaClass =
                             tranElem[i].getAttributeNS(null, "JAVACLASS");
                         try {
-                            Transform.register(URI, JAVACLASS);
+                            Transform.register(uri, javaClass);
                             if (log.isDebugEnabled()) {
-                                log.debug("Transform.register(" + URI + ", " + JAVACLASS + ")");
+                                log.debug("Transform.register(" + uri + ", " + javaClass + ")");
                             }
                         } catch (ClassNotFoundException e) {
-                            Object exArgs[] = { URI, JAVACLASS };
+                            Object exArgs[] = { uri, javaClass };
 
                             log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         } catch (NoClassDefFoundError ex) {
@@ -256,20 +256,20 @@ public class Init {
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "SignatureAlgorithm");
 
                     for (int i = 0; i < sigElems.length; i++) {
-                        String URI = sigElems[i].getAttributeNS(null, "URI");
-                        String JAVACLASS =
+                        String uri = sigElems[i].getAttributeNS(null, "URI");
+                        String javaClass =
                             sigElems[i].getAttributeNS(null, "JAVACLASS");
 
                         /** $todo$ handle registering */
 
                         try {
-                            SignatureAlgorithm.register(URI, JAVACLASS);
+                            SignatureAlgorithm.register(uri, javaClass);
                             if (log.isDebugEnabled()) {
-                                log.debug("SignatureAlgorithm.register(" + URI + ", "
-                                          + JAVACLASS + ")");
+                                log.debug("SignatureAlgorithm.register(" + uri + ", "
+                                          + javaClass + ")");
                             }
                         } catch (ClassNotFoundException e) {
-                            Object exArgs[] = { URI, JAVACLASS };
+                            Object exArgs[] = { uri, javaClass };
 
                             log.error(I18n.translate("algorithm.classDoesNotExist", exArgs));
                         }
@@ -281,27 +281,27 @@ public class Init {
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "Resolver");
 
                     for (int i = 0; i < resolverElem.length; i++) {
-                        String JAVACLASS =
+                        String javaClass =
                             resolverElem[i].getAttributeNS(null, "JAVACLASS");
-                        String Description =
+                        String description =
                             resolverElem[i].getAttributeNS(null, "DESCRIPTION");
 
-                        if ((Description != null) && (Description.length() > 0)) {
+                        if ((description != null) && (description.length() > 0)) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Register Resolver: " + JAVACLASS + ": "
-                                          + Description);
+                                log.debug("Register Resolver: " + javaClass + ": "
+                                          + description);
                             }
                         } else {
                             if (log.isDebugEnabled()) {
-                                log.debug("Register Resolver: " + JAVACLASS
+                                log.debug("Register Resolver: " + javaClass
                                           + ": For unknown purposes");
                             }
                         }
                         try {
-                            ResourceResolver.register(JAVACLASS);
+                            ResourceResolver.register(javaClass);
                         } catch (Throwable e) {
                             log.warn(
-                                 "Cannot register:" + JAVACLASS 
+                                 "Cannot register:" + javaClass 
                                  + " perhaps some needed jars are not installed", 
                                  e
                              );
@@ -314,23 +314,23 @@ public class Init {
                         XMLUtils.selectNodes(el.getFirstChild(), CONF_NS, "Resolver");
                     List<String> classNames = new ArrayList<String>(resolverElem.length);
                     for (int i = 0; i < resolverElem.length; i++) {
-                        String JAVACLASS =
+                        String javaClass =
                             resolverElem[i].getAttributeNS(null, "JAVACLASS");
-                        String Description =
+                        String description =
                             resolverElem[i].getAttributeNS(null, "DESCRIPTION");
 
-                        if ((Description != null) && (Description.length() > 0)) {
+                        if ((description != null) && (description.length() > 0)) {
                             if (log.isDebugEnabled()) {
-                                log.debug("Register Resolver: " + JAVACLASS + ": "
-                                          + Description);
+                                log.debug("Register Resolver: " + javaClass + ": "
+                                          + description);
                             }
                         } else {
                             if (log.isDebugEnabled()) {
-                                log.debug("Register Resolver: " + JAVACLASS
+                                log.debug("Register Resolver: " + javaClass
                                           + ": For unknown purposes");
                             }
                         }
-                        classNames.add(JAVACLASS);
+                        classNames.add(javaClass);
                     }
                     KeyResolver.registerClassNames(classNames);
                 }

@@ -75,11 +75,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * Method engineResolvePublicKey
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      */
     public PublicKey engineLookupAndResolvePublicKey(
-           Element element, String BaseURI, StorageResolver storage
+           Element element, String baseURI, StorageResolver storage
     ) {
         if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_RETRIEVALMETHOD)) {      
             return null;
@@ -87,9 +87,9 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
 
         try {
             // Create a retrieval method over the given element
-            RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
+            RetrievalMethod rm = new RetrievalMethod(element, baseURI);
             String type = rm.getType();		   
-            XMLSignatureInput resource = resolveInput(rm, BaseURI, secureValidation);
+            XMLSignatureInput resource = resolveInput(rm, baseURI, secureValidation);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 // a raw certificate, direct parsing is done!
                 X509Certificate cert = getRawCertificate(resource);
@@ -111,8 +111,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                      }
                      return null;
                  }
-                 RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
-                 XMLSignatureInput resource2 = resolveInput(rm2, BaseURI, secureValidation);
+                 RetrievalMethod rm2 = new RetrievalMethod(e, baseURI);
+                 XMLSignatureInput resource2 = resolveInput(rm2, baseURI, secureValidation);
                  Element e2 = obtainReferenceElement(resource2);
                  if (e2 == element) {
                      if (log.isDebugEnabled()) {
@@ -122,7 +122,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                  }
              }
             
-             return resolveKey(e, BaseURI, storage);
+             return resolveKey(e, baseURI, storage);
          } catch (XMLSecurityException ex) {
              if (log.isDebugEnabled()) {
                  log.debug("XMLSecurityException", ex);
@@ -151,19 +151,19 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * Method engineResolveX509Certificate
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      */
     public X509Certificate engineLookupResolveX509Certificate(
-        Element element, String BaseURI, StorageResolver storage) {
+        Element element, String baseURI, StorageResolver storage) {
         if (!XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_RETRIEVALMETHOD)) {      
              return null;
         }
 
         try {
-            RetrievalMethod rm = new RetrievalMethod(element, BaseURI);
+            RetrievalMethod rm = new RetrievalMethod(element, baseURI);
             String type = rm.getType();		   
-            XMLSignatureInput resource = resolveInput(rm, BaseURI, secureValidation);
+            XMLSignatureInput resource = resolveInput(rm, baseURI, secureValidation);
             if (RetrievalMethod.TYPE_RAWX509.equals(type)) {
                 return getRawCertificate(resource);
             }
@@ -181,8 +181,8 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                     }
                     return null;
                 }
-                RetrievalMethod rm2 = new RetrievalMethod(e, BaseURI);
-                XMLSignatureInput resource2 = resolveInput(rm2, BaseURI, secureValidation);
+                RetrievalMethod rm2 = new RetrievalMethod(e, baseURI);
+                XMLSignatureInput resource2 = resolveInput(rm2, baseURI, secureValidation);
                 Element e2 = obtainReferenceElement(resource2);
                 if (e2 == element) {
                     if (log.isDebugEnabled()) {
@@ -192,7 +192,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
                 }
             }
             
-            return resolveCertificate(e, BaseURI, storage);
+            return resolveCertificate(e, baseURI, storage);
         } catch (XMLSecurityException ex) {
             if (log.isDebugEnabled()) {
                 log.debug("XMLSecurityException", ex);
@@ -220,13 +220,13 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     /**
      * Retrieves a x509Certificate from the given information
      * @param e
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return
      * @throws KeyResolverException 
      */
     private static X509Certificate resolveCertificate(
-        Element e, String BaseURI, StorageResolver storage
+        Element e, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug("Now we have a {" + e.getNamespaceURI() + "}"
@@ -234,7 +234,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         }
         // An element has been provided
         if (e != null) { 
-            return KeyResolver.getX509Certificate(e, BaseURI, storage);
+            return KeyResolver.getX509Certificate(e, baseURI, storage);
         }
         return null;
     } 
@@ -242,13 +242,13 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
     /**
      * Retrieves a PublicKey from the given information
      * @param e
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return
      * @throws KeyResolverException 
      */
     private static PublicKey resolveKey(
-        Element e, String BaseURI, StorageResolver storage
+        Element e, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         if (log.isDebugEnabled()) {
             log.debug("Now we have a {" + e.getNamespaceURI() + "}"
@@ -256,7 +256,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         }
         // An element has been provided
         if (e != null) { 
-            return KeyResolver.getPublicKey(e, BaseURI, storage);
+            return KeyResolver.getPublicKey(e, baseURI, storage);
         }
         return null;
     }
@@ -299,13 +299,13 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * @throws XMLSecurityException 
      */
     private static XMLSignatureInput resolveInput(
-        RetrievalMethod rm, String BaseURI, boolean secureValidation
+        RetrievalMethod rm, String baseURI, boolean secureValidation
     ) throws XMLSecurityException {
         Attr uri = rm.getURIAttr();
         // Apply the transforms
         Transforms transforms = rm.getTransforms();
-        ResourceResolver resRes = ResourceResolver.getInstance(uri, BaseURI, secureValidation);
-        XMLSignatureInput resource = resRes.resolve(uri, BaseURI);
+        ResourceResolver resRes = ResourceResolver.getInstance(uri, baseURI, secureValidation);
+        XMLSignatureInput resource = resRes.resolve(uri, baseURI);
         if (transforms != null) {
             if (log.isDebugEnabled()) {
                 log.debug("We have Transforms");
@@ -343,11 +343,11 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
      * Method engineResolveSecretKey
      * @inheritDoc
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      */
     public javax.crypto.SecretKey engineLookupAndResolveSecretKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) {
         return null;
     }

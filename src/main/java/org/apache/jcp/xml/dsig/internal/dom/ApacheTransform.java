@@ -72,6 +72,9 @@ public abstract class ApacheTransform extends TransformService {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
         }
+        if (parent == null || !(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
+            throw new ClassCastException("parent must be of type DOMStructure");
+        }
         transformElem = (Element) 
             ((javax.xml.crypto.dom.DOMStructure) parent).getNode();
         ownerDoc = DOMUtils.getOwnerDocument(transformElem);
@@ -83,6 +86,9 @@ public abstract class ApacheTransform extends TransformService {
         if (context != null && !(context instanceof DOMCryptoContext)) {
             throw new ClassCastException
                 ("context must be of type DOMCryptoContext");
+        }
+        if (parent == null || !(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
+            throw new ClassCastException("parent must be of type DOMStructure");
         }
         transformElem = (Element) 
             ((javax.xml.crypto.dom.DOMStructure) parent).getNode();

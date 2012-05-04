@@ -84,7 +84,7 @@ public interface XMLSignature extends XMLStructure {
      * The XML Namespace URI of the W3C Recommendation for XML-Signature
      * Syntax and Processing.
      */
-    static final String XMLNS = "http://www.w3.org/2000/09/xmldsig#";
+    String XMLNS = "http://www.w3.org/2000/09/xmldsig#";
 
     /**
      * Validates the signature according to the 

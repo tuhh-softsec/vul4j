@@ -41,10 +41,10 @@ package org.apache.xml.security.encryption;
 public interface CipherData {
     
     /** VALUE_TYPE ASN */
-    public static final int VALUE_TYPE = 0x00000001;
+    int VALUE_TYPE = 0x00000001;
     
     /** REFERENCE_TYPE ASN */
-    public static final int REFERENCE_TYPE = 0x00000002;
+    int REFERENCE_TYPE = 0x00000002;
 
     /**
      * Returns the type of encrypted data contained in the

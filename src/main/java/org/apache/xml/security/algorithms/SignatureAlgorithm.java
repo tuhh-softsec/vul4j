@@ -79,11 +79,11 @@ public class SignatureAlgorithm extends Algorithm {
      *
      * @param doc
      * @param algorithmURI
-     * @param HMACOutputLength
+     * @param hmacOutputLength
      * @throws XMLSecurityException
      */
     public SignatureAlgorithm(
-        Document doc, String algorithmURI, int HMACOutputLength
+        Document doc, String algorithmURI, int hmacOutputLength
     ) throws XMLSecurityException {
         super(doc, algorithmURI);
         this.algorithmURI = algorithmURI;
@@ -91,7 +91,7 @@ public class SignatureAlgorithm extends Algorithm {
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);
         signatureAlgorithm.engineGetContextFromElement(this.constructionElement);
         
-        signatureAlgorithm.engineSetHMACOutputLength(HMACOutputLength);
+        signatureAlgorithm.engineSetHMACOutputLength(hmacOutputLength);
         ((IntegrityHmac)signatureAlgorithm).engineAddContextToElement(constructionElement);
     }
 
@@ -99,25 +99,25 @@ public class SignatureAlgorithm extends Algorithm {
      * Constructor SignatureAlgorithm
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @throws XMLSecurityException
      */
-    public SignatureAlgorithm(Element element, String BaseURI) throws XMLSecurityException {
-        this(element, BaseURI, false);
+    public SignatureAlgorithm(Element element, String baseURI) throws XMLSecurityException {
+        this(element, baseURI, false);
     }
     
     /**
      * Constructor SignatureAlgorithm
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param secureValidation
      * @throws XMLSecurityException
      */
     public SignatureAlgorithm(
-        Element element, String BaseURI, boolean secureValidation
+        Element element, String baseURI, boolean secureValidation
     ) throws XMLSecurityException {
-        super(element, BaseURI);      
+        super(element, baseURI);      
         algorithmURI = this.getURI();
         
         Attr attr = element.getAttributeNodeNS(null, "Id");

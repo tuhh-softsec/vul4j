@@ -55,11 +55,11 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
      * Constructor X509Data
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @throws XMLSecurityException
      */
-    public X509Data(Element element, String BaseURI) throws XMLSecurityException {
-        super(element, BaseURI);
+    public X509Data(Element element, String baseURI) throws XMLSecurityException {
+        super(element, baseURI);
         
         Node sibling = this.constructionElement.getFirstChild();
         while (sibling != null) {

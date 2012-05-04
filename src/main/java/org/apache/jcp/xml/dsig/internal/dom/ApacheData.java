@@ -37,5 +37,5 @@ public interface ApacheData extends Data {
     /**
      * Returns the XMLSignatureInput.
      */
-    public XMLSignatureInput getXMLSignatureInput();
+    XMLSignatureInput getXMLSignatureInput();
 }

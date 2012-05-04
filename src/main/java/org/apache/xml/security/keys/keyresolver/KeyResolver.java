@@ -76,14 +76,14 @@ public class KeyResolver {
      * Method getX509Certificate
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return The certificate represented by the element.
      * 
      * @throws KeyResolverException
      */
     public static final X509Certificate getX509Certificate(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         for (KeyResolver resolver : resolverVector) {
             if (resolver == null) {
@@ -99,7 +99,7 @@ public class KeyResolver {
                 log.debug("check resolvability by class " + resolver.getClass());
             }
 
-            X509Certificate cert = resolver.resolveX509Certificate(element, BaseURI, storage);
+            X509Certificate cert = resolver.resolveX509Certificate(element, baseURI, storage);
             if (cert != null) {
                 return cert;
             }
@@ -117,14 +117,14 @@ public class KeyResolver {
      * Method getPublicKey
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return the public key contained in the element
      * 
      * @throws KeyResolverException
      */
     public static final PublicKey getPublicKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         for (KeyResolver resolver : resolverVector) {
             if (resolver == null) {
@@ -140,7 +140,7 @@ public class KeyResolver {
                 log.debug("check resolvability by class " + resolver.getClass());
             }
 
-            PublicKey cert = resolver.resolvePublicKey(element, BaseURI, storage);
+            PublicKey cert = resolver.resolvePublicKey(element, baseURI, storage);
             if (cert != null) {
                 return cert;
             }
@@ -281,45 +281,45 @@ public class KeyResolver {
      * Method resolvePublicKey
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage 
      * @return resolved public key from the registered from the elements
      * 
      * @throws KeyResolverException
      */
     public PublicKey resolvePublicKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
-        return resolverSpi.engineLookupAndResolvePublicKey(element, BaseURI, storage);
+        return resolverSpi.engineLookupAndResolvePublicKey(element, baseURI, storage);
     }
 
     /**
      * Method resolveX509Certificate
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return resolved X509certificate key from the registered from the elements
      * 
      * @throws KeyResolverException
      */
     public X509Certificate resolveX509Certificate(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
-        return resolverSpi.engineLookupResolveX509Certificate(element, BaseURI, storage);
+        return resolverSpi.engineLookupResolveX509Certificate(element, baseURI, storage);
     }
 
     /**
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @param storage
      * @return resolved SecretKey key from the registered from the elements
      * @throws KeyResolverException
      */
     public SecretKey resolveSecretKey(
-        Element element, String BaseURI, StorageResolver storage
+        Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
-        return resolverSpi.engineLookupAndResolveSecretKey(element, BaseURI, storage);
+        return resolverSpi.engineLookupAndResolveSecretKey(element, baseURI, storage);
     }
 
     /**

@@ -165,7 +165,9 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
                         try {
                             base = joinURI(n.getValue(), base);
                         } catch (URISyntaxException ue) {
-                            ue.printStackTrace();
+                            if (log.isDebugEnabled()) {
+                                log.debug(ue.getMessage(), ue);
+                            }
                         }
                     }
                 }

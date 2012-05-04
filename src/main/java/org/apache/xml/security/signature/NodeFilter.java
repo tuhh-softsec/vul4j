@@ -33,7 +33,7 @@ public interface NodeFilter {
      * 		  -1 if the node and all it's child must not be output.
      * 			
      */
-    public int isNodeInclude(Node n);
+    int isNodeInclude(Node n);
     
     /**
      * Tells if a node must be output in a c14n.
@@ -46,6 +46,6 @@ public interface NodeFilter {
      * 		   0 if node must not be output, 
      * 		  -1 if the node and all it's child must not be output.
      */
-    public int isNodeIncludeDO(Node n, int level);
+    int isNodeIncludeDO(Node n, int level);
 
 }

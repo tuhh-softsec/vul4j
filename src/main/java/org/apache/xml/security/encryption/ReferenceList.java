@@ -43,10 +43,10 @@ import java.util.Iterator;
 public interface ReferenceList {
     
     /** DATA TAG */
-    public static final int DATA_REFERENCE = 0x00000001;
+    int DATA_REFERENCE = 0x00000001;
     
     /** KEY TAG */
-    public static final int KEY_REFERENCE  = 0x00000002;
+    int KEY_REFERENCE  = 0x00000002;
 
     /**
      * Adds a reference to this reference list.
@@ -55,21 +55,21 @@ public interface ReferenceList {
      * @throws IllegalAccessException if the <code>Reference</code> is not an
      *   instance of <code>DataReference</code> or <code>KeyReference</code>.
      */
-    public void add(Reference reference);
+    void add(Reference reference);
 
     /**
      * Removes a reference from the <code>ReferenceList</code>.
      *
      * @param reference the reference to remove.
      */
-    public void remove(Reference reference);
+    void remove(Reference reference);
 
     /**
      * Returns the size of the <code>ReferenceList</code>.
      *
      * @return the size of the <code>ReferenceList</code>.
      */
-    public int size();
+    int size();
 
     /**
      * Indicates if the <code>ReferenceList</code> is empty.
@@ -77,7 +77,7 @@ public interface ReferenceList {
      * @return <code><b>true</b></code> if the <code>ReferenceList</code> is
      *     empty, else <code><b>false</b></code>.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns an <code>Iterator</code> over all the <code>Reference</code>s
@@ -85,7 +85,7 @@ public interface ReferenceList {
      *
      * @return Iterator.
      */
-    public Iterator<Reference> getReferences();
+    Iterator<Reference> getReferences();
 
     /**
      * <code>DataReference</code> factory method. Returns a
@@ -93,7 +93,7 @@ public interface ReferenceList {
      * @param uri
      * @return a <code>DataReference</code>.
      */
-    public Reference newDataReference(String uri);
+    Reference newDataReference(String uri);
 
     /**
      * <code>KeyReference</code> factory method. Returns a
@@ -101,5 +101,5 @@ public interface ReferenceList {
      * @param uri
      * @return a <code>KeyReference</code>.
      */
-    public Reference newKeyReference(String uri);
+    Reference newKeyReference(String uri);
 }

@@ -149,8 +149,8 @@ public final class DOMXMLSignatureFactory extends XMLSignatureFactory {
     public XMLSignature unmarshalXMLSignature(XMLStructure xmlStructure)
         throws MarshalException {
 
-        if (xmlStructure == null) {
-            throw new NullPointerException("xmlStructure cannot be null");
+        if (xmlStructure == null || !(xmlStructure instanceof javax.xml.crypto.dom.DOMStructure)) {
+            throw new ClassCastException("xmlStructure must be of type DOMStructure");
         }
         return unmarshal
             (((javax.xml.crypto.dom.DOMStructure) xmlStructure).getNode(), 

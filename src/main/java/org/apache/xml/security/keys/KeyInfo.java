@@ -130,11 +130,11 @@ public class KeyInfo extends SignatureElementProxy {
      * Constructor KeyInfo
      *
      * @param element
-     * @param BaseURI
+     * @param baseURI
      * @throws XMLSecurityException
      */
-    public KeyInfo(Element element, String BaseURI) throws XMLSecurityException {
-        super(element, BaseURI);
+    public KeyInfo(Element element, String baseURI) throws XMLSecurityException {
+        super(element, baseURI);
         
         Attr attr = element.getAttributeNodeNS(null, "Id");
         if (attr != null) {
@@ -154,9 +154,9 @@ public class KeyInfo extends SignatureElementProxy {
      *
      * @param Id ID
      */
-    public void setId(String Id) {
-        if (Id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+    public void setId(String id) {
+        if (id != null) {
+            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
             this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
@@ -276,12 +276,12 @@ public class KeyInfo extends SignatureElementProxy {
     /**
      * Method addRetrievalMethod
      *
-     * @param URI
+     * @param uri
      * @param transforms
      * @param Type  
      */
-    public void addRetrievalMethod(String URI, Transforms transforms, String Type) {
-        this.add(new RetrievalMethod(this.doc, URI, transforms, Type));
+    public void addRetrievalMethod(String uri, Transforms transforms, String Type) {
+        this.add(new RetrievalMethod(this.doc, uri, transforms, Type));
     }
 
     /**

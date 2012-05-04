@@ -115,8 +115,8 @@ public class KeyInfoTest extends org.junit.Assert {
             (Collections.singletonList(fac.newKeyName("foo")), "keyid");
         try {
             ki.marshal(null, null);
-            fail("Should raise a NullPointerException");
-        } catch (NullPointerException npe) {}
+            fail("Should raise a ClassCastException");
+        } catch (ClassCastException npe) {}
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);

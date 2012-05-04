@@ -64,7 +64,7 @@ public interface SignatureProperties extends XMLStructure {
      * can be specified as the value of the <code>type</code> parameter of the 
      * {@link Reference} class to identify the referent's type).
      */
-    static final String TYPE =
+    String TYPE =
         "http://www.w3.org/2000/09/xmldsig#SignatureProperties";
 
     /**

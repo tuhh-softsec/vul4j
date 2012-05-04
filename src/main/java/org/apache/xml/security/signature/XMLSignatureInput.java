@@ -97,7 +97,7 @@ public class XMLSignatureInput {
      * Transform algorithm and should be described in the specification for the 
      * algorithm.
      */   
-    private String MIMEType = null;
+    private String mimeType = null;
 
     /**
      * Field sourceURI 
@@ -336,21 +336,21 @@ public class XMLSignatureInput {
     }
 
     /**
-     * Returns MIMEType
+     * Returns mimeType
      *
-     * @return MIMEType
+     * @return mimeType
      */
     public String getMIMEType() {
-        return MIMEType;
+        return mimeType;
     }
 
     /**
-     * Sets MIMEType
+     * Sets mimeType
      *
      * @param mimeType
      */
     public void setMIMEType(String mimeType) {
-        this.MIMEType = mimeType;
+        this.mimeType = mimeType;
     }
 
     /**

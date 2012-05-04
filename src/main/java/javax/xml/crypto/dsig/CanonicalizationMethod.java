@@ -59,7 +59,7 @@ public interface CanonicalizationMethod extends Transform {
      * The <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315">Canonical 
      * XML (without comments)</a> canonicalization method algorithm URI.
      */
-    static final String INCLUSIVE = 
+    String INCLUSIVE = 
         "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
 
     /**
@@ -67,7 +67,7 @@ public interface CanonicalizationMethod extends Transform {
      * <a href="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments">
      * Canonical XML with comments</a> canonicalization method algorithm URI.
      */
-    static final String INCLUSIVE_WITH_COMMENTS =
+    String INCLUSIVE_WITH_COMMENTS =
         "http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments";
 
     /**
@@ -75,7 +75,7 @@ public interface CanonicalizationMethod extends Transform {
      * Canonical XML (without comments)</a> canonicalization method algorithm
      * URI.
      */
-    static final String EXCLUSIVE =
+    String EXCLUSIVE =
         "http://www.w3.org/2001/10/xml-exc-c14n#";
 
     /**
@@ -83,7 +83,7 @@ public interface CanonicalizationMethod extends Transform {
      * Exclusive Canonical XML with comments</a> canonicalization method 
      * algorithm URI.
      */
-    static final String EXCLUSIVE_WITH_COMMENTS =
+    String EXCLUSIVE_WITH_COMMENTS =
         "http://www.w3.org/2001/10/xml-exc-c14n#WithComments";
 
     /**

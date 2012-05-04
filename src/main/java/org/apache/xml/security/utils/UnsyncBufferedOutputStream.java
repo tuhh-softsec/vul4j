@@ -68,7 +68,7 @@ public class UnsyncBufferedOutputStream extends OutputStream {
         pointer = newLen;
     }
 
-    private final void flushBuffer() throws IOException {
+    private void flushBuffer() throws IOException {
         if (pointer > 0) {
             out.write(buf, 0, pointer);
         }

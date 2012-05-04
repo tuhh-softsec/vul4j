@@ -131,7 +131,7 @@ public class Reference extends SignatureElementProxy {
     private static final org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(Reference.class);
 
-    private Manifest manifest = null;
+    private Manifest manifest;
     private XMLSignatureInput transformsOutput;
 
     private Transforms transforms;
@@ -146,8 +146,8 @@ public class Reference extends SignatureElementProxy {
      * Constructor Reference
      *
      * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
-     * @param BaseURI the URI of the resource where the XML instance will be stored
-     * @param ReferenceURI URI indicate where is data which will digested
+     * @param baseURI the URI of the resource where the XML instance will be stored
+     * @param referenceURI URI indicate where is data which will digested
      * @param manifest
      * @param transforms {@link Transforms} applied to data
      * @param messageDigestAlgorithm {@link MessageDigestAlgorithm Digest algorithm} which is 
@@ -156,17 +156,17 @@ public class Reference extends SignatureElementProxy {
      * @throws XMLSignatureException
      */
     protected Reference(
-        Document doc, String BaseURI, String ReferenceURI, Manifest manifest, 
+        Document doc, String baseURI, String referenceURI, Manifest manifest, 
         Transforms transforms, String messageDigestAlgorithm
     ) throws XMLSignatureException {
         super(doc);
 
         XMLUtils.addReturnToElement(this.constructionElement);
 
-        this.baseURI = BaseURI;
+        this.baseURI = baseURI;
         this.manifest = manifest;
 
-        this.setURI(ReferenceURI);
+        this.setURI(referenceURI);
 
         // important: The ds:Reference must be added to the associated ds:Manifest
         //            or ds:SignedInfo _before_ the this.resolverResult() is called.
@@ -197,32 +197,32 @@ public class Reference extends SignatureElementProxy {
      * Build a {@link Reference} from an {@link Element}
      *
      * @param element <code>Reference</code> element
-     * @param BaseURI the URI of the resource where the XML instance was stored
+     * @param baseURI the URI of the resource where the XML instance was stored
      * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs.
      * We need this because the Manifest has the individual {@link ResourceResolver}s which have 
      * been set by the user
      * @throws XMLSecurityException
      */
-    protected Reference(Element element, String BaseURI, Manifest manifest) throws XMLSecurityException {
-        this(element, BaseURI, manifest, false);
+    protected Reference(Element element, String baseURI, Manifest manifest) throws XMLSecurityException {
+        this(element, baseURI, manifest, false);
     }
 
     /**
      * Build a {@link Reference} from an {@link Element}
      *
      * @param element <code>Reference</code> element
-     * @param BaseURI the URI of the resource where the XML instance was stored
+     * @param baseURI the URI of the resource where the XML instance was stored
      * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs.
      * @param secureValidation whether secure validation is enabled or not
      * We need this because the Manifest has the individual {@link ResourceResolver}s which have 
      * been set by the user
      * @throws XMLSecurityException
      */
-    protected Reference(Element element, String BaseURI, Manifest manifest, boolean secureValidation)
+    protected Reference(Element element, String baseURI, Manifest manifest, boolean secureValidation)
         throws XMLSecurityException {
-        super(element, BaseURI);
+        super(element, baseURI);
         this.secureValidation = secureValidation;
-        this.baseURI = BaseURI;
+        this.baseURI = baseURI;
         Element el = XMLUtils.getNextElement(element.getFirstChild());
         if (Constants._TAG_TRANSFORMS.equals(el.getLocalName()) 
             && Constants.SignatureSpecNS.equals(el.getNamespaceURI())) {
@@ -271,11 +271,11 @@ public class Reference extends SignatureElementProxy {
     /**
      * Sets the <code>URI</code> of this <code>Reference</code> element
      *
-     * @param URI the <code>URI</code> of this <code>Reference</code> element
+     * @param uri the <code>URI</code> of this <code>Reference</code> element
      */
-    public void setURI(String URI) {
-        if (URI != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
+    public void setURI(String uri) {
+        if (uri != null) {
+            this.constructionElement.setAttributeNS(null, Constants._ATT_URI, uri);
         }
     }
 
@@ -291,11 +291,11 @@ public class Reference extends SignatureElementProxy {
     /**
      * Sets the <code>Id</code> attribute of this <code>Reference</code> element
      *
-     * @param Id the <code>Id</code> attribute of this <code>Reference</code> element
+     * @param id the <code>Id</code> attribute of this <code>Reference</code> element
      */
-    public void setId(String Id) {
-        if (Id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+    public void setId(String id) {
+        if (id != null) {
+            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
             this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
@@ -314,11 +314,11 @@ public class Reference extends SignatureElementProxy {
      * <code>ds:Object</code>, <code>ds:SignatureProperty</code>, or <code>ds:Manifest</code> 
      * element.
      *
-     * @param Type the <code>type</code> attribute of the Reference
+     * @param type the <code>type</code> attribute of the Reference
      */
-    public void setType(String Type) {
-        if (Type != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_TYPE, Type);
+    public void setType(String type) {
+        if (type != null) {
+            this.constructionElement.setAttributeNS(null, Constants._ATT_TYPE, type);
         }
     }
 
@@ -405,16 +405,16 @@ public class Reference extends SignatureElementProxy {
     public XMLSignatureInput getContentsBeforeTransformation()
         throws ReferenceNotInitializedException {
         try {
-            Attr URIAttr = 
+            Attr uriAttr = 
                 this.constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
 
             ResourceResolver resolver = 
                 ResourceResolver.getInstance(
-                    URIAttr, this.baseURI, this.manifest.getPerManifestResolvers(), secureValidation
+                    uriAttr, this.baseURI, this.manifest.getPerManifestResolvers(), secureValidation
                 );
             resolver.addProperties(this.manifest.getResolverProperties());
 
-            return resolver.resolve(URIAttr, this.baseURI);
+            return resolver.resolve(uriAttr, this.baseURI);
         }  catch (ResourceResolverException ex) {
             throw new ReferenceNotInitializedException("empty", ex);
         }
@@ -481,12 +481,12 @@ public class Reference extends SignatureElementProxy {
             if (transforms != null) {
                 doTransforms: for (int i = 0; i < transforms.getLength(); i++) {
                     Transform t = transforms.item(i);
-                    String URI = t.getURI();
+                    String uri = t.getURI();
 
-                    if (URI.equals(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS) 
-                        || URI.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS) 
-                        || URI.equals(Transforms.TRANSFORM_C14N_OMIT_COMMENTS) 
-                        || URI.equals(Transforms.TRANSFORM_C14N_WITH_COMMENTS)) {
+                    if (uri.equals(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS) 
+                        || uri.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS) 
+                        || uri.equals(Transforms.TRANSFORM_C14N_OMIT_COMMENTS) 
+                        || uri.equals(Transforms.TRANSFORM_C14N_WITH_COMMENTS)) {
                         break doTransforms;
                     }
 
@@ -526,10 +526,10 @@ public class Reference extends SignatureElementProxy {
             if (transforms != null) {
                 doTransforms: for (int i = 0; i < transforms.getLength(); i++) {
                     Transform t = transforms.item(i);
-                    String URI = t.getURI();
+                    String uri = t.getURI();
 
-                    if (URI.equals(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS)
-                        || URI.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS)) {
+                    if (uri.equals(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS)
+                        || uri.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS)) {
                         c14nTransform = t;
                         break doTransforms;
                     }

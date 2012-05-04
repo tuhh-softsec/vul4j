@@ -48,11 +48,11 @@ public class ObjectContainer extends SignatureElementProxy {
      * Constructs {@link ObjectContainer} from {@link Element}
      *
      * @param element is <code>Object</code> element
-     * @param BaseURI the URI of the resource where the XML instance was stored
+     * @param baseURI the URI of the resource where the XML instance was stored
      * @throws XMLSecurityException
      */
-    public ObjectContainer(Element element, String BaseURI) throws XMLSecurityException {
-        super(element, BaseURI);
+    public ObjectContainer(Element element, String baseURI) throws XMLSecurityException {
+        super(element, baseURI);
     }
 
     /**

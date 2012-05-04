@@ -589,10 +589,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             String NValue = e.getNamespaceURI();
             String Name;
             if (NName == null || NName.equals("")) {
-                NName = "xmlns";
-                Name = "xmlns";
+                NName = XMLNS;
+                Name = XMLNS;
             } else {
-                Name = "xmlns:" + NName;
+                Name = XMLNS + ":" + NName;
             }
             Attr n = e.getOwnerDocument().createAttributeNS("http://www.w3.org/2000/xmlns/", Name);
             n.setValue(NValue);
@@ -628,9 +628,9 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             handleParent(ele, ns);
         }
         Attr nsprefix;
-        if (((nsprefix = ns.getMappingWithoutRendered("xmlns")) != null) 
+        if (((nsprefix = ns.getMappingWithoutRendered(XMLNS)) != null) 
             && "".equals(nsprefix.getValue())) {
-            ns.addMappingAndRender("xmlns", "", nullNode);
+            ns.addMappingAndRender(XMLNS, "", nullNode);
         }
     }
     

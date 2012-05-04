@@ -35,30 +35,30 @@ import org.w3c.dom.Node;
 public class SignatureProperty extends SignatureElementProxy {
 
     /**
-     * Constructs{@link SignatureProperty} using specified <code>Target</code> attribute
+     * Constructs{@link SignatureProperty} using specified <code>target</code> attribute
      *
      * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
-     * @param Target the <code>Target</code> attribute references the <code>Signature</code> 
+     * @param target the <code>target</code> attribute references the <code>Signature</code> 
      * element to which the property applies SignatureProperty
      */
-    public SignatureProperty(Document doc, String Target) {
-        this(doc, Target, null);
+    public SignatureProperty(Document doc, String target) {
+        this(doc, target, null);
     }
 
     /**
-     * Constructs {@link SignatureProperty} using sepcified <code>Target</code> attribute and 
-     * <code>Id</code> attribute
+     * Constructs {@link SignatureProperty} using sepcified <code>target</code> attribute and 
+     * <code>id</code> attribute
      *
      * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
-     * @param Target the <code>Target</code> attribute references the <code>Signature</code>
+     * @param target the <code>target</code> attribute references the <code>Signature</code>
      *  element to which the property applies
-     * @param Id the <code>Id</code> will be specified by {@link Reference#getURI} in validation
+     * @param id the <code>id</code> will be specified by {@link Reference#getURI} in validation
      */
-    public SignatureProperty(Document doc, String Target, String Id) {
+    public SignatureProperty(Document doc, String target, String id) {
         super(doc);
 
-        this.setTarget(Target);
-        this.setId(Id);
+        this.setTarget(target);
+        this.setId(id);
     }
 
     /**
@@ -72,30 +72,30 @@ public class SignatureProperty extends SignatureElementProxy {
     }
 
     /**
-     *   Sets the <code>Id</code> attribute
+     *   Sets the <code>id</code> attribute
      *
-     *   @param Id the <code>Id</code> attribute
+     *   @param id the <code>id</code> attribute
      */
-    public void setId(String Id) {
-        if (Id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
+    public void setId(String id) {
+        if (id != null) {
+            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
             this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         }
     }
 
     /**
-     * Returns the <code>Id</code> attribute
+     * Returns the <code>id</code> attribute
      *
-     * @return the <code>Id</code> attribute
+     * @return the <code>id</code> attribute
      */
     public String getId() {
         return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
     }
 
     /**
-     * Sets the <code>Target</code> attribute
+     * Sets the <code>target</code> attribute
      *
-     * @param target the <code>Target</code> attribute
+     * @param target the <code>target</code> attribute
      */
     public void setTarget(String target) {
         if (target != null) {
@@ -104,9 +104,9 @@ public class SignatureProperty extends SignatureElementProxy {
     }
 
     /**
-     * Returns the <code>Target</code> attribute
+     * Returns the <code>target</code> attribute
      *
-     * @return the <code>Target</code> attribute
+     * @return the <code>target</code> attribute
      */
     public String getTarget() {
         return this.constructionElement.getAttributeNS(null, Constants._ATT_TARGET);
