@@ -150,9 +150,9 @@ public class XalanXPathAPI implements XPathAPI {
         try {
             Constructor<?> constructor = XPath.class.getConstructor(classes);
             xpath = (XPath) constructor.newInstance(objects);
-        } catch (Throwable t) {
+        } catch (Exception ex) {
             if (log.isDebugEnabled()) {
-                log.debug(t);
+                log.debug(ex);
             }
         }
         if (xpath == null) {
@@ -173,23 +173,23 @@ public class XalanXPathAPI implements XPathAPI {
             Class<?>[] args = {String.class, Expression.class};
             Method installFunction = FunctionTable.class.getMethod("installFunction", args);
             if ((installFunction.getModifiers() & Modifier.STATIC) != 0) {
-                Object []params = {"here", new FuncHere()};
+                Object[] params = {"here", new FuncHere()};
                 installFunction.invoke(null, params);
                 installed = true;
             }
-        } catch (Throwable t) {
-            log.debug("Error installing function using the static installFunction method", t);
+        } catch (Exception ex) {
+            log.debug("Error installing function using the static installFunction method", ex);
         }
         if (!installed) {
             try {
                 funcTable = new FunctionTable();
                 Class<?>[] args = {String.class, Class.class};
                 Method installFunction = FunctionTable.class.getMethod("installFunction", args);
-                Object []params = {"here", FuncHere.class};
+                Object[] params = {"here", FuncHere.class};
                 installFunction.invoke(funcTable, params);
                 installed = true;
-            } catch (Throwable t) {
-                log.debug("Error installing function using the static installFunction method", t);
+            } catch (Exception ex) {
+                log.debug("Error installing function using the static installFunction method", ex);
             }
         }
         if (log.isDebugEnabled()) {

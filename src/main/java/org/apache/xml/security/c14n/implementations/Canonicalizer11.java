@@ -466,9 +466,8 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
         String rauthority = r.getAuthority();
         String rpath = r.getPath();
         String rquery = r.getQuery();
-        String rfragment = null;
 
-        String tscheme, tauthority, tpath, tquery, tfragment;
+        String tscheme, tauthority, tpath, tquery;
         if (rscheme != null && rscheme.equals(bscheme)) {
             rscheme = null;
         }
@@ -512,8 +511,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             }
             tscheme = bscheme;
         }
-        tfragment = rfragment;
-        return new URI(tscheme, tauthority, tpath, tquery, tfragment).toString();
+        return new URI(tscheme, tauthority, tpath, tquery, null).toString();
     }
 
     private static String removeDotSegments(String path) {

@@ -624,14 +624,10 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         }
         //Obtain all the parents of the element
         List<Element> parents = new ArrayList<Element>(10);
-        Element parent = (Element) n1;
-        while (parent != null) {
-            parents.add(parent);
-            Node n = parent.getParentNode();
-            if (n == null || Node.ELEMENT_NODE != n.getNodeType()) {
-                break;
-            }
-            parent = (Element)n;
+        Node parent = n1;
+        while (parent != null && Node.ELEMENT_NODE == parent.getNodeType()) {
+            parents.add((Element)parent);
+            parent = parent.getParentNode();
         }
         //Visit them in reverse order.
         ListIterator<Element> it = parents.listIterator(parents.size());
