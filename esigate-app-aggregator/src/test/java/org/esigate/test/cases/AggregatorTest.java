@@ -196,8 +196,7 @@ public class AggregatorTest extends TestCase {
 		assertEquals(
 				"should be only one location: " + Arrays.asList(locations), 1,
 				locations.length);
-		assertEquals(
-				"Redirect header did not match",
+		assertEquals("Redirect header did not match",
 				"http://localhost:8080/esigate-app-aggregator/redirected.jsp",
 				locations[0]);
 	}
@@ -226,23 +225,6 @@ public class AggregatorTest extends TestCase {
 
 	public void testTemplate() throws Exception {
 		doSimpleTest("template.html");
-	}
-
-	// Test la récupération depuis le cache disque
-	public void testTemplateFromDisk() throws Exception {
-		doSimpleTest("templateFromDisk.html", "template.html");
-	}
-
-	public void testTemplateFromDiskMixedEncoding() throws Exception {
-		doSimpleTest("testTemplateFromDiskMixedEncoding",
-				"testTemplateFromDiskMixedEncoding.html");
-	}
-
-	// Test la récupération depuis le cache disque
-	public void testTemplateFromDiskWithDirectoryAndFile() throws Exception {
-		doSimpleTest("testDirAndFile", "template.html");
-		doSimpleTest("testDirAndFile/", "template.html");
-		doSimpleTest("testDirAndFile/file", "template.html");
 	}
 
 	public void testTemplateWithParams() throws Exception {

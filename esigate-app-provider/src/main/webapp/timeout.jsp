@@ -9,7 +9,8 @@
 <title>Timeout test</title>
 </head>
 <body style="background-color: aqua">
-<% 
+<% 	
+	response.setHeader("Cache-control", "public, max-age=60000");
 	try {
 		Thread.sleep(5000);
 	} catch (InterruptedException e) {

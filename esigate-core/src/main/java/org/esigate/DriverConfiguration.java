@@ -26,8 +26,6 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
-import org.esigate.cache.CacheStorage;
-import org.esigate.cache.DefaultCacheStorage;
 import org.esigate.cookie.SerializableBasicCookieStore;
 import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
@@ -63,7 +61,6 @@ public class DriverConfiguration {
 	private boolean useCache = true;
 	private int cacheRefreshDelay = 0;
 	private int cacheMaxFileSize = 0;
-	private Class<? extends CacheStorage> cacheStorageClass;
 	private final String localBase;
 	private boolean putInCache = false;
 	private String proxyHost = null;
@@ -84,8 +81,7 @@ public class DriverConfiguration {
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 	private static final String DEFAULT_BLACK_LISTED_REQUEST_HEADERS = "Authorization,Connection,"
-			+ "Content-Length,Cookie,Expect,Host,If-Match,If-Modified-Since,If-None-Match,If-Range,"
-			+ "If-Unmodified-Since,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,"
+			+ "Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,"
 			+ "Transfer-Encoding,Upgrade";
 	private static final String DEFAULT_BLACK_LISTED_RESPONSE_HEADERS = "Age,Connection,Content-Encoding,"
 			+ "Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,"
@@ -105,21 +101,6 @@ public class DriverConfiguration {
 		// Cache settings
 		cacheRefreshDelay = PropertiesUtil.getPropertyValue(props, "cacheRefreshDelay", cacheRefreshDelay);
 		cacheMaxFileSize = PropertiesUtil.getPropertyValue(props, "cacheMaxFileSize", cacheMaxFileSize);
-		if (props.getProperty("cacheStorageClassName") != null) {
-			String cacheStorageClassName = props.getProperty("cacheStorageClassName");
-			try {
-				@SuppressWarnings("unchecked")
-				Class<? extends CacheStorage> cacheStorageClass = (Class<? extends CacheStorage>) this.getClass().getClassLoader().loadClass(cacheStorageClassName);
-				if (cacheStorageClass != null) {
-					this.cacheStorageClass = cacheStorageClass;
-				}
-			} catch (Exception e) {
-				throw new RuntimeException("Cachestorage instance can not be loaded", e);
-			}
-		}
-		if (null == this.cacheStorageClass) {
-			this.cacheStorageClass = DefaultCacheStorage.class;
-		}
 
 		// Local file system settings
 		localBase = PropertiesUtil.getPropertyValue(props, "localBase", null);
@@ -321,10 +302,6 @@ public class DriverConfiguration {
 
 	public String getCookieStore() {
 		return cookieStore;
-	}
-
-	public Class<? extends CacheStorage> getCacheStorageClass() {
-		return cacheStorageClass;
 	}
 
 	/**

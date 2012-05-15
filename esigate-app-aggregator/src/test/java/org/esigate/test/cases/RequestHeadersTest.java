@@ -213,7 +213,7 @@ public class RequestHeadersTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testIfMatch() throws Exception {
-		assertHeaderDiscarded("If-Match");
+		assertHeaderForwarded("If-Match");
 	}
 
 	/**
@@ -223,11 +223,11 @@ public class RequestHeadersTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testIfRange() throws Exception {
-		assertHeaderDiscarded("If-Range");
+		assertHeaderForwarded("If-Range");
 	}
 
 	public void testIfUnmodifiedSince() throws Exception {
-		assertHeaderDiscarded("If-Unmodified-Since");
+		assertHeaderForwarded("If-Unmodified-Since");
 	}
 
 	public void testMaxForwards() throws Exception {

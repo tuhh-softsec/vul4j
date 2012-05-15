@@ -15,18 +15,13 @@
 package org.esigate.output;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.esigate.file.FileOutput;
-import org.esigate.file.FileResource;
-import org.esigate.output.Output;
-import org.esigate.output.OutputException;
-import org.esigate.test.MockOutput;
-
 import junit.framework.TestCase;
+
+import org.esigate.test.MockOutput;
 
 public class OutputTest extends TestCase {
 
@@ -75,28 +70,6 @@ public class OutputTest extends TestCase {
 			assertNotNull(e.getCause());
 			assertTrue("cause should be instance of IOException", e.getCause() instanceof IOException);
 		}
-	}
-
-	public void testFileOutput() throws Exception {
-		FileOutput fo = new FileOutput(new File("./target/test.txt"), new File("./target/test.txt.headers"));
-		fo.setStatus(22, "someMessage");
-		fo.addHeader("headerName1", "headerValue1");
-		fo.open();
-		fo.write("Test String");
-		assertEquals("headerValue1", fo.getHeader("headerName1"));
-		assertEquals(22, fo.getStatusCode());
-		assertEquals("someMessage", fo.getStatusMessage());
-
-		FileResource fr = new FileResource(new File("./target/test.txt"), new File("./target/test.txt.headers"));
-		fr.render(fo);
-
-		assertEquals(404, fr.getStatusCode());
-		assertEquals(null, fr.getHeader("name"));
-
-		fr.release();
-
-		fo.close();
-		fo.delete();
 	}
 
 }

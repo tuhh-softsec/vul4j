@@ -1,4 +1,4 @@
-<%@page session="false" language="java" contentType="text/plain; charset=ISO-8859-1" pageEncoding="ISO-8859-1" import="java.util.Enumeration"%><%
+<%@page session="false" language="java" import="java.util.Enumeration"%><%
 	// This JSP sends a response depending only on the request headers.
 	// The request headers to send are:
 	// X-response-code: the return code (default 200)
@@ -18,9 +18,8 @@
        			response.getWriter().append(value);
        		} else if(name.toLowerCase().startsWith("x-response-header-")) {
        			String headerName = name.substring(18);
-       			if("Date".equalsIgnoreCase(name))
-       				// Can have only 1 date header
-       				response.setDateHeader(name, System.currentTimeMillis()+86400000);
+				if("Content-type".equalsIgnoreCase(name))
+       				response.setContentType(value);
        			else
 	       			response.addHeader(headerName, value);
        		} else {
@@ -28,5 +27,4 @@
        		}
        	}
     }
-		response.setDateHeader("Date", System.currentTimeMillis()+86400000);
 %>

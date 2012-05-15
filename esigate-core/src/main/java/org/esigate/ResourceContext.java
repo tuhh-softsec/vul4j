@@ -40,7 +40,6 @@ public class ResourceContext {
 	private boolean proxy = false;
 	private boolean preserveHost = false;
 	private boolean neededForTransformation = true;
-	private Map<String, String> validators = null;
 	private URL baseURLasURL = null;
 
 	public boolean isPreserveHost() {
@@ -106,14 +105,6 @@ public class ResourceContext {
 		return originalResponse;
 	}
 
-	public Map<String, String> getValidators() {
-		return validators;
-	}
-
-	public void setValidators(Map<String, String> validators) {
-		this.validators = validators;
-	}
-	
 	public String getBaseURL(){
 		return baseURL;
 	}

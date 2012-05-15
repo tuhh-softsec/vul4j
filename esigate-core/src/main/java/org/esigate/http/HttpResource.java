@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
@@ -67,12 +66,7 @@ public class HttpResource extends Resource {
 		HttpClientRequest httpClientRequest = new HttpClientRequest(url, originalRequest, proxy, preserveHost);
 		httpClientRequest.setCookieStore(CookieAdapter.convertCookieStore(userContext.getCookieStore()));
 		httpClientRequest.setConfiguration(driver.getConfiguration());
-		if (resourceContext.getValidators() != null) {
-			for (Entry<String, String> header : resourceContext.getValidators().entrySet()) {
-				LOG.debug("Adding validator: {}: {}", header.getKey(), header.getValue());
-				httpClientRequest.addHeader(header.getKey(), header.getValue());
-			}
-		}
+
 		// Auth handler
 		AuthenticationHandler authenticationHandler = driver.getAuthenticationHandler();
 		authenticationHandler.preRequest(httpClientRequest, resourceContext);
