@@ -81,9 +81,9 @@ public class DriverConfiguration {
 
 	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
 	private static final String DEFAULT_BLACK_LISTED_REQUEST_HEADERS = "Authorization,Connection,"
-			+ "Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,"
+			+ "Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,TE,Trailer,"
 			+ "Transfer-Encoding,Upgrade";
-	private static final String DEFAULT_BLACK_LISTED_RESPONSE_HEADERS = "Age,Connection,Content-Encoding,"
+	private static final String DEFAULT_BLACK_LISTED_RESPONSE_HEADERS = "Connection,Content-Encoding,"
 			+ "Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,"
 			+ "Trailer,Transfer-Encoding,WWW-Authenticate";
 

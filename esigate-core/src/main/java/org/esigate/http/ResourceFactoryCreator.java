@@ -9,6 +9,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.cache.HttpCacheStorage;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -25,6 +26,8 @@ import org.apache.http.params.HttpParams;
 import org.esigate.ConfigurationException;
 import org.esigate.DriverConfiguration;
 import org.esigate.ResourceFactory;
+import org.esigate.cache.CacheConfigHelper;
+import org.esigate.extension.Extension;
 
 public class ResourceFactoryCreator {
 
@@ -69,23 +72,35 @@ public class ResourceFactoryCreator {
 		// Cache
 		if (config.isUseCache()) {
 
-			// TODO set these as parameters in driver.properties
-			boolean heuristicCachingEnabled = true;
+			// TODO set all as parameters in driver.properties
+
+			// TODO make a wrapper for each storage type that can be instanced with properties configuration only
+			String cacheStorageClass = "org.esigate.cache.BasicCacheStorage";
+			// org.esigate.cache.BasicCacheStorage
+			// org.esigate.cache.EhcacheCacheStorage
+			// org.esigate.cache.ManagedCacheStorage
+			// org.esigate.cache.MemcachedCacheStorage
+			Object cacheStorage;
+			try {
+				cacheStorage = Class.forName(cacheStorageClass).newInstance();
+			} catch (Exception e) {
+				throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
+			}
+			if (!(cacheStorage instanceof Extension) || !(cacheStorage instanceof HttpCacheStorage))
+				throw new ConfigurationException("Cache storage class must implement Extension and HttpCacheStorage interfaces");
+			((Extension) cacheStorage).init(config.getProperties());
+
+			// TODO wrap backend http client for responses and incoming requests : cache errors, add stale management, force cache
 			// TODO add these parameters to cache-control header in every request
-			long staleWhileRevalidate = 3600; // seconds
-			long staleIfError = 86400; // seconds
 
-			// TODO If-Match,If-Modified-Since,If-None-Match,If-Range, If-Unmodified-Since should be copied to request
-			// Update documentation and unit tests
+			// TODO Update cache.xml xdoc
+			
+			// TODO support load balancing combined with cache
+			// TODO replace "clustering" by "load balancing" in documentation
 
-			CacheConfig cacheConfig = new CacheConfig();
-			cacheConfig.setHeuristicCachingEnabled(heuristicCachingEnabled);
-			if (config.getCacheMaxFileSize() > 0)
-				cacheConfig.setMaxObjectSizeBytes(config.getCacheMaxFileSize());
-			else
-				cacheConfig.setMaxObjectSizeBytes(Integer.MAX_VALUE);
+			CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(config.getProperties());
 			cacheConfig.setSharedCache(true);
-			httpClient = new CachingHttpClient(httpClient, cacheConfig);
+			httpClient = new CachingHttpClient(httpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
 
 		}
 		ResourceFactory result = new HttpResourceFactory(httpClient);

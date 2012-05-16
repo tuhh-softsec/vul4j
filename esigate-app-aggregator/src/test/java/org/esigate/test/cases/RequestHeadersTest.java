@@ -249,7 +249,7 @@ public class RequestHeadersTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testRange() throws Exception {
-		assertHeaderDiscarded("Range");
+		assertHeaderForwarded("Range");
 	}
 
 	/**

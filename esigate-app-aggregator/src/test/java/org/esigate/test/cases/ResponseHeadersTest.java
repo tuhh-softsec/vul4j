@@ -81,13 +81,6 @@ public class ResponseHeadersTest extends TestCase {
 		return result;
 	}
 
-	public void testAge() throws Exception {
-		// FIXME Age header should be recalculated as described in HTTP
-		// specification. Probably the age of the cache entry + the age header
-		// received in the response
-		assertHeaderDiscarded("Age");
-	}
-
 	public void testAllow() throws Exception {
 		assertHeaderForwarded("Allow");
 	}

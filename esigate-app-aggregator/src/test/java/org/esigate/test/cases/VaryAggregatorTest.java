@@ -55,7 +55,6 @@ public class VaryAggregatorTest extends TestCase {
 		// Ensure content is valid.
 		String text = IOUtils.toString(response.getEntity().getContent());
 		assertNotNull(text);
-		System.err.println(cookieValue + " -> " + text);
 		if (cookieValue != null) {
 			assertTrue("no value '" + cookieValue + "' found",
 					text.contains(cookieValue));

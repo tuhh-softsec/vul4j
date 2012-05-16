@@ -36,7 +36,7 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 &lt;web-app&gt;
 &lt;servlet&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;servlet-class&gt;org.esigate.ProxyServlet&lt;/servlet-class&gt;
+&lt;servlet-class&gt;org.esigate.servlet.ProxyServlet&lt;/servlet-class&gt;
 &lt;/servlet&gt;
 &lt;servlet-mapping&gt;
 &lt;servlet-name&gt;proxy&lt;/servlet-name&gt;

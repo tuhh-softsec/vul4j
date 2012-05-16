@@ -3,7 +3,7 @@
 <web-app>
 	<servlet>
 		<servlet-name>proxy</servlet-name>
-		<servlet-class>org.esigate.ProxyServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>proxy2</param-value>

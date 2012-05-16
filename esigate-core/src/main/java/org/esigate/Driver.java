@@ -470,22 +470,22 @@ public class Driver {
 	 * is cached into the request scope in order not to send several requests if
 	 * you need several blocks in the same page to build the final page.
 	 * 
-	 * @param target
+	 * @param context
 	 *            the target resource
 	 * @return the content of the url
 	 * @throws HttpErrorPage
 	 */
-	protected StringOutput getResourceAsString(ResourceContext target) throws HttpErrorPage {
+	protected StringOutput getResourceAsString(ResourceContext context) throws HttpErrorPage {
 		StringOutput result = null;
-		String url = ResourceUtils.getHttpUrlWithQueryString(target);
-		org.esigate.api.HttpRequest request = target.getOriginalRequest();
-		boolean cacheable = Rfc2616.isCacheable(target);
+		String url = ResourceUtils.getHttpUrlWithQueryString(context);
+		org.esigate.api.HttpRequest request = context.getOriginalRequest();
+		boolean cacheable = !context.isProxy() || "GET".equalsIgnoreCase(context.getOriginalRequest().getMethod());
 		if (cacheable) {
 			result = (StringOutput) request.getAttribute(url);
 		}
 		if (result == null) {
 			result = new StringOutput();
-			renderResource(target, result);
+			renderResource(context, result);
 			if (cacheable) {
 				request.setAttribute(url, result);
 			}

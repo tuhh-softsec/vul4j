@@ -77,7 +77,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Authorization,Connection,Content-Length,Cookie,Expect,Host,If-Match,If-Modified-Since,If-None-Match,If-Range,If-Unmodified-Since,Max-Forwards,Proxy-Authorization,Range,TE,Trailer,Transfer-Encoding,Upgrade</td>
+                    <td>Authorization,Connection,Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
                 </tr>
                 <tr>
                     <td>forwardRequestHeaders</td>
@@ -95,7 +95,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Age,Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
+                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
                 </tr>
                 <tr>
                     <td>forwardResponseHeaders</td>

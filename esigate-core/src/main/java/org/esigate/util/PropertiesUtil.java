@@ -123,4 +123,14 @@ public class PropertiesUtil {
 		return props.getProperty(name, defaultValue);
 	}
 
+	public static float getPropertyValue(Properties properties, String name, float defaultValue) {
+		String value = properties.getProperty(name);
+		return value != null ? Float.parseFloat(value) : defaultValue;
+	}
+
+	public static long getPropertyValue(Properties properties, String name, long defaultValue) {
+		String value = properties.getProperty(name);
+		return value != null ? Long.parseLong(value) : defaultValue;
+	}
+
 }
