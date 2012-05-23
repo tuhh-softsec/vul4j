@@ -19,10 +19,10 @@ import java.util.Properties;
 
 import org.apache.http.client.CookieStore;
 import org.esigate.ConfigurationException;
+import org.esigate.Parameters;
 import org.esigate.ResourceContext;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.filter.Filter;
-import org.esigate.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,9 +53,9 @@ public class CookieForwardingFilter implements Filter {
 	 */
 	public void init(Properties properties) {
 		// Cookies to forward
-		forwardCookies = PropertiesUtil.getPropertyValueAsList(properties, "forwardCookies");
+		forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
 		// Cookies to discard
-		discardCookies = PropertiesUtil.getPropertyValueAsList(properties, "discardCookies");
+		discardCookies = Parameters.DISCARD_COOKIES.getValueList(properties);
 		if (forwardCookies.contains("*") && forwardCookies.size() > 1) {
 			throw new ConfigurationException("forwardCookies must be a list of cookie names OR *");
 		}

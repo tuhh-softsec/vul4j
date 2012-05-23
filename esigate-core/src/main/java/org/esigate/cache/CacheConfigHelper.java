@@ -1,37 +1,40 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.esigate.cache;
 
 import java.util.Properties;
 
 import org.apache.http.impl.client.cache.CacheConfig;
-import org.esigate.util.PropertiesUtil;
+import org.esigate.Parameters;
 
 public class CacheConfigHelper {
-	public final static String HEURISTIC_CACHING_ENABLED_PROPERTY = "cache.heuristicCachingEnabled";
-	public final static String HEURISTIC_COEFFICIENT_PROPERTY = "cache.heuristicCoefficient";
-	public final static String HEURISTIC_DEFAULT_LIFETIME_SECS_PROPERTY = "cache.heuristicDefaultLifetimeSecs";
-	public final static String MAX_CACHE_ENTRIES_PROPERTY = "cache.maxCacheEntries";
-	public final static String MAX_OBJECT_SIZE_PROPERTY = "cache.maxObjectSize";
-	public final static String MIN_ASYNCHRONOUS_WORKERS_PROPERTY = "cache.minAsynchronousWorkers";
-	public final static String MAX_ASYNCHRONOUS_WORKERS_PROPERTY = "cache.maxAsynchronousWorkers";
-	public final static String ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS_PROPERTY = "cache.asynchronousWorkerIdleLifetimeSecs";
-	public final static String MAX_UPDATE_RETRIES_PROPERTY = "cache.maxUpdateRetries";
-	public final static String REVALIDATION_QUEUE_SIZE_PROPERTY = "cache.revalidationQueueSize";
-
 	public final static CacheConfig createCacheConfig(Properties properties) {
+
 		// Heuristic caching
-		boolean heuristicCachingEnabled = PropertiesUtil.getPropertyValue(properties, HEURISTIC_CACHING_ENABLED_PROPERTY, true);
-		// default value defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2.4
-		float heuristicCoefficient = PropertiesUtil.getPropertyValue(properties, HEURISTIC_COEFFICIENT_PROPERTY, 0.1f);
-		// when no cache directive at all, nothing is cached by default
-		long heuristicDefaultLifetimeSecs = PropertiesUtil.getPropertyValue(properties, HEURISTIC_DEFAULT_LIFETIME_SECS_PROPERTY, 0l); // Cache size
-		int maxCacheEntries = PropertiesUtil.getPropertyValue(properties, MAX_CACHE_ENTRIES_PROPERTY, 1000);
-		int maxObjectSize = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 0);
+		boolean heuristicCachingEnabled = Parameters.HEURISTIC_CACHING_ENABLED.getValueBoolean(properties);
+		float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValueFloat(properties);
+		long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValueLong(properties);
+		int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValueInt(properties);
+		int maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueInt(properties);
+
 		// Asynchronous revalidation
-		int minAsynchronousWorkers = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 1);
-		int maxAsynchronousWorkers = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 20);
-		int asynchronousWorkerIdleLifetimeSecs = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 60);
-		int maxUpdateRetries = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 1);
-		int revalidationQueueSize = PropertiesUtil.getPropertyValue(properties, MAX_OBJECT_SIZE_PROPERTY, 100);
+		int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+		int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+		int asynchronousWorkerIdleLifetimeSecs = Parameters.ASYNCHRONOUS_WORKER_IDLE_LIFETIME_SECS.getValueInt(properties);
+		int maxUpdateRetries = Parameters.MAX_UPDATE_RETRIES.getValueInt(properties);
+		int revalidationQueueSize = Parameters.REVALIDATION_QUEUE_SIZE.getValueInt(properties);
 
 		CacheConfig cacheConfig = new CacheConfig();
 		cacheConfig.setHeuristicCachingEnabled(heuristicCachingEnabled);

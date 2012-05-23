@@ -33,8 +33,7 @@
 						Base URL of the remote application. Eg:
 						<code>remoteUrlBase=http://localhost:8080/provider/
 						</code>
-						If not defined, local file system will be used (see localBase
-						directive). When <a href="clustering.html">clustering</a> (remote application runs on several servers), use a coma-separated list.
+						When <a href="clustering.html">clustering</a> (remote application runs on several servers), use a coma-separated list.
 					</td>
 					<td>No</td>
 					<td>-</td>
@@ -45,30 +44,65 @@
 					<td>No</td>
 					<td>ISO-8859-1</td>
 				</tr>
-				<tr>
-					<td>maxConnectionsPerHost</td>
-					<td>Maximum number of HTTP connections simultaneously
-						opened
-						with this application</td>
-					<td>No</td>
-					<td>20</td>
-				</tr>
                 <tr>
                     <td>parsableContentTypes</td>
-                    <td>List of parsable content types.  By default, parsable content types are text/html and application/xhtml+xml.  
+                    <td>List of parsable content types..  
                     Use this syntax to set content types :                   
                     <code>parsableContentTypes=text/html,application/xhtml+xml,text/plain</code>                    
                     </td>
                     <td>No</td>
                     <td>text/html,application/xhtml+xml</td>
                 </tr>
-                <tr>
-                    <td><strike>blackListedHeaders</strike></td>
-                    <td><b>Deprecated property.</b> Comma separated list of HTTP request or response headers which will not be forwarded from server to client or from client
-                    to server. Use forwardRequestHeaders, discardRequestHeaders, forwardResponseHeaders, discardResponseHeaders instead.
-                    </td>
+				<tr>
+					<td>maxConnectionsPerHost</td>
+					<td>Maximum number of HTTP connections simultaneously
+						opened with 1 server.</td>
+					<td>No</td>
+					<td>20</td>
+				</tr>
+                 <tr>
+                    <td>connectTimeout</td>
+                    <td>Defines the timeout while trying to establish a connection with the server.</td>
                     <td>No</td>
-                    <td></td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <td>socketTimeout</td>
+                    <td>Defines the timeout waiting for data once the connection to the server has been opened.</td>
+                    <td>No</td>
+                    <td>10000</td>
+                </tr>
+				<tr>
+					<td>proxyHost</td>
+					<td>Proxy host name or IP. The tool can work through an HTTP
+						proxy server.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyPort</td>
+					<td>Proxy port</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyUser</td>
+					<td>Username used by the driver for proxy authentication. Leave blank if no authentication is required by the proxy.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyPassword</td>
+					<td>Proxy password</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+                <tr>
+                    <td>preserveHost</td>
+                    <td>Instructs send the request to the target server with the same Host header value as in the incoming request.
+                    This feature is very usefull when the target server uses virtual hosts.</td>
+                    <td>No</td>
+                    <td>false</td>
                 </tr>
                 <tr>
                     <td>discardRequestHeaders</td>
@@ -95,7 +129,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
+                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticat</td>
                 </tr>
                 <tr>
                     <td>forwardResponseHeaders</td>
@@ -107,139 +141,23 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td><strike>timeout</strike></td>
-                    <td><b>Deprecated property.</b> Defines timeout while establishing a connection with the server (connect time out)
-                    and timeout waiting for data (socket timeout) if appropriate properties aren't defined.
-                    In case when 'connectTimeout' property isn't defined then connect timeout is equal to the value of that property.
-                    In case when 'socketTimeout' property isn't defined then socket timeout is equal to the ten (10x) values of that property.
-                    </td>
-                    <td>No</td>
-                    <td>1000</td>
-                </tr>
-                <tr>
-                    <td>connectTimeout</td>
-                    <td>Defines timeout while establishing a connection with the server (connect time out).
-                    In case when 'connectTimeout' property isn't defined then 'timeout' property value may be used instead.
-                    </td>
-                    <td>No</td>
-                    <td>1000</td>
-                </tr>
-                <tr>
-                    <td>socketTimeout</td>
-                    <td>Defines timeout waiting for data (socket timeout) after connection to the server has been opened.
-                    In case when 'socketTimeout' property isn't defined then ten (10x) values of 'timeout' property may be used instead.
-                    </td>
-                    <td>No</td>
-                    <td>10000</td>
-                </tr>
-				<tr>
-					<td>useCache</td>
-					<td>
-						Use OsCache to reuse downloaded resources. Additional parameters
-						can be set using oscache.properties file (see
-						<a href="http://www.opensymphony.com/oscache/wiki/Configuration.html">OsCache documentation</a>
-						)
-					</td>
-					<td>No</td>
-					<td>true</td>
-				</tr>
-				<tr>
-					<td>cacheRefreshDelay</td>
-					<td>Time to live (seconds) of any cached page. If 0, cache entries will
-						never expire</td>
-					<td>No</td>
-					<td>0</td>
-				</tr>
-				<tr>
-					<td>cacheMaxFileSize</td>
-					<td>Maximum size of a cache entry (bytes). If 0, no size limit.
-						This
-						directive can be used to avoid excessive memory usage</td>
-					<td>No</td>
-					<td>0</td>
-				</tr>
-				<tr>
-					<td>cacheStorageClassName</td>
-					<td>Implementation of org.esigate.cache.CacheStorage to use</td>
-					<td>No</td>
-					<td>org.esigate.cache.DefaultCacheStorage</td>
-				</tr>
-				<tr>
-					<td>localBase</td>
-					<td>File system path where to retrieve a resource if it cannot
-						be retrieved neither from the remote server nor from the cache.
-						This directive is particularly useful for developers to make mock
-						applications. For each file in the folder, you can simulate HTTP
-						headers in an additional header file (same file name with .header
-						extension)</td>
-					<td>No</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>putInCache</td>
-					<td>The tool can automatically store a copy of any downloaded
-						resource to the file system. These files will then be used if the
-						application is not available</td>
-					<td>No</td>
-					<td>false</td>
-				</tr>
-				<tr>
-					<td>proxyHost</td>
-					<td>Proxy host name or IP. The tool can work through an HTTP
-						proxy server.</td>
-					<td>No</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>proxyPort</td>
-					<td>Proxy port</td>
-					<td>No</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>proxyUser</td>
-					<td>Username used by the driver for proxy authentication. Leave blank if no authentication is required by the proxy.</td>
-					<td>No</td>
-					<td>-</td>
-				</tr>
-				<tr>
-					<td>proxyPassword</td>
-					<td>Proxy password</td>
-					<td>No</td>
-					<td>-</td>
-				</tr>
-                <tr>
-                    <td>filterJsessionid</td>
-                    <td>Instructs driver to replace all <code>jsessionid</code>
-                        occurencies inside generated URL's with correct ones retrived from remote site</td>
-                    <td>No</td>
-                    <td>true</td>
-                </tr>
-                <tr>
-                    <td>preserveHost</td>
-                    <td>Instructs send the request to the target server with the same Host header value as in the incoming request.
-                    This feature is very usefull when the target server uses virtual hosts.</td>
-                    <td>No</td>
-                    <td>false</td>
-                </tr>
-                <tr>
                     <td>cookieStore</td>
                     <td>The cookieStore to use. Must be a class that implements org.esigate.cookie.CustomCookieStore</td>
                     <td>No</td>
                     <td>org.esigate.cookie.SerializableBasicCookieStore</td>
                 </tr>
-                <tr>
-                    <td>authenticationHandler</td>
-                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements org.esigate.authentication.AuthenticationHandler</td>
-                    <td>No</td>
-                    <td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
-                </tr> 
-				<tr>
-                    <td>filter</td>
-                    <td>The request filter to use. Must be a class that implements org.esigate.filter.Filter</td>
+                 <tr>
+                    <td>discardCookies</td>
+                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on EsiGate side. You can use the value * to discard all cookies. To use this feature, you must configure org.esigate.http.CookieForwardingFilter as a filter.</td>
                     <td>No</td>
                     <td></td>
-                </tr>   
+                </tr>
+                 <tr>
+                    <td>forwardCookies</td>
+                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on EsiGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client. To use this feature, you must configure org.esigate.http.CookieForwardingFilter as a filter.</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
 				<tr>
                     <td>fixResources</td>
                     <td>Fix links to resources, images and pages in the pages retrieved (parse the pages to find &lt;a href=...&gt; or &lt;img src=...&gt; ...)</td>
@@ -264,11 +182,143 @@
 						The strategy to use if load balancing (ie remoteUrlBase has been
 						defined as a comma-separated list). Value can be "roundrobin",
 						"iphash" or "stickysession". See
-						<a href="clustering.html">clustering</a>
+						<a href="load-balancing.html">clustering</a>
 						for details
 					</td>
 					<td>No</td>
 					<td>roundrobin</td>
+				</tr>
+               <tr>
+                    <td>authenticationHandler</td>
+                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements org.esigate.authentication.AuthenticationHandler. Default implementation taken the user authenticated against the application server (request.getRemoteUser()) if any.</td>
+                    <td>No</td>
+                    <td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
+                </tr> 
+				<tr>
+                    <td>filter</td>
+                    <td>The request filter to use. Must be a class that implements org.esigate.filter.Filter</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>   
+ 				<tr>
+					<td>useCache</td>
+					<td>Use the cache</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
+					<td>maxCacheEntries</td>
+					<td>Maximum number of entries in the cache (this parameter is only taken into account by the default implementation)</td>
+					<td>No</td>
+					<td>1000</td>
+				</tr>
+				<tr>
+					<td>maxObjectSize</td>
+					<td>Maximum size of a cache entry (bytes). If 0, no size limit.
+						This
+						directive can be used to avoid excessive memory usage</td>
+					<td>No</td>
+					<td>1000000</td>
+				</tr>
+				<tr>
+					<td>cacheStorage</td>
+					<td>
+						Implementation of org.esigate.cache.CacheStorage to use. It can be one
+						of these values:
+						<ul>
+							<li>org.esigate.cache.BasicCacheStorage</li>
+							<li>org.esigate.cache.EhcacheCacheStorage</li>
+							<li>org.esigate.cache.MemcachedCacheStorage</li>
+						</ul>
+					</td>
+					<td>No</td>
+					<td>org.esigate.cache.BasicCacheStorage</td>
+				</tr>
+				<tr>
+					<td>ttl</td>
+					<td>Time to live (seconds) of any cached page. If 0, cache expiration
+						will be calculated automatically depending on http response headers.
+						If set to a non-zero value, the value will apply for all GET requests ignoring any Cache-control header!</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>heuristicCachingEnabled</td>
+					<td>Heuristic caching enabled (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Caching in HTTP</a>)</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
+					<td>heuristicCoefficient</td>
+					<td>Heuristic coefficient.</td>
+					<td>No</td>
+					<td>0.1</td>
+				</tr>
+				<tr>
+					<td>heuristicDefaultLifetimeSecs</td>
+					<td>Default lifetime of a cache entry if there is absolutely no information about it the http headers.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>staleWhileRevalidate</td>
+					<td>If non 0, when we receive a request for which an entry is in the cache but this entry is stale, we will send immediately the stale cache entry and try to update it from the server for next time. The value indicates the maximum staleness of the cache entry. This strategy can reduce a lot the load on the target server as there is only 1 refresh request for a cache entry at the same time.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>staleIfError</td>
+					<td>If non 0, when we receive an error from the target server, we will try to use the corresponding cache entry even if it is stale. The value indicates the maximum staleness of the cache entry.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>minAsynchronousWorkers</td>
+					<td>Minimum number of threads processing background revalidations.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>maxAsynchronousWorkers</td>
+					<td>Maximum number of threads processing background revalidations. Set this parameter to 0 in order to deactivate background revalidation.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>asynchronousWorkerIdleLifetimeSecs</td>
+					<td>Maximum idle lifetime for a background revalidation thread before it gets reclaimed.</td>
+					<td>No</td>
+					<td>60</td>
+				</tr>
+				<tr>
+					<td>maxUpdateRetries</td>
+					<td>number of retries on a failed cache update.</td>
+					<td>No</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>revalidationQueueSize</td>
+					<td>Maximum number of requests in the revalidation queue.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>ehcache.cacheName</td>
+					<td>Name of the EhCache</td>
+					<td>No</td>
+					<td>esigate</td>
+				</tr>
+				<tr>
+					<td>ehcache.configurationFile</td>
+					<td>Xml configuration file for EhCache (loaded via the classloader of the application).</td>
+					<td>No</td>
+					<td>/ehcache.xml</td>
+				</tr>
+				<tr>
+					<td>memcached.servers</td>
+					<td>Comma separated list of MemCached servers and ports. Syntax: server1:port1,server2:port2</td>
+					<td>No</td>
+					<td></td>
 				</tr>
 			</table>
 

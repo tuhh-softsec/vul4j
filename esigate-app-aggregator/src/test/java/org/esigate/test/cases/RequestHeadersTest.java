@@ -235,7 +235,7 @@ public class RequestHeadersTest extends TestCase {
 	}
 
 	public void testPragma() throws Exception {
-		assertHeaderForwarded("Pragma");
+		assertHeaderDiscarded("Pragma");
 	}
 
 	public void testProxyAuthorization() throws Exception {

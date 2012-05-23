@@ -1,7 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.esigate.http;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 
 import javax.net.ssl.SSLContext;
 
@@ -24,14 +39,44 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.esigate.ConfigurationException;
-import org.esigate.DriverConfiguration;
+import org.esigate.Parameters;
 import org.esigate.ResourceFactory;
+import org.esigate.cache.CacheAdapter;
 import org.esigate.cache.CacheConfigHelper;
 import org.esigate.extension.Extension;
 
 public class ResourceFactoryCreator {
 
-	public static ResourceFactory create(DriverConfiguration config) {
+	/**
+	 * Creates a ResourceFactory on top of a backend HttpClient by adding a cache on it.
+	 * 
+	 * @param config
+	 * @param backend
+	 * @return A ResourceFactory
+	 */
+	static ResourceFactory create(Properties properties, HttpClient backend) {
+		HttpClient httpClient;
+		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
+		if (useCache) {
+			httpClient = addCache(properties, backend);
+		} else {
+			httpClient = backend;
+		}
+		ResourceFactory result = new HttpResourceFactory(httpClient);
+		return result;
+	}
+
+	/**
+	 * Creates a ResourceFactory on top of a default backend HttpClient by adding a cache on it.
+	 * 
+	 * @return A ResourceFactory
+	 */
+	public static ResourceFactory create(Properties properties) {
+		DefaultHttpClient backend = createDefaultHttpClient(properties);
+		return create(properties, backend);
+	}
+
+	private static DefaultHttpClient createDefaultHttpClient(Properties properties) {
 		// Create and initialize scheme registry
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		try {
@@ -50,61 +95,55 @@ public class ResourceFactoryCreator {
 		// This connection manager must be used if more than one thread will
 		// be using the HttpClient.
 		ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(schemeRegistry);
-		connectionManager.setMaxTotal(config.getMaxConnectionsPerHost());
-		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerHost());
+		connectionManager.setMaxTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
+		// FIXME see the diference between route and host. Something to do with load balancing ???
+		connectionManager.setDefaultMaxPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
 		HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, config.getConnectTimeout());
-		HttpConnectionParams.setSoTimeout(httpParams, config.getSocketTimeout());
+		HttpConnectionParams.setConnectionTimeout(httpParams, Parameters.CONNECT_TIMEOUT.getValueInt(properties));
+		HttpConnectionParams.setSoTimeout(httpParams, Parameters.SOCKET_TIMEOUT.getValueInt(properties));
 		httpParams.setBooleanParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionManager, httpParams);
 		defaultHttpClient.setRedirectStrategy(new RedirectStrategy());
-		HttpClient httpClient = defaultHttpClient;
 
 		// Proxy settings
-		if (config.getProxyHost() != null) {
-			if (config.getProxyUser() != null) {
-				defaultHttpClient.getCredentialsProvider().setCredentials(new AuthScope(config.getProxyHost(), config.getProxyPort()),
-						new UsernamePasswordCredentials(config.getProxyUser(), config.getProxyPassword()));
+		String proxyHost = Parameters.PROXY_HOST.getValueString(properties);
+		if (proxyHost != null) {
+			int proxyPort = Parameters.PROXY_PORT.getValueInt(properties);
+			String proxyUser = Parameters.PROXY_USER.getValueString(properties);
+			if (proxyUser != null) {
+				String proxyPassword = Parameters.PROXY_PASSWORD.getValueString(properties);
+				defaultHttpClient.getCredentialsProvider().setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUser, proxyPassword));
 			}
-			HttpHost proxy = new HttpHost(config.getProxyHost(), config.getProxyPort(), "http");
-			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+			HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+			defaultHttpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 		}
-		// Cache
-		if (config.isUseCache()) {
+		return defaultHttpClient;
+	}
 
-			// TODO set all as parameters in driver.properties
-
-			// TODO make a wrapper for each storage type that can be instanced with properties configuration only
-			String cacheStorageClass = "org.esigate.cache.BasicCacheStorage";
-			// org.esigate.cache.BasicCacheStorage
-			// org.esigate.cache.EhcacheCacheStorage
-			// org.esigate.cache.ManagedCacheStorage
-			// org.esigate.cache.MemcachedCacheStorage
-			Object cacheStorage;
-			try {
-				cacheStorage = Class.forName(cacheStorageClass).newInstance();
-			} catch (Exception e) {
-				throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
-			}
-			if (!(cacheStorage instanceof Extension) || !(cacheStorage instanceof HttpCacheStorage))
-				throw new ConfigurationException("Cache storage class must implement Extension and HttpCacheStorage interfaces");
-			((Extension) cacheStorage).init(config.getProperties());
-
-			// TODO wrap backend http client for responses and incoming requests : cache errors, add stale management, force cache
-			// TODO add these parameters to cache-control header in every request
-
-			// TODO Update cache.xml xdoc
-			
-			// TODO support load balancing combined with cache
-			// TODO replace "clustering" by "load balancing" in documentation
-
-			CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(config.getProperties());
-			cacheConfig.setSharedCache(true);
-			httpClient = new CachingHttpClient(httpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
-
+	private static HttpClient addCache(Properties properties, HttpClient backend) {
+		String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
+		// TODO fix documentation for configuration
+		// TODO Update cache.xml xdoc
+		// TODO add a test with conditional request where resource is supposed to be transformed and not in cache yet. We should send back the Not modified response (responsibility of the application.
+		// TODO review the configuration for each webapp
+		Object cacheStorage;
+		try {
+			cacheStorage = Class.forName(cacheStorageClass).newInstance();
+		} catch (Exception e) {
+			throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
 		}
-		ResourceFactory result = new HttpResourceFactory(httpClient);
-		return result;
+		if (!(cacheStorage instanceof Extension) || !(cacheStorage instanceof HttpCacheStorage))
+			throw new ConfigurationException("Cache storage class must implement Extension and HttpCacheStorage interfaces");
+		((Extension) cacheStorage).init(properties);
+		// TODO support load balancing combined with cache
+		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
+		cacheConfig.setSharedCache(true);
+		CacheAdapter cacheAdapter = new CacheAdapter();
+		cacheAdapter.init(properties);
+		HttpClient cachingHttpClient = cacheAdapter.wrapBackendHttpClient(backend);
+		cachingHttpClient = new CachingHttpClient(cachingHttpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
+		cachingHttpClient = cacheAdapter.wrapCachingHttpClient(cachingHttpClient);
+		return cachingHttpClient;
 	}
 
 	private ResourceFactoryCreator() {

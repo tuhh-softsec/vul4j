@@ -3,7 +3,7 @@
 	pageEncoding="ISO-8859-1" session="false"%> 
 <%@ page import="javax.servlet.http.Cookie"%> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<% response.addHeader("Vary", "toto"); %>
+<% response.addHeader("Vary", "foo"); %>
 <% response.addHeader( "Cache-Control", "public, max-age=3600"); %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -15,9 +15,9 @@
 This page display "test-cookie" content.
 
 <%
-    if ( request.getHeader("toto") != null) { 
+    if ( request.getHeader("foo") != null) { 
 %>
-                test-cookie: <%=request.getHeader("toto") %>
+                test-cookie: <%=request.getHeader("foo") %>
 <% 
 	} else {
 %>

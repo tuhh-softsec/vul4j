@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.esigate.esi;
 
 import java.io.IOException;
@@ -7,6 +21,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.esigate.Parameters;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
@@ -205,11 +220,11 @@ public class IncludeElementTest extends TestCase {
 	
 	public void testIncludeReplaceAbsolute() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";	
-		String deafultBaseUrl = "http://www.foo.com/context/";
+		String defaultBaseUrl = "http://www.foo.com/context/";
 		String visibleBaseURL = "http://www.foo.com/contextExt/";
 
 		Properties defaultProps = new Properties();
-		defaultProps.setProperty("remoteUrlBase", deafultBaseUrl);
+		defaultProps.setProperty(Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
 		defaultProps.setProperty("visibleUrlBase", visibleBaseURL);
 		defaultProps.setProperty("fixResources", "true");
 		
@@ -228,10 +243,10 @@ public class IncludeElementTest extends TestCase {
 	
 	public void testIncludeReplaceAbsoluteBaseUrl() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" rewriteabsoluteurl=\"true\"  /> after";	
-		String deafultBaseUrl = "http://www.foo.com/context";
+		String defaultBaseUrl = "http://www.foo.com/context";
 
 		Properties defaultProps = new Properties();
-		defaultProps.setProperty("remoteUrlBase", deafultBaseUrl);
+		defaultProps.setProperty(Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
 		
 		provider = new MockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Clustering</title>
+		<title>Load-balancing</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<h1>Clustering</h1>
+		<h1>Load-balancing</h1>
 		<p>
 			For better performance and availability, it is possible to work
 			with several servers for each provider application. As EsiGate can

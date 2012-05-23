@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.http;
 
 import java.io.IOException;
@@ -35,8 +36,6 @@ import org.esigate.output.Output;
 import org.esigate.resource.Resource;
 import org.esigate.resource.ResourceUtils;
 import org.esigate.util.Rfc2616;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Resource implementation pointing to a resource on an external application.
@@ -45,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class HttpResource extends Resource {
-	private final static Logger LOG = LoggerFactory.getLogger(HttpResource.class);
 	private HttpClientResponse httpClientResponse;
 	private final ResourceContext target;
 	private final String url;

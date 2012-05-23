@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.esigate;
 
 import java.io.ByteArrayOutputStream;
@@ -21,31 +35,22 @@ public class DriverTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		MockDriver provider = new MockDriver("mock");
-		provider.addResource("/testBlock",
-				"abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
-		provider.addResource(
-				"/testTemplateFullPage",
-				"some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
-		provider.addResource(
-				"/testTemplate",
-				"abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
+		provider.addResource("/testBlock", "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
+		provider.addResource("/testTemplateFullPage", "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
+		provider.addResource("/testTemplate", "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
 	}
 
 	public void testRenderBlock() throws IOException, HttpErrorPage {
 		Writer out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out,
-				null, null, new HashMap<String, String>(), null, false);
+		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out, null, null, new HashMap<String, String>(), null, false);
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("$(vartestBlock)", "A",
-				out, null, null, new HashMap<String, String>(), null, false);
+		DriverFactory.getInstance("mock").renderBlock("$(vartestBlock)", "A", out, null, null, new HashMap<String, String>(), null, false);
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("/$(vartest)$(varBlock)",
-				"A", out, null, null, new HashMap<String, String>(), null,
-				false);
+		DriverFactory.getInstance("mock").renderBlock("/$(vartest)$(varBlock)", "A", out, null, null, new HashMap<String, String>(), null, false);
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -55,9 +60,7 @@ public class DriverTest extends TestCase {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("key", "'value'");
 		params.put("some other key", "'another value'");
-		DriverFactory.getInstance("mock").renderTemplate(
-				"/testTemplateFullPage", null, out, null, null, params, null,
-				null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/testTemplateFullPage", null, out, null, null, params, null, null, false);
 		assertFalse(out.toString().contains("key"));
 		assertTrue(out.toString().contains("'value'"));
 		assertFalse(out.toString().contains("some other key"));
@@ -66,13 +69,11 @@ public class DriverTest extends TestCase {
 
 	public void testRenderTemplate() throws IOException, HttpErrorPage {
 		StringWriter out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A",
-				out, null, null, null, null, null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A", out, null, null, null, null, null, false);
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)",
-				"A", out, null, null, null, null, null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)", "A", out, null, null, null, null, null, false);
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -81,18 +82,13 @@ public class DriverTest extends TestCase {
 		String relUrl = "/test.html";
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("?test=56")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("?test=56").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeaderNames())
-				.andReturn(Collections.singleton("Host"))
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeaderNames()).andReturn(Collections.singleton("Host")).anyTimes();
 
 		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(404);
@@ -109,7 +105,7 @@ public class DriverTest extends TestCase {
 
 	public void testProxy() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:8080");
+		props.setProperty(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
 		props.setProperty("putInCache", "true");
 		File localBase = new File("./target/localBase/");
 		localBase.mkdirs();
@@ -121,57 +117,34 @@ public class DriverTest extends TestCase {
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Cookie")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(
-				request.getAttribute("org.esigate.UserContext#mockTestProxy"))
-				.andReturn(null).anyTimes();
-		request.setAttribute(
-				EasyMock.eq("org.esigate.UserContext#mockTestProxy"),
-				EasyMock.anyObject(UserContext.class));
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getAttribute("org.esigate.UserContext#mockTestProxy")).andReturn(null).anyTimes();
+		request.setAttribute(EasyMock.eq("org.esigate.UserContext#mockTestProxy"), EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(Arrays.asList(
-						"Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language",
-						"Accept-Charset", "User-Agent", "If-None-Match"))
-				.anyTimes();
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match")).anyTimes();
 
 		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
@@ -181,57 +154,34 @@ public class DriverTest extends TestCase {
 
 		// Retrieve from cache
 		EasyMock.reset(request, response);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Cookie")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(
-				request.getAttribute("org.esigate.UserContext#mockTestProxy"))
-				.andReturn(null).anyTimes();
-		request.setAttribute(
-				EasyMock.eq("org.esigate.UserContext#mockTestProxy"),
-				EasyMock.anyObject(UserContext.class));
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getAttribute("org.esigate.UserContext#mockTestProxy")).andReturn(null).anyTimes();
+		request.setAttribute(EasyMock.eq("org.esigate.UserContext#mockTestProxy"), EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset","User-Agent", "If-None-Match"))
-				.anyTimes();
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match")).anyTimes();
 
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
@@ -241,65 +191,42 @@ public class DriverTest extends TestCase {
 
 	public void testProxyWithCacheRefreshDelay() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:8080");
+		props.setProperty(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
 		props.setProperty("cacheRefreshDelay", "1");
 
-		MockDriver provider = new MockDriver(
-				"mockTestProxyWithCacheRefreshDelay", props);
+		MockDriver provider = new MockDriver("mockTestProxyWithCacheRefreshDelay", props);
 		provider.addResource("/wiki/", "<h1>Hello</h1>");
 		String relUrl = "/wiki/";
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Cookie")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(
-				request.getAttribute("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"))
-				.andReturn(null).anyTimes();
-		request.setAttribute(
-				EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"),
-				EasyMock.anyObject(UserContext.class));
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getAttribute("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay")).andReturn(null).anyTimes();
+		request.setAttribute(EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"), EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match"))
-				.anyTimes();
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match")).anyTimes();
 
 		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 
@@ -310,57 +237,34 @@ public class DriverTest extends TestCase {
 		Thread.sleep(1000);
 		// Retrieve from cache
 		EasyMock.reset(request, response);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Cookie")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(
-				request.getAttribute("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"))
-				.andReturn(null).anyTimes();
-		request.setAttribute(
-				EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"),
-				EasyMock.anyObject(UserContext.class));
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getAttribute("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay")).andReturn(null).anyTimes();
+		request.setAttribute(EasyMock.eq("org.esigate.UserContext#mockTestProxyWithCacheRefreshDelay"), EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		EasyMock.expect(request.getHeaderNames())
-				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding",
-						"Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match"))
-				.anyTimes();
+				.andReturn(Arrays.asList("Host", "User-Agent", "If-None-Match", "Accept", "Accept-Encoding", "Accept-Language", "Accept-Charset", "User-Agent", "If-None-Match")).anyTimes();
 
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
@@ -369,44 +273,27 @@ public class DriverTest extends TestCase {
 
 		// Retrieve from cache
 		EasyMock.reset(request, response);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getHeader("Cache-control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Cookie")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
 
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 		EasyMock.replay(request, response);
@@ -416,7 +303,7 @@ public class DriverTest extends TestCase {
 
 	public void testProxyWithoutCache() throws Exception {
 		Properties props = new Properties();
-		props.setProperty("remoteUrlBase", "http://localhost:8080");
+		props.setProperty(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
 		props.setProperty("useCache", "false");
 		new MockDriver("mockTestProxyWithoutCache", props);
 		MockDriver provider = new MockDriver("mockTestProxyWithoutCache", props);
@@ -424,50 +311,30 @@ public class DriverTest extends TestCase {
 		String relUrl = "/wiki/Portal:Contents";
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1")
-				.anyTimes();
+		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("?test=56")
-				.anyTimes();
+		EasyMock.expect(request.getQueryString()).andReturn("?test=56").anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
-		EasyMock.expect(request.getHeader("Host")).andReturn("localhost")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null)
-				.anyTimes();
+		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
+		EasyMock.expect(request.getHeader("Cache-Control")).andReturn(null).anyTimes();
 		EasyMock.expect(request.getHeader("Pragma")).andReturn(null).anyTimes();
-		EasyMock.expect(request.getHeader("Accept"))
-				.andReturn(
-						"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Encoding"))
-				.andReturn("gzip,deflate").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Language"))
-				.andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
-		EasyMock.expect(request.getHeader("Accept-Charset"))
-				.andReturn("ISO-8859-1").anyTimes();
+		EasyMock.expect(request.getHeader("Accept")).andReturn("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Encoding")).andReturn("gzip,deflate").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Language")).andReturn("ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3").anyTimes();
+		EasyMock.expect(request.getHeader("Accept-Charset")).andReturn("ISO-8859-1").anyTimes();
 
-		EasyMock.expect(request.getHeader("User-Agent"))
-				.andReturn(
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13")
-				.anyTimes();
-		EasyMock.expect(request.getHeader("If-None-Match"))
-				.andReturn("\"some_string\"").anyTimes();
-		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null)
-				.anyTimes();
-		EasyMock.expect(
-				request.getAttribute("org.esigate.UserContext#mockTestProxyWithoutCache"))
-				.andReturn(null).anyTimes();
-		request.setAttribute(EasyMock
-				.eq("org.esigate.UserContext#mockTestProxyWithoutCache"),
-				EasyMock.anyObject(UserContext.class));
+		EasyMock.expect(request.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();
+		EasyMock.expect(request.getHeader("If-None-Match")).andReturn("\"some_string\"").anyTimes();
+		EasyMock.expect(request.getHeader("If-Modified-Since")).andReturn(null).anyTimes();
+		EasyMock.expect(request.getAttribute("org.esigate.UserContext#mockTestProxyWithoutCache")).andReturn(null).anyTimes();
+		request.setAttribute(EasyMock.eq("org.esigate.UserContext#mockTestProxyWithoutCache"), EasyMock.anyObject(UserContext.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(request.getRemoteUser()).andReturn(null).anyTimes();
 
 		HttpResponse response = EasyMock.createMock(HttpResponse.class);
 		response.setStatus(200);
-		response.addHeader(EasyMock.isA(String.class),
-				EasyMock.isA(String.class));
+		response.addHeader(EasyMock.isA(String.class), EasyMock.isA(String.class));
 		EasyMock.expectLastCall().anyTimes();
 		EasyMock.expect(response.getOutputStream()).andReturn(out);
 

@@ -34,19 +34,19 @@ public class VaryAggregatorTest extends TestCase {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private String doCookieRequest(String cookieValue, boolean forceRefresh)
+	private String doRequestWithHeader(String headerValue, boolean forceRefresh)
 			throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
 		client.getParams().setParameter(ClientPNames.COOKIE_POLICY,
 				CookiePolicy.BROWSER_COMPATIBILITY);
 		HttpGet request = new HttpGet(APPLICATION_PATH + "vary.jsp");
-		if (cookieValue != null) {
+		if (headerValue != null) {
 			BasicClientCookie cookie = new BasicClientCookie("test-cookie",
-					cookieValue);
+					headerValue);
 			cookie.setDomain("localhost");
 			cookie.setPath("/");
 			client.getCookieStore().addCookie(cookie);
-			request.setHeader("toto", cookieValue);
+			request.setHeader("foo", headerValue);
 		}
 		if (forceRefresh) {
 			request.addHeader("Cache-Control", "no-cache");
@@ -55,15 +55,15 @@ public class VaryAggregatorTest extends TestCase {
 		// Ensure content is valid.
 		String text = IOUtils.toString(response.getEntity().getContent());
 		assertNotNull(text);
-		if (cookieValue != null) {
-			assertTrue("no value '" + cookieValue + "' found",
-					text.contains(cookieValue));
+		if (headerValue != null) {
+			assertTrue("no value '" + headerValue + "' found",
+					text.contains(headerValue));
 		} else {
 			assertTrue("no cookie found", text.contains("no cookie"));
 		}
 
 		// Ensure vary and Cache-Control header were forwarded
-		assertEquals("toto", response.getFirstHeader("Vary").getValue());
+		assertEquals("foo", response.getFirstHeader("Vary").getValue());
 		assertEquals("public, max-age=3600",
 				response.getFirstHeader("Cache-Control").getValue());
 
@@ -82,15 +82,10 @@ public class VaryAggregatorTest extends TestCase {
 	public void testBlockVary() throws Exception {
 
 		// Cache test
-		String value1 = doCookieRequest("value1", false);
-		String value2 = doCookieRequest("value2", false);
-		assertEquals(value1, doCookieRequest("value1", false));
-		assertEquals(value2, doCookieRequest("value2", false));
-
-		// Test refresh
-		String value1Refresh = doCookieRequest("value1", true);
-		assertFalse(value1.equals(value1Refresh));
-		assertEquals(value1Refresh, doCookieRequest("value1", false));
+		String value1 = doRequestWithHeader("value1", false);
+		String value2 = doRequestWithHeader("value2", false);
+		assertEquals(value1, doRequestWithHeader("value1", false));
+		assertEquals(value2, doRequestWithHeader("value2", false));
 
 	}
 

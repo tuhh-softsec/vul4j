@@ -60,14 +60,14 @@ public class ResponseHeadersTest extends TestCase {
 		assertEquals(
 				name
 						+ " header should be rewritten ('aggregator' replaced with 'aggregated1')",
-				APPLICATION_PATH + "dummy", resp);
+				APPLICATION_PATH + "nocache/ag1/dummy", resp);
 	}
 
 	private String sendRequestAndExpectResponseHeader(String name, String value)
 			throws Exception {
 		WebConversation webConversation = new WebConversation();
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "response-headers.jsp");
+				+ "nocache/ag1/response-headers.jsp");
 		req.setHeaderField("X-response-header-" + name, value);
 		WebResponse resp = webConversation.getResponse(req);
 		String[] responseHeader = resp.getHeaderFields(name);

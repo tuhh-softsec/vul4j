@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate;
 
 import java.io.IOException;
@@ -48,10 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class used to retrieve data from a provider application using HTTP
- * requests. Data can be retrieved as binary streams or as String for text data.
- * To improve performance, the Driver uses a cache that can be configured
- * depending on the needs.
+ * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary streams or as String for text data. To improve performance, the Driver uses a cache
+ * that can be configured depending on the needs.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
@@ -66,17 +65,16 @@ public class Driver {
 	private final ExtensionFactory extension;
 
 	public Driver(String name, Properties props) {
-		LOG.info("Initializing instance: " + name);
-		config = new DriverConfiguration(name, props);
-		// Remote application settings
-		
-		this.resourceFactory = ResourceFactoryCreator.create(config);
-		
-		extension = new ExtensionFactory(config);
+		this(name, props, ResourceFactoryCreator.create(props));
+	}
 
+	public Driver(String name, Properties props, ResourceFactory resourceFactory) {
+		config = new DriverConfiguration(name, props);
+		this.resourceFactory = resourceFactory;
+		// Extension
+		extension = new ExtensionFactory(config);
 		// Authentication handler
-		authenticationHandler = extension
-				.getExtension(AuthenticationHandler.class);
+		authenticationHandler = extension.getExtension(AuthenticationHandler.class);
 		// Filter
 		Filter f = extension.getExtension(Filter.class);
 		filter = (f != null) ? f : Filter.EMPTY;
@@ -87,8 +85,7 @@ public class Driver {
 	}
 
 	/**
-	 * Get current user context in session or request. Context will be saved to
-	 * session only if not empty.
+	 * Get current user context in session or request. Context will be saved to session only if not empty.
 	 * 
 	 * @param request
 	 *            http request
@@ -117,8 +114,7 @@ public class Driver {
 	 * @return UserContext
 	 */
 	private UserContext createNewUserContext() {
-		UserContext context = new UserContext(
-				extension.getExtension(CustomCookieStore.class));
+		UserContext context = new UserContext(extension.getExtension(CustomCookieStore.class));
 		return context;
 	}
 
@@ -136,9 +132,7 @@ public class Driver {
 			Object sessionContext = session.getAttribute(key);
 			if (sessionContext == null || sessionContext != context) {
 				if (LOG.isInfoEnabled()) {
-					LOG.info("Provider=" + config.getInstanceName()
-							+ " saving context to session : "
-							+ context.toString().replaceAll("\n", ""));
+					LOG.info("Provider=" + config.getInstanceName() + " saving context to session : " + context.toString().replaceAll("\n", ""));
 				}
 				session.setAttribute(key, context);
 			}
@@ -146,37 +140,30 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a page from the provider application, evaluates XPath
-	 * expression if exists, applies XSLT transformation and writes result to a
-	 * Writer.
+	 * Retrieves a page from the provider application, evaluates XPath expression if exists, applies XSLT transformation and writes result to a Writer.
 	 * 
 	 * @param source
 	 *            external page used for inclusion
 	 * @param template
-	 *            path to the XSLT template (may be <code>null</code>) will be
-	 *            evaluated against current web application context
+	 *            path to the XSLT template (may be <code>null</code>) will be evaluated against current web application context
 	 * @param out
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
-	 * @param replaceRules 
+	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderXml(String source, String template, Appendable out,
-			HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
+	public final void renderXml(String source, String template, Appendable out, HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
 		LOG.info("renderXml provider=" + config.getInstanceName() + " source=" + source + " template=" + template);
-		render(source, null, out, request, response,
-				new XsltRenderer(template, request), new ReplaceRenderer(replaceRules));
+		render(source, null, out, request, response, new XsltRenderer(template, request), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
-	 * Retrieves a page from the provider application, evaluates XPath
-	 * expression if exists, applies XSLT transformation and writes result to a
-	 * Writer.
+	 * Retrieves a page from the provider application, evaluates XPath expression if exists, applies XSLT transformation and writes result to a Writer.
 	 * 
 	 * @param source
 	 *            external page used for inclusion
@@ -186,27 +173,21 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
-	 * @param replaceRules 
+	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final void renderXpath(String source, String xpath, Appendable out,
-			HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
-		LOG.info("renderXpath provider=" + config.getInstanceName()
-				+ " source=" + source + " xpath=" + xpath);
-		render(source, null, out,request, response,
-				new XpathRenderer(xpath), new ReplaceRenderer(replaceRules));
+	public final void renderXpath(String source, String xpath, Appendable out, HttpRequest request, HttpResponse response, Map<String, String> replaceRules) throws IOException, HttpErrorPage {
+		LOG.info("renderXpath provider=" + config.getInstanceName() + " source=" + source + " xpath=" + xpath);
+		render(source, null, out, request, response, new XpathRenderer(xpath), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
-	 * Retrieves a block from the provider application and writes it to a
-	 * Writer. Block can be defined in the provider application using HTML
-	 * comments.<br />
-	 * eg: a block name "myblock" should be delimited with
-	 * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
+	 * Retrieves a block from the provider application and writes it to a Writer. Block can be defined in the provider application using HTML comments.<br />
+	 * eg: a block name "myblock" should be delimited with "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
 	 * 
 	 * @param page
 	 *            Page containing the block
@@ -221,35 +202,25 @@ public class Driver {
 	 * @param parameters
 	 *            Additional parameters
 	 * @param copyOriginalRequestParameters
-	 *            indicates whether the original request parameters should be
-	 *            copied in the new request
+	 *            indicates whether the original request parameters should be copied in the new request
 	 * @return {@link ResourceContext}
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the block
 	 */
-	public final ResourceContext renderBlock(String page, String name, Appendable writer,
-			HttpRequest request,
-			HttpResponse response,
-			Map<String, String> replaceRules, Map<String, String> parameters,
-			boolean copyOriginalRequestParameters) throws IOException,
-			HttpErrorPage {
+	public final ResourceContext renderBlock(String page, String name, Appendable writer, HttpRequest request, HttpResponse response, Map<String, String> replaceRules, Map<String, String> parameters,
+			boolean copyOriginalRequestParameters) throws IOException, HttpErrorPage {
 		LOG.info("renderBlock provider=" + config.getInstanceName() + " page=" + page + " name=" + name);
-		return render(page, parameters, writer, request, response,
-				new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
+		return render(page, parameters, writer, request, response, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
 	}
 
 	/**
-	 * Retrieves a template from the provider application and renders it to the
-	 * writer replacing the parameters with the given map. If "name" param is
-	 * null, the whole page will be used as the template.<br />
-	 * eg: The template "mytemplate" can be delimited in the provider page by
-	 * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
-	 * "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
+	 * Retrieves a template from the provider application and renders it to the writer replacing the parameters with the given map. If "name" param is null, the whole page will be used as the
+	 * template.<br />
+	 * eg: The template "mytemplate" can be delimited in the provider page by comments "&lt;!--$begintemplate$mytemplate$--&gt;" and "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
 	 * Inside the template, the parameters can be defined by comments.<br />
-	 * eg: parameter named "myparam" should be delimited by comments
-	 * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
+	 * eg: parameter named "myparam" should be delimited by comments "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
 	 * 
 	 * @param page
 	 *            Address of the page containing the template
@@ -266,33 +237,26 @@ public class Driver {
 	 * @param parameters
 	 *            Parameters to be added to the request
 	 * @param propagateJsessionId
-	 *            indicates whether <code>jsessionid</code> should be propagated
-	 *            or just removed from generated output
+	 *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void renderTemplate(String page, String name,
-			Appendable writer, HttpRequest request,
-			HttpResponse response, Map<String, String> params,
-			Map<String, String> replaceRules, Map<String, String> parameters,
-			boolean propagateJsessionId) throws IOException, HttpErrorPage {
-		LOG.info("renderTemplate provider=" + config.getInstanceName()
-				+ " page=" + page + " name=" + name);
-		render(page, parameters, writer, request, response,
-				new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
+	public final void renderTemplate(String page, String name, Appendable writer, HttpRequest request, HttpResponse response, Map<String, String> params, Map<String, String> replaceRules,
+			Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
+		LOG.info("renderTemplate provider=" + config.getInstanceName() + " page=" + page + " name=" + name);
+		render(page, parameters, writer, request, response, new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 	}
 
-	public final void renderEsi(String page, Appendable writer,
-			HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
+	public final void renderEsi(String page, Appendable writer, HttpRequest request, HttpResponse response) throws IOException, HttpErrorPage {
 		render(page, null, writer, request, response);
 	}
 
-	public final void render(String page, Appendable writer, ResourceContext parent, Renderer... renderers)
-			throws IOException, HttpErrorPage {
+	public final void render(String page, Appendable writer, ResourceContext parent, Renderer... renderers) throws IOException, HttpErrorPage {
 		render(page, parent.getParameters(), writer, parent.getOriginalRequest(), parent.getOriginalResponse(), renderers);
 	}
+
 	/**
 	 * @param page
 	 *            Address of the page containing the template
@@ -310,28 +274,24 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	protected final ResourceContext render(String page, Map<String, String> parameters,
-			Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers)
-			throws IOException, HttpErrorPage {
+	protected final ResourceContext render(String page, Map<String, String> parameters, Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException,
+			HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
 			List<String> rendererNames = new ArrayList<String>(renderers.length);
 			for (Renderer renderer : renderers) {
 				rendererNames.add(renderer.getClass().getName());
 			}
-			LOG.info("render provider={} page= {} renderers={}", new Object[] { config.getInstanceName(), page, rendererNames});
+			LOG.info("render provider={} page= {} renderers={}", new Object[] { config.getInstanceName(), page, rendererNames });
 		}
 		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
-		ResourceContext resourceContext = new ResourceContext(this,
-				resultingpage, parameters, request, response);
+		ResourceContext resourceContext = new ResourceContext(this, resultingpage, parameters, request, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
 
 		// Fix resources
 		if (config.isFixResources()) {
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-					resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()), page,
-					config.getFixMode());
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()), page, config.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(resourceContext, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
@@ -348,8 +308,7 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a resource from the provider application and transforms it
-	 * using the Renderer passed as a parameter.
+	 * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
 	 * 
 	 * @param relUrl
 	 *            the relative URL to the resource
@@ -364,9 +323,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public final void proxy(String relUrl,
-			HttpRequest request, HttpResponse response,
-			Renderer... renderers) throws IOException, HttpErrorPage {
+	public final void proxy(String relUrl, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException, HttpErrorPage {
 		LOG.info("proxy provider={} relUrl={}", config.getInstanceName(), relUrl);
 
 		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
@@ -378,33 +335,23 @@ public class Driver {
 		}
 
 		if (renderers.length == 0 && !config.isFixResources()) {
-			// As we don't have any transformation to apply, we don't even
-			// have to retrieve the resource if it is already in browser's
-			// cache. So we can use conditional a request like
-			// "if-modified-since"
-			resourceContext.setNeededForTransformation(false);
 			renderResource(resourceContext, new ResponseOutput(response));
 		} else {
 			// Directly stream out non text data
-			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(
-					response, this.config.getParsableContentTypes());
+			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(response, this.config.getParsableContentTypes());
 			renderResource(resourceContext, textOutput);
 			// If data was binary, no text buffer is available and no rendering
 			// is needed.
 			if (!textOutput.hasTextBuffer()) {
-				LOG.debug("'" + relUrl
-						+ "' is binary : was forwarded without modification.");
+				LOG.debug("'" + relUrl + "' is binary : was forwarded without modification.");
 				return;
 			}
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
 			String currentValue = textOutput.toString();
 
-			List<Renderer> listOfRenderers = new ArrayList<Renderer>(
-					renderers.length + 1);
+			List<Renderer> listOfRenderers = new ArrayList<Renderer>(renderers.length + 1);
 			if (config.isFixResources()) {
-				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-						resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()),
-						relUrl, config.getFixMode());
+				ResourceFixupRenderer fixup = new ResourceFixupRenderer(resourceContext.getBaseURL(), config.getVisibleBaseURL(resourceContext.getBaseURL()), relUrl, config.getFixMode());
 				listOfRenderers.add(fixup);
 			}
 			listOfRenderers.addAll(Arrays.asList(renderers));
@@ -423,8 +370,7 @@ public class Driver {
 				// We do not use the Writer because the container may add some
 				// unwanted headers like default content-type that may not be
 				// consistent with the original response
-				response.getOutputStream().write(
-						currentValue.getBytes(charsetName));
+				response.getOutputStream().write(currentValue.getBytes(charsetName));
 			} else {
 				// Even if Content-type header has been set, some containers
 				// like
@@ -436,8 +382,7 @@ public class Driver {
 		}
 	}
 
-	protected void renderResource(ResourceContext resourceContext, Output output)
-			throws HttpErrorPage {
+	protected void renderResource(ResourceContext resourceContext, Output output) throws HttpErrorPage {
 		Resource resource = null;
 		try {
 			resource = this.resourceFactory.getResource(resourceContext);
@@ -451,9 +396,7 @@ public class Driver {
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));
-				HttpErrorPage httpErrorPage = new HttpErrorPage(
-						HttpStatusConstants.SC_BAD_GATEWAY, e.getMessage(),
-						out.toString());
+				HttpErrorPage httpErrorPage = new HttpErrorPage(HttpStatusConstants.SC_BAD_GATEWAY, e.getMessage(), out.toString());
 				httpErrorPage.initCause(e);
 				throw httpErrorPage;
 			}
@@ -466,9 +409,8 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a StringOutput. The result
-	 * is cached into the request scope in order not to send several requests if
-	 * you need several blocks in the same page to build the final page.
+	 * This method returns the content of an url as a StringOutput. The result is cached into the request scope in order not to send several requests if you need several blocks in the same page to
+	 * build the final page.
 	 * 
 	 * @param context
 	 *            the target resource
@@ -492,39 +434,36 @@ public class Driver {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * This method returns the content of an url as a String. The result
-	 * is cached into the request scope in order not to send several requests if
-	 * you need several blocks in the same page to build the final page.
+	 * This method returns the content of an url as a String. The result is cached into the request scope in order not to send several requests if you need several blocks in the same page to build the
+	 * final page.
 	 * 
 	 * @param page
 	 *            Address of the page containing the template
 	 * @param ctx
-	 *           target resource
+	 *            target resource
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 * @return the content of the url
 	 * @throws HttpErrorPage
 	 */
-	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage{
+	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage {
 		String actualPage = VariablesResolver.replaceAllVariables(page, ctx.getOriginalRequest());
-		ResourceContext resourceContext = new ResourceContext(this, actualPage, 
-				null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
+		ResourceContext resourceContext = new ResourceContext(this, actualPage, null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
 		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
 		StringOutput stringOutput = getResourceAsString(resourceContext);
 		String currentValue = stringOutput.toString();
 		return currentValue;
-		
+
 	}
-	
+
 	private final String getContextKey() {
 		return UserContext.class.getName() + "#" + config.getInstanceName();
 	}
 
 	/**
-	 * Returns {@linkplain Filter} instance configured for this driver. Never
-	 * returns <code>null</code>.
+	 * Returns {@linkplain Filter} instance configured for this driver. Never returns <code>null</code>.
 	 */
 	public Filter getFilter() {
 		return filter;
@@ -535,9 +474,8 @@ public class Driver {
 	 * <p>
 	 * This method is not intended to get a WRITE access to the configuration.
 	 * <p>
-	 * This may be supported in future versions (testing is needed). For the
-	 * time being, changing configuration settings after getting access through
-	 * this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
+	 * This may be supported in future versions (testing is needed). For the time being, changing configuration settings after getting access through this method is <b>UNSUPPORTED</b> and <b>SHOULD
+	 * NOT</b> be used.
 	 * 
 	 * @return current configuration
 	 */

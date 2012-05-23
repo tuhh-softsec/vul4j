@@ -93,7 +93,10 @@
 					</tr>
 					<tr>
 						<td>If-Match</td>
-						<td>Not forwarded</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="cache.html">Cache</a>)
+						</td>
 					</tr>
 					<tr>
 						<td>If-Modified-Since</td>
@@ -111,11 +114,17 @@
 					</tr>
 					<tr>
 						<td>If-Range</td>
-						<td>Not forwarded (Ranges not supported)</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="cache.html">Cache</a>)
+						</td>
 					</tr>
 					<tr>
 						<td>If-Unmodified-Since</td>
-						<td>Not forwarded</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="cache.html">Cache</a>)
+						</td>
 					</tr>
 					<tr>
 						<td>Max-Forwards</td>
@@ -123,7 +132,10 @@
 					</tr>
 					<tr>
 						<td>Pragma</td>
-						<td>Forwarded</td>
+						<td>
+							Ignored (see
+							<a href="cache.html">Cache</a>)
+						</td>
 					</tr>
 					<tr>
 						<td>Proxy-Authorization</td>
@@ -131,7 +143,7 @@
 					</tr>
 					<tr>
 						<td>Range</td>
-						<td>Not forwarded (Ranges not supported)</td>
+						<td>Forwarded</td>
 					</tr>
 					<tr>
 						<td>Referer</td>
@@ -183,7 +195,7 @@
 					</tr>
 					<tr>
 						<td>Age</td>
-						<td>Not forwarded</td>
+						<td>Recalculated by the cache</td>
 					</tr>
 					<tr>
 						<td>Allow</td>
@@ -298,7 +310,7 @@
 					</tr>
 					<tr>
 						<td>Via</td>
-						<td>Forwarded</td>
+						<td>Set by Http caching client.</td>
 					</tr>
 					<tr>
 						<td>Warning</td>

@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package org.esigate;
 
 import java.util.Collection;
@@ -53,36 +67,6 @@ public class DriverConfigurationTest extends TestCase {
 		}
 	}
 
-	public void testGetTimeout() {
-		// default setup (1000 and 10000)
-		Properties properties = new Properties();
-		DriverConfiguration config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("default connectTimeout should be 1000", 1000, config.getConnectTimeout());
-		assertEquals("default socketTimeout should be 10000", 1000 * 10, config.getSocketTimeout());
-
-		// timeout property with no other ones
-		properties = new Properties();
-		properties.setProperty("timeout", "5000");
-		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("connectTimeout should be same as 'timeout' value", 5000, config.getConnectTimeout());
-		assertEquals("socketTimeout should be 10x of 'timeout' value", 5000 * 10, config.getSocketTimeout());
-
-		// connect only
-		properties = new Properties();
-		properties.setProperty("connectTimeout", "3000");
-		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("connectTimeout should be 3000", 3000, config.getConnectTimeout());
-		assertEquals("default socketTimeout should be 10000", 1000 * 10, config.getSocketTimeout());
-
-		// timeout+connect
-		properties = new Properties();
-		properties.setProperty("connectTimeout", "3000");
-		properties.setProperty("timeout", "5000");
-		config = new DriverConfiguration("test-parsable", properties);
-		assertEquals("connectTimeout should be 3000", 3000, config.getConnectTimeout());
-		assertEquals("socketTimeout should be 10x of 'timeout' value", 5000 * 10, config.getSocketTimeout());
-	}
-
 	public void testIsBlackListed() {
 		// by default only DriverConfiguration#DEFAULT_BLACK_LISTED_HEADERS are blacklisted
 		Properties properties = new Properties();
@@ -105,7 +89,7 @@ public class DriverConfigurationTest extends TestCase {
 
 		// blacklisted headers are specified via 'blackListedHeaders' property -> they are merged with default
 		properties = new Properties();
-		properties.setProperty("blackListedHeaders", "header");
+		properties.setProperty(Parameters.DISCARD_REQUEST_HEADERS.name, "header");
 		config = new DriverConfiguration("test-parsable", properties);
 
 		validateRequestHeaderIsBlacklisted(config, "Content-Length", true);
@@ -133,32 +117,32 @@ public class DriverConfigurationTest extends TestCase {
 
 		assertEquals(null, config.getBaseUrlRetrieveStrategy());
 
-		properties.setProperty("remoteUrlBase", "http://example.com");
+		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com");
 		config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof SingleBaseUrlRetrieveStrategy);
 
-		properties.setProperty("remoteUrlBase", "http://example.com, http://example1.com");
+		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
 		config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
 
-		properties.setProperty("remoteUrlBase", "http://example.com, http://example1.com");
-		properties.setProperty("remoteUrlBaseStrategy", "roundrobin");
+		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
+		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "roundrobin");
 		config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof RoundRobinBaseUrlRetrieveStrategy);
 
-		properties.setProperty("remoteUrlBase", "http://example.com, http://example1.com");
-		properties.setProperty("remoteUrlBaseStrategy", "iphash");
+		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
+		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "iphash");
 		config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof IpHashBaseUrlRetrieveStrategy);
 
-		properties.setProperty("remoteUrlBase", "http://example.com, http://example1.com");
-		properties.setProperty("remoteUrlBaseStrategy", "stickysession");
+		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
+		properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "stickysession");
 		config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof StickySessionBaseUrlRetrieveStrategy);
 
 		try {
-			properties.setProperty("remoteUrlBase", "http://example.com, http://example1.com");
-			properties.setProperty("remoteUrlBaseStrategy", "invalid_strategy");
+			properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");
+			properties.setProperty(Parameters.REMOTE_URL_BASE_STRATEGY.name, "invalid_strategy");
 			config = new DriverConfiguration("test-baseurl", properties);
 			fail();
 		} catch (ConfigurationException e) {
@@ -168,7 +152,7 @@ public class DriverConfigurationTest extends TestCase {
 		}
 
 		try {
-			properties.setProperty("remoteUrlBase", "http://example.com, ://1.com");
+			properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, ://1.com");
 			config = new DriverConfiguration("test-baseurl", properties);
 			fail();
 		} catch (ConfigurationException e) {
@@ -177,19 +161,6 @@ public class DriverConfigurationTest extends TestCase {
 			fail();
 		}
 
-	}
-
-	public void testProxy() {
-		Properties properties = new Properties();
-		properties.setProperty("proxyHost", "www-cache");
-		properties.setProperty("proxyPort", "3128");
-		properties.setProperty("proxyUser", "username");
-		properties.setProperty("proxyPassword", "password");
-		DriverConfiguration config = new DriverConfiguration("test-proxy", properties);
-		assertEquals("proxyHost should be www-cache", "www-cache", config.getProxyHost());
-		assertEquals("proxyPort should be 3128", 3128, config.getProxyPort());
-		assertEquals("proxyUser should be username", "username", config.getProxyUser());
-		assertEquals("proxyPassword should be 3128", "password", config.getProxyPassword());
 	}
 
 	private void validateRequestHeaderIsBlacklisted(DriverConfiguration config, String header, boolean blacklisted) {
@@ -202,7 +173,7 @@ public class DriverConfigurationTest extends TestCase {
 
 	public void testDiscardRequestHeader() {
 		Properties props = new Properties();
-		props.put("discardRequestHeaders", "dummy1,dummy2");
+		props.put(Parameters.DISCARD_REQUEST_HEADERS.name, "dummy1,dummy2");
 		DriverConfiguration driverConfiguration = new DriverConfiguration("dummy", props);
 		assertFalse("Header should be discarded", driverConfiguration.isForwardedRequestHeader("dummy1"));
 		assertFalse("Header should be discarded", driverConfiguration.isForwardedRequestHeader("dummy2"));
@@ -211,24 +182,24 @@ public class DriverConfigurationTest extends TestCase {
 
 	public void testForwardRequestHeader() {
 		Properties props = new Properties();
-		props.put("forwardRequestHeaders", "Authorization");
+		props.put(Parameters.FORWARD_REQUEST_HEADERS.name, "Authorization");
 		DriverConfiguration driverConfiguration = new DriverConfiguration("dummy", props);
 		assertTrue("Header should be forwarded", driverConfiguration.isForwardedRequestHeader("Authorization"));
 	}
 
 	public void testDiscardResponseHeader() {
 		Properties props = new Properties();
-		props.put("discardRequestHeaders", "dummy1,dummy2");
+		props.put(Parameters.DISCARD_RESPONSE_HEADERS.name, "dummy1,dummy2");
 		DriverConfiguration driverConfiguration = new DriverConfiguration("dummy", props);
-		assertFalse("Header should be discarded", driverConfiguration.isForwardedRequestHeader("dummy1"));
-		assertFalse("Header should be discarded", driverConfiguration.isForwardedRequestHeader("dummy2"));
-		assertTrue("Header should be forwarded", driverConfiguration.isForwardedRequestHeader("dummy3"));
+		assertFalse("Header should be discarded", driverConfiguration.isForwardedResponseHeader("dummy1"));
+		assertFalse("Header should be discarded", driverConfiguration.isForwardedResponseHeader("dummy2"));
+		assertTrue("Header should be forwarded", driverConfiguration.isForwardedResponseHeader("dummy3"));
 	}
 
 	public void testForwardResponseHeader() {
 		Properties props = new Properties();
-		props.put("forwardRequestHeaders", "WWW-Authenticate");
+		props.put(Parameters.FORWARD_RESPONSE_HEADERS.name, "WWW-Authenticate");
 		DriverConfiguration driverConfiguration = new DriverConfiguration("dummy", props);
-		assertTrue("Header should be forwarded", driverConfiguration.isForwardedRequestHeader("WWW-Authenticate"));
+		assertTrue("Header should be forwarded", driverConfiguration.isForwardedResponseHeader("WWW-Authenticate"));
 	}
 }

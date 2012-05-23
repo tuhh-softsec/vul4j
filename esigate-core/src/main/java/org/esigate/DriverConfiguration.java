@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate;
 
 import java.net.MalformedURLException;
@@ -25,8 +26,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
-import org.esigate.authentication.RemoteUserAuthenticationHandler;
-import org.esigate.cookie.SerializableBasicCookieStore;
 import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
 import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
@@ -34,8 +33,6 @@ import org.esigate.url.SingleBaseUrlRetrieveStrategy;
 import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
 import org.esigate.util.FilterList;
 import org.esigate.util.PropertiesUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Driver configuration parameters
@@ -44,107 +41,40 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class DriverConfiguration {
-	private static final Logger LOG = LoggerFactory.getLogger(DriverConfiguration.class);
-
-	private static final String STICKYSESSION = "stickysession";
-	private static final String IPHASH = "iphash";
-	private static final String ROUNDROBIN = "roundrobin";
 
 	private final String instanceName;
-	private String uriEncoding = "ISO-8859-1";
-	private boolean fixResources = false;
-	private String visibleBaseURL = null;
-	private int fixMode = ResourceFixupRenderer.RELATIVE;
-	private int maxConnectionsPerHost = 20;
-	private int connectTimeout = 1000;
-	private int socketTimeout = 10000;
-	private boolean useCache = true;
-	private int cacheRefreshDelay = 0;
-	private int cacheMaxFileSize = 0;
-	private final String localBase;
-	private boolean putInCache = false;
-	private String proxyHost = null;
-	private int proxyPort = 0;
-	private String proxyUser = null;
-	private String proxyPassword = null;
-	private boolean filterJsessionid = true;
-	private String authenticationHandler = RemoteUserAuthenticationHandler.class.getName();
+	private final String uriEncoding;
+	private final boolean fixResources;
+	private final String visibleBaseURL;
+	private final int fixMode;
+	private final String authenticationHandler;
 	private final Properties properties;
-	private boolean preserveHost = false;
-	private String cookieStore = SerializableBasicCookieStore.class.getName();
-	private String filter = null;
+	private final boolean preserveHost;
+	private final String cookieStore;
+	private final String filter;
 	private final List<String> parsableContentTypes;
 	private final FilterList requestHeadersFilterList;
 	private final FilterList responseHeadersFilterList;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
-	private boolean isVisibleBaseURLEmpty = true;
-
-	private static final String DEFAULT_PARSABLE_CONTENT_TYPES = "text/html, application/xhtml+xml";
-	private static final String DEFAULT_BLACK_LISTED_REQUEST_HEADERS = "Authorization,Connection,"
-			+ "Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,TE,Trailer,"
-			+ "Transfer-Encoding,Upgrade";
-	private static final String DEFAULT_BLACK_LISTED_RESPONSE_HEADERS = "Connection,Content-Encoding,"
-			+ "Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,"
-			+ "Trailer,Transfer-Encoding,WWW-Authenticate";
+	private final boolean isVisibleBaseURLEmpty;
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
-		// Remote application settings
 		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
-
-		uriEncoding = PropertiesUtil.getPropertyValue(props, "uriEncoding", uriEncoding);
-		maxConnectionsPerHost = PropertiesUtil.getPropertyValue(props, "maxConnectionsPerHost", maxConnectionsPerHost);
-		int timeout = PropertiesUtil.getPropertyValue(props, "timeout", 1000);
-		connectTimeout = PropertiesUtil.getPropertyValue(props, "connectTimeout", timeout);
-		socketTimeout = PropertiesUtil.getPropertyValue(props, "socketTimeout", timeout * 10);
-
-		// Cache settings
-		cacheRefreshDelay = PropertiesUtil.getPropertyValue(props, "cacheRefreshDelay", cacheRefreshDelay);
-		cacheMaxFileSize = PropertiesUtil.getPropertyValue(props, "cacheMaxFileSize", cacheMaxFileSize);
-
-		// Local file system settings
-		localBase = PropertiesUtil.getPropertyValue(props, "localBase", null);
-		putInCache = PropertiesUtil.getPropertyValue(props, "putInCache", putInCache);
-
-		// proxy settings
-		if (props.getProperty("proxyHost") != null && props.getProperty("proxyPort") != null) {
-			proxyHost = PropertiesUtil.getPropertyValue(props, "proxyHost", null);
-			proxyPort = PropertiesUtil.getPropertyValue(props, "proxyPort", 0);
-			if (props.getProperty("proxyUser") != null && props.getProperty("proxyPassword") != null) {
-				proxyUser = PropertiesUtil.getPropertyValue(props, "proxyUser", null);
-				proxyPassword = PropertiesUtil.getPropertyValue(props, "proxyPassword", null);
-			}
+		uriEncoding = Parameters.URI_ENCODING.getValueString(props);
+		authenticationHandler = Parameters.AUTHENTICATION_HANDLER.getValueString(props);
+		cookieStore = Parameters.COOKIE_STORE.getValueString(props);
+		filter = Parameters.FILTER.getValueString(props);
+		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
+		fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
+		visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
+		isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
+		if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValueString(props))) {
+			this.fixMode = ResourceFixupRenderer.ABSOLUTE;
+		} else {
+			this.fixMode = ResourceFixupRenderer.RELATIVE;
 		}
-		useCache = PropertiesUtil.getPropertyValue(props, "useCache", useCache);
-		filterJsessionid = PropertiesUtil.getPropertyValue(props, "filterJsessionid", filterJsessionid);
-
-		// Authentification handler
-		authenticationHandler = PropertiesUtil.getPropertyValue(props, "authenticationHandler", authenticationHandler);
-
-		// Cookie Store
-		cookieStore = PropertiesUtil.getPropertyValue(props, "cookieStore", cookieStore);
-
-		// Wat Filter
-		filter = PropertiesUtil.getPropertyValue(props, "filter", filter);
-
-		preserveHost = PropertiesUtil.getPropertyValue(props, "preserveHost", preserveHost);
-
-		// Fix resources
-		if (props.getProperty("fixResources") != null) {
-			fixResources = PropertiesUtil.getPropertyValue(props, "fixResources", fixResources);
-			// Fix resources mode
-			if (props.getProperty("fixMode") != null) {
-				if ("absolute".equalsIgnoreCase(props.getProperty("fixMode"))) {
-					this.fixMode = ResourceFixupRenderer.ABSOLUTE;
-				}
-			}
-			// Visible base url
-			visibleBaseURL = PropertiesUtil.getPropertyValue(props, "visibleUrlBase", null);
-			isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
-		}
-
-		// Parsable content types
-		String strContentTypes = PropertiesUtil.getPropertyValue(props, "parsableContentTypes", DEFAULT_PARSABLE_CONTENT_TYPES);
+		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(props);
 		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
 		String contentType;
 		parsableContentTypes = new ArrayList<String>();
@@ -153,28 +83,22 @@ public class DriverConfiguration {
 			contentType = contentType.trim();
 			parsableContentTypes.add(contentType);
 		}
-
 		// Populate headers filter lists
 		requestHeadersFilterList = new FilterList();
 		responseHeadersFilterList = new FilterList();
 		// By default all headers are forwarded
 		requestHeadersFilterList.add(Collections.singletonList("*"));
 		responseHeadersFilterList.add(Collections.singletonList("*"));
-		if (props.get("blackListedHeaders") != null) {
-			LOG.warn("Property 'blackListedHeaders' is deprecated");
-			Collection<String> blackListedHeadersList = PropertiesUtil.getPropertyValueAsList(props, "blackListedHeaders");
-			requestHeadersFilterList.remove(blackListedHeadersList);
-			responseHeadersFilterList.remove(blackListedHeadersList);
-		}
-		PropertiesUtil.populate(requestHeadersFilterList, props, "forwardRequestHeaders", "discardRequestHeaders", "", DEFAULT_BLACK_LISTED_REQUEST_HEADERS);
-		PropertiesUtil.populate(responseHeadersFilterList, props, "forwardResponseHeaders", "discardResponseHeaders", "", DEFAULT_BLACK_LISTED_RESPONSE_HEADERS);
-
+		PropertiesUtil.populate(requestHeadersFilterList, props, Parameters.FORWARD_REQUEST_HEADERS.name, Parameters.DISCARD_REQUEST_HEADERS.name, "",
+				Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
+		PropertiesUtil.populate(responseHeadersFilterList, props, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
+				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
 		properties = props;
 	}
 
 	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
 		BaseUrlRetrieveStrategy urlStrategy = null;
-		String baseURLs = PropertiesUtil.getPropertyValue(props, "remoteUrlBase", null);
+		String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
 		try {
 			if (!StringUtils.isEmpty(baseURLs)) {
 				String[] urls = StringUtils.split(baseURLs, ",");
@@ -189,12 +113,12 @@ public class DriverConfiguration {
 						new URL(baseURL);
 						urlArr[i] = baseURL;
 					}
-					String strategy = StringUtils.trimToEmpty(PropertiesUtil.getPropertyValue(props, "remoteUrlBaseStrategy", ROUNDROBIN));
-					if (ROUNDROBIN.equalsIgnoreCase(strategy)) {
+					String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
+					if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
 						urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
-					} else if (IPHASH.equalsIgnoreCase(strategy)) {
+					} else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
 						urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
-					} else if (STICKYSESSION.equalsIgnoreCase(strategy)) {
+					} else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
 						urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
 					} else {
 						throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
@@ -232,60 +156,8 @@ public class DriverConfiguration {
 		return instanceName;
 	}
 
-	public int getMaxConnectionsPerHost() {
-		return maxConnectionsPerHost;
-	}
-
-	public int getConnectTimeout() {
-		return connectTimeout;
-	}
-
-	public int getSocketTimeout() {
-		return socketTimeout;
-	}
-
-	public boolean isUseCache() {
-		return useCache;
-	}
-
-	public int getCacheRefreshDelay() {
-		return cacheRefreshDelay;
-	}
-
-	public int getCacheMaxFileSize() {
-		return cacheMaxFileSize;
-	}
-
-	public String getLocalBase() {
-		return localBase;
-	}
-
-	public boolean isPutInCache() {
-		return putInCache;
-	}
-
-	public String getProxyHost() {
-		return proxyHost;
-	}
-
-	public int getProxyPort() {
-		return proxyPort;
-	}
-
-	public String getProxyUser() {
-		return proxyUser;
-	}
-
-	public String getProxyPassword() {
-		return proxyPassword;
-	}
-
 	public String getUriEncoding() {
 		return uriEncoding;
-	}
-
-	public boolean isFilterJsessionid() {
-		return filterJsessionid;
 	}
 
 	public String getAuthenticationHandler() {
@@ -296,19 +168,10 @@ public class DriverConfiguration {
 		return properties;
 	}
 
-	public void setCookieStore(String cookieStore) {
-		this.cookieStore = cookieStore;
-	}
-
 	public String getCookieStore() {
 		return cookieStore;
 	}
 
-	/**
-	 * List of parsable content types. Default is text/html, application/xhtml+xml
-	 * 
-	 * @return List of parsable content types.
-	 */
 	public Collection<String> getParsableContentTypes() {
 		return parsableContentTypes;
 	}
