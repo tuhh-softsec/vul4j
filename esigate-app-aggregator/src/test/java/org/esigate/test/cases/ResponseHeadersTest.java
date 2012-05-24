@@ -157,6 +157,15 @@ public class ResponseHeadersTest extends TestCase {
 		// fail("HTTP header Content-Type should be forwarded, expected 'text/plain', got '"
 		// + resp + "'");
 		// }
+		WebConversation webConversation = new WebConversation();
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
+				+ "nocache/ag1/response-headers.jsp");
+		WebResponse resp = webConversation.getResponse(req);
+		String[] responseHeader = resp.getHeaderFields("Content-type");
+		if (responseHeader == null || responseHeader.length != 1) {
+			fail("There should be one and only one Content-type header in the response, found "
+					+ responseHeader.length);
+		}
 	}
 
 	public void testDate() throws Exception {
@@ -165,6 +174,15 @@ public class ResponseHeadersTest extends TestCase {
 		// on Jetty 6 you can override it only with setDateHeader method
 		// setHeader method will not work !
 		// assertHeaderForwarded("Date", "Fri, 06 Apr 2012 15:18:12 GMT");
+		WebConversation webConversation = new WebConversation();
+		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
+				+ "nocache/ag1/response-headers.jsp");
+		WebResponse resp = webConversation.getResponse(req);
+		String[] responseHeader = resp.getHeaderFields("Date");
+		if (responseHeader == null || responseHeader.length != 1) {
+			fail("There should be one and only one Date header in the response, found "
+					+ responseHeader.length);
+		}
 	}
 
 	public void testETag() throws Exception {
