@@ -13,26 +13,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CasAuthenticationHandler implements AuthenticationHandler {
+	public static final String DEFAULT_LOGIN_URL = "/login";
+
 	private final static Logger LOG = LoggerFactory.getLogger(AuthenticationHandler.class);
+
+	// Configuration properties names
+	private final static String LOGIN_URL_PROPERTY = "casLoginUrl";
 	private final static String SECOND_REQUEST = "SECOND_REQUEST";
-	private String loginUrl = "/login";
+	private final static String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
+
+	private final static String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
+
+	private String loginUrl;
+	private boolean springSecurity;
+	private String springSecurityUrl;
 
 	private String addCasAuthentication(String location, ResourceContext requestContext) {
+		String resultLocation = location;
 		Principal principal = requestContext.getOriginalRequest().getUserPrincipal();
 		if (principal != null && principal instanceof AttributePrincipal) {
 			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
-			String casProxyTicket = casPrincipal.getProxyTicketFor(location);
+
+			if (springSecurity) {
+				String params = null;
+				if (resultLocation.indexOf("?") != -1) {
+					params = resultLocation.substring(resultLocation.indexOf("?"));
+					LOG.debug("params: " + params.substring(1));
+				}
+				if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
+					resultLocation = requestContext.getBaseURL() + springSecurityUrl + ((params != null) ? params : "");
+					LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
+				}
+			}
+			String casProxyTicket = casPrincipal.getProxyTicketFor(resultLocation);
 			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : " + casProxyTicket);
 			if (casProxyTicket != null) {
-				if (location.indexOf("?") > 0) {
-					return location + "&ticket=" + casProxyTicket;
+				if (resultLocation.indexOf("?") > 0) {
+					return resultLocation + "&ticket=" + casProxyTicket;
 				} else {
-					return location + "?ticket=" + casProxyTicket;
+					return resultLocation + "?ticket=" + casProxyTicket;
 				}
 			}
 		}
-		return location;
+
+		return resultLocation;
 	}
 
 	public boolean beforeProxy(ResourceContext requestContext) {
@@ -40,14 +65,22 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	public void init(Properties properties) {
-		String casLoginUrl = properties.getProperty("casLoginUrl");
-		if (casLoginUrl != null) {
-			this.loginUrl = casLoginUrl;
+		loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
+		if (loginUrl == null) {
+			loginUrl = DEFAULT_LOGIN_URL;
 		}
+		String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
+		if (springSecurityString != null) {
+			springSecurity = Boolean.parseBoolean(springSecurityString);
+		} else {
+			springSecurity = false;
+		}
+		springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
 	}
 
 	public boolean needsNewRequest(HttpClientResponse httpClientResponse, ResourceContext requestContext) {
 		HttpRequest httpServletRequest = requestContext.getOriginalRequest();
+
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
 			// Calculating the URL we may have been redirected to, as
 			// automatic redirect following is activated

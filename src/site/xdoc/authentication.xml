@@ -36,7 +36,7 @@
 		<section name="CAS authentication">
 			<p>
 				There is also an AuthenticationHandler for CAS Single Sign On. See
-				<a href="cas.html">CAS</a>
+				<a href="esigate-cas/index.html">CAS</a>
 				for more information.
 			</p>
 		</section>
