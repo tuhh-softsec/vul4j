@@ -129,7 +129,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticat</td>
+                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Date,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticat</td>
                 </tr>
                 <tr>
                     <td>forwardResponseHeaders</td>
