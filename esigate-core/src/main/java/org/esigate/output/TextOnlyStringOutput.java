@@ -11,19 +11,11 @@ import java.util.Set;
 import org.esigate.api.HttpResponse;
 import org.esigate.resource.ResourceUtils;
 
-
 /**
- * TextOnlyStringOutput is a variant of string output which actually checks
- * whether content is of type text before buffering it. If no header indicates
- * whether this input is text the output is directly forwarded to binaryOutput
- * specified in construction time. For details on how text content is detected
- * look at {@link ResourceUtils#isTextContentType(String, Collection)}. The
- * {@link #hasTextBuffer()} method can be used to check whether the content has
- * been buffered. Notice that {@link #hasTextBuffer()} throws
- * IllegalStateException see its javadoc for details. Notice the nothing is done
- * in the fallback binary output until forwarding has been decided in open
- * method That is you can safley pass an output object that writes to http
- * resonse for example.
+ * TextOnlyStringOutput is a variant of string output which actually checks whether content is of type text before buffering it. If no header indicates whether this input is text the output is
+ * directly forwarded to binaryOutput specified in construction time. For details on how text content is detected look at {@link ResourceUtils#isTextContentType(String, Collection)}. The
+ * {@link #hasTextBuffer()} method can be used to check whether the content has been buffered. Notice that {@link #hasTextBuffer()} throws IllegalStateException see its javadoc for details. Notice the
+ * nothing is done in the fallback binary output until forwarding has been decided in open method That is you can safley pass an output object that writes to http resonse for example.
  * 
  * @author Omar BENHAMID
  * @author Francois-Xavier Bonnet
@@ -40,34 +32,31 @@ public class TextOnlyStringOutput extends Output {
 	}
 
 	/**
-	 * Check whether this output has buffered text content or has forwarded it
-	 * to its fallback binary output considering it binary.
+	 * Check whether this output has buffered text content or has forwarded it to its fallback binary output considering it binary.
 	 * 
-	 * @return true if text content has been (or is beeing) buffered and false
-	 *         if it has been (is beeing) forwarded.
+	 * @return true if text content has been (or is beeing) buffered and false if it has been (is beeing) forwarded.
 	 * @throws IllegalStateException
-	 *             it this have not yet been decided. This happens when output
-	 *             is not yet opened and cann still receive more headers.
+	 *             it this have not yet been decided. This happens when output is not yet opened and cann still receive more headers.
 	 */
 	public boolean hasTextBuffer() throws IllegalStateException {
 		return byteArrayOutputStream != null;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IOException
+	 */
 	@Override
-	public void open() {
+	public void open() throws IOException {
 		response.setStatus(getStatusCode());
 		boolean text = ResourceUtils.isTextContentType(getHeader("Content-Type"), this.contentTypes);
 		copyHeaders(text);
-		try {
 			if (text) {
 				byteArrayOutputStream = new ByteArrayOutputStream();
 			} else {
 				outputStream = response.getOutputStream();
 			}
-		} catch (IOException e) {
-			throw new OutputException(e);
-		}
 	}
 
 	/**
@@ -87,15 +76,12 @@ public class TextOnlyStringOutput extends Output {
 		}
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws IOException */
 	@Override
-	public void close() {
+	public void close() throws IOException {
 		if (outputStream != null) {
-			try {
-				outputStream.close();
-			} catch (IOException e) {
-				throw new OutputException(e);
-			}
+			outputStream.close();
 		}
 	}
 
@@ -114,8 +100,7 @@ public class TextOnlyStringOutput extends Output {
 	@Override
 	public String toString() {
 		if (byteArrayOutputStream == null) {
-			return "<Unparsed binary data: Content-Type="
-					+ getHeader("Content-Type") + " >";
+			return "<Unparsed binary data: Content-Type=" + getHeader("Content-Type") + " >";
 		}
 		String charsetName = getCharsetName();
 		if (charsetName == null) {

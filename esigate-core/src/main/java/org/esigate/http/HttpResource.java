@@ -35,7 +35,6 @@ import org.esigate.filter.Filter;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
 import org.esigate.resource.ResourceUtils;
-import org.esigate.util.Rfc2616;
 
 /**
  * Resource implementation pointing to a resource on an external application.
@@ -98,7 +97,7 @@ public class HttpResource extends Resource {
 	@Override
 	public void render(Output output) throws IOException {
 		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
-		Rfc2616.copyHeaders(target.getDriver().getConfiguration(), this, output);
+		Resource.copyHeaders(target.getDriver().getConfiguration(), this, output);
 		target.getDriver().getFilter().postRequest(httpClientResponse, target);
 		// In case of a redirect, we need to rewrite the location header to
 		// match provider application and remove any jsessionid in the URL

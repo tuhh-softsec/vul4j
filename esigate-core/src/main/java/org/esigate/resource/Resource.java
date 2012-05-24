@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
+import org.esigate.DriverConfiguration;
 import org.esigate.api.HttpStatusConstants;
 import org.esigate.output.Output;
 
@@ -108,5 +109,17 @@ public abstract class Resource {
 	 */
 	public Date getLocalDate() {
 		return null;
+	}
+
+	/** Copies end-to-end headers from a resource to an output. */
+	public final static void copyHeaders(DriverConfiguration config, Resource resource, Output output) {
+		for (String headerName : resource.getHeaderNames()) {
+			if (config.isForwardedResponseHeader(headerName)) {
+				Collection<String> values = resource.getHeaders(headerName);
+				for (String value : values) {
+					output.addHeader(headerName, value);
+				}
+			}
+		}
 	}
 }

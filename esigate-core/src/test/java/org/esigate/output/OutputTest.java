@@ -38,7 +38,7 @@ public class OutputTest extends TestCase {
 		assertEquals("headers are different", tested.getHeaders(), actual.getHeaders());
 	}
 
-	public void testWrite() throws UnsupportedEncodingException {
+	public void testWrite() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Output tested = new MockOutput(out);
 		tested.setCharsetName("UTF-8");
@@ -52,8 +52,7 @@ public class OutputTest extends TestCase {
 			fail("should throw OutputException");
 		} catch (OutputException e) {
 			assertNotNull(e.getCause());
-			assertTrue("cause should be instance of UnsupportedEncodingException",
-					e.getCause() instanceof UnsupportedEncodingException);
+			assertTrue("cause should be instance of UnsupportedEncodingException", e.getCause() instanceof UnsupportedEncodingException);
 		}
 
 		tested = new MockOutput(new OutputStream() {
@@ -66,9 +65,8 @@ public class OutputTest extends TestCase {
 		try {
 			tested.write("unexpected");
 			fail("should throw OutputException");
-		} catch (OutputException e) {
-			assertNotNull(e.getCause());
-			assertTrue("cause should be instance of IOException", e.getCause() instanceof IOException);
+		} catch (IOException e) {
+			assertTrue("cause should be instance of IOException", e instanceof IOException);
 		}
 	}
 

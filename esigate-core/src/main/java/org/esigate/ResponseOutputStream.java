@@ -18,8 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Wrapper for servlet OutputStream that wraps underlying IOExceptions to be
- * able to distinguish them later from other kinds of IOExceptions
+ * Wrapper for servlet OutputStream that wraps underlying IOExceptions to be able to distinguish them later from other kinds of IOExceptions
  * 
  * @author Francois-Xavier Bonnet
  * 
@@ -32,48 +31,28 @@ class ResponseOutputStream extends OutputStream {
 	}
 
 	@Override
-	public void write(int b) {
-		try {
-			parent.write(b);
-		} catch (IOException e) {
-			throw new ResponseOutputStreamException(e);
-		}
+	public void write(int b) throws IOException {
+		parent.write(b);
 	}
 
 	@Override
-	public void close() {
-		try {
-			parent.close();
-		} catch (IOException e) {
-			throw new ResponseOutputStreamException(e);
-		}
+	public void close() throws IOException {
+		parent.close();
 	}
 
 	@Override
-	public void flush() {
-		try {
-			parent.flush();
-		} catch (IOException e) {
-			throw new ResponseOutputStreamException(e);
-		}
+	public void flush() throws IOException {
+		parent.flush();
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) {
-		try {
-			parent.write(b, off, len);
-		} catch (IOException e) {
-			throw new ResponseOutputStreamException(e);
-		}
+	public void write(byte[] b, int off, int len) throws IOException {
+		parent.write(b, off, len);
 	}
 
 	@Override
-	public void write(byte[] b) {
-		try {
-			parent.write(b);
-		} catch (IOException e) {
-			throw new ResponseOutputStreamException(e);
-		}
+	public void write(byte[] b) throws IOException {
+		parent.write(b);
 	}
 
 }

@@ -11,12 +11,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * An Output is designed to collect the response to a successfull HTTP request,
- * typically an HTML page or any other file type with all the headers sent by
- * the server.<br />
+ * An Output is designed to collect the response to a successfull HTTP request, typically an HTML page or any other file type with all the headers sent by the server.<br />
  * 
- * Output implementations may handle the data as needed : write it to an
- * HttpServletResponse, save it to a File or a database for example.
+ * Output implementations may handle the data as needed : write it to an HttpServletResponse, save it to a File or a database for example.
  * 
  * @author Francois-Xavier Bonnet
  * 
@@ -29,11 +26,11 @@ public abstract class Output {
 	private String charsetName;
 	private int statusCode;
 	private String statusMessage;
-	
+
 	// This map has to be synchronized, because headers are updated by multiple threads
 	// see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=84
-	private final Map<String, Set<String>> headers = Collections
-		    .synchronizedMap(new HashMap<String, Set<String>>());
+	private final Map<String, Set<String>> headers = Collections.synchronizedMap(new HashMap<String, Set<String>>());
+
 	/**
 	 * Sets the HTTP status code of the response
 	 * 
@@ -70,8 +67,7 @@ public abstract class Output {
 	public final String getHeader(String key) {
 		String result = null;
 		for (Entry<String, Set<String>> entry : headers.entrySet()) {
-			if (key.equalsIgnoreCase(entry.getKey())
-					&& !entry.getValue().isEmpty()) {
+			if (key.equalsIgnoreCase(entry.getKey()) && !entry.getValue().isEmpty()) {
 				result = entry.getValue().iterator().next();
 				break;
 			}
@@ -146,11 +142,10 @@ public abstract class Output {
 
 	/**
 	 * Opens the OutputStreams that may be needed by the OutPut.<br />
-	 * The headers and charset may be ignored if not defined before calling this
-	 * method.<br />
+	 * The headers and charset may be ignored if not defined before calling this method.<br />
 	 * Any opened Output should be closed in order to release the resources.
 	 */
-	public abstract void open();
+	public abstract void open() throws IOException;
 
 	/**
 	 * Returns underlying output stream
@@ -165,9 +160,9 @@ public abstract class Output {
 	 * @throws OutputException
 	 *             in case of error
 	 */
-	public abstract void close();
+	public abstract void close() throws IOException;
 
-	public final void write(String string) {
+	public final void write(String string) throws IOException {
 		try {
 			if (charsetName != null) {
 				getOutputStream().write(string.getBytes(charsetName));
@@ -175,8 +170,6 @@ public abstract class Output {
 				getOutputStream().write(string.getBytes("ISO-8859-1"));
 			}
 		} catch (UnsupportedEncodingException e) {
-			throw new OutputException(e);
-		} catch (IOException e) {
 			throw new OutputException(e);
 		}
 	}

@@ -30,15 +30,11 @@ public class StringOutput extends Output {
 		return byteArrayOutputStream;
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws IOException */
 	@Override
-	public void close() {
-		try {
+	public void close() throws IOException {
 			byteArrayOutputStream.close();
-		} catch (IOException e) {
-			// should not happen
-			throw new OutputException(e);
-		}
 	}
 
 	@Override

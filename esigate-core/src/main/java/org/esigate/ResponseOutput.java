@@ -21,8 +21,6 @@ import java.util.Set;
 
 import org.esigate.api.HttpResponse;
 import org.esigate.output.Output;
-import org.esigate.output.OutputException;
-
 
 /**
  * Output implementation that simply writes to an HttpServletResponse.
@@ -38,16 +36,13 @@ class ResponseOutput extends Output {
 		this.response = response;
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws IOException */
 	@Override
-	public void open() {
+	public void open() throws IOException {
 		response.setStatus(getStatusCode());
-		try {
-			copyHeaders();
-			outputStream = new ResponseOutputStream(response.getOutputStream());
-		} catch (IOException e) {
-			throw new OutputException(e);
-		}
+		copyHeaders();
+		outputStream = new ResponseOutputStream(response.getOutputStream());
 	}
 
 	/** {@inheritDoc} */
@@ -68,15 +63,15 @@ class ResponseOutput extends Output {
 		}
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IOException
+	 */
 	@Override
-	public void close() {
+	public void close() throws IOException {
 		if (outputStream != null) {
-			try {
-				outputStream.close();
-			} catch (IOException e) {
-				throw new OutputException(e);
-			}
+			outputStream.close();
 		}
 	}
 }

@@ -20,7 +20,7 @@ public class MockDriver extends Driver {
 		DriverFactory.put(name, this);
 	}
 
-	public void addResource(String relUrl, String content) {
+	public void addResource(String relUrl, String content) throws IOException {
 		StringOutput stringOutput = new StringOutput();
 		stringOutput.setStatusCode(200);
 		stringOutput.setStatusMessage("OK");
@@ -43,7 +43,7 @@ public class MockDriver extends Driver {
 
 	@Override
 	protected void renderResource(ResourceContext target, Output output)
-			throws HttpErrorPage {
+			throws HttpErrorPage, IOException {
 		StringOutput result = resources.get(target.getRelUrl());
 		if (result == null) {
 			output.setStatus(404, "Not found");

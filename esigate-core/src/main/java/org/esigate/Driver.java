@@ -16,7 +16,6 @@
 package org.esigate;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +25,6 @@ import java.util.Properties;
 
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.esigate.api.HttpStatusConstants;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.cookie.CustomCookieStore;
 import org.esigate.extension.ExtensionFactory;
@@ -41,7 +39,6 @@ import org.esigate.resource.Resource;
 import org.esigate.resource.ResourceUtils;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
-import org.esigate.util.Rfc2616;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
@@ -382,23 +379,18 @@ public class Driver {
 		}
 	}
 
-	protected void renderResource(ResourceContext resourceContext, Output output) throws HttpErrorPage {
+	protected void renderResource(ResourceContext resourceContext, Output output) throws HttpErrorPage, IOException {
 		Resource resource = null;
 		try {
 			resource = this.resourceFactory.getResource(resourceContext);
-			try {
-				Rfc2616.renderResource(config, resource, output);
-			} catch (ResponseOutputStreamException e) {
-				if (LOG.isInfoEnabled()) {
-					Throwable t = e.getCause();
-					LOG.info("Client or network problem, ignoring: {} {}", t.getClass().getName(), t.getMessage());
-				}
-			} catch (IOException e) {
-				StringWriter out = new StringWriter();
-				e.printStackTrace(new PrintWriter(out));
-				HttpErrorPage httpErrorPage = new HttpErrorPage(HttpStatusConstants.SC_BAD_GATEWAY, e.getMessage(), out.toString());
-				httpErrorPage.initCause(e);
-				throw httpErrorPage;
+			if (resource.isError()) {
+				String errorPageContent;
+				StringOutput stringOutput = new StringOutput();
+				resource.render(stringOutput);
+				errorPageContent = stringOutput.toString();
+				throw new HttpErrorPage(resource.getStatusCode(), resource.getStatusMessage(), errorPageContent);
+			} else {
+				resource.render(output);
 			}
 		} finally {
 			if (null != resource) {
@@ -416,8 +408,9 @@ public class Driver {
 	 *            the target resource
 	 * @return the content of the url
 	 * @throws HttpErrorPage
+	 * @throws IOException
 	 */
-	protected StringOutput getResourceAsString(ResourceContext context) throws HttpErrorPage {
+	protected StringOutput getResourceAsString(ResourceContext context) throws HttpErrorPage, IOException {
 		StringOutput result = null;
 		String url = ResourceUtils.getHttpUrlWithQueryString(context);
 		org.esigate.api.HttpRequest request = context.getOriginalRequest();
@@ -447,8 +440,9 @@ public class Driver {
 	 *             If an Exception occurs while retrieving the template
 	 * @return the content of the url
 	 * @throws HttpErrorPage
+	 * @throws IOException
 	 */
-	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage {
+	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage, IOException {
 		String actualPage = VariablesResolver.replaceAllVariables(page, ctx.getOriginalRequest());
 		ResourceContext resourceContext = new ResourceContext(this, actualPage, null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
 		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
