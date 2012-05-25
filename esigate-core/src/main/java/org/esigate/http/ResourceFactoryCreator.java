@@ -96,7 +96,6 @@ public class ResourceFactoryCreator {
 		// be using the HttpClient.
 		ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(schemeRegistry);
 		connectionManager.setMaxTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
-		// FIXME see the diference between route and host. Something to do with load balancing ???
 		connectionManager.setDefaultMaxPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, Parameters.CONNECT_TIMEOUT.getValueInt(properties));
@@ -122,8 +121,6 @@ public class ResourceFactoryCreator {
 
 	private static HttpClient addCache(Properties properties, HttpClient backend) {
 		String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
-		// TODO fix documentation for configuration
-		// TODO Update cache.xml xdoc
 		// TODO add a test with conditional request where resource is supposed to be transformed and not in cache yet. We should send back the Not modified response (responsibility of the application.
 		// TODO review the configuration for each webapp
 		Object cacheStorage;
@@ -135,7 +132,6 @@ public class ResourceFactoryCreator {
 		if (!(cacheStorage instanceof Extension) || !(cacheStorage instanceof HttpCacheStorage))
 			throw new ConfigurationException("Cache storage class must implement Extension and HttpCacheStorage interfaces");
 		((Extension) cacheStorage).init(properties);
-		// TODO support load balancing combined with cache
 		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
 		cacheConfig.setSharedCache(true);
 		CacheAdapter cacheAdapter = new CacheAdapter();

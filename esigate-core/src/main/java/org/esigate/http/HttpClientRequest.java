@@ -15,7 +15,8 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.ClientParamBean;
 import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
@@ -85,9 +89,17 @@ public class HttpClientRequest {
 	}
 
 	public HttpClientResponse execute(HttpClient httpClient) throws IOException, HttpErrorPage {
-		buildHttpMethod();
-		URL url = new URL(uri);
-		HttpHost httpHost = new HttpHost(url.getHost(), url.getPort(), url.getProtocol());
+		// Extract the host in the URI
+		HttpHost uriHost;
+		try {
+			uriHost = URIUtils.extractHost(new URI(uri));
+		} catch (URISyntaxException e) {
+			// Should not happen
+			throw new RuntimeException(e);
+		}
+		HttpHost targetHost = uriHost;
+		HttpHost virtualHost = null;
+		HttpRoute route = null;
 		// Preserve host if required
 		if (preserveHost) {
 			// original port is -1 for default ports(80, 443),
@@ -96,14 +108,32 @@ public class HttpClientRequest {
 			if (originalRequest.getServerPort() != 80 && originalRequest.getServerPort() != 443) {
 				originalport = originalRequest.getServerPort();
 			}
-			HttpHost virtualHost = new HttpHost(originalRequest.getServerName(), originalport, originalRequest.getScheme());
+			virtualHost = new HttpHost(originalRequest.getServerName(), originalport, originalRequest.getScheme());
+			targetHost = virtualHost;
+			HttpHost proxyHost = (HttpHost) httpClient.getParams().getParameter(ConnRoutePNames.DEFAULT_PROXY);
+			// force the route to the server in case of load balancing because. The request and the host header (virtualHost) will be the same as in original request but the request will be routed to
+			// the host in the original url. We need to do this if we don't want a separate cache entry for each node.
+			if (proxyHost == null)
+				route = new HttpRoute(uriHost);
+			else
+				route = new HttpRoute(uriHost, null, proxyHost, false);
+			try {
+				uri = URIUtils.rewriteURI(new URI(uri), targetHost).toString();
+			} catch (URISyntaxException e) {
+				// Should not happen
+				throw new RuntimeException(e);
+			}
+		}
+		buildHttpMethod();
+		if (virtualHost != null) {
 			ClientParamBean clientParamBean = new ClientParamBean(httpRequest.getParams());
 			clientParamBean.setVirtualHost(virtualHost);
+			httpRequest.getParams().setParameter(ConnRoutePNames.FORCED_ROUTE, route);
 		}
 
 		long start = System.currentTimeMillis();
 		// Do the request
-		HttpClientResponse result = new HttpClientResponse(httpHost, httpRequest, httpClient, cookieStore);
+		HttpClientResponse result = new HttpClientResponse(targetHost, httpRequest, httpClient, cookieStore);
 		long end = System.currentTimeMillis();
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(toString() + " -> " + result.toString() + " (" + (end - start) + " ms)");

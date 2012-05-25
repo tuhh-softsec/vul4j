@@ -8,7 +8,6 @@ import org.esigate.DriverConfiguration;
 import org.esigate.api.HttpStatusConstants;
 import org.esigate.output.Output;
 
-
 /**
  * An HTML page or resource (image, stylesheet...) that can be rendered to an HttpServletResponse.<br />
  * A resource can come directly from a proxied request but also from a cache or a file.<br />
@@ -49,8 +48,8 @@ public abstract class Resource {
 
 	public boolean isError() {
 		int statusCode = getStatusCode();
-		return statusCode != HttpStatusConstants.SC_OK && statusCode != HttpStatusConstants.SC_MOVED_TEMPORARILY
-				&& statusCode != HttpStatusConstants.SC_MOVED_PERMANENTLY && statusCode != HttpStatusConstants.SC_NOT_MODIFIED;
+		return statusCode != HttpStatusConstants.SC_OK && statusCode != HttpStatusConstants.SC_MOVED_TEMPORARILY && statusCode != HttpStatusConstants.SC_MOVED_PERMANENTLY
+				&& statusCode != HttpStatusConstants.SC_NOT_MODIFIED;
 	}
 
 	/**
@@ -70,8 +69,7 @@ public abstract class Resource {
 	public abstract Collection<String> getHeaderNames();
 
 	/**
-	 * Get header of the request which was used to get this resource. This can be used to check cache matching
-	 * especially when the "Vary" header is used.
+	 * Get header of the request which was used to get this resource. This can be used to check cache matching especially when the "Vary" header is used.
 	 * 
 	 * <p>
 	 * This method is intended to be overridden when saving request header is supported by the implementation.
@@ -92,9 +90,9 @@ public abstract class Resource {
 	 */
 	public boolean hasResponseBody() {
 		switch (getStatusCode()) {
-			case HttpStatusConstants.SC_OK:
-			case HttpStatusConstants.SC_PARTIAL_CONTENT:
-				return true;
+		case HttpStatusConstants.SC_OK:
+		case HttpStatusConstants.SC_PARTIAL_CONTENT:
+			return true;
 
 		}
 		return false;
@@ -112,10 +110,10 @@ public abstract class Resource {
 	}
 
 	/** Copies end-to-end headers from a resource to an output. */
-	public final static void copyHeaders(DriverConfiguration config, Resource resource, Output output) {
-		for (String headerName : resource.getHeaderNames()) {
+	public void copyHeaders(DriverConfiguration config, Output output) {
+		for (String headerName : getHeaderNames()) {
 			if (config.isForwardedResponseHeader(headerName)) {
-				Collection<String> values = resource.getHeaders(headerName);
+				Collection<String> values = getHeaders(headerName);
 				for (String value : values) {
 					output.addHeader(headerName, value);
 				}

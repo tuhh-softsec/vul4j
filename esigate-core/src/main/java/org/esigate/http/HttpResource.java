@@ -71,7 +71,7 @@ public class HttpResource extends Resource {
 		// Filter
 		Filter filter = driver.getFilter();
 		filter.preRequest(httpClientRequest, resourceContext);
-
+		
 		httpClientResponse = httpClientRequest.execute(httpClient);
 		// Save the cookies to session if necessary
 		resourceContext.getDriver().saveUserContext(resourceContext.getOriginalRequest());
@@ -97,7 +97,7 @@ public class HttpResource extends Resource {
 	@Override
 	public void render(Output output) throws IOException {
 		output.setStatus(httpClientResponse.getStatusCode(), httpClientResponse.getStatusText());
-		Resource.copyHeaders(target.getDriver().getConfiguration(), this, output);
+		copyHeaders(target.getDriver().getConfiguration(), output);
 		target.getDriver().getFilter().postRequest(httpClientResponse, target);
 		// In case of a redirect, we need to rewrite the location header to
 		// match provider application and remove any jsessionid in the URL
@@ -131,6 +131,7 @@ public class HttpResource extends Resource {
 
 	/**
 	 * Location header rewriting
+	 * 
 	 * @param location
 	 * @return
 	 * @throws MalformedURLException

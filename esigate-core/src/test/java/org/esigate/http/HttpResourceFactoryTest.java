@@ -29,6 +29,7 @@ import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.ResourceContext;
 import org.esigate.ResourceFactory;
+import org.esigate.cache.EhcacheCacheStorage;
 import org.esigate.output.StringOutput;
 import org.esigate.resource.Resource;
 import org.esigate.test.MockHttpRequest;
@@ -77,9 +78,10 @@ public class HttpResourceFactoryTest extends TestCase {
 	}
 
 	private Resource executeRequest() throws Exception {
-		org.esigate.api.HttpRequest originalRequest = new MockHttpRequest();
-		org.esigate.api.HttpResponse originalResponse = new MockHttpResponse();
+		MockHttpRequest originalRequest = new MockHttpRequest("http://localhost");
+		MockHttpResponse originalResponse = new MockHttpResponse();
 		ResourceContext resourceContext = new ResourceContext(driver, "", null, originalRequest, originalResponse);
+		resourceContext.setPreserveHost(true);
 		return resourceFactory.getResource(resourceContext);
 	}
 
@@ -161,4 +163,41 @@ public class HttpResourceFactoryTest extends TestCase {
 		result = executeRequest();
 		assertTrue("Response should have been refreshed.", compare(response2, result));
 	}
+
+	public void testCacheAndLoadBalancing() throws Exception {
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
+		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		createResourceFactory();
+		// First request
+		HttpResponse response = createMockResponse("0");
+		response.setHeader("Cache-control", "public, max-age=3600");
+		mockHttpClient.setResponse(response);
+		Resource result = executeRequest();
+		assertTrue("Response content should be '0'", compare(response, result));
+		// Second request should reuse the cache entry even if it uses a different node
+		HttpResponse response1 = createMockResponse("1");
+		mockHttpClient.setResponse(response1);
+		result = executeRequest();
+		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
+	}
+
+	public void testEhCache() throws Exception {
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
+		properties.put(Parameters.CACHE_STORAGE, EhcacheCacheStorage.class.getName()); // Default value
+		createResourceFactory();
+		// First request
+		HttpResponse response = createMockResponse("0");
+		response.setHeader("Cache-control", "public, max-age=3600");
+		mockHttpClient.setResponse(response);
+		Resource result = executeRequest();
+		assertTrue("Response content should be '0'", compare(response, result));
+		// Second request should reuse the cache entry even if it uses a different node
+		HttpResponse response1 = createMockResponse("1");
+		mockHttpClient.setResponse(response1);
+		result = executeRequest();
+		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
+	}
+
 }
