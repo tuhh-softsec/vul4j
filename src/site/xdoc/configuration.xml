@@ -111,7 +111,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Authorization,Connection,Content-Length,Cookie,Expect,Host,Max-Forwards,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
+                    <td>Authorization,Connection,Cache-control,Content-Length,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
                 </tr>
                 <tr>
                     <td>forwardRequestHeaders</td>

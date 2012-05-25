@@ -122,7 +122,6 @@ public class ResourceFactoryCreator {
 	private static HttpClient addCache(Properties properties, HttpClient backend) {
 		String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
 		// TODO add a test with conditional request where resource is supposed to be transformed and not in cache yet. We should send back the Not modified response (responsibility of the application.
-		// TODO review the configuration for each webapp
 		Object cacheStorage;
 		try {
 			cacheStorage = Class.forName(cacheStorageClass).newInstance();

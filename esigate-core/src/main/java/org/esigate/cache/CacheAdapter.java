@@ -147,8 +147,7 @@ public class CacheAdapter implements Extension {
 			 */
 			@Override
 			void transformRequest(HttpRequest httpRequest) {
-				httpRequest.removeHeaders("Cache-control");
-				httpRequest.removeHeaders("Pragma");
+				// Nothing to do
 			}
 
 			/**

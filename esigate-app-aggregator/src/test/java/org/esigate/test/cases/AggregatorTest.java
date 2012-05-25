@@ -117,8 +117,8 @@ public class AggregatorTest extends TestCase {
 	}
 
 	public void testCookies() throws Exception {
-		doCookieSimpleTest("cookies.jsp", "cookies-firstcall.html");
-		doCookieSimpleTest("cookies.jsp", "cookies.html");
+		doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies-firstcall.html");
+		doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies.html");
 	}
 
 	public void testESIInclude() throws Exception {

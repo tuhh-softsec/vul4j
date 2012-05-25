@@ -43,7 +43,7 @@ public class RequestHeadersTest extends TestCase {
 			throws Exception {
 		WebConversation webConversation = new WebConversation();
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "request-headers.jsp?name=" + name);
+				+ "nocache/ag1/request-headers.jsp?name=" + name);
 		req.setHeaderField(name, value);
 		WebResponse resp = webConversation.getResponse(req);
 		return resp.getText();
@@ -117,7 +117,7 @@ public class RequestHeadersTest extends TestCase {
 		// forwarded
 		WebConversation webConversation = new WebConversation();
 		WebRequest req = new PostMethodWebRequest(APPLICATION_PATH
-				+ "request-headers.jsp?name=Content-Length");
+				+ "nocache/ag1/request-headers.jsp?name=Content-Length");
 		WebResponse resp = webConversation.getResponse(req);
 		String result = resp.getText();
 		assertEquals(
@@ -188,7 +188,8 @@ public class RequestHeadersTest extends TestCase {
 	public void testHost() throws Exception {
 		WebConversation webConversation = new WebConversation();
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH.replace(
-				"localhost", "127.0.0.1") + "request-headers.jsp?name=host");
+				"localhost", "127.0.0.1")
+				+ "nocache/ag1/request-headers.jsp?name=host");
 		req.setHeaderField("Host", "127.0.0.1:8080");
 		WebResponse resp = webConversation.getResponse(req);
 		String result = resp.getText();
@@ -259,7 +260,7 @@ public class RequestHeadersTest extends TestCase {
 	 */
 	public void testReferer() throws Exception {
 		String result = sendRequestWithHeader("Referer", APPLICATION_PATH
-				+ "dummy");
+				+ "nocache/ag1/dummy");
 		assertEquals(
 				"Referer should be rewritten ('aggregator' replaced with 'aggregated1')",
 				"referer: http://localhost:8080/esigate-app-aggregated1/dummy",
@@ -335,7 +336,7 @@ public class RequestHeadersTest extends TestCase {
 	public void testXForwardedForNotPresent() throws Exception {
 		WebConversation webConversation = new WebConversation();
 		WebRequest req = new GetMethodWebRequest(APPLICATION_PATH
-				+ "request-headers.jsp?name=X-Forwarded-For");
+				+ "nocache/ag1/request-headers.jsp?name=X-Forwarded-For");
 		WebResponse resp = webConversation.getResponse(req);
 		if (!resp.getText().toLowerCase()
 				.startsWith("x-forwarded-for: 127.0.0.1")) {
