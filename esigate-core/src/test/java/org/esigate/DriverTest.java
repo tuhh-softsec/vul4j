@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,7 +85,7 @@ public class DriverTest extends TestCase {
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("?test=56").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?test=56")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -119,7 +120,7 @@ public class DriverTest extends TestCase {
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?text=tt&lr=143")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -156,7 +157,7 @@ public class DriverTest extends TestCase {
 		EasyMock.reset(request, response);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?text=tt&lr=143")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -201,7 +202,7 @@ public class DriverTest extends TestCase {
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?text=tt&lr=143")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -239,7 +240,7 @@ public class DriverTest extends TestCase {
 		EasyMock.reset(request, response);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?text=tt&lr=143")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -275,7 +276,7 @@ public class DriverTest extends TestCase {
 		EasyMock.reset(request, response);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("text=tt&lr=143").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?text=tt&lr=143")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();
@@ -313,7 +314,7 @@ public class DriverTest extends TestCase {
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andReturn("ISO-8859-1").anyTimes();
 		request.setCharacterEncoding("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn("?test=56").anyTimes();
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com?test=56")).anyTimes();
 		EasyMock.expect(request.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(request.getMethod()).andReturn("GET").anyTimes();
 		EasyMock.expect(request.getHeader("Host")).andReturn("localhost").anyTimes();

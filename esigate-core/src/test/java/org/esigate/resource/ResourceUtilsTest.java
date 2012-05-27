@@ -14,6 +14,7 @@
 
 package org.esigate.resource;
 
+import java.net.URI;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -27,13 +28,13 @@ import org.esigate.api.HttpRequest;
 
 public class ResourceUtilsTest extends TestCase {
 
-	public void testGetHttpUrlWithQueryString() {
+	public void testGetHttpUrlWithQueryString() throws Exception {
 		Properties props = new Properties();
 		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		Driver driver = new Driver("test", props);
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andStubReturn("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn(null);
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
 		EasyMock.expect(request.getSession(false)).andReturn(null);
 		ResourceContext resourceContext = new ResourceContext(driver, "/test", null, request, null);
 		resourceContext.setProxy(true);
@@ -41,13 +42,13 @@ public class ResourceUtilsTest extends TestCase {
 		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext));
 	}
 
-	public void testGetHttpUrlWithQueryStringAbsoluteurl() {
+	public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
 		Properties props = new Properties();
 		props.put(Parameters.REMOTE_URL_BASE, "http://www.foo.com/");
 		Driver driver = new Driver("test", props);
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andStubReturn("ISO-8859-1");
-		EasyMock.expect(request.getQueryString()).andReturn(null);
+		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
 		EasyMock.expect(request.getSession(false)).andReturn(null);
 		ResourceContext resourceContext = new ResourceContext(driver, "http://www.bar.com/test", null, request, null);
 		resourceContext.setProxy(true);

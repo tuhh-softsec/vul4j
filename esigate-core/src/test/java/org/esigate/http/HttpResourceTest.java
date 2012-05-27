@@ -34,8 +34,8 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.easymock.EasyMock;
-import org.esigate.Parameters;
 import org.esigate.Driver;
+import org.esigate.Parameters;
 import org.esigate.ResourceContext;
 import org.esigate.output.Output;
 import org.esigate.test.MockOutput;
@@ -65,8 +65,8 @@ public class HttpResourceTest extends TestCase {
 		ResourceContext resourceContext = new ResourceContext(driver, "/redirect.jsp", null, originalRequest, originalResponse);
 
 		EasyMock.expect(originalRequest.getCharacterEncoding()).andReturn("UTF-8").anyTimes();
-		EasyMock.expect(originalRequest.getQueryString()).andReturn("http://localhost:8080/esigate-app-aggregator/redirect.jsp").anyTimes();
-		EasyMock.expect(originalRequest.getRequestURL()).andReturn(new String("http://localhost:8080/esigate-app-aggregator/redirect.jsp")).anyTimes();
+		EasyMock.expect(originalRequest.getUri().getRawQuery()).andReturn("http://localhost:8080/esigate-app-aggregator/redirect.jsp").anyTimes();
+		EasyMock.expect(originalRequest.getUri().getPath()).andReturn(new String("http://localhost:8080/esigate-app-aggregator/redirect.jsp")).anyTimes();
 		EasyMock.expect(originalRequest.getSession(false)).andReturn(null).anyTimes();
 		EasyMock.expect(originalRequest.getRemoteUser()).andReturn(null).anyTimes();
 		EasyMock.expect(originalRequest.getHeader("User-Agent")).andReturn("Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13").anyTimes();

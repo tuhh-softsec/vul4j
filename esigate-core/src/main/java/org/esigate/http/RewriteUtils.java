@@ -15,12 +15,12 @@
 package org.esigate.http;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
+import org.esigate.util.UriUtils;
 
 public class RewriteUtils {
 
@@ -46,7 +46,7 @@ public class RewriteUtils {
 	 * @param sourceContext
 	 * @param targetContext
 	 * @return The translated URL
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
 	public final static String translateUrl(String sourceUrl, String sourceContext, String targetContext) throws MalformedURLException {
 		// Find what has been replaced at the beginning of sourceContext to transform it to targetContext
@@ -54,7 +54,8 @@ public class RewriteUtils {
 		String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
 		String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);
 		// Make the source url absolute
-		String absoluteSourceUrl = new URL(new URL(sourceContext), sourceUrl).toString();
+		String absoluteSourceUrl;
+			absoluteSourceUrl = UriUtils.resolve(sourceContext, sourceUrl).toString();
 		if (absoluteSourceUrl.startsWith(sourcePrefix))
 			return targetPrefix + StringUtils.removeStart(absoluteSourceUrl, sourcePrefix);
 		else

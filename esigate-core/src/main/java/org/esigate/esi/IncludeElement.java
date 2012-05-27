@@ -1,7 +1,6 @@
 package org.esigate.esi;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.esigate.parser.ElementType;
 import org.esigate.parser.Parser;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
+import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
@@ -51,7 +51,8 @@ class IncludeElement extends BaseElement {
 	private Map<String, CharSequence> fragmentRepacements;
 	private Map<String, CharSequence> regexpRepacements;
 
-	IncludeElement() { }
+	IncludeElement() {
+	}
 
 	@Override
 	public void characters(CharSequence csq, int start, int end) {
@@ -63,17 +64,14 @@ class IncludeElement extends BaseElement {
 		// apply fragment replacements
 		if (!fragmentRepacements.isEmpty()) {
 			StringBuilder tmp = new StringBuilder(buf.length());
-			Parser fragmentReplacementParser = new Parser(FRAGMENT_REPLACEMENT_PATTERN,
-					FragmentReplacementElement.createType(fragmentRepacements));
+			Parser fragmentReplacementParser = new Parser(FRAGMENT_REPLACEMENT_PATTERN, FragmentReplacementElement.createType(fragmentRepacements));
 			fragmentReplacementParser.parse(buf, tmp);
 			buf = tmp;
 		}
 		// apply regexp replacements
 		if (!regexpRepacements.isEmpty()) {
 			for (Entry<String, CharSequence> entry : regexpRepacements.entrySet()) {
-				buf = new StringBuilder(Pattern.compile(entry.getKey())
-					.matcher(buf)
-					.replaceAll(entry.getValue().toString()));
+				buf = new StringBuilder(Pattern.compile(entry.getKey()).matcher(buf).replaceAll(entry.getValue().toString()));
 			}
 		}
 
@@ -93,7 +91,7 @@ class IncludeElement extends BaseElement {
 
 		String src = tag.getAttribute("src");
 		String alt = tag.getAttribute("alt");
-		
+
 		boolean ignoreError = "continue".equals(tag.getAttribute("onerror"));
 		try {
 			try {
@@ -122,41 +120,36 @@ class IncludeElement extends BaseElement {
 		String ttl = tag.getAttribute("ttl");
 		String maxWait = tag.getAttribute("maxwait");
 		boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
-		
+
 		ResourceContext resourceContext = ctx.getResourceContext();
 		List<Renderer> rendererList = new ArrayList<Renderer>();
 		Driver driver;
 		String page;
-		
-		if(maxWait!=null){
-			try{
+
+		if (maxWait != null) {
+			try {
 				resourceContext.getOriginalRequest().setFetchMaxWait(Integer.parseInt(maxWait));
-			}catch (NumberFormatException e) {
-				//invalid maxwait value
+			} catch (NumberFormatException e) {
+				// invalid maxwait value
 			}
 		}
-		
-		if(resourceContext != null)
-		{
+
+		if (resourceContext != null) {
 			resourceContext.getOriginalRequest().setNoStoreResource(noStore);
-			
-			if(!noStore && ttl != null)
-			{
+
+			if (!noStore && ttl != null) {
 				String timePeriod = ttl.substring(ttl.length() - 1);
 				Long time = null;
 				try {
 					time = Long.parseLong(ttl.substring(0, ttl.length() - 1));
-					//convert time to milliseconds
-					if(timePeriod.equalsIgnoreCase("d")){
+					// convert time to milliseconds
+					if (timePeriod.equalsIgnoreCase("d")) {
 						time = time * 86400000;
-					}
-					else if(timePeriod.equalsIgnoreCase("h")){
+					} else if (timePeriod.equalsIgnoreCase("h")) {
 						time = time * 3600000;
-					}
-					else if(timePeriod.equalsIgnoreCase("m")){
+					} else if (timePeriod.equalsIgnoreCase("m")) {
 						time = time * 60000;
-					}
-					else if(timePeriod.equalsIgnoreCase("s")){
+					} else if (timePeriod.equalsIgnoreCase("s")) {
 						time = time * 1000;
 					}
 				} catch (NumberFormatException e) {
@@ -165,7 +158,7 @@ class IncludeElement extends BaseElement {
 				resourceContext.getOriginalRequest().setResourceTtl(time);
 			}
 		}
-		
+
 		int idx = src.indexOf("$PROVIDER({");
 		if (idx < 0) {
 			page = src;
@@ -177,33 +170,30 @@ class IncludeElement extends BaseElement {
 			page = src.substring(endIndex + "})".length());
 			driver = DriverFactory.getInstance(provider);
 		}
-		
-		if(rewriteAbsoluteUrl)
-		{
+
+		if (rewriteAbsoluteUrl) {
 			Map<String, String> replaceRules = new HashMap<String, String>();
 			String baseUrl = resourceContext.getBaseURL();
-			String visibleBaseUrl =  driver.getConfiguration().getVisibleBaseURL(baseUrl);
-			
+			String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
+
 			String contextBaseUrl;
 			String contextVisibleBaseUrl;
-			
-			if(visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)){
-				contextBaseUrl = new URL(baseUrl).getPath();
-				contextVisibleBaseUrl = new URL(visibleBaseUrl).getPath();
-				replaceRules.put("href=(\"|')"+ visibleBaseUrl +"(.*)(\"|')", "href=$1"+ contextVisibleBaseUrl +"$2$3");
-				replaceRules.put("src=(\"|')"+ visibleBaseUrl +"(.*)(\"|')", "src=$1"+ contextVisibleBaseUrl +"$2$3");
-				replaceRules.put("href=(\"|')"+ baseUrl +"(.*)(\"|')", "href=$1"+ contextBaseUrl +"$2$3");
-				replaceRules.put("src=(\"|')"+ baseUrl +"(.*)(\"|')", "src=$1"+ contextBaseUrl +"$2$3");
+			contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+			if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
+				contextVisibleBaseUrl = UriUtils.createUri(visibleBaseUrl).getPath();
+				replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl + "$2$3");
+				replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl + "$2$3");
+				replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
+				replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
+			} else {
+				contextBaseUrl = UriUtils.createUri(baseUrl).getPath();
+				replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
+				replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
 			}
-			else{
-				contextBaseUrl = new URL(baseUrl).getPath();
-				replaceRules.put("href=(\"|')"+ baseUrl +"(.*)(\"|')", "href=$1"+ contextBaseUrl +"$2$3");
-				replaceRules.put("src=(\"|')"+ baseUrl +"(.*)(\"|')", "src=$1"+ contextBaseUrl +"$2$3");
-			}
-				
+
 			rendererList.add(new ReplaceRenderer(replaceRules));
 		}
-		
+
 		page = VariablesResolver.replaceAllVariables(page, resourceContext.getOriginalRequest());
 		InlineCache ic = InlineCache.getFragment(src);
 		if (ic != null && !ic.isExpired()) {
@@ -215,12 +205,11 @@ class IncludeElement extends BaseElement {
 			} else if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
-				rendererList.add(new XsltRenderer(xslt , driver, resourceContext));
+				rendererList.add(new XsltRenderer(xslt, driver, resourceContext));
 			}
 			rendererList.add(new EsiRenderer());
-			
-			driver.render(page, outAdapter, resourceContext,
-					rendererList.toArray(new Renderer[rendererList.size()]));
+
+			driver.render(page, outAdapter, resourceContext, rendererList.toArray(new Renderer[rendererList.size()]));
 		}
 	}
 

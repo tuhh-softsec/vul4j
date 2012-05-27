@@ -72,7 +72,7 @@ public class IncludeElementTest extends TestCase {
 	public void testIncludeQueryString() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test?$(QUERY_STRING)\" /> after";
 		provider.addResource("/test?queryparameter1=test&queryparameter2=test2", "query OK");
-		request.setUrl("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals("before query OK after", out.toString());
@@ -81,7 +81,7 @@ public class IncludeElementTest extends TestCase {
 	public void testIncludeQueryStringParameter() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/$(QUERY_STRING{queryparameter2})\" /> after";
 		provider.addResource("/test2", "queryparameter2 OK");
-		request.setUrl("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals("before queryparameter2 OK after", out.toString());

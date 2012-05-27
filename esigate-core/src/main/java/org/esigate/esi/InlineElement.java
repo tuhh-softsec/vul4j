@@ -19,7 +19,8 @@ class InlineElement extends BaseElement {
 	private boolean fetchable;
 	private StringBuilder buf = new StringBuilder();
 
-	InlineElement() { }
+	InlineElement() {
+	}
 
 	@Override
 	protected void parseTag(Tag tag, ParserContext ctx) {
@@ -34,7 +35,7 @@ class InlineElement extends BaseElement {
 
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		String originalUrl = ctx.getResourceContext().getOriginalRequest().getRequestURL().toString();
+		String originalUrl = ctx.getResourceContext().getOriginalRequest().getUri().getPath().toString();
 		InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.toString());
 	}
 }

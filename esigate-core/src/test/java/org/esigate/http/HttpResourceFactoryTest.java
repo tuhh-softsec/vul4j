@@ -156,7 +156,7 @@ public class HttpResourceFactoryTest extends TestCase {
 		HttpResponse response2 = createMockResponse(200, "2");
 		mockHttpClient.setResponse(response2);
 		result = executeRequest();
-		assertTrue("Response should have been refreshed.", compare(response, result));
+		assertTrue("Response should not have been refreshed yet.", compare(response, result));
 		// Wait until revalidation is complete
 		Thread.sleep(100);
 		// Fourth request after cache has been updated at last

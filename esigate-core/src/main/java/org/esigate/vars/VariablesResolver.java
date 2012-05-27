@@ -147,7 +147,7 @@ public class VariablesResolver {
 		String res = null;
 		if (var.indexOf("QUERY_STRING") != -1) {
 			if (arg == null) {
-				res = request.getQueryString();
+				res = request.getUri().getRawQuery();
 			} else {
 				res = request.getParameter(arg);
 			}

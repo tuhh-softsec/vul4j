@@ -129,11 +129,6 @@ public class AggregatorTest extends TestCase {
 		doSimpleTest("get.jsp?myField=%C3%A9&send=Post+this+form", "get.jsp");
 	}
 
-	public void testGetUnsafeCharacter() throws Exception {
-		doSimpleTest("get.jsp?myField={}|\\^~[]`&send=Post+this+form",
-				"getUnsafeCharacter.jsp");
-	}
-
 	public void testMixedEncodings() throws Exception {
 		doSimpleTest("template-mixed-encodings.jsp");
 	}

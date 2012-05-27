@@ -15,8 +15,6 @@
 
 package org.esigate;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -89,8 +87,7 @@ public class DriverConfiguration {
 		// By default all headers are forwarded
 		requestHeadersFilterList.add(Collections.singletonList("*"));
 		responseHeadersFilterList.add(Collections.singletonList("*"));
-		PropertiesUtil.populate(requestHeadersFilterList, props, Parameters.FORWARD_REQUEST_HEADERS.name, Parameters.DISCARD_REQUEST_HEADERS.name, "",
-				Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
+		PropertiesUtil.populate(requestHeadersFilterList, props, Parameters.FORWARD_REQUEST_HEADERS.name, Parameters.DISCARD_REQUEST_HEADERS.name, "", Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
 		PropertiesUtil.populate(responseHeadersFilterList, props, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
 				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
 		properties = props;
@@ -99,35 +96,29 @@ public class DriverConfiguration {
 	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
 		BaseUrlRetrieveStrategy urlStrategy = null;
 		String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
-		try {
-			if (!StringUtils.isEmpty(baseURLs)) {
-				String[] urls = StringUtils.split(baseURLs, ",");
-				if (1 == urls.length) {
-					String baseURL = StringUtils.trimToEmpty(urls[0]);
-					new URL(baseURL);
-					urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
-				} else if (urls.length > 0) {
-					String[] urlArr = new String[urls.length];
-					for (int i = 0; i < urls.length; i++) {
-						String baseURL = StringUtils.trimToEmpty(urls[i]);
-						new URL(baseURL);
-						urlArr[i] = baseURL;
-					}
-					String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
-					if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
-						urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
-					} else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
-						urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
-					} else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
-						urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
-					} else {
-						throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
-					}
-
+		if (!StringUtils.isEmpty(baseURLs)) {
+			String[] urls = StringUtils.split(baseURLs, ",");
+			if (1 == urls.length) {
+				String baseURL = StringUtils.trimToEmpty(urls[0]);
+				urlStrategy = new SingleBaseUrlRetrieveStrategy(baseURL);
+			} else if (urls.length > 0) {
+				String[] urlArr = new String[urls.length];
+				for (int i = 0; i < urls.length; i++) {
+					String baseURL = StringUtils.trimToEmpty(urls[i]);
+					urlArr[i] = baseURL;
 				}
+				String strategy = Parameters.REMOTE_URL_BASE_STRATEGY.getValueString(props);
+				if (Parameters.ROUNDROBIN.equalsIgnoreCase(strategy)) {
+					urlStrategy = new RoundRobinBaseUrlRetrieveStrategy(urlArr);
+				} else if (Parameters.IPHASH.equalsIgnoreCase(strategy)) {
+					urlStrategy = new IpHashBaseUrlRetrieveStrategy(urlArr);
+				} else if (Parameters.STICKYSESSION.equalsIgnoreCase(strategy)) {
+					urlStrategy = new StickySessionBaseUrlRetrieveStrategy(urlArr);
+				} else {
+					throw new ConfigurationException("No such BaseUrlRetrieveStrategy '" + strategy + "'");
+				}
+
 			}
-		} catch (MalformedURLException e) {
-			throw new ConfigurationException(e);
 		}
 		return urlStrategy;
 	}

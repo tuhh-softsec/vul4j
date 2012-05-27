@@ -31,7 +31,7 @@ public class VarsElementTest extends TestCase {
 
 	public void testHttpHost() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
-		request.setUrl("http://www.foo.com");
+		request.setUri("http://www.foo.com");
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals("begin www.foo.com end", out.toString());
@@ -51,7 +51,7 @@ public class VarsElementTest extends TestCase {
 		String page = "begin <esi:vars>"
 				+ "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >"
 				+ "</esi:vars> end";
-		request.setUrl("http://localhost/?param1=param1value");
+		request.setUri("http://localhost/?param1=param1value");
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", out.toString());

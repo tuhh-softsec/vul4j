@@ -14,15 +14,13 @@
 
 package org.esigate;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.esigate.util.UriUtils;
 
 /**
  * Represents the location of a requested resource with all the necessary parameters. When proxyMode is set to true, the resource should not be cached and any cookie or parameter coming from the
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * @author Francois-Xavier Bonnet
  */
 public class ResourceContext {
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceContext.class);
 	private final Driver driver;
 
 	/**
@@ -48,7 +45,7 @@ public class ResourceContext {
 	private final Map<String, String> parameters;
 	private boolean proxy = false;
 	private boolean preserveHost = false;
-	private URL baseURLasURL = null;
+	private URI baseURLasURL = null;
 
 	public boolean isPreserveHost() {
 		return preserveHost;
@@ -107,14 +104,10 @@ public class ResourceContext {
 		return baseURL;
 	}
 
-	public URL getBaseURLasURL() {
+	public URI getBaseURLasURL() {
 		if (null == baseURLasURL) {
 			if (null != baseURL) {
-				try {
-					baseURLasURL = new URL(baseURL);
-				} catch (MalformedURLException e) {
-					LOG.error("Base URL is not valid", e);
-				}
+				baseURLasURL = UriUtils.createUri(baseURL);
 			}
 		}
 		return baseURLasURL;

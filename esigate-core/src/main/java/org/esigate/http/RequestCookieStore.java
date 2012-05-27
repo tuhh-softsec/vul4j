@@ -29,13 +29,10 @@ import org.slf4j.LoggerFactory;
 /**
  * A CookieStore specific to current request.
  * <ul>
- * <li>It wraps the actual CookieStore for current user in order to store the
- * cookies and send them back to the server.</li>
- * <li>It retrieves the Cookies from incoming request to send them to the server
- * if they match the list of forwarded cookies.</li>
+ * <li>It wraps the actual CookieStore for current user in order to store the cookies and send them back to the server.</li>
+ * <li>It retrieves the Cookies from incoming request to send them to the server if they match the list of forwarded cookies.</li>
  * <li>It filters the Cookies according to the discardCookies list.</li>
- * <li>It forwards the cookies that should be forwarded according to
- * forwardCookies list.</li>
+ * <li>It forwards the cookies that should be forwarded according to forwardCookies list.</li>
  * </ul>
  * 
  * @see CookieStore
@@ -51,9 +48,7 @@ class RequestCookieStore implements CookieStore {
 	private final CookieStore actualCookieStore;
 	private final ResourceContext resourceContext;
 
-	public RequestCookieStore(Collection<String> discardCookies,
-			Collection<String> forwardCookies, CookieStore actualCookieStore,
-			HttpClientRequest request, ResourceContext resourceContext) {
+	public RequestCookieStore(Collection<String> discardCookies, Collection<String> forwardCookies, CookieStore actualCookieStore, HttpClientRequest request, ResourceContext resourceContext) {
 		this.discardCookies = discardCookies;
 		this.forwardCookies = forwardCookies;
 		this.actualCookieStore = actualCookieStore;
@@ -108,16 +103,13 @@ class RequestCookieStore implements CookieStore {
 		if ("JSESSIONID".equalsIgnoreCase(name)) {
 			name = "_" + name;
 		}
-		
+
 		// Rewrite domain
-		String domain = rewriteDomain(
-				cookie.getDomain(),
-				resourceContext.getBaseURLasURL().getHost(),
-				resourceContext.getOriginalRequest().getServerName());
+		String domain = rewriteDomain(cookie.getDomain(), resourceContext.getBaseURLasURL().getHost(), resourceContext.getOriginalRequest().getUri().getHost());
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
-		String requestPath = resourceContext.getOriginalRequest().getRequestURI();
+		String requestPath = resourceContext.getOriginalRequest().getUri().getRawQuery();
 		String path = originalPath;
 		if (requestPath == null || !requestPath.startsWith(originalPath)) {
 			path = "/";
@@ -140,8 +132,7 @@ class RequestCookieStore implements CookieStore {
 		return cookieToForward;
 	}
 
-	static String rewriteDomain(String originalDomain, String providerHostName,
-			String requestHostName) {
+	static String rewriteDomain(String originalDomain, String providerHostName, String requestHostName) {
 		String domain = null;
 		if (!providerHostName.equals(originalDomain)) {
 			// if original domain starts with ".", remove it.
@@ -150,16 +141,14 @@ class RequestCookieStore implements CookieStore {
 			}
 			String[] originalDomainParts = originalDomain.split("\\.");
 			String[] requestHostNameParts = requestHostName.split("\\.");
-			int targetLength = Math.min(originalDomainParts.length,
-					requestHostNameParts.length);
+			int targetLength = Math.min(originalDomainParts.length, requestHostNameParts.length);
 			if (targetLength == requestHostNameParts.length) {
 				// The bigger domain we can use is request host name, it is like
 				// returning null as domaine name!
 				return null;
 			}
 			domain = "";
-			for (int i = requestHostNameParts.length; i > requestHostNameParts.length
-					- targetLength; i--) {
+			for (int i = requestHostNameParts.length; i > requestHostNameParts.length - targetLength; i--) {
 				domain = "." + requestHostNameParts[i - 1] + domain;
 			}
 		}
@@ -189,12 +178,11 @@ class RequestCookieStore implements CookieStore {
 		if ("_JSESSIONID".equalsIgnoreCase(name)) {
 			name = name.substring(1);
 		}
-		SerializableBasicClientCookie2 httpClientCookie = new SerializableBasicClientCookie2(
-				name, cookie.getValue());
+		SerializableBasicClientCookie2 httpClientCookie = new SerializableBasicClientCookie2(name, cookie.getValue());
 		httpClientCookie.setSecure(false);
 		String domain;
 		if (resourceContext.getDriver().getConfiguration().isPreserveHost()) {
-			domain = resourceContext.getOriginalRequest().getServerName();
+			domain = resourceContext.getOriginalRequest().getUri().getHost();
 		} else {
 			domain = resourceContext.getBaseURLasURL().getHost();
 		}

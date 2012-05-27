@@ -3,6 +3,7 @@ package org.esigate.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import org.esigate.api.Cookie;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 import org.esigate.cookie.BasicClientCookie;
+import org.esigate.util.UriUtils;
 
 public class HttpRequestImpl implements HttpRequest {
 
@@ -20,12 +22,11 @@ public class HttpRequestImpl implements HttpRequest {
 	private Long ttl;
 	private Integer maxWait;
 	private boolean noStore;
-	
-	
+
 	private HttpRequestImpl(HttpServletRequest parent) {
 		this.parent = parent;
 	}
-	
+
 	public static HttpRequest wrap(HttpServletRequest parent) {
 		return new HttpRequestImpl(parent);
 	}
@@ -44,13 +45,13 @@ public class HttpRequestImpl implements HttpRequest {
 
 	@SuppressWarnings("unchecked")
 	public Collection<String> getHeaderNames() {
-		return Collections.<String>list(parent.getHeaderNames());
+		return Collections.<String> list(parent.getHeaderNames());
 	}
 
 	public Cookie[] getCookies() {
 		javax.servlet.http.Cookie[] src = parent.getCookies();
 		Cookie result[] = null;
-		if(src != null){
+		if (src != null) {
 			result = new Cookie[src.length];
 			for (int i = 0; i < src.length; i++) {
 				javax.servlet.http.Cookie c = src[i];
@@ -60,8 +61,8 @@ public class HttpRequestImpl implements HttpRequest {
 				dest.setPath(c.getPath());
 				dest.setComment(c.getComment());
 				dest.setVersion(c.getVersion());
-				//if (cookie.getMaxAge() < 0) {
-	
+				// if (cookie.getMaxAge() < 0) {
+
 				result[i] = dest;
 			}
 		}
@@ -111,9 +112,9 @@ public class HttpRequestImpl implements HttpRequest {
 	public String getCharacterEncoding() {
 		return parent.getCharacterEncoding();
 	}
-	
+
 	public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-		 this.parent.setCharacterEncoding(env);
+		this.parent.setCharacterEncoding(env);
 	}
 
 	public String getRemoteUser() {
@@ -159,6 +160,10 @@ public class HttpRequestImpl implements HttpRequest {
 
 	public void setFetchMaxWait(Integer maxWait) {
 		this.maxWait = maxWait;
+	}
+
+	public URI getUri() {
+		return UriUtils.createURI(parent.getScheme(), parent.getServerName(), parent.getServerPort(), parent.getRequestURI(), parent.getQueryString(), null);
 	}
 
 }

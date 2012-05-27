@@ -2,7 +2,6 @@ package org.esigate.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -20,17 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Reverse Proxy servlet with rewrite abilities. It will usually be mapped on *
- * in a webapp deployed on the ROOT context. Other configurations will also
- * work.
+ * Reverse Proxy servlet with rewrite abilities. It will usually be mapped on * in a webapp deployed on the ROOT context. Other configurations will also work.
  * 
  * <p>
- * Configuration in
- * <strong>org/esigate/rewrite-proxy.properties</strong> : <br/>
+ * Configuration in <strong>org/esigate/rewrite-proxy.properties</strong> : <br/>
  * <code>
  * # Rule 1<br/> 
  * <br/>
@@ -290,12 +287,10 @@ public class RewriteProxyServlet extends HttpServlet {
 	}
 
 	/**
-	 * {@inheritDoc} javax.servlet.http.HttpServlet#service(javax.servlet.http.
-	 * HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * {@inheritDoc} javax.servlet.http.HttpServlet#service(javax.servlet.http. HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void service(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Build request url
 		String relUrl = request.getRequestURI();
 		relUrl = relUrl.substring(request.getContextPath().length());
@@ -312,27 +307,22 @@ public class RewriteProxyServlet extends HttpServlet {
 				// Match query if necessary
 				Matcher queryMatcher = null;
 				if (conf.getQueryMatchPattern() != null) {
-					queryMatcher = conf.getQueryMatchPattern().matcher(
-							getStringNotNull(request.getQueryString()));
+					queryMatcher = conf.getQueryMatchPattern().matcher(getStringNotNull(request.getQueryString()));
 				}
 
 				// Match scheme if necessary
 				Boolean schemeMatcher = null;
 				if (conf.getSchemePattern() != null) {
-					schemeMatcher = conf.getSchemePattern().equals(
-							request.getScheme()) ? true : false;
+					schemeMatcher = conf.getSchemePattern().equals(request.getScheme()) ? true : false;
 				}
 
 				// Match port if necessary
 				Boolean portMatcher = null;
 				if (conf.getPortPattern() != null) {
-					portMatcher = conf.getPortPattern().equals(
-							request.getServerPort()) ? true : false;
+					portMatcher = conf.getPortPattern().equals(request.getServerPort()) ? true : false;
 				}
 
-				if ((queryMatcher == null || queryMatcher.matches())
-						&& (schemeMatcher == null || schemeMatcher)
-						&& (portMatcher == null || portMatcher)) {
+				if ((queryMatcher == null || queryMatcher.matches()) && (schemeMatcher == null || schemeMatcher) && (portMatcher == null || portMatcher)) {
 					// Rule matched.
 
 					// Create new URL
@@ -350,13 +340,11 @@ public class RewriteProxyServlet extends HttpServlet {
 					// Process Query string
 					if (queryMatcher != null) {
 						// Create new query string
-						targetQueryString = getStringNotNull(conf
-								.getQueryRewrite());
+						targetQueryString = getStringNotNull(conf.getQueryRewrite());
 
 						// Do replacements.
 						for (int i = 1; i < queryMatcher.groupCount() + 1; i++) {
-							targetQueryString = targetQueryString.replace("$"
-									+ i, queryMatcher.group(i));
+							targetQueryString = targetQueryString.replace("$" + i, queryMatcher.group(i));
 						}
 
 						// clear query string if empty
@@ -369,8 +357,7 @@ public class RewriteProxyServlet extends HttpServlet {
 
 					// Process Scheme string
 					String targetScheme = null;
-					if (schemeMatcher != null
-							&& conf.getSchemeRewrite() != null) {
+					if (schemeMatcher != null && conf.getSchemeRewrite() != null) {
 						targetScheme = conf.getSchemeRewrite();
 					} else {
 						targetScheme = request.getScheme();
@@ -389,13 +376,9 @@ public class RewriteProxyServlet extends HttpServlet {
 						try {
 							// Nice log
 							if (LOG.isDebugEnabled()) {
-								LOG.debug("Proxying " + relUrl + " to "
-										+ newUrl + " w/ query "
-										+ targetQueryString);
+								LOG.debug("Proxying " + relUrl + " to " + newUrl + " w/ query " + targetQueryString);
 							}
-							DriverFactory.getInstance(conf.getProvider())
-									.proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request,
-											targetQueryString)), HttpResponseImpl.wrap(response));
+							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString)), HttpResponseImpl.wrap(response));
 							return;
 						} catch (HttpErrorPage e) {
 							response.setStatus(e.getStatusCode());
@@ -410,14 +393,7 @@ public class RewriteProxyServlet extends HttpServlet {
 						} else {
 							targetFile = newUrl;
 						}
-						if (targetPort != null) {
-							target = new URL(targetScheme,
-									request.getServerName(), targetPort,
-									targetFile).toString();
-						} else {
-							target = new URL(targetScheme,
-									request.getServerName(), newUrl).toString();
-						}
+						target = UriUtils.createURI(targetScheme, request.getServerName(), targetPort, targetFile, null, null).toString();
 
 						// Redirect request and return;
 						int redirectCode = HttpServletResponse.SC_MOVED_PERMANENTLY;
@@ -427,8 +403,7 @@ public class RewriteProxyServlet extends HttpServlet {
 
 						// Nice log
 						if (LOG.isDebugEnabled()) {
-							LOG.debug("Redirecting " + relUrl + " to "
-									+ target + ". Code=" + redirectCode);
+							LOG.debug("Redirecting " + relUrl + " to " + target + ". Code=" + redirectCode);
 						}
 						response.setStatus(redirectCode);
 						response.setHeader("Location", target);
@@ -443,9 +418,7 @@ public class RewriteProxyServlet extends HttpServlet {
 		// validate the schemePatttern
 		if (conf.getSchemePattern() != null) {
 			if (!conf.getSchemePattern().matches("http|https")) {
-				ConfigurationException e = new ConfigurationException("Rule : "
-						+ rule + " had a none expected scheme pattern : "
-						+ conf.getSchemePattern()
+				ConfigurationException e = new ConfigurationException("Rule : " + rule + " had a none expected scheme pattern : " + conf.getSchemePattern()
 						+ " expected scheme pattern : http or https");
 				throw e;
 			}
@@ -453,9 +426,7 @@ public class RewriteProxyServlet extends HttpServlet {
 		// validate the schemeRewrite
 		if (conf.getSchemeRewrite() != null) {
 			if (!conf.getSchemeRewrite().matches("http|https")) {
-				ConfigurationException e = new ConfigurationException("Rule : "
-						+ rule + " had a none expected rewrite scheme : "
-						+ conf.getSchemeRewrite()
+				ConfigurationException e = new ConfigurationException("Rule : " + rule + " had a none expected rewrite scheme : " + conf.getSchemeRewrite()
 						+ " expected rewrite scheme : http or https");
 				throw e;
 			}
@@ -463,9 +434,7 @@ public class RewriteProxyServlet extends HttpServlet {
 		// validate the redirect code
 		if (conf.getRedirect() != null) {
 			if (conf.getRedirect() < 300 || conf.getRedirect() > 400) {
-				ConfigurationException e = new ConfigurationException("Rule : "
-						+ rule + " had a none expected redirect code range : "
-						+ conf.getRedirect() + " expected range : 300-400");
+				ConfigurationException e = new ConfigurationException("Rule : " + rule + " had a none expected redirect code range : " + conf.getRedirect() + " expected range : 300-400");
 				throw e;
 			}
 		}

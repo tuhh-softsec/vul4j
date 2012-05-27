@@ -18,8 +18,6 @@ package org.esigate.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -35,6 +33,7 @@ import org.esigate.filter.Filter;
 import org.esigate.output.Output;
 import org.esigate.resource.Resource;
 import org.esigate.resource.ResourceUtils;
+import org.esigate.util.UriUtils;
 
 /**
  * Resource implementation pointing to a resource on an external application.
@@ -71,7 +70,7 @@ public class HttpResource extends Resource {
 		// Filter
 		Filter filter = driver.getFilter();
 		filter.preRequest(httpClientRequest, resourceContext);
-		
+
 		httpClientResponse = httpClientRequest.execute(httpClient);
 		// Save the cookies to session if necessary
 		resourceContext.getDriver().saveUserContext(resourceContext.getOriginalRequest());
@@ -120,7 +119,7 @@ public class HttpResource extends Resource {
 		}
 	}
 
-	private void copyHeaderAndRewriteUri(String headerName, Output output) throws MalformedURLException {
+	private void copyHeaderAndRewriteUri(String headerName, Output output) {
 		String headerValue = httpClientResponse.getHeader(headerName);
 		if (headerValue != null) {
 			headerValue = rewriteLocation(headerValue);
@@ -134,17 +133,16 @@ public class HttpResource extends Resource {
 	 * 
 	 * @param location
 	 * @return
-	 * @throws MalformedURLException
 	 */
-	private String rewriteLocation(String location) throws MalformedURLException {
+	private String rewriteLocation(String location) {
 		// TODO Check that this method works for relative URI or URI starting with /
 		// TODO refactor with URI rewriting in request headers
 
 		// Make the url absolute
-		location = new URL(new URL(url), location).toString();
+		location = UriUtils.resolve(url, location).toString();
 
 		HttpRequest request = target.getOriginalRequest();
-		String originalRequestURL = request.getRequestURL();
+		String originalRequestURL = request.getUri().toString();
 
 		// Look for the relUrl starting from the end of the url
 		int pos = originalRequestURL.lastIndexOf(target.getRelUrl());

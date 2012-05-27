@@ -31,8 +31,7 @@ public class ResourceUtils {
 			if (charset == null) {
 				charset = "ISO-8859-1";
 			}
-			String originalQuerystring = target.getOriginalRequest()
-					.getQueryString();
+			String originalQuerystring = target.getOriginalRequest().getUri().getRawQuery();
 			if (target.isProxy() && originalQuerystring != null) {
 				// Remove jsessionid from request if it is present
 				// As we are in a java application, the container might add
@@ -44,14 +43,12 @@ public class ResourceUtils {
 					jsessionid = session.getId();
 				}
 				if (jsessionid != null) {
-					originalQuerystring = RewriteUtils.removeSessionId(
-							jsessionid, originalQuerystring);
+					originalQuerystring = RewriteUtils.removeSessionId(jsessionid, originalQuerystring);
 				}
 				queryString.append(originalQuerystring);
 			}
 			if (target.getParameters() != null) {
-				ResourceUtils.appendParameters(queryString, charset,
-						target.getParameters());
+				ResourceUtils.appendParameters(queryString, charset, target.getParameters());
 			}
 			return queryString.toString();
 		} catch (UnsupportedEncodingException e) {
@@ -60,8 +57,7 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * Check whether the given content-type value corresponds to "parsable"
-	 * text.
+	 * Check whether the given content-type value corresponds to "parsable" text.
 	 * 
 	 * @param contentType
 	 *            the value of http header Content-Type
@@ -82,8 +78,7 @@ public class ResourceUtils {
 		return isText;
 	}
 
-	private static void appendParameters(StringBuilder buf, String charset,
-			Map<String, String> params) throws UnsupportedEncodingException {
+	private static void appendParameters(StringBuilder buf, String charset, Map<String, String> params) throws UnsupportedEncodingException {
 		for (Entry<String, String> param : params.entrySet()) {
 			if (buf.length() > 0) {
 				buf.append("&");
@@ -96,11 +91,8 @@ public class ResourceUtils {
 
 	private final static String concatUrl(String baseUrl, String relUrl) {
 		StringBuilder url = new StringBuilder();
-		if (baseUrl != null && relUrl != null
-				&& (baseUrl.endsWith("/") || baseUrl.endsWith("\\"))
-				&& relUrl.startsWith("/")) {
-			url.append(baseUrl.substring(0, baseUrl.length() - 1)).append(
-					relUrl);
+		if (baseUrl != null && relUrl != null && (baseUrl.endsWith("/") || baseUrl.endsWith("\\")) && relUrl.startsWith("/")) {
+			url.append(baseUrl.substring(0, baseUrl.length() - 1)).append(relUrl);
 		} else {
 			url.append(baseUrl).append(relUrl);
 		}
