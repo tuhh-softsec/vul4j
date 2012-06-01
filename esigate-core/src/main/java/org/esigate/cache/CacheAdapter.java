@@ -24,12 +24,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.params.ConnRoutePNames;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.Parameters;
 import org.esigate.extension.Extension;
+import org.esigate.util.UriUtils;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -43,11 +48,13 @@ public class CacheAdapter implements Extension {
 	private int staleIfError;
 	private int staleWhileRevalidate;
 	private int ttl;
+	private boolean xCacheHeader;
 
 	public void init(Properties properties) {
 		staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
 		staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
 		ttl = Parameters.TTL.getValueInt(properties);
+		xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
 	}
 
 	private abstract class HttpClientWrapper implements HttpClient {
@@ -65,77 +72,77 @@ public class CacheAdapter implements Extension {
 			return wrapped.getConnectionManager();
 		}
 
-		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request);
+		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
+			transformRequest(request, context);
 			return wrapped.execute(target, request, new ResponseHandler<T>() {
 				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response);
+					transformResponse(request, response, context);
 					return responseHandler.handleResponse(response);
 				}
 			}, context);
 		}
 
 		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, null);
 			return wrapped.execute(target, request, new ResponseHandler<T>() {
 				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response);
+					transformResponse(request, response, null);
 					return responseHandler.handleResponse(response);
 				}
 			});
 		}
 
-		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request);
+		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
+			transformRequest(request, context);
 			return wrapped.execute(request, new ResponseHandler<T>() {
 				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response);
+					transformResponse(request, response, context);
 					return responseHandler.handleResponse(response);
 				}
 			}, context);
 		}
 
 		public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, context);
 			HttpResponse response = wrapped.execute(target, request, context);
-			transformResponse(request, response);
+			transformResponse(request, response, context);
 			return response;
 		}
 
 		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, null);
 			return wrapped.execute(request, new ResponseHandler<T>() {
 				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response);
+					transformResponse(request, response, null);
 					return responseHandler.handleResponse(response);
 				}
 			});
 		}
 
 		public HttpResponse execute(HttpHost target, HttpRequest request) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, null);
 			HttpResponse response = wrapped.execute(target, request);
-			transformResponse(request, response);
+			transformResponse(request, response, null);
 			return response;
 		}
 
 		public HttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, context);
 			HttpResponse response = wrapped.execute(request, context);
-			transformResponse(request, response);
+			transformResponse(request, response, context);
 			return response;
 		}
 
 		public HttpResponse execute(HttpUriRequest request) throws IOException, ClientProtocolException {
-			transformRequest(request);
+			transformRequest(request, null);
 			HttpResponse response = wrapped.execute(request);
-			transformResponse(request, response);
+			transformResponse(request, response, null);
 			return response;
 		}
 
-		abstract void transformRequest(HttpRequest httpRequest);
+		abstract void transformRequest(HttpRequest httpRequest, HttpContext context);
 
-		abstract void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse);
+		abstract void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context);
 
 	}
 
@@ -146,7 +153,7 @@ public class CacheAdapter implements Extension {
 			 * Removes client http cache directives like "Cache-control" and "Pragma". Users must not be able to bypass the cache just by making a refresh in the browser.
 			 */
 			@Override
-			void transformRequest(HttpRequest httpRequest) {
+			void transformRequest(HttpRequest httpRequest, HttpContext context) {
 				// Nothing to do
 			}
 
@@ -154,7 +161,7 @@ public class CacheAdapter implements Extension {
 			 * Restores the real http status code if it has been hidden to HttpCache
 			 */
 			@Override
-			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse) {
+			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
 				// Transform status code
 				Header realStatusCode = httpResponse.getFirstHeader(STATUS_CODE_HEADER);
 				Header realStatusText = httpResponse.getFirstHeader(REASON_PHRASE_HEADER);
@@ -170,7 +177,26 @@ public class CacheAdapter implements Extension {
 				if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && (staleWhileRevalidate > 0 || staleIfError > 0)) {
 					httpResponse.removeHeader(httpResponse.getLastHeader("Cache-control"));
 				}
-
+				// Add X-cache header
+				if (xCacheHeader) {
+					if (context != null) {
+						CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context.getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
+						String host = UriUtils.extractHost(httpRequest.getRequestLine().getUri()).toHostString();
+						HttpRoute forcedRoute = (HttpRoute) httpRequest.getParams().getParameter(ConnRoutePNames.FORCED_ROUTE);
+						if (forcedRoute != null)
+							host = forcedRoute.getTargetHost().toHostString();
+						String xCacheString;
+						if (cacheResponseStatus.equals(CacheResponseStatus.CACHE_HIT))
+							xCacheString = "HIT";
+						else if (cacheResponseStatus.equals(CacheResponseStatus.VALIDATED))
+							xCacheString = "VALIDATED";
+						else
+							xCacheString = "MISS";
+						xCacheString += " from " + host;
+						xCacheString += " (" + httpRequest.getRequestLine().getMethod() + " " + httpRequest.getRequestLine().getUri() + ")";
+						httpResponse.addHeader("X-Cache", xCacheString);
+					}
+				}
 			}
 		};
 	}
@@ -182,7 +208,7 @@ public class CacheAdapter implements Extension {
 			 * Currently does nothing
 			 */
 			@Override
-			void transformRequest(HttpRequest httpRequest) {
+			void transformRequest(HttpRequest httpRequest, HttpContext context) {
 				// Nothing to do
 			}
 
@@ -191,7 +217,7 @@ public class CacheAdapter implements Extension {
 			 * efficient caching policy. Adds "stale-while-revalidate" and "stale-if-error" cache-control directives depending on the configuration.
 			 */
 			@Override
-			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse) {
+			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
 				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
 					int statusCode = httpResponse.getStatusLine().getStatusCode();
 					if (statusCode != 200) {

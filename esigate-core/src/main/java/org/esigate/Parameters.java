@@ -79,6 +79,7 @@ public interface Parameters {
 	public final static Parameter MAX_CACHE_ENTRIES = new Parameter("maxCacheEntries", "1000");
 	public final static Parameter MAX_OBJECT_SIZE = new Parameter("maxObjectSize", "1000000");
 	public final static Parameter CACHE_STORAGE = new Parameter("cacheStorage", BasicCacheStorage.class.getName());
+	public final static Parameter X_CACHE_HEADER = new Parameter("xCacheHeader", "false");
 
 	// Forced caching
 	public final static Parameter TTL = new Parameter("ttl", "0");

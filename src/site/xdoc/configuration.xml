@@ -235,6 +235,12 @@
 					<td>org.esigate.cache.BasicCacheStorage</td>
 				</tr>
 				<tr>
+					<td>xCacheHeader</td>
+					<td>Activates X-Cache header in HTTP responses (usefull to debug cache)</td>
+					<td>No</td>
+					<td>false</td>
+				</tr>
+				<tr>
 					<td>ttl</td>
 					<td>Time to live (seconds) of any cached page. If 0, cache expiration
 						will be calculated automatically depending on http response headers.

@@ -185,7 +185,7 @@ public class HttpResourceFactoryTest extends TestCase {
 	public void testEhCache() throws Exception {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
-		properties.put(Parameters.CACHE_STORAGE, EhcacheCacheStorage.class.getName()); // Default value
+		properties.put(Parameters.CACHE_STORAGE.name, EhcacheCacheStorage.class.getName()); // Default value
 		createResourceFactory();
 		// First request
 		HttpResponse response = createMockResponse("0");
@@ -198,6 +198,52 @@ public class HttpResourceFactoryTest extends TestCase {
 		mockHttpClient.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
+	}
+
+	public void testXCacheHeader() throws Exception {
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
+		properties.put(Parameters.X_CACHE_HEADER.name, "true");
+		createResourceFactory();
+		// First request
+		HttpResponse response = createMockResponse("0");
+		response.setHeader("Cache-control", "public, max-age=3600");
+		mockHttpClient.setResponse(response);
+		Resource result = executeRequest();
+		assertNotNull("X-Cache header is missing", result.getHeader("X-Cache"));
+		assertTrue("X-Cache header should start with MISS", result.getHeader("X-Cache").startsWith("MISS"));
+		result = executeRequest();
+		assertNotNull("X-Cache header is missing", result.getHeader("X-Cache"));
+		assertTrue("X-Cache header should start with HIT", result.getHeader("X-Cache").startsWith("HIT"));
+		result = executeRequest();
+		assertNotNull("X-Cache header is missing", result.getHeader("X-Cache"));
+		assertTrue("There should be only 1 header X-Cache", result.getHeaders("X-Cache").size() == 1);
+		assertTrue("X-Cache header should start with HIT", result.getHeader("X-Cache").startsWith("HIT"));
+	}
+
+	public void testXCacheHeaderWithLoadBalancing() throws Exception {
+		// Use load balancing in round robin mode and check that the header indicates properly the host that was used for the request
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
+		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
+		properties.put(Parameters.X_CACHE_HEADER.name, "true");
+		properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.name, Parameters.ROUNDROBIN);
+		createResourceFactory();
+		// First request
+		HttpResponse response = createMockResponse("1");
+		response.setHeader("Cache-control", "no-cache");
+		mockHttpClient.setResponse(response);
+		Resource result = executeRequest();
+		String xCacheHeader1 = result.getHeader("X-Cache");
+		assertNotNull("X-Cache header is missing", xCacheHeader1);
+		response = createMockResponse("2");
+		response.setHeader("Cache-control", "no-cache");
+		mockHttpClient.setResponse(response);
+		result = executeRequest();
+		String xCacheHeader2 = result.getHeader("X-Cache");
+		assertNotNull("X-Cache header is missing", xCacheHeader2);
+		assertTrue("X-Cache header should indicate one of the 2 nodes", xCacheHeader1.startsWith("MISS from 127.0.0.1") || xCacheHeader1.startsWith("MISS from localhost"));
+		assertTrue("X-Cache header should indicate one of the 2 nodes", xCacheHeader2.startsWith("MISS from 127.0.0.1") || xCacheHeader2.startsWith("MISS from localhost"));
+		assertFalse("The 2 nodes should have been used", xCacheHeader1.equals(xCacheHeader2));
 	}
 
 }
