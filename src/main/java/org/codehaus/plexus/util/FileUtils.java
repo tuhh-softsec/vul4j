@@ -1562,6 +1562,14 @@ public class FileUtils
             return;
         }
 
+        /* try delete the directory before its contents, which will take
+         * care of any directories that are really symbolic links.
+         */
+        if ( directory.delete() )
+        {
+        	return;
+        }
+
         cleanDirectory( directory );
         if ( !directory.delete() )
         {
