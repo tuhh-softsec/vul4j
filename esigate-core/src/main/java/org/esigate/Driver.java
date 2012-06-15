@@ -22,21 +22,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
+import org.apache.http.client.CookieStore;
+import org.apache.http.protocol.HttpContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.cookie.CustomCookieStore;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.filter.Filter;
-import org.esigate.http.ResourceFactoryCreator;
-import org.esigate.output.Output;
-import org.esigate.output.StringOutput;
-import org.esigate.output.TextOnlyStringOutput;
+import org.esigate.http.CookieAdapter;
+import org.esigate.http.GenericHttpRequest;
+import org.esigate.http.HttpClientHelper;
+import org.esigate.http.HttpHeaders;
+import org.esigate.http.HttpResponseUtils;
+import org.esigate.http.ResourceUtils;
 import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.renderers.ResourceFixupRenderer;
-import org.esigate.resource.Resource;
-import org.esigate.resource.ResourceUtils;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.vars.VariablesResolver;
@@ -58,16 +61,18 @@ public class Driver {
 	private final DriverConfiguration config;
 	private final AuthenticationHandler authenticationHandler;
 	private final Filter filter;
-	private final ResourceFactory resourceFactory;
+	private final HttpClientHelper httpClientHelper;
 	private final ExtensionFactory extension;
+	private final List<String> parsableContentTypes;
 
 	public Driver(String name, Properties props) {
-		this(name, props, ResourceFactoryCreator.create(props));
+		this(name, props, new HttpClientHelper());
+		httpClientHelper.init(props);
 	}
 
-	public Driver(String name, Properties props, ResourceFactory resourceFactory) {
+	public Driver(String name, Properties props, HttpClientHelper httpClientHelper) {
 		config = new DriverConfiguration(name, props);
-		this.resourceFactory = resourceFactory;
+		this.httpClientHelper = httpClientHelper;
 		// Extension
 		extension = new ExtensionFactory(config);
 		// Authentication handler
@@ -75,6 +80,15 @@ public class Driver {
 		// Filter
 		Filter f = extension.getExtension(Filter.class);
 		filter = (f != null) ? f : Filter.EMPTY;
+		parsableContentTypes = new ArrayList<String>();
+		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(props);
+		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
+		String contentType;
+		while (tokenizer.hasMoreElements()) {
+			contentType = tokenizer.nextToken();
+			contentType = contentType.trim();
+			parsableContentTypes.add(contentType);
+		}
 	}
 
 	public AuthenticationHandler getAuthenticationHandler() {
@@ -283,8 +297,7 @@ public class Driver {
 		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
 		ResourceContext resourceContext = new ResourceContext(this, resultingpage, parameters, request, response);
 		resourceContext.setPreserveHost(config.isPreserveHost());
-		StringOutput stringOutput = getResourceAsString(resourceContext);
-		String currentValue = stringOutput.toString();
+		String currentValue = getResourceAsString(resourceContext);
 
 		// Fix resources
 		if (config.isFixResources()) {
@@ -320,7 +333,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public final void proxy(String relUrl, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException, HttpErrorPage {
+	public void proxy(String relUrl, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException, HttpErrorPage {
 		LOG.info("proxy provider={} relUrl={}", config.getInstanceName(), relUrl);
 
 		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
@@ -330,21 +343,20 @@ public class Driver {
 		if (!authenticationHandler.beforeProxy(resourceContext)) {
 			return;
 		}
-
-		if (renderers.length == 0 && !config.isFixResources()) {
-			renderResource(resourceContext, new ResponseOutput(response));
+		HttpRequest originalRequest = resourceContext.getOriginalRequest();
+		boolean proxy = resourceContext.isProxy();
+		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, proxy);
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, resourceContext);
+		if (HttpResponseUtils.isError(httpResponse)) {
+			String errorPageContent = httpClientHelper.toString(httpResponse);
+			throw new HttpErrorPage(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase(), errorPageContent);
+		} else if (!isTextContentType(httpResponse)) {
+			LOG.debug("'" + relUrl + "' is binary on no transformation to apply: was forwarded without modification.");
+			httpClientHelper.render(httpResponse, response, originalRequest, httpRequest);
 		} else {
-			// Directly stream out non text data
-			TextOnlyStringOutput textOutput = new TextOnlyStringOutput(response, this.config.getParsableContentTypes());
-			renderResource(resourceContext, textOutput);
-			// If data was binary, no text buffer is available and no rendering
-			// is needed.
-			if (!textOutput.hasTextBuffer()) {
-				LOG.debug("'" + relUrl + "' is binary : was forwarded without modification.");
-				return;
-			}
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
-			String currentValue = textOutput.toString();
+			String currentValue = httpClientHelper.toString(httpResponse);
 
 			List<Renderer> listOfRenderers = new ArrayList<Renderer>(renderers.length + 1);
 			if (config.isFixResources()) {
@@ -358,46 +370,15 @@ public class Driver {
 				renderer.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
 			}
-			// Write the result to the OutpuStream
-			String charsetName = textOutput.getCharsetName();
+			// Write the result to the OutpuStream using default charset ISO-8859-1 if not defined
+			String charsetName = HttpResponseUtils.getContentCharset(httpResponse);
 			if (charsetName == null) {
-				// No charset was specified in the response, we assume this is
-				// ISO-8859-1
 				charsetName = "ISO-8859-1";
-				// We do not use the Writer because the container may add some
-				// unwanted headers like default content-type that may not be
-				// consistent with the original response
-				response.getOutputStream().write(currentValue.getBytes(charsetName));
-			} else {
-				// Even if Content-type header has been set, some containers
-				// like
-				// Jetty need the charsetName to be set, if not it will take
-				// default value ISO-8859-1
-				response.setCharacterEncoding(charsetName);
-				response.getWriter().write(currentValue);
 			}
+			httpClientHelper.render(currentValue, httpResponse, response, originalRequest, httpRequest);
 		}
-	}
-
-	protected void renderResource(ResourceContext resourceContext, Output output) throws HttpErrorPage, IOException {
-		Resource resource = null;
-		try {
-			resource = this.resourceFactory.getResource(resourceContext);
-			if (resource.isError()) {
-				String errorPageContent;
-				StringOutput stringOutput = new StringOutput();
-				resource.render(stringOutput);
-				errorPageContent = stringOutput.toString();
-				throw new HttpErrorPage(resource.getStatusCode(), resource.getStatusMessage(), errorPageContent);
-			} else {
-				resource.render(output);
-			}
-		} finally {
-			if (null != resource) {
-				resource.release();
-			}
-		}
-
+		// Save the cookies to session if necessary
+		saveUserContext(resourceContext.getOriginalRequest());
 	}
 
 	/**
@@ -410,20 +391,28 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	protected StringOutput getResourceAsString(ResourceContext context) throws HttpErrorPage, IOException {
-		StringOutput result = null;
+	protected String getResourceAsString(ResourceContext context) throws HttpErrorPage, IOException {
+		String result;
 		String url = ResourceUtils.getHttpUrlWithQueryString(context);
 		org.esigate.api.HttpRequest request = context.getOriginalRequest();
 		boolean cacheable = !context.isProxy() || "GET".equalsIgnoreCase(context.getOriginalRequest().getMethod());
 		if (cacheable) {
-			result = (StringOutput) request.getAttribute(url);
+			result = (String) request.getAttribute(url);
+			if (result != null)
+				return result;
 		}
-		if (result == null) {
-			result = new StringOutput();
-			renderResource(context, result);
-			if (cacheable) {
-				request.setAttribute(url, result);
-			}
+		HttpRequest originalRequest = context.getOriginalRequest();
+		boolean proxy = context.isProxy();
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, proxy);
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, context);
+		result = httpClientHelper.toString(httpResponse);
+		if (HttpResponseUtils.isError(httpResponse)) {
+			throw new HttpErrorPage(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase(), result);
+		}
+		// Save the cookies to session if necessary
+		saveUserContext(context.getOriginalRequest());
+		if (cacheable) {
+			request.setAttribute(url, result);
 		}
 		return result;
 	}
@@ -446,8 +435,7 @@ public class Driver {
 		String actualPage = VariablesResolver.replaceAllVariables(page, ctx.getOriginalRequest());
 		ResourceContext resourceContext = new ResourceContext(this, actualPage, null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
 		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
-		StringOutput stringOutput = getResourceAsString(resourceContext);
-		String currentValue = stringOutput.toString();
+		String currentValue = getResourceAsString(resourceContext);
 		return currentValue;
 
 	}
@@ -475,6 +463,56 @@ public class Driver {
 	 */
 	public DriverConfiguration getConfiguration() {
 		return config;
+	}
+
+	/**
+	 * Check whether the given content-type value corresponds to "parsable" text.
+	 * 
+	 * @param httpResponse
+	 *            the response to analyze depending on its content-type
+	 * @return true if this represents text or false if not
+	 */
+	private boolean isTextContentType(org.apache.http.HttpResponse httpResponse) {
+		String contentType = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpResponse);
+		return isTextContentType(contentType);
+	}
+
+	protected boolean isTextContentType(String contentType) {
+		if (contentType != null) {
+			String lowerContentType = contentType.toLowerCase();
+			for (String textContentType : parsableContentTypes) {
+				if (lowerContentType.startsWith(textContentType)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private org.apache.http.HttpResponse executeSingleRequest(GenericHttpRequest httpRequest, HttpContext httpContext, ResourceContext resourceContext) {
+		org.apache.http.HttpResponse result;
+		filter.preRequest(httpRequest, httpContext, resourceContext);
+		authenticationHandler.preRequest(httpRequest, resourceContext);
+		long start = System.currentTimeMillis();
+		result = httpClientHelper.execute(httpRequest, httpContext);
+		long end = System.currentTimeMillis();
+		filter.postRequest(httpRequest, result, httpContext, resourceContext);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(httpRequest.getRequestLine().toString() + " -> " + result.getStatusLine().toString() + " (" + (end - start) + " ms)");
+		}
+		return result;
+	}
+
+	private org.apache.http.HttpResponse execute(GenericHttpRequest httpRequest, HttpRequest originalRequest, ResourceContext resourceContext) throws HttpErrorPage {
+		UserContext userContext = resourceContext.getUserContext();
+		CookieStore cookieStore = CookieAdapter.convertCookieStore(userContext.getCookieStore());
+		HttpContext httpContext = httpClientHelper.createHttpContext(cookieStore);
+		org.apache.http.HttpResponse httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
+		while (authenticationHandler.needsNewRequest(httpResponse, resourceContext)) {
+			HttpResponseUtils.release(httpResponse);
+			httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
+		}
+		return httpResponse;
 	}
 
 }

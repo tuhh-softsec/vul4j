@@ -17,11 +17,11 @@ package org.esigate.filter;
 
 import java.util.Properties;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.protocol.HttpContext;
 import org.esigate.ResourceContext;
 import org.esigate.extension.Extension;
-import org.esigate.http.HttpClientRequest;
-import org.esigate.http.HttpClientResponse;
-
+import org.esigate.http.GenericHttpRequest;
 
 /**
  * Interface for request filter.
@@ -31,9 +31,9 @@ import org.esigate.http.HttpClientResponse;
  */
 public interface Filter extends Extension {
 
-	void preRequest(HttpClientRequest request, ResourceContext context);
+	void preRequest(GenericHttpRequest request, HttpContext httpContext, ResourceContext resourceContext);
 
-	void postRequest(HttpClientResponse response, ResourceContext context);
+	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext);
 
 	/**
 	 * Does the filter need userContext ?
@@ -46,12 +46,10 @@ public interface Filter extends Extension {
 		public void init(Properties properties) {
 		}
 
-		public void preRequest(HttpClientRequest request,
-				ResourceContext context) {
+		public void preRequest(GenericHttpRequest request, HttpContext httpContext, ResourceContext resourceContext) {
 		}
 
-		public void postRequest(HttpClientResponse response,
-				ResourceContext context) {
+		public void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext) {
 		}
 
 		public boolean needUserContext() {

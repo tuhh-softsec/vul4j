@@ -17,7 +17,10 @@ package org.esigate.http;
 import java.util.Collection;
 import java.util.Properties;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.protocol.HttpContext;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.ResourceContext;
@@ -63,35 +66,27 @@ public class CookieForwardingFilter implements Filter {
 			throw new ConfigurationException("discardCookies must be a list of cookie names OR *");
 		}
 		if (forwardCookies.contains("*") && discardCookies.contains("*")) {
-			throw new ConfigurationException( "cannot use * for forwardCookies AND discardCookies at the same time");
+			throw new ConfigurationException("cannot use * for forwardCookies AND discardCookies at the same time");
 		}
 	}
 
 	/**
 	 * Retrieves the wrapper to the CookieStore and forwards th
 	 * 
-	 * @see org.esigate.filter.Filter#postRequest(HttpClientResponse,
-	 *      ResourceContext)
 	 */
-	public void postRequest(HttpClientResponse response, ResourceContext context) {
+	public void postRequest(GenericHttpRequest request, HttpResponse response, HttpContext context, ResourceContext resourceContext) {
 		// Nothing to do
 	}
 
 	/**
-	 * Replace actual cookieStore by a wrapper to filter some cookies and
-	 * forward others
+	 * Replace actual cookieStore by a wrapper to filter some cookies and forward others
 	 * 
-	 * @see org.esigate.filter.Filter#preRequest(org.esigate.http.HttpClientRequest,
-	 *      org.esigate.ResourceContext)
 	 */
-	public void preRequest(HttpClientRequest request, ResourceContext context) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("preRequest");
-		}
+	public void preRequest(GenericHttpRequest request, HttpContext httpContext, ResourceContext context) {
+		LOG.debug("preRequest");
 		CookieStore cookieStore = CookieAdapter.convertCookieStore(context.getUserContext().getCookieStore());
-		CookieStore wrappedCookieStore = new RequestCookieStore(discardCookies,
-				forwardCookies, cookieStore, request, context);
-		request.setCookieStore(wrappedCookieStore);
+		CookieStore wrappedCookieStore = new RequestCookieStore(discardCookies, forwardCookies, cookieStore, context);
+		httpContext.setAttribute(ClientContext.COOKIE_STORE, wrappedCookieStore);
 	}
 
 	/**

@@ -12,33 +12,29 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.authentication;
 
 import java.util.Properties;
 
+import org.apache.http.HttpResponse;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
-import org.esigate.http.HttpClientRequest;
-import org.esigate.http.HttpClientResponse;
-
+import org.esigate.http.GenericHttpRequest;
 
 /**
- * AuthenticationHandler implementation that retrieves the user passed by the
- * servlet container or set manually into the RequestContext and transmits it as
- * a HTTP header X_REMOTE_USER in all requests
+ * AuthenticationHandler implementation that retrieves the user passed by the servlet container or set manually into the RequestContext and transmits it as a HTTP header X_REMOTE_USER in all requests
  * 
  * @author Francois-Xavier Bonnet
  * 
  */
 public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 
-	public boolean needsNewRequest(HttpClientResponse response,
-			ResourceContext requestContext) {
+	public boolean needsNewRequest(HttpResponse response, ResourceContext requestContext) {
 		return false;
 	}
 
-	public void preRequest(HttpClientRequest request,
-			ResourceContext requestContext) {
+	public void preRequest(GenericHttpRequest request, ResourceContext requestContext) {
 		UserContext userContext = requestContext.getUserContext();
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null) {

@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.http;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ class RequestCookieStore implements CookieStore {
 	private final CookieStore actualCookieStore;
 	private final ResourceContext resourceContext;
 
-	public RequestCookieStore(Collection<String> discardCookies, Collection<String> forwardCookies, CookieStore actualCookieStore, HttpClientRequest request, ResourceContext resourceContext) {
+	public RequestCookieStore(Collection<String> discardCookies, Collection<String> forwardCookies, CookieStore actualCookieStore, ResourceContext resourceContext) {
 		this.discardCookies = discardCookies;
 		this.forwardCookies = forwardCookies;
 		this.actualCookieStore = actualCookieStore;

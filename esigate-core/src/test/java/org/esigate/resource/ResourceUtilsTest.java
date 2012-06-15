@@ -21,10 +21,10 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.esigate.Driver;
-import org.esigate.DriverConfiguration;
 import org.esigate.Parameters;
 import org.esigate.ResourceContext;
 import org.esigate.api.HttpRequest;
+import org.esigate.http.ResourceUtils;
 
 public class ResourceUtilsTest extends TestCase {
 
@@ -54,22 +54,5 @@ public class ResourceUtilsTest extends TestCase {
 		resourceContext.setProxy(true);
 		EasyMock.replay(request);
 		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext));
-	}
-
-	public void testIsTextContentType() {
-		DriverConfiguration config = new DriverConfiguration("test", new Properties());
-		assertTrue(ResourceUtils.isTextContentType("text/html", config.getParsableContentTypes()));
-
-		assertTrue(ResourceUtils.isTextContentType("application/xhtml+xml", config.getParsableContentTypes()));
-
-		assertFalse(ResourceUtils.isTextContentType("text/plain", config.getParsableContentTypes()));
-
-		Properties properties = new Properties();
-		properties.setProperty(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain");
-
-		config = new DriverConfiguration("test", properties);
-		assertTrue(ResourceUtils.isTextContentType("text/plain", config.getParsableContentTypes()));
-		assertFalse(ResourceUtils.isTextContentType("text/html", config.getParsableContentTypes()));
-
 	}
 }

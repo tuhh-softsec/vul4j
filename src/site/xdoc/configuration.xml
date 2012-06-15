@@ -111,7 +111,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Authorization,Connection,Cache-control,Content-Length,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
+                    <td>Authorization,Connection,Content-Length,Cache-control,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
                 </tr>
                 <tr>
                     <td>forwardRequestHeaders</td>
@@ -129,7 +129,7 @@
                     See <a href="httpheaders.html">HTTP headers support</a> for more details.
                     </td>
                     <td>No</td>
-                    <td>Connection,Content-Encoding,Content-Length,Content-Location,Content-MD5,Date,Keep-Alive,Location,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticat</td>
+                    <td>Connection,Content-Length,Content-MD5,Date,Keep-Alive,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
                 </tr>
                 <tr>
                     <td>forwardResponseHeaders</td>

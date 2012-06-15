@@ -15,12 +15,7 @@
 
 package org.esigate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
@@ -29,8 +24,6 @@ import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
 import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
 import org.esigate.url.SingleBaseUrlRetrieveStrategy;
 import org.esigate.url.StickySessionBaseUrlRetrieveStrategy;
-import org.esigate.util.FilterList;
-import org.esigate.util.PropertiesUtil;
 
 /**
  * Driver configuration parameters
@@ -50,9 +43,6 @@ public class DriverConfiguration {
 	private final boolean preserveHost;
 	private final String cookieStore;
 	private final String filter;
-	private final List<String> parsableContentTypes;
-	private final FilterList requestHeadersFilterList;
-	private final FilterList responseHeadersFilterList;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
 	private final boolean isVisibleBaseURLEmpty;
 
@@ -72,24 +62,6 @@ public class DriverConfiguration {
 		} else {
 			this.fixMode = ResourceFixupRenderer.RELATIVE;
 		}
-		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(props);
-		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
-		String contentType;
-		parsableContentTypes = new ArrayList<String>();
-		while (tokenizer.hasMoreElements()) {
-			contentType = tokenizer.nextToken();
-			contentType = contentType.trim();
-			parsableContentTypes.add(contentType);
-		}
-		// Populate headers filter lists
-		requestHeadersFilterList = new FilterList();
-		responseHeadersFilterList = new FilterList();
-		// By default all headers are forwarded
-		requestHeadersFilterList.add(Collections.singletonList("*"));
-		responseHeadersFilterList.add(Collections.singletonList("*"));
-		PropertiesUtil.populate(requestHeadersFilterList, props, Parameters.FORWARD_REQUEST_HEADERS.name, Parameters.DISCARD_REQUEST_HEADERS.name, "", Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
-		PropertiesUtil.populate(responseHeadersFilterList, props, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
-				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
 		properties = props;
 	}
 
@@ -163,20 +135,8 @@ public class DriverConfiguration {
 		return cookieStore;
 	}
 
-	public Collection<String> getParsableContentTypes() {
-		return parsableContentTypes;
-	}
-
 	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
 		return baseUrlRetrieveStrategy;
-	}
-
-	public boolean isForwardedRequestHeader(String headerName) {
-		return requestHeadersFilterList.contains(headerName);
-	}
-
-	public boolean isForwardedResponseHeader(String headerName) {
-		return responseHeadersFilterList.contains(headerName);
 	}
 
 }

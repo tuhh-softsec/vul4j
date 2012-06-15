@@ -184,4 +184,9 @@ public class MockHttpRequest implements HttpRequest {
 		return uri;
 	}
 
+	@Override
+	public String toString() {
+		return method + " " + uri.toString();
+	}
+
 }

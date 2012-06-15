@@ -1,14 +1,27 @@
-package org.esigate.resource;
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.esigate.http;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.esigate.ResourceContext;
 import org.esigate.api.HttpSession;
-import org.esigate.http.RewriteUtils;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -54,28 +67,6 @@ public class ResourceUtils {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * Check whether the given content-type value corresponds to "parsable" text.
-	 * 
-	 * @param contentType
-	 *            the value of http header Content-Type
-	 * @return true if this represents text or false if not
-	 */
-	public static boolean isTextContentType(String contentType, Collection<String> textContentTypes) {
-		boolean isText = false;
-
-		if (contentType != null) {
-			String lowerContentType = contentType.toLowerCase();
-			for (String textContentType : textContentTypes) {
-				if (lowerContentType.startsWith(textContentType)) {
-					isText = true;
-					break;
-				}
-			}
-		}
-		return isText;
 	}
 
 	private static void appendParameters(StringBuilder buf, String charset, Map<String, String> params) throws UnsupportedEncodingException {

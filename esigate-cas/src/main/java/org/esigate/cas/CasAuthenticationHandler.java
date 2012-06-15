@@ -3,11 +3,12 @@ package org.esigate.cas;
 import java.security.Principal;
 import java.util.Properties;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.esigate.ResourceContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.authentication.AuthenticationHandler;
-import org.esigate.http.HttpClientRequest;
-import org.esigate.http.HttpClientResponse;
+import org.esigate.http.GenericHttpRequest;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,13 +79,17 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
 	}
 
-	public boolean needsNewRequest(HttpClientResponse httpClientResponse, ResourceContext requestContext) {
+	public boolean needsNewRequest(HttpResponse httpResponse, ResourceContext requestContext) {
 		HttpRequest httpServletRequest = requestContext.getOriginalRequest();
 
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
 			// Calculating the URL we may have been redirected to, as
 			// automatic redirect following is activated
-			String currentLocation = httpClientResponse.getHeader("Location");
+			Header LocationHeader = httpResponse.getFirstHeader("Location");
+			String currentLocation = null;
+			if (LocationHeader != null) {
+				currentLocation = LocationHeader.getValue();
+			}
 			if (currentLocation != null && currentLocation.contains(loginUrl)) {
 				// If the user is authenticated we need a second request with
 				// the proxy ticket
@@ -97,12 +102,11 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		return false;
 	}
 
-	public void preRequest(HttpClientRequest request, ResourceContext requestContext) {
+	public void preRequest(GenericHttpRequest request, ResourceContext requestContext) {
 		HttpRequest httpServletRequest = requestContext.getOriginalRequest();
 		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
-			request.setUri(addCasAuthentication(request.getUri(), requestContext));
+			request.setUri(addCasAuthentication(request.getRequestLine().getUri(), requestContext));
 		}
 		httpServletRequest.setAttribute(SECOND_REQUEST, true);
 	}
-
 }

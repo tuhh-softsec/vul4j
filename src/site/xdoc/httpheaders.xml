@@ -215,7 +215,7 @@
 					</tr>
 					<tr>
 						<td>Content-Encoding</td>
-						<td>Not forwarded (gzip responses are decompressed by HTTP client)</td>
+						<td>Forwarded only if the entity has not been decompressed (if we have to transform it, we have to decompress it)</td>
 					</tr>
 					<tr>
 						<td>Content-Language</td>
