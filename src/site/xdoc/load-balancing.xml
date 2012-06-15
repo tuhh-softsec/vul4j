@@ -13,7 +13,7 @@
 			hardware. Basically, load-balancing is simple, you just have to define in property 'remoteUrlBase' a
 			comma-separated list of backend servers. E.g.:
 		</p>
-		<source>remoteUrlBase=http://example.com:8080/,http://example2.com:8080/</source>
+		<source>default.remoteUrlBase=http://example.com:8080/,http://example2.com:8080/</source>
 		<p>
 			There are 3 strategies to retrieve backed server url for current
 			request:

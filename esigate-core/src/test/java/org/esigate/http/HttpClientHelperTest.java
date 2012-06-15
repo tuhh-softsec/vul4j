@@ -199,7 +199,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testCacheAndLoadBalancing() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.PRESERVE_HOST.name, "true");
 		createHttpClientHelper();
@@ -217,7 +216,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testCacheStaleIfError() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.STALE_IF_ERROR.name, "60");
 		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "60");
@@ -250,7 +248,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testCacheTtl() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.TTL.name, "1");
 		createHttpClientHelper();
@@ -273,7 +270,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testCacheTtlErrorPage() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.TTL.name, "1");
 		createHttpClientHelper();
@@ -296,7 +292,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testEhCache() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.CACHE_STORAGE.name, EhcacheCacheStorage.class.getName()); // Default value
 		createHttpClientHelper();
@@ -314,7 +309,6 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testXCacheHeader() throws Exception {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.X_CACHE_HEADER.name, "true");
 		createHttpClientHelper();
@@ -334,9 +328,8 @@ public class HttpClientHelperTest extends TestCase {
 		assertTrue("X-Cache header should start with HIT", result.getFirstHeader("X-Cache").getValue().startsWith("HIT"));
 	}
 
-	public void testXCacheHeaderWithLoadBalancing() throws Exception {
+	public void testXCacheHeaderWithLoadBalancingNoCache() throws Exception {
 		// Use load balancing in round robin mode and check that the header indicates properly the host that was used for the request
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.X_CACHE_HEADER.name, "true");
 		properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.name, Parameters.ROUNDROBIN);
@@ -345,22 +338,56 @@ public class HttpClientHelperTest extends TestCase {
 		HttpResponse response = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
-		HttpResponse result = executeRequest();
+		HttpContext httpContext = new BasicHttpContext();
+		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest("http://localhost:8080");
+		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
-		result = executeRequest();
+		httpRequest = new MockHttpRequest("http://localhost:8080");
+		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
+		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader2);
-		assertTrue("X-Cache header should indicate one of the 2 nodes", xCacheHeader1.getValue().startsWith("MISS from 127.0.0.1") || xCacheHeader1.getValue().startsWith("MISS from localhost"));
-		assertTrue("X-Cache header should indicate one of the 2 nodes", xCacheHeader2.getValue().startsWith("MISS from 127.0.0.1") || xCacheHeader2.getValue().startsWith("MISS from localhost"));
-		assertFalse("The 2 nodes should have been used", xCacheHeader1.equals(xCacheHeader2));
+		assertTrue("X-Cache header should indicate the first backend used", xCacheHeader1.getValue().startsWith("MISS from localhost"));
+		assertTrue("X-Cache header should indicate the second backend used", xCacheHeader2.getValue().startsWith("MISS from 127.0.0.1"));
+		assertFalse("The 2 nodes should have been used", xCacheHeader1.getValue().equals(xCacheHeader2.getValue()));
+	}
+
+	public void testXCacheHeaderWithLoadBalancing() throws Exception {
+		// Use load balancing in round robin mode and check that the header indicates properly the host that was used for the request
+		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		properties.put(Parameters.X_CACHE_HEADER.name, "true");
+		properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.name, Parameters.ROUNDROBIN);
+		createHttpClientHelper();
+		// First request
+		HttpResponse response = createMockResponse("1");
+		response.setHeader("Cache-control", "max-age=60");
+		mockHttpClient.setResponse(response);
+		HttpContext httpContext = new BasicHttpContext();
+		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest("http://localhost:8080");
+		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
+		assertNotNull("X-Cache header is missing", xCacheHeader1);
+		response = createMockResponse("2");
+		response.setHeader("Cache-control", "max-age=60");
+		mockHttpClient.setResponse(response);
+		httpRequest = new MockHttpRequest("http://localhost:8080");
+		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
+		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
+		assertNotNull("X-Cache header is missing", xCacheHeader2);
+		assertTrue("X-Cache header should indicate the first backend used", xCacheHeader1.getValue().startsWith("MISS from localhost"));
+		assertTrue("X-Cache header should indicate reuse of the cache entry", xCacheHeader2.getValue().startsWith("HIT from 127.0.0.1"));
 	}
 
 	public void testDecompressStream() throws ClientProtocolException, IOException, HttpErrorPage {
-		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
+		properties.put("default" + Parameters.REMOTE_URL_BASE.name, "http://localhost,http://127.0.0.1");
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		createHttpClientHelper();
 		String content = "To be compressed";

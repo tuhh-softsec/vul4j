@@ -36,8 +36,13 @@
 				Eg for 2 applications:
 		</p>
 <source>
-remoteUrlBase=http://localhost:8080/esigate-app-aggregated1/
+# Common settings
 uriEncoding=UTF-8
+
+# Settings for default application
+default.remoteUrlBase=http://localhost:8080/esigate-app-aggregated1/
+
+# Settings for aggregated2 application
 aggregated2.remoteUrlBase=http://localhost:8080/esigate-app-aggregated2/
 </source>
 			<p>

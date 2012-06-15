@@ -58,25 +58,10 @@ public class DriverFactoryTest extends TestCase {
 	}
 
 	public void testConfigureStringProperties2() {
-		try {
 
-			DriverFactory.getInstance();
-			fail("should throw ConfigurationException as there should be no provider named default");
-		} catch (ConfigurationException e) {
-			assertNotNull(e.getMessage());
-			assertTrue(e.getMessage().contains("default"));
-		}
-
-		Properties props = new Properties();
-		props.setProperty(Parameters.REMOTE_URL_BASE.name, "http://base.url");
-		DriverFactory.configure(null, props);
 		Driver instance = DriverFactory.getInstance();
 		assertNotNull(instance);
 
-		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		ResourceContext resourceContext = new ResourceContext(instance, "/test", null, request, null);
-
-		assertEquals("http://base.url", resourceContext.getBaseURL());
 	}
 
 	public void testMergeProperties() {
@@ -84,14 +69,14 @@ public class DriverFactoryTest extends TestCase {
 		String extendedBaseUrl = "http://baseextended.url";
 
 		Properties defaultProps = new Properties();
-		defaultProps.setProperty(Parameters.REMOTE_URL_BASE.name, deafultBaseUrl);
-		defaultProps.setProperty(Parameters.FILTER.name, CookieForwardingFilter.class.getName());
-		defaultProps.setProperty(Parameters.COOKIE_STORE.name, "org.esigate.cookie.FilteringCookieStore");
-		defaultProps.setProperty(Parameters.FORWARD_COOKIES.name, "test");
+		defaultProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, deafultBaseUrl);
+		defaultProps.setProperty("default." + Parameters.FILTER.name, CookieForwardingFilter.class.getName());
+		defaultProps.setProperty("default." + Parameters.COOKIE_STORE.name, "org.esigate.cookie.FilteringCookieStore");
+		defaultProps.setProperty("default." + Parameters.FORWARD_COOKIES.name, "test");
 
 		Properties extendedProps = new Properties();
-		extendedProps.setProperty(Parameters.REMOTE_URL_BASE.name, extendedBaseUrl);
-		extendedProps.setProperty(Parameters.COOKIE_STORE.name, "test-cookie");
+		extendedProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, extendedBaseUrl);
+		extendedProps.setProperty("default." + Parameters.COOKIE_STORE.name, "test-cookie");
 
 		URL dir = this.getClass().getResource("DriverFactoryTest.class");
 		File file = new File(dir.getPath());

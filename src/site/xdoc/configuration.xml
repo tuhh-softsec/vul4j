@@ -333,18 +333,23 @@
 			<p>
 				You can specify several provider applications prefixing directives
 				with the provider name.
-				Eg for 3 applications, the first one is the
-				default applications, the other ones are called "appli1" and
-				"appli2":
+				Note: "default" application is the application used when later you use
+				tags without specifying the application, the other ones are called "appli1"
+				and "appli2":
 			</p>
 <source>
-remoteUrlBase=http://localhost:8080/appli0/
+# Common settings
+uriEncoding=UTF-8
 
+# Default application
+default.remoteUrlBase=http://localhost:8080/appli0/
+
+# appli1 application
 appli1.remoteUrlBase=http://localhost:8080/appli1/
-appli1.uriEncoding=UTF-8
+appli1.uriEncoding=ISO-8859-1
 
+# appli2 application
 appli2.remoteUrlBase=http://localhost:8080/appli2/
-appli2.uriEncoding=UTF-8
 </source>
 		</section>
 

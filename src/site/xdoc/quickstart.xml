@@ -39,7 +39,7 @@
 				application.
 	</p>
 <source>
-remoteUrlBase=http://localhost:8080/provider/
+default.remoteUrlBase=http://localhost:8080/provider/
 </source>
 		</section>
 		<section name="Tag the block on the provider application">
