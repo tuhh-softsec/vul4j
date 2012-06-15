@@ -16,10 +16,12 @@
 package org.esigate.http;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.esigate.api.HttpStatusConstants;
 import org.slf4j.Logger;
@@ -42,12 +44,13 @@ public class HttpResponseUtils {
 	}
 
 	public static String getContentCharset(HttpResponse httpResponse) {
-		HttpEntity httpEntity = httpResponse.getEntity();
-		String charset = null;
-		if (httpEntity != null) {
-			charset = EntityUtils.getContentCharSet(httpEntity);
+		ContentType contentType = ContentType.get(httpResponse.getEntity());
+		if (contentType != null) {
+			Charset charset = contentType.getCharset();
+			if (charset != null)
+				return charset.name();
 		}
-		return charset;
+		return null;
 	}
 
 	public static void release(HttpResponse httpResponse) {

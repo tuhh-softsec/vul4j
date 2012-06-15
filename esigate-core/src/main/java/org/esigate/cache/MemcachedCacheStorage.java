@@ -25,8 +25,9 @@ import java.util.Properties;
 import net.spy.memcached.MemcachedClient;
 
 import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.DefaultHttpCacheEntrySerializer;
+import org.apache.http.impl.client.cache.memcached.MemcachedCacheEntryFactoryImpl;
 import org.apache.http.impl.client.cache.memcached.MemcachedHttpCacheStorage;
+import org.apache.http.impl.client.cache.memcached.SHA256KeyHashingScheme;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
@@ -56,6 +57,6 @@ public class MemcachedCacheStorage extends CacheStorage {
 			throw new ConfigurationException(e);
 		}
 		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
-		impl = new MemcachedHttpCacheStorage(memcachedClient, cacheConfig, new DefaultHttpCacheEntrySerializer());
+		impl = new MemcachedHttpCacheStorage(memcachedClient, cacheConfig, new MemcachedCacheEntryFactoryImpl(), new SHA256KeyHashingScheme());
 	}
 }

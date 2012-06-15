@@ -32,7 +32,7 @@ public class CacheConfigHelper {
 		float heuristicCoefficient = Parameters.HEURISTIC_COEFFICIENT.getValueFloat(properties);
 		long heuristicDefaultLifetimeSecs = Parameters.HEURISTIC_DEFAULT_LIFETIME_SECS.getValueLong(properties);
 		int maxCacheEntries = Parameters.MAX_CACHE_ENTRIES.getValueInt(properties);
-		int maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueInt(properties);
+		long maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValueLong(properties);
 
 		// Asynchronous revalidation
 		int minAsynchronousWorkers = Parameters.MIN_ASYNCHRONOUS_WORKERS.getValueInt(properties);
@@ -47,9 +47,9 @@ public class CacheConfigHelper {
 		cacheConfig.setHeuristicDefaultLifetime(heuristicDefaultLifetimeSecs);
 		cacheConfig.setMaxCacheEntries(maxCacheEntries);
 		if (maxObjectSize > 0)
-			cacheConfig.setMaxObjectSizeBytes(maxObjectSize);
+			cacheConfig.setMaxObjectSize(maxObjectSize);
 		else
-			cacheConfig.setMaxObjectSizeBytes(Integer.MAX_VALUE);
+			cacheConfig.setMaxObjectSize(Long.MAX_VALUE);
 		cacheConfig.setAsynchronousWorkersCore(minAsynchronousWorkers);
 		cacheConfig.setAsynchronousWorkersMax(maxAsynchronousWorkers);
 		cacheConfig.setAsynchronousWorkerIdleLifetimeSecs(asynchronousWorkerIdleLifetimeSecs);

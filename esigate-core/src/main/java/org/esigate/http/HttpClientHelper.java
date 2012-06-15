@@ -61,10 +61,11 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.MalformedCookieException;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
@@ -155,7 +156,7 @@ public class HttpClientHelper implements Extension {
 		// Create an HttpClient with the ThreadSafeClientConnManager.
 		// This connection manager must be used if more than one thread will
 		// be using the HttpClient.
-		ThreadSafeClientConnManager connectionManager = new ThreadSafeClientConnManager(schemeRegistry);
+		PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager(schemeRegistry);
 		connectionManager.setMaxTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
 		connectionManager.setDefaultMaxPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
 		HttpParams httpParams = new BasicHttpParams();
@@ -405,14 +406,7 @@ public class HttpClientHelper implements Extension {
 	}
 
 	public void render(String transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest request) throws IOException {
-		HttpEntity httpEntity = httpResponse.getEntity();
-		String charset = null;
-		String mimeType = null;
-		if (httpEntity != null) {
-			charset = EntityUtils.getContentCharSet(httpEntity);
-			mimeType = EntityUtils.getContentMimeType(httpEntity);
-		}
-		httpEntity = new StringEntity(transformedEntity, mimeType, charset);
+		HttpEntity httpEntity = new StringEntity(transformedEntity, ContentType.get(httpResponse.getEntity()));
 		render(httpEntity, httpResponse, output, originalRequest, request);
 	}
 
