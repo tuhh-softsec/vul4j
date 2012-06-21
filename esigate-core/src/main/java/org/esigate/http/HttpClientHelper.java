@@ -313,7 +313,7 @@ public class HttpClientHelper implements Extension {
 		CookieSpec cookieSpec = new BrowserCompatSpec();
 		// Dummy origin, used only by CookieSpec for setting the domain for the cookie but we don't need it
 		CookieOrigin cookieOrigin = new CookieOrigin("dummy", 80, "/", false);
-		Header[] responseHeaders = httpResponse.getAllHeaders();
+		Header[] responseHeaders = httpResponse.getHeaders("Set-cookie");
 		String jsessionid = null;
 		for (int i = 0; i < responseHeaders.length; i++) {
 			Header header = responseHeaders[i];

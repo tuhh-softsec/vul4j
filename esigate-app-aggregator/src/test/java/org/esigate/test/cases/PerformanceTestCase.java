@@ -23,14 +23,23 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
+import junitx.framework.AssertionFailedError;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
 
 /**
  * Performance test
@@ -39,79 +48,97 @@ import com.meterware.httpunit.WebResponse;
  */
 public class PerformanceTestCase extends TestCase {
 	/**
-	 * Runnable that perform GET
-	 * 
-	 * @author altha
-	 * 
+	 * Runnable that perform a GET request. This object is reusable and thread
+	 * safe.
 	 */
-	class GetRunnable implements Runnable {
-		private final String app;
-		private final String page;
+	private class HttpGetRequestRunnable implements Runnable {
+		long count = 0;
+		Throwable exception;
+		String lastResult;
+		final String url;
 
-		public GetRunnable(String app, String page) {
-			this.app = app;
-			this.page = page;
+		private HttpGetRequestRunnable(String url) {
+			this.url = url;
 		}
 
 		public void run() {
-			try {
-				doGet(app, page);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+			if (exception == null) {
+				count++;
+				try {
+					HttpUriRequest request = new HttpGet(url);
+					HttpResponse response = httpClient.execute(request);
+					String result = EntityUtils.toString(response.getEntity());
+					if (lastResult == null) {
+						lastResult = result;
+					}
+					assertEquals("Status should be 200",
+							HttpServletResponse.SC_OK, response.getStatusLine()
+									.getStatusCode());
+					assertEquals("Result should always be the same",
+							lastResult, result);
+				} catch (Throwable e) {
+					exception = e;
+				}
 			}
 		}
 	}
 
-	private final static String AGGREGATED1_PATH = "http://localhost:8080/esigate-app-aggregated1/";
-	private final static String AGGREGATED2_PATH = "http://localhost:8080/esigate-app-aggregated2/";
+	private final static String AGGREGATED1 = "http://localhost:8080/esigate-app-aggregated1/";
+	private final static String AGGREGATED2 = "http://localhost:8080/esigate-app-aggregated2/";
 	private final static String AGGREGATOR = "http://localhost:8080/esigate-app-aggregator/";
 	private final static String AGGREGATOR_NO_CACHE = "http://localhost:8080/esigate-app-aggregator/nocache/ag1/";
+
 	private static final Logger LOG = LoggerFactory
 			.getLogger(PerformanceTestCase.class);
+	private PoolingClientConnectionManager connectionManager;
 
-	/**
-	 * Execute a get request
-	 * 
-	 * @param path
-	 * @param page
-	 * @throws Exception
-	 */
-	private void doGet(String path, String page) throws Exception {
-		WebConversation webConversation = new WebConversation();
-		webConversation.getClientProperties().setAutoRedirect(false);
-		WebRequest req = new GetMethodWebRequest(path + page);
-		WebResponse resp = webConversation.getResponse(req);
-
-		assertEquals("Status should be 200", HttpServletResponse.SC_OK,
-				resp.getResponseCode());
-
-	}
+	private HttpClient httpClient;
 
 	/**
 	 * Execute la tache avec plusieurs Threads
 	 * 
-	 * @param run
+	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
-	private long executePool(GetRunnable run) throws Exception {
-		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+	private long execute(HttpGetRequestRunnable request, int numberOfRequests,
+			int threads) throws Exception {
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory
+				.getSocketFactory()));
+		connectionManager = new PoolingClientConnectionManager(schemeRegistry);
+		connectionManager.setMaxTotal(threads);
+		connectionManager.setDefaultMaxPerRoute(threads);
+		HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+		HttpConnectionParams.setSoTimeout(httpParams, 10000);
+		httpClient = new DefaultHttpClient(connectionManager, httpParams);
+		// Warm up
+		request.run();
 
-		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(20, 800, 5000,
-				TimeUnit.MILLISECONDS, queue);
+		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+		ThreadPoolExecutor threadPool = new ThreadPoolExecutor(threads,
+				threads, 5, TimeUnit.SECONDS, queue);
 
 		long start = System.currentTimeMillis();
 		threadPool.prestartAllCoreThreads();
-		for (int i = 0; i < 500; i++) {
-			threadPool.submit(run);
+		for (int i = 0; i < numberOfRequests; i++) {
+			threadPool.submit(request);
 		}
 		threadPool.shutdown();
 
 		// wait maximum 20 s
-		threadPool.awaitTermination(20000, TimeUnit.MILLISECONDS);
+		threadPool.awaitTermination(200, TimeUnit.SECONDS);
+		connectionManager.shutdown();
+
+		if (request.exception != null) {
+			throw new AssertionFailedError("Exception for request "
+					+ request.url + " after " + request.count + " requests",
+					request.exception);
+		}
 		if (threadPool.getCompletedTaskCount() < threadPool.getTaskCount()) {
 			// All task were not executed
-			String msg = run.app + run.page + " : Only "
+			String msg = request.url + " : Only "
 					+ threadPool.getCompletedTaskCount() + "/"
 					+ threadPool.getTaskCount() + " have been renderered "
 					+ " => Maybe a performance issue";
@@ -121,55 +148,44 @@ public class PerformanceTestCase extends TestCase {
 
 		long end = System.currentTimeMillis();
 		long execTime = end - start;
+		LOG.debug("Executed request " + request.url + " " + numberOfRequests
+				+ " times with " + threads + " threads in " + execTime + "ms");
 		return execTime;
-
-	}
-
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
 
 	}
 
 	/**
 	 * Performance test
 	 */
-	public void test() throws Exception {
-		// Get page to compile jsp and init driver
-		doGet(AGGREGATOR, "templateslow.jsp");
-		doGet(AGGREGATOR_NO_CACHE, "templateslow.jsp");
-		doGet(AGGREGATED1_PATH, "templateslow.jsp");
-		doGet(AGGREGATED2_PATH, "template.html");
+	public void testAggregator() throws Exception {
+		HttpGetRequestRunnable runAggregated1 = new HttpGetRequestRunnable(
+				AGGREGATED1 + "templateslow.jsp");
+		HttpGetRequestRunnable runAggregated2 = new HttpGetRequestRunnable(
+				AGGREGATED2 + "template.html");
+		HttpGetRequestRunnable runAggregator = new HttpGetRequestRunnable(
+				AGGREGATOR + "templateslow.jsp");
+		HttpGetRequestRunnable runAggregatorNoCache = new HttpGetRequestRunnable(
+				AGGREGATOR_NO_CACHE + "templateslow.jsp");
 
-		GetRunnable runAggregated1 = new GetRunnable(AGGREGATED1_PATH,
-				"templateslow.jsp");
-		GetRunnable runAggregated2 = new GetRunnable(AGGREGATED2_PATH,
-				"template.html");
-		GetRunnable runAggregator = new GetRunnable(AGGREGATOR,
-				"templateslow.jsp");
-		GetRunnable runAggregatorNoCache = new GetRunnable(AGGREGATOR_NO_CACHE,
-				"templateslow.jsp");
-
-		long execTimeAggregated1 = executePool(runAggregated1);
-		LOG.debug("execTimeAggregated1 :" + execTimeAggregated1 + "ms");
-
-		long execTimeAggregated2 = executePool(runAggregated2);
+		long execTimeAggregated1 = execute(runAggregated1, 5000, 50);
+		long execTimeAggregated2 = execute(runAggregated2, 5000, 50);
 		long execTimeDirectAccess = execTimeAggregated1 + execTimeAggregated2;
-		LOG.debug("execTimeAggregated2 :" + execTimeAggregated2 + "ms");
-		LOG.debug("execTimeDirectAccess :" + execTimeDirectAccess + "ms");
-
-		long execTimeAggregator = executePool(runAggregator);
-		LOG.debug("execTimeAggregator :" + execTimeAggregator + "ms");
-
-		long execTimeAggregatorNoCache = executePool(runAggregatorNoCache);
-		LOG.debug("execTimeAggregatorNoCache :" + execTimeAggregatorNoCache
+		LOG.debug("Total execution time direct access: " + execTimeDirectAccess
 				+ "ms");
+
+		long execTimeAggregator = execute(runAggregator, 5000, 50);
+		LOG.debug("Total execution time with aggregator (cache): "
+				+ execTimeAggregator + "ms");
+
+		long execTimeAggregatorNoCache = execute(runAggregatorNoCache, 5000, 50);
+		LOG.debug("Total execution time with aggregator (no cache): "
+				+ execTimeAggregatorNoCache + "ms");
 
 		/*
 		 * Expected time : 10% of total time to retrieve resources without
 		 * aggregator
 		 */
-		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.20);
+		long expectedExecTime = Math.round((execTimeDirectAccess) * 1.10);
 		LOG.debug("Maximum expected :" + expectedExecTime + "ms");
 		if (execTimeAggregator > expectedExecTime) {
 			fail("Performance issue :" + execTimeAggregator
@@ -187,4 +203,5 @@ public class PerformanceTestCase extends TestCase {
 		}
 
 	}
+
 }
