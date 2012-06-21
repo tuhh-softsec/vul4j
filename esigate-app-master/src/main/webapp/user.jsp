@@ -4,8 +4,8 @@
 <%@page import="org.esigate.UserContext"%>
 <%@page import="org.esigate.servlet.HttpRequestImpl"%>
 <%@page import="org.esigate.DriverFactory"%>
-<%@page import="org.esigate.cookie.SerializableBasicCookieStore"%>
 <%@taglib uri="http://www.esigate.org/taglib" prefix="assemble"%>
+
 <%
 	UserContext context = DriverFactory.getInstance().getUserContext(HttpRequestImpl.wrap(request));	
 	context.setUser("test");

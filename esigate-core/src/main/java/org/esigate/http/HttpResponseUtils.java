@@ -21,9 +21,9 @@ import java.nio.charset.Charset;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
-import org.esigate.api.HttpStatusConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +32,8 @@ public class HttpResponseUtils {
 
 	public static boolean isError(HttpResponse httpResponse) {
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		return statusCode != HttpStatusConstants.SC_OK && statusCode != HttpStatusConstants.SC_MOVED_TEMPORARILY && statusCode != HttpStatusConstants.SC_MOVED_PERMANENTLY
-				&& statusCode != HttpStatusConstants.SC_NOT_MODIFIED;
+		return statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_MOVED_TEMPORARILY && statusCode != HttpStatus.SC_MOVED_PERMANENTLY
+				&& statusCode != HttpStatus.SC_NOT_MODIFIED;
 	}
 
 	public static String getFirstHeader(String headerName, HttpResponse httpResponse) {

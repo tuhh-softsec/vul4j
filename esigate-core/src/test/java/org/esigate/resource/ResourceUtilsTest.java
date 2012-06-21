@@ -37,9 +37,8 @@ public class ResourceUtilsTest extends TestCase {
 		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
 		EasyMock.expect(request.getSession(false)).andReturn(null);
 		ResourceContext resourceContext = new ResourceContext(driver, "/test", null, request, null);
-		resourceContext.setProxy(true);
 		EasyMock.replay(request);
-		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext));
+		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext, true));
 	}
 
 	public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
@@ -51,8 +50,7 @@ public class ResourceUtilsTest extends TestCase {
 		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
 		EasyMock.expect(request.getSession(false)).andReturn(null);
 		ResourceContext resourceContext = new ResourceContext(driver, "http://www.bar.com/test", null, request, null);
-		resourceContext.setProxy(true);
 		EasyMock.replay(request);
-		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext));
+		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext, true));
 	}
 }

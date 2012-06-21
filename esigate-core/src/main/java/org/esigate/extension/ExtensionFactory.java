@@ -12,16 +12,13 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.extension;
 
-import java.util.HashMap;
-
+import java.util.Properties;
 
 import org.esigate.ConfigurationException;
-import org.esigate.DriverConfiguration;
-import org.esigate.authentication.AuthenticationHandler;
-import org.esigate.cookie.CustomCookieStore;
-import org.esigate.filter.Filter;
+import org.esigate.util.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,36 +26,11 @@ import org.slf4j.LoggerFactory;
  * Factory for all ESIGate extension classes (authenticator, filters, cookie store).
  * 
  * @author Nicolas Richeton
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class ExtensionFactory {
 	private static final Logger LOG = LoggerFactory.getLogger(ExtensionFactory.class);
-
-	private static final String EXTENSION_WAT_FILTER = Filter.class.getName();
-	private static final String EXTENSION_COOKIE_STORE = CustomCookieStore.class
-			.getName();
-	private static final String EXTENSION_AUTHENTIFICATION_HANDLER = AuthenticationHandler.class
-			.getName();
-
-	// Store class name for each Extension (Filter,Cookie,AuthenticationHandler)
-	private final HashMap<String, String> classes = new HashMap<String, String>();
-
-	private final DriverConfiguration conf;
-
-	/**
-	 * Build an extension factory using the given properties. These properties
-	 * will be forwarded to each extension in
-	 * {@link Extension#init(java.util.Properties)}.
-	 * 
-	 * @param conf
-	 */
-	public ExtensionFactory(DriverConfiguration conf) {
-		this.conf = conf;
-		classes.put(EXTENSION_COOKIE_STORE, conf.getCookieStore());
-		classes.put(EXTENSION_AUTHENTIFICATION_HANDLER, conf
-				.getAuthenticationHandler());
-		classes.put(EXTENSION_WAT_FILTER, conf.getFilter());
-	}
 
 	/**
 	 * Get an extension using its interface.
@@ -70,26 +42,23 @@ public class ExtensionFactory {
 	 * @return instance of {@link Extension} or null.
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Extension> T getExtension(Class<T> clazz) {
+	public final static <T extends Extension> T getExtension(Properties properties, Parameter parameter, Class<T> clazz) {
 		T result = null;
-
-		String className = classes.get(clazz.getName());
-
-		if (className != null) {
-			try {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Creating  " + className + " as "
-							+ clazz.getName());
-				}
-				result = (T) Class.forName(className).newInstance();
-				result.init(conf.getProperties());
-			} catch (InstantiationException e) {
-				throw new ConfigurationException(e);
-			} catch (IllegalAccessException e) {
-				throw new ConfigurationException(e);
-			} catch (ClassNotFoundException e) {
-				throw new ConfigurationException(e);
+		String className = parameter.getValueString(properties);
+		if (className == null)
+			return null;
+		try {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Creating  extension " + className + " as " + clazz.getName());
 			}
+			result = (T) Class.forName(className).newInstance();
+			result.init(properties);
+		} catch (InstantiationException e) {
+			throw new ConfigurationException(e);
+		} catch (IllegalAccessException e) {
+			throw new ConfigurationException(e);
+		} catch (ClassNotFoundException e) {
+			throw new ConfigurationException(e);
 		}
 		return result;
 	}

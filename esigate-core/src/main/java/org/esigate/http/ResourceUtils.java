@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import org.esigate.ResourceContext;
 import org.esigate.api.HttpSession;
+import org.esigate.util.UriUtils;
 
 /**
  * Utility class to generate URL and path for Resources
@@ -37,7 +38,7 @@ public class ResourceUtils {
 
 	}
 
-	private final static String buildQueryString(ResourceContext target) {
+	private final static String buildQueryString(ResourceContext target, boolean proxy) {
 		try {
 			StringBuilder queryString = new StringBuilder();
 			String charset = target.getOriginalRequest().getCharacterEncoding();
@@ -45,7 +46,7 @@ public class ResourceUtils {
 				charset = "ISO-8859-1";
 			}
 			String originalQuerystring = target.getOriginalRequest().getUri().getRawQuery();
-			if (target.isProxy() && originalQuerystring != null) {
+			if (proxy && originalQuerystring != null) {
 				// Remove jsessionid from request if it is present
 				// As we are in a java application, the container might add
 				// jsessionid to the querystring. We must not forward it to
@@ -56,7 +57,7 @@ public class ResourceUtils {
 					jsessionid = session.getId();
 				}
 				if (jsessionid != null) {
-					originalQuerystring = RewriteUtils.removeSessionId(jsessionid, originalQuerystring);
+					originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
 				}
 				queryString.append(originalQuerystring);
 			}
@@ -90,7 +91,7 @@ public class ResourceUtils {
 		return url.toString();
 	}
 
-	public final static String getHttpUrlWithQueryString(ResourceContext target) {
+	public final static String getHttpUrlWithQueryString(ResourceContext target, boolean proxy) {
 		String url = target.getRelUrl();
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			// Relative URL, we need to add the driver base url
@@ -98,7 +99,7 @@ public class ResourceUtils {
 				url = concatUrl(target.getBaseURL(), url);
 			}
 		}
-		String queryString = ResourceUtils.buildQueryString(target);
+		String queryString = ResourceUtils.buildQueryString(target, proxy);
 		if (queryString.length() == 0) {
 			return url;
 		} else {

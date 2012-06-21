@@ -33,6 +33,7 @@ import javax.net.ssl.SSLContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -261,7 +262,7 @@ public class HttpClientHelper implements Extension {
 			else if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
 				String value = originalRequest.getHeader(name);
 				try {
-					value = RewriteUtils.translateUrl(value, originalUri, uri);
+					value = UriUtils.translateUrl(value, originalUri, uri);
 				} catch (MalformedURLException e) {
 					throw new HttpErrorPage(HttpStatus.SC_BAD_REQUEST, "Bad request", e);
 				}
@@ -295,9 +296,8 @@ public class HttpClientHelper implements Extension {
 			String value = header.getValue();
 			if (isForwardedResponseHeader(name)) {
 				// Some headers containing an URI have to be rewritten
-				if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || HttpHeaders.LINK.equalsIgnoreCase(name)
-						|| HttpHeaders.P3P.equalsIgnoreCase(name)) {
-					value = RewriteUtils.translateUrl(value, uri, originalUri);
+				if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
+					value = UriUtils.translateUrl(value, uri, originalUri);
 					value = removeSessionId(value, httpClientResponse);
 					output.addHeader(name, value);
 				} else if (HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
@@ -333,7 +333,7 @@ public class HttpClientHelper implements Extension {
 		if (jsessionid == null) {
 			return src;
 		} else {
-			return RewriteUtils.removeSessionId(jsessionid, src);
+			return UriUtils.removeSessionId(jsessionid, src);
 		}
 	}
 

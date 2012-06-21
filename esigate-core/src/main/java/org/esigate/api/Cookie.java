@@ -12,24 +12,7 @@ import java.util.Date;
  */
 public interface Cookie {
 	
-	 // RFC2109 attributes
-    public static final String VERSION_ATTR    = "version";
-    public static final String PATH_ATTR       = "path";
-    public static final String DOMAIN_ATTR     = "domain";
-    public static final String MAX_AGE_ATTR    = "max-age";
-    public static final String SECURE_ATTR     = "secure";
-    public static final String COMMENT_ATTR    = "comment";
-    public static final String EXPIRES_ATTR    = "expires";
-
-    // RFC2965 attributes
-    public static final String PORT_ATTR       = "port";
-    public static final String COMMENTURL_ATTR = "commenturl";
-    public static final String DISCARD_ATTR    = "discard";
-
-    String getAttribute(String name);
-
-    boolean containsAttribute(String name);
-    /**
+	 /**
      * Returns the name.
      *
      * @return String name The name
@@ -66,15 +49,6 @@ public interface Cookie {
      * @return Expiration {@link Date}, or <tt>null</tt>.
      */
     Date getExpiryDate();
-
-    /**
-     * Returns <tt>false</tt> if the cookie should be discarded at the end
-     * of the "session"; <tt>true</tt> otherwise.
-     *
-     * @return <tt>false</tt> if the cookie should be discarded at the end
-     *         of the "session"; <tt>true</tt> otherwise
-     */
-    boolean isPersistent();
 
     /**
      * Returns domain attribute of the cookie. The value of the Domain
@@ -135,15 +109,6 @@ public interface Cookie {
      */
     void setPorts(int[] ports);
 
-    /**
-     * Set the Discard attribute.
-     *
-     * Note: <tt>Discard</tt> attribute overrides <tt>Max-age</tt>.
-     *
-     * @see #isPersistent()
-     */
-    void setDiscard(boolean discard);
-    
     void setValue(String value);
 
     /**

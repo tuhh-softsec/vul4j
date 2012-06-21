@@ -17,7 +17,7 @@ package org.esigate;
 
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
-import org.esigate.cookie.SerializableBasicCookieStore;
+import org.esigate.cookie.DefaultCookieManager;
 import org.esigate.util.Parameter;
 
 /**
@@ -54,7 +54,7 @@ public interface Parameters {
 	public static final Parameter FORWARD_RESPONSE_HEADERS = new Parameter("forwardResponseHeaders", null);
 
 	// Cookies
-	public static final Parameter COOKIE_STORE = new Parameter("cookieStore", SerializableBasicCookieStore.class.getName());
+	public static final Parameter COOKIE_MANAGER = new Parameter("cookieManager", DefaultCookieManager.class.getName());
 	public static final Parameter DISCARD_COOKIES = new Parameter("discardCookies", null);
 	public static final Parameter FORWARD_COOKIES = new Parameter("forwardCookies", null);
 

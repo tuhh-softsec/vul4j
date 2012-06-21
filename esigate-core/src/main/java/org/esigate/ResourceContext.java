@@ -43,21 +43,7 @@ public class ResourceContext {
 	private final HttpRequest originalRequest;
 	private final HttpResponse originalResponse;
 	private final Map<String, String> parameters;
-	private boolean proxy = false;
-	private boolean preserveHost = false;
 	private URI baseURLasURL = null;
-
-	public boolean isPreserveHost() {
-		return preserveHost;
-	}
-
-	public void setPreserveHost(boolean preserveHost) {
-		this.preserveHost = preserveHost;
-	}
-
-	public void setProxy(boolean proxyMode) {
-		this.proxy = proxyMode;
-	}
 
 	public ResourceContext(Driver driver, String relUrl, Map<String, String> parameters, HttpRequest originalRequest, HttpResponse originalResponse) {
 		this.driver = driver;
@@ -86,10 +72,6 @@ public class ResourceContext {
 
 	public Map<String, String> getParameters() {
 		return parameters;
-	}
-
-	public boolean isProxy() {
-		return proxy;
 	}
 
 	public UserContext getUserContext() {

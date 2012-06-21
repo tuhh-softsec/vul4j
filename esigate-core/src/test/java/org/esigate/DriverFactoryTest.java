@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.esigate.api.HttpRequest;
-import org.esigate.http.CookieForwardingFilter;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -65,18 +64,16 @@ public class DriverFactoryTest extends TestCase {
 	}
 
 	public void testMergeProperties() {
-		String deafultBaseUrl = "http://basedefault.url";
+		String defaultBaseUrl = "http://basedefault.url";
 		String extendedBaseUrl = "http://baseextended.url";
 
 		Properties defaultProps = new Properties();
-		defaultProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, deafultBaseUrl);
-		defaultProps.setProperty("default." + Parameters.FILTER.name, CookieForwardingFilter.class.getName());
-		defaultProps.setProperty("default." + Parameters.COOKIE_STORE.name, "org.esigate.cookie.FilteringCookieStore");
-		defaultProps.setProperty("default." + Parameters.FORWARD_COOKIES.name, "test");
+		defaultProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, defaultBaseUrl);
+		defaultProps.setProperty("default." + Parameters.URI_ENCODING.name, "ISO-8859-1");
 
 		Properties extendedProps = new Properties();
 		extendedProps.setProperty("default." + Parameters.REMOTE_URL_BASE.name, extendedBaseUrl);
-		extendedProps.setProperty("default." + Parameters.COOKIE_STORE.name, "test-cookie");
+		extendedProps.setProperty("default." + Parameters.URI_ENCODING.name, "UTF-8");
 
 		URL dir = this.getClass().getResource("DriverFactoryTest.class");
 		File file = new File(dir.getPath());
@@ -90,7 +87,7 @@ public class DriverFactoryTest extends TestCase {
 			FileOutputStream defaultOutputStream = new FileOutputStream(driverPropsFile);
 			FileOutputStream extOutputStream = new FileOutputStream(extendedPropsFile);
 			defaultProps.store(defaultOutputStream, "driver.properties");
-			extendedProps.store(extOutputStream, "driver.properties");
+			extendedProps.store(extOutputStream, "driver-ext.properties");
 
 			defaultOutputStream.close();
 			extOutputStream.close();
@@ -102,16 +99,7 @@ public class DriverFactoryTest extends TestCase {
 		try {
 			DriverFactory.configure();
 			Driver driver = DriverFactory.getInstance();
-
-			HttpRequest request = EasyMock.createMock(HttpRequest.class);
-			ResourceContext resourceContext = new ResourceContext(driver, "/test", null, request, null);
-
-			assertEquals(extendedBaseUrl, resourceContext.getBaseURL());
-
-			assertEquals(CookieForwardingFilter.class.getName(), driver.getFilter().getClass().getName());
-			assertEquals("test-cookie", driver.getConfiguration().getCookieStore());
-			assertEquals("test", driver.getConfiguration().getProperties().get(Parameters.FORWARD_COOKIES.name));
-
+			assertEquals("UTF-8", driver.getConfiguration().getUriEncoding());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		} finally {

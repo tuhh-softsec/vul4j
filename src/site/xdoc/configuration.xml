@@ -141,20 +141,20 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>cookieStore</td>
-                    <td>The cookieStore to use. Must be a class that implements org.esigate.cookie.CustomCookieStore</td>
+                    <td>cookieManager</td>
+                    <td>The cookieManager to use. Must be a class that implements org.esigate.cookie.CookieManager</td>
                     <td>No</td>
-                    <td>org.esigate.cookie.SerializableBasicCookieStore</td>
+                    <td>org.esigate.cookie.DefaultCookieManager</td>
                 </tr>
                  <tr>
                     <td>discardCookies</td>
-                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on EsiGate side. You can use the value * to discard all cookies. To use this feature, you must configure org.esigate.http.CookieForwardingFilter as a filter.</td>
+                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on EsiGate side. You can use the value * to discard all cookies.</td>
                     <td>No</td>
                     <td></td>
                 </tr>
                  <tr>
                     <td>forwardCookies</td>
-                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on EsiGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client. To use this feature, you must configure org.esigate.http.CookieForwardingFilter as a filter.</td>
+                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on EsiGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
                     <td>No</td>
                     <td></td>
                 </tr>

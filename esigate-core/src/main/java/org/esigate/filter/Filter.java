@@ -35,13 +35,6 @@ public interface Filter extends Extension {
 
 	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext);
 
-	/**
-	 * Does the filter need userContext ?
-	 * 
-	 * @return true if the filter needs the userContext to be setted beforehand
-	 */
-	boolean needUserContext();
-
 	Filter EMPTY = new Filter() {
 		public void init(Properties properties) {
 		}
@@ -50,10 +43,6 @@ public interface Filter extends Extension {
 		}
 
 		public void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext) {
-		}
-
-		public boolean needUserContext() {
-			return false;
 		}
 
 	};

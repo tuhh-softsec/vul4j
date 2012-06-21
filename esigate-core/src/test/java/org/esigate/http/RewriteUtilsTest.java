@@ -1,11 +1,13 @@
 package org.esigate.http;
 
+import org.esigate.util.UriUtils;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class RewriteUtilsTest extends TestCase {
 	private void simpleRemoveTest(String sessionId, String in, String expected) {
-		String actual = RewriteUtils.removeSessionId(sessionId, in);
+		String actual = UriUtils.removeSessionId(sessionId, in);
 		Assert.assertEquals("Removing sessionId failed", expected, actual);
 	}
 
@@ -46,7 +48,7 @@ public class RewriteUtilsTest extends TestCase {
 		String sourceExample = "http://www.test.com/aaa/cccc/d/";
 		String targetExample = "https://localhost:8080/eee/cccc/d/";
 		String expected = "https://localhost:8080/eee/bb";
-		assertEquals(expected, RewriteUtils.translateUrl(sourceUrl, sourceExample, targetExample));
+		assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
 	}
 
 	public void testTranslateUnmodified() throws Exception {
@@ -54,7 +56,7 @@ public class RewriteUtilsTest extends TestCase {
 		String sourceExample = "http://www.test.com/aaa/cccc/d/";
 		String targetExample = "https://localhost:8080/eee/cccc/d/";
 		String expected = sourceUrl;
-		assertEquals(expected, RewriteUtils.translateUrl(sourceUrl, sourceExample, targetExample));
+		assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
 	}
 
 }

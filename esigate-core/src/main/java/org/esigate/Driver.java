@@ -24,19 +24,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.CookieStore;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
 import org.esigate.authentication.AuthenticationHandler;
-import org.esigate.cookie.CustomCookieStore;
+import org.esigate.cookie.CookieManager;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.filter.Filter;
-import org.esigate.http.CookieAdapter;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.HttpClientHelper;
-import org.esigate.http.HttpHeaders;
 import org.esigate.http.HttpResponseUtils;
+import org.esigate.http.RequestCookieStore;
 import org.esigate.http.ResourceUtils;
 import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.renderers.ResourceFixupRenderer;
@@ -62,8 +62,8 @@ public class Driver {
 	private final AuthenticationHandler authenticationHandler;
 	private final Filter filter;
 	private final HttpClientHelper httpClientHelper;
-	private final ExtensionFactory extension;
 	private final List<String> parsableContentTypes;
+	private final CookieManager cookieManager;
 
 	public Driver(String name, Properties props) {
 		this(name, props, new HttpClientHelper());
@@ -73,12 +73,10 @@ public class Driver {
 	public Driver(String name, Properties props, HttpClientHelper httpClientHelper) {
 		config = new DriverConfiguration(name, props);
 		this.httpClientHelper = httpClientHelper;
-		// Extension
-		extension = new ExtensionFactory(config);
 		// Authentication handler
-		authenticationHandler = extension.getExtension(AuthenticationHandler.class);
+		authenticationHandler = ExtensionFactory.getExtension(props, Parameters.AUTHENTICATION_HANDLER, AuthenticationHandler.class);
 		// Filter
-		Filter f = extension.getExtension(Filter.class);
+		Filter f = ExtensionFactory.getExtension(props, Parameters.FILTER, Filter.class);
 		filter = (f != null) ? f : Filter.EMPTY;
 		parsableContentTypes = new ArrayList<String>();
 		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(props);
@@ -89,65 +87,19 @@ public class Driver {
 			contentType = contentType.trim();
 			parsableContentTypes.add(contentType);
 		}
-	}
-
-	public AuthenticationHandler getAuthenticationHandler() {
-		return authenticationHandler;
+		cookieManager = ExtensionFactory.getExtension(props, Parameters.COOKIE_MANAGER, CookieManager.class);
 	}
 
 	/**
 	 * Get current user context in session or request. Context will be saved to session only if not empty.
 	 * 
-	 * @param request
+	 * @param httpRequest
 	 *            http request
 	 * 
 	 * @return UserContext
 	 */
-	public final UserContext getUserContext(HttpRequest request) {
-		String key = getContextKey();
-		UserContext context = (UserContext) request.getAttribute(key);
-		if (context == null) {
-			org.esigate.api.HttpSession session = request.getSession(false);
-			if (session != null) {
-				context = (UserContext) session.getAttribute(key);
-			}
-			if (context == null) {
-				context = createNewUserContext();
-			}
-			request.setAttribute(key, context);
-		}
-		return context;
-	}
-
-	/**
-	 * Return a new and initialized user context.
-	 * 
-	 * @return UserContext
-	 */
-	private UserContext createNewUserContext() {
-		UserContext context = new UserContext(extension.getExtension(CustomCookieStore.class));
-		return context;
-	}
-
-	/**
-	 * Save user context to session only if not empty.
-	 * 
-	 * @param request
-	 *            http request.
-	 */
-	public final void saveUserContext(HttpRequest request) {
-		String key = getContextKey();
-		UserContext context = (UserContext) request.getAttribute(key);
-		if (context != null && !context.isEmpty()) {
-			org.esigate.api.HttpSession session = request.getSession(true);
-			Object sessionContext = session.getAttribute(key);
-			if (sessionContext == null || sessionContext != context) {
-				if (LOG.isInfoEnabled()) {
-					LOG.info("Provider=" + config.getInstanceName() + " saving context to session : " + context.toString().replaceAll("\n", ""));
-				}
-				session.setAttribute(key, context);
-			}
-		}
+	public final UserContext getUserContext(HttpRequest httpRequest) {
+		return new UserContext(httpRequest, config.getInstanceName());
 	}
 
 	/**
@@ -285,7 +237,7 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	protected final ResourceContext render(String page, Map<String, String> parameters, Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException,
+	private final ResourceContext render(String page, Map<String, String> parameters, Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException,
 			HttpErrorPage {
 		if (LOG.isInfoEnabled()) {
 			List<String> rendererNames = new ArrayList<String>(renderers.length);
@@ -296,7 +248,6 @@ public class Driver {
 		}
 		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
 		ResourceContext resourceContext = new ResourceContext(this, resultingpage, parameters, request, response);
-		resourceContext.setPreserveHost(config.isPreserveHost());
 		String currentValue = getResourceAsString(resourceContext);
 
 		// Fix resources
@@ -338,15 +289,12 @@ public class Driver {
 
 		ResourceContext resourceContext = new ResourceContext(this, relUrl, null, request, response);
 		request.setCharacterEncoding(config.getUriEncoding());
-		resourceContext.setProxy(true);
-		resourceContext.setPreserveHost(config.isPreserveHost());
 		if (!authenticationHandler.beforeProxy(resourceContext)) {
 			return;
 		}
 		HttpRequest originalRequest = resourceContext.getOriginalRequest();
-		boolean proxy = resourceContext.isProxy();
-		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext);
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, proxy);
+		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext, true);
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, true);
 		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, resourceContext);
 		if (HttpResponseUtils.isError(httpResponse)) {
 			String errorPageContent = httpClientHelper.toString(httpResponse);
@@ -377,8 +325,6 @@ public class Driver {
 			}
 			httpClientHelper.render(currentValue, httpResponse, response, originalRequest, httpRequest);
 		}
-		// Save the cookies to session if necessary
-		saveUserContext(resourceContext.getOriginalRequest());
 	}
 
 	/**
@@ -393,24 +339,21 @@ public class Driver {
 	 */
 	protected String getResourceAsString(ResourceContext context) throws HttpErrorPage, IOException {
 		String result;
-		String url = ResourceUtils.getHttpUrlWithQueryString(context);
+		String url = ResourceUtils.getHttpUrlWithQueryString(context, false);
 		org.esigate.api.HttpRequest request = context.getOriginalRequest();
-		boolean cacheable = !context.isProxy() || "GET".equalsIgnoreCase(context.getOriginalRequest().getMethod());
+		boolean cacheable = "GET".equalsIgnoreCase(context.getOriginalRequest().getMethod());
 		if (cacheable) {
 			result = (String) request.getAttribute(url);
 			if (result != null)
 				return result;
 		}
 		HttpRequest originalRequest = context.getOriginalRequest();
-		boolean proxy = context.isProxy();
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, proxy);
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, false);
 		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, context);
 		result = httpClientHelper.toString(httpResponse);
 		if (HttpResponseUtils.isError(httpResponse)) {
 			throw new HttpErrorPage(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase(), result);
 		}
-		// Save the cookies to session if necessary
-		saveUserContext(context.getOriginalRequest());
 		if (cacheable) {
 			request.setAttribute(url, result);
 		}
@@ -434,21 +377,9 @@ public class Driver {
 	public String getResourceAsString(String page, ResourceContext ctx) throws HttpErrorPage, IOException {
 		String actualPage = VariablesResolver.replaceAllVariables(page, ctx.getOriginalRequest());
 		ResourceContext resourceContext = new ResourceContext(this, actualPage, null, ctx.getOriginalRequest(), ctx.getOriginalResponse());
-		resourceContext.setPreserveHost(getConfiguration().isPreserveHost());
 		String currentValue = getResourceAsString(resourceContext);
 		return currentValue;
 
-	}
-
-	private final String getContextKey() {
-		return UserContext.class.getName() + "#" + config.getInstanceName();
-	}
-
-	/**
-	 * Returns {@linkplain Filter} instance configured for this driver. Never returns <code>null</code>.
-	 */
-	public Filter getFilter() {
-		return filter;
 	}
 
 	/**
@@ -504,8 +435,7 @@ public class Driver {
 	}
 
 	private org.apache.http.HttpResponse execute(GenericHttpRequest httpRequest, HttpRequest originalRequest, ResourceContext resourceContext) throws HttpErrorPage {
-		UserContext userContext = resourceContext.getUserContext();
-		CookieStore cookieStore = CookieAdapter.convertCookieStore(userContext.getCookieStore());
+		CookieStore cookieStore = new RequestCookieStore(cookieManager, resourceContext);
 		HttpContext httpContext = httpClientHelper.createHttpContext(cookieStore);
 		org.apache.http.HttpResponse httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
 		while (authenticationHandler.needsNewRequest(httpResponse, resourceContext)) {

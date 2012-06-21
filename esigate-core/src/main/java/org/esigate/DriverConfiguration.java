@@ -41,7 +41,6 @@ public class DriverConfiguration {
 	private final String authenticationHandler;
 	private final Properties properties;
 	private final boolean preserveHost;
-	private final String cookieStore;
 	private final String filter;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
 	private final boolean isVisibleBaseURLEmpty;
@@ -51,7 +50,6 @@ public class DriverConfiguration {
 		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
 		uriEncoding = Parameters.URI_ENCODING.getValueString(props);
 		authenticationHandler = Parameters.AUTHENTICATION_HANDLER.getValueString(props);
-		cookieStore = Parameters.COOKIE_STORE.getValueString(props);
 		filter = Parameters.FILTER.getValueString(props);
 		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
 		fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
@@ -129,10 +127,6 @@ public class DriverConfiguration {
 
 	public Properties getProperties() {
 		return properties;
-	}
-
-	public String getCookieStore() {
-		return cookieStore;
 	}
 
 	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {

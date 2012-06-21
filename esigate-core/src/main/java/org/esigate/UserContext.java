@@ -14,52 +14,49 @@
  */
 package org.esigate;
 
-import java.io.Serializable;
-
-import org.esigate.api.Cookie;
-import org.esigate.cookie.CustomCookieStore;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpSession;
 
 /**
- * User context that can be used in the master application to define the user
- * id. This context will be transmitted to the provider applications.<br />
+ * User context that can be used in the master application to define the user id. This context will be transmitted to the provider applications.<br />
  * There is one instance of user context associated with each session.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  * 
  */
-public class UserContext implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private String user;
-	private final CustomCookieStore cookieStore;
+public class UserContext {
+	private final static String USER_KEY = "user";
+	private final HttpRequest httpRequest;
+	private final String key;
 
-	public UserContext(CustomCookieStore cookieStore) {
-		if (cookieStore == null) {
-			throw new IllegalArgumentException(
-					"cookieStore implementation not set");
-		}
-
-		this.cookieStore = cookieStore;
+	public UserContext(HttpRequest httpRequest, String key) {
+		this.httpRequest = httpRequest;
+		this.key = UserContext.class.getName() + "#" + key;
 	}
 
-	/** Looks up for <code>jsessionid</code> cookie and returns its value. Returns <code>null</code> otherwise. */
-	public String getSessionId() {
-		String result = null;
-		for (Cookie cookie : cookieStore.getCookies()) {
-			if ("jsessionid".equalsIgnoreCase(cookie.getName())) {
-				result = cookie.getValue();
-				break;
-			}
-		}
-		return result;
+	private String prefixAttributeName(String name) {
+		return key + "#" + name;
+	}
+
+	public Object getAttribute(String name) {
+		HttpSession httpSession = httpRequest.getSession(false);
+		if (httpSession != null)
+			return httpSession.getAttribute(prefixAttributeName(name));
+		return null;
+	}
+
+	public void setAttribute(String name, Object value) {
+		HttpSession httpSession = httpRequest.getSession(true);
+		httpSession.setAttribute(prefixAttributeName(name), value);
 	}
 
 	public String getUser() {
-		return user;
+		return (String) getAttribute(USER_KEY);
 	}
 
 	public void setUser(String user) {
-		this.user = user;
+		setAttribute(USER_KEY, user);
 	}
 
 	/**
@@ -67,34 +64,7 @@ public class UserContext implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder()
-			.append("User=")
-			.append(user)
-			.append(" Cookies={\n");
-		for (Cookie cookie : cookieStore.getCookies()) {
-			result.append('\t');
-			if (cookie.isSecure()) {
-				result.append("https");
-			} else {
-				result.append("http");
-			}
-			result.append("://")
-				.append(cookie.getDomain())
-				.append(cookie.getPath())
-				.append('#')
-				.append(cookie.getName())
-				.append('=')
-				.append(cookie.getValue())
-				.append('\n');
-		}
-		return result.append('}').toString();
-	}
-
-	public CustomCookieStore getCookieStore() {
-		return cookieStore;
-	}
-
-	public boolean isEmpty() {
-		return user == null && cookieStore.getCookies().isEmpty();
+		StringBuilder result = new StringBuilder().append("User=").append(getUser());
+		return result.toString();
 	}
 }

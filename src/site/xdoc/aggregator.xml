@@ -56,11 +56,11 @@ aggregated2.remoteUrlBase=http://localhost:8080/esigate-app-aggregated2/
 &lt;web-app&gt;
 	&lt;servlet&gt;
 		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;org.esigate.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
 	&lt;/servlet&gt;
 	&lt;servlet&gt;
 		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;org.esigate.aggregator.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
 		&lt;init-param&gt;
 			&lt;param-name&gt;provider&lt;/param-name&gt;
 			&lt;param-value&gt;aggregated2&lt;/param-value&gt;
