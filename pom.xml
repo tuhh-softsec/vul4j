@@ -6,7 +6,9 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
 	<groupId>org.esigate</groupId>
 	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
@@ -21,7 +23,7 @@
 				<sendOnSuccess>false</sendOnSuccess>
 				<sendOnWarning>false</sendOnWarning>
 				<configuration>
-					<address>alexis.thaveau@smile.fr</address>
+					<address>alexis.thaveau@gmail.com</address>
 				</configuration>
 			</notifier>
 			<notifier>
@@ -120,7 +122,7 @@
 		<developer>
 			<id>athaveau</id>
 			<name>Alexis Thaveau</name>
-			<email>a.thaveau@free.fr</email>
+			<email>alexis.thaveau@gmail.com</email>
 		</developer>
 		<developer>
 			<id>bibimax</id>
@@ -136,7 +138,7 @@
 	<scm>
 		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
 		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</developerConnection>
-		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk</url>
+		<url>scm:svn:http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk</url>
 	</scm>
 	<build>
 		<pluginManagement>
@@ -221,11 +223,43 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>            
+                <chmod>true</chmod>
+                <chmodMode>g+wX,a+rX</chmodMode>
+                <chmodOptions>-Rf</chmodOptions>
+                <reportPlugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-project-info-reports-plugin</artifactId>
+                        <version>2.4</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.8</version>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-changelog-plugin</artifactId>
+                        <version>2.2</version>
+                    </plugin>
+                </reportPlugins>
+            </configuration>
+        </plugin>
+    </plugins>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>1.0-beta-6</version>
+				<version>2.2</version>
 			</extension>
 		</extensions>
 	</build>
@@ -567,47 +601,15 @@
 		<module>esigate-app-facelet</module>
 		<module>esigate-distribution</module>
 	</modules>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<moduleExcludes>
-						<moduleType>war</moduleType>
-					</moduleExcludes>
-					<chmod>true</chmod>
-					<chmodMode>g+wX,a+rX</chmodMode>
-					<chmodOptions>-Rf</chmodOptions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changelog-plugin</artifactId>
-				<version>2.2</version>
-			</plugin>
-		</plugins>
-	</reporting>
 	<distributionManagement>
 		<site>
 			<id>esigate-site</id>
 			<name>ESIGate</name>
-			<url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url>
-			<!--<url>scp://shell.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url> -->
+			<!-- <url>sftp://web.sourceforge.net/home/groups/w/we/webassembletool/htdocs</url> -->
+			<!-- To use scp, you need to create a shell first :
+			    ssh -t USER,webassembletool@shell.sourceforge.net create
+			 -->
+			<url>scp://shell.sourceforge.net/home/project-web/webassembletool/htdocs</url>    
 		</site>
 	</distributionManagement>
 	<properties>
