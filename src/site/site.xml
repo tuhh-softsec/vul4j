@@ -18,7 +18,7 @@
 	<skin>
 		<groupId>org.esigate.maven</groupId>
 		<artifactId>esigate-maven-skin</artifactId>
-		<version>3.5</version>
+		<version>3.6</version>
 	</skin>
 	<body>
 		<head>

@@ -21,9 +21,19 @@
 					</li>
 				</ul>
 			</subsection>
-
-
-
+			<subsection name="Blogs">
+				<ul>
+					<li>
+						<a href="http://blog.esigate.org/">EsiGate blog</a>
+					</li>
+					<li>
+						<a href="http://blog.smile.fr/ESIGate-le-portail-d-un-genre-nouveau">Smile (French)</a>
+					</li>
+					<li>
+						<a href="http://leblogdefx.blogspot.fr/search/label/EsiGate">Blog de Francois-Xavier Bonnet (French)</a>
+					</li>
+				</ul>
+			</subsection>
 		</section>
 	</body>
 </document>
