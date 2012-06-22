@@ -566,7 +566,6 @@
 		<module>esigate-app-casified-aggregator</module>
 		<module>esigate-app-facelet</module>
 		<module>esigate-distribution</module>
-		<module>esigate-maven</module>
 	</modules>
 	<reporting>
 		<plugins>
