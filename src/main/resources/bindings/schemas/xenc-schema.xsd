@@ -16,9 +16,6 @@
         targetNamespace='http://www.w3.org/2001/04/xmlenc#'
         elementFormDefault='qualified'>
 
-  <import namespace='http://www.w3.org/2000/09/xmldsig#'
-          schemaLocation='http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd'/>
-
   <complexType name='EncryptedType' abstract='true'>
     <sequence>
       <element name='EncryptionMethod' type='xenc:EncryptionMethodType'
