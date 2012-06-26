@@ -1,6 +1,6 @@
 Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
-New in v1.5.3-SNAPSHOT:
+New in v2.0.0-SNAPSHOT:
 
 New in v1.5.2:
     Fixed SANTUARIO-313 - Javadocs warnings.

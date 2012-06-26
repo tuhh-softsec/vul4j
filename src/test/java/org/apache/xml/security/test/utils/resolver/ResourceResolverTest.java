@@ -78,7 +78,7 @@ public class ResourceResolverTest extends org.junit.Assert {
             DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Attr uriAttr = doc.createAttribute("URI");
         String basedir = System.getProperty("basedir");
-        String file = new File(basedir, "build.xml").toURI().toString();
+        String file = new File(basedir, "pom.xml").toURI().toString();
         uriAttr.setValue(file);
         ResourceResolver res = ResourceResolver.getInstance(uriAttr, file);
         try {

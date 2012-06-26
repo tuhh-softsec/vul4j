@@ -81,8 +81,8 @@ public class XMLCipherTest extends org.junit.Assert {
     public XMLCipherTest() {
         basedir = System.getProperty("basedir",".");
         documentName = System.getProperty("org.apache.xml.enc.test.doc",
-                                          basedir + "/build.xml");
-        elementName = System.getProperty("org.apache.xml.enc.test.elem", "path");
+                                          basedir + "/pom.xml");
+        elementName = System.getProperty("org.apache.xml.enc.test.elem", "project");
         elementIndex = System.getProperty("org.apache.xml.enc.test.idx", "0");
 
         tstBase64EncodedString = 
