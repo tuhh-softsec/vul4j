@@ -5,6 +5,9 @@
         targetNamespace="http://www.w3.org/2009/xmldsig11#"
         version="0.1" elementFormDefault="qualified">
 
+  <import namespace="http://www.w3.org/2000/09/xmldsig#"
+          schemaLocation='./xmldsig-core-schema.xsd'/>
+          
   <element name="ECKeyValue" type="dsig11:ECKeyValueType"/>
   <complexType name="ECKeyValueType">
     <sequence>
