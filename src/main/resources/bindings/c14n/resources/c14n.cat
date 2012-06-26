@@ -1,0 +1,8 @@
+PUBLIC "-//W3C//DTD XMLSchema 200102//EN" "schemas/XMLSchema.dtd"
+PUBLIC "http://www.w3.org/2001/XMLSchema.dtd" "schemas/XMLSchema.dtd"
+SYSTEM "http://www.w3.org/2001/XMLSchema.dtd" "schemas/XMLSchema.dtd"
+
+PUBLIC "datatypes" "schemas/datatypes.dtd"
+SYSTEM "datatypes.dtd" "schemas/datatypes.dtd"
+
+SYSTEM "http://www.w3.org/2001/xml.xsd" "schemas/xml.xsd"
