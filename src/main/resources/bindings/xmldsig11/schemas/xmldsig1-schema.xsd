@@ -1,0 +1,11 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+               targetNamespace="http://www.w3.org/2000/09/xmldsig#"
+               version="0.1" elementFormDefault="qualified">
+
+  <include
+   schemaLocation="http://www.w3.org/TR/2008/REC-xmldsig-core-20080610/xmldsig-core.xsd"/>
+
+  <import namespace="http://www.w3.org/2009/xmldsig11#"
+   schemaLocation="http://www.w3.org/TR/xmldsig-core1/xmldsig11-schema.xsd"/>
+</schema>
+
