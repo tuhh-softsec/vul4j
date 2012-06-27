@@ -18,14 +18,15 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.swssf.xmlsec.ext.*;
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.impl.OutputProcessorChainImpl;
 import org.swssf.xmlsec.impl.SecurityContextImpl;
 import org.swssf.xmlsec.impl.XMLSecurityStreamWriter;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLEventWriter;
@@ -40,7 +41,7 @@ import java.util.*;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class XMLSecurityStreamWriterTest {
+public class XMLSecurityStreamWriterTest extends org.junit.Assert {
 
     @Test
     public void testIdentityTransformResult() throws Exception {

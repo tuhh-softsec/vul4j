@@ -18,15 +18,16 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.impl.util.RFC2253Parser;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class RFC2253ParserTest {
+public class RFC2253ParserTest extends org.junit.Assert {
 
     @Test
     public void testToXML1() throws Exception {

@@ -18,6 +18,9 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.ext.InputProcessor;
 import org.swssf.xmlsec.ext.InputProcessorChain;
 import org.swssf.xmlsec.ext.XMLSecurityConstants;
@@ -25,8 +28,6 @@ import org.swssf.xmlsec.ext.XMLSecurityException;
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.impl.InputProcessorChainImpl;
 import org.swssf.xmlsec.impl.SecurityContextImpl;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ import java.util.Set;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class InputProcessorChainTest {
+public class InputProcessorChainTest extends org.junit.Assert {
 
     abstract class AbstractInputProcessor implements InputProcessor {
 

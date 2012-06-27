@@ -18,9 +18,10 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Test;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.swssf.xmlsec.impl.XMLSecurityEventWriter;
-import org.testng.annotations.Test;
 
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
@@ -30,7 +31,7 @@ import java.io.StringWriter;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class XMLSecurityEventWriterTest {
+public class XMLSecurityEventWriterTest extends org.junit.Assert {
 
     @Test
     public void testConformness() throws Exception {

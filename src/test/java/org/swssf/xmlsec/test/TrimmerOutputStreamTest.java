@@ -18,9 +18,10 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.impl.util.TrimmerOutputStream;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.io.ByteArrayOutputStream;
 
@@ -28,7 +29,7 @@ import java.io.ByteArrayOutputStream;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class TrimmerOutputStreamTest {
+public class TrimmerOutputStreamTest extends org.junit.Assert {
 
     private final String testString = "Within this class we test if the TrimmerOutputStream works correctly under different conditions";
 

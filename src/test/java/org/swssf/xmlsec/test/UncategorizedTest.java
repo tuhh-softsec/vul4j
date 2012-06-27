@@ -18,10 +18,11 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.config.Init;
 import org.swssf.xmlsec.ext.XMLSecurityException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.net.URL;
 
@@ -29,7 +30,7 @@ import java.net.URL;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class UncategorizedTest {
+public class UncategorizedTest extends org.junit.Assert {
 
     @Test
     public void testConfigurationLoadFromUrl() throws Exception {

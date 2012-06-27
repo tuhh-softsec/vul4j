@@ -18,12 +18,13 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_ExclOmitCommentsTransformer;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer;
 import org.swssf.xmlsec.test.utils.XMLSecEventAllocator;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -36,18 +37,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class Canonicalizer20010315ExclusiveTest {
+public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
 
     private XMLInputFactory xmlInputFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());

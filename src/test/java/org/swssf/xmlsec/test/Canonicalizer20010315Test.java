@@ -18,12 +18,13 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Test;
+
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_WithCommentsTransformer;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.CanonicalizerBase;
 import org.swssf.xmlsec.test.utils.XMLSecEventAllocator;
-import org.testng.annotations.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -35,13 +36,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static org.testng.Assert.*;
-
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class Canonicalizer20010315Test {
+public class Canonicalizer20010315Test extends org.junit.Assert {
 
     private XMLInputFactory xmlInputFactory;
 

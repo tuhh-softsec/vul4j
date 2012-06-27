@@ -18,11 +18,12 @@
  */
 package org.swssf.xmlsec.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.ext.stax.XMLSecEventFactory;
 import org.swssf.xmlsec.impl.XMLSecurityEventReader;
-import org.testng.annotations.Test;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -35,7 +36,7 @@ import java.util.Deque;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class XMLSecurityEventReaderTest {
+public class XMLSecurityEventReaderTest extends org.junit.Assert {
 
     @Test
     public void testConformness() throws Exception {

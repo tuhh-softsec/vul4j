@@ -18,7 +18,9 @@
  */
 package org.swssf.xmlsec.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.custommonkey.xmlunit.XMLAssert;
 import org.swssf.xmlsec.ext.*;
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
@@ -27,7 +29,6 @@ import org.swssf.xmlsec.impl.DocumentContextImpl;
 import org.swssf.xmlsec.impl.InputProcessorChainImpl;
 import org.swssf.xmlsec.impl.SecurityContextImpl;
 import org.swssf.xmlsec.impl.XMLSecurityStreamReader;
-import org.testng.annotations.Test;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -47,7 +48,7 @@ import java.util.Set;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class XMLSecurityStreamReaderTest {
+public class XMLSecurityStreamReaderTest extends org.junit.Assert {
 
     @Test
     public void testPassThroughDocumentEvents() throws Exception {

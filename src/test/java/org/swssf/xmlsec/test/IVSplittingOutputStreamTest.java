@@ -18,10 +18,11 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.swssf.xmlsec.impl.util.IVSplittingOutputStream;
 import org.swssf.xmlsec.impl.util.ReplaceableOuputStream;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -32,7 +33,7 @@ import java.io.ByteArrayOutputStream;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class IVSplittingOutputStreamTest {
+public class IVSplittingOutputStreamTest extends org.junit.Assert {
 
     private final String testString = "Within this class we test if the IVSplittingOutputStream works correctly under different conditions";
 

@@ -368,7 +368,6 @@
         <junit.version>4.8.2</junit.version>
         <log4j.version>1.2.17</log4j.version>
         <bcprov.version>1.46</bcprov.version>
-        <testng.version>6.5.2</testng.version>
         <xmlunit.version>1.3</xmlunit.version>
         <commons.codec.version>1.6</commons.codec.version>
         <commons.compress.version>1.4.1</commons.compress.version>
@@ -412,14 +411,6 @@
             <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>

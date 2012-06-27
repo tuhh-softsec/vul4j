@@ -18,19 +18,18 @@
  */
 package org.swssf.xmlsec.test;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import org.swssf.xmlsec.ext.stax.XMLSecEvent;
 import org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer11_OmitCommentsTransformer;
 import org.swssf.xmlsec.test.utils.XMLSecEventAllocator;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * This is a test for Santuario-191:
@@ -39,7 +38,7 @@ import static org.testng.Assert.assertEquals;
  * <p/>
  * An xml:Id attribute is appearing in a child element, contrary to the C14n11 spec.
  */
-public class Santuario191Test {
+public class Santuario191Test extends org.junit.Assert {
 
     private static final String INPUT_DATA =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -57,7 +56,7 @@ public class Santuario191Test {
 
     private XMLInputFactory xmlInputFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
