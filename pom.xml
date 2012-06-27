@@ -233,6 +233,23 @@
                             <strict>false</strict>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>schema</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <forceRegenerate>true</forceRegenerate>
+                            <schemaDirectory>
+                                ${basedir}/src/main/resources/schemas
+                            </schemaDirectory>
+                            <schemaIncludes>
+                                <schemaInclude>security-config.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <readOnly>true</readOnly>
+                         </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
@@ -273,7 +290,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.9</version>
                     <configuration>
                         <reportFormat>brief</reportFormat>
                         <useFile>false</useFile>
@@ -284,6 +301,7 @@
                         </includes>
                         <systemPropertyVariables>
                             <product.version>${project.version}</product.version>
+                            <log4j.configuration>log4j-xmlsec.xml</log4j.configuration>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -343,13 +361,18 @@
     </profiles>
 
     <properties>
-        <xml.apis.version>1.3.04</xml.apis.version>
+        <xml.apis.version>1.4.01</xml.apis.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.9.1</xerces.version>
         <junit.version>4.8.2</junit.version>
-        <log4j.version>1.2.16</log4j.version>
+        <log4j.version>1.2.17</log4j.version>
         <bcprov.version>1.46</bcprov.version>
+        <testng.version>6.5.2</testng.version>
+        <xmlunit.version>1.3</xmlunit.version>
+        <commons.codec.version>1.6</commons.codec.version>
+        <commons.compress.version>1.4.1</commons.compress.version>
+        <woodstox.core.asl.version>4.1.3</woodstox.core.asl.version>
     </properties>
     
     <dependencies>
@@ -357,6 +380,24 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>${commons.logging.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>woodstox-core-asl</artifactId>
+            <version>${woodstox.core.asl.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons.codec.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons.compress.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -369,6 +410,20 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>${xmlunit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
