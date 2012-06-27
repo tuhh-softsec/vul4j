@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.xmlsecurity.org/NS/configuration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Configuration" type="con:ConfigurationType" xmlns:con="http://www.xmlsecurity.org/NS/configuration">
+    <xs:annotation>
+      <xs:documentation>This configuration file is used for configuration of the org.apache.xml.security package</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="AlgorithmType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:anyURI" name="URI" use="required"/>
+        <xs:attribute type="xs:string" name="Description" use="required"/>
+        <xs:attribute type="xs:string" name="AlgorithmClass" use="required"/>
+        <xs:attribute type="xs:string" name="RequirementLevel" use="required"/>
+        <xs:attribute type="xs:string" name="SpecificationURL" use="optional"/>
+        <xs:attribute type="xs:string" name="JCEProvider" use="optional"/>
+        <xs:attribute type="xs:string" name="JCEName" use="required"/>
+        <xs:attribute type="xs:int" name="KeyLength" use="optional"/>
+        <xs:attribute type="xs:string" name="RequiredKey" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:simpleType name="inOutAttrType">
+      <xs:restriction base="xs:string">
+          <xs:enumeration value="IN"/>
+          <xs:enumeration value="OUT"/>
+      </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="TransformAlgorithmType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="URI" use="required"/>
+        <xs:attribute type="xs:string" name="JAVACLASS" use="required"/>
+        <xs:attribute type="con:inOutAttrType" name="INOUT" use="optional" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ResolverType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="JAVACLASS" use="required"/>
+        <xs:attribute type="xs:string" name="DESCRIPTION" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PropertyType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="NAME"/>
+        <xs:attribute type="xs:string" name="VAL"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="TransformAlgorithmsType">
+    <xs:sequence>
+      <xs:element type="con:TransformAlgorithmType" name="TransformAlgorithm" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration">
+        <xs:annotation>
+          <xs:documentation>Base64  c14n omitting comments  c14n with comments  c14n 1.1 omitting comments  c14n 1.1 with comments  exclusive c14n omitting comments  exclusive c14n with comments  XPath transform  enveloped signature  XSLT  XPath version 2  XPath version 2b</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HandlerType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="NAME" use="required"/>
+        <xs:attribute type="xs:string" name="URI" use="required"/>
+        <xs:attribute type="xs:string" name="JAVACLASS" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ResourceBundleType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="LanguageCode" use="required"/>
+        <xs:attribute type="xs:string" name="CountryCode" use="required"/>
+        <xs:attribute type="xs:string" name="LOCATION" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="SecurityHeaderHandlersType">
+    <xs:sequence>
+      <xs:element type="con:HandlerType" name="Handler" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ConfigurationType">
+    <xs:sequence>
+      <xs:element type="con:PropertiesType" name="Properties" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+      <xs:element type="con:SecurityHeaderHandlersType" name="SecurityHeaderHandlers" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+      <xs:element type="con:TransformAlgorithmsType" name="TransformAlgorithms" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+      <xs:element type="con:JCEAlgorithmMappingsType" name="JCEAlgorithmMappings" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+      <xs:element type="con:ResourceResolversType" name="ResourceResolvers" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="target"/>
+  </xs:complexType>
+  <xs:complexType name="PropertiesType">
+    <xs:sequence>
+      <xs:element type="con:PropertyType" name="Property" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="JCEAlgorithmMappingsType">
+    <xs:sequence>
+      <xs:element type="con:AlgorithmType" name="Algorithm" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration">
+        <xs:annotation>
+          <xs:documentation>MessageDigest Algorithms  Signature Algorithms  MAC Algorithms  Block encryption Algorithms</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResourceResolversType">
+    <xs:sequence>
+      <xs:element type="con:ResolverType" name="Resolver" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
