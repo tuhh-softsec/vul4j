@@ -16,12 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.swssf.xmlsec.test;
+package org.apache.xml.security.test.utils;
 
+import org.apache.xml.security.utils.RFC2253Parser;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.swssf.xmlsec.impl.util.RFC2253Parser;
 
 /**
  * @author $Author$

@@ -18,6 +18,7 @@
  */
 package org.swssf.xmlsec.impl.transformer.canonicalizer;
 
+import org.apache.xml.security.c14n.implementations.UtfHelpper;
 import org.swssf.xmlsec.ext.Transformer;
 import org.swssf.xmlsec.ext.XMLSecurityException;
 import org.swssf.xmlsec.ext.XMLSecurityUtils;

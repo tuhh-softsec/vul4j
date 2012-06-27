@@ -18,9 +18,9 @@
  */
 package org.swssf.xmlsec.ext;
 
+import org.apache.xml.security.utils.RFC2253Parser;
 import org.swssf.xmlsec.ext.stax.*;
 import org.swssf.xmlsec.impl.EncryptionPartDef;
-import org.swssf.xmlsec.impl.util.RFC2253Parser;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
