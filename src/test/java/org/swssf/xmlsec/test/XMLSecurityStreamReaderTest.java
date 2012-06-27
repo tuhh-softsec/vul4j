@@ -102,7 +102,9 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, true);
         xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-        XMLStreamReader stdXmlStreamReader = xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLStreamReader stdXmlStreamReader = 
+            xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
 
         //hmm why does a streamreader return a DOCUMENT_EVENT before we did call next() ??
         int stdXMLEventType = stdXmlStreamReader.getEventType();
@@ -238,7 +240,9 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
     }
 
     private String readTestFile() throws Exception {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml");
+        InputStream inputStream = 
+            this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         char[] buf = new char[1024];
         int read;
@@ -257,7 +261,9 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
             XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
             xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, true);
             xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
-            xmlStreamReader = xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+            xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
         }
 
         public void addBeforeProcessor(Object processor) {

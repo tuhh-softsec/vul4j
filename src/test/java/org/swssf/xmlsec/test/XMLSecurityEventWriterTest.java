@@ -44,7 +44,9 @@ public class XMLSecurityEventWriterTest extends org.junit.Assert {
         XMLEventWriter stdXmlEventWriter = xmlOutputFactory.createXMLEventWriter(stdStringWriter);
 
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLEventReader xmlEventReader = 
+            xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
 
         while (xmlEventReader.hasNext()) {
             XMLEvent xmlEvent = xmlEventReader.nextEvent();

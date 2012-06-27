@@ -34,7 +34,9 @@ public class UncategorizedTest extends org.junit.Assert {
 
     @Test
     public void testConfigurationLoadFromUrl() throws Exception {
-        URL url = this.getClass().getClassLoader().getResource("testdata/c14n/in/31_input.xml");
+        URL url = 
+            this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/c14n/in/31_input.xml");
         try {
             Init.init(url.toURI());
             Assert.fail();

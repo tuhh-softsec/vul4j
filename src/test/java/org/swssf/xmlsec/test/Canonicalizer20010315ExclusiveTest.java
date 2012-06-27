@@ -58,7 +58,8 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Canonicalizer20010315_ExclWithCommentsTransformer c = new Canonicalizer20010315_ExclWithCommentsTransformer();
         c.setOutputStream(baos);
         XMLEventReader xmlSecEventReader = xmlInputFactory.createXMLEventReader(
-                this.getClass().getClassLoader().getResourceAsStream("testdata/c14n/inExcl/example2_2_1.xml")
+                this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/example2_2_1.xml")
         );
 
         XMLSecEvent xmlSecEvent = null;
@@ -78,7 +79,9 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        byte[] reference = getBytesFromResource(this.getClass().getClassLoader().getResource("testdata/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
+        byte[] reference = 
+            getBytesFromResource(this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
         boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
 
         if (!equals) {
@@ -97,7 +100,8 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Canonicalizer20010315_ExclWithCommentsTransformer c = new Canonicalizer20010315_ExclWithCommentsTransformer();
         c.setOutputStream(baos);
         XMLEventReader xmlSecEventReader = xmlInputFactory.createXMLEventReader(
-                this.getClass().getClassLoader().getResourceAsStream("testdata/c14n/inExcl/example2_2_2.xml")
+                this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/example2_2_2.xml")
         );
 
         XMLSecEvent xmlSecEvent = null;
@@ -117,7 +121,9 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        byte[] reference = getBytesFromResource(this.getClass().getClassLoader().getResource("testdata/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
+        byte[] reference = 
+            getBytesFromResource(this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/c14n/inExcl/example2_2_c14nized_exclusive.xml"));
         boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
 
         if (!equals) {
@@ -136,7 +142,8 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Canonicalizer20010315_ExclWithCommentsTransformer c = new Canonicalizer20010315_ExclWithCommentsTransformer();
         c.setOutputStream(baos);
         XMLEventReader xmlSecEventReader = xmlInputFactory.createXMLEventReader(
-                this.getClass().getClassLoader().getResourceAsStream("testdata/c14n/inExcl/example2_4.xml")
+                this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/example2_4.xml")
         );
 
         XMLSecEvent xmlSecEvent = null;
@@ -156,7 +163,9 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        byte[] reference = getBytesFromResource(this.getClass().getClassLoader().getResource("testdata/c14n/inExcl/example2_4_c14nized.xml"));
+        byte[] reference = 
+            getBytesFromResource(this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/c14n/inExcl/example2_4_c14nized.xml"));
         boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
 
         if (!equals) {
@@ -177,7 +186,8 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Canonicalizer20010315_ExclWithCommentsTransformer c = new Canonicalizer20010315_ExclWithCommentsTransformer();
         c.setOutputStream(baos);
         XMLEventReader xmlSecEventReader = xmlInputFactory.createXMLEventReader(
-                this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml")
+                this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml")
         );
 
         XMLSecEvent xmlSecEvent = null;
@@ -197,7 +207,9 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        byte[] reference = getBytesFromResource(this.getClass().getClassLoader().getResource("testdata/c14n/inExcl/plain-soap-c14nized.xml"));
+        byte[] reference = 
+            getBytesFromResource(this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-c14nized.xml"));
         boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
 
         if (!equals) {

@@ -41,7 +41,9 @@ public class XMLSecurityEventReaderTest extends org.junit.Assert {
     @Test
     public void testConformness() throws Exception {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLStreamReader xmlStreamReader = 
+            xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
 
         Deque<XMLSecEvent> xmlSecEventDeque = new ArrayDeque<XMLSecEvent>();
         do {
@@ -53,7 +55,9 @@ public class XMLSecurityEventReaderTest extends org.junit.Assert {
 
         XMLSecurityEventReader xmlSecurityEventReader = new XMLSecurityEventReader(xmlSecEventDeque, 0);
 
-        XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLEventReader xmlEventReader = 
+            xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
         while (xmlEventReader.hasNext()) {
             Assert.assertEquals(xmlEventReader.hasNext(), xmlSecurityEventReader.hasNext());
             XMLEvent stdXmlEvent = xmlEventReader.nextEvent();
@@ -76,7 +80,9 @@ public class XMLSecurityEventReaderTest extends org.junit.Assert {
     @Test
     public void testIndex() throws Exception {
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLStreamReader xmlStreamReader = 
+            xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
 
         Deque<XMLSecEvent> xmlSecEventDeque = new ArrayDeque<XMLSecEvent>();
         do {
@@ -90,7 +96,9 @@ public class XMLSecurityEventReaderTest extends org.junit.Assert {
 
         XMLSecurityEventReader xmlSecurityEventReader = new XMLSecurityEventReader(xmlSecEventDeque, skip);
 
-        XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream("testdata/plain-soap-1.1.xml"));
+        XMLEventReader xmlEventReader = 
+            xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream(
+                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
         int currentIndex = 0;
         while (xmlEventReader.hasNext()) {
             XMLEvent stdXmlEvent = xmlEventReader.nextEvent();
