@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="FILE" class="org.apache.log4j.FileAppender">
+        <param name="File" value="target/logging.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
+        </layout>
+    </appender>
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
+        </layout>
+    </appender>
+    <logger name="org.swssf.xmlsec.impl.util.SignerOutputStream">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.swssf.xmlsec.impl.util.DigestOutputStream">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.xml.security.utils.DigesterOutputStream">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.xml.security.utils.SignerOutputStream">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.xml.security.encryption.XMLCipher">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.apache.xml">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.swssf.xmlsec.impl.InputProcessorChainImpl">
+        <level value="INFO"/>
+    </logger>
+    <logger name="org.swssf.xmlsec.impl.OutputProcessorChainImpl">
+        <level value="INFO"/>
+    </logger>
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</log4j:configuration>

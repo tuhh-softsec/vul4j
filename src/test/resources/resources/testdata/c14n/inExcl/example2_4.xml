@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><dsig:local xmlns:dsig="foo:bar"><etsi:test xmlns:etsi="http://example.net"><etsi:elem2><dsig:stuff/></etsi:elem2></etsi:test></dsig:local>

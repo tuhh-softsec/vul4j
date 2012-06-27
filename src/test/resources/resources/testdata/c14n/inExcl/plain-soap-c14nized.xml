@@ -1,0 +1,1916 @@
+<env:Body xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+        <definitions xmlns="http://schemas.xmlsoap.org/wsdl/" name="comprehensive types test" targetNamespace="urn:comprehensive-service.types.wsdl.test">
+
+
+            <types>
+                <xsd:schema xmlns:xsd="http://www.w3.org/1999/XMLSchema" targetNamespace="urn:comprehensive-types.types.wsdl.test">
+
+                    <xsd:simpleType name="simple">
+                        <xsd:restriction base="xsd:string"></xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="simpleDate">
+                        <xsd:restriction base="xsd:date"></xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="simpleDateTime">
+                        <xsd:restriction base="xsd2:dateTime"></xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="enum">
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="one"></xsd:enumeration>
+                            <xsd:enumeration value="two"></xsd:enumeration>
+                            <xsd:enumeration value="three"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:complexType name="array">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="array_of_base64">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="xsd:base64Binary[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="complexAll">
+                        <xsd:all>
+                            <xsd:element name="areaCode" type="xsd:int"></xsd:element>
+                            <xsd:element name="exchange" type="xsd:string"></xsd:element>
+                            <xsd:element name="number" type="xsd:string"></xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="complexSequence">
+                        <xsd:sequence>
+                            <xsd:element name="areaCode" type="xsd:int"></xsd:element>
+                            <xsd:element name="exchange" type="xsd:string"></xsd:element>
+                            <xsd:element name="number" type="xsd:string"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="complexChoice">
+                        <xsd:choice>
+                            <xsd:element name="choiceA" type="xsd:int"></xsd:element>
+                            <xsd:element name="choiceB" type="xsd:string"></xsd:element>
+                            <xsd:element name="choiceC" type="xsd:string"></xsd:element>
+                        </xsd:choice>
+                    </xsd:complexType>
+
+
+                    <xsd:complexType name="Object">
+                        <xsd:sequence>
+                            <xsd:element name="test" type="xsd:string"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                    <xsd:complexType name="String">
+                        <xsd:sequence>
+                            <xsd:element name="test" type="xsd:string"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                    <xsd:complexType name="Class">
+                        <xsd:sequence>
+                            <xsd:element name="test" type="xsd:string"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:element name="enumValue" type="typens:enum"></xsd:element>
+
+                    <xsd:complexType name="time">
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="DST" type="xsd:boolean"></xsd:attribute>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="complexWComplex">
+                        <xsd:sequence>
+                            <xsd:element name="stock_quote">
+                                <xsd:complexType>
+                                    <xsd:attribute name="symbol" type="xsd:string"></xsd:attribute>
+                                    <xsd:sequence>
+
+                                        <xsd:element name="time" type="typens:time"></xsd:element>
+                                        <xsd:element name="change" type="typens:simpleFwd"></xsd:element>
+                                        <xsd:element name="pctchange" type="xsd:string"></xsd:element>
+                                        <xsd:element name="bid" type="xsd:string"></xsd:element>
+                                        <xsd:element name="ask" type="xsd:string"></xsd:element>
+                                        <xsd:element name="choice" type="typens:complexChoice"></xsd:element>
+                                    </xsd:sequence>
+                                    <xsd:attribute name="last" type="xsd:string"></xsd:attribute>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="outside" type="xsd:int"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="emptyFault">
+                        <xsd:sequence></xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:element name="faultElement" type="typens:faultType"></xsd:element>
+                    <xsd:complexType name="faultType">
+                        <xsd:sequence>
+                            <xsd:element name="userData" type="xsd:string"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="emptyComplexType">
+                        <xsd:sequence></xsd:sequence>
+                    </xsd:complexType>
+
+                    <xsd:simpleType name="simpleFwd">
+                        <xsd:restriction base="typens:simple"></xsd:restriction>
+                    </xsd:simpleType>
+
+
+                    <xsd:complexType name="arrayM">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="typens:arrayM2[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+                    <xsd:complexType name="arrayM2">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="typens:arrayM3[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+                    <xsd:complexType name="arrayM3">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="xsd:int[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+
+
+                    <xsd:complexType name="Animal">
+                        <xsd:all>
+                            <xsd:element name="Name" nillable="true" type="xsd:string"></xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                    <xsd:element name="Animal" nillable="true" type="typens:Animal"></xsd:element>
+                    <xsd:complexType name="Cat">
+                        <xsd:complexContent>
+                            <xsd:extension base="typens:Animal">
+                                <xsd:all>
+                                    <xsd:element name="Purr" nillable="true" type="xsd:string"></xsd:element>
+                                </xsd:all>
+                            </xsd:extension>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+                    <xsd:element name="Cat" nillable="true" type="typens:Cat"></xsd:element>
+
+                    <xsd:complexType name="PersionCat">
+                        <xsd:complexContent>
+                            <xsd:extension base="typens:Cat">
+                                <xsd:all>
+                                    <xsd:element name="Color" type="xsd:string"></xsd:element>
+                                    <xsd:element name="Toy"></xsd:element>
+                                </xsd:all>
+                            </xsd:extension>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+
+                    <xsd:complexType name="Yarn">
+                        <xsd:all>
+                            <xsd:element name="Color" type="xsd:string"></xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+
+
+                    <xsd:simpleType name="enumString">
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="Ho Ho Ho"></xsd:enumeration>
+                            <xsd:enumeration value="He He He"></xsd:enumeration>
+                            <xsd:enumeration value="Ha Ha Ha"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumInt">
+                        <xsd:restriction base="xsd:int">
+                            <xsd:enumeration value="1"></xsd:enumeration>
+                            <xsd:enumeration value="2"></xsd:enumeration>
+                            <xsd:enumeration value="3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumLong">
+                        <xsd:restriction base="xsd:long">
+                            <xsd:enumeration value="1"></xsd:enumeration>
+                            <xsd:enumeration value="2"></xsd:enumeration>
+                            <xsd:enumeration value="3"></xsd:enumeration>
+                            <xsd:enumeration value="-9223372036854775808"></xsd:enumeration>
+                            <xsd:enumeration value="9223372036854775807"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumShort">
+                        <xsd:restriction base="xsd:short">
+                            <xsd:enumeration value="1"></xsd:enumeration>
+                            <xsd:enumeration value="2"></xsd:enumeration>
+                            <xsd:enumeration value="3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumFloat">
+                        <xsd:restriction base="xsd:float">
+                            <xsd:enumeration value="1.1"></xsd:enumeration>
+                            <xsd:enumeration value="2.2"></xsd:enumeration>
+                            <xsd:enumeration value="3.3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumDouble">
+                        <xsd:restriction base="xsd:double">
+                            <xsd:enumeration value="1.1"></xsd:enumeration>
+                            <xsd:enumeration value="2.2"></xsd:enumeration>
+                            <xsd:enumeration value="3.3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                    <xsd:simpleType name="enumByte">
+                        <xsd:restriction base="xsd:byte">
+                            <xsd:enumeration value="1"></xsd:enumeration>
+                            <xsd:enumeration value="2"></xsd:enumeration>
+                            <xsd:enumeration value="3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="enumInteger">
+                        <xsd:restriction base="xsd:integer">
+                            <xsd:enumeration value="1"></xsd:enumeration>
+                            <xsd:enumeration value="2"></xsd:enumeration>
+                            <xsd:enumeration value="3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="flowDirectionType">
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="in"></xsd:enumeration>
+                            <xsd:enumeration value="inOut"></xsd:enumeration>
+                            <xsd:enumeration value="out"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="enumNMTOKEN">
+                        <xsd:restriction base="xsd:NMTOKEN">
+                            <xsd:enumeration value="NameToken1"></xsd:enumeration>
+                            <xsd:enumeration value="NameToken2"></xsd:enumeration>
+                            <xsd:enumeration value="NameToken3"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="AIDType">
+                        <xsd:restriction base="xsd:hexBinary">
+                            <xsd:maxLength value="16"></xsd:maxLength>
+                            <xsd:minLength value="5"></xsd:minLength>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+                    <xsd:simpleType name="passModeType">
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="passByValue"></xsd:enumeration>
+                            <xsd:enumeration value="passByReference"></xsd:enumeration>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+
+
+                    <xsd:element name="StringParameter" type="typens:StringParameter"></xsd:element>
+                    <xsd:complexType name="StringParameter">
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:string">
+                                <xsd:attribute name="numBytes" type="soapenc:int"></xsd:attribute>
+                                <xsd:attribute name="storageEncoding" type="xsd:string"></xsd:attribute>
+                                <xsd:attribute name="direction" type="typens:flowDirectionType"></xsd:attribute>
+                                <xsd:attribute name="passMode" type="typens:passModeType"></xsd:attribute>
+                                <xsd:attribute name="description" type="xsd:string"></xsd:attribute>
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+
+                </xsd:schema>
+
+
+                <xsd:schema xmlns:xsd="http://www.w3.org/1999/XMLSchema" targetNamespace="urn:comprehensive-types2.types.wsdl.test">
+                    <xsd:complexType name="fwd">
+                        <xsd:complexContent>
+                            <xsd:restriction base="soapenc:Array">
+                                <xsd:attribute xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" ref="soapenc:arrayType" wsdl:arrayType="xsd:QName[]"></xsd:attribute>
+                            </xsd:restriction>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+
+
+                    <xsd:element maxOccurs="unbounded" name="three" type="typens:enum"></xsd:element>
+
+
+                    <xsd:element name="a" type="xsd:short"></xsd:element>
+                    <xsd:complexType name="a">
+                        <xsd:sequence>
+                            <xsd:element name="c" type="xsd:int"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                    <xsd:complexType name="b">
+                        <xsd:sequence>
+                            <xsd:element name="d" type="typens2:a"></xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+
+
+                    <xsd:complexType name="SimpleAnyURIType">
+                        <xsd:simpleContent>
+                            <xsd:extension base="xsd:anyURI">
+                            </xsd:extension>
+                        </xsd:simpleContent>
+                    </xsd:complexType>
+
+                </xsd:schema>
+
+            </types>
+
+            <message name="empty"></message>
+
+            <message name="allPrimitives">
+                <part name="string" type="xsd:string"></part>
+                <part name="integer" type="xsd:integer"></part>
+                <part name="int" type="xsd:int"></part>
+                <part name="long" type="xsd:long"></part>
+                <part name="short" type="xsd:short"></part>
+                <part name="decimal" type="xsd:decimal"></part>
+                <part name="float" type="xsd:float"></part>
+                <part name="double" type="xsd:double"></part>
+                <part name="boolean" type="xsd:boolean"></part>
+                <part name="byte" type="xsd:byte"></part>
+                <part name="QName" type="xsd:QName"></part>
+                <part name="dateTime" type="xsd:dateTime"></part>
+                <part name="base64Binary" type="xsd:base64Binary"></part>
+                <part name="hexBinary" type="xsd:hexBinary"></part>
+                <part name="soapString" type="soapenc:string"></part>
+                <part name="soapBoolean" type="soapenc:boolean"></part>
+                <part name="soapFloat" type="soapenc:float"></part>
+                <part name="soapDouble" type="soapenc:double"></part>
+                <part name="soapDecimal" type="soapenc:decimal"></part>
+                <part name="soapInt" type="soapenc:int"></part>
+                <part name="soapShort" type="soapenc:short"></part>
+                <part name="soapBase64" type="soapenc:base64"></part>
+                <part name="time" type="xsd:time"></part>
+                <part name="unsignedLong" type="xsd:unsignedLong"></part>
+                <part name="unsignedInt" type="xsd:unsignedInt"></part>
+                <part name="unsignedShort" type="xsd:unsignedShort"></part>
+                <part name="unsignedByte" type="xsd:unsignedByte"></part>
+                <part name="nonNegativeInteger" type="xsd:nonNegativeInteger"></part>
+                <part name="positiveInteger" type="xsd:positiveInteger"></part>
+                <part name="nonPositiveInteger" type="xsd:nonPositiveInteger"></part>
+                <part name="negativeInteger" type="xsd:negativeInteger"></part>
+                <part name="anyURI" type="xsd:anyURI"></part>
+                <part name="gYear" type="xsd:gYear"></part>
+                <part name="gMonth" type="xsd:gMonth"></part>
+                <part name="gDay" type="xsd:gDay"></part>
+                <part name="gYearMonth" type="xsd:gYearMonth"></part>
+                <part name="gMonthDay" type="xsd:gMonthDay"></part>
+            </message>
+            <message name="inputBoolean">
+                <part name="inBoolean" type="xsd:boolean"></part>
+                <part name="boolean" type="xsd:boolean"></part>
+            </message>
+
+            <message name="outputBoolean">
+                <part name="outBoolean" type="xsd:boolean"></part>
+                <part name="boolean" type="xsd:boolean"></part>
+            </message>
+
+            <message name="inputByte">
+                <part name="inByte" type="xsd:byte"></part>
+                <part name="byte" type="xsd:byte"></part>
+            </message>
+
+            <message name="outputByte">
+                <part name="outByte" type="xsd:byte"></part>
+                <part name="byte" type="xsd:byte"></part>
+            </message>
+
+            <message name="inputShort">
+                <part name="inShort" type="xsd:short"></part>
+                <part name="short" type="xsd:short"></part>
+            </message>
+
+            <message name="outputShort">
+                <part name="outShort" type="xsd:short"></part>
+                <part name="short" type="xsd:short"></part>
+            </message>
+
+            <message name="inputInt">
+                <part name="inInt" type="xsd:int"></part>
+                <part name="int" type="xsd:int"></part>
+            </message>
+
+            <message name="outputInt">
+                <part name="outInt" type="xsd:int"></part>
+                <part name="int" type="xsd:int"></part>
+            </message>
+
+            <message name="inputLong">
+                <part name="inLong" type="xsd:long"></part>
+                <part name="long" type="xsd:long"></part>
+            </message>
+
+            <message name="outputLong">
+                <part name="outLong" type="xsd:long"></part>
+                <part name="long" type="xsd:long"></part>
+            </message>
+
+            <message name="inputFloat">
+                <part name="inFloat" type="xsd:float"></part>
+                <part name="float" type="xsd:float"></part>
+            </message>
+
+            <message name="outputFloat">
+                <part name="outFloat" type="xsd:float"></part>
+                <part name="float" type="xsd:float"></part>
+            </message>
+
+            <message name="inputDouble">
+                <part name="inDouble" type="xsd:double"></part>
+                <part name="double" type="xsd:double"></part>
+            </message>
+
+            <message name="outputDouble">
+                <part name="outDouble" type="xsd:double"></part>
+                <part name="double" type="xsd:double"></part>
+            </message>
+
+            <message name="inputString">
+                <part name="inString" type="xsd:string"></part>
+                <part name="string" type="xsd:string"></part>
+            </message>
+
+            <message name="outputString">
+                <part name="outString" type="xsd:string"></part>
+                <part name="string" type="xsd:string"></part>
+            </message>
+
+            <message name="inputInteger">
+                <part name="inInteger" type="xsd:integer"></part>
+                <part name="integer" type="xsd:integer"></part>
+            </message>
+
+            <message name="outputInteger">
+                <part name="outInteger" type="xsd:integer"></part>
+                <part name="integer" type="xsd:integer"></part>
+            </message>
+
+            <message name="inputDecimal">
+                <part name="inDecimal" type="xsd:decimal"></part>
+                <part name="decimal" type="xsd:decimal"></part>
+            </message>
+
+            <message name="outputDecimal">
+                <part name="outDecimal" type="xsd:decimal"></part>
+                <part name="decimal" type="xsd:decimal"></part>
+            </message>
+
+            <message name="inputDateTime">
+                <part name="inDateTime" type="xsd:dateTime"></part>
+                <part name="dateTime" type="xsd:dateTime"></part>
+            </message>
+
+            <message name="outputDateTime">
+                <part name="outDateTime" type="xsd:dateTime"></part>
+                <part name="dateTime" type="xsd:dateTime"></part>
+            </message>
+
+            <message name="inputBase64Binary">
+                <part name="inBase64Binary" type="xsd:base64Binary"></part>
+                <part name="base64Binary" type="xsd:base64Binary"></part>
+            </message>
+
+            <message name="outputBase64Binary">
+                <part name="outBase64Binary" type="xsd:base64Binary"></part>
+                <part name="base64Binary" type="xsd:base64Binary"></part>
+            </message>
+
+            <message name="inputQName">
+                <part name="inQName" type="xsd:QName"></part>
+                <part name="qName" type="xsd:QName"></part>
+            </message>
+
+            <message name="outputQName">
+                <part name="outQName" type="xsd:QName"></part>
+                <part name="qName" type="xsd:QName"></part>
+            </message>
+
+            <message name="inputHexBinary">
+                <part name="inHexBinary" type="xsd:hexBinary"></part>
+                <part name="hexBinary" type="xsd:hexBinary"></part>
+            </message>
+
+            <message name="outputHexBinary">
+                <part name="outHexBinary" type="xsd:hexBinary"></part>
+                <part name="hexBinary" type="xsd:hexBinary"></part>
+            </message>
+
+            <message name="inputTime">
+                <part name="inTime" type="xsd:time"></part>
+                <part name="time" type="xsd:time"></part>
+            </message>
+
+            <message name="outputTime">
+                <part name="outTime" type="xsd:time"></part>
+                <part name="time" type="xsd:time"></part>
+            </message>
+
+            <message name="inputUnsignedLong">
+                <part name="inUnsignedLong" type="xsd:unsignedLong"></part>
+                <part name="unsignedLong" type="xsd:unsignedLong"></part>
+            </message>
+
+            <message name="outputUnsignedLong">
+                <part name="outUnsignedLong" type="xsd:unsignedLong"></part>
+                <part name="unsignedLong" type="xsd:unsignedLong"></part>
+            </message>
+
+            <message name="inputUnsignedInt">
+                <part name="inUnsignedInt" type="xsd:unsignedInt"></part>
+                <part name="unsignedInt" type="xsd:unsignedInt"></part>
+            </message>
+
+            <message name="outputUnsignedInt">
+                <part name="outUnsignedInt" type="xsd:unsignedInt"></part>
+                <part name="unsignedInt" type="xsd:unsignedInt"></part>
+            </message>
+
+            <message name="inputUnsignedShort">
+                <part name="inUnsignedShort" type="xsd:unsignedShort"></part>
+                <part name="unsignedShort" type="xsd:unsignedShort"></part>
+            </message>
+
+            <message name="outputUnsignedShort">
+                <part name="outUnsignedShort" type="xsd:unsignedShort"></part>
+                <part name="unsignedShort" type="xsd:unsignedShort"></part>
+            </message>
+
+            <message name="inputUnsignedByte">
+                <part name="inUnsignedByte" type="xsd:unsignedByte"></part>
+                <part name="unsignedByte" type="xsd:unsignedByte"></part>
+            </message>
+
+            <message name="outputUnsignedByte">
+                <part name="outUnsignedByte" type="xsd:unsignedByte"></part>
+                <part name="unsignedByte" type="xsd:unsignedByte"></part>
+            </message>
+
+            <message name="inputNonNegativeInteger">
+                <part name="inNonNegativeInteger" type="xsd:nonNegativeInteger"></part>
+                <part name="NonNegativeInteger" type="xsd:nonNegativeInteger"></part>
+            </message>
+
+            <message name="outputNonNegativeInteger">
+                <part name="outNonNegativeInteger" type="xsd:nonNegativeInteger"></part>
+                <part name="NonNegativeInteger" type="xsd:nonNegativeInteger"></part>
+            </message>
+
+            <message name="inputPositiveInteger">
+                <part name="inPositiveInteger" type="xsd:positiveInteger"></part>
+                <part name="PositiveInteger" type="xsd:positiveInteger"></part>
+            </message>
+
+            <message name="outputPositiveInteger">
+                <part name="outPositiveInteger" type="xsd:positiveInteger"></part>
+                <part name="PositiveInteger" type="xsd:positiveInteger"></part>
+            </message>
+
+            <message name="inputNonPositiveInteger">
+                <part name="inNonPositiveInteger" type="xsd:nonPositiveInteger"></part>
+                <part name="NonPositiveInteger" type="xsd:nonPositiveInteger"></part>
+            </message>
+
+            <message name="outputNonPositiveInteger">
+                <part name="outNonPositiveInteger" type="xsd:nonPositiveInteger"></part>
+                <part name="NonPositiveInteger" type="xsd:nonPositiveInteger"></part>
+            </message>
+
+            <message name="inputNegativeInteger">
+                <part name="inNegativeInteger" type="xsd:negativeInteger"></part>
+                <part name="NegativeInteger" type="xsd:negativeInteger"></part>
+            </message>
+
+            <message name="outputNegativeInteger">
+                <part name="outNegativeInteger" type="xsd:negativeInteger"></part>
+                <part name="NegativeInteger" type="xsd:negativeInteger"></part>
+            </message>
+
+            <message name="inputAnyURI">
+                <part name="inAnyURI" type="xsd:anyURI"></part>
+                <part name="anyURI" type="xsd:anyURI"></part>
+            </message>
+
+            <message name="outputAnyURI">
+                <part name="outAnyURI" type="xsd:anyURI"></part>
+                <part name="anyURI" type="xsd:anyURI"></part>
+            </message>
+
+            <message name="inputSimpleAnyURI">
+                <part name="inAnyURI" type="typens2:SimpleAnyURIType"></part>
+                <part name="anyURI" type="typens2:SimpleAnyURIType"></part>
+            </message>
+
+            <message name="outputSimpleAnyURI">
+                <part name="outAnyURI" type="typens2:SimpleAnyURIType"></part>
+                <part name="anyURI" type="typens2:SimpleAnyURIType"></part>
+            </message>
+
+            <message name="inputYear">
+                <part name="inYear" type="xsd:gYear"></part>
+                <part name="Year" type="xsd:gYear"></part>
+            </message>
+
+            <message name="outputYear">
+                <part name="outYear" type="xsd:gYear"></part>
+                <part name="Year" type="xsd:gYear"></part>
+            </message>
+
+            <message name="inputMonth">
+                <part name="inMonth" type="xsd:gMonth"></part>
+                <part name="Month" type="xsd:gMonth"></part>
+            </message>
+
+            <message name="outputMonth">
+                <part name="outMonth" type="xsd:gMonth"></part>
+                <part name="Month" type="xsd:gMonth"></part>
+            </message>
+
+            <message name="inputDay">
+                <part name="inDay" type="xsd:gDay"></part>
+                <part name="Day" type="xsd:gDay"></part>
+            </message>
+
+            <message name="outputDay">
+                <part name="outDay" type="xsd:gDay"></part>
+                <part name="Day" type="xsd:gDay"></part>
+            </message>
+
+            <message name="inputYearMonth">
+                <part name="inYearMonth" type="xsd:gYearMonth"></part>
+                <part name="YearMonth" type="xsd:gYearMonth"></part>
+            </message>
+
+            <message name="outputYearMonth">
+                <part name="outYearMonth" type="xsd:gYearMonth"></part>
+                <part name="YearMonth" type="xsd:gYearMonth"></part>
+            </message>
+
+            <message name="inputMonthDay">
+                <part name="inMonthDay" type="xsd:gMonthDay"></part>
+                <part name="MonthDay" type="xsd:gMonthDay"></part>
+            </message>
+
+            <message name="outputMonthDay">
+                <part name="outMonthDay" type="xsd:gMonthDay"></part>
+                <part name="MonthDay" type="xsd:gMonthDay"></part>
+            </message>
+
+            <message name="inputSoapString">
+                <part name="inSoapString" type="soapenc:string"></part>
+                <part name="soapencString" type="soapenc:string"></part>
+            </message>
+
+            <message name="outputSoapString">
+                <part name="outSoapString" type="soapenc:string"></part>
+                <part name="soapencString" type="soapenc:string"></part>
+            </message>
+
+            <message name="inputSoapBoolean">
+                <part name="inSoapBoolean" type="soapenc:boolean"></part>
+                <part name="soapencBoolean" type="soapenc:boolean"></part>
+            </message>
+
+            <message name="outputSoapBoolean">
+                <part name="outSoapBoolean" type="soapenc:boolean"></part>
+                <part name="soapencBoolean" type="soapenc:boolean"></part>
+            </message>
+
+            <message name="inputSoapFloat">
+                <part name="inSoapFloat" type="soapenc:float"></part>
+                <part name="soapencFloat" type="soapenc:float"></part>
+            </message>
+
+            <message name="outputSoapFloat">
+                <part name="outSoapFloat" type="soapenc:float"></part>
+                <part name="soapencFloat" type="soapenc:float"></part>
+            </message>
+
+            <message name="inputSoapDouble">
+                <part name="inSoapDouble" type="soapenc:double"></part>
+                <part name="soapencDouble" type="soapenc:double"></part>
+            </message>
+
+            <message name="outputSoapDouble">
+                <part name="outSoapDouble" type="soapenc:double"></part>
+                <part name="soapencDouble" type="soapenc:double"></part>
+            </message>
+
+            <message name="inputSoapDecimal">
+                <part name="inSoapDecimal" type="soapenc:decimal"></part>
+                <part name="soapencDecimal" type="soapenc:decimal"></part>
+            </message>
+
+            <message name="outputSoapDecimal">
+                <part name="outSoapDecimal" type="soapenc:decimal"></part>
+                <part name="soapencDecimal" type="soapenc:decimal"></part>
+            </message>
+
+            <message name="inputSoapInt">
+                <part name="inSoapInt" type="soapenc:int"></part>
+                <part name="soapencInt" type="soapenc:int"></part>
+            </message>
+
+            <message name="outputSoapInt">
+                <part name="outSoapInt" type="soapenc:int"></part>
+                <part name="soapencInt" type="soapenc:int"></part>
+            </message>
+
+            <message name="inputSoapShort">
+                <part name="inSoapShort" type="soapenc:short"></part>
+                <part name="soapencShort" type="soapenc:short"></part>
+            </message>
+
+            <message name="outputSoapShort">
+                <part name="outSoapShort" type="soapenc:short"></part>
+                <part name="soapencShort" type="soapenc:short"></part>
+            </message>
+
+            <message name="inputSoapBase64">
+                <part name="inSoapBase64" type="soapenc:base64"></part>
+                <part name="soapencBase64" type="soapenc:base64"></part>
+            </message>
+
+            <message name="outputSoapBase64">
+                <part name="outSoapBase64" type="soapenc:base64"></part>
+                <part name="soapencBase64" type="soapenc:base64"></part>
+            </message>
+
+            <message name="enum">
+                <part name="enum" type="typens:enum"></part>
+            </message>
+
+            <message name="enumInt">
+                <part name="enumInt" type="typens:enumInt"></part>
+            </message>
+
+            <message name="array">
+                <part name="array" type="typens:array"></part>
+            </message>
+
+            <message name="arrayM">
+                <part name="arrayM" type="typens:arrayM"></part>
+            </message>
+
+            <message name="complexAll">
+                <part name="complexAll" type="typens:complexAll"></part>
+            </message>
+
+            <message name="complexSequence">
+                <part name="complexSequence" type="typens:complexSequence"></part>
+            </message>
+
+            <message name="complexWComplex">
+                <part name="complexWComplex" type="typens:complexWComplex"></part>
+            </message>
+
+            <message name="any">
+                <part name="any" type="xsd:anyType"></part>
+            </message>
+
+            <message name="animal">
+                <part name="animal" type="typens:Animal"></part>
+            </message>
+
+            <message name="cat">
+                <part name="cat" type="typens:Cat"></part>
+            </message>
+
+            <message name="emptyFault">
+                <part name="theFault" type="typens:emptyFault"></part>
+            </message>
+
+            <message name="faultWithElement">
+                <part element="typens:faultElement" name="fault2"></part>
+            </message>
+
+            <message name="emptyComplexType">
+                <part name="emptyComplexType" type="typens:emptyComplexType"></part>
+            </message>
+
+
+            <portType name="TypeTest">
+                <operation name="allPrimitivesIn">
+                    <input message="tns:allPrimitives"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="allPrimitivesInout">
+                    <input message="tns:allPrimitives"></input>
+                    <output message="tns:allPrimitives"></output>
+                </operation>
+                <operation name="allPrimitivesOut">
+                    <input message="tns:empty"></input>
+                    <output message="tns:allPrimitives"></output>
+                </operation>
+                <operation name="enumIn">
+                    <input message="tns:enum"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="enumInout">
+                    <input message="tns:enum"></input>
+                    <output message="tns:enum"></output>
+                </operation>
+                <operation name="enumOut" parameterOrder="enum">
+                    <input message="tns:empty"></input>
+                    <output message="tns:enum"></output>
+                </operation>
+                <operation name="enumReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:enum"></output>
+                </operation>
+                <operation name="enumIntIn">
+                    <input message="tns:enumInt"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="enumIntInout">
+                    <input message="tns:enumInt"></input>
+                    <output message="tns:enumInt"></output>
+                </operation>
+                <operation name="enumIntOut" parameterOrder="enumInt">
+                    <input message="tns:empty"></input>
+                    <output message="tns:enumInt"></output>
+                </operation>
+                <operation name="enumIntReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:enumInt"></output>
+                </operation>
+                <operation name="arrayIn">
+                    <input message="tns:array"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="arrayInout">
+                    <input message="tns:array"></input>
+                    <output message="tns:array"></output>
+                </operation>
+                <operation name="arrayOut" parameterOrder="array">
+                    <input message="tns:empty"></input>
+                    <output message="tns:array"></output>
+                </operation>
+                <operation name="arrayReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:array"></output>
+                </operation>
+
+                <operation name="arrayMIn">
+                    <input message="tns:arrayM"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="arrayMInout">
+                    <input message="tns:arrayM"></input>
+                    <output message="tns:arrayM"></output>
+                </operation>
+                <operation name="arrayMOut" parameterOrder="arrayM">
+                    <input message="tns:empty"></input>
+                    <output message="tns:arrayM"></output>
+                </operation>
+                <operation name="arrayMReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:arrayM"></output>
+                </operation>
+
+                <operation name="complexAllIn">
+                    <input message="tns:complexAll"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="complexAllInout">
+                    <input message="tns:complexAll"></input>
+                    <output message="tns:complexAll"></output>
+                </operation>
+                <operation name="complexAllOut" parameterOrder="complexAll">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexAll"></output>
+                </operation>
+                <operation name="complexAllReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexAll"></output>
+                </operation>
+                <operation name="complexSequenceIn">
+                    <input message="tns:complexSequence"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="complexSequenceInout">
+                    <input message="tns:complexSequence"></input>
+                    <output message="tns:complexSequence"></output>
+                </operation>
+                <operation name="complexSequenceOut" parameterOrder="complexSequence">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexSequence"></output>
+                </operation>
+                <operation name="complexSequenceReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexSequence"></output>
+                </operation>
+                <operation name="complexWComplexIn">
+                    <input message="tns:complexWComplex"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="complexWComplexInout">
+                    <input message="tns:complexWComplex"></input>
+                    <output message="tns:complexWComplex"></output>
+                </operation>
+                <operation name="complexWComplexOut" parameterOrder="complexWComplex">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexWComplex"></output>
+                </operation>
+                <operation name="complexWComplexReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:complexWComplex"></output>
+                </operation>
+                <operation name="emptyComplexTypeIn" parameterOrder="emptyComplexType">
+                    <input message="tns:emptyComplexType"></input>
+                    <output message="tns:empty"></output>
+                    <fault message="tns:emptyFault" name="emptyFault"></fault>
+                </operation>
+                <operation name="emptyComplexTypeInout" parameterOrder="emptyComplexType">
+                    <input message="tns:emptyComplexType"></input>
+                    <output message="tns:emptyComplexType"></output>
+                    <fault message="tns:emptyFault" name="emptyFault"></fault>
+                </operation>
+                <operation name="emptyComplexTypeOut" parameterOrder="emptyComplexType">
+                    <input message="tns:empty"></input>
+                    <output message="tns:emptyComplexType"></output>
+                    <fault message="tns:emptyFault" name="emptyFault"></fault>
+                </operation>
+                <operation name="emptyComplexTypeReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:emptyComplexType"></output>
+                    <fault message="tns:emptyFault" name="emptyFault"></fault>
+                </operation>
+                <operation name="anyIn">
+                    <input message="tns:any"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="anyInout">
+                    <input message="tns:any"></input>
+                    <output message="tns:any"></output>
+                </operation>
+                <operation name="anyOut" parameterOrder="any">
+                    <input message="tns:empty"></input>
+                    <output message="tns:any"></output>
+                </operation>
+                <operation name="anyReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:any"></output>
+                </operation>
+                <operation name="animalIn">
+                    <input message="tns:animal"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="animalInout">
+                    <input message="tns:animal"></input>
+                    <output message="tns:animal"></output>
+                </operation>
+                <operation name="animalOut" parameterOrder="animal">
+                    <input message="tns:empty"></input>
+                    <output message="tns:animal"></output>
+                </operation>
+                <operation name="animalReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:animal"></output>
+                </operation>
+                <operation name="catIn">
+                    <input message="tns:cat"></input>
+                    <output message="tns:empty"></output>
+                </operation>
+                <operation name="catInout">
+                    <input message="tns:cat"></input>
+                    <output message="tns:cat"></output>
+                </operation>
+                <operation name="catOut" parameterOrder="cat">
+                    <input message="tns:empty"></input>
+                    <output message="tns:cat"></output>
+                </operation>
+                <operation name="catReturn">
+                    <input message="tns:empty"></input>
+                    <output message="tns:cat"></output>
+                </operation>
+                <operation name="methodBoolean">
+                    <input message="tns:inputBoolean"></input>
+                    <output message="tns:outputBoolean"></output>
+                </operation>
+                <operation name="methodByte">
+                    <input message="tns:inputByte"></input>
+                    <output message="tns:outputByte"></output>
+                </operation>
+                <operation name="methodShort">
+                    <input message="tns:inputShort"></input>
+                    <output message="tns:outputShort"></output>
+                </operation>
+                <operation name="methodInt">
+                    <input message="tns:inputInt"></input>
+                    <output message="tns:outputInt"></output>
+                </operation>
+                <operation name="methodLong">
+                    <input message="tns:inputLong"></input>
+                    <output message="tns:outputLong"></output>
+                </operation>
+                <operation name="methodFloat">
+                    <input message="tns:inputFloat"></input>
+                    <output message="tns:outputFloat"></output>
+                </operation>
+                <operation name="methodDouble">
+                    <input message="tns:inputDouble"></input>
+                    <output message="tns:outputDouble"></output>
+                </operation>
+                <operation name="methodString">
+                    <input message="tns:inputString"></input>
+                    <output message="tns:outputString"></output>
+                </operation>
+                <operation name="methodInteger">
+                    <input message="tns:inputInteger"></input>
+                    <output message="tns:outputInteger"></output>
+                </operation>
+                <operation name="methodDecimal">
+                    <input message="tns:inputDecimal"></input>
+                    <output message="tns:outputDecimal"></output>
+                </operation>
+                <operation name="methodDateTime">
+                    <input message="tns:inputDateTime"></input>
+                    <output message="tns:outputDateTime"></output>
+                </operation>
+                <operation name="methodQName">
+                    <input message="tns:inputQName"></input>
+                    <output message="tns:outputQName"></output>
+                </operation>
+                <operation name="methodTime">
+                    <input message="tns:inputTime"></input>
+                    <output message="tns:outputTime"></output>
+                </operation>
+                <operation name="methodUnsignedLong">
+                    <input message="tns:inputUnsignedLong"></input>
+                    <output message="tns:outputUnsignedLong"></output>
+                </operation>
+                <operation name="methodUnsignedInt">
+                    <input message="tns:inputUnsignedInt"></input>
+                    <output message="tns:outputUnsignedInt"></output>
+                </operation>
+                <operation name="methodUnsignedShort">
+                    <input message="tns:inputUnsignedShort"></input>
+                    <output message="tns:outputUnsignedShort"></output>
+                </operation>
+                <operation name="methodUnsignedByte">
+                    <input message="tns:inputUnsignedByte"></input>
+                    <output message="tns:outputUnsignedByte"></output>
+                </operation>
+                <operation name="methodNonNegativeInteger">
+                    <input message="tns:inputNonNegativeInteger"></input>
+                    <output message="tns:outputNonNegativeInteger"></output>
+                </operation>
+                <operation name="methodPositiveInteger">
+                    <input message="tns:inputPositiveInteger"></input>
+                    <output message="tns:outputPositiveInteger"></output>
+                </operation>
+                <operation name="methodNonPositiveInteger">
+                    <input message="tns:inputNonPositiveInteger"></input>
+                    <output message="tns:outputNonPositiveInteger"></output>
+                </operation>
+                <operation name="methodNegativeInteger">
+                    <input message="tns:inputNegativeInteger"></input>
+                    <output message="tns:outputNegativeInteger"></output>
+                </operation>
+                <operation name="methodAnyURI">
+                    <input message="tns:inputAnyURI"></input>
+                    <output message="tns:outputAnyURI"></output>
+                </operation>
+                <operation name="methodSimpleAnyURI">
+                    <input message="tns:inputSimpleAnyURI"></input>
+                    <output message="tns:outputSimpleAnyURI"></output>
+                </operation>
+                <operation name="methodYear">
+                    <input message="tns:inputYear"></input>
+                    <output message="tns:outputYear"></output>
+                </operation>
+                <operation name="methodMonth">
+                    <input message="tns:inputMonth"></input>
+                    <output message="tns:outputMonth"></output>
+                </operation>
+                <operation name="methodDay">
+                    <input message="tns:inputDay"></input>
+                    <output message="tns:outputDay"></output>
+                </operation>
+                <operation name="methodYearMonth">
+                    <input message="tns:inputYearMonth"></input>
+                    <output message="tns:outputYearMonth"></output>
+                </operation>
+                <operation name="methodMonthDay">
+                    <input message="tns:inputMonthDay"></input>
+                    <output message="tns:outputMonthDay"></output>
+                </operation>
+                <operation name="methodSoapString">
+                    <input message="tns:inputSoapString"></input>
+                    <output message="tns:outputSoapString"></output>
+                </operation>
+                <operation name="methodSoapBoolean">
+                    <input message="tns:inputSoapBoolean"></input>
+                    <output message="tns:outputSoapBoolean"></output>
+                </operation>
+                <operation name="methodSoapFloat">
+                    <input message="tns:inputSoapFloat"></input>
+                    <output message="tns:outputSoapFloat"></output>
+                </operation>
+                <operation name="methodSoapDouble">
+                    <input message="tns:inputSoapDouble"></input>
+                    <output message="tns:outputSoapDouble"></output>
+                </operation>
+                <operation name="methodSoapDecimal">
+                    <input message="tns:inputSoapDecimal"></input>
+                    <output message="tns:outputSoapDecimal"></output>
+                </operation>
+                <operation name="methodSoapInt">
+                    <input message="tns:inputSoapInt"></input>
+                    <output message="tns:outputSoapInt"></output>
+                </operation>
+                <operation name="methodSoapShort">
+                    <input message="tns:inputSoapShort"></input>
+                    <output message="tns:outputSoapShort"></output>
+                </operation>
+            </portType>
+
+
+            <binding name="TypeTestBinding" type="tns:TypeTest">
+                <soap:binding xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" style="rpc" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+                <operation name="allPrimitivesIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="allPrimitivesInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="allPrimitivesOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumIntIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumIntInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumIntOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="enumIntReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+
+                <operation name="arrayMIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayMInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayMOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="arrayMReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+
+                <operation name="complexAllIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexAllInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexAllOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexAllReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexSequenceIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexSequenceInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexSequenceOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexSequenceReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexWComplexIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexWComplexInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexWComplexOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="complexWComplexReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="emptyComplexTypeIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                    <fault name="emptyFault">
+                        <soap:fault xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="emptyFault" use="encoded"></soap:fault>
+                    </fault>
+                </operation>
+                <operation name="emptyComplexTypeInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                    <fault name="emptyFault">
+                        <soap:fault xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="emptyFault" use="encoded"></soap:fault>
+                    </fault>
+                </operation>
+                <operation name="emptyComplexTypeOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                    <fault name="emptyFault">
+                        <soap:fault xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="emptyFault" use="encoded"></soap:fault>
+                    </fault>
+                </operation>
+                <operation name="emptyComplexTypeReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                    <fault name="emptyFault">
+                        <soap:fault xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="emptyFault" use="encoded"></soap:fault>
+                    </fault>
+                </operation>
+                <operation name="anyIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="anyInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="anyOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="anyReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="animalIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="animalInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="animalOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="animalReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="catIn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="catInout">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="catOut">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="catReturn">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodBoolean">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodByte">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodShort">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodInt">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodLong">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodFloat">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodDouble">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodString">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodInteger">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodDecimal">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodDateTime">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodQName">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodTime">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodUnsignedLong">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodUnsignedInt">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodUnsignedShort">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodUnsignedByte">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodNonNegativeInteger">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodPositiveInteger">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodNonPositiveInteger">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodNegativeInteger">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+
+                <operation name="methodAnyURI">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSimpleAnyURI">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodYear">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodMonth">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodDay">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodYearMonth">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodMonthDay">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapString">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapBoolean">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapFloat">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapDouble">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapDecimal">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapInt">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+                <operation name="methodSoapShort">
+                    <soap:operation xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" soapAction=""></soap:operation>
+                    <input>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </input>
+                    <output>
+                        <soap:body xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="" use="encoded"></soap:body>
+                    </output>
+                </operation>
+            </binding>
+
+
+            <service name="TypeTestService">
+                <port binding="tns:TypeTestBinding" name="TypeTest">
+                    <soap:address xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" location="http://localhost:8080/axis/services/TypeTest"></soap:address>
+                </port>
+            </service>
+
+        </definitions>
+
+    </env:Body>
