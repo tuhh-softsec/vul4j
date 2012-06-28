@@ -315,7 +315,6 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
      * Provided by Pete Hendry.
      */
     @org.junit.Test
-    @SuppressWarnings("unchecked")
     public void testNodeSet() throws Exception {
         final String XML =
             "<env:Envelope"
@@ -346,7 +345,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         Document doc = this.db.parse(new InputSource(new StringReader(XML)));
         Canonicalizer20010315ExclOmitComments c14n = 
             new Canonicalizer20010315ExclOmitComments();
-        Set nodeSet = new HashSet();
+        Set<Node> nodeSet = new HashSet<Node>();
         XMLUtils.getSet(doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
         XMLSignatureInput input = new XMLSignatureInput(nodeSet);
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");

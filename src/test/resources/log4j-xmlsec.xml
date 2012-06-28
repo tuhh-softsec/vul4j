@@ -12,10 +12,10 @@
             <param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n"/>
         </layout>
     </appender>
-    <logger name="org.swssf.xmlsec.impl.util.SignerOutputStream">
+    <logger name="org.apache.xml.security.stax.impl.util.SignerOutputStream">
         <level value="INFO"/>
     </logger>
-    <logger name="org.swssf.xmlsec.impl.util.DigestOutputStream">
+    <logger name="org.apache.xml.security.stax.impl.util.DigestOutputStream">
         <level value="INFO"/>
     </logger>
     <logger name="org.apache.xml.security.utils.DigesterOutputStream">
@@ -30,10 +30,10 @@
     <logger name="org.apache.xml">
         <level value="INFO"/>
     </logger>
-    <logger name="org.swssf.xmlsec.impl.InputProcessorChainImpl">
+    <logger name="org.apache.xml.security.stax.impl.InputProcessorChainImpl">
         <level value="INFO"/>
     </logger>
-    <logger name="org.swssf.xmlsec.impl.OutputProcessorChainImpl">
+    <logger name="org.apache.xml.security.stax.impl.OutputProcessorChainImpl">
         <level value="INFO"/>
     </logger>
     <root>

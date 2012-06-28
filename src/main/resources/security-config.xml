@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- This configuration file is used for configuration of the org.swssf -->
+<!-- This configuration file is used for configuration of the org.apache.xml.security -->
 <Configuration target="org.apache.xml.security" xmlns="http://www.xmlsecurity.org/NS/configuration">
     <Properties>
-        <Property NAME="securityTokenFactory" VAL="org.swssf.xmlsec.impl.securityToken.SecurityTokenFactoryImpl"/>
+        <Property NAME="securityTokenFactory" VAL="org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactoryImpl"/>
         <Property NAME="CACertKeyStorePassword" VAL="changeit"/>
         <!--<Property NAME="CertProvider" VAL="BC"/>-->
         <!--<Property NAME="DefaultX509Alias" VAL="sigEnc"/>-->
@@ -12,22 +12,22 @@
    <TransformAlgorithms>
       <!-- c14n omitting comments -->
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer" />
       <!-- c14n with comments -->
       <TransformAlgorithm URI="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_WithCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_WithCommentsTransformer" />
       <!-- c14n 1.1 omitting comments -->
       <TransformAlgorithm URI="http://www.w3.org/2006/12/xml-c14n11"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer11_OmitCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer11_OmitCommentsTransformer" />
       <!-- c14n 1.1 with comments -->
       <TransformAlgorithm URI="http://www.w3.org/2006/12/xml-c14n11#WithComments"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer11_WithCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer11_WithCommentsTransformer" />
       <!-- exclusive c14n omitting comments -->
       <TransformAlgorithm URI="http://www.w3.org/2001/10/xml-exc-c14n#"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_ExclOmitCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_ExclOmitCommentsTransformer" />
       <!-- exclusive c14n with comments -->
       <TransformAlgorithm URI="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
-                          JAVACLASS="org.swssf.xmlsec.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer" />
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer" />
 
        <!-- Base64 -->
       <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"

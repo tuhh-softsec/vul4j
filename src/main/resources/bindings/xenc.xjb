@@ -4,7 +4,7 @@
           version="2.1">
     <bindings schemaLocation="schemas/xenc-schema.xsd" version="1.0">
         <schemaBindings>
-            <package name="org.swssf.binding.xmlenc"/>
+            <package name="org.apache.xml.security.binding.xmlenc"/>
         </schemaBindings>
     </bindings>
 </bindings>

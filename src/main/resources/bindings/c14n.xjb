@@ -4,7 +4,7 @@
           version="2.1">
     <bindings schemaLocation="schemas/exc-c14n.xsd" version="1.0">
         <schemaBindings>
-            <package name="org.swssf.binding.excc14n"/>
+            <package name="org.apache.xml.security.binding.excc14n"/>
         </schemaBindings>
     </bindings>
 </bindings>

@@ -4,7 +4,7 @@
           version="2.1">
     <bindings schemaLocation="schemas/xmldsig11-schema.xsd" node="/xs:schema" version="1.0">
         <schemaBindings>
-            <package name="org.swssf.binding.xmldsig11"/>
+            <package name="org.apache.xml.security.binding.xmldsig11"/>
         </schemaBindings>
     </bindings>
 </bindings>
