@@ -91,7 +91,7 @@ public class Santuario191Test extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        assertEquals(new String(baos.toByteArray()), EXPECTED_RESULT);
+        assertEquals(new String(baos.toByteArray(), "UTF-8"), EXPECTED_RESULT);
     }
 
 }

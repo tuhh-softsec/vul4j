@@ -303,7 +303,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
         }
 
-        assertEquals(new String(baos.toByteArray()), c14nXML);
+        assertEquals(new String(baos.toByteArray(), "UTF-8"), c14nXML);
     }
     
     /**
