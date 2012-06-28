@@ -72,23 +72,23 @@ public class XMLSecurityConstants {
                 public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, String baseURI) {
                     if ("http://www.w3.org/2001/XMLSchema.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("schemas/XMLSchema.dtd"));
+                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/XMLSchema.dtd"));
                         return concreteLSInput;
                     } else if ("XMLSchema.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("schemas/XMLSchema.dtd"));
+                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/XMLSchema.dtd"));
                         return concreteLSInput;
                     } else if ("datatypes.dtd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("schemas/datatypes.dtd"));
+                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/datatypes.dtd"));
                         return concreteLSInput;
                     } else if ("http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("schemas/xmldsig-core-schema.xsd"));
+                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd"));
                         return concreteLSInput;
                     } else if ("http://www.w3.org/2001/xml.xsd".equals(systemId)) {
                         ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("schemas/xml.xsd"));
+                        concreteLSInput.setByteStream(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xml.xsd"));
                         return concreteLSInput;
                     }
                     return null;
