@@ -209,7 +209,8 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     public void writeEndElement() throws XMLStreamException {
         outputOpenStartElement();
         QName element = startElementStack.pop();
-        Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
+        // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
+        nsStack.pop();
         //todo namespaces which are going out of scope for endElement?
         chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(element));
 
@@ -219,7 +220,8 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         outputOpenStartElement();
         Iterator<QName> startElements = startElementStack.iterator();
         while (startElements.hasNext()) {
-            Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
+            // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
+            nsStack.pop();
             //todo namespaces which are going out of scope for endElement?
             chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(startElements.next()));
         }
@@ -427,10 +429,8 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
         putNamespaceOntoStack(prefix, XMLSecEventFactory.createXMLSecNamespace(prefix, uri));
-        if (openStartElement != null) {
-            if (openStartElement.getNamespaceURI().equals(uri)) {
-                openStartElement = new QName(openStartElement.getNamespaceURI(), openStartElement.getLocalPart(), prefix);
-            }
+        if (openStartElement != null && openStartElement.getNamespaceURI().equals(uri)) {
+            openStartElement = new QName(openStartElement.getNamespaceURI(), openStartElement.getLocalPart(), prefix);
         }
     }
 

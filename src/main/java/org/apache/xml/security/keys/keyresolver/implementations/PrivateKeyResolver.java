@@ -324,6 +324,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
                     try {
                         certBytes = cert.getEncoded();
                     } catch (CertificateEncodingException e1) {
+                        log.debug("Cannot recover the key", e1);
                     }
 
                     if (certBytes != null && Arrays.equals(certBytes, x509CertBytes)) {

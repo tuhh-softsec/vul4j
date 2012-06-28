@@ -18,8 +18,6 @@
  */
 package org.apache.xml.security.exceptions;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.text.MessageFormat;
 
 import org.apache.xml.security.utils.Constants;
@@ -178,24 +176,6 @@ public class XMLSecurityException extends Exception {
         synchronized (System.err) {
             super.printStackTrace(System.err);
         }
-    }
-
-    /**
-     * Method printStackTrace
-     *
-     * @param printwriter
-     */
-    public void printStackTrace(PrintWriter printwriter) {
-        super.printStackTrace(printwriter);
-    }
-
-    /**
-     * Method printStackTrace
-     *
-     * @param printstream
-     */
-    public void printStackTrace(PrintStream printstream) {
-        super.printStackTrace(printstream);
     }
 
     /**

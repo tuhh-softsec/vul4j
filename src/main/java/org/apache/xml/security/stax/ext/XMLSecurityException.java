@@ -51,7 +51,6 @@ public class XMLSecurityException extends RemoteException {
     }
 
     private static final ResourceBundle resources;
-    private ErrorCode errorCode;
 
     static {
         try {
@@ -72,7 +71,6 @@ public class XMLSecurityException extends RemoteException {
      */
     public XMLSecurityException(ErrorCode errorCode, String msgId, Throwable exception, Object... arguments) {
         super(getMessage(errorCode, msgId, arguments), exception);
-        this.errorCode = errorCode;
     }
 
     /**
@@ -85,12 +83,10 @@ public class XMLSecurityException extends RemoteException {
      */
     public XMLSecurityException(ErrorCode errorCode, String msgId, Throwable exception) {
         super(getMessage(errorCode, msgId), exception);
-        this.errorCode = errorCode;
     }
 
     public XMLSecurityException(ErrorCode errorCode, Throwable exception) {
         super(getMessage(errorCode, null), exception);
-        this.errorCode = errorCode;
     }
 
     /**
@@ -103,7 +99,6 @@ public class XMLSecurityException extends RemoteException {
      */
     public XMLSecurityException(ErrorCode errorCode, String msgId, Object... arguments) {
         super(getMessage(errorCode, msgId, arguments));
-        this.errorCode = errorCode;
     }
 
     /**

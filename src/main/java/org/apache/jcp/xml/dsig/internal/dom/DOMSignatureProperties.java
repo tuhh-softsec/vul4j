@@ -86,7 +86,7 @@ public final class DOMSignatureProperties extends DOMStructure
      * @param propsElem a SignatureProperties element
      * @throws MarshalException if a marshalling error occurs
      */
-    public DOMSignatureProperties(Element propsElem, XMLCryptoContext context)
+    public DOMSignatureProperties(Element propsElem)
         throws MarshalException
     {
         // unmarshal attributes
@@ -105,8 +105,7 @@ public final class DOMSignatureProperties extends DOMStructure
         for (int i = 0; i < length; i++) {
             Node child = nodes.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                properties.add(new DOMSignatureProperty((Element)child,
-                                                        context));
+                properties.add(new DOMSignatureProperty((Element)child));
             }
         }
         if (properties.isEmpty()) {

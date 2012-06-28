@@ -90,7 +90,7 @@ public final class DOMSignatureProperty extends DOMStructure
      *
      * @param propElem a SignatureProperty element
      */
-    public DOMSignatureProperty(Element propElem, XMLCryptoContext context)
+    public DOMSignatureProperty(Element propElem)
         throws MarshalException
     {
         // unmarshal attributes

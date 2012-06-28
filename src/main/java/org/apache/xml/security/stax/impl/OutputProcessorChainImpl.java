@@ -209,10 +209,8 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
             }
         }
         outputProcessors.get(this.curPos++).processNextEvent(xmlSecEvent, this);
-        if (reparent) {
-            if (parentXmlSecStartElement != null) {
-                parentXmlSecStartElement = parentXmlSecStartElement.getParentXMLSecStartElement();
-            }
+        if (reparent && parentXmlSecStartElement != null) {
+            parentXmlSecStartElement = parentXmlSecStartElement.getParentXMLSecStartElement();
         }
     }
 

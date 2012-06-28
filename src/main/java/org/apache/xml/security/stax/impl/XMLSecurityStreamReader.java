@@ -117,10 +117,6 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
-    final private static int MASK_GET_ELEMENT_TEXT =
-            (1 << CHARACTERS) | (1 << CDATA) | (1 << SPACE)
-                    | (1 << ENTITY_REFERENCE);
-
     public String getElementText() throws XMLStreamException {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {

@@ -57,6 +57,7 @@ public class Merlin extends MerlinBase {
                     try {
                         cacertsIs.close();
                     } catch (IOException e) {
+                        log.debug(e.getMessage(), e);
                         //ignore
                     }
                 }

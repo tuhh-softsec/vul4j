@@ -28,7 +28,7 @@ public final class UtfHelpper {
         // complete
     }
 
-    public static final void writeByte(
+    public static void writeByte(
         final String str,
         final OutputStream out,
         Map<String, byte[]> cache
@@ -42,7 +42,7 @@ public final class UtfHelpper {
         out.write(result);
     }
 
-    public static final void writeCharToUtf8(final char c, final OutputStream out) throws IOException {   	
+    public static void writeCharToUtf8(final char c, final OutputStream out) throws IOException {   	
         if (c < 0x80) {
             out.write(c);
             return;
@@ -77,7 +77,7 @@ public final class UtfHelpper {
 
     }
 
-    public static final void writeStringToUtf8(
+    public static void writeStringToUtf8(
         final String str,
         final OutputStream out
     ) throws IOException{	   
@@ -122,7 +122,7 @@ public final class UtfHelpper {
 
     }
     
-    public static final byte[] getStringInUtf8(final String str) {
+    public static byte[] getStringInUtf8(final String str) {
         final int length = str.length();
         boolean expanded = false;
         byte []result = new byte[length];

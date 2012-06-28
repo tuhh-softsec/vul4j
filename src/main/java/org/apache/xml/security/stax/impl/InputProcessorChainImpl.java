@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     private List<InputProcessor> inputProcessors = Collections.synchronizedList(new ArrayList<InputProcessor>(20));//the default of ten entries is not enough
     private int startPos = 0;
     private int curPos = 0;
-    private XMLSecStartElement parentXmlSecStartElement;
 
     private final SecurityContext securityContext;
     private final DocumentContextImpl documentContext;

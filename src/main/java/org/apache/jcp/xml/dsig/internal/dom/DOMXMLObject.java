@@ -117,7 +117,7 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
                     content.add(new DOMManifest(childElem, context, provider));
                     continue;
                 } else if (tag.equals("SignatureProperties")) {
-                    content.add(new DOMSignatureProperties(childElem, context));
+                    content.add(new DOMSignatureProperties(childElem));
                     continue;
                 } else if (tag.equals("X509Data")) {
                     content.add(new DOMX509Data(childElem));

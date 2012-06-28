@@ -142,7 +142,7 @@ public final class DOMXMLSignature extends DOMStructure
 
         // unmarshal SignatureValue 
         Element sigValElem = DOMUtils.getNextSiblingElement(siElem);
-        sv = new DOMSignatureValue(sigValElem, context);
+        sv = new DOMSignatureValue(sigValElem);
 
         // unmarshal KeyInfo, if specified
         Element nextSibling = DOMUtils.getNextSiblingElement(sigValElem);
@@ -489,7 +489,7 @@ public final class DOMXMLSignature extends DOMStructure
             this.id = id;
         }
 
-        DOMSignatureValue(Element sigValueElem, XMLCryptoContext context)
+        DOMSignatureValue(Element sigValueElem)
             throws MarshalException
         {
             try {
