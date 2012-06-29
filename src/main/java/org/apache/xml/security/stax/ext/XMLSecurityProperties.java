@@ -23,6 +23,7 @@ import org.apache.xml.security.stax.crypto.MerlinBase;
 
 import javax.security.auth.callback.CallbackHandler;
 import java.net.URL;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -340,6 +341,7 @@ public class XMLSecurityProperties {
     private KeyStore signatureKeyStore;
     private String signatureUser;
     private boolean useSingleCert = true;
+    private Key signatureKey;
 
     public void addSignaturePart(SecurePart securePart) {
         signatureParts.add(securePart);
@@ -371,6 +373,14 @@ public class XMLSecurityProperties {
 
     public String getSignatureUser() {
         return signatureUser;
+    }
+    
+    public void setSignatureKey(Key signatureKey) {
+        this.signatureKey = signatureKey;
+    }
+    
+    public Key getSignatureKey() {
+        return signatureKey;
     }
 
     public KeyStore getSignatureKeyStore() {
