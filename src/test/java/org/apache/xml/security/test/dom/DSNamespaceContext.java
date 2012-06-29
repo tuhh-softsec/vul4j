@@ -34,6 +34,7 @@ public class DSNamespaceContext implements NamespaceContext {
     
     public DSNamespaceContext() {
         namespaceMap.put("ds", "http://www.w3.org/2000/09/xmldsig#");
+        namespaceMap.put("dsig", "http://www.w3.org/2000/09/xmldsig#");
     }
     
     public DSNamespaceContext(Map<String, String> namespaces) {
