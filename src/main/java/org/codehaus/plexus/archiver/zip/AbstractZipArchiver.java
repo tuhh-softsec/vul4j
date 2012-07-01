@@ -352,12 +352,12 @@ public abstract class AbstractZipArchiver
         return entries;
     }
 
-    protected boolean isFileAdded( ArchiveEntry entry, Map entries )
+    protected static boolean isFileAdded(ArchiveEntry entry, Map entries)
     {
         return !entries.containsKey( entry.getName() );
     }
 
-    protected boolean isFileUpdated( ArchiveEntry entry, Map entries )
+    protected static boolean isFileUpdated(ArchiveEntry entry, Map entries)
     {
         Long l = (Long) entries.get( entry.getName() );
         return l != null && (l == -1 || !ResourceUtils.isUptodate(entry.getResource(), l));

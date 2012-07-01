@@ -57,10 +57,7 @@ public final class ZipLong
      */
     public ZipLong( byte[] bytes, int offset )
     {
-        value = ( bytes[ offset + 3 ] << 24 ) & 0xFF000000L;
-        value += ( bytes[ offset + 2 ] << 16 ) & 0xFF0000;
-        value += ( bytes[ offset + 1 ] << 8 ) & 0xFF00;
-        value += ( bytes[ offset ] & 0xFF );
+        value = convert(bytes, offset);
     }
 
     /**
@@ -70,12 +67,7 @@ public final class ZipLong
      */
     public byte[] getBytes()
     {
-        byte[] result = new byte[4];
-        result[ 0 ] = (byte) ( ( value & 0xFF ) );
-        result[ 1 ] = (byte) ( ( value & 0xFF00 ) >> 8 );
-        result[ 2 ] = (byte) ( ( value & 0xFF0000 ) >> 16 );
-        result[ 3 ] = (byte) ( ( value & 0xFF000000l ) >> 24 );
-        return result;
+        return bytes(value);
     }
 
     /**
@@ -110,5 +102,30 @@ public final class ZipLong
     public int hashCode()
     {
         return (int) value;
+    }
+
+    static long convert(byte[] bytes) {
+        return convert(bytes, 0);
+    }
+
+    static long convert(byte[] bytes, int offset) {
+        long value = (bytes[offset + 3] << 24) & 0xFF000000L;
+        value += (bytes[offset + 2] << 16) & 0xFF0000;
+        value += (bytes[offset + 1] << 8) & 0xFF00;
+        value += (bytes[offset] & 0xFF);
+
+        return value;
+    }
+
+    static byte[] bytes(long value) {
+        return bytes(value, new byte[4]);
+    }
+
+    static byte[] bytes(long value, byte[] result) {
+        result[0] = (byte) ((value & 0xFF));
+        result[1] = (byte) ((value & 0xFF00) >> 8);
+        result[2] = (byte) ((value & 0xFF0000) >> 16);
+        result[3] = (byte) ((value & 0xFF000000l) >> 24);
+        return result;
     }
 }

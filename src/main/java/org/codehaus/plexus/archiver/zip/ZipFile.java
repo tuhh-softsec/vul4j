@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipException;
@@ -58,12 +59,10 @@ import org.codehaus.plexus.archiver.ArchiveFile;
  * <li>close is allowed to throw IOException.</li>
  * </ul>
  *
- * @version $Revision$ $Date$
+ * @version $Revision: 7140 $ $Date: 2008-01-06 12:50:12 +0100 (dim., 06 janv. 2008) $
  *          from org.apache.ant.tools.zip.ZipFile v1.13
  */
-@SuppressWarnings("JavaDoc")
-public class ZipFile
-    implements ArchiveFile
+public class ZipFile implements ArchiveFile
 {
 
     /**
@@ -80,7 +79,7 @@ public class ZipFile
     /**
      * Maps ZipEntrys to Longs, recording the offsets of the actual file data.
      */
-    private final Hashtable<ZipEntry, Long> dataOffsets = new Hashtable<ZipEntry, Long>();
+    private Hashtable<ZipEntry, Long> dataOffsets = new Hashtable<ZipEntry, Long>();
 
     /**
      * The encoding to use for filenames and the file comment.
@@ -233,7 +232,8 @@ public class ZipFile
                     }
                 };
             default:
-                throw new ZipException( "Found unsupported compression method " + ze.getMethod() );
+                throw new ZipException( "Found unsupported compression method "
+                                        + ze.getMethod() );
         }
     }
 
@@ -279,46 +279,45 @@ public class ZipFile
             int off = 0;
             ZipEntry ze = new ZipEntry();
 
-            ZipShort versionMadeBy = new ZipShort( cfh, off );
+            ze.setPlatform( ( ZipShort.convert( cfh, off ) >> 8 ) & 0x0F );
             off += 2;
-            ze.setPlatform( ( versionMadeBy.getValue() >> 8 ) & 0x0F );
 
             off += 4; // skip version info and general purpose byte
 
-            ze.setMethod( ( new ZipShort( cfh, off ) ).getValue() );
+            ze.setMethod( ZipShort.convert( cfh, off ) );
             off += 2;
 
-            ze.setTime( fromDosTime( new ZipLong( cfh, off ) ).getTime() );
+            ze.setTime( fromDosTime( ZipLong.convert( cfh, off ) ).getTime() );
             off += 4;
 
-            ze.setCrc( ( new ZipLong( cfh, off ) ).getValue() );
+            ze.setCrc( ZipLong.convert( cfh, off ));
             off += 4;
 
-            ze.setCompressedSize( ( new ZipLong( cfh, off ) ).getValue() );
+            ze.setCompressedSize( ZipLong.convert( cfh, off ));
             off += 4;
 
-            ze.setSize( ( new ZipLong( cfh, off ) ).getValue() );
+            ze.setSize( ZipLong.convert( cfh, off ) );
             off += 4;
 
-            int fileNameLen = ( new ZipShort( cfh, off ) ).getValue();
+            int fileNameLen = ZipShort.convert( cfh, off );
             off += 2;
 
-            int extraLen = ( new ZipShort( cfh, off ) ).getValue();
+            int extraLen = ZipShort.convert( cfh, off );
             off += 2;
 
-            int commentLen = ( new ZipShort( cfh, off ) ).getValue();
+            int commentLen = ZipShort.convert( cfh, off );
             off += 2;
 
             off += 2; // disk number
 
-            ze.setInternalAttributes( ( new ZipShort( cfh, off ) ).getValue() );
+            ze.setInternalAttributes( ZipShort.convert( cfh, off ));
             off += 2;
 
-            ze.setExternalAttributes( ( new ZipLong( cfh, off ) ).getValue() );
+            ze.setExternalAttributes( ZipLong.convert( cfh, off ) );
             off += 4;
 
             // LFH offset
-            entries.put( ze, (new ZipLong(cfh, off)).getValue());
+            entries.put( ze, new Long( ZipLong.convert( cfh, off )) );
 
             byte[] fileName = new byte[fileNameLen];
             archive.readFully( fileName );
@@ -405,7 +404,7 @@ public class ZipFile
         archive.seek( off + CFD_LOCATOR_OFFSET );
         byte[] cfdOffset = new byte[4];
         archive.readFully( cfdOffset );
-        archive.seek( ( new ZipLong( cfdOffset ) ).getValue() );
+        archive.seek( ZipLong.convert( cfdOffset ) );
     }
 
     /**
@@ -433,26 +432,40 @@ public class ZipFile
     private void resolveLocalFileHeaderData()
         throws IOException
     {
-        Enumeration e = getEntries();
-        while ( e.hasMoreElements() )
-        {
-            ZipEntry ze = (ZipEntry) e.nextElement();
-            long offset = entries.get(ze);
+        // Create a sufficiently large HashTable in order to avoid
+        // the cost or repeated expansion of the backing array
+        // in case of large jars
+        dataOffsets = new Hashtable<ZipEntry, Long>(entries.size());
+
+        // Allocated array once outside the loop
+        final byte[] b = new byte[2];
+
+        // Iterate using the entrySet
+        for (Map.Entry<ZipEntry, Long> e : entries.entrySet()) {
+            ZipEntry ze = e.getKey();
+            long offset = e.getValue();
             archive.seek( offset + LFH_OFFSET_FOR_FILENAME_LENGTH );
-            byte[] b = new byte[2];
             archive.readFully( b );
-            int fileNameLen = ( new ZipShort( b ) ).getValue();
+            int fileNameLen = ZipShort.convert(b);
             archive.readFully( b );
-            int extraFieldLen = ( new ZipShort( b ) ).getValue();
+            int extraFieldLen = ZipShort.convert( b );
             archive.skipBytes( fileNameLen );
             byte[] localExtraData = new byte[extraFieldLen];
             archive.readFully( localExtraData );
             ze.setExtra( localExtraData );
-            dataOffsets.put( ze,
-                    offset + LFH_OFFSET_FOR_FILENAME_LENGTH
-                            + 2 + 2 + fileNameLen + extraFieldLen);
+            dataOffsets.put( ze, offset + LFH_OFFSET_FOR_FILENAME_LENGTH + 2 + 2 + fileNameLen + extraFieldLen );
         }
     }
+
+    /**
+     * Creating a Calendar is relatively expensive. So create on per thread and
+     * keep it alive
+     */
+    static final ThreadLocal threadCalander = new ThreadLocal() {
+        protected Object initialValue() {
+            return Calendar.getInstance();
+        }
+    };
 
     /**
      * Convert a DOS date/time field to a Date object.
@@ -463,7 +476,12 @@ public class ZipFile
     protected static Date fromDosTime( ZipLong l )
     {
         long dosTime = l.getValue();
-        Calendar cal = Calendar.getInstance();
+        return fromDosTime(dosTime);
+    }
+
+    protected static Date fromDosTime( long dosTime  )
+    {
+        Calendar cal = (Calendar) threadCalander.get();
         cal.set( Calendar.YEAR, (int) ( ( dosTime >> 25 ) & 0x7f ) + 1980 );
         cal.set( Calendar.MONTH, (int) ( ( dosTime >> 21 ) & 0x0f ) - 1 );
         cal.set( Calendar.DATE, (int) ( dosTime >> 16 ) & 0x1f );
@@ -586,5 +604,4 @@ public class ZipFile
             addDummyByte = true;
         }
     }
-
 }

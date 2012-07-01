@@ -57,8 +57,7 @@ public final class ZipShort
      */
     public ZipShort( byte[] bytes, int offset )
     {
-        value = ( bytes[ offset + 1 ] << 8 ) & 0xFF00;
-        value += ( bytes[ offset ] & 0xFF );
+        value = convert(bytes, offset);
     }
 
     /**
@@ -68,10 +67,7 @@ public final class ZipShort
      */
     public byte[] getBytes()
     {
-        byte[] result = new byte[2];
-        result[ 0 ] = (byte) ( value & 0xFF );
-        result[ 1 ] = (byte) ( ( value & 0xFF00 ) >> 8 );
-        return result;
+        return bytes(value);
     }
 
     /**
@@ -106,5 +102,27 @@ public final class ZipShort
     public int hashCode()
     {
         return value;
+    }
+
+
+    static int convert(byte[] bytes) {
+        return convert(bytes, 0);
+    }
+
+    static int convert(byte[] bytes, int offset) {
+        int value = (bytes[offset + 1] << 8) & 0xFF00;
+        value += (bytes[offset] & 0xFF);
+
+        return value;
+    }
+
+    static byte[] bytes(int value) {
+        return bytes(value, new byte[2]);
+    }
+
+    static byte[] bytes(int value, byte[] result) {
+        result[0] = (byte) (value & 0xFF);
+        result[1] = (byte) ((value & 0xFF00) >> 8);
+        return result;
     }
 }
