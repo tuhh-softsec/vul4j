@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.ext;
 
 import java.io.OutputStream;
 import java.security.Key;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -134,7 +135,7 @@ public class OutboundXMLSec {
         String alias = securityProperties.getSignatureUser();
         Key key = securityProperties.getSignatureKey();
         X509Certificate[] x509Certificates = null;
-        if (key instanceof PublicKey) {
+        if (key instanceof PublicKey || key instanceof PrivateKey) {
             CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
             cryptoType.setAlias(alias);
             x509Certificates = securityProperties.getSignatureCrypto().getX509Certificates(cryptoType);
