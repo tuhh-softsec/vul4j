@@ -26,6 +26,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -118,7 +119,7 @@ public class SignatureCreationTest extends org.junit.Assert {
     }
     
     @Test
-    public void testMultipleElementsSignatureCreation() throws Exception {
+    public void testMultipleElements() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
@@ -163,7 +164,7 @@ public class SignatureCreationTest extends org.junit.Assert {
         verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
     }
     
-    // @Test
+    @Test
     public void testHMACSignatureCreation() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
@@ -179,10 +180,10 @@ public class SignatureCreationTest extends org.junit.Assert {
         SecurePart securePart = 
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
-
+        
         // Set the key up
         byte[] hmacKey = "secret".getBytes("ASCII");
-        SecretKey key = getHMACSecretKey(hmacKey);
+        SecretKey key = new SecretKeySpec(hmacKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
         properties.setSignatureKey(key);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
@@ -197,7 +198,7 @@ public class SignatureCreationTest extends org.junit.Assert {
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
         xmlStreamWriter.close();
         
-        System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
@@ -342,6 +343,94 @@ public class SignatureCreationTest extends org.junit.Assert {
         verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
     }
 
+    @Test
+    public void testDifferentC14nMethod() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.loadSignatureKeyStore(
+            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        );
+        properties.setSignatureUser("transmitter");
+        properties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        // Set the key up
+        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
+        properties.setSignatureKey(key);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
+        cryptoType.setAlias(properties.getSignatureUser());
+        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
+        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testC14n11Method() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.loadSignatureKeyStore(
+            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        );
+        properties.setSignatureUser("transmitter");
+        properties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/2006/12/xml-c14n11");
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        // Set the key up
+        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
+        properties.setSignatureKey(key);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
+        cryptoType.setAlias(properties.getSignatureUser());
+        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
+        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+    }
+
 
     /**
      * Verify the document using DOM
@@ -401,19 +490,7 @@ public class SignatureCreationTest extends org.junit.Assert {
         }
         
         XMLSignature signature = new XMLSignature(sigElement, "");
-        KeyInfo ki = signature.getKeyInfo();
-        Assert.assertNotNull(ki);
-        
         Assert.assertTrue(signature.checkSignatureValue(secretKey));
     }
 
-    private SecretKey getHMACSecretKey(final byte[] secret) {
-        return new SecretKey() {
-            private static final long serialVersionUID = -6527915934685938837L;
-            public String getFormat()   { return "RAW"; }
-            public byte[] getEncoded()  { return secret; }
-            public String getAlgorithm(){ return "SECRET"; }
-        };
-    }
-    
 }
