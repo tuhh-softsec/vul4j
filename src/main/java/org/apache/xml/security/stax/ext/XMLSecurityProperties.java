@@ -467,6 +467,15 @@ public class XMLSecurityProperties {
 
     private Class<? extends MerlinBase> signatureVerificationCryptoClass;
     private KeyStore signatureVerificationKeyStore;
+    private Key signatureVerificationKey;
+    
+    public Key getSignatureVerificationKey() {
+        return signatureVerificationKey;
+    }
+
+    public void setSignatureVerificationKey(Key signatureVerificationKey) {
+        this.signatureVerificationKey = signatureVerificationKey;
+    }
 
     public KeyStore getSignatureVerificationKeyStore() {
         return signatureVerificationKeyStore;
@@ -545,4 +554,5 @@ public class XMLSecurityProperties {
     public void setDisableSchemaValidation(boolean disableSchemaValidation) {
         this.disableSchemaValidation = disableSchemaValidation;
     }
+
 }

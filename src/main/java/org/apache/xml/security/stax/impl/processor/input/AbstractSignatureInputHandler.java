@@ -26,7 +26,6 @@ import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
-import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
 
 import javax.xml.bind.JAXBElement;
@@ -151,7 +150,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
     </ds:Signature>
      */
 
-    public class SignatureVerifier {
+    public abstract class SignatureVerifier {
 
         private final SignatureType signatureType;
         private final SecurityToken securityToken;
@@ -165,9 +164,8 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             this.signatureType = signatureType;
 
             KeyInfoType keyInfoType = signatureType.getKeyInfo();
-            SecurityToken securityToken = SecurityTokenFactory.getInstance().getSecurityToken(keyInfoType,
-                    securityProperties.getSignatureVerificationCrypto(), securityProperties.getCallbackHandler(),
-                    securityContext);
+            SecurityToken securityToken = 
+                retrieveSecurityToken(keyInfoType, securityProperties, securityContext);
             securityToken.verify();
 
             try {
@@ -178,6 +176,10 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             }
             this.securityToken = securityToken;
         }
+        
+        protected abstract SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
+                                                 XMLSecurityProperties securityProperties,
+                                                 SecurityContext securityContext) throws XMLSecurityException;
 
         public SecurityToken getSecurityToken() {
             return securityToken;
