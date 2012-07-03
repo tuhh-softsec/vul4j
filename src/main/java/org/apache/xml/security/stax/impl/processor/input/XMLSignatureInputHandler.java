@@ -58,9 +58,11 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         if (signatureType.getSignatureValue() == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
         }
+        /*
         if (signatureType.getKeyInfo() == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
         }
+        */
         return new XMLSignatureVerifier(signatureType, inputProcessorChain.getSecurityContext(), securityProperties);
     }
 
