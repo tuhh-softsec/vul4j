@@ -23,16 +23,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
-import java.security.Provider;
-import java.security.Security;
 import java.security.cert.X509Certificate;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -41,23 +42,19 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.ext.InputProcessor;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.InboundXMLSec;
+import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-import org.apache.xml.security.stax.impl.DocumentContextImpl;
-import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
-import org.apache.xml.security.stax.impl.XMLSecurityStreamReader;
-import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
-import org.apache.xml.security.stax.impl.processor.input.XMLSignatureInputProcessor;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xml.security.utils.XMLUtils;
+// import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,22 +70,6 @@ public class SignatureVerificationTest extends org.junit.Assert {
     private DocumentBuilderFactory documentBuilderFactory;
     private TransformerFactory transformerFactory = TransformerFactory.newInstance();
     
-    static {
-        try {
-            Class<?> c =
-                    SignatureVerificationTest.class.getClassLoader().loadClass(
-                            "org.bouncycastle.jce.provider.BouncyCastleProvider"
-                    );
-            if (null == Security.getProvider("BC")) {
-                // Security.addProvider((Provider) c.newInstance());
-                Security.insertProviderAt((Provider) c.newInstance(), 1);
-            }
-        } catch (Throwable e) {
-            throw new RuntimeException("Adding BouncyCastle provider failed", e);
-        }
-    }
-
-
     @Before
     public void setUp() throws Exception {
         Init.init(SignatureVerificationTest.class.getClassLoader().getResource("security-config.xml").toURI());
@@ -124,8 +105,10 @@ public class SignatureVerificationTest extends org.junit.Assert {
         X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
         
         // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
         signUsingDOM(
-            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, cert, key
+            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, cert, key
         );
         
         // XMLUtils.outputDOM(document, System.out);
@@ -138,35 +121,284 @@ public class SignatureVerificationTest extends org.junit.Assert {
                 xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
   
         // Verify signature
-        SecurityContextImpl securityContextImpl = new SecurityContextImpl();
-        securityContextImpl.put(XMLSecurityConstants.XMLINPUTFACTORY, xmlInputFactory);
-        
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
-        
-        final DocumentContextImpl documentContext = new DocumentContextImpl();
-        documentContext.setEncoding("UTF-8");
-        
-        // Set up the processor chain
-        InputProcessorChainImpl processorChain = 
-            new InputProcessorChainImpl(securityContextImpl, documentContext);
-        processorChain.addProcessor(new XMLEventReaderInputProcessor(properties, xmlStreamReader));
-        
-        List<InputProcessor> additionalInputProcessors = properties.getInputProcessorList();
-        if (!additionalInputProcessors.isEmpty()) {
-            Iterator<InputProcessor> inputProcessorIterator = additionalInputProcessors.iterator();
-            while (inputProcessorIterator.hasNext()) {
-                InputProcessor inputProcessor = inputProcessorIterator.next();
-                processorChain.addProcessor(inputProcessor);
-            }
-        }
-        
-        processorChain.addProcessor(new XMLSignatureInputProcessor(properties));
-         
-        XMLStreamReader securityStreamReader = new XMLSecurityStreamReader(processorChain, properties);
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        XMLUtils.outputDOM(document, System.out);
+        // XMLUtils.outputDOM(document, System.out);
+    }
+    
+    @Test
+    public void testMultipleElements() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        localNames.add("ShippingAddress");
+        signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, cert, key
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // XMLUtils.outputDOM(document, System.out);
+    }
+    
+    @Test
+    public void testHMACSignatureVerification() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        byte[] hmacKey = "secret".getBytes("ASCII");
+        SecretKey key = new SecretKeySpec(hmacKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#hmac-sha1", document, localNames, null, key
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(key);
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // XMLUtils.outputDOM(document, System.out);
+    }
+    
+    @Test
+    public void testHMACSignatureVerificationWrongKey() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        byte[] hmacKey = "secret".getBytes("ASCII");
+        SecretKey key = new SecretKeySpec(hmacKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#hmac-sha1", document, localNames, null, key
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        
+        byte[] badKey = "secret2".getBytes("ASCII");
+        key = new SecretKeySpec(badKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
+        properties.setSignatureVerificationKey(key);
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        try {
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            fail("Failure expected on a bad key");
+        } catch (XMLStreamException ex) {
+            // expected
+        }
+    }
+    
+    @Test
+    public void testECDSASignatureVerification() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource(
+                "org/apache/xml/security/samples/input/ecdsa.jks").openStream(), 
+                "security".toCharArray()
+        );
+        Key key = keyStore.getKey("ECDSA", "security".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("ECDSA");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1", document, localNames, cert, key
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // XMLUtils.outputDOM(document, System.out);
+    }
+    
+    @Test
+    public void testDifferentC14nMethod() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, cert, key,
+            "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // XMLUtils.outputDOM(document, System.out);
+    }
+    
+    @Test
+    public void testC14n11Method() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, cert, key,
+            "http://www.w3.org/2006/12/xml-c14n11"
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // XMLUtils.outputDOM(document, System.out);
     }
     
     /**
@@ -175,10 +407,26 @@ public class SignatureVerificationTest extends org.junit.Assert {
     private void signUsingDOM(
         String algorithm,
         Document document,
+        List<String> localNames,
         X509Certificate cert,
         Key signingKey
     ) throws Exception {
-        XMLSignature sig = new XMLSignature(document, "", algorithm);
+        String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
+        signUsingDOM(algorithm, document, localNames, cert, signingKey, c14nMethod);
+    }
+    
+    /**
+     * Sign the document using DOM
+     */
+    private void signUsingDOM(
+        String algorithm,
+        Document document,
+        List<String> localNames,
+        X509Certificate cert,
+        Key signingKey,
+        String c14nMethod
+    ) throws Exception {
+        XMLSignature sig = new XMLSignature(document, "", algorithm, c14nMethod);
         Element root = document.getDocumentElement();
         root.appendChild(sig.getElement());
 
@@ -186,22 +434,30 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XPath xpath = xpf.newXPath();
         xpath.setNamespaceContext(new DSNamespaceContext());
         
-        String expression = "//*[local-name()='" + "PaymentInfo" + "']";
-        Element elementToSign = 
-            (Element)xpath.evaluate(expression, document, XPathConstants.NODE);
-        Assert.assertNotNull(elementToSign);
-        String id = UUID.randomUUID().toString();
-        elementToSign.setAttributeNS(null, "Id", id);
-        elementToSign.setIdAttributeNS(null, "Id", true);
+        for (String localName : localNames) {
+            String expression = "//*[local-name()='" + localName + "']";
+            Element elementToSign = 
+                (Element)xpath.evaluate(expression, document, XPathConstants.NODE);
+            Assert.assertNotNull(elementToSign);
+            String id = UUID.randomUUID().toString();
+            elementToSign.setAttributeNS(null, "Id", id);
+            elementToSign.setIdAttributeNS(null, "Id", true);
+            
+            Transforms transforms = new Transforms(document);
+            transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+            sig.addDocument("#" + id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
+        }
         
-        Transforms transforms = new Transforms(document);
-        transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
-        sig.addDocument("#" + id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
-
-        sig.addKeyInfo(cert);
+        if (cert != null) {
+            sig.addKeyInfo(cert);
+        } else {
+            KeyInfo keyInfo = sig.getKeyInfo();
+            KeyName keyName = new KeyName(document, "SecretKey");
+            keyInfo.add(keyName);
+        }
         sig.sign(signingKey);
         
-        expression = "//ds:Signature[1]";
+        String expression = "//ds:Signature[1]";
         Element sigElement = 
             (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
         Assert.assertNotNull(sigElement);

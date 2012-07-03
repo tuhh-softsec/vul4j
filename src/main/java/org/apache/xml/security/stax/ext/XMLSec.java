@@ -76,6 +76,24 @@ public class XMLSec {
         return new OutboundXMLSec(securityProperties);
     }
 
+    /**
+     * Creates and configures an inbound streaming security engine
+     *
+     * @param securityProperties The user-defined security configuration
+     * @return A new InboundWSSec
+     * @throws org.apache.xml.security.stax.ext.XMLSecurityException
+     *          if the initialisation failed
+     * @throws org.apache.xml.security.stax.ext.XMLSecurityConfigurationException
+     *          if the configuration is invalid
+     */
+    public static InboundXMLSec getInboundWSSec(XMLSecurityProperties securityProperties) throws XMLSecurityException {
+        if (securityProperties == null) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "missingSecurityProperties");
+        }
+
+        securityProperties = validateAndApplyDefaultsToInboundSecurityProperties(securityProperties);
+        return new InboundXMLSec(securityProperties);
+    }
 
     /**
      * Validates the user supplied configuration and applies default values as appropriate for the outbound security engine
@@ -124,4 +142,16 @@ public class XMLSec {
         return securityProperties;
     }
 
+    /**
+     * Validates the user supplied configuration and applies default values as appropriate for the inbound security engine
+     *
+     * @param securityProperties The configuration to validate
+     * @return The validated configuration
+     * @throws org.apache.xml.security.stax.ext.XMLSecurityConfigurationException
+     *          if the configuration is invalid
+     */
+    public static XMLSecurityProperties validateAndApplyDefaultsToInboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
+        //todo clone securityProperties
+        return securityProperties;
+    }
 }
