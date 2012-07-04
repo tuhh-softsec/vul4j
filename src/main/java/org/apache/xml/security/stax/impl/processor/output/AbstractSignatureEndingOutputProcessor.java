@@ -87,7 +87,10 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
     */
 
     @Override
-    public abstract void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException;
+    public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        setAppendAfterThisTokenId(outputProcessorChain.getSecurityContext().<String>get(XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID));
+        super.doFinal(outputProcessorChain);
+    }
 
     public void processHeaderEvent(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
 

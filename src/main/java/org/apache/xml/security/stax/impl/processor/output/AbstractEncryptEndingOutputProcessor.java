@@ -19,10 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.xml.security.stax.ext.AbstractBufferingOutputProcessor;
-import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
-
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Processor buffers encrypted XMLEvents and forwards them when final is called
@@ -35,7 +32,4 @@ public abstract class AbstractEncryptEndingOutputProcessor extends AbstractBuffe
     public AbstractEncryptEndingOutputProcessor() throws XMLSecurityException {
         super();
     }
-
-    @Override
-    public abstract void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException;
 }
