@@ -30,6 +30,7 @@ import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
@@ -192,6 +193,14 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         protected void buildTransformerChain(ReferenceType referenceType, InputProcessorChain inputProcessorChain)
                 throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
+            if (referenceType.getTransforms() == null) {
+                // If no Transforms then just default to an Exclusive with comments transform
+                Transformer transformer = new Canonicalizer20010315_ExclWithCommentsTransformer();
+                transformer.setOutputStream(getBufferedDigestOutputStream());
+                this.setTransformer(transformer);
+                return;
+            }
+            
             List<TransformType> transformTypeList = referenceType.getTransforms().getTransform();
 
             Transformer parentTransformer = null;

@@ -92,7 +92,7 @@ public class XMLSignatureInputProcessor extends AbstractInputProcessor {
                             && xmlSecEndElement.getName().equals(XMLSecurityConstants.TAG_dsig_Signature)) {
                         // Handle the signature
                         XMLSignatureInputHandler inputHandler = new XMLSignatureInputHandler();
-                        inputHandler.handle(inputProcessorChain, getSecurityProperties(), 
+                        inputHandler.handle(subInputProcessorChain, getSecurityProperties(), 
                                             xmlSecEventList, startIndexForProcessor);
                         
                         subInputProcessorChain.removeProcessor(internalBufferProcessor);

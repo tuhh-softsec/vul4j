@@ -49,7 +49,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Absolutely primive XInclude#xpointer scheme handling
+ * Absolutely primitive XInclude#xpointer scheme handling
  *
  * @author $Author$
  * @version $Revision$ $Date$
