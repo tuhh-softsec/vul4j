@@ -26,6 +26,8 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -616,6 +618,80 @@ public class BaltimoreTest extends org.junit.Assert {
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+    }
+    
+    // See SANTUARIO-319
+    @Test
+    @Ignore
+    public void test_signature_keyname() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-keyname.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        CertificateFactory cf = CertificateFactory.getInstance("X509");
+        InputStream sourceCert = 
+            this.getClass().getClassLoader().getResourceAsStream(
+                    "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/lugh.crt");
+  
+        Certificate cert = cf.generateCertificate(sourceCert);
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+    }
+    
+    // See SANTUARIO-319
+    @Test
+    @Ignore
+    public void test_signature_retrievalmethod_rawx509crt() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/signature-retrievalmethod-rawx509crt.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        CertificateFactory cf = CertificateFactory.getInstance("X509");
+        InputStream sourceCert = 
+            this.getClass().getClassLoader().getResourceAsStream(
+                    "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/balor.crt");
+  
+        Certificate cert = cf.generateCertificate(sourceCert);
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
