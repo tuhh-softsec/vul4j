@@ -29,7 +29,6 @@ import java.util.UUID;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.xml.security.stax.crypto.CryptoType;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
@@ -132,16 +131,11 @@ public class OutboundXMLSec {
     }
     
     private void configureSignatureKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
-        String alias = securityProperties.getSignatureUser();
         Key key = securityProperties.getSignatureKey();
-        X509Certificate[] x509Certificates = null;
-        if (key instanceof PublicKey || key instanceof PrivateKey) {
-            CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-            cryptoType.setAlias(alias);
-            x509Certificates = securityProperties.getSignatureCrypto().getX509Certificates(cryptoType);
-            if (x509Certificates == null || x509Certificates.length == 0) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound", alias);
-            }
+        X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
+        if ((key instanceof PublicKey || key instanceof PrivateKey)
+            && (x509Certificates == null || x509Certificates.length == 0)) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
         }
         
         final SecurityToken signatureSecurityToken = new SignatureSecurityToken(key, x509Certificates);

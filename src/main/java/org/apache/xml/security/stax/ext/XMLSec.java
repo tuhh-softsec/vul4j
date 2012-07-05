@@ -111,12 +111,6 @@ public class XMLSec {
         for (int i = 0; i < securityProperties.getOutAction().length; i++) {
             XMLSecurityConstants.Action action = securityProperties.getOutAction()[i];
             if (action.equals(XMLSecurityConstants.SIGNATURE)) {
-                if (securityProperties.getSignatureKeyStore() == null) {
-                    throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "signatureKeyStoreNotSet");
-                }
-                if (securityProperties.getSignatureUser() == null) {
-                    throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "noSignatureUser");
-                }
                 /*
                 if (securityProperties.getCallbackHandler() == null) {
                     throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "noCallback");

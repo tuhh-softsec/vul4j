@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
+import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -38,7 +39,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.stax.crypto.CryptoType;
 import org.apache.xml.security.stax.ext.OutboundXMLSec;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.XMLSec;
@@ -82,19 +82,22 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
         );
-        properties.setSignatureUser("transmitter");
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
         
         SecurePart securePart = 
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -112,10 +115,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
     
     @Test
@@ -125,10 +125,17 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
         );
-        properties.setSignatureUser("transmitter");
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
         
         SecurePart securePart = 
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
@@ -137,10 +144,6 @@ public class SignatureCreationTest extends org.junit.Assert {
                 new SecurePart(new QName("urn:example:po", "ShippingAddress"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -158,10 +161,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
     
     @Test
@@ -171,21 +171,18 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
-        );
-        properties.setSignatureUser("transmitter");
+        
+        // Set the key up
+        byte[] hmacKey = "secret".getBytes("ASCII");
+        SecretKey key = new SecretKeySpec(hmacKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
+        properties.setSignatureKey(key);
+        
         properties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#hmac-sha1");
         
         SecurePart securePart = 
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        byte[] hmacKey = "secret".getBytes("ASCII");
-        SecretKey key = new SecretKeySpec(hmacKey, "http://www.w3.org/2000/09/xmldsig#hmac-sha1");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -213,10 +210,18 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
         );
-        properties.setSignatureUser("transmitter");
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
         properties.setSignatureAlgorithm("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
         properties.setSignatureDigestAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
         
@@ -224,10 +229,6 @@ public class SignatureCreationTest extends org.junit.Assert {
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -245,10 +246,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
     
     @Test
@@ -258,21 +256,25 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
             this.getClass().getClassLoader().getResource(
-                "org/apache/xml/security/samples/input/ecdsa.jks"), "security".toCharArray()
+                "org/apache/xml/security/samples/input/ecdsa.jks").openStream(), 
+            "security".toCharArray()
         );
-        properties.setSignatureUser("ECDSA");
+        Key key = keyStore.getKey("ECDSA", "security".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("ECDSA");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
         properties.setSignatureAlgorithm("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1");
         
         SecurePart securePart = 
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("ECDSA", "security");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -290,10 +292,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
     
     @Test
@@ -303,11 +302,18 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
+        
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
             this.getClass().getClassLoader().getResource(
-                "org/apache/xml/security/samples/input/ecdsa.jks"), "security".toCharArray()
+                "org/apache/xml/security/samples/input/ecdsa.jks").openStream(), 
+            "security".toCharArray()
         );
-        properties.setSignatureUser("ECDSA");
+        Key key = keyStore.getKey("ECDSA", "security".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("ECDSA");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+
         properties.setSignatureAlgorithm("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256");
         properties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
         properties.setSignatureDigestAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
@@ -316,10 +322,6 @@ public class SignatureCreationTest extends org.junit.Assert {
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("ECDSA", "security");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -337,10 +339,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
 
     @Test
@@ -350,20 +349,24 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
         );
-        properties.setSignatureUser("transmitter");
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+
         properties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
         
         SecurePart securePart = 
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -381,10 +384,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
     
     @Test
@@ -394,20 +394,24 @@ public class SignatureCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.loadSignatureKeyStore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
         );
-        properties.setSignatureUser("transmitter");
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+
         properties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/2006/12/xml-c14n11");
         
         SecurePart securePart = 
                new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
         properties.addSignaturePart(securePart);
         
-        // Set the key up
-        Key key = properties.getSignatureCrypto().getPrivateKey("transmitter", "default");
-        properties.setSignatureKey(key);
-
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
@@ -425,10 +429,7 @@ public class SignatureCreationTest extends org.junit.Assert {
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
         
         // Verify using DOM
-        CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ALIAS);
-        cryptoType.setAlias(properties.getSignatureUser());
-        X509Certificate[] x509Certificates = properties.getSignatureCrypto().getX509Certificates(cryptoType);
-        verifyUsingDOM(document, x509Certificates[0], properties.getSignatureSecureParts());
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
 
 
