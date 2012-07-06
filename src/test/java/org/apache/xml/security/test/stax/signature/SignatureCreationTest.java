@@ -432,7 +432,183 @@ public class SignatureCreationTest extends org.junit.Assert {
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
 
-
+    @Test
+    public void testSignatureCreationKeyValue() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testSignatureCreationSKI() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
+        properties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("test.jceks").openStream(), 
+            "secret".toCharArray()
+        );
+        Key key = keyStore.getKey("rsakey", "secret".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("rsakey");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testSignatureCreationX509Certificate() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
+    }
+    
+    @Test
+    public void testSignatureCreationX509SubjectName() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+        
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        // Verify using DOM
+        verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
+    }
+    
     /**
      * Verify the document using DOM
      */

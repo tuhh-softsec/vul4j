@@ -39,6 +39,16 @@ import java.util.List;
  */
 public class XMLSecurityProperties {
 
+    private XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType;
+
+    public XMLSecurityConstants.KeyIdentifierType getSignatureKeyIdentifierType() {
+        return signatureKeyIdentifierType;
+    }
+
+    public void setSignatureKeyIdentifierType(XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType) {
+        this.signatureKeyIdentifierType = signatureKeyIdentifierType;
+    }
+    
     private final List<InputProcessor> inputProcessorList = new ArrayList<InputProcessor>();
 
     /**

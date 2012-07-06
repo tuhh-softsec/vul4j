@@ -186,6 +186,9 @@ public class XMLSecurityConstants {
     public static final QName TAG_dsig_X509IssuerSerial = new QName(NS_DSIG, "X509IssuerSerial", PREFIX_DSIG);
     public static final QName TAG_dsig_X509IssuerName = new QName(NS_DSIG, "X509IssuerName", PREFIX_DSIG);
     public static final QName TAG_dsig_X509SerialNumber = new QName(NS_DSIG, "X509SerialNumber", PREFIX_DSIG);
+    public static final QName TAG_dsig_X509SKI = new QName(NS_DSIG, "X509SKI", PREFIX_DSIG);
+    public static final QName TAG_dsig_X509Certificate = new QName(NS_DSIG, "X509Certificate", PREFIX_DSIG);
+    public static final QName TAG_dsig_X509SubjectName = new QName(NS_DSIG, "X509SubjectName", PREFIX_DSIG);
 
     public static final QName TAG_dsig_KeyValue = new QName(NS_DSIG, "KeyValue", PREFIX_DSIG);
     public static final QName TAG_dsig_RSAKeyValue = new QName(NS_DSIG, "RSAKeyValue", PREFIX_DSIG);
@@ -233,6 +236,18 @@ public class XMLSecurityConstants {
 
     public static final Action SIGNATURE = new Action("SIGNATURE");
     public static final Action ENCRYPT = new Action("ENCRYPT");
+    
+    public interface KeyIdentifierType {
+        
+    }
+    
+    public enum XMLKeyIdentifierType implements KeyIdentifierType {
+        KEY_VALUE,
+        X509_ISSUER_SERIAL,
+        X509_SKI,
+        X509_CERTIFICATE,
+        X509_SUBJECT_NAME
+    }
 
     public static class Action implements Comparable<Action> {
         private final String name;

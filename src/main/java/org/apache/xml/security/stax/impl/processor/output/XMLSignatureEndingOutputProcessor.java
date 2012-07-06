@@ -28,6 +28,7 @@ import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
@@ -60,10 +61,26 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
             SecurityToken securityToken,
             boolean useSingleCertificate)
             throws XMLStreamException, XMLSecurityException {
-        // Issuer-Serial by default
+        XMLSecurityConstants.KeyIdentifierType keyIdentifierType = getSecurityProperties().getSignatureKeyIdentifierType();
+
         X509Certificate[] x509Certificates = securityToken.getX509Certificates();
-        if (x509Certificates != null) {
+        if (x509Certificates == null) {
+            return;
+        }
+        
+        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
+            XMLSecurityUtils.createKeyValueTokenStructure(this, outputProcessorChain, x509Certificates);
+        } else if (keyIdentifierType == null 
+                || keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
             createX509IssuerSerialStructure(outputProcessorChain, x509Certificates);
+        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI) {
+            XMLSecurityUtils.createX509SubjectKeyIdentifierStructure(this, outputProcessorChain, x509Certificates);
+        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE) {
+            XMLSecurityUtils.createX509CertificateStructure(this, outputProcessorChain, x509Certificates);
+        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
+            XMLSecurityUtils.createX509SubjectNameStructure(this, outputProcessorChain, x509Certificates);
+        } else {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "unsupportedSecurityToken");
         }
     }
 
