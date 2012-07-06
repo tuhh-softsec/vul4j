@@ -133,8 +133,7 @@ public class OutboundXMLSec {
     private void configureSignatureKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
         Key key = securityProperties.getSignatureKey();
         X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
-        if ((key instanceof PublicKey || key instanceof PrivateKey)
-            && (x509Certificates == null || x509Certificates.length == 0)) {
+        if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
         }
         

@@ -21,6 +21,10 @@ package org.apache.xml.security.stax.ext;
 import java.net.URISyntaxException;
 import java.security.Provider;
 import java.security.Security;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
+
+import javax.crypto.SecretKey;
 
 import org.apache.xml.security.stax.config.Init;
 
@@ -117,7 +121,13 @@ public class XMLSec {
                 }
                 */
                 if (securityProperties.getSignatureAlgorithm() == null) {
-                    securityProperties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+                    if (securityProperties.getSignatureKey() instanceof RSAPrivateKey) {
+                        securityProperties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+                    } else if (securityProperties.getSignatureKey() instanceof DSAPrivateKey) {
+                        securityProperties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#dsa-sha1");
+                    } else if (securityProperties.getSignatureKey() instanceof SecretKey) {
+                        securityProperties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#hmac-sha1");
+                    }
                 }
                 if (securityProperties.getSignatureDigestAlgorithm() == null) {
                     securityProperties.setSignatureDigestAlgorithm("http://www.w3.org/2000/09/xmldsig#sha1");
@@ -125,11 +135,9 @@ public class XMLSec {
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
                     securityProperties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
                 }
-                /*
                 if (securityProperties.getSignatureKeyIdentifierType() == null) {
-                    securityProperties.setSignatureKeyIdentifierType(WSSConstants.KeyIdentifierType.ISSUER_SERIAL);
+                    securityProperties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
                 }
-                */
             }
         }
         //todo clone securityProperties
