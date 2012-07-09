@@ -51,26 +51,26 @@ public class PathTool
      * PathTool.getRelativePath( "/usr/local/java/bin/java.sh", "/usr/local/" ) = ""
      * </pre>
      *
-     * @param basedir The base directory.
+     * @param basedir  The base directory.
      * @param filename The filename that is relative to the base
-     * directory.
+     *                 directory.
      * @return The relative path of the filename from the base
-     * directory.  This value is not terminated with a forward slash.
-     * A zero-length string is returned if: the filename is not relative to
-     * the base directory, <code>basedir</code> is null or zero-length,
-     * or <code>filename</code> is null or zero-length.
+     *         directory.  This value is not terminated with a forward slash.
+     *         A zero-length string is returned if: the filename is not relative to
+     *         the base directory, <code>basedir</code> is null or zero-length,
+     *         or <code>filename</code> is null or zero-length.
      */
     public static final String getRelativePath( String basedir, String filename )
     {
-        basedir = uppercaseDrive(basedir);
-        filename = uppercaseDrive(filename);
+        basedir = uppercaseDrive( basedir );
+        filename = uppercaseDrive( filename );
 
         /*
          * Verify the arguments and make sure the filename is relative
          * to the base directory.
          */
-        if ( basedir == null || basedir.length() == 0 || filename == null
-            || filename.length() == 0 || !filename.startsWith( basedir ) )
+        if ( basedir == null || basedir.length() == 0 || filename == null || filename.length() == 0
+            || !filename.startsWith( basedir ) )
         {
             return "";
         }
@@ -108,13 +108,13 @@ public class PathTool
      *
      * @param filename The filename to be parsed.
      * @return The relative path of the filename. This value is not
-     * terminated with a forward slash.  A zero-length string is
-     * returned if: <code>filename</code> is null or zero-length.
+     *         terminated with a forward slash.  A zero-length string is
+     *         returned if: <code>filename</code> is null or zero-length.
      * @see #getRelativeFilePath(String, String)
      */
     public static final String getRelativePath( String filename )
     {
-        filename = uppercaseDrive(filename);
+        filename = uppercaseDrive( filename );
 
         if ( filename == null || filename.length() == 0 )
         {
@@ -155,8 +155,8 @@ public class PathTool
      *
      * @param filename The filename to be parsed.
      * @return The directory portion of the <code>filename</code>.  If
-     * the filename does not contain a directory component, "." is
-     * returned.
+     *         the filename does not contain a directory component, "." is
+     *         returned.
      */
     public static final String getDirectoryComponent( String filename )
     {
@@ -191,44 +191,52 @@ public class PathTool
      * @param relativePath
      * @return String
      */
-    public static final String calculateLink(String link, String relativePath)
+    public static final String calculateLink( String link, String relativePath )
     {
-        //This must be some historical feature
-        if (link.startsWith("/site/"))
+        if ( link == null )
         {
-            return link.substring(5);
+            link = "";
+        }
+        if ( relativePath == null )
+        {
+            relativePath = "";
+        }
+        //This must be some historical feature
+        if ( link.startsWith( "/site/" ) )
+        {
+            return link.substring( 5 );
         }
 
         //Allows absolute links in nav-bars etc
-        if (link.startsWith("/absolute/"))
+        if ( link.startsWith( "/absolute/" ) )
         {
-            return link.substring(10);
+            return link.substring( 10 );
         }
 
         // This traps urls like http://
-        if (link.indexOf(":") >= 0)
+        if ( link.indexOf( ":" ) >= 0 )
         {
             return link;
         }
 
         //If relativepath is current directory, just pass the link through
-        if (relativePath.equals("."))
+        if ( StringUtils.equals( relativePath, "." ) )
         {
-            if (link.startsWith("/"))
+            if ( link.startsWith( "/" ) )
             {
-                return link.substring(1);
+                return link.substring( 1 );
             }
 
             return link;
         }
 
         //If we don't do this, you can end up with ..//bob.html rather than ../bob.html
-        if (relativePath.endsWith("/") && link.startsWith("/"))
+        if ( relativePath.endsWith( "/" ) && link.startsWith( "/" ) )
         {
-            return relativePath + "." + link.substring(1);
+            return relativePath + "." + link.substring( 1 );
         }
 
-        if (relativePath.endsWith("/") || link.startsWith("/"))
+        if ( relativePath.endsWith( "/" ) || link.startsWith( "/" ) )
         {
             return relativePath + link;
         }
@@ -324,16 +332,16 @@ public class PathTool
 
         // check for the presence of windows drives. No relative way of
         // traversing from one to the other.
-        if ( ( toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) )
-                        && ( !toPath.substring( 0, 1 ).equals( fromPath.substring( 0, 1 ) ) ) )
+        if ( ( toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) ) && ( !toPath.substring( 0, 1 ).equals(
+            fromPath.substring( 0, 1 ) ) ) )
         {
             // they both have drive path element but they dont match, no
             // relative path
             return null;
         }
 
-        if ( ( toPath.startsWith( ":", 1 ) && !fromPath.startsWith( ":", 1 ) )
-                        || ( !toPath.startsWith( ":", 1 ) && fromPath.startsWith( ":", 1 ) ) )
+        if ( ( toPath.startsWith( ":", 1 ) && !fromPath.startsWith( ":", 1 ) ) || ( !toPath.startsWith( ":", 1 )
+            && fromPath.startsWith( ":", 1 ) ) )
         {
             // one has a drive path element and the other doesnt, no relative
             // path.
@@ -359,26 +367,24 @@ public class PathTool
      * within the filename (except the leading if present), append the
      * "../" string to the return value.
      *
-     * @param filename The filename to parse.
+     * @param filename  The filename to parse.
      * @param separator The separator used within the filename.
      * @return The relative path of the filename.  This value is not
-     * terminated with a forward slash.  A zero-length string is
-     * returned if: the filename is zero-length.
+     *         terminated with a forward slash.  A zero-length string is
+     *         returned if: the filename is zero-length.
      */
-    private static final String determineRelativePath( String filename,
-                                                       String separator )
+    private static final String determineRelativePath( String filename, String separator )
     {
         if ( filename.length() == 0 )
         {
             return "";
         }
 
-
         /*
-         * Count the slashes in the relative filename, but exclude the
-         * leading slash.  If the path has no slashes, then the filename
-         * is relative to the current directory.
-         */
+        * Count the slashes in the relative filename, but exclude the
+        * leading slash.  If the path has no slashes, then the filename
+        * is relative to the current directory.
+        */
         int slashCount = StringUtils.countMatches( filename, separator ) - 1;
         if ( slashCount <= 0 )
         {
@@ -409,9 +415,9 @@ public class PathTool
      * often is returned as the separator.
      *
      * @param filename The filename parsed to determine the file
-     * separator.
+     *                 separator.
      * @return The file separator used within <code>filename</code>.
-     * This value is either a forward or backward slash.
+     *         This value is either a forward or backward slash.
      */
     private static final String determineSeparator( String filename )
     {
@@ -423,23 +429,24 @@ public class PathTool
 
     /**
      * Cygwin prefers lowercase drive letters, but other parts of maven use uppercase
+     *
      * @param path
      * @return String
      */
-    static final String uppercaseDrive(String path)
+    static final String uppercaseDrive( String path )
     {
-        if (path == null)
+        if ( path == null )
         {
             return null;
         }
-        if (path.length() >= 2 && path.charAt(1) == ':')
+        if ( path.length() >= 2 && path.charAt( 1 ) == ':' )
         {
             path = Character.toUpperCase( path.charAt( 0 ) ) + path.substring( 1 );
         }
         return path;
     }
 
-    private static final String buildRelativePath( String toPath,  String fromPath, final char separatorChar )
+    private static final String buildRelativePath( String toPath, String fromPath, final char separatorChar )
     {
         // use tokeniser to traverse paths and for lazy checking
         StringTokenizer toTokeniser = new StringTokenizer( toPath, String.valueOf( separatorChar ) );
