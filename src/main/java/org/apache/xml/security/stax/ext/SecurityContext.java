@@ -21,13 +21,15 @@ package org.apache.xml.security.stax.ext;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
+
 /**
  * The document security context
  *
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public interface SecurityContext {
+public interface SecurityContext extends SecurityEventListener {
 
     <T> void put(String key, T value);
 
@@ -60,4 +62,11 @@ public interface SecurityContext {
      * @return The SecurityTokenProvider
      */
     SecurityTokenProvider getSecurityTokenProvider(String id);
+    
+    /**
+     * Registers a SecurityEventListener to receive Security-Events
+     *
+     * @param securityEventListener The SecurityEventListener
+     */
+    public void addSecurityEventListener(SecurityEventListener securityEventListener);
 }

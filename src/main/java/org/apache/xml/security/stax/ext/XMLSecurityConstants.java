@@ -288,11 +288,13 @@ public class XMLSecurityConstants {
     public static final KeyUsage Sym_Sig = new KeyUsage("Sym_Sig");
     public static final KeyUsage Asym_Sig = new KeyUsage("Asym_Sig");
     public static final KeyUsage Enc = new KeyUsage("Enc");
+    public static final KeyUsage Dig = new KeyUsage("Dig");
+    public static final KeyUsage C14n = new KeyUsage("C14n");
 
     public static class KeyUsage implements Comparable<KeyUsage> {
         private final String name;
 
-        protected KeyUsage(String name) {
+        public KeyUsage(String name) {
             this.name = name;
         }
 
@@ -325,10 +327,16 @@ public class XMLSecurityConstants {
         }
     }
 
+    public static final TokenType X509V3Token = new TokenType("X509V3Token");
+    public static final TokenType X509V1Token = new TokenType("X509V1Token");
+    public static final TokenType X509Pkcs7Token = new TokenType("X509Pkcs7Token");
+    public static final TokenType X509PkiPathV1Token = new TokenType("X509PkiPathV1Token");
+    public static final TokenType KeyValueToken = new TokenType("KeyValueToken");
+    
     public static class TokenType implements Comparable<TokenType> {
         private final String name;
 
-        protected TokenType(String name) {
+        public TokenType(String name) {
             this.name = name;
         }
 

@@ -32,6 +32,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.xml.namespace.QName;
@@ -114,7 +115,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                         throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
                     }
                     InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
-                            new InternalSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
+                        getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
                                     referenceType, xmlSecStartElement.getName());
                     if (!internalSignatureReferenceVerifier.isFinished()) {
                         internalSignatureReferenceVerifier.processEvent(xmlSecEvent, inputProcessorChain);
@@ -124,11 +125,19 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                     inputProcessorChain.getDocumentContext().setIsInSignedContent(
                             inputProcessorChain.getProcessors().indexOf(internalSignatureReferenceVerifier),
                             internalSignatureReferenceVerifier);
+                    
+                    // Fire a SecurityEvent
+                    List<QName> elementPath = xmlSecStartElement.getElementPath();
+                    processElementPath(elementPath, inputProcessorChain, xmlSecEvent);
                 }
                 break;
         }
         return xmlSecEvent;
     }
+    
+    protected abstract void processElementPath(
+               List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
+    ) throws XMLSecurityException;
 
     protected ReferenceType matchesReferenceId(XMLSecStartElement xmlSecStartElement) {
         Attribute refId = getReferenceIDAttribute(xmlSecStartElement);
@@ -148,6 +157,13 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             }
         }
         inputProcessorChain.doFinal();
+    }
+    
+    protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
+            XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
+            ReferenceType referenceType, QName startElement) throws XMLSecurityException {
+        return new InternalSignatureReferenceVerifier(securityProperties, inputProcessorChain, 
+                                                      referenceType, startElement);
     }
 
     public class InternalSignatureReferenceVerifier extends AbstractInputProcessor {
@@ -187,6 +203,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             }
             this.setDigestOutputStream(new DigestOutputStream(messageDigest));
             this.setBufferedDigestOutputStream(new BufferedOutputStream(this.getDigestOutputStream()));
+            
+            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+            algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
+            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
+            securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+
             return digestAlgorithm;
         }
 
@@ -214,6 +236,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                         ? inclusiveNamespacesType.getPrefixList()
                         : null;
                 String algorithm = transformType.getAlgorithm();
+                
+                AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+                algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
+                algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+                inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
+                
                 if (parentTransformer != null) {
                     parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm);
                 } else {

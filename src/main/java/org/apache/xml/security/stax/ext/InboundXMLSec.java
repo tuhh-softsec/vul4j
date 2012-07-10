@@ -27,10 +27,14 @@ import org.apache.xml.security.stax.impl.XMLSecurityStreamReader;
 import org.apache.xml.security.stax.impl.processor.input.LogInputProcessor;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
 import org.apache.xml.security.stax.impl.processor.input.XMLSignatureInputProcessor;
+import org.apache.xml.security.stax.securityEvent.SecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,7 +88,39 @@ public class InboundXMLSec {
      * @throws WSSecurityException thrown when a Security failure occurs
      */
     public XMLStreamReader processInMessage(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+        return processInMessage(xmlStreamReader, null, null);
+    }
+    
+    /**
+     * Warning:
+     * configure your xmlStreamReader correctly. Otherwise you can create a security hole.
+     * At minimum configure the following properties:
+     * xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+     * xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+     * xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, false);
+     * xmlInputFactory.setProperty(WstxInputProperties.P_MIN_TEXT_SEGMENT, new Integer(8192));
+     * <p/>
+     * This method is the entry point for the incoming security-engine.
+     * Hand over the original XMLStreamReader and use the returned one for further processing
+     *
+     * @param xmlStreamReader The original XMLStreamReader
+     * @param requestSecurityEvents A List of requested SecurityEvents
+     * @param securityEventListener A SecurityEventListener to receive security-relevant events.
+     * @return A new XMLStreamReader which does transparently the security processing.
+     * @throws XMLStreamException  thrown when a streaming error occurs
+     * @throws WSSecurityException thrown when a Security failure occurs
+     */
+    public XMLStreamReader processInMessage(
+            XMLStreamReader xmlStreamReader, List<SecurityEvent> requestSecurityEvents, 
+            SecurityEventListener securityEventListener) throws XMLStreamException {
+        
+        if (requestSecurityEvents == null) {
+            requestSecurityEvents = Collections.emptyList();
+        }
+        
         final SecurityContextImpl securityContextImpl = new SecurityContextImpl();
+        securityContextImpl.putList(SecurityEvent.class, requestSecurityEvents);
+        securityContextImpl.addSecurityEventListener(securityEventListener);
 
         securityContextImpl.put(XMLSecurityConstants.XMLINPUTFACTORY, xmlInputFactory);
 

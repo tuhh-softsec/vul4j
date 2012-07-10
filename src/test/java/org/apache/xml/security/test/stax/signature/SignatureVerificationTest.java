@@ -48,7 +48,17 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
+import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
+import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
@@ -124,11 +134,15 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener);
+        checkSignedElementSecurityEvents(securityEventListener);
     }
     
     @Test
@@ -170,11 +184,15 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener);
+        checkSignedElementMultipleSecurityEvents(securityEventListener);
     }
     
     @Test
@@ -210,11 +228,19 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(key);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        SignatureValueSecurityEvent sigValueEvent = 
+                (SignatureValueSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.SignatureValue);
+        assertNotNull(sigValueEvent);
+        assertNotNull(sigValueEvent.getSignatureValue());
+        
+        checkSignedElementSecurityEvents(securityEventListener);
     }
     
     @Test
@@ -302,11 +328,15 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener);
+        checkSignedElementSecurityEvents(securityEventListener);
     }
     
     @Test
@@ -348,11 +378,17 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener, 
+                            "http://www.w3.org/TR/2001/REC-xml-c14n-20010315",
+                            "http://www.w3.org/2000/09/xmldsig#sha1");
+        checkSignedElementSecurityEvents(securityEventListener);
     }
     
     @Test
@@ -394,11 +430,17 @@ public class SignatureVerificationTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(cert.getPublicKey());
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener, 
+                            "http://www.w3.org/2006/12/xml-c14n11",
+                            "http://www.w3.org/2000/09/xmldsig#sha1");
+        checkSignedElementSecurityEvents(securityEventListener);
     }
     
     /**
@@ -444,7 +486,7 @@ public class SignatureVerificationTest extends org.junit.Assert {
             elementToSign.setIdAttributeNS(null, "Id", true);
             
             Transforms transforms = new Transforms(document);
-            transforms.addTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+            transforms.addTransform(c14nMethod);
             sig.addDocument("#" + id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
         }
         
@@ -463,4 +505,110 @@ public class SignatureVerificationTest extends org.junit.Assert {
         Assert.assertNotNull(sigElement);
     }
     
+    private static class TestSecurityEventListener implements SecurityEventListener {
+        List<SecurityEvent> events = new ArrayList<SecurityEvent>();
+
+        @Override
+        public void registerSecurityEvent(SecurityEvent securityEvent)
+                throws XMLSecurityException {
+            events.add(securityEvent);
+        }
+        
+        public SecurityEvent getTokenEvent(Event securityEvent) {
+            for (SecurityEvent event : events) {
+                if (event.getSecurityEventType() == securityEvent) {
+                    return event;
+                }
+            }
+            return null;
+        }
+        
+        public List<SecurityEvent> getTokenEvents(Event securityEvent) {
+            List<SecurityEvent> foundEvents = new ArrayList<SecurityEvent>();
+            for (SecurityEvent event : events) {
+                if (event.getSecurityEventType() == securityEvent) {
+                    foundEvents.add(event);
+                }
+            }
+            return foundEvents;
+        }
+    }
+    
+    private void checkSecurityEvents(TestSecurityEventListener securityEventListener) {
+        String c14nAlgorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
+        String digestAlgorithm = "http://www.w3.org/2000/09/xmldsig#sha1";
+        checkSecurityEvents(securityEventListener, c14nAlgorithm, digestAlgorithm);
+    }
+    
+    private void checkSecurityEvents(
+        TestSecurityEventListener securityEventListener,
+        String c14nAlgorithm,
+        String digestAlgorithm
+    ) {
+        X509TokenSecurityEvent tokenEvent = 
+            (X509TokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
+        assertNotNull(tokenEvent);
+
+        SignatureValueSecurityEvent sigValueEvent = 
+            (SignatureValueSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.SignatureValue);
+        assertNotNull(sigValueEvent);
+        assertNotNull(sigValueEvent.getSignatureValue());
+        
+        List<SecurityEvent> algorithmEvents = 
+            securityEventListener.getTokenEvents(SecurityEventConstants.AlgorithmSuite);
+        assertFalse(algorithmEvents.isEmpty());
+        
+        // C14n algorithm
+        for (SecurityEvent event : algorithmEvents) {
+            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
+            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.C14n) {
+                assertEquals(c14nAlgorithm, algorithmEvent.getAlgorithmURI());
+            }
+        }
+        
+        // Digest algorithm
+        for (SecurityEvent event : algorithmEvents) {
+            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
+            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Dig) {
+                assertEquals(digestAlgorithm, algorithmEvent.getAlgorithmURI());
+            }
+        }
+    }
+    
+    private void checkSignedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
+        SignedElementSecurityEvent signedElementEvent = 
+            (SignedElementSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.SignedElement);
+        assertNotNull(signedElementEvent);
+        assertEquals(signedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}PaymentInfo", signedElementEvent.getElementPath().get(1).toString());
+        assertTrue(signedElementEvent.isSigned());
+    }
+    
+    private void checkSignedElementMultipleSecurityEvents(
+        TestSecurityEventListener securityEventListener
+    ) {
+        List<SecurityEvent> signedElements = 
+            securityEventListener.getTokenEvents(SecurityEventConstants.SignedElement);
+        assertTrue(signedElements.size() == 2);
+        SignedElementSecurityEvent signedElementEvent = 
+                (SignedElementSecurityEvent)signedElements.get(0);
+        assertNotNull(signedElementEvent);
+        assertEquals(signedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}ShippingAddress", signedElementEvent.getElementPath().get(1).toString());
+        
+        assertTrue(signedElementEvent.isSigned());
+        
+        signedElementEvent = 
+            (SignedElementSecurityEvent)signedElements.get(1);
+        assertNotNull(signedElementEvent);
+        assertEquals(signedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}PaymentInfo", signedElementEvent.getElementPath().get(1).toString());
+        assertTrue(signedElementEvent.isSigned());
+    }
+    
+    
+
 }

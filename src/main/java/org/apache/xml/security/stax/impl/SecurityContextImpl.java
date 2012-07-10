@@ -20,6 +20,9 @@ package org.apache.xml.security.stax.impl;
 
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityTokenProvider;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.securityEvent.SecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
 import java.util.*;
 
@@ -35,6 +38,25 @@ public class SecurityContextImpl implements SecurityContext {
 
     @SuppressWarnings("unchecked")
     private final Map content = Collections.synchronizedMap(new HashMap());
+    
+    private final List<SecurityEventListener> securityEventListeners = new ArrayList<SecurityEventListener>(2);
+
+    public void addSecurityEventListener(SecurityEventListener securityEventListener) {
+        if (securityEventListener != null) {
+            this.securityEventListeners.add(securityEventListener);
+        }
+    }
+
+    public synchronized void registerSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
+        forwardSecurityEvent(securityEvent);
+    }
+
+    protected void forwardSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
+        for (int i = 0; i < securityEventListeners.size(); i++) {
+            SecurityEventListener securityEventListener = securityEventListeners.get(i);
+            securityEventListener.registerSecurityEvent(securityEvent);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public <T> void put(String key, T value) {

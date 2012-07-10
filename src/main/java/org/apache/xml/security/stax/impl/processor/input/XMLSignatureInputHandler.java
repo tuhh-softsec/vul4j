@@ -27,14 +27,22 @@ import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
+import org.apache.xml.security.binding.xmldsig.KeyValueType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
+import org.apache.xml.security.binding.xmldsig.X509DataType;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 
 /**
  * An input handler for XML Signature.
@@ -58,12 +66,43 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         if (signatureType.getSignatureValue() == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
         }
-        /*
-        if (signatureType.getKeyInfo() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
-        }
-        */
-        return new XMLSignatureVerifier(signatureType, inputProcessorChain.getSecurityContext(), securityProperties);
+        final SecurityContext securityContext = inputProcessorChain.getSecurityContext();
+        final SignatureVerifier signatureVerifier = 
+                new XMLSignatureVerifier(signatureType, securityContext, securityProperties) {
+            @Override
+            protected void handleSecurityToken(SecurityToken securityToken) throws XMLSecurityException {
+                //we have to emit a TokenSecurityEvent here too since it could be an embedded token
+                securityToken.addTokenUsage(SecurityToken.TokenUsage.Signature);
+                XMLSecurityConstants.TokenType tokenType = securityToken.getTokenType();
+                TokenSecurityEvent tokenSecurityEvent = null;
+                if (tokenType == XMLSecurityConstants.X509V1Token
+                        || tokenType == XMLSecurityConstants.X509V3Token
+                        || tokenType == XMLSecurityConstants.X509Pkcs7Token
+                        || tokenType == XMLSecurityConstants.X509PkiPathV1Token) {
+                    tokenSecurityEvent = new X509TokenSecurityEvent();
+                } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
+                    tokenSecurityEvent = new KeyValueTokenSecurityEvent();
+                }/* else {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
+                }*/
+                if (tokenSecurityEvent != null) {
+                    securityContext.registerSecurityEvent(tokenSecurityEvent);
+                }
+                
+                SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
+                signatureValueSecurityEvent.setSignatureValue(signatureType.getSignatureValue().getValue());
+                securityContext.registerSecurityEvent(signatureValueSecurityEvent);
+
+                AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+                algorithmSuiteSecurityEvent.setAlgorithmURI(signatureType.getSignedInfo().getCanonicalizationMethod().getAlgorithm());
+                algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+                securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+                
+                super.handleSecurityToken(securityToken);
+            }
+        };
+        
+        return signatureVerifier;
     }
 
     @Override
@@ -84,12 +123,30 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         protected SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
                                                       XMLSecurityProperties securityProperties,
                                                       SecurityContext securityContext) throws XMLSecurityException {
-            return new SignatureSecurityToken(securityProperties.getSignatureVerificationKey());
+            SignatureSecurityToken token = 
+                    new SignatureSecurityToken(securityProperties.getSignatureVerificationKey());
+
+            // TODO revisit
+            if (keyInfoType != null) {
+                final KeyValueType keyValueType = 
+                        XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_KeyValue);
+                if (keyValueType != null) {
+                    token.setTokenType(XMLSecurityConstants.KeyValueToken);
+                }
+                final X509DataType x509DataType = 
+                        XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_X509Data);
+                if (x509DataType != null) {
+                    token.setTokenType(XMLSecurityConstants.X509V3Token);
+                }
+            }
+
+            return token;
         }
     }
     
     private static class SignatureSecurityToken implements SecurityToken {
         private Key key;
+        private XMLSecurityConstants.TokenType tokenType;
         
         public SignatureSecurityToken(Key key) {
             this.key = key;
@@ -141,7 +198,11 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         }
 
         public XMLSecurityConstants.TokenType getTokenType() {
-            return null;
+            return tokenType;
+        }
+        
+        public void setTokenType(XMLSecurityConstants.TokenType tokenType) {
+            this.tokenType = tokenType;
         }
 
         @Override

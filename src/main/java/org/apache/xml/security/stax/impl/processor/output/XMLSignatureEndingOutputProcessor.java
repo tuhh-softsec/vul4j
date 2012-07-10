@@ -32,6 +32,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
 
 /**
  * An EndingOutputProcessor for XML Signature.
@@ -53,6 +54,14 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
         this.signedInfoProcessor.addAfterProcessor(XMLSignatureEndingOutputProcessor.class.getName());
         this.signedInfoProcessor.init(outputProcessorChain);
         return this.signedInfoProcessor;
+    }
+    
+    @Override
+    public void processHeaderEvent(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        super.processHeaderEvent(outputProcessorChain);
+        SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
+        signatureValueSecurityEvent.setSignatureValue(this.signedInfoProcessor.getSignatureValue());
+        outputProcessorChain.getSecurityContext().registerSecurityEvent(signatureValueSecurityEvent);
     }
 
     @Override

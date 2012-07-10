@@ -18,10 +18,18 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.xml.security.binding.xmldsig.SignatureType;
+import org.apache.xml.security.stax.ext.DocumentContext;
+import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
 
 /**
  * A processor to verify XML Signature references.
@@ -31,6 +39,18 @@ public class XMLSignatureReferenceVerifyInputProcessor extends AbstractSignature
     public XMLSignatureReferenceVerifyInputProcessor(SignatureType signatureType, SecurityToken securityToken, XMLSecurityProperties securityProperties) throws XMLSecurityException {
         super(signatureType, securityToken, securityProperties);
         this.addAfterProcessor(XMLSignatureReferenceVerifyInputProcessor.class.getName());
+    }
+    
+    @Override
+    protected void processElementPath(
+            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
+    ) throws XMLSecurityException {
+        final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
+        SignedElementSecurityEvent signedElementSecurityEvent =
+                new SignedElementSecurityEvent(getSecurityToken(), true, documentContext.getProtectionOrder());
+        signedElementSecurityEvent.setElementPath(elementPath);
+        signedElementSecurityEvent.setXmlSecEvent(xmlSecEvent);
+        inputProcessorChain.getSecurityContext().registerSecurityEvent(signedElementSecurityEvent);
     }
 
 }
