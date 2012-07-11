@@ -49,13 +49,10 @@ import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
-import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
-import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
@@ -63,12 +60,12 @@ import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.transforms.Transforms;
-// import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+// import org.apache.xml.security.utils.XMLUtils;
 
 /**
  * A set of test-cases for Signature verification.
@@ -576,35 +573,6 @@ public class SignatureVerificationTest extends org.junit.Assert {
         Element sigElement = 
             (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
         Assert.assertNotNull(sigElement);
-    }
-    
-    private static class TestSecurityEventListener implements SecurityEventListener {
-        List<SecurityEvent> events = new ArrayList<SecurityEvent>();
-
-        @Override
-        public void registerSecurityEvent(SecurityEvent securityEvent)
-                throws XMLSecurityException {
-            events.add(securityEvent);
-        }
-        
-        public SecurityEvent getTokenEvent(Event securityEvent) {
-            for (SecurityEvent event : events) {
-                if (event.getSecurityEventType() == securityEvent) {
-                    return event;
-                }
-            }
-            return null;
-        }
-        
-        public List<SecurityEvent> getTokenEvents(Event securityEvent) {
-            List<SecurityEvent> foundEvents = new ArrayList<SecurityEvent>();
-            for (SecurityEvent event : events) {
-                if (event.getSecurityEventType() == securityEvent) {
-                    foundEvents.add(event);
-                }
-            }
-            return foundEvents;
-        }
     }
     
     private void checkSecurityEvents(TestSecurityEventListener securityEventListener) {
