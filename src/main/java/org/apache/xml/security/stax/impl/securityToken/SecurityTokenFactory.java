@@ -20,13 +20,10 @@ package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
-import org.apache.xml.security.stax.crypto.Crypto;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Factory to create SecurityToken Objects from keys in XML
@@ -60,8 +57,8 @@ public abstract class SecurityTokenFactory {
         return securityTokenFactory;
     }
 
-    public abstract SecurityToken getSecurityToken(KeyInfoType keyInfoType, Crypto crypto,
-                                                   final CallbackHandler callbackHandler,
+    public abstract SecurityToken getSecurityToken(KeyInfoType keyInfoType,
+                                                   SecurityToken.KeyInfoUsage keyInfoUsage,
                                                    XMLSecurityProperties securityProperties,
                                                    SecurityContext securityContext) throws XMLSecurityException;
 }

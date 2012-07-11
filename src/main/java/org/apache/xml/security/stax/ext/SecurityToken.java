@@ -51,6 +51,11 @@ public interface SecurityToken {
         EndorsingEncryptedSupportingTokens,
         SignedEndorsingEncryptedSupportingTokens,
     }
+    
+    public enum KeyInfoUsage {
+        SIGNATURE_VERIFICATION,
+        DECRYPTION
+    }
 
     /**
      * Returns the token id aka wsu:Id

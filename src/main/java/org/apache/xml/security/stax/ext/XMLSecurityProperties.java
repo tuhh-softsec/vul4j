@@ -18,17 +18,13 @@
  */
 package org.apache.xml.security.stax.ext;
 
-import org.apache.xml.security.stax.crypto.Crypto;
-import org.apache.xml.security.stax.crypto.MerlinBase;
-
-import javax.security.auth.callback.CallbackHandler;
-import java.net.URL;
 import java.security.Key;
-import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Main configuration class to supply keys etc.
@@ -69,85 +65,7 @@ public class XMLSecurityProperties {
         return inputProcessorList;
     }
 
-    private Class<? extends MerlinBase> decryptionCryptoClass;
-    private KeyStore decryptionKeyStore;
     private CallbackHandler callbackHandler;
-
-    /**
-     * Returns the decryption keystore
-     *
-     * @return A keystore for decryption operation
-     */
-    public KeyStore getDecryptionKeyStore() {
-        return decryptionKeyStore;
-    }
-
-    /**
-     * loads a java keystore from the given url for decrypt operations
-     *
-     * @param url              The URL to the keystore
-     * @param keyStorePassword The keyStorePassword
-     * @throws Exception thrown if something goes wrong while loading the keystore
-     */
-    public void loadDecryptionKeystore(URL url, char[] keyStorePassword) throws Exception {
-        KeyStore keyStore = KeyStore.getInstance("jks");
-        keyStore.load(url.openStream(), keyStorePassword);
-        this.decryptionKeyStore = keyStore;
-    }
-
-    /**
-     * Returns the decryption crypto class
-     *
-     * @return
-     */
-    public Class<? extends MerlinBase> getDecryptionCryptoClass() {
-        if (decryptionCryptoClass != null) {
-            return decryptionCryptoClass;
-        }
-        decryptionCryptoClass = org.apache.xml.security.stax.crypto.Merlin.class;
-        return decryptionCryptoClass;
-    }
-
-    /**
-     * Sets a custom decryption class
-     *
-     * @param decryptionCryptoClass
-     */
-    public void setDecryptionCryptoClass(Class<? extends MerlinBase> decryptionCryptoClass) {
-        this.decryptionCryptoClass = decryptionCryptoClass;
-    }
-
-    private Crypto cachedDecryptionCrypto;
-    private KeyStore cachedDecryptionKeyStore;
-
-    /**
-     * returns the decryptionCrypto for the key-management
-     *
-     * @return A Crypto instance
-     * @throws XMLSecurityException thrown if something goes wrong
-     */
-    public Crypto getDecryptionCrypto() throws XMLSecurityException {
-
-        if (this.getDecryptionKeyStore() == null) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "decryptionKeyStoreNotSet");
-        }
-
-        if (this.getDecryptionKeyStore() == cachedDecryptionKeyStore) {
-            return cachedDecryptionCrypto;
-        }
-
-        Class<? extends MerlinBase> decryptionCryptoClass = this.getDecryptionCryptoClass();
-
-        try {
-            MerlinBase decryptionCrypto = decryptionCryptoClass.newInstance();
-            decryptionCrypto.setKeyStore(this.getDecryptionKeyStore());
-            cachedDecryptionCrypto = decryptionCrypto;
-            cachedDecryptionKeyStore = this.getDecryptionKeyStore();
-            return decryptionCrypto;
-        } catch (Exception e) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "decryptionCryptoFailure", e);
-        }
-    }
 
     /**
      * returns the password callback handler
@@ -169,90 +87,12 @@ public class XMLSecurityProperties {
 
     private XMLSecurityConstants.Action[] outAction;
 
-    private Class<? extends MerlinBase> encryptionCryptoClass;
-    private KeyStore encryptionKeyStore;
-    private String encryptionUser;
     private X509Certificate encryptionUseThisCertificate;
     private String encryptionSymAlgorithm;
     private String encryptionCompressionAlgorithm;
     private String encryptionKeyTransportAlgorithm;
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
 
-    /**
-     * Returns the encryption keystore
-     *
-     * @return A keystore for encryption operation
-     */
-    public KeyStore getEncryptionKeyStore() {
-        return encryptionKeyStore;
-    }
-
-    /**
-     * loads a java keystore from the given url for encrypt operations
-     *
-     * @param url              The URL to the keystore
-     * @param keyStorePassword The keyStorePassword
-     * @throws Exception thrown if something goes wrong while loading the keystore
-     */
-    public void loadEncryptionKeystore(URL url, char[] keyStorePassword) throws Exception {
-        KeyStore keyStore = KeyStore.getInstance("jks");
-        keyStore.load(url.openStream(), keyStorePassword);
-        this.encryptionKeyStore = keyStore;
-    }
-
-    /**
-     * Returns the encryption crypto class
-     *
-     * @return
-     */
-    public Class<? extends MerlinBase> getEncryptionCryptoClass() {
-        if (encryptionCryptoClass != null) {
-            return encryptionCryptoClass;
-        }
-        encryptionCryptoClass = org.apache.xml.security.stax.crypto.Merlin.class;
-        return encryptionCryptoClass;
-    }
-
-    /**
-     * Sets a custom encryption class
-     *
-     * @param encryptionCryptoClass
-     */
-    public void setEncryptionCryptoClass(Class<? extends MerlinBase> encryptionCryptoClass) {
-        this.encryptionCryptoClass = encryptionCryptoClass;
-    }
-
-    private Crypto cachedEncryptionCrypto;
-    private KeyStore cachedEncryptionKeyStore;
-
-    /**
-     * returns the encryptionCrypto for the key-management
-     *
-     * @return A Crypto instance
-     * @throws XMLSecurityException thrown if something goes wrong
-     */
-    public Crypto getEncryptionCrypto() throws XMLSecurityException {
-
-        if (this.getEncryptionKeyStore() == null) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "encryptionKeyStoreNotSet");
-        }
-
-        if (this.getEncryptionKeyStore() == cachedEncryptionKeyStore) {
-            return cachedEncryptionCrypto;
-        }
-
-        Class<? extends MerlinBase> encryptionCryptoClass = this.getEncryptionCryptoClass();
-
-        try {
-            MerlinBase encryptionCrypto = encryptionCryptoClass.newInstance();
-            encryptionCrypto.setKeyStore(this.getEncryptionKeyStore());
-            cachedEncryptionCrypto = encryptionCrypto;
-            cachedEncryptionKeyStore = this.getEncryptionKeyStore();
-            return encryptionCrypto;
-        } catch (Exception e) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "encryptionCryptoFailure", e);
-        }
-    }
 
     /**
      * Adds a part which must be encrypted by the framework
@@ -315,24 +155,6 @@ public class XMLSecurityProperties {
 
     public void setEncryptionUseThisCertificate(X509Certificate encryptionUseThisCertificate) {
         this.encryptionUseThisCertificate = encryptionUseThisCertificate;
-    }
-
-    /**
-     * Returns the alias for the encryption key in the keystore
-     *
-     * @return the alias for the encryption key in the keystore as string
-     */
-    public String getEncryptionUser() {
-        return encryptionUser;
-    }
-
-    /**
-     * Specifies the the alias for the encryption key in the keystore
-     *
-     * @param encryptionUser the the alias for the encryption key in the keystore as string
-     */
-    public void setEncryptionUser(String encryptionUser) {
-        this.encryptionUser = encryptionUser;
     }
 
     public String getEncryptionCompressionAlgorithm() {

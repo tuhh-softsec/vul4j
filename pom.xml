@@ -355,6 +355,7 @@
             <id>fastinstall</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
+                <pmd.skip>true</pmd.skip>
             </properties>
         </profile>
         <profile>

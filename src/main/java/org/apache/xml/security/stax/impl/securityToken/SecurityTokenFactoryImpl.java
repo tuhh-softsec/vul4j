@@ -29,7 +29,6 @@ import org.apache.xml.security.binding.xmldsig.KeyValueType;
 import org.apache.xml.security.binding.xmldsig.RSAKeyValueType;
 import org.apache.xml.security.binding.xmldsig.X509DataType;
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
-import org.apache.xml.security.stax.crypto.Crypto;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
@@ -52,15 +51,15 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
     }
 
     @Override
-    public SecurityToken getSecurityToken(KeyInfoType keyInfoType, Crypto crypto,
-                                          final CallbackHandler callbackHandler,
+    public SecurityToken getSecurityToken(KeyInfoType keyInfoType,
+                                          SecurityToken.KeyInfoUsage keyInfoUsage,
                                           XMLSecurityProperties securityProperties,
                                           SecurityContext securityContext) throws XMLSecurityException {
         if (keyInfoType != null) {
             final KeyValueType keyValueType
                     = XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_KeyValue);
             if (keyValueType != null) {
-                return getSecurityToken(keyValueType, callbackHandler, securityContext);
+                return getSecurityToken(keyValueType, securityProperties.getCallbackHandler(), securityContext);
             }
             // TODO revisit
             final X509DataType x509DataType = 
@@ -68,7 +67,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             if (x509DataType != null) {
                 X509SecurityToken token = 
                         new X509SecurityToken(XMLSecurityConstants.X509V3Token, securityContext,
-                                callbackHandler, "", XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+                                securityProperties.getCallbackHandler(), "", XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
                 token.setKey(securityProperties.getSignatureVerificationKey());
                 return token;
             }
@@ -76,7 +75,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         
         // TODO revisit
         SecretKeySecurityToken token = 
-                new SecretKeySecurityToken(securityContext, callbackHandler, "", 
+                new SecretKeySecurityToken(securityContext, securityProperties.getCallbackHandler(), "", 
                         XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         token.setKey(securityProperties.getSignatureVerificationKey());
         return token;

@@ -112,9 +112,8 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         protected SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
                                                       XMLSecurityProperties securityProperties,
                                                       SecurityContext securityContext) throws XMLSecurityException {
-            return SecurityTokenFactory.getInstance().getSecurityToken(keyInfoType, 
-                    null,
-                    securityProperties.getCallbackHandler(),
+            return SecurityTokenFactory.getInstance().getSecurityToken(keyInfoType,
+                    SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION,
                     securityProperties,
                     securityContext);
         }
