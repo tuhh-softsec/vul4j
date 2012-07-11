@@ -24,6 +24,7 @@ import org.apache.xml.security.stax.crypto.Crypto;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -61,5 +62,6 @@ public abstract class SecurityTokenFactory {
 
     public abstract SecurityToken getSecurityToken(KeyInfoType keyInfoType, Crypto crypto,
                                                    final CallbackHandler callbackHandler,
+                                                   XMLSecurityProperties securityProperties,
                                                    SecurityContext securityContext) throws XMLSecurityException;
 }

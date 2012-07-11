@@ -63,7 +63,6 @@ import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.Constants;
 // import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -335,7 +334,10 @@ public class SignatureVerificationTest extends org.junit.Assert {
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
         // Check the SecurityEvents
-        checkSecurityEvents(securityEventListener);
+        checkSecurityEvents(securityEventListener, 
+                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1");
         checkSignedElementSecurityEvents(securityEventListener);
     }
     
@@ -387,7 +389,8 @@ public class SignatureVerificationTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkSecurityEvents(securityEventListener, 
                             "http://www.w3.org/TR/2001/REC-xml-c14n-20010315",
-                            "http://www.w3.org/2000/09/xmldsig#sha1");
+                            "http://www.w3.org/2000/09/xmldsig#sha1",
+                            "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         checkSignedElementSecurityEvents(securityEventListener);
     }
     
@@ -439,7 +442,61 @@ public class SignatureVerificationTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkSecurityEvents(securityEventListener, 
                             "http://www.w3.org/2006/12/xml-c14n11",
-                            "http://www.w3.org/2000/09/xmldsig#sha1");
+                            "http://www.w3.org/2000/09/xmldsig#sha1",
+                            "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+        checkSignedElementSecurityEvents(securityEventListener);
+    }
+    
+    @Test
+    public void testStrongSignatureVerification() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        signUsingDOM(
+            "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", document, localNames, cert, key,
+            "http://www.w3.org/2001/10/xml-exc-c14n#", "http://www.w3.org/2001/04/xmlenc#sha256"
+        );
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener, 
+                            "http://www.w3.org/2001/10/xml-exc-c14n#",
+                            "http://www.w3.org/2001/04/xmlenc#sha256",
+                            "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
         checkSignedElementSecurityEvents(securityEventListener);
     }
     
@@ -468,6 +525,22 @@ public class SignatureVerificationTest extends org.junit.Assert {
         Key signingKey,
         String c14nMethod
     ) throws Exception {
+        String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
+        signUsingDOM(algorithm, document, localNames, cert, signingKey, c14nMethod, digestMethod);
+    }
+    
+    /**
+     * Sign the document using DOM
+     */
+    private void signUsingDOM(
+        String algorithm,
+        Document document,
+        List<String> localNames,
+        X509Certificate cert,
+        Key signingKey,
+        String c14nMethod,
+        String digestMethod
+    ) throws Exception {
         XMLSignature sig = new XMLSignature(document, "", algorithm, c14nMethod);
         Element root = document.getDocumentElement();
         root.appendChild(sig.getElement());
@@ -487,7 +560,7 @@ public class SignatureVerificationTest extends org.junit.Assert {
             
             Transforms transforms = new Transforms(document);
             transforms.addTransform(c14nMethod);
-            sig.addDocument("#" + id, transforms, Constants.ALGO_ID_DIGEST_SHA1);
+            sig.addDocument("#" + id, transforms, digestMethod);
         }
         
         if (cert != null) {
@@ -537,13 +610,15 @@ public class SignatureVerificationTest extends org.junit.Assert {
     private void checkSecurityEvents(TestSecurityEventListener securityEventListener) {
         String c14nAlgorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
         String digestAlgorithm = "http://www.w3.org/2000/09/xmldsig#sha1";
-        checkSecurityEvents(securityEventListener, c14nAlgorithm, digestAlgorithm);
+        String signatureMethod = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+        checkSecurityEvents(securityEventListener, c14nAlgorithm, digestAlgorithm, signatureMethod);
     }
     
     private void checkSecurityEvents(
         TestSecurityEventListener securityEventListener,
         String c14nAlgorithm,
-        String digestAlgorithm
+        String digestAlgorithm,
+        String signatureMethod
     ) {
         X509TokenSecurityEvent tokenEvent = 
             (X509TokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
@@ -571,6 +646,15 @@ public class SignatureVerificationTest extends org.junit.Assert {
             AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
             if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Dig) {
                 assertEquals(digestAlgorithm, algorithmEvent.getAlgorithmURI());
+            }
+        }
+        
+        // Signature method
+        for (SecurityEvent event : algorithmEvents) {
+            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
+            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Asym_Sig
+                || algorithmEvent.getKeyUsage() == XMLSecurityConstants.Sym_Sig) {
+                assertEquals(signatureMethod, algorithmEvent.getAlgorithmURI());
             }
         }
     }

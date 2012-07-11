@@ -243,5 +243,17 @@ public class OutboundXMLSec {
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+        public void setElementPath(List<QName> elementPath) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void setXMLSecEvent(XMLSecEvent xmlSecEvent) {
+            // TODO Auto-generated method stub
+            
+        }
     };
 }

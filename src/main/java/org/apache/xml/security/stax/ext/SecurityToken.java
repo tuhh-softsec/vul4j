@@ -144,4 +144,8 @@ public interface SecurityToken {
     void addTokenUsage(TokenUsage tokenUsage) throws XMLSecurityException;
 
     List<TokenUsage> getTokenUsages();
+    
+    void setElementPath(List<QName> elementPath);
+
+    void setXMLSecEvent(XMLSecEvent xmlSecEvent);
 }

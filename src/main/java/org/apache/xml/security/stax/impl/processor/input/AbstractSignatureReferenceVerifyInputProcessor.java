@@ -216,7 +216,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                 throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
             if (referenceType.getTransforms() == null) {
-                // If no Transforms then just default to an Exclusive with comments transform
+                // If no Transforms then just default to an Inclusive without comments transform
                 Transformer transformer = new Canonicalizer20010315_OmitCommentsTransformer();
                 transformer.setOutputStream(getBufferedDigestOutputStream());
                 this.setTransformer(transformer);
