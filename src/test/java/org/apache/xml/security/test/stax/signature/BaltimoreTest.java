@@ -48,6 +48,8 @@ import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Before;
@@ -250,9 +252,6 @@ public class BaltimoreTest extends org.junit.Assert {
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey("DSA", 15);
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -264,11 +263,20 @@ public class BaltimoreTest extends org.junit.Assert {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Compare the keys
+        KeyValueTokenSecurityEvent tokenEvent = 
+            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+        assertNotNull(tokenEvent);
+        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
+        Key publicKey = getPublicKey("DSA", 15);
+        assertEquals(processedKey, publicKey);
     }
     
     @Test
@@ -280,9 +288,6 @@ public class BaltimoreTest extends org.junit.Assert {
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey("RSA", 15);
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -294,11 +299,20 @@ public class BaltimoreTest extends org.junit.Assert {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Compare the keys
+        KeyValueTokenSecurityEvent tokenEvent = 
+            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+        assertNotNull(tokenEvent);
+        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
+        Key publicKey = getPublicKey("RSA", 15);
+        assertEquals(processedKey, publicKey);
     }
     
     // See SANTUARIO-318
@@ -508,9 +522,6 @@ public class BaltimoreTest extends org.junit.Assert {
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey("DSA", 23);
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -522,11 +533,20 @@ public class BaltimoreTest extends org.junit.Assert {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Compare the keys
+        KeyValueTokenSecurityEvent tokenEvent = 
+            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+        assertNotNull(tokenEvent);
+        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
+        Key publicKey = getPublicKey("DSA", 23);
+        assertEquals(processedKey, publicKey);
     }
     
     @Test
@@ -538,9 +558,6 @@ public class BaltimoreTest extends org.junit.Assert {
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey("RSA", 23);
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -552,11 +569,20 @@ public class BaltimoreTest extends org.junit.Assert {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Compare the keys
+        KeyValueTokenSecurityEvent tokenEvent = 
+            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+        assertNotNull(tokenEvent);
+        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
+        Key publicKey = getPublicKey("RSA", 23);
+        assertEquals(processedKey, publicKey);
     }
     
     // See SANTUARIO-318

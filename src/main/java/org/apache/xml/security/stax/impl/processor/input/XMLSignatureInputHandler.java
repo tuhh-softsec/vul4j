@@ -75,6 +75,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
                 }*/
                 if (tokenSecurityEvent != null) {
+                    tokenSecurityEvent.setSecurityToken(securityToken);
                     securityContext.registerSecurityEvent(tokenSecurityEvent);
                 }
                 
