@@ -29,6 +29,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
@@ -72,6 +73,8 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                     tokenSecurityEvent = new X509TokenSecurityEvent();
                 } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
                     tokenSecurityEvent = new KeyValueTokenSecurityEvent();
+                } else if (tokenType == XMLSecurityConstants.KeyNameToken) {
+                    tokenSecurityEvent = new KeyNameTokenSecurityEvent();
                 } else if (tokenType == XMLSecurityConstants.DefaultToken) {
                     tokenSecurityEvent = new DefaultTokenSecurityEvent();
                 } else {

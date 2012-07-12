@@ -190,6 +190,7 @@ public class XMLSecurityConstants {
     public static final QName TAG_dsig_X509Certificate = new QName(NS_DSIG, "X509Certificate", PREFIX_DSIG);
     public static final QName TAG_dsig_X509SubjectName = new QName(NS_DSIG, "X509SubjectName", PREFIX_DSIG);
 
+    public static final QName TAG_dsig_KeyName = new QName(NS_DSIG, "KeyName", PREFIX_DSIG);
     public static final QName TAG_dsig_KeyValue = new QName(NS_DSIG, "KeyValue", PREFIX_DSIG);
     public static final QName TAG_dsig_RSAKeyValue = new QName(NS_DSIG, "RSAKeyValue", PREFIX_DSIG);
     public static final QName TAG_dsig_Modulus = new QName(NS_DSIG, "Modulus", PREFIX_DSIG);
@@ -243,6 +244,7 @@ public class XMLSecurityConstants {
     
     public enum XMLKeyIdentifierType implements KeyIdentifierType {
         KEY_VALUE,
+        KEY_NAME,
         X509_ISSUER_SERIAL,
         X509_SKI,
         X509_CERTIFICATE,
@@ -333,6 +335,7 @@ public class XMLSecurityConstants {
     public static final TokenType X509Pkcs7Token = new TokenType("X509Pkcs7Token");
     public static final TokenType X509PkiPathV1Token = new TokenType("X509PkiPathV1Token");
     public static final TokenType KeyValueToken = new TokenType("KeyValueToken");
+    public static final TokenType KeyNameToken = new TokenType("KeyNameToken");
     public static final TokenType DefaultToken = new TokenType("DefaultToken");
     
     public static class TokenType implements Comparable<TokenType> {

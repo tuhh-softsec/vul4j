@@ -45,10 +45,17 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509SecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509SubjectNameSecurityToken;
 import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
+import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Before;
@@ -130,12 +137,9 @@ public class IAIKTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // Compare the keys
-        DefaultTokenSecurityEvent tokenEvent = 
-            (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
-        assertNotNull(tokenEvent);
-        Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
-        assertEquals(processedKey, key);
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, key,
+                              XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
     }
     
     @Test
@@ -201,13 +205,9 @@ public class IAIKTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // Compare the keys
-        KeyValueTokenSecurityEvent tokenEvent = 
-            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
-        assertNotNull(tokenEvent);
-        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
-        Key publicKey = getPublicKey("DSA");
-        assertEquals(processedKey, publicKey);
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("DSA"),
+                              XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
     
     @Test
@@ -237,13 +237,9 @@ public class IAIKTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // Compare the keys
-        KeyValueTokenSecurityEvent tokenEvent = 
-            (KeyValueTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
-        assertNotNull(tokenEvent);
-        PublicKey processedKey = tokenEvent.getSecurityToken().getPublicKey("",  null);
-        Key publicKey = getPublicKey("RSA");
-        assertEquals(processedKey, publicKey);
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("RSA"),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }    
     
     // See SANTUARIO-318
@@ -361,4 +357,46 @@ public class IAIKTest extends org.junit.Assert {
         return kf.generatePublic(kspec);
     }
 
+    private void checkSignatureToken(
+        TestSecurityEventListener securityEventListener,
+        Key key,
+        XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
+    ) throws XMLSecurityException {
+        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
+
+        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
+            DefaultTokenSecurityEvent tokenEvent = 
+                (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+            assertNotNull(tokenEvent);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            assertEquals(processedKey, key);
+        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
+            KeyNameTokenSecurityEvent tokenEvent = 
+                (KeyNameTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyNameToken);
+            assertNotNull(tokenEvent);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            assertEquals(processedKey, key);
+            assertNotNull(((KeyNameSecurityToken)tokenEvent.getSecurityToken()).getKeyName());
+        } else {
+            X509TokenSecurityEvent tokenEvent = 
+                (X509TokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
+            assertNotNull(tokenEvent);
+            X509SecurityToken x509SecurityToken = 
+                (X509SecurityToken)tokenEvent.getSecurityToken();
+            assertNotNull(x509SecurityToken);
+            if (keyIdentifierType == 
+                XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
+                Key processedKey = x509SecurityToken.getKey("", null);
+                assertEquals(processedKey, key);
+                assertNotNull(((X509SubjectNameSecurityToken)x509SecurityToken).getSubjectName());
+            } else if (keyIdentifierType == 
+                XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
+                Key processedKey = x509SecurityToken.getKey("", null);
+                assertEquals(processedKey, key);
+                assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getIssuerName());
+                assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getSerialNumber());
+            }
+        }
+
+    }
 }

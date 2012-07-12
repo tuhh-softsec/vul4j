@@ -26,6 +26,7 @@ public class SecurityEventConstants {
     public static final Event SignatureValue = new Event("SignatureValue");
     public static final Event SignedElement = new Event("SignedElement");
     public static final Event KeyValueToken = new Event("KeyValueToken");
+    public static final Event KeyNameToken = new Event("KeyNameToken");
     public static final Event X509Token = new Event("X509Token");
     public static final Event AlgorithmSuite = new Event("AlgorithmSuite");
     public static final Event DefaultToken = new Event("DefaultToken");
