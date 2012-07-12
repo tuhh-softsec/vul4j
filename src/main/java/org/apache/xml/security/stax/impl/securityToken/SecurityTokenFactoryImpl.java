@@ -73,14 +73,16 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             }
         }
         
-        // TODO revisit
-        SecretKeySecurityToken token = 
-                new SecretKeySecurityToken(securityContext, securityProperties.getCallbackHandler(), "", 
-                        XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
-        token.setKey(securityProperties.getSignatureVerificationKey());
-        return token;
+        // Use a default key if it exists
+        if (securityProperties.getSignatureVerificationKey() != null) {
+            DefaultSecurityToken token = 
+                    new DefaultSecurityToken(securityContext, securityProperties.getCallbackHandler(), "", 
+                            XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+            token.setKey(securityProperties.getSignatureVerificationKey());
+            return token;
+        }
         
-        // throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo");
+        throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo");
     }
     
     private static SecurityToken getSecurityToken(KeyValueType keyValueType,
@@ -108,11 +110,11 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "unsupportedKeyInfo");
     }
     
-    private static class SecretKeySecurityToken extends AbstractSecurityToken {
+    private static class DefaultSecurityToken extends AbstractSecurityToken {
 
         private Key key;
         
-        public SecretKeySecurityToken(SecurityContext securityContext,
+        public DefaultSecurityToken(SecurityContext securityContext,
                 CallbackHandler callbackHandler, String id,
                 KeyIdentifierType keyIdentifierType) {
             super(securityContext, callbackHandler, id, keyIdentifierType);
@@ -120,6 +122,9 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
 
         @Override
         public boolean isAsymmetric() {
+            if (key instanceof PublicKey) {
+                return true;
+            }
             return false;
         }
 
@@ -130,7 +135,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
 
         @Override
         public TokenType getTokenType() {
-            return null;
+            return XMLSecurityConstants.DefaultToken;
         }
 
         @Override
@@ -146,6 +151,9 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         @Override
         protected PublicKey getPubKey(String algorithmURI, KeyUsage keyUsage)
                 throws XMLSecurityException {
+            if (key instanceof PublicKey) {
+                return (PublicKey)key;
+            }
             return null;
         }
         

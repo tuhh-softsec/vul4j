@@ -51,6 +51,7 @@ import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
@@ -237,6 +238,13 @@ public class SignatureVerificationTest extends org.junit.Assert {
         assertNotNull(sigValueEvent.getSignatureValue());
         
         checkSignedElementSecurityEvents(securityEventListener);
+        
+        // Compare the keys
+        DefaultTokenSecurityEvent tokenEvent = 
+            (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+        assertNotNull(tokenEvent);
+        Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+        assertEquals(processedKey, key);
     }
     
     @Test

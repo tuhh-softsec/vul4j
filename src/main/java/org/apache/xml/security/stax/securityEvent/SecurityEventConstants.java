@@ -28,6 +28,7 @@ public class SecurityEventConstants {
     public static final Event KeyValueToken = new Event("KeyValueToken");
     public static final Event X509Token = new Event("X509Token");
     public static final Event AlgorithmSuite = new Event("AlgorithmSuite");
+    public static final Event DefaultToken = new Event("DefaultToken");
 
     public static class Event implements Comparable<Event> {
         private final String name;

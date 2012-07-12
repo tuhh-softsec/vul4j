@@ -48,6 +48,7 @@ import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
@@ -136,11 +137,18 @@ public class BaltimoreTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(key);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Compare the keys
+        DefaultTokenSecurityEvent tokenEvent = 
+            (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+        assertNotNull(tokenEvent);
+        Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+        assertEquals(processedKey, key);
     }
     
     @Test
@@ -406,11 +414,18 @@ public class BaltimoreTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(key);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        // XMLUtils.outputDOM(document, System.out);
+        // Compare the keys
+        DefaultTokenSecurityEvent tokenEvent = 
+            (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+        assertNotNull(tokenEvent);
+        Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+        assertEquals(processedKey, key);
     }
     
     @Test

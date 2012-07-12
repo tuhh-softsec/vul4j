@@ -28,6 +28,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
@@ -71,13 +72,13 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                     tokenSecurityEvent = new X509TokenSecurityEvent();
                 } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
                     tokenSecurityEvent = new KeyValueTokenSecurityEvent();
-                }/* else {
+                } else if (tokenType == XMLSecurityConstants.DefaultToken) {
+                    tokenSecurityEvent = new DefaultTokenSecurityEvent();
+                } else {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
-                }*/
-                if (tokenSecurityEvent != null) {
-                    tokenSecurityEvent.setSecurityToken(securityToken);
-                    securityContext.registerSecurityEvent(tokenSecurityEvent);
                 }
+                tokenSecurityEvent.setSecurityToken(securityToken);
+                securityContext.registerSecurityEvent(tokenSecurityEvent);
                 
                 SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
                 signatureValueSecurityEvent.setSignatureValue(signatureType.getSignatureValue().getValue());

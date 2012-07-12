@@ -246,7 +246,8 @@ public class XMLSecurityConstants {
         X509_ISSUER_SERIAL,
         X509_SKI,
         X509_CERTIFICATE,
-        X509_SUBJECT_NAME
+        X509_SUBJECT_NAME,
+        NO_KEY_INFO
     }
 
     public static class Action implements Comparable<Action> {
@@ -332,6 +333,7 @@ public class XMLSecurityConstants {
     public static final TokenType X509Pkcs7Token = new TokenType("X509Pkcs7Token");
     public static final TokenType X509PkiPathV1Token = new TokenType("X509PkiPathV1Token");
     public static final TokenType KeyValueToken = new TokenType("KeyValueToken");
+    public static final TokenType DefaultToken = new TokenType("DefaultToken");
     
     public static class TokenType implements Comparable<TokenType> {
         private final String name;
