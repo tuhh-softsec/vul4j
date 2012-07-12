@@ -31,6 +31,8 @@ public class SignaturePartDef {
     private String transformAlgo;
     private String c14nAlgo;
     private String inclusiveNamespaces;
+    private boolean externalResource;
+    private boolean generateXPointer;
 
     public String getSigRefId() {
         return sigRefId;
@@ -70,5 +72,21 @@ public class SignaturePartDef {
 
     public void setInclusiveNamespaces(String inclusiveNamespaces) {
         this.inclusiveNamespaces = inclusiveNamespaces;
+    }
+
+    public boolean isExternalResource() {
+        return externalResource;
+    }
+
+    public void setExternalResource(boolean externalResource) {
+        this.externalResource = externalResource;
+    }
+
+    public boolean isGenerateXPointer() {
+        return generateXPointer;
+    }
+
+    public void setGenerateXPointer(boolean generateXPointer) {
+        this.generateXPointer = generateXPointer;
     }
 }

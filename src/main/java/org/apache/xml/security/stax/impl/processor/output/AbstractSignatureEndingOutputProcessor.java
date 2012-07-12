@@ -142,12 +142,18 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         Iterator<SignaturePartDef> signaturePartDefIterator = signaturePartDefList.iterator();
         while (signaturePartDefIterator.hasNext()) {
             SignaturePartDef signaturePartDef = signaturePartDefIterator.next();
+            String uriString;
+            if (signaturePartDef.isExternalResource()) {
+                uriString = signaturePartDef.getSigRefId();
+            } else if (signaturePartDef.isGenerateXPointer()) {
+                uriString = "#xpointer(id('" + signaturePartDef.getSigRefId() + "'))";
+            } else {
+                uriString = "#" + signaturePartDef.getSigRefId();
+            }
             attributes = new ArrayList<XMLSecAttribute>(1);
-            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_URI, "#" + signaturePartDef.getSigRefId()));
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_URI, uriString));
             createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Reference, false, attributes);
-            createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms, false, null);
             createTransformsStructureForSignature(subOutputProcessorChain, signaturePartDef);
-            createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms);
 
             attributes = new ArrayList<XMLSecAttribute>(1);
             attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, getSecurityProperties().getSignatureDigestAlgorithm()));

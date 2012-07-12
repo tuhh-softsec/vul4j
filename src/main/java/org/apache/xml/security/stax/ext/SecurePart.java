@@ -26,8 +26,8 @@ import java.util.Map;
 /**
  * Class to describe which and how an element must be secured
  *
- * @author $Author: giger $
- * @version $Revision: 1181995 $ $Date: 2011-10-11 20:03:00 +0200 (Tue, 11 Oct 2011) $
+ * @author $Author$
+ * @version $Revision$ $Date$
  */
 public class SecurePart {
 
@@ -59,12 +59,19 @@ public class SecurePart {
     }
 
     private QName name;
+    private boolean generateXPointer;
     private Modifier modifier;
     private String idToSign;
     private String idToReference;
+    private String externalReference;
 
     public SecurePart(QName name, Modifier modifier) {
+        this(name, false, modifier);
+    }
+
+    public SecurePart(QName name, boolean generateXPointer, Modifier modifier) {
         this.name = name;
+        this.generateXPointer = generateXPointer;
         this.modifier = modifier;
     }
 
@@ -73,6 +80,10 @@ public class SecurePart {
         this.idToSign = idToSign;
         this.idToReference = idToReference;
         this.modifier = modifier;
+    }
+
+    public SecurePart(String externalReference) {
+        this.externalReference = externalReference;
     }
 
     /**
@@ -115,5 +126,21 @@ public class SecurePart {
 
     public void setIdToReference(String idToReference) {
         this.idToReference = idToReference;
+    }
+
+    public boolean isGenerateXPointer() {
+        return generateXPointer;
+    }
+
+    public void setGenerateXPointer(boolean generateXPointer) {
+        this.generateXPointer = generateXPointer;
+    }
+
+    public String getExternalReference() {
+        return externalReference;
+    }
+
+    public void setExternalReference(String externalReference) {
+        this.externalReference = externalReference;
     }
 }

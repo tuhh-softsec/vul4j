@@ -1,0 +1,96 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.xml.security.stax.impl.resourceResolvers;
+
+import org.apache.xml.security.stax.ext.ResourceResolver;
+import org.apache.xml.security.stax.ext.ResourceResolverLookup;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.regex.Pattern;
+
+/**
+ * Resolver for external http[s] resources.
+ *
+ * @author $Author$
+ * @version $Revision$ $Date$
+ */
+public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
+
+    private String uri;
+    private Pattern pattern = Pattern.compile("^http[s]?://.*");
+
+    public ResolverHttp() {
+    }
+
+    public ResolverHttp(String uri) {
+        this.uri = uri;
+    }
+
+    @Override
+    public ResourceResolverLookup canResolve(String uri) {
+        if (uri != null && pattern.matcher(uri).matches()) {
+            return this;
+        }
+        return null;
+    }
+
+    @Override
+    public ResourceResolver newInstance(String uri) {
+        return new ResolverHttp(uri);
+    }
+
+    @Override
+    public boolean isSameDocumentReference() {
+        return false;
+    }
+
+    @Override
+    public boolean matches(XMLSecStartElement xmlSecStartElement) {
+        return false;
+    }
+
+    @Override
+    public InputStream getInputStreamFromExternalReference() throws XMLSecurityException {
+        try {
+            URI tmp = new URI(uri);
+            if (tmp.getFragment() != null) {
+                tmp = new URI(tmp.getScheme(), tmp.getSchemeSpecificPart(), null);
+            }
+            HttpURLConnection urlConnection = (HttpURLConnection) tmp.toURL().openConnection();
+            InputStream inputStream = urlConnection.getInputStream();
+            if (urlConnection.getResponseCode() != 200) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+            }
+            return inputStream;
+        } catch (MalformedURLException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (IOException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (URISyntaxException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        }
+    }
+}

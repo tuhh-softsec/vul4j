@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
@@ -26,6 +27,7 @@ import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.TransformType;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
+import org.apache.xml.security.stax.config.ResourceResolverMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -36,12 +38,11 @@ import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import javax.xml.stream.XMLStreamReader;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -58,7 +59,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     private final SignatureType signatureType;
     private final SecurityToken securityToken;
-    private final Map<String, ReferenceType> references;
+    private final Map<ResourceResolver, ReferenceType> sameDocumentReferences;
+    private final Map<ResourceResolver, ReferenceType> externalReferences;
     private final List<ReferenceType> processedReferences;
 
     public AbstractSignatureReferenceVerifyInputProcessor(
@@ -69,7 +71,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         this.securityToken = securityToken;
 
         List<ReferenceType> referencesTypeList = signatureType.getSignedInfo().getReference();
-        references = new HashMap<String, ReferenceType>(referencesTypeList.size() + 1);
+        sameDocumentReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
+        externalReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
         processedReferences = new ArrayList<ReferenceType>(referencesTypeList.size());
 
         Iterator<ReferenceType> referenceTypeIterator = referencesTypeList.iterator();
@@ -78,7 +81,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             if (referenceType.getURI() == null) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
             }
-            references.put(XMLSecurityUtils.dropReferenceMarker(referenceType.getURI()), referenceType);
+            ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(referenceType.getURI());
+            if (resourceResolver.isSameDocumentReference()) {
+                sameDocumentReferences.put(resourceResolver, referenceType);
+            } else {
+                externalReferences.put(resourceResolver, referenceType);
+            }
         }
     }
 
@@ -108,14 +116,14 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         switch (xmlSecEvent.getEventType()) {
             case XMLStreamConstants.START_ELEMENT:
                 XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
-                ReferenceType referenceType = matchesReferenceId(xmlSecStartElement);
+                ReferenceType referenceType = resolvesResource(xmlSecStartElement);
                 if (referenceType != null) {
 
                     if (processedReferences.contains(referenceType)) {
                         throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
                     }
                     InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
-                        getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
+                            getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
                                     referenceType, xmlSecStartElement.getName());
                     if (!internalSignatureReferenceVerifier.isFinished()) {
                         internalSignatureReferenceVerifier.processEvent(xmlSecEvent, inputProcessorChain);
@@ -125,7 +133,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                     inputProcessorChain.getDocumentContext().setIsInSignedContent(
                             inputProcessorChain.getProcessors().indexOf(internalSignatureReferenceVerifier),
                             internalSignatureReferenceVerifier);
-                    
+
                     // Fire a SecurityEvent
                     List<QName> elementPath = xmlSecStartElement.getElementPath();
                     processElementPath(elementPath, inputProcessorChain, xmlSecEvent);
@@ -134,36 +142,189 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         }
         return xmlSecEvent;
     }
-    
+
     protected abstract void processElementPath(
-               List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
+            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
     ) throws XMLSecurityException;
 
-    protected ReferenceType matchesReferenceId(XMLSecStartElement xmlSecStartElement) {
-        Attribute refId = getReferenceIDAttribute(xmlSecStartElement);
-        if (refId != null) {
-            return references.get(refId.getValue());
+    protected ReferenceType resolvesResource(XMLSecStartElement xmlSecStartElement) {
+        Iterator<Map.Entry<ResourceResolver, ReferenceType>> resourceResolverIterator = sameDocumentReferences.entrySet().iterator();
+        while (resourceResolverIterator.hasNext()) {
+            Map.Entry<ResourceResolver, ReferenceType> entry = resourceResolverIterator.next();
+            if (entry.getKey().matches(xmlSecStartElement)) {
+                return entry.getValue();
+            }
         }
         return null;
     }
 
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
-        Iterator<Map.Entry<String, ReferenceType>> refEntryIterator = this.references.entrySet().iterator();
-        while (refEntryIterator.hasNext()) {
-            Map.Entry<String, ReferenceType> referenceTypeEntry = refEntryIterator.next();
+        if (externalReferences.size() > 0) {
+            Iterator<Map.Entry<ResourceResolver, ReferenceType>> externalReferenceIterator = externalReferences.entrySet().iterator();
+            while (externalReferenceIterator.hasNext()) {
+                Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = externalReferenceIterator.next();
+                ResourceResolver resourceResolver = referenceTypeEntry.getKey();
+                ReferenceType referenceType = referenceTypeEntry.getValue();
+
+                verifyExternalReference(inputProcessorChain, resourceResolver, referenceType);
+                processedReferences.add(referenceType);
+            }
+
+            externalReferenceIterator = externalReferences.entrySet().iterator();
+            while (externalReferenceIterator.hasNext()) {
+                Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = externalReferenceIterator.next();
+                if (!processedReferences.contains(referenceTypeEntry.getValue())) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedSignatureReferences");
+                }
+            }
+        }
+
+        Iterator<Map.Entry<ResourceResolver, ReferenceType>> sameDocumentReferenceIterator = sameDocumentReferences.entrySet().iterator();
+        while (sameDocumentReferenceIterator.hasNext()) {
+            Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = sameDocumentReferenceIterator.next();
             if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedEncryptionReferences");
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedSignatureReferences");
             }
         }
         inputProcessorChain.doFinal();
     }
-    
+
     protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
             XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
             ReferenceType referenceType, QName startElement) throws XMLSecurityException {
-        return new InternalSignatureReferenceVerifier(securityProperties, inputProcessorChain, 
-                                                      referenceType, startElement);
+        return new InternalSignatureReferenceVerifier(securityProperties, inputProcessorChain, referenceType, startElement);
+    }
+
+    private void verifyExternalReference(InputProcessorChain inputProcessorChain, ResourceResolver resourceResolver,
+                                         ReferenceType referenceType) throws XMLSecurityException, XMLStreamException {
+
+        DigestOutputStream digestOutputStream;
+        OutputStream bufferedDigestOutputStream;
+        Transformer transformer;
+
+        InputStream inputStream = new BufferedInputStream(resourceResolver.getInputStreamFromExternalReference());
+        try {
+            digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
+            bufferedDigestOutputStream = new BufferedOutputStream(digestOutputStream);
+
+            if (referenceType.getTransforms() != null) {
+                transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
+
+                XMLStreamReader xmlStreamReader =
+                        inputProcessorChain.getSecurityContext().<XMLInputFactory>get(
+                                XMLSecurityConstants.XMLINPUTFACTORY).createXMLStreamReader(inputStream);
+                XMLEventReaderInputProcessor xmlEventReaderInputProcessor = new XMLEventReaderInputProcessor(null, xmlStreamReader);
+
+                XMLSecEvent xmlSecEvent;
+                do {
+                    xmlSecEvent = xmlEventReaderInputProcessor.processNextEvent(null);
+                    transformer.transform(xmlSecEvent);
+                } while (xmlSecEvent.getEventType() != XMLStreamConstants.END_DOCUMENT);
+
+                bufferedDigestOutputStream.close();
+            } else {
+                IOUtils.copy(inputStream, bufferedDigestOutputStream);
+                bufferedDigestOutputStream.close();
+            }
+        } catch (IOException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (NoSuchMethodException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (IllegalAccessException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (InstantiationException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (NoSuchProviderException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } catch (InvocationTargetException e) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                logger.warn("Could not close external resource input stream, ignored.");
+            }
+        }
+        compareDigest(digestOutputStream.getDigestValue(), referenceType);
+    }
+
+    protected DigestOutputStream createMessageDigestOutputStream(ReferenceType referenceType, SecurityContext securityContext)
+            throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+        AlgorithmType digestAlgorithm =
+                JCEAlgorithmMapper.getAlgorithmMapping(referenceType.getDigestMethod().getAlgorithm());
+
+        MessageDigest messageDigest;
+        if (digestAlgorithm.getJCEProvider() != null) {
+            messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName(), digestAlgorithm.getJCEProvider());
+        } else {
+            messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName());
+        }
+
+        AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+        algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
+        algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
+        securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+
+        return new DigestOutputStream(messageDigest);
+    }
+
+    protected Transformer buildTransformerChain(ReferenceType referenceType, OutputStream outputStream,
+                                                InputProcessorChain inputProcessorChain,
+                                                InternalSignatureReferenceVerifier internalSignatureReferenceVerifier)
+            throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
+            IllegalAccessException, InvocationTargetException {
+
+        if (referenceType.getTransforms() == null) {
+            // If no Transforms then just default to an Inclusive without comments transform
+            Transformer transformer = new Canonicalizer20010315_OmitCommentsTransformer();
+            transformer.setOutputStream(outputStream);
+            //todo algoSecEvent??
+            return transformer;
+        }
+
+        List<TransformType> transformTypeList = referenceType.getTransforms().getTransform();
+
+        Transformer parentTransformer = null;
+        for (int i = transformTypeList.size() - 1; i >= 0; i--) {
+            TransformType transformType = transformTypeList.get(i);
+
+            InclusiveNamespaces inclusiveNamespacesType =
+                    XMLSecurityUtils.getQNameType(transformType.getContent(),
+                            XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces);
+            List<String> inclusiveNamespaces = inclusiveNamespacesType != null
+                    ? inclusiveNamespacesType.getPrefixList()
+                    : null;
+            String algorithm = transformType.getAlgorithm();
+
+            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+            algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
+            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+            inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
+
+            if (parentTransformer != null) {
+                parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm);
+            } else {
+                parentTransformer =
+                        XMLSecurityUtils.getTransformer(inclusiveNamespaces, outputStream, algorithm);
+            }
+        }
+        return parentTransformer;
+    }
+
+    private void compareDigest(byte[] calculatedDigest, ReferenceType referenceType) throws XMLSecurityException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Calculated Digest: " + new String(Base64.encodeBase64(calculatedDigest)));
+            logger.debug("Stored Digest: " + new String(Base64.encodeBase64(referenceType.getDigestValue())));
+        }
+
+        if (!MessageDigest.isEqual(referenceType.getDigestValue(), calculatedDigest)) {
+            throw new XMLSecurityException(
+                    XMLSecurityException.ErrorCode.FAILED_CHECK,
+                    "digestVerificationFailed", referenceType.getURI());
+        }
     }
 
     public class InternalSignatureReferenceVerifier extends AbstractInputProcessor {
@@ -183,73 +344,19 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             this.setStartElement(startElement);
             this.setReferenceType(referenceType);
             try {
-                createMessageDigest(inputProcessorChain.getSecurityContext());
-                buildTransformerChain(referenceType, inputProcessorChain);
+                this.digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
+                this.bufferedDigestOutputStream = new BufferedOutputStream(this.getDigestOutputStream());
+                this.transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain);
             } catch (Exception e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             }
         }
 
-        protected AlgorithmType createMessageDigest(SecurityContext securityContext)
-                throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
-            AlgorithmType digestAlgorithm =
-                    JCEAlgorithmMapper.getAlgorithmMapping(getReferenceType().getDigestMethod().getAlgorithm());
-
-            MessageDigest messageDigest;
-            if (digestAlgorithm.getJCEProvider() != null) {
-                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName(), digestAlgorithm.getJCEProvider());
-            } else {
-                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName());
-            }
-            this.setDigestOutputStream(new DigestOutputStream(messageDigest));
-            this.setBufferedDigestOutputStream(new BufferedOutputStream(this.getDigestOutputStream()));
-            
-            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
-            algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
-            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
-            securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
-
-            return digestAlgorithm;
-        }
-
-        protected void buildTransformerChain(ReferenceType referenceType, InputProcessorChain inputProcessorChain)
+        public Transformer buildTransformerChain(ReferenceType referenceType, OutputStream outputStream, InputProcessorChain inputProcessorChain)
                 throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
                 IllegalAccessException, InvocationTargetException {
-            if (referenceType.getTransforms() == null) {
-                // If no Transforms then just default to an Inclusive without comments transform
-                Transformer transformer = new Canonicalizer20010315_OmitCommentsTransformer();
-                transformer.setOutputStream(getBufferedDigestOutputStream());
-                this.setTransformer(transformer);
-                return;
-            }
-            
-            List<TransformType> transformTypeList = referenceType.getTransforms().getTransform();
-
-            Transformer parentTransformer = null;
-            for (int i = transformTypeList.size() - 1; i >= 0; i--) {
-                TransformType transformType = transformTypeList.get(i);
-
-                InclusiveNamespaces inclusiveNamespacesType =
-                        XMLSecurityUtils.getQNameType(transformType.getContent(),
-                                XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces);
-                List<String> inclusiveNamespaces = inclusiveNamespacesType != null
-                        ? inclusiveNamespacesType.getPrefixList()
-                        : null;
-                String algorithm = transformType.getAlgorithm();
-                
-                AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
-                algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
-                algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
-                inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
-                
-                if (parentTransformer != null) {
-                    parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm);
-                } else {
-                    parentTransformer =
-                            XMLSecurityUtils.getTransformer(inclusiveNamespaces, this.getBufferedDigestOutputStream(), algorithm);
-                }
-            }
-            this.setTransformer(parentTransformer);
+            return AbstractSignatureReferenceVerifyInputProcessor.this.buildTransformerChain(
+                    referenceType, outputStream, inputProcessorChain, this);
         }
 
         @Override
@@ -266,7 +373,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             return xmlSecEvent;
         }
 
-        protected void processEvent(XMLSecEvent xmlSecEvent, InputProcessorChain inputProcessorChain)
+        public void processEvent(XMLSecEvent xmlSecEvent, InputProcessorChain inputProcessorChain)
                 throws XMLStreamException, XMLSecurityException {
 
             getTransformer().transform(xmlSecEvent);
@@ -285,19 +392,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
                         }
 
-                        byte[] calculatedDigest = this.getDigestOutputStream().getDigestValue();
-                        byte[] storedDigest = getReferenceType().getDigestValue();
+                        compareDigest(this.getDigestOutputStream().getDigestValue(), getReferenceType());
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Calculated Digest: " + new String(Base64.encodeBase64(calculatedDigest)));
-                            logger.debug("Stored Digest: " + new String(Base64.encodeBase64(storedDigest)));
-                        }
-
-                        if (!MessageDigest.isEqual(storedDigest, calculatedDigest)) {
-                            throw new XMLSecurityException(
-                                    XMLSecurityException.ErrorCode.FAILED_CHECK,
-                                    "digestVerificationFailed", getReferenceType().getURI());
-                        }
                         inputProcessorChain.removeProcessor(this);
                         inputProcessorChain.getDocumentContext().unsetIsInSignedContent(this);
                         setFinished(true);
@@ -310,47 +406,47 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             return finished;
         }
 
-        protected void setFinished(boolean finished) {
+        public void setFinished(boolean finished) {
             this.finished = finished;
         }
 
-        protected ReferenceType getReferenceType() {
+        public ReferenceType getReferenceType() {
             return referenceType;
         }
 
-        protected void setReferenceType(ReferenceType referenceType) {
+        public void setReferenceType(ReferenceType referenceType) {
             this.referenceType = referenceType;
         }
 
-        protected Transformer getTransformer() {
+        public Transformer getTransformer() {
             return transformer;
         }
 
-        protected void setTransformer(Transformer transformer) {
+        public void setTransformer(Transformer transformer) {
             this.transformer = transformer;
         }
 
-        protected DigestOutputStream getDigestOutputStream() {
+        public DigestOutputStream getDigestOutputStream() {
             return digestOutputStream;
         }
 
-        protected void setDigestOutputStream(DigestOutputStream digestOutputStream) {
+        public void setDigestOutputStream(DigestOutputStream digestOutputStream) {
             this.digestOutputStream = digestOutputStream;
         }
 
-        protected OutputStream getBufferedDigestOutputStream() {
+        public OutputStream getBufferedDigestOutputStream() {
             return bufferedDigestOutputStream;
         }
 
-        protected void setBufferedDigestOutputStream(OutputStream bufferedDigestOutputStream) {
+        public void setBufferedDigestOutputStream(OutputStream bufferedDigestOutputStream) {
             this.bufferedDigestOutputStream = bufferedDigestOutputStream;
         }
 
-        protected QName getStartElement() {
+        public QName getStartElement() {
             return startElement;
         }
 
-        protected void setStartElement(QName startElement) {
+        public void setStartElement(QName startElement) {
             this.startElement = startElement;
         }
     }

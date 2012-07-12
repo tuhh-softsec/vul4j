@@ -69,6 +69,7 @@ public class Init {
                 SecurityHeaderHandlerMapper.init(configurationTypeJAXBElement.getValue().getSecurityHeaderHandlers());
                 JCEAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getJCEAlgorithmMappings());
                 TransformerAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getTransformAlgorithms());
+                ResourceResolverMapper.init(configurationTypeJAXBElement.getValue().getResourceResolvers());
 
             } catch (Exception e) {
                 throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, null, e);

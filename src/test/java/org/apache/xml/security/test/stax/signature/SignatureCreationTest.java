@@ -18,62 +18,27 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
+import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.junit.Test;
+import org.w3c.dom.Document;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import java.util.List;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.stax.ext.OutboundXMLSec;
-import org.apache.xml.security.stax.ext.SecurePart;
-import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-import org.apache.xml.security.test.dom.DSNamespaceContext;
-import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A set of test-cases for Signature creation.
  */
-public class SignatureCreationTest extends org.junit.Assert {
-
-    private XMLInputFactory xmlInputFactory;
-    private DocumentBuilderFactory documentBuilderFactory;
-
-    @Before
-    public void setUp() throws Exception {
-        org.apache.xml.security.Init.init();
-        
-        xmlInputFactory = XMLInputFactory.newInstance();
-        xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
-        
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setIgnoringComments(false);
-        documentBuilderFactory.setCoalescing(false);
-        documentBuilderFactory.setIgnoringElementContentWhitespace(false);
-    }
+public class SignatureCreationTest extends AbstractSignatureCreationTest {
 
     @Test
     public void testSignatureCreation() throws Exception {
@@ -214,8 +179,8 @@ public class SignatureCreationTest extends org.junit.Assert {
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(
-            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
-            "default".toCharArray()
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
         );
         Key key = keyStore.getKey("transmitter", "default".toCharArray());
         properties.setSignatureKey(key);
@@ -260,9 +225,9 @@ public class SignatureCreationTest extends org.junit.Assert {
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(
-            this.getClass().getClassLoader().getResource(
-                "org/apache/xml/security/samples/input/ecdsa.jks").openStream(), 
-            "security".toCharArray()
+                this.getClass().getClassLoader().getResource(
+                        "org/apache/xml/security/samples/input/ecdsa.jks").openStream(),
+                "security".toCharArray()
         );
         Key key = keyStore.getKey("ECDSA", "security".toCharArray());
         properties.setSignatureKey(key);
@@ -305,9 +270,9 @@ public class SignatureCreationTest extends org.junit.Assert {
         
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(
-            this.getClass().getClassLoader().getResource(
-                "org/apache/xml/security/samples/input/ecdsa.jks").openStream(), 
-            "security".toCharArray()
+                this.getClass().getClassLoader().getResource(
+                        "org/apache/xml/security/samples/input/ecdsa.jks").openStream(),
+                "security".toCharArray()
         );
         Key key = keyStore.getKey("ECDSA", "security".toCharArray());
         properties.setSignatureKey(key);
@@ -353,8 +318,8 @@ public class SignatureCreationTest extends org.junit.Assert {
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(
-            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
-            "default".toCharArray()
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
         );
         Key key = keyStore.getKey("transmitter", "default".toCharArray());
         properties.setSignatureKey(key);
@@ -398,8 +363,8 @@ public class SignatureCreationTest extends org.junit.Assert {
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
         keyStore.load(
-            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
-            "default".toCharArray()
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
         );
         Key key = keyStore.getKey("transmitter", "default".toCharArray());
         properties.setSignatureKey(key);
@@ -607,67 +572,6 @@ public class SignatureCreationTest extends org.junit.Assert {
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
-    }
-    
-    /**
-     * Verify the document using DOM
-     */
-    private void verifyUsingDOM(
-        Document document,
-        X509Certificate cert,
-        List<SecurePart> secureParts
-    ) throws Exception {
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DSNamespaceContext());
-
-        String expression = "//dsig:Signature[1]";
-        Element sigElement = 
-            (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
-        Assert.assertNotNull(sigElement);
-        
-        for (SecurePart securePart : secureParts) {
-            expression = "//*[local-name()='" + securePart.getName().getLocalPart() + "']";
-            Element signedElement = 
-                (Element)xpath.evaluate(expression, document, XPathConstants.NODE);
-            Assert.assertNotNull(signedElement);
-            signedElement.setIdAttributeNS(null, "Id", true);
-        }
-        
-        XMLSignature signature = new XMLSignature(sigElement, "");
-        KeyInfo ki = signature.getKeyInfo();
-        Assert.assertNotNull(ki);
-
-        Assert.assertTrue(signature.checkSignatureValue(cert));
-    }
-    
-    /**
-     * Verify the document using DOM
-     */
-    private void verifyUsingDOM(
-        Document document,
-        SecretKey secretKey,
-        List<SecurePart> secureParts
-    ) throws Exception {
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DSNamespaceContext());
-
-        String expression = "//dsig:Signature[1]";
-        Element sigElement = 
-            (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
-        Assert.assertNotNull(sigElement);
-        
-        for (SecurePart securePart : secureParts) {
-            expression = "//*[local-name()='" + securePart.getName().getLocalPart() + "']";
-            Element signedElement = 
-                (Element)xpath.evaluate(expression, document, XPathConstants.NODE);
-            Assert.assertNotNull(signedElement);
-            signedElement.setIdAttributeNS(null, "Id", true);
-        }
-        
-        XMLSignature signature = new XMLSignature(sigElement, "");
-        Assert.assertTrue(signature.checkSignatureValue(secretKey));
     }
 
 }

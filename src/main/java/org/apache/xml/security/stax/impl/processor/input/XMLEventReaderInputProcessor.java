@@ -26,6 +26,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.NoSuchElementException;
 
 /**
  * The XMLEventReaderInputProcessor reads requested XMLEvents from the original XMLEventReader
@@ -38,6 +39,7 @@ public class XMLEventReaderInputProcessor extends AbstractInputProcessor {
 
     private final XMLStreamReader xmlStreamReader;
     private XMLSecStartElement parentXmlSecStartElement;
+    private boolean EOF = false;
 
     public XMLEventReaderInputProcessor(XMLSecurityProperties securityProperties, XMLStreamReader xmlStreamReader) {
         super(securityProperties);
@@ -71,6 +73,11 @@ public class XMLEventReaderInputProcessor extends AbstractInputProcessor {
         }
         if (xmlStreamReader.hasNext()) {
             xmlStreamReader.next();
+        } else {
+            if (EOF) {
+                throw new NoSuchElementException();
+            }
+            EOF = true;
         }
         return xmlSecEvent;
     }

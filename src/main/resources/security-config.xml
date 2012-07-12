@@ -351,14 +351,14 @@
                     RequiredKey="AES"
                     JCEName="AESWrap"/>
    </JCEAlgorithmMappings>
-   <ResourceResolvers>
-      <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP"
-                DESCRIPTION="A simple resolver for requests to HTTP space" />
-      <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverLocalFilesystem"
-                DESCRIPTION="A simple resolver for requests to the local file system" />
-      <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverFragment"
-                DESCRIPTION="A simple resolver for requests of same-document URIs" />
-      <Resolver JAVACLASS="org.apache.xml.security.utils.resolver.implementations.ResolverXPointer"
-                DESCRIPTION="A simple resolver for requests of XPointer fragents" />
-   </ResourceResolvers>
+    <ResourceResolvers>
+        <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverSameDocument"
+                  DESCRIPTION="A simple resolver for requests of same-document URIs"/>
+        <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverFilesystem"
+                  DESCRIPTION="A simple resolver for requests to the local file system"/>
+        <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp"
+                  DESCRIPTION="A simple resolver for requests to HTTP space"/>
+        <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverXPointer"
+                  DESCRIPTION="A simple resolver for requests of XPointer fragents"/>
+    </ResourceResolvers>
 </Configuration>
