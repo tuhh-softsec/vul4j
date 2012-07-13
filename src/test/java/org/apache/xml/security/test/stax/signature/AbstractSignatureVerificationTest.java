@@ -281,7 +281,9 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
     ) throws XMLSecurityException {
         if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
-
+            KeyValueTokenSecurityEvent tokenEvent = 
+                    (KeyValueTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+            assertNotNull(tokenEvent);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
             DefaultTokenSecurityEvent tokenEvent =
                     (DefaultTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);

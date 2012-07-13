@@ -359,6 +359,6 @@
         <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp"
                   DESCRIPTION="A simple resolver for requests to HTTP space"/>
         <Resolver JAVACLASS="org.apache.xml.security.stax.impl.resourceResolvers.ResolverXPointer"
-                  DESCRIPTION="A simple resolver for requests of XPointer fragents"/>
+                  DESCRIPTION="A simple resolver for requests of XPointer fragments"/>
     </ResourceResolvers>
 </Configuration>

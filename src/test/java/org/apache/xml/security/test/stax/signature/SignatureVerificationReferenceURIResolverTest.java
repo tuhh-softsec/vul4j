@@ -206,7 +206,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
     }
 
     @Test
-    public void testBaiscSignatureVerificationWithExternalHttpReference() throws Exception {
+    public void testBasicSignatureVerificationWithExternalHttpReference() throws Exception {
         //for simplification and to prevent online lookups, we just test if the ResolverHttp class is returned.
         //another option would be to start an embedded jetty instance...
 

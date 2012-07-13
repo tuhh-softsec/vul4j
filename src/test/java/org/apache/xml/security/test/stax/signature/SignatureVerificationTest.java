@@ -26,7 +26,6 @@ import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -38,9 +37,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyName;
@@ -51,34 +47,17 @@ import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509SecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509SubjectNameSecurityToken;
-import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
-import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
-import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.transforms.Transforms;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A set of test-cases for Signature verification.
  */
-public class SignatureVerificationTest extends org.junit.Assert {
+public class SignatureVerificationTest extends AbstractSignatureVerificationTest {
 
     private XMLInputFactory xmlInputFactory;
     private DocumentBuilderFactory documentBuilderFactory;
@@ -713,204 +692,58 @@ public class SignatureVerificationTest extends org.junit.Assert {
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
     }
     
-    /**
-     * Sign the document using DOM
-     */
-    private XMLSignature signUsingDOM(
-        String algorithm,
-        Document document,
-        List<String> localNames,
-        Key signingKey
-    ) throws Exception {
-        String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod);
-    }
-    
-    /**
-     * Sign the document using DOM
-     */
-    private XMLSignature signUsingDOM(
-        String algorithm,
-        Document document,
-        List<String> localNames,
-        Key signingKey,
-        String c14nMethod
-    ) throws Exception {
-        String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod);
-    }
-    
-    /**
-     * Sign the document using DOM
-     */
-    private XMLSignature signUsingDOM(
-        String algorithm,
-        Document document,
-        List<String> localNames,
-        Key signingKey,
-        String c14nMethod,
-        String digestMethod
-    ) throws Exception {
-        XMLSignature sig = new XMLSignature(document, "", algorithm, c14nMethod);
-        Element root = document.getDocumentElement();
-        root.appendChild(sig.getElement());
+    @Test
+    public void testKeyValue() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+        
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+            this.getClass().getClassLoader().getResource("transmitter.jks").openStream(), 
+            "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        XMLSignature sig = signUsingDOM(
+            "http://www.w3.org/2000/09/xmldsig#rsa-sha1", document, localNames, key
+        );
+        
+        // Add KeyInfo
+        sig.addKeyInfo(cert.getPublicKey());
+        
+        // XMLUtils.outputDOM(document, System.out);
+        
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader = 
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+  
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        XPathFactory xpf = XPathFactory.newInstance();
-        XPath xpath = xpf.newXPath();
-        xpath.setNamespaceContext(new DSNamespaceContext());
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
-        for (String localName : localNames) {
-            String expression = "//*[local-name()='" + localName + "']";
-            Element elementToSign = 
-                (Element)xpath.evaluate(expression, document, XPathConstants.NODE);
-            Assert.assertNotNull(elementToSign);
-            String id = UUID.randomUUID().toString();
-            elementToSign.setAttributeNS(null, "Id", id);
-            elementToSign.setIdAttributeNS(null, "Id", true);
-            
-            Transforms transforms = new Transforms(document);
-            transforms.addTransform(c14nMethod);
-            sig.addDocument("#" + id, transforms, digestMethod);
-        }
-
-        sig.sign(signingKey);
-        
-        String expression = "//ds:Signature[1]";
-        Element sigElement = 
-            (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
-        Assert.assertNotNull(sigElement);
-        
-        return sig;
+        // Check the SecurityEvents
+        checkSecurityEvents(securityEventListener);
+        checkSignedElementSecurityEvents(securityEventListener);
+        checkSignatureToken(securityEventListener, null, cert.getPublicKey(),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
-    
-    private void checkSecurityEvents(TestSecurityEventListener securityEventListener) {
-        String c14nAlgorithm = "http://www.w3.org/2001/10/xml-exc-c14n#";
-        String digestAlgorithm = "http://www.w3.org/2000/09/xmldsig#sha1";
-        String signatureMethod = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-        checkSecurityEvents(securityEventListener, c14nAlgorithm, digestAlgorithm, signatureMethod);
-    }
-    
-    private void checkSecurityEvents(
-        TestSecurityEventListener securityEventListener,
-        String c14nAlgorithm,
-        String digestAlgorithm,
-        String signatureMethod
-    ) {
-        SignatureValueSecurityEvent sigValueEvent = 
-            (SignatureValueSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.SignatureValue);
-        assertNotNull(sigValueEvent);
-        assertNotNull(sigValueEvent.getSignatureValue());
-        
-        List<SecurityEvent> algorithmEvents = 
-            securityEventListener.getTokenEvents(SecurityEventConstants.AlgorithmSuite);
-        assertFalse(algorithmEvents.isEmpty());
-        
-        // C14n algorithm
-        for (SecurityEvent event : algorithmEvents) {
-            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
-            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.C14n) {
-                assertEquals(c14nAlgorithm, algorithmEvent.getAlgorithmURI());
-            }
-        }
-        
-        // Digest algorithm
-        for (SecurityEvent event : algorithmEvents) {
-            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
-            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Dig) {
-                assertEquals(digestAlgorithm, algorithmEvent.getAlgorithmURI());
-            }
-        }
-        
-        // Signature method
-        for (SecurityEvent event : algorithmEvents) {
-            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent)event;
-            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Asym_Sig
-                || algorithmEvent.getKeyUsage() == XMLSecurityConstants.Sym_Sig) {
-                assertEquals(signatureMethod, algorithmEvent.getAlgorithmURI());
-            }
-        }
-    }
-    
-    private void checkSignedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
-        SignedElementSecurityEvent signedElementEvent = 
-            (SignedElementSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.SignedElement);
-        assertNotNull(signedElementEvent);
-        assertEquals(signedElementEvent.getElementPath().size(), 2);
-        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
-        assertEquals("{urn:example:po}PaymentInfo", signedElementEvent.getElementPath().get(1).toString());
-        assertTrue(signedElementEvent.isSigned());
-    }
-    
-    private void checkSignedElementMultipleSecurityEvents(
-        TestSecurityEventListener securityEventListener
-    ) {
-        List<SecurityEvent> signedElements = 
-            securityEventListener.getTokenEvents(SecurityEventConstants.SignedElement);
-        assertTrue(signedElements.size() == 2);
-        SignedElementSecurityEvent signedElementEvent = 
-                (SignedElementSecurityEvent)signedElements.get(0);
-        assertNotNull(signedElementEvent);
-        assertEquals(signedElementEvent.getElementPath().size(), 2);
-        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
-        assertEquals("{urn:example:po}ShippingAddress", signedElementEvent.getElementPath().get(1).toString());
-        
-        assertTrue(signedElementEvent.isSigned());
-        
-        signedElementEvent = 
-            (SignedElementSecurityEvent)signedElements.get(1);
-        assertNotNull(signedElementEvent);
-        assertEquals(signedElementEvent.getElementPath().size(), 2);
-        assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
-        assertEquals("{urn:example:po}PaymentInfo", signedElementEvent.getElementPath().get(1).toString());
-        assertTrue(signedElementEvent.isSigned());
-    }
-    
-    private void checkSignatureToken(
-        TestSecurityEventListener securityEventListener,
-        X509Certificate cert,
-        Key key,
-        XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
-    ) throws XMLSecurityException {
-        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
-            
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
-            DefaultTokenSecurityEvent tokenEvent = 
-                (DefaultTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
-            assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
-            assertEquals(processedKey, key);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
-            KeyNameTokenSecurityEvent tokenEvent = 
-                (KeyNameTokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.KeyNameToken);
-            assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
-            assertEquals(processedKey, key);
-            assertNotNull(((KeyNameSecurityToken)tokenEvent.getSecurityToken()).getKeyName());
-        } else {
-            X509TokenSecurityEvent tokenEvent = 
-                (X509TokenSecurityEvent)securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
-            assertNotNull(tokenEvent);
-            X509SecurityToken x509SecurityToken = 
-                (X509SecurityToken)tokenEvent.getSecurityToken();
-            assertNotNull(x509SecurityToken);
-            if (keyIdentifierType == 
-                XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE) {
-                assertEquals(cert, x509SecurityToken.getX509Certificates()[0]);
-            } else if (keyIdentifierType == 
-                XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
-                Key processedKey = x509SecurityToken.getKey("", null);
-                assertEquals(processedKey, cert.getPublicKey());
-                assertNotNull(((X509SubjectNameSecurityToken)x509SecurityToken).getSubjectName());
-            } else if (keyIdentifierType == 
-                XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
-                Key processedKey = x509SecurityToken.getKey("", null);
-                assertEquals(processedKey, cert.getPublicKey());
-                assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getIssuerName());
-                assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getSerialNumber());
-            }
-        }
-        
-    }
-    
 
 }

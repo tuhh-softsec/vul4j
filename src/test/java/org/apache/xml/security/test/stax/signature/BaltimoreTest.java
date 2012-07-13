@@ -322,7 +322,6 @@ public class BaltimoreTest extends org.junit.Assert {
     }
     
     // See SANTUARIO-318
-    // See SANTUARIO-319
     @Test
     @Ignore
     public void test_fifteen_external_b64_dsa() throws Exception {
@@ -588,7 +587,6 @@ public class BaltimoreTest extends org.junit.Assert {
     }
     
     // See SANTUARIO-318
-    // See SANTUARIO-319
     @Test
     @Ignore
     public void test_twenty_three_external_b64_dsa() throws Exception {
