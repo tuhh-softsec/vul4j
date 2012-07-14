@@ -66,7 +66,8 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart("file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        //todo remove null-c14n when external transformation is implemented
+        securePart = new SecurePart("file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml", null, XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
@@ -111,7 +112,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart("file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class");
+        securePart = new SecurePart("file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class", null, XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
@@ -158,7 +159,7 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart("http://gigerstyle.homelinux.com/wp-content/themes/twentyeleven/images/headers/willow.jpg");
+        securePart = new SecurePart("http://www.apache.org/images/feather-small.gif", null, XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);

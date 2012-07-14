@@ -73,10 +73,16 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                     InternalSignatureOutputProcessor internalSignatureOutputProcessor = null;
                     try {
                         SignaturePartDef signaturePartDef = new SignaturePartDef();
+                        signaturePartDef.setC14nAlgo(securePart.getC14nMethod());
+                        String digestMethod = securePart.getDigestMethod();
+                        if (digestMethod == null) {
+                            digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
+                        }
+                        signaturePartDef.setDigestAlgo(digestMethod);
+
                         if (securePart.getIdToSign() == null) {
                             signaturePartDef.setGenerateXPointer(securePart.isGenerateXPointer());
                             signaturePartDef.setSigRefId(IDGenerator.generateID(null));
-                            signaturePartDef.setC14nAlgo(getSecurityProperties().getSignatureCanonicalizationAlgorithm());
 
                             Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
                             if (attribute != null) {
@@ -97,8 +103,7 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                             }
                         } else {
                             signaturePartDef.setSigRefId(securePart.getIdToSign());
-                            signaturePartDef.setC14nAlgo(getSecurityProperties().getSignatureCanonicalizationAlgorithm());
-                            String signatureAppendId = 
+                            String signatureAppendId =
                                     outputProcessorChain.getSecurityContext().get(
                                             XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
                             if (signatureAppendId == null || "".equals(signatureAppendId)) {

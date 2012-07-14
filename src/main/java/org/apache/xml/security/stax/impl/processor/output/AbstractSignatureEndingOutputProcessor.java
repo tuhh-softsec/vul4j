@@ -156,7 +156,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
             createTransformsStructureForSignature(subOutputProcessorChain, signaturePartDef);
 
             attributes = new ArrayList<XMLSecAttribute>(1);
-            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, getSecurityProperties().getSignatureDigestAlgorithm()));
+            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, signaturePartDef.getDigestAlgo()));
             createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod, false, attributes);
             createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod);
             createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestValue, false, null);

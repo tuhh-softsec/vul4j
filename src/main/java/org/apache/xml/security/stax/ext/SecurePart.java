@@ -64,15 +64,29 @@ public class SecurePart {
     private String idToSign;
     private String idToReference;
     private String externalReference;
+    private String c14nMethod = XMLSecurityConstants.NS_C14N_EXCL;
+    private String digestMethod = XMLSecurityConstants.NS_XMLDSIG_SHA1;
 
     public SecurePart(QName name, Modifier modifier) {
         this(name, false, modifier);
+    }
+
+    public SecurePart(QName name, Modifier modifier, String c14nMethod, String digestMethod) {
+        this(name, false, modifier, c14nMethod, digestMethod);
     }
 
     public SecurePart(QName name, boolean generateXPointer, Modifier modifier) {
         this.name = name;
         this.generateXPointer = generateXPointer;
         this.modifier = modifier;
+    }
+
+    public SecurePart(QName name, boolean generateXPointer, Modifier modifier, String c14nMethod, String digestMethod) {
+        this.name = name;
+        this.generateXPointer = generateXPointer;
+        this.modifier = modifier;
+        this.c14nMethod = c14nMethod;
+        this.digestMethod = digestMethod;
     }
 
     public SecurePart(QName name, String idToSign, String idToReference, Modifier modifier) {
@@ -84,6 +98,12 @@ public class SecurePart {
 
     public SecurePart(String externalReference) {
         this.externalReference = externalReference;
+    }
+
+    public SecurePart(String externalReference, String c14nMethod, String digestMethod) {
+        this.externalReference = externalReference;
+        this.c14nMethod = c14nMethod;
+        this.digestMethod = digestMethod;
     }
 
     /**
@@ -142,5 +162,21 @@ public class SecurePart {
 
     public void setExternalReference(String externalReference) {
         this.externalReference = externalReference;
+    }
+
+    public String getC14nMethod() {
+        return c14nMethod;
+    }
+
+    public void setC14nMethod(String c14nMethod) {
+        this.c14nMethod = c14nMethod;
+    }
+
+    public String getDigestMethod() {
+        return digestMethod;
+    }
+
+    public void setDigestMethod(String digestMethod) {
+        this.digestMethod = digestMethod;
     }
 }

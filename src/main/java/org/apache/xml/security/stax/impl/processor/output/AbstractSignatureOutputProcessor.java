@@ -75,13 +75,14 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         Iterator<Map.Entry<Object, SecurePart>> securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
         while (securePartsMapIterator.hasNext()) {
             Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
-            final String externalReference = securePartEntry.getValue().getExternalReference();
+            final SecurePart securePart = securePartEntry.getValue();
+            final String externalReference = securePart.getExternalReference();
             if (externalReference != null) {
                 ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(externalReference);
 
                 DigestOutputStream digestOutputStream = null;
                 try {
-                    digestOutputStream = createMessageDigestOutputStream();
+                    digestOutputStream = createMessageDigestOutputStream(securePart.getDigestMethod());
                 } catch (NoSuchAlgorithmException e) {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
                 } catch (NoSuchProviderException e) {
@@ -89,6 +90,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                 }
 
                 InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
+
+                //todo transformers
+
                 try {
                     IOUtils.copy(inputStream, digestOutputStream);
                 } catch (IOException e) {
@@ -99,11 +103,16 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     logger.debug("Calculated Digest: " + calculatedDigest);
                 }
 
-                //todo we need a per SecurePart C14N and Digest algorithm property
                 SignaturePartDef signaturePartDef = new SignaturePartDef();
                 signaturePartDef.setSigRefId(externalReference);
                 signaturePartDef.setDigestValue(calculatedDigest);
                 signaturePartDef.setExternalResource(true);
+                signaturePartDef.setC14nAlgo(securePart.getC14nMethod());
+                String digestMethod = securePart.getDigestMethod();
+                if (digestMethod == null) {
+                    digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
+                }
+                signaturePartDef.setDigestAlgo(digestMethod);
                 getSignaturePartDefList().add(signaturePartDef);
             }
         }
@@ -120,13 +129,16 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         this.activeInternalSignatureOutputProcessor = activeInternalSignatureOutputProcessor;
     }
 
-    private DigestOutputStream createMessageDigestOutputStream() throws NoSuchAlgorithmException, NoSuchProviderException {
-        AlgorithmType algorithmID = JCEAlgorithmMapper.getAlgorithmMapping(getSecurityProperties().getSignatureDigestAlgorithm());
+    private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm) throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+        AlgorithmType algorithmType = JCEAlgorithmMapper.getAlgorithmMapping(digestAlgorithm);
+        if (algorithmType == null) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unknownSignatureAlgorithm", digestAlgorithm);
+        }
         MessageDigest messageDigest;
-        if (algorithmID.getJCEProvider() != null) {
-            messageDigest = MessageDigest.getInstance(algorithmID.getJCEName(), algorithmID.getJCEProvider());
+        if (algorithmType.getJCEProvider() != null) {
+            messageDigest = MessageDigest.getInstance(algorithmType.getJCEName(), algorithmType.getJCEProvider());
         } else {
-            messageDigest = MessageDigest.getInstance(algorithmID.getJCEName());
+            messageDigest = MessageDigest.getInstance(algorithmType.getJCEName());
         }
         return new DigestOutputStream(messageDigest);
     }
@@ -152,7 +164,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         @Override
         public void init(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
             try {
-                this.digestOutputStream = createMessageDigestOutputStream();
+                this.digestOutputStream = createMessageDigestOutputStream(signaturePartDef.getDigestAlgo());
                 this.bufferedDigestOutputStream = new BufferedOutputStream(digestOutputStream);
 
                 if (signaturePartDef.getTransformAlgo() != null) {

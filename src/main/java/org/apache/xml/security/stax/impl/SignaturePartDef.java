@@ -30,6 +30,7 @@ public class SignaturePartDef {
     private String digestValue;
     private String transformAlgo;
     private String c14nAlgo;
+    private String digestAlgo;
     private String inclusiveNamespaces;
     private boolean externalResource;
     private boolean generateXPointer;
@@ -64,6 +65,14 @@ public class SignaturePartDef {
 
     public void setC14nAlgo(String c14nAlgo) {
         this.c14nAlgo = c14nAlgo;
+    }
+
+    public String getDigestAlgo() {
+        return digestAlgo;
+    }
+
+    public void setDigestAlgo(String digestAlgo) {
+        this.digestAlgo = digestAlgo;
     }
 
     public String getInclusiveNamespaces() {
