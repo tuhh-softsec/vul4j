@@ -253,8 +253,7 @@ public class XIncludeHandler extends DefaultHandler {
                     return null;
                 }
 
-                @Override
-                public Iterator getPrefixes(String namespaceURI) {
+                public Iterator<String> getPrefixes(String namespaceURI) {
                     return null;
                 }
             });

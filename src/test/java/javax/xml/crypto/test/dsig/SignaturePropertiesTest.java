@@ -73,7 +73,7 @@ public class SignaturePropertiesTest extends org.junit.Assert {
             fail("Should raise a CCE for content containing " +
                  "invalid, i.e. non-SignatureProperty, entries"); 
         } catch (ClassCastException cce) {
-            cce.printStackTrace();
+            // cce.printStackTrace();
         } catch (Exception ex) {
             fail("Should raise a CCE for content with invalid entries " +
                  "instead of " + ex);

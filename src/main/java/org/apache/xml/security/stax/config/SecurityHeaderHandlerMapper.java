@@ -35,14 +35,14 @@ import java.util.Map;
  */
 public class SecurityHeaderHandlerMapper {
 
-    private static Map<QName, Class> handlerClassMap;
+    private static Map<QName, Class<?>> handlerClassMap;
 
     private SecurityHeaderHandlerMapper() {
     }
 
     protected synchronized static void init(SecurityHeaderHandlersType securityHeaderHandlersType) throws Exception {
         List<HandlerType> handlerList = securityHeaderHandlersType.getHandler();
-        handlerClassMap = new HashMap<QName, Class>(handlerList.size() + 1);
+        handlerClassMap = new HashMap<QName, Class<?>>(handlerList.size() + 1);
         for (int i = 0; i < handlerList.size(); i++) {
             HandlerType handlerType = handlerList.get(i);
             QName qName = new QName(handlerType.getURI(), handlerType.getNAME());
@@ -50,7 +50,7 @@ public class SecurityHeaderHandlerMapper {
         }
     }
 
-    public static Class getSecurityHeaderHandler(QName name) {
+    public static Class<?> getSecurityHeaderHandler(QName name) {
         return handlerClassMap.get(name);
     }
 }

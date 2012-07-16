@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -293,6 +294,11 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
     
     @Test
     public void testECDSASignatureVerification() throws Exception {
+        
+        if (Security.getProvider("BC") == null) {
+            return;
+        }
+        
         // Read in plaintext document
         InputStream sourceDocument = 
                 this.getClass().getClassLoader().getResourceAsStream(

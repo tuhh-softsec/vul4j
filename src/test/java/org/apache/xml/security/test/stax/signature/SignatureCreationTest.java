@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.KeyStore;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 
 /**
@@ -219,6 +220,11 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     
     @Test
     public void testECDSASignatureCreation() throws Exception {
+        
+        if (Security.getProvider("BC") == null) {
+            return;
+        }
+        
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
@@ -265,6 +271,11 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
     
     @Test
     public void testStrongECDSASignatureCreation() throws Exception {
+        
+        if (Security.getProvider("BC") == null) {
+            return;
+        }
+        
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 

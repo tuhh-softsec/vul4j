@@ -29,41 +29,28 @@
       <TransformAlgorithm URI="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
                           JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer" />
 
-       <!-- Base64 -->
-      <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformBase64Decode" />
-
+      <!-- Base64 -->
       <!-- XPath transform -->
-      <TransformAlgorithm URI="http://www.w3.org/TR/1999/REC-xpath-19991116"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath" />
       <!-- enveloped signature -->
-      <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#enveloped-signature"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformEnvelopedSignature" />
       <!-- XSLT -->
-      <TransformAlgorithm URI="http://www.w3.org/TR/1999/REC-xslt-19991116"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXSLT" />
       <!-- XPath version 2 -->
-      <TransformAlgorithm URI="http://www.w3.org/2002/04/xmldsig-filter2"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter" />
       <!-- XPath version 2b -->
-      <TransformAlgorithm URI="http://www.w3.org/2002/06/xmldsig-filter2"
-                          JAVACLASS="org.apache.xml.security.transforms.implementations.TransformXPath2Filter" />
 
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="IN"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="IN"
                            JAVACLASS="org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="IN"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="IN"
                            JAVACLASS="org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="IN"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="IN"
                            JAVACLASS="org.apache.commons.compress.compressors.xz.XZCompressorInputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="IN"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="IN"
                            JAVACLASS="org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="OUT"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="OUT"
                            JAVACLASS="org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="OUT"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="OUT"
                            JAVACLASS="org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="OUT"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="OUT"
                            JAVACLASS="org.apache.commons.compress.compressors.xz.XZCompressorOutputStream" />
-       <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="OUT"
+      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="OUT"
                            JAVACLASS="org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream" />
    </TransformAlgorithms>
    <JCEAlgorithmMappings>
@@ -180,7 +167,6 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     RequiredKey="SHA1withECDSA"
-                    JCEProvider="BC"
                     JCEName="SHA1withECDSA"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"
@@ -189,7 +175,6 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     RequiredKey="SHA256withECDSA"
-                    JCEProvider="BC"
                     JCEName="SHA256withECDSA"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384"
@@ -198,7 +183,6 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     RequiredKey="SHA384withECDSA"
-                    JCEProvider="BC"
                     JCEName="SHA384withECDSA"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"
@@ -207,7 +191,6 @@
                     RequirementLevel="OPTIONAL"
                     SpecificationURL="http://www.ietf.org/rfc/rfc4051.txt"
                     RequiredKey="SHA512withECDSA"
-                    JCEProvider="BC"
                     JCEName="SHA512withECDSA"/>
 
          <!-- MAC Algorithms -->
@@ -309,7 +292,6 @@
                     AlgorithmClass="KeyTransport"
                     RequirementLevel="REQUIRED"
                     RequiredKey="RSA"
-                    JCEProvider="BC"
                     JCEName="RSA/ECB/OAEPWithSHA1AndMGF1Padding"/>
 
          <Algorithm URI="http://www.w3.org/2001/04/xmlenc#dh"

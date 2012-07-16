@@ -39,6 +39,6 @@
     <root>
         <level value="INFO"/>
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="STDOUT"/>-->
     </root>
 </log4j:configuration>

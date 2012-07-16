@@ -26,6 +26,8 @@ import java.security.interfaces.RSAPrivateKey;
 
 import javax.crypto.SecretKey;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.stax.config.Init;
 
 /**
@@ -37,6 +39,9 @@ import org.apache.xml.security.stax.config.Init;
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
 public class XMLSec {
+    
+    private static final transient Log logger = LogFactory.getLog(XMLSec.class);
+
 
     //todo crl check
     //todo outgoing client setup per policy
@@ -49,7 +54,8 @@ public class XMLSec {
                 Security.addProvider((Provider) c.newInstance());
             }
         } catch (Throwable e) {
-            throw new RuntimeException("Adding BouncyCastle provider failed", e);
+            logger.debug("Adding BouncyCastle provider failed", e);
+            // throw new RuntimeException("Adding BouncyCastle provider failed", e);
         }
 
         try {

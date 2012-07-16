@@ -36,19 +36,18 @@ import java.util.Map;
  */
 public class TransformerAlgorithmMapper {
 
-    private static Map<String, Class> algorithmsClassMapInOut;
-    private static Map<String, Class> algorithmsClassMapIn;
-    private static Map<String, Class> algorithmsClassMapOut;
+    private static Map<String, Class<?>> algorithmsClassMapInOut;
+    private static Map<String, Class<?>> algorithmsClassMapIn;
+    private static Map<String, Class<?>> algorithmsClassMapOut;
 
     private TransformerAlgorithmMapper() {
     }
 
-    @SuppressWarnings("unchecked")
     protected synchronized static void init(TransformAlgorithmsType transformAlgorithms) throws Exception {
         List<TransformAlgorithmType> algorithms = transformAlgorithms.getTransformAlgorithm();
-        algorithmsClassMapInOut = new HashMap<String, Class>();
-        algorithmsClassMapIn = new HashMap<String, Class>();
-        algorithmsClassMapOut = new HashMap<String, Class>();
+        algorithmsClassMapInOut = new HashMap<String, Class<?>>();
+        algorithmsClassMapIn = new HashMap<String, Class<?>>();
+        algorithmsClassMapOut = new HashMap<String, Class<?>>();
 
         for (int i = 0; i < algorithms.size(); i++) {
             TransformAlgorithmType algorithmType = algorithms.get(i);
@@ -65,7 +64,7 @@ public class TransformerAlgorithmMapper {
     }
 
     public static Class<?> getTransformerClass(String algoURI, String inOut) throws XMLSecurityException {
-        Class clazz = null;
+        Class<?> clazz = null;
         if (inOut == null) {
             clazz = algorithmsClassMapInOut.get(algoURI);
         } else if ("IN".equals(inOut)) {
