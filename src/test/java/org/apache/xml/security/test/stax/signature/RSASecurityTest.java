@@ -82,7 +82,7 @@ public class RSASecurityTest extends org.junit.Assert {
     }
     
 
-    // TODO - not working?
+    // TODO - not working? See SANTUARIO-328.
     @Test
     @org.junit.Ignore
     public void test_enveloping() throws Exception {

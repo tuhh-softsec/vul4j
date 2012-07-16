@@ -135,6 +135,26 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                                                   XMLSecurityProperties securityProperties, 
                                                   SecurityContext securityContext)
                                               throws XMLSecurityException, Base64DecodingException {
+        // X509Certificate
+        byte[] certBytes = 
+            XMLSecurityUtils.getQNameType(
+                x509DataType.getX509IssuerSerialOrX509SKIOrX509SubjectName(), 
+                XMLSecurityConstants.TAG_dsig_X509Certificate
+            );
+        if (certBytes != null) {
+            X509Certificate cert = getCertificateFromBytes(certBytes);
+            TokenType tokenType = XMLSecurityConstants.X509V3Token;
+            if (cert.getVersion() == 1) {
+                tokenType = XMLSecurityConstants.X509V1Token;
+            }
+            X509SecurityToken token = 
+                new X509SecurityToken(tokenType, securityContext,
+                        securityProperties.getCallbackHandler(), "", 
+                        XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+            token.setX509Certificates(new X509Certificate[]{cert});
+            return token;
+        }
+        
         // Issuer Serial
         final X509IssuerSerialType issuerSerialType = 
             XMLSecurityUtils.getQNameType(
@@ -167,26 +187,6 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                      securityProperties.getCallbackHandler(), "", XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
             token.setSkiBytes(skiBytes);
             token.setKey(securityProperties.getSignatureVerificationKey());
-            return token;
-        }
-        
-        // X509Certificate
-        byte[] certBytes = 
-            XMLSecurityUtils.getQNameType(
-                x509DataType.getX509IssuerSerialOrX509SKIOrX509SubjectName(), 
-                XMLSecurityConstants.TAG_dsig_X509Certificate
-            );
-        if (certBytes != null) {
-            X509Certificate cert = getCertificateFromBytes(certBytes);
-            TokenType tokenType = XMLSecurityConstants.X509V3Token;
-            if (cert.getVersion() == 1) {
-                tokenType = XMLSecurityConstants.X509V1Token;
-            }
-            X509SecurityToken token = 
-                new X509SecurityToken(tokenType, securityContext,
-                        securityProperties.getCallbackHandler(), "", 
-                        XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
-            token.setX509Certificates(new X509Certificate[]{cert});
             return token;
         }
         
