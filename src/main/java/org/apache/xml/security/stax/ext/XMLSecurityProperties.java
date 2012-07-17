@@ -92,7 +92,15 @@ public class XMLSecurityProperties {
     private String encryptionCompressionAlgorithm;
     private String encryptionKeyTransportAlgorithm;
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
+    private Key encryptionKey;
 
+    public void setEncryptionKey(Key encryptionKey) {
+        this.encryptionKey = encryptionKey;
+    }
+    
+    public Key getEncryptionKey() {
+        return encryptionKey;
+    }
 
     /**
      * Adds a part which must be encrypted by the framework

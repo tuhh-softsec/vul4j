@@ -35,6 +35,7 @@ import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
 import org.apache.xml.security.stax.impl.SecurityContextImpl;
 import org.apache.xml.security.stax.impl.XMLSecurityStreamWriter;
 import org.apache.xml.security.stax.impl.processor.output.FinalOutputProcessor;
+import org.apache.xml.security.stax.impl.processor.output.XMLEncryptOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLSignatureOutputProcessor;
 
 /**
@@ -107,6 +108,28 @@ public class OutboundXMLSec {
                         );
                     }
                 }
+            } else if (action.equals(XMLSecurityConstants.ENCRYPT)) {
+                XMLEncryptOutputProcessor encryptOutputProcessor = new XMLEncryptOutputProcessor();
+                initializeOutputProcessor(outputProcessorChain, encryptOutputProcessor, action);
+                
+                configureEncryptionKeys(securityContextImpl);
+                List<SecurePart> encryptionParts = securityProperties.getEncryptionSecureParts();
+                for (int j = 0; j < encryptionParts.size(); j++) {
+                    SecurePart securePart = encryptionParts.get(j);
+                    if (securePart.getIdToSign() == null) {
+                        outputProcessorChain.getSecurityContext().putAsMap(
+                                XMLSecurityConstants.ENCRYPTION_PARTS,
+                                securePart.getName(),
+                                securePart
+                        );
+                    } else {
+                        outputProcessorChain.getSecurityContext().putAsMap(
+                                XMLSecurityConstants.ENCRYPTION_PARTS,
+                                securePart.getIdToSign(),
+                                securePart
+                        );
+                    }
+                }
             }
         }
         if (output instanceof OutputStream) {
@@ -137,14 +160,14 @@ public class OutboundXMLSec {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
         }
         
-        final SecurityToken signatureSecurityToken = new SignatureSecurityToken(key, x509Certificates);
+        final SecurityToken securityToken = new XMLSecSecurityToken(key, x509Certificates);
         final String securityTokenid = UUID.randomUUID().toString();
         
-        final SecurityTokenProvider signatureSecurityTokenProvider = new SecurityTokenProvider() {
+        final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
             @Override
             public SecurityToken getSecurityToken() throws XMLSecurityException {
-                return signatureSecurityToken;
+                return securityToken;
             }
 
             @Override
@@ -152,16 +175,45 @@ public class OutboundXMLSec {
                 return securityTokenid;
             }
         };
-        securityContextImpl.registerSecurityTokenProvider(securityTokenid, signatureSecurityTokenProvider);
+        securityContextImpl.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
         
         securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE, securityTokenid);
     }
     
-    private static class SignatureSecurityToken implements SecurityToken {
+    private void configureEncryptionKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
+        Key key = securityProperties.getEncryptionKey();
+        /*
+        X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
+        if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
+        }
+        */
+        
+        final SecurityToken securityToken = new XMLSecSecurityToken(key, null);
+        final String securityTokenid = UUID.randomUUID().toString();
+        
+        final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
+
+            @Override
+            public SecurityToken getSecurityToken() throws XMLSecurityException {
+                return securityToken;
+            }
+
+            @Override
+            public String getId() {
+                return securityTokenid;
+            }
+        };
+        securityContextImpl.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
+        
+        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, securityTokenid);
+    }
+    
+    private static class XMLSecSecurityToken implements SecurityToken {
         private Key key;
         private X509Certificate[] certs;
         
-        public SignatureSecurityToken(Key key, X509Certificate[] certs) {
+        public XMLSecSecurityToken(Key key, X509Certificate[] certs) {
             this.key = key;
             this.certs = certs;
         }
