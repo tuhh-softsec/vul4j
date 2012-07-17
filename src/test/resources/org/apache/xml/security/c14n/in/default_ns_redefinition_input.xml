@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <dsig:Object Id="envelopedData" xmlns="" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><FOO xmlns="http://www.foo.org/foo">
+        foo
+    </FOO></dsig:Object>
+</Signature>

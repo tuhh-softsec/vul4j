@@ -362,6 +362,48 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         }
     }
 
+    @Test
+    public void testDefault_ns_redefinition() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Canonicalizer20010315_WithCommentsTransformer c = new Canonicalizer20010315_WithCommentsTransformer();
+        c.setOutputStream(baos);
+        XMLEventReader xmlSecEventReader = xmlInputFactory.createXMLEventReader(
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "org/apache/xml/security/c14n/in/default_ns_redefinition_input.xml")
+        );
+
+        XMLSecEvent xmlSecEvent = null;
+        while (xmlSecEventReader.hasNext()) {
+            xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
+            if (xmlSecEvent.isStartElement() && xmlSecEvent.asStartElement().getName().equals(new QName("http://www.w3.org/2000/09/xmldsig#", "Object"))) {
+                break;
+            }
+        }
+        while (xmlSecEventReader.hasNext()) {
+
+            c.transform(xmlSecEvent);
+
+            if (xmlSecEvent.isEndElement() && xmlSecEvent.asEndElement().getName().equals(new QName("http://www.w3.org/2000/09/xmldsig#", "Object"))) {
+                break;
+            }
+            xmlSecEvent = (XMLSecEvent) xmlSecEventReader.nextEvent();
+        }
+
+        byte[] reference =
+                getBytesFromResource(this.getClass().getClassLoader().getResource(
+                        "org/apache/xml/security/c14n/in/default_ns_redefinition_c14n.xml"));
+        boolean equals = java.security.MessageDigest.isEqual(reference, baos.toByteArray());
+
+        if (!equals) {
+            System.out.println("Expected:\n" + new String(reference, "UTF-8"));
+            System.out.println("");
+            System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        }
+
+        assertTrue(equals);
+    }
+
 //   /**
 //    * The XPath data model represents data using UCS characters.
 //    * Implementations MUST use XML processors that support UTF-8 and UTF-16

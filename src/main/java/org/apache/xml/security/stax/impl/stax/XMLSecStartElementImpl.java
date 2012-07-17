@@ -120,10 +120,10 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public void getNamespacesFromCurrentScope(List<XMLSecNamespace> comparableNamespaceList) {
-        comparableNamespaceList.addAll(namespaces);
         if (parentXMLSecStartELement != null) {
             parentXMLSecStartELement.getNamespacesFromCurrentScope(comparableNamespaceList);
         }
+        comparableNamespaceList.addAll(namespaces);
     }
 
     @Override

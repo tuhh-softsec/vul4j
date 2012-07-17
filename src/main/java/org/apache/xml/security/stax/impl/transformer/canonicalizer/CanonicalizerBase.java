@@ -192,11 +192,18 @@ public abstract class CanonicalizerBase implements Transformer {
 
             final XMLSecNamespace found = (XMLSecNamespace) outputStack.containsOnStack(comparableNamespace);
             //found means the prefix matched. so check the ns further
-            if (found != null && found.getNamespaceURI() != null && found.getNamespaceURI().equals(comparableNamespace.getNamespaceURI())) {
-                continue;
+            if (found != null) {
+                //ns redefinition so remove the old one:
+                //remove(comparableNamespace) works because we have overwritten the hash and equals method and just test
+                //for prefix equality
+                utilizedNamespaces.remove(comparableNamespace);
             }
-            utilizedNamespaces.add(comparableNamespace);
             outputStack.peek().add(comparableNamespace);
+
+            //don't add xmlns="" declarations:
+            if (!comparableNamespace.getNamespaceURI().isEmpty() || !comparableNamespace.getPrefix().isEmpty()) {
+                utilizedNamespaces.add(comparableNamespace);
+            }
         }
 
         return utilizedNamespaces;

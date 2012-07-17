@@ -80,11 +80,8 @@ public class RSASecurityTest extends org.junit.Assert {
         documentBuilderFactory.setCoalescing(false);
         documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
-    
 
-    // TODO - not working? See SANTUARIO-328.
     @Test
-    @org.junit.Ignore
     public void test_enveloping() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 

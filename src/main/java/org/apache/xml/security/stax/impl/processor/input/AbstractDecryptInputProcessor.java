@@ -305,7 +305,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         List<XMLSecNamespace> comparableNamespacesToApply = new ArrayList<XMLSecNamespace>();
         List<XMLSecNamespace> comparableNamespaceList = new ArrayList<XMLSecNamespace>();
         xmlSecStartElement.getNamespacesFromCurrentScope(comparableNamespaceList);
-        for (int i = 0; i < comparableNamespaceList.size(); i++) {
+        //reverse iteration -> From current element namespaces to parent namespaces
+        for (int i = comparableNamespaceList.size() - 1; i >= 0; i--) {
             XMLSecNamespace comparableNamespace = comparableNamespaceList.get(i);
             if (!comparableNamespacesToApply.contains(comparableNamespace)) {
                 comparableNamespacesToApply.add(comparableNamespace);
