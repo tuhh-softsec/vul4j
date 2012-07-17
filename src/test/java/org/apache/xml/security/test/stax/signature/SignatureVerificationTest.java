@@ -752,4 +752,51 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                             XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
 
+    @Test
+    public void testSignatureVerificationTransformBase64() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext-base64.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+                document, localNames, "http://www.w3.org/2000/09/xmldsig#base64", key
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        //XMLUtils.outputDOM(document, System.out);
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+    }
 }

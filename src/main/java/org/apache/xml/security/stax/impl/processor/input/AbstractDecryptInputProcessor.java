@@ -246,7 +246,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     @SuppressWarnings("unchecked")
                     Class<InputStream> transformerClass =
                             (Class<InputStream>) TransformerAlgorithmMapper.getTransformerClass(
-                                    transformType.getAlgorithm(), "IN");
+                                    transformType.getAlgorithm(), XMLSecurityConstants.DIRECTION.IN);
                     try {
                         Constructor<InputStream> constructor = transformerClass.getConstructor(InputStream.class);
                         decryptInputStream = constructor.newInstance(decryptInputStream);

@@ -78,13 +78,23 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
+                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
         XMLSignature sig = signUsingDOM(
                 "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
                 document,
-                "file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
-                false,
                 localNames,
-                key
+                key,
+                referenceInfos
         );
 
         // Add KeyInfo
@@ -127,13 +137,23 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
+                null,
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                true
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
         XMLSignature sig = signUsingDOM(
                 "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
                 document,
-                "file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
-                true,
                 localNames,
-                key
+                key,
+                referenceInfos
         );
 
         // Add KeyInfo
@@ -177,13 +197,23 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "http://www.apache.org/images/feather-small.gif",
+                null,
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                true
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
         XMLSignature sig = signUsingDOM(
                 "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
                 document,
-                "http://gigerstyle.homelinux.com/wp-content/themes/twentyeleven/images/headers/willow.jpg",
-                true,
                 localNames,
-                key
+                key,
+                referenceInfos
         );
 
         // Add KeyInfo
@@ -248,13 +278,23 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "#xpointer(id('" + id + "'))",
+                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
         XMLSignature sig = signUsingDOM(
                 "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
                 document,
-                "#xpointer(id('" + id + "'))",
-                false,
                 localNames,
-                key
+                key,
+                referenceInfos
         );
 
         // Add KeyInfo
@@ -309,13 +349,23 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         // Sign using DOM
         List<String> localNames = new ArrayList<String>();
         localNames.add("PaymentInfo");
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "#xpointer(id(\"" + id + "\"))",
+                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
         XMLSignature sig = signUsingDOM(
                 "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
                 document,
-                "#xpointer(id(\"" + id + "\"))",
-                false,
                 localNames,
-                key
+                key,
+                referenceInfos
         );
 
         // Add KeyInfo

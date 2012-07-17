@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.config;
 
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.xmlsecurity.ns.configuration.TransformAlgorithmType;
@@ -63,17 +64,23 @@ public class TransformerAlgorithmMapper {
         }
     }
 
-    public static Class<?> getTransformerClass(String algoURI, String inOut) throws XMLSecurityException {
+    public static Class<?> getTransformerClass(String algoURI, XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
         Class<?> clazz = null;
-        if (inOut == null) {
+
+        switch (direction) {
+            case IN:
+                clazz = algorithmsClassMapIn.get(algoURI);
+                break;
+            case OUT:
+                clazz = algorithmsClassMapOut.get(algoURI);
+                break;
+        }
+
+        if (clazz == null) {
             clazz = algorithmsClassMapInOut.get(algoURI);
-        } else if ("IN".equals(inOut)) {
-            clazz = algorithmsClassMapIn.get(algoURI);
-        } else if ("OUT".equals(inOut)) {
-            clazz = algorithmsClassMapOut.get(algoURI);
         }
         if (clazz == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "unknownTransformAlgorithm", algoURI);
         }
         return clazz;
     }

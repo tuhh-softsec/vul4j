@@ -148,14 +148,11 @@ public class XMLSecurityUtils {
     }
 
     //todo transformer factory?
-    public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm)
+    public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm, XMLSecurityConstants.DIRECTION direction)
             throws XMLSecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         @SuppressWarnings("unchecked")
-        Class<Transformer> transformerClass = (Class<Transformer>) TransformerAlgorithmMapper.getTransformerClass(algorithm, null);
-        if (transformerClass == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM);
-        }
+        Class<Transformer> transformerClass = (Class<Transformer>) TransformerAlgorithmMapper.getTransformerClass(algorithm, direction);
         Transformer childTransformer = transformerClass.newInstance();
         if (methodParameter2 != null) {
             childTransformer.setList((List) methodParameter1);

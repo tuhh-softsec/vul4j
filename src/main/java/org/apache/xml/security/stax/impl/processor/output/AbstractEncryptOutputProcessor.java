@@ -135,7 +135,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 if (compressionAlgorithm != null) {
                     @SuppressWarnings("unchecked")
                     Class<OutputStream> transformerClass =
-                            (Class<OutputStream>) TransformerAlgorithmMapper.getTransformerClass(compressionAlgorithm, "OUT");
+                            (Class<OutputStream>) TransformerAlgorithmMapper.getTransformerClass(compressionAlgorithm, XMLSecurityConstants.DIRECTION.OUT);
                     Constructor<OutputStream> constructor = transformerClass.getConstructor(OutputStream.class);
                     outputStream = constructor.newInstance(outputStream);
                 }

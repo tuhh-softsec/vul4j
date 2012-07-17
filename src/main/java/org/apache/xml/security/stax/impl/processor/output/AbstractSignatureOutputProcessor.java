@@ -171,10 +171,10 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     List<String> inclusiveNamespaces = new ArrayList<String>(1);
                     inclusiveNamespaces.add("#default");
                     Transformer transformer = XMLSecurityUtils.getTransformer(inclusiveNamespaces,
-                            this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo());
-                    this.transformer = XMLSecurityUtils.getTransformer(transformer, null, signaturePartDef.getTransformAlgo());
+                            this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo(), XMLSecurityConstants.DIRECTION.OUT);
+                    this.transformer = XMLSecurityUtils.getTransformer(transformer, null, signaturePartDef.getTransformAlgo(), XMLSecurityConstants.DIRECTION.OUT);
                 } else {
-                    transformer = XMLSecurityUtils.getTransformer(null, this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo());
+                    transformer = XMLSecurityUtils.getTransformer(null, this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo(), XMLSecurityConstants.DIRECTION.OUT);
                 }
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
@@ -207,6 +207,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     elementCounter--;
 
                     if (elementCounter == 0 && xmlSecEvent.asEndElement().getName().equals(this.startElement)) {
+                        transformer.doFinal();
                         try {
                             bufferedDigestOutputStream.close();
                         } catch (IOException e) {

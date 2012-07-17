@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @author $Author: $
- * @version $Revision: $ $Date: $
+ * @author $Author$
+ * @version $Revision$ $Date$
  */
 public class AbstractSignatureVerificationTest extends org.junit.Assert {
 
@@ -90,7 +90,21 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             Key signingKey
     ) throws Exception {
         String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, (List<ReferenceInfo>)null);
+    }
+
+    /**
+     * Sign the document using DOM
+     */
+    protected XMLSignature signUsingDOM(
+            String algorithm,
+            Document document,
+            List<String> localNames,
+            String referenceC14Nmethod,
+            Key signingKey
+    ) throws Exception {
+        String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, (List<ReferenceInfo>)null);
     }
 
 
@@ -100,13 +114,12 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
     protected XMLSignature signUsingDOM(
             String algorithm,
             Document document,
-            String externalReference,
-            boolean binaryResource,
             List<String> localNames,
-            Key signingKey
+            Key signingKey,
+            List<ReferenceInfo> additionalReferences
     ) throws Exception {
         String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, additionalReferences);
     }
 
     /**
@@ -120,7 +133,22 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String c14nMethod
     ) throws Exception {
         String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
-        return signUsingDOM(algorithm, document, null, false, localNames, signingKey, c14nMethod, digestMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod);
+    }
+
+    /**
+     * Sign the document using DOM
+     */
+    protected XMLSignature signUsingDOM(
+            String algorithm,
+            Document document,
+            List<String> localNames,
+            Key signingKey,
+            String c14nMethod,
+            List<ReferenceInfo> additionalReferences
+    ) throws Exception {
+        String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, additionalReferences, c14nMethod);
     }
 
     /**
@@ -134,7 +162,7 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String c14nMethod,
             String digestMethod
     ) throws Exception {
-        return signUsingDOM(algorithm, document, null, false, localNames, signingKey, c14nMethod, digestMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod);
     }
 
     /**
@@ -143,12 +171,12 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
     protected XMLSignature signUsingDOM(
             String algorithm,
             Document document,
-            String externalReference,
-            boolean binaryResource,
             List<String> localNames,
             Key signingKey,
             String c14nMethod,
-            String digestMethod
+            String digestMethod,
+            List<ReferenceInfo> additionalReferences,
+            String referenceC14NMethod
     ) throws Exception {
         XMLSignature sig = new XMLSignature(document, "", algorithm, c14nMethod);
         Element root = document.getDocumentElement();
@@ -167,18 +195,21 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             elementToSign.setAttributeNS(null, "Id", id);
             elementToSign.setIdAttributeNS(null, "Id", true);
 
-            if (externalReference != null) {
-                if (binaryResource) {
-                    sig.addDocument(externalReference, null, digestMethod);
-                } else {
-                    Transforms transforms = new Transforms(document);
-                    transforms.addTransform(c14nMethod);
-                    sig.addDocument(externalReference, transforms, digestMethod);
+            if (additionalReferences != null) {
+                for (int i = 0; i < additionalReferences.size(); i++) {
+                    ReferenceInfo referenceInfo = additionalReferences.get(i);
+                    if (referenceInfo.isBinary()) {
+                        sig.addDocument(referenceInfo.getResource(), null, referenceInfo.getDigestMethod());
+                    } else {
+                        Transforms transforms = new Transforms(document);
+                        transforms.addTransform(referenceInfo.getC14NMethod());
+                        sig.addDocument(referenceInfo.getResource(), transforms, referenceInfo.getDigestMethod());
+                    }
                 }
             }
 
             Transforms transforms = new Transforms(document);
-            transforms.addTransform(c14nMethod);
+            transforms.addTransform(referenceC14NMethod);
             sig.addDocument("#" + id, transforms, digestMethod);
         }
 
@@ -320,6 +351,51 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getSerialNumber());
             }
         }
+    }
 
+    class ReferenceInfo {
+        private String resource;
+        private String c14NMethod;
+        private String digestMethod;
+        private boolean binary;
+
+        ReferenceInfo(String resource, String c14NMethod, String digestMethod, boolean binary) {
+            this.resource = resource;
+            this.c14NMethod = c14NMethod;
+            this.digestMethod = digestMethod;
+            this.binary = binary;
+        }
+
+        public String getResource() {
+            return resource;
+        }
+
+        public void setResource(String resource) {
+            this.resource = resource;
+        }
+
+        public String getC14NMethod() {
+            return c14NMethod;
+        }
+
+        public void setC14NMethod(String c14NMethod) {
+            this.c14NMethod = c14NMethod;
+        }
+
+        public String getDigestMethod() {
+            return digestMethod;
+        }
+
+        public void setDigestMethod(String digestMethod) {
+            this.digestMethod = digestMethod;
+        }
+
+        public boolean isBinary() {
+            return binary;
+        }
+
+        public void setBinary(boolean binary) {
+            this.binary = binary;
+        }
     }
 }

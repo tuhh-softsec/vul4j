@@ -30,6 +30,9 @@
                           JAVACLASS="org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_ExclWithCommentsTransformer" />
 
       <!-- Base64 -->
+      <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"
+                          JAVACLASS="org.apache.xml.security.stax.impl.transformer.TransformBase64Decode" />
+
       <!-- XPath transform -->
       <!-- enveloped signature -->
       <!-- XSLT -->

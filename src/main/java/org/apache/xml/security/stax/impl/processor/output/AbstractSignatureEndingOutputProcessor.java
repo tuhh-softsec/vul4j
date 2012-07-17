@@ -222,7 +222,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
 
             try {
                 this.transformer = XMLSecurityUtils.getTransformer(null, this.bufferedSignerOutputStream,
-                        getSecurityProperties().getSignatureCanonicalizationAlgorithm());
+                        getSecurityProperties().getSignatureCanonicalizationAlgorithm(), XMLSecurityConstants.DIRECTION.OUT);
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
             } catch (InstantiationException e) {
@@ -241,10 +241,13 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
                 return signatureValue;
             }
             try {
+                transformer.doFinal();
                 bufferedSignerOutputStream.close();
                 signatureValue = signerOutputStream.sign();
                 return signatureValue;
             } catch (IOException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            } catch (XMLStreamException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
             }
         }

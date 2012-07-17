@@ -37,4 +37,6 @@ public interface Transformer {
     void setTransformer(Transformer transformer) throws XMLSecurityException;
 
     void transform(XMLSecEvent xmlSecEvent) throws XMLStreamException;
+
+    void doFinal() throws XMLStreamException;
 }

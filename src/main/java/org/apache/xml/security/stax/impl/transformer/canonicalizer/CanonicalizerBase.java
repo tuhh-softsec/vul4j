@@ -392,6 +392,11 @@ public abstract class CanonicalizerBase implements Transformer {
         }
     }
 
+    @Override
+    public void doFinal() throws XMLStreamException {
+        //nothing to do here
+    }
+
     protected static void outputAttrToWriter(final String name, final String value, final OutputStream writer,
                                              final Map<String, byte[]> cache) throws IOException {
         writer.write(' ');

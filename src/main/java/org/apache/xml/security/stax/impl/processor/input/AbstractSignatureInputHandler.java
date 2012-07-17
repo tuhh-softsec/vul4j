@@ -222,7 +222,8 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                 transformer = XMLSecurityUtils.getTransformer(
                         inclusiveNamespaces,
                         this.bufferedSignerOutputStream,
-                        canonicalizationMethodType.getAlgorithm());
+                        canonicalizationMethodType.getAlgorithm(),
+                        XMLSecurityConstants.DIRECTION.IN);
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             } catch (InstantiationException e) {
@@ -240,11 +241,14 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
 
         protected void doFinal() throws XMLSecurityException {
             try {
+                transformer.doFinal();
                 bufferedSignerOutputStream.close();
                 if (!signerOutputStream.verify(signatureType.getSignatureValue().getValue())) {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
                 }
             } catch (IOException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (XMLStreamException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             }
         }

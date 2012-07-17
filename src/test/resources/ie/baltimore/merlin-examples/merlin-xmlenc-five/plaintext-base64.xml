@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PurchaseOrder xmlns="urn:example:po">
+  <Items>
+    <Item Code="001-001-001" Quantity="1">
+      spade
+    </Item>
+    <Item Code="001-001-002" Quantity="1">
+      shovel
+    </Item>
+  </Items>
+  <ShippingAddress>
+    Dig PLC, 1 First Ave, Dublin 1, Ireland
+  </ShippingAddress>
+  <PaymentInfo>
+      PEJpbGxpbmdBZGRyZXNzPgogICAgICBEaWcgUExDLCAxIEZpcnN0IEF2ZSwgRHVibGluIDEsIEly
+      ZWxhbmQKICAgIDwvQmlsbGluZ0FkZHJlc3M+CiAgICA8Q3JlZGl0Q2FyZCBUeXBlPUFtZXg+CiAg
+      ICAgIDxOYW1lPkZvbyBCIEJhejwvTmFtZT4KICAgICAgPE51bWJlcj4xMjM0IDU2Nzg5MCAxMjM0
+      NTwvTnVtYmVyPgogICAgICA8RXhwaXJlcyBNb250aD0xIFllYXI9MjAwNSAvPgogICAgPC9DcmVk
+      aXRDYXJkPgo=
+  </PaymentInfo>
+</PurchaseOrder>

@@ -136,6 +136,11 @@ public class XMLSecurityConstants {
         POSTPROCESSING,
     }
 
+    public enum DIRECTION {
+        IN,
+        OUT,
+    }
+
     public static final String XMLINPUTFACTORY = "XMLInputFactory";
 
     public static final String NS_XML = "http://www.w3.org/2000/xmlns/";

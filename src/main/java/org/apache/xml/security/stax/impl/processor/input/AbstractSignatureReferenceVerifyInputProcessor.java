@@ -305,10 +305,10 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
             if (parentTransformer != null) {
-                parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm);
+                parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm, XMLSecurityConstants.DIRECTION.IN);
             } else {
                 parentTransformer =
-                        XMLSecurityUtils.getTransformer(inclusiveNamespaces, outputStream, algorithm);
+                        XMLSecurityUtils.getTransformer(inclusiveNamespaces, outputStream, algorithm, XMLSecurityConstants.DIRECTION.IN);
             }
         }
         return parentTransformer;
@@ -386,6 +386,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                     this.elementCounter--;
 
                     if (this.elementCounter == 0 && xmlSecEndElement.getName().equals(getStartElement())) {
+                        getTransformer().doFinal();
                         try {
                             getBufferedDigestOutputStream().close();
                         } catch (IOException e) {
