@@ -223,9 +223,7 @@ public class PhaosTest extends org.junit.Assert {
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
     
-    // See Santuario-318
     @Test
-    @org.junit.Ignore
     public void test_signature_rsa_detached_b64_transform() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 

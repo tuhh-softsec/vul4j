@@ -242,7 +242,6 @@ public class IAIKTest extends org.junit.Assert {
                             XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }    
     
-    // See SANTUARIO-318
     // See SANTUARIO-322
     @Test
     @Ignore
