@@ -41,6 +41,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
@@ -54,7 +55,7 @@ import org.w3c.dom.Document;
  * from RSA Security using Cert-J 2.01. These test vectors are located in the directory
  * <CODE>data/com/rsasecurity/bdournaee/</CODE>.
  */
-public class RSASecurityTest extends org.junit.Assert {
+public class RSASecurityTest extends AbstractSignatureVerificationTest {
     
     // Define the Keys
     private static final String RSA_MOD =
@@ -90,9 +91,6 @@ public class RSASecurityTest extends org.junit.Assert {
         DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
         Document document = builder.parse(sourceDocument);
         
-        // Set up the Key
-        Key publicKey = getPublicKey();
-        
         // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
@@ -104,11 +102,16 @@ public class RSASecurityTest extends org.junit.Assert {
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, null, getPublicKey(),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
     
     // See SANTUARIO-320
