@@ -20,15 +20,18 @@ package org.apache.xml.security.stax.ext;
 
 import java.io.OutputStream;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.UUID;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
@@ -37,6 +40,7 @@ import org.apache.xml.security.stax.impl.XMLSecurityStreamWriter;
 import org.apache.xml.security.stax.impl.processor.output.FinalOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLEncryptOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLSignatureOutputProcessor;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 
 /**
  * Outbound Streaming-XML-Security
@@ -161,7 +165,7 @@ public class OutboundXMLSec {
         }
         
         final SecurityToken securityToken = new XMLSecSecurityToken(key, x509Certificates);
-        final String securityTokenid = UUID.randomUUID().toString();
+        final String securityTokenid = IDGenerator.generateID("SIG");
         
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
@@ -181,16 +185,44 @@ public class OutboundXMLSec {
     }
     
     private void configureEncryptionKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
-        Key key = securityProperties.getEncryptionKey();
-        /*
-        X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
-        if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
+        // Sort out transport keys / key wrapping keys first.
+        Key transportKey = securityProperties.getEncryptionTransportKey();
+        X509Certificate transportCert = securityProperties.getEncryptionUseThisCertificate();
+        X509Certificate[] transportCerts = null;
+        if (transportCert != null) {
+            transportCerts = new X509Certificate[]{transportCert};
         }
-        */
+        final SecurityToken transportSecurityToken = new XMLSecSecurityToken(transportKey, transportCerts);
         
-        final SecurityToken securityToken = new XMLSecSecurityToken(key, null);
-        final String securityTokenid = UUID.randomUUID().toString();
+        // Now sort out the session key
+        Key key = securityProperties.getEncryptionKey();
+        if (key == null) {
+            if (transportCert == null && transportKey == null) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, "encryptionKeyMissing");
+            }
+            // If none is configured then generate one
+            String keyAlgorithm = 
+                JCEAlgorithmMapper.getJCERequiredKeyFromURI(securityProperties.getEncryptionSymAlgorithm());
+            KeyGenerator keyGen;
+            try {
+                keyGen = KeyGenerator.getInstance(keyAlgorithm);
+            } catch (NoSuchAlgorithmException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+            }
+            //the sun JCE provider expects the real key size for 3DES (112 or 168 bit)
+            //whereas bouncy castle expects the block size of 128 or 192 bits
+            if (keyAlgorithm.contains("AES")) {
+                int keyLength = 
+                    JCEAlgorithmMapper.getKeyLengthFromURI(securityProperties.getEncryptionSymAlgorithm());
+                keyGen.init(keyLength);
+            }
+
+            key = keyGen.generateKey();
+        }
+        
+        final XMLSecSecurityToken securityToken = new XMLSecSecurityToken(key, null);
+        securityToken.setKeyWrappingToken(transportSecurityToken);
+        final String securityTokenid = IDGenerator.generateID(null);
         
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
@@ -212,34 +244,46 @@ public class OutboundXMLSec {
     private static class XMLSecSecurityToken implements SecurityToken {
         private Key key;
         private X509Certificate[] certs;
+        private boolean asymmetric;
+        private SecurityToken keyWrappingToken;
         
         public XMLSecSecurityToken(Key key, X509Certificate[] certs) {
             this.key = key;
             this.certs = certs;
+            if (key instanceof PrivateKey || key instanceof PublicKey || certs != null) {
+                asymmetric = true;
+            }
         }
 
         public String getId() {
             return null;
         }
 
-
         public Object getProcessor() {
             return null;
         }
 
         public boolean isAsymmetric() {
-            return false;
+            return asymmetric;
         }
 
         public Key getSecretKey(
             String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage
         ) throws XMLSecurityException {
-            return key;
+            if (key instanceof SecretKey || key instanceof PrivateKey) {
+                return key;
+            }
+            return null;
         }
 
         public PublicKey getPublicKey(
             String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage
         ) throws XMLSecurityException {
+            if (key instanceof PublicKey) {
+                return (PublicKey)key;
+            } else if (certs != null && certs.length > 0) {
+                return certs[0].getPublicKey();
+            }
             return null;
         }
 
@@ -249,9 +293,13 @@ public class OutboundXMLSec {
 
         public void verify() throws XMLSecurityException {
         }
+        
+        public void setKeyWrappingToken(SecurityToken keyWrappingToken) {
+            this.keyWrappingToken = keyWrappingToken;
+        }
 
         public SecurityToken getKeyWrappingToken() {
-            return null;
+            return keyWrappingToken;
         }
 
         public XMLSecurityConstants.TokenType getTokenType() {

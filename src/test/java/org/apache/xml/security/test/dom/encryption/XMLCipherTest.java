@@ -181,7 +181,7 @@ public class XMLCipherTest extends org.junit.Assert {
      * encrypted using an RSA key.  Reverse using KEK
      */
     @org.junit.Test
-    public void testAES128ElementRSAKWCipherUsingKEK() throws Exception {
+    public void testAES256ElementRSAKWCipherUsingKEK() throws Exception {
 
         Document d = document(); // source
         Document ed = null;
@@ -232,7 +232,7 @@ public class XMLCipherTest extends org.junit.Assert {
             //decrypt
             key = null;
             ee = (Element) ed.getElementsByTagName("xenc:EncryptedData").item(0);
-            cipher = XMLCipher.getInstance(XMLCipher.AES_128);
+            cipher = XMLCipher.getInstance(XMLCipher.AES_256);
             cipher.init(XMLCipher.DECRYPT_MODE, null);
             cipher.setKEK(priv);
             dd = cipher.doFinal(ed, ee);
@@ -241,7 +241,7 @@ public class XMLCipherTest extends org.junit.Assert {
             assertEquals(source, target);
         } else {
             log.warn(
-                "Test testAES128ElementRSAKWCipherUsingKEK skipped as "
+                "Test testAES256ElementRSAKWCipherUsingKEK skipped as "
                 + "necessary algorithms not available"
             );
         }
@@ -253,7 +253,7 @@ public class XMLCipherTest extends org.junit.Assert {
      * EncryptedKey by hand
      */
     @org.junit.Test
-    public void testAES192ElementAES256KWCipher() throws Exception {
+    public void testAES192Element3DESKWCipher() throws Exception {
 
         Document d = document(); // source
         Document ed = null;
@@ -328,7 +328,7 @@ public class XMLCipherTest extends org.junit.Assert {
             assertEquals(source, target);
         } else {
             log.warn(
-                "Test testAES192ElementAES256KWCipher skipped as "
+                "Test testAES192Element3DESKWCipher skipped as "
                 + "necessary algorithms not available"
             );
         }

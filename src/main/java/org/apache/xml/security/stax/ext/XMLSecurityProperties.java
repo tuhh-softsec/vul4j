@@ -93,6 +93,15 @@ public class XMLSecurityProperties {
     private String encryptionKeyTransportAlgorithm;
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
     private Key encryptionKey;
+    private Key encryptionTransportKey;
+    
+    public void setEncryptionTransportKey(Key encryptionTransportKey) {
+        this.encryptionTransportKey = encryptionTransportKey;
+    }
+    
+    public Key getEncryptionTransportKey() {
+        return encryptionTransportKey;
+    }
 
     public void setEncryptionKey(Key encryptionKey) {
         this.encryptionKey = encryptionKey;

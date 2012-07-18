@@ -22,11 +22,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -278,11 +283,7 @@ public class EncryptionCreationTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 2);
     }
     
-    /*
-    
-    /**
-     * Test encryption using a generated AES 128 bit key that is
-     * encrypted using a AES 192 bit key.  Then reverse using the KEK
+    // Test encryption using a generated AES 128 bit key that is encrypted using a AES 192 bit key. 
     @Test
     public void testAES128ElementAES192KWCipherUsingKEKOutbound() throws Exception {
         // Set up the Configuration
@@ -290,52 +291,35 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
         properties.setOutAction(actions);
-        properties.loadEncryptionKeystore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
-        );
-        properties.setEncryptionUser("receiver");
-        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes128-cbc");
-        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#kw-aes192");
         
-        SecurePart securePart = new SecurePart("PaymentInfo", "urn:example:po", SecurePart.Modifier.Element);
-        properties.addEncryptionPart(securePart);
-        
-        SecurityContextImpl securityContextImpl = new SecurityContextImpl();
-        // Set up a Key Encryption Key
+        // Set the key up
         byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
-        SecretKey kek = new SecretKeySpec(bits192, "AES");
-
-        // Generate a traffic key
+        SecretKey transportKey = new SecretKeySpec(bits192, "AES");
+        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#kw-aes192");
+        properties.setEncryptionTransportKey(transportKey);
+        
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
         keygen.init(128);
-        SecretKey secretKey = keygen.generateKey();
+        SecretKey key = keygen.generateKey();
+        properties.setEncryptionKey(key);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes128-cbc");
         
-        EncryptionSecurityToken securityToken = new EncryptionSecurityToken(secretKey);
-        String id = UUID.randomUUID().toString();
-        EncryptionSecurityTokenProvider securityTokenProvider = 
-                new EncryptionSecurityTokenProvider(securityToken, id);
-        securityContextImpl.registerSecurityTokenProvider(id, securityTokenProvider);
-        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, id);
-
-        final DocumentContextImpl documentContext = new DocumentContextImpl();
-        documentContext.setEncoding("UTF-8");
-        InputStream sourceDocument = 
-                this.getClass().getClassLoader().getResourceAsStream("testdata/plaintext.xml");
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
+        properties.addEncryptionPart(securePart);
         
-        // Add processor to the chain
-        OutputProcessorChainImpl processorChain = 
-            new OutputProcessorChainImpl(securityContextImpl, documentContext);
-        processorChain.addProcessor(
-            new EKEncryptOutputProcessor(properties, XMLSecurityConstants.ENCRYPT, kek)
-        );
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        processorChain.addProcessor(new FinalOutputProcessor(baos, "UTF-8", properties, null));
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
         
-        XMLStreamWriter xmlStreamWriter = new XMLSecurityStreamWriter(processorChain);
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
         xmlStreamWriter.close();
-
+        
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         
         Document document = 
@@ -354,68 +338,50 @@ public class EncryptionCreationTest extends org.junit.Assert {
             );
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // Decrypt using Apache Santuario
-        decryptUsingSantuario("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, kek, document);
+        // Decrypt using DOM API
+        decryptUsingDOM("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, transportKey, document);
     }
     
-    /**
-     * Test encryption using a generated AES 256 bit key that is
-     * encrypted using an RSA key.  Reverse using KEK
+    // Test encryption using a generated AES 256 bit key that is encrypted using an RSA key. 
     @Test
-    public void testAES128ElementRSAKWCipherUsingKEK() throws Exception {
+    public void testAES256ElementRSAKWCipherUsingKEKOutbound() throws Exception {
         // Set up the Configuration
         XMLSecurityProperties properties = new XMLSecurityProperties();
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
         properties.setOutAction(actions);
-        properties.loadEncryptionKeystore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
-        );
-        properties.setEncryptionUser("receiver");
-        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
-        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#rsa-1_5");
         
-        SecurePart securePart = new SecurePart("PaymentInfo", "urn:example:po", SecurePart.Modifier.Element);
-        properties.addEncryptionPart(securePart);
-        
-        SecurityContextImpl securityContextImpl = new SecurityContextImpl();
+        // Set the key up
         // Generate an RSA key
         KeyPairGenerator rsaKeygen = KeyPairGenerator.getInstance("RSA");
         KeyPair kp = rsaKeygen.generateKeyPair();
         PrivateKey priv = kp.getPrivate();
         PublicKey pub = kp.getPublic();
-
-        // Generate a traffic key
+        properties.setEncryptionTransportKey(pub);
+        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#rsa-1_5");
+        
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
         keygen.init(256);
-        SecretKey secretKey = keygen.generateKey();
+        SecretKey key = keygen.generateKey();
+        properties.setEncryptionKey(key);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
         
-        EncryptionSecurityToken securityToken = new EncryptionSecurityToken(secretKey);
-        String id = UUID.randomUUID().toString();
-        EncryptionSecurityTokenProvider securityTokenProvider = 
-                new EncryptionSecurityTokenProvider(securityToken, id);
-        securityContextImpl.registerSecurityTokenProvider(id, securityTokenProvider);
-        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, id);
-
-        final DocumentContextImpl documentContext = new DocumentContextImpl();
-        documentContext.setEncoding("UTF-8");
-        InputStream sourceDocument = 
-                this.getClass().getClassLoader().getResourceAsStream("testdata/plaintext.xml");
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
+        properties.addEncryptionPart(securePart);
         
-        // Add processor to the chain
-        OutputProcessorChainImpl processorChain = 
-            new OutputProcessorChainImpl(securityContextImpl, documentContext);
-        processorChain.addProcessor(
-            new EKEncryptOutputProcessor(properties, XMLSecurityConstants.ENCRYPT, pub)
-        );
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        processorChain.addProcessor(new FinalOutputProcessor(baos, "UTF-8", properties, null));
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
         
-        XMLStreamWriter xmlStreamWriter = new XMLSecurityStreamWriter(processorChain);
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
         xmlStreamWriter.close();
-
+        
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         
         Document document = 
@@ -434,13 +400,11 @@ public class EncryptionCreationTest extends org.junit.Assert {
             );
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // Decrypt using Apache Santuario
-        decryptUsingSantuario("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, priv, document);
+        // Decrypt using DOM API
+        decryptUsingDOM("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, priv, document);
     }
     
-    /**
-     * Test encryption using a generated AES 192 bit key that is
-     * encrypted using a 3DES key.  Then reverse using the KEK
+    // Test encryption using a generated AES 192 bit key that is encrypted using a 3DES key.  
     @Test
     public void testAES192Element3DESKWCipher() throws Exception {
         // Set up the Configuration
@@ -448,51 +412,34 @@ public class EncryptionCreationTest extends org.junit.Assert {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
         properties.setOutAction(actions);
-        properties.loadEncryptionKeystore(
-            this.getClass().getClassLoader().getResource("transmitter.jks"), "default".toCharArray()
-        );
-        properties.setEncryptionUser("receiver");
-        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes192-cbc");
+        
+        // Set the key up
+        SecretKey transportKey = generateDESSecretKey();
         properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#kw-tripledes");
+        properties.setEncryptionTransportKey(transportKey);
         
-        SecurePart securePart = new SecurePart("PaymentInfo", "urn:example:po", SecurePart.Modifier.Element);
-        properties.addEncryptionPart(securePart);
-        
-        SecurityContextImpl securityContextImpl = new SecurityContextImpl();
-        // Set up a Key Encryption Key
-        SecretKey kek = generateSecretKey();
-
-        // Generate a traffic key
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
         keygen.init(192);
-        SecretKey secretKey = keygen.generateKey();
+        SecretKey key = keygen.generateKey();
+        properties.setEncryptionKey(key);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes192-cbc");
         
-        EncryptionSecurityToken securityToken = new EncryptionSecurityToken(secretKey);
-        String id = UUID.randomUUID().toString();
-        EncryptionSecurityTokenProvider securityTokenProvider = 
-                new EncryptionSecurityTokenProvider(securityToken, id);
-        securityContextImpl.registerSecurityTokenProvider(id, securityTokenProvider);
-        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, id);
-
-        final DocumentContextImpl documentContext = new DocumentContextImpl();
-        documentContext.setEncoding("UTF-8");
-        InputStream sourceDocument = 
-                this.getClass().getClassLoader().getResourceAsStream("testdata/plaintext.xml");
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
+        properties.addEncryptionPart(securePart);
         
-        // Add processor to the chain
-        OutputProcessorChainImpl processorChain = 
-            new OutputProcessorChainImpl(securityContextImpl, documentContext);
-        processorChain.addProcessor(
-            new EKEncryptOutputProcessor(properties, XMLSecurityConstants.ENCRYPT, kek)
-        );
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        processorChain.addProcessor(new FinalOutputProcessor(baos, "UTF-8", properties, null));
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
         
-        XMLStreamWriter xmlStreamWriter = new XMLSecurityStreamWriter(processorChain);
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
         xmlStreamWriter.close();
-
+        
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         
         Document document = 
@@ -511,11 +458,11 @@ public class EncryptionCreationTest extends org.junit.Assert {
             );
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // Decrypt using Apache Santuario
-        decryptUsingSantuario("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, kek, document);
+        // Decrypt using DOM API
+        decryptUsingDOM("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, transportKey, document);
     }
-    */
     
+
     /**
      * Generate a secret key
      */
