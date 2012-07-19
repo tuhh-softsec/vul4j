@@ -116,27 +116,30 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         switch (xmlSecEvent.getEventType()) {
             case XMLStreamConstants.START_ELEMENT:
                 XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
-                ReferenceType referenceType = resolvesResource(xmlSecStartElement);
-                if (referenceType != null) {
+                List<ReferenceType> referenceTypes = resolvesResource(xmlSecStartElement);
+                if (!referenceTypes.isEmpty()) {
+                    for (int i = 0; i < referenceTypes.size(); i++) {
+                        ReferenceType referenceType = referenceTypes.get(i);
 
-                    if (processedReferences.contains(referenceType)) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
-                    }
-                    InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
-                            getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
-                                    referenceType, xmlSecStartElement.getName());
-                    if (!internalSignatureReferenceVerifier.isFinished()) {
-                        internalSignatureReferenceVerifier.processEvent(xmlSecEvent, inputProcessorChain);
-                        inputProcessorChain.addProcessor(internalSignatureReferenceVerifier);
-                    }
-                    processedReferences.add(referenceType);
-                    inputProcessorChain.getDocumentContext().setIsInSignedContent(
-                            inputProcessorChain.getProcessors().indexOf(internalSignatureReferenceVerifier),
-                            internalSignatureReferenceVerifier);
+                        if (processedReferences.contains(referenceType)) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
+                        }
+                        InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
+                                getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
+                                        referenceType, xmlSecStartElement.getName());
+                        if (!internalSignatureReferenceVerifier.isFinished()) {
+                            internalSignatureReferenceVerifier.processEvent(xmlSecEvent, inputProcessorChain);
+                            inputProcessorChain.addProcessor(internalSignatureReferenceVerifier);
+                        }
+                        processedReferences.add(referenceType);
+                        inputProcessorChain.getDocumentContext().setIsInSignedContent(
+                                inputProcessorChain.getProcessors().indexOf(internalSignatureReferenceVerifier),
+                                internalSignatureReferenceVerifier);
 
-                    // Fire a SecurityEvent
-                    List<QName> elementPath = xmlSecStartElement.getElementPath();
-                    processElementPath(elementPath, inputProcessorChain, xmlSecEvent);
+                        // Fire a SecurityEvent
+                        List<QName> elementPath = xmlSecStartElement.getElementPath();
+                        processElementPath(elementPath, inputProcessorChain, xmlSecEvent);
+                    }
                 }
                 break;
         }
@@ -147,15 +150,20 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
     ) throws XMLSecurityException;
 
-    protected ReferenceType resolvesResource(XMLSecStartElement xmlSecStartElement) {
+    protected List<ReferenceType> resolvesResource(XMLSecStartElement xmlSecStartElement) {
+        List<ReferenceType> referenceTypes = Collections.emptyList();
+
         Iterator<Map.Entry<ResourceResolver, ReferenceType>> resourceResolverIterator = sameDocumentReferences.entrySet().iterator();
         while (resourceResolverIterator.hasNext()) {
             Map.Entry<ResourceResolver, ReferenceType> entry = resourceResolverIterator.next();
             if (entry.getKey().matches(xmlSecStartElement)) {
-                return entry.getValue();
+                if (referenceTypes == Collections.<ReferenceType>emptyList()) {
+                    referenceTypes = new ArrayList<ReferenceType>();
+                }
+                referenceTypes.add(entry.getValue());
             }
         }
-        return null;
+        return referenceTypes;
     }
 
     @Override
