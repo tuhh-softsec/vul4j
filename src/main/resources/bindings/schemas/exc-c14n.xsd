@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE schema
- PUBLIC "-//W3C//DTD XMLSchema 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd"
-[
+  PUBLIC "-//W3C//DTD XMLSchema 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd"
+  [
   <!ATTLIST schema
-    xmlns:ec CDATA #FIXED 'http://www.w3.org/2001/10/xml-exc-c14n#'>
-  <!ENTITY ec 'http://www.w3.org/2001/10/xml-exc-c14n#'>
-  <!ENTITY % p ''>
-  <!ENTITY % s ''>
- ]>
+        xmlns:ec CDATA #FIXED 'http://www.w3.org/2001/10/xml-exc-c14n#'>
+      <!ENTITY ec 'http://www.w3.org/2001/10/xml-exc-c14n#'>
+      <!ENTITY % p ''>
+      <!ENTITY % s ''>
+     ]> 
 
 
 <!-- Schema for Exclusive Canonicalization
@@ -29,10 +29,16 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
            xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#"
            targetNamespace="http://www.w3.org/2001/10/xml-exc-c14n#"
-           version="0.1" elementFormDefault="qualified">    <element name="InclusiveNamespaces"
+	   version="0.1" elementFormDefault="qualified">
+  
+  <element name="InclusiveNamespaces"
             type="ec:InclusiveNamespaces"/>
     
    <complexType name="InclusiveNamespaces">
-      <attribute name="PrefixList" type="NMTOKENS"/>
+     <attribute name="PrefixList">
+       <simpleType>
+         <list itemType="string"/>
+       </simpleType>  
+     </attribute>
    </complexType>
 </schema>
