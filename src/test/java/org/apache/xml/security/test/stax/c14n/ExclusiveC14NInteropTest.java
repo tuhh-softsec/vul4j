@@ -44,9 +44,7 @@ import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -85,9 +83,7 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
     }
     
 
-    // See SANTUARIO-321
     @Test
-    @Ignore
     public void test_Y1() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -98,7 +94,7 @@ public class ExclusiveC14NInteropTest extends org.junit.Assert {
         // Set up the Key
         Key publicKey = getPublicKey();
         
-        XMLUtils.outputDOM(document, System.out);
+        // XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
         javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();

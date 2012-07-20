@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -491,7 +490,6 @@ public class BaltimoreTest extends org.junit.Assert {
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
     
-    // SANTUARIO-318
     @Test
     public void test_twenty_three_enveloping_b64_dsa() throws Exception {
         // Read in plaintext document
