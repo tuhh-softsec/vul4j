@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.impl.processor.output;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -30,6 +31,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
@@ -62,6 +64,19 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
         SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
         signatureValueSecurityEvent.setSignatureValue(this.signedInfoProcessor.getSignatureValue());
         outputProcessorChain.getSecurityContext().registerSecurityEvent(signatureValueSecurityEvent);
+    }
+
+    @Override
+    protected void flushBufferAndCallbackAfterTokenID(
+            OutputProcessorChain outputProcessorChain, Iterator<XMLSecEvent> xmlSecEventIterator)
+            throws XMLStreamException, XMLSecurityException {
+
+        //@see SANTUARIO-324
+        //output root element...
+        outputProcessorChain.reset();
+        outputProcessorChain.processEvent(xmlSecEventIterator.next());
+        //...then call super to append the signature and flush the rest
+        super.flushBufferAndCallbackAfterTokenID(outputProcessorChain, xmlSecEventIterator);
     }
 
     @Override

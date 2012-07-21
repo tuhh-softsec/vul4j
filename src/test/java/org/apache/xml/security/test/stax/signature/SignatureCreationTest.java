@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.crypto.SecretKey;
@@ -82,6 +83,17 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
         Document document = 
             documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+
+        //first child element must be the dsig:Signature @see SANTUARIO-324:
+        NodeList nodeList = document.getDocumentElement().getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node child = nodeList.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)child;
+                Assert.assertEquals(element.getLocalName(), "Signature");
+                break;
+            }
+        }
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
