@@ -308,7 +308,6 @@ public class IAIKTest extends org.junit.Assert {
     
     // See SANTUARIO-320
     @Test
-    @Ignore
     public void test_transforms_signatures_envelopedSignatureSignature() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 

@@ -33,8 +33,10 @@
       <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#base64"
                           JAVACLASS="org.apache.xml.security.stax.impl.transformer.TransformBase64Decode" />
 
-      <!-- XPath transform -->
-      <!-- enveloped signature -->
+       <!-- enveloped signature -->
+       <TransformAlgorithm URI="http://www.w3.org/2000/09/xmldsig#enveloped-signature"
+                           JAVACLASS="org.apache.xml.security.stax.impl.transformer.TransformEnvelopedSignature" />
+       <!-- XPath transform -->
       <!-- XSLT -->
       <!-- XPath version 2 -->
       <!-- XPath version 2b -->

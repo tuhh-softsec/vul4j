@@ -195,22 +195,25 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             elementToSign.setAttributeNS(null, "Id", id);
             elementToSign.setIdAttributeNS(null, "Id", true);
 
-            if (additionalReferences != null) {
-                for (int i = 0; i < additionalReferences.size(); i++) {
-                    ReferenceInfo referenceInfo = additionalReferences.get(i);
-                    if (referenceInfo.isBinary()) {
-                        sig.addDocument(referenceInfo.getResource(), null, referenceInfo.getDigestMethod());
-                    } else {
-                        Transforms transforms = new Transforms(document);
-                        transforms.addTransform(referenceInfo.getC14NMethod());
-                        sig.addDocument(referenceInfo.getResource(), transforms, referenceInfo.getDigestMethod());
-                    }
-                }
-            }
-
             Transforms transforms = new Transforms(document);
             transforms.addTransform(referenceC14NMethod);
             sig.addDocument("#" + id, transforms, digestMethod);
+        }
+
+        if (additionalReferences != null) {
+            for (int i = 0; i < additionalReferences.size(); i++) {
+                ReferenceInfo referenceInfo = additionalReferences.get(i);
+                if (referenceInfo.isBinary()) {
+                    sig.addDocument(referenceInfo.getResource(), null, referenceInfo.getDigestMethod());
+                } else {
+                    Transforms transforms = new Transforms(document);
+                    for (int j = 0; j < referenceInfo.getC14NMethod().length; j++) {
+                        String transform = referenceInfo.getC14NMethod()[j];
+                        transforms.addTransform(transform);
+                    }
+                    sig.addDocument(referenceInfo.getResource(), transforms, referenceInfo.getDigestMethod());
+                }
+            }
         }
 
         sig.sign(signingKey);
@@ -355,11 +358,11 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
 
     class ReferenceInfo {
         private String resource;
-        private String c14NMethod;
+        private String[] c14NMethod;
         private String digestMethod;
         private boolean binary;
 
-        ReferenceInfo(String resource, String c14NMethod, String digestMethod, boolean binary) {
+        ReferenceInfo(String resource, String[] c14NMethod, String digestMethod, boolean binary) {
             this.resource = resource;
             this.c14NMethod = c14NMethod;
             this.digestMethod = digestMethod;
@@ -374,11 +377,11 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             this.resource = resource;
         }
 
-        public String getC14NMethod() {
+        public String[] getC14NMethod() {
             return c14NMethod;
         }
 
-        public void setC14NMethod(String c14NMethod) {
+        public void setC14NMethod(String[] c14NMethod) {
             this.c14NMethod = c14NMethod;
         }
 

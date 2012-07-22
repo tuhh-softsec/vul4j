@@ -27,6 +27,7 @@ import org.apache.xml.security.stax.config.ResourceResolverMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
+import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
@@ -107,7 +108,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                 signaturePartDef.setSigRefId(externalReference);
                 signaturePartDef.setDigestValue(calculatedDigest);
                 signaturePartDef.setExternalResource(true);
-                signaturePartDef.setC14nAlgo(securePart.getC14nMethod());
+                signaturePartDef.setTransforms(securePart.getTransforms());
                 String digestMethod = securePart.getDigestMethod();
                 if (digestMethod == null) {
                     digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
@@ -166,16 +167,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             try {
                 this.digestOutputStream = createMessageDigestOutputStream(signaturePartDef.getDigestAlgo());
                 this.bufferedDigestOutputStream = new BufferedOutputStream(digestOutputStream);
-
-                if (signaturePartDef.getTransformAlgo() != null) {
-                    List<String> inclusiveNamespaces = new ArrayList<String>(1);
-                    inclusiveNamespaces.add("#default");
-                    Transformer transformer = XMLSecurityUtils.getTransformer(inclusiveNamespaces,
-                            this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo(), XMLSecurityConstants.DIRECTION.OUT);
-                    this.transformer = XMLSecurityUtils.getTransformer(transformer, null, signaturePartDef.getTransformAlgo(), XMLSecurityConstants.DIRECTION.OUT);
-                } else {
-                    transformer = XMLSecurityUtils.getTransformer(null, this.bufferedDigestOutputStream, signaturePartDef.getC14nAlgo(), XMLSecurityConstants.DIRECTION.OUT);
-                }
+                this.transformer = buildTransformerChain(this.bufferedDigestOutputStream, signaturePartDef.getTransforms());
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
             } catch (InstantiationException e) {
@@ -191,6 +183,31 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             }
 
             super.init(outputProcessorChain);
+        }
+
+        protected Transformer buildTransformerChain(OutputStream outputStream, String[] transforms)
+                throws XMLSecurityException, NoSuchMethodException, InstantiationException,
+                IllegalAccessException, InvocationTargetException {
+
+            if (transforms == null || transforms.length == 0) {
+                Transformer transformer = new TransformIdentity();
+                transformer.setOutputStream(outputStream);
+                return transformer;
+            }
+
+            Transformer parentTransformer = null;
+            for (int i = transforms.length - 1; i >= 0; i--) {
+                String transform = transforms[i];
+
+                if (parentTransformer != null) {
+                    parentTransformer = XMLSecurityUtils.getTransformer(
+                            parentTransformer, null, transform, XMLSecurityConstants.DIRECTION.OUT);
+                } else {
+                    parentTransformer = XMLSecurityUtils.getTransformer(
+                            null, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
+                }
+            }
+            return parentTransformer;
         }
 
         @Override

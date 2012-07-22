@@ -604,7 +604,7 @@ public abstract class CanonicalizerBase implements Transformer {
                 if (list.isEmpty()) {
                     continue;
                 }
-                final int idx = list.indexOf(o);
+                final int idx = list.lastIndexOf(o);
                 if (idx != -1) {
                     return list.get(idx);
                 }

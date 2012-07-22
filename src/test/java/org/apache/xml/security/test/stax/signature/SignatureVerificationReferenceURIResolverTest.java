@@ -81,7 +81,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
         ReferenceInfo referenceInfo = new ReferenceInfo(
                 "file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
-                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
                 "http://www.w3.org/2000/09/xmldsig#sha1",
                 false
         );
@@ -281,7 +281,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
         ReferenceInfo referenceInfo = new ReferenceInfo(
                 "#xpointer(id('" + id + "'))",
-                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
                 "http://www.w3.org/2000/09/xmldsig#sha1",
                 false
         );
@@ -352,7 +352,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
         ReferenceInfo referenceInfo = new ReferenceInfo(
                 "#xpointer(id(\"" + id + "\"))",
-                "http://www.w3.org/2001/10/xml-exc-c14n#",
+                new String[]{"http://www.w3.org/2001/10/xml-exc-c14n#"},
                 "http://www.w3.org/2000/09/xmldsig#sha1",
                 false
         );
@@ -389,16 +389,65 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
     @Test
     public void testSignatureVerificationWithSameDocumentXPointerSlashReference() throws Exception {
-        //todo complete testcase when we support enveloped signatures
-        //ATM we just test if the ResolverXPointer matches /
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
 
-        ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver("#xpointer(/)");
-        Assert.assertNotNull(resourceResolver);
-        Assert.assertTrue(resourceResolver instanceof ResolverXPointer);
+        // Set up the Key
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        X509Certificate cert = (X509Certificate) keyStore.getCertificate("transmitter");
 
-        //only the first call to matches must return true:
-        Assert.assertTrue(resourceResolver.matches(null));
-        Assert.assertFalse(resourceResolver.matches(null));
-        Assert.assertFalse(resourceResolver.matches(null));
+        // Sign using DOM
+        List<String> localNames = new ArrayList<String>();
+
+        ReferenceInfo referenceInfo = new ReferenceInfo(
+                "#xpointer(/)",
+                new String[]{
+                        "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
+                        "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
+                },
+                "http://www.w3.org/2000/09/xmldsig#sha1",
+                false
+        );
+
+        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+        referenceInfos.add(referenceInfo);
+
+        XMLSignature sig = signUsingDOM(
+                "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+                document,
+                localNames,
+                key,
+                referenceInfos
+        );
+
+        // Add KeyInfo
+        sig.addKeyInfo(cert);
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+
+        //System.out.println(baos.toString());
+
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Verify signature
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setSignatureVerificationKey(cert.getPublicKey());
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
 }

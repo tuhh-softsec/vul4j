@@ -229,10 +229,4 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
     }
-
-    @Test
-    @Ignore
-    public void testSignatureVerificationWithSameDocumentXPointerSlashReference() throws Exception {
-        //todo complete testcase when we support enveloped signatures
-    }
 }

@@ -193,7 +193,6 @@ public class BaltimoreTest extends org.junit.Assert {
     
     // See SANTUARIO-320
     @Test
-    @Ignore
     public void test_fifteen_enveloped_dsa() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -460,7 +459,6 @@ public class BaltimoreTest extends org.junit.Assert {
     
     // See SANTUARIO-320
     @Test
-    @Ignore
     public void test_twenty_three_enveloped_dsa() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 

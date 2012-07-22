@@ -28,8 +28,7 @@ public class SignaturePartDef {
 
     private String sigRefId;
     private String digestValue;
-    private String transformAlgo;
-    private String c14nAlgo;
+    private String[] transforms;
     private String digestAlgo;
     private String inclusiveNamespaces;
     private boolean externalResource;
@@ -51,20 +50,12 @@ public class SignaturePartDef {
         this.digestValue = digestValue;
     }
 
-    public String getTransformAlgo() {
-        return transformAlgo;
+    public String[] getTransforms() {
+        return transforms;
     }
 
-    public void setTransformAlgo(String transformAlgo) {
-        this.transformAlgo = transformAlgo;
-    }
-
-    public String getC14nAlgo() {
-        return c14nAlgo;
-    }
-
-    public void setC14nAlgo(String c14nAlgo) {
-        this.c14nAlgo = c14nAlgo;
+    public void setTransforms(String[] transforms) {
+        this.transforms = transforms;
     }
 
     public String getDigestAlgo() {

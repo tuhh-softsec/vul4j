@@ -33,6 +33,7 @@ import java.io.InputStream;
 public class ResolverSameDocument implements ResourceResolver, ResourceResolverLookup {
 
     private String id;
+    private boolean firstElementOccured = false;
 
     public ResolverSameDocument() {
     }
@@ -47,7 +48,7 @@ public class ResolverSameDocument implements ResourceResolver, ResourceResolverL
 
     @Override
     public ResourceResolverLookup canResolve(String uri) {
-        if (uri != null && uri.charAt(0) == '#') {
+        if (uri != null && (uri.isEmpty() || uri.charAt(0) == '#')) {
             if (uri.startsWith("#xpointer")) {
                 return null;
             }
@@ -68,9 +69,17 @@ public class ResolverSameDocument implements ResourceResolver, ResourceResolverL
 
     @Override
     public boolean matches(XMLSecStartElement xmlSecStartElement) {
-        Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
-        if (attribute != null && attribute.getValue().equals(id)) {
+        if (id.isEmpty()) {
+            if (firstElementOccured) {
+                return false;
+            }
+            firstElementOccured = true;
             return true;
+        } else {
+            Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
+            if (attribute != null && attribute.getValue().equals(id)) {
+                return true;
+            }
         }
         return false;
     }

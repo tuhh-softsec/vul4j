@@ -116,7 +116,6 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
     
     // See SANTUARIO-320
     @Test
-    @Ignore
     public void test_enveloped() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
