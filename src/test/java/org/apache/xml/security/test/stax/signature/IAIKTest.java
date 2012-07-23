@@ -58,6 +58,7 @@ import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -174,7 +175,8 @@ public class IAIKTest extends org.junit.Assert {
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
             fail("Failure expected on a short HMAC length");
         } catch (XMLStreamException ex) {
-            // expected
+            Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
+            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
         }
     }
     

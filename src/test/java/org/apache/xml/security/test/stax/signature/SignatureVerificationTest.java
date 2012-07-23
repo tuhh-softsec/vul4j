@@ -45,12 +45,10 @@ import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.ext.InboundXMLSec;
-import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -288,7 +286,8 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
             fail("Failure expected on a bad key");
         } catch (XMLStreamException ex) {
-            // expected
+            Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
+            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
         }
     }
     
