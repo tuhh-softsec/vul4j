@@ -36,9 +36,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -102,7 +104,6 @@ public class PhaosTest extends org.junit.Assert {
     
     // See Santuario-320
     @Test
-    @org.junit.Ignore
     public void test_signature_dsa_enveloped() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -195,7 +196,6 @@ public class PhaosTest extends org.junit.Assert {
     
     // See Santuario-320
     @Test
-    @org.junit.Ignore
     public void test_signature_hmac_sha1_exclusive_c14n_enveloped() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -293,7 +293,6 @@ public class PhaosTest extends org.junit.Assert {
     
     // See Santuario-320
     @Test
-    @org.junit.Ignore
     public void test_signature_rsa_enveloped_bad_digest_val() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -315,17 +314,18 @@ public class PhaosTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
         try {
-            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
             fail("Failure expected on a bad digest");
         } catch (XMLStreamException ex) {
-            // expected
+            Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
+            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
         }
     }
     
     // See Santuario-320
     @Test
-    @org.junit.Ignore
     public void test_signature_rsa_enveloped() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 

@@ -285,7 +285,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
 
-        if (referenceType.getTransforms() == null) {
+        if (referenceType.getTransforms() == null || referenceType.getTransforms().getTransform().isEmpty()) {
             // If no Transforms then just default to an Inclusive without comments transform
             Transformer transformer = new Canonicalizer20010315_OmitCommentsTransformer();
             transformer.setOutputStream(outputStream);
@@ -294,6 +294,13 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         }
 
         List<TransformType> transformTypeList = referenceType.getTransforms().getTransform();
+
+        if (transformTypeList.size() == 1 &&
+                XMLSecurityConstants.NS_XMLDSIG_ENVELOPED_SIGNATURE.equals(transformTypeList.get(0).getAlgorithm())) {
+            TransformType transformType = new TransformType();
+            transformType.setAlgorithm("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
+            transformTypeList.add(transformType);
+        }
 
         Transformer parentTransformer = null;
         for (int i = transformTypeList.size() - 1; i >= 0; i--) {

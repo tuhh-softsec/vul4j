@@ -168,10 +168,16 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                 retrieveSecurityToken(keyInfoType, securityProperties, securityContext);
             securityToken.verify();
 
+            handleSecurityToken(securityToken);
             try {
-                handleSecurityToken(securityToken);
                 createSignatureAlgorithm(securityToken, signatureType);
-            } catch (Exception e) {
+            } catch (InvalidKeyException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (NoSuchProviderException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (CertificateException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             }
             this.securityToken = securityToken;
@@ -243,13 +249,13 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             try {
                 transformer.doFinal();
                 bufferedSignerOutputStream.close();
-                if (!signerOutputStream.verify(signatureType.getSignatureValue().getValue())) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
-                }
             } catch (IOException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             } catch (XMLStreamException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            }
+            if (!signerOutputStream.verify(signatureType.getSignatureValue().getValue())) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
             }
         }
     }
