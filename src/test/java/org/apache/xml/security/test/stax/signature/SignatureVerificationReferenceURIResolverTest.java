@@ -27,7 +27,9 @@ import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverXPointer;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
+import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,6 +46,8 @@ import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
@@ -176,73 +180,76 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
     }
 
     @Test
-    @Ignore
     public void testSignatureVerificationWithExternalHttpReference() throws Exception {
-        // Read in plaintext document
-        InputStream sourceDocument =
-                this.getClass().getClassLoader().getResourceAsStream(
-                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-        Document document = builder.parse(sourceDocument);
 
-        // Set up the Key
-        KeyStore keyStore = KeyStore.getInstance("jks");
-        keyStore.load(
-                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
-                "default".toCharArray()
-        );
-        Key key = keyStore.getKey("transmitter", "default".toCharArray());
-        X509Certificate cert = (X509Certificate) keyStore.getCertificate("transmitter");
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
 
-        // Sign using DOM
-        List<String> localNames = new ArrayList<String>();
-        localNames.add("PaymentInfo");
+        try {
+            ResolverHttp.setProxy(proxy);
 
-        ReferenceInfo referenceInfo = new ReferenceInfo(
-                "http://www.apache.org/images/feather-small.gif",
-                null,
-                "http://www.w3.org/2000/09/xmldsig#sha1",
-                true
-        );
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress)proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress)proxy.address()).getPort());
 
-        List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
-        referenceInfos.add(referenceInfo);
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
 
-        XMLSignature sig = signUsingDOM(
-                "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
-                document,
-                localNames,
-                key,
-                referenceInfos
-        );
+            // Set up the Key
+            KeyStore keyStore = KeyStore.getInstance("jks");
+            keyStore.load(
+                    this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                    "default".toCharArray()
+            );
+            Key key = keyStore.getKey("transmitter", "default".toCharArray());
+            X509Certificate cert = (X509Certificate) keyStore.getCertificate("transmitter");
 
-        // Add KeyInfo
-        sig.addKeyInfo(cert);
+            // Sign using DOM
+            List<String> localNames = new ArrayList<String>();
+            localNames.add("PaymentInfo");
 
-        // Convert Document to a Stream Reader
-        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformer.transform(new DOMSource(document), new StreamResult(baos));
-        final XMLStreamReader xmlStreamReader =
-                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+            ReferenceInfo referenceInfo = new ReferenceInfo(
+                    "http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
+                    null,
+                    "http://www.w3.org/2000/09/xmldsig#sha1",
+                    true
+            );
 
-        // Verify signature
-        XMLSecurityProperties properties = new XMLSecurityProperties();
-        properties.setSignatureVerificationKey(cert.getPublicKey());
-        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            List<ReferenceInfo> referenceInfos = new ArrayList<ReferenceInfo>();
+            referenceInfos.add(referenceInfo);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
-    }
+            XMLSignature sig = signUsingDOM(
+                    "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+                    document,
+                    localNames,
+                    key,
+                    referenceInfos,
+                    resolverDirectHTTP
+            );
 
-    @Test
-    public void testBasicSignatureVerificationWithExternalHttpReference() throws Exception {
-        //for simplification and to prevent online lookups, we just test if the ResolverHttp class is returned.
-        //another option would be to start an embedded jetty instance...
+            // Add KeyInfo
+            sig.addKeyInfo(cert);
 
-        ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver("http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/ws-securitypolicy.xsd");
-        Assert.assertNotNull(resourceResolver);
-        Assert.assertTrue(resourceResolver instanceof ResolverHttp);
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
     }
 
     @Test

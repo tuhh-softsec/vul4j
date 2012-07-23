@@ -25,10 +25,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.util.regex.Pattern;
 
 /**
@@ -39,6 +36,8 @@ import java.util.regex.Pattern;
  */
 public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
 
+    private static Proxy proxy;
+
     private String uri;
     private Pattern pattern = Pattern.compile("^http[s]?://.*");
 
@@ -47,6 +46,10 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
 
     public ResolverHttp(String uri) {
         this.uri = uri;
+    }
+
+    public static void setProxy(Proxy proxy) {
+        ResolverHttp.proxy = proxy;
     }
 
     @Override
@@ -79,7 +82,13 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
             if (tmp.getFragment() != null) {
                 tmp = new URI(tmp.getScheme(), tmp.getSchemeSpecificPart(), null);
             }
-            HttpURLConnection urlConnection = (HttpURLConnection) tmp.toURL().openConnection();
+            URL url = tmp.toURL();
+            HttpURLConnection urlConnection;
+            if (proxy != null) {
+                urlConnection = (HttpURLConnection)url.openConnection(proxy);
+            } else {
+                urlConnection = (HttpURLConnection)url.openConnection();
+            }
             InputStream inputStream = urlConnection.getInputStream();
             if (urlConnection.getResponseCode() != 200) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);

@@ -30,6 +30,7 @@ import org.apache.xml.security.stax.securityEvent.*;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -116,6 +117,22 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             Document document,
             List<String> localNames,
             Key signingKey,
+            List<ReferenceInfo> additionalReferences,
+            ResourceResolverSpi resourceResolverSpi
+    ) throws Exception {
+        String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod,
+                additionalReferences, resourceResolverSpi);
+    }
+
+    /**
+     * Sign the document using DOM
+     */
+    protected XMLSignature signUsingDOM(
+            String algorithm,
+            Document document,
+            List<String> localNames,
+            Key signingKey,
             List<ReferenceInfo> additionalReferences
     ) throws Exception {
         String c14nMethod = "http://www.w3.org/2001/10/xml-exc-c14n#";
@@ -133,7 +150,24 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String c14nMethod
     ) throws Exception {
         String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod, null);
+    }
+
+    /**
+     * Sign the document using DOM
+     */
+    protected XMLSignature signUsingDOM(
+            String algorithm,
+            Document document,
+            List<String> localNames,
+            Key signingKey,
+            String c14nMethod,
+            List<ReferenceInfo> additionalReferences,
+            ResourceResolverSpi resourceResolverSpi
+    ) throws Exception {
+        String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
+        return signUsingDOM(algorithm, document, localNames, signingKey,
+                c14nMethod, digestMethod, additionalReferences, c14nMethod, resourceResolverSpi);
     }
 
     /**
@@ -148,7 +182,8 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             List<ReferenceInfo> additionalReferences
     ) throws Exception {
         String digestMethod = "http://www.w3.org/2000/09/xmldsig#sha1";
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, additionalReferences, c14nMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey,
+                c14nMethod, digestMethod, additionalReferences, c14nMethod, null);
     }
 
     /**
@@ -162,7 +197,7 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String c14nMethod,
             String digestMethod
     ) throws Exception {
-        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod);
+        return signUsingDOM(algorithm, document, localNames, signingKey, c14nMethod, digestMethod, null, c14nMethod, null);
     }
 
     /**
@@ -176,9 +211,13 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String c14nMethod,
             String digestMethod,
             List<ReferenceInfo> additionalReferences,
-            String referenceC14NMethod
+            String referenceC14NMethod,
+            ResourceResolverSpi resourceResolverSpi
     ) throws Exception {
         XMLSignature sig = new XMLSignature(document, "", algorithm, c14nMethod);
+        if (resourceResolverSpi != null) {
+            sig.addResourceResolver(resourceResolverSpi);
+        }
         Element root = document.getDocumentElement();
         root.appendChild(sig.getElement());
 

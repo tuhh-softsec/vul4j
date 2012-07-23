@@ -23,6 +23,8 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -77,6 +79,18 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
             X509Certificate cert,
             List<SecurePart> secureParts
     ) throws Exception {
+        verifyUsingDOM(document, cert, secureParts, null);
+    }
+
+    /**
+     * Verify the document using DOM
+     */
+    protected void verifyUsingDOM(
+            Document document,
+            X509Certificate cert,
+            List<SecurePart> secureParts,
+            ResourceResolverSpi resourceResolverSpi
+    ) throws Exception {
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();
         xpath.setNamespaceContext(new DSNamespaceContext());
@@ -98,6 +112,9 @@ public class AbstractSignatureCreationTest extends org.junit.Assert {
         }
 
         XMLSignature signature = new XMLSignature(sigElement, "");
+        if (resourceResolverSpi != null) {
+            signature.addResourceResolver(resourceResolverSpi);
+        }
         KeyInfo ki = signature.getKeyInfo();
         Assert.assertNotNull(ki);
 
