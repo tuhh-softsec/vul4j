@@ -306,7 +306,6 @@ public class IAIKTest extends org.junit.Assert {
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }    
     
-    // See SANTUARIO-320
     @Test
     public void test_transforms_signatures_envelopedSignatureSignature() throws Exception {
         // Read in plaintext document

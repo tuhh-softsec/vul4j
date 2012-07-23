@@ -582,6 +582,7 @@ public class BaltimoreTest extends org.junit.Assert {
                               XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
     
+    // See Santuario-319
     @Test
     @Ignore
     public void test_twenty_three_external_b64_dsa() throws Exception {
@@ -865,7 +866,6 @@ public class BaltimoreTest extends org.junit.Assert {
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
     
-    // See SANTUARIO-330
     @Test
     public void testExcSignature() throws Exception {
         // Read in plaintext document

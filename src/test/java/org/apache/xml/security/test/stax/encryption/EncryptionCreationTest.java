@@ -922,6 +922,64 @@ public class EncryptionCreationTest extends org.junit.Assert {
         assertEquals("", attr.getValue());
     }
     
+    @Test
+    public void testTransportKey() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions = 
+            new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        properties.setOutAction(actions);
+        
+        // Set the key up - only specify a transport key, so the session key gets generated
+        byte[] bits192 = "abcdefghijklmnopqrstuvwx".getBytes();
+        SecretKey transportKey = new SecretKeySpec(bits192, "AES");
+        properties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#kw-aes192");
+        properties.setEncryptionTransportKey(transportKey);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes128-cbc");
+        
+        SecurePart securePart = 
+               new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
+        properties.addEncryptionPart(securePart);
+        
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+        
+        InputStream sourceDocument = 
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+        
+        XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+        xmlStreamWriter.close();
+        
+        // System.out.println("Got:\n" + new String(baos.toByteArray(), "UTF-8"));
+        
+        Document document = 
+            documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+        
+        NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "PaymentInfo");
+        Assert.assertEquals(nodeList.getLength(), 0);
+        
+        // Check the CreditCard encrypted ok
+        nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 0);
+        
+        nodeList = document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getNamespaceURI(),
+                XMLSecurityConstants.TAG_xenc_EncryptedData.getLocalPart()
+            );
+        Assert.assertEquals(nodeList.getLength(), 1);
+        
+        // Decrypt using DOM API
+        Document doc = 
+            decryptUsingDOM("http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null, transportKey, document);
+        
+        // Check the CreditCard decrypted ok
+        nodeList = doc.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 1);
+    }
+
     /**
      * Generate a secret key
      */
