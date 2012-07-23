@@ -40,6 +40,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -67,9 +68,11 @@ public class PhaosTest extends org.junit.Assert {
         documentBuilderFactory.setCoalescing(false);
         documentBuilderFactory.setIgnoringElementContentWhitespace(false);
     }
-    
 
+
+    // See SANTUARIO-319
     @Test
+    @Ignore
     public void test_signature_dsa_detached() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -154,8 +157,10 @@ public class PhaosTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
-    
+
+    // See SANTUARIO-319
     @Test
+    @Ignore
     public void test_signature_hmac_sha1_exclusive_c14n_comments_detached() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
@@ -255,8 +260,10 @@ public class PhaosTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
-    
+
+    // See SANTUARIO-319
     @Test
+    @Ignore
     public void test_signature_rsa_detached() throws Exception {
         // Read in plaintext document
         InputStream sourceDocument = 
