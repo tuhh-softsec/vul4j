@@ -223,7 +223,7 @@ public class XMLSecurityConstants {
     public static final String NS_XMLDSIG_HMACSHA1 = NS_DSIG + "hmac-sha1";
     public static final String NS_XMLDSIG_RSASHA1 = NS_DSIG + "rsa-sha1";
 
-    public static final String NS_XENC_TRIBLE_DES = NS_XMLENC + "tripledes-cbc";
+    public static final String NS_XENC_TRIPLE_DES = NS_XMLENC + "tripledes-cbc";
     public static final String NS_XENC_AES128 = NS_XMLENC + "aes128-cbc";
     public static final String NS_XENC_AES256 = NS_XMLENC + "aes256-cbc";
 

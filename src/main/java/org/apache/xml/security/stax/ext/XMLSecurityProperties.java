@@ -94,6 +94,15 @@ public class XMLSecurityProperties {
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
     private Key encryptionKey;
     private Key encryptionTransportKey;
+    private Key decryptionKey;
+    
+    public void setDecryptionKey(Key decryptionKey) {
+        this.decryptionKey = decryptionKey;
+    }
+    
+    public Key getDecryptionKey() {
+        return decryptionKey;
+    }
     
     public void setEncryptionTransportKey(Key encryptionTransportKey) {
         this.encryptionTransportKey = encryptionTransportKey;

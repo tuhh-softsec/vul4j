@@ -26,7 +26,7 @@ import org.apache.xml.security.stax.impl.SecurityContextImpl;
 import org.apache.xml.security.stax.impl.XMLSecurityStreamReader;
 import org.apache.xml.security.stax.impl.processor.input.LogInputProcessor;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
-import org.apache.xml.security.stax.impl.processor.input.XMLSignatureInputProcessor;
+import org.apache.xml.security.stax.impl.processor.input.XMLSecurityInputProcessor;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
@@ -139,12 +139,11 @@ public class InboundXMLSec {
             }
         }
         
-        // TODO change
-        inputProcessorChain.addProcessor(new XMLSignatureInputProcessor(securityProperties));
+        inputProcessorChain.addProcessor(new XMLSecurityInputProcessor(securityProperties));
         
         if (log.isTraceEnabled()) {
             LogInputProcessor logInputProcessor = new LogInputProcessor(securityProperties);
-            logInputProcessor.addAfterProcessor(XMLSignatureInputProcessor.class.getName());
+            logInputProcessor.addAfterProcessor(XMLSecurityInputProcessor.class.getName());
             inputProcessorChain.addProcessor(logInputProcessor);
         }
 

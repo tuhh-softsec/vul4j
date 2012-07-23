@@ -95,11 +95,19 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         }
         
         // Use a default key if it exists
-        if (securityProperties.getSignatureVerificationKey() != null) {
+        if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION
+            && securityProperties.getSignatureVerificationKey() != null) {
             DefaultSecurityToken token = 
                     new DefaultSecurityToken(securityContext, securityProperties.getCallbackHandler(), "", 
                             XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
             token.setKey(securityProperties.getSignatureVerificationKey());
+            return token;
+        } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION
+            && securityProperties.getDecryptionKey() != null) {
+            DefaultSecurityToken token = 
+                    new DefaultSecurityToken(securityContext, securityProperties.getCallbackHandler(), "", 
+                            XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+            token.setKey(securityProperties.getDecryptionKey());
             return token;
         }
         

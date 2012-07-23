@@ -81,6 +81,13 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
     private final ArrayDeque<XMLSecEvent> tmpXmlEventList = new ArrayDeque<XMLSecEvent>();
 
+    public AbstractDecryptInputProcessor(XMLSecurityProperties securityProperties) throws XMLSecurityException {
+        super(securityProperties);
+        keyInfoType = null;
+        references = null;
+        processedReferences = null;
+    }
+    
     public AbstractDecryptInputProcessor(KeyInfoType keyInfoType, ReferenceList referenceList,
                                          XMLSecurityProperties securityProperties) throws XMLSecurityException {
         super(securityProperties);
@@ -154,22 +161,25 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
             //check if the current start-element has the name EncryptedData and an Id attribute
             if (xmlSecStartElement.getName().equals(XMLSecurityConstants.TAG_xenc_EncryptedData)) {
-                ReferenceType referenceType = matchesReferenceId(xmlSecStartElement);
-                if (referenceType == null) {
-                    //if the events were not for us (no matching reference-id the we have to replay the EncryptedHeader elements)
-                    if (!tmpXmlEventList.isEmpty()) {
-                        return tmpXmlEventList.pollLast();
+                ReferenceType referenceType = null;
+                if (references != null) {
+                    referenceType = matchesReferenceId(xmlSecStartElement);
+                    if (referenceType == null) {
+                        //if the events were not for us (no matching reference-id the we have to replay the EncryptedHeader elements)
+                        if (!tmpXmlEventList.isEmpty()) {
+                            return tmpXmlEventList.pollLast();
+                        }
+                        return xmlSecEvent;
                     }
-                    return xmlSecEvent;
+                    //duplicate id's are forbidden
+                    if (processedReferences.contains(referenceType)) {
+                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
+                    }
+    
+                    processedReferences.add(referenceType);
                 }
-                //duplicate id's are forbidden
-                if (processedReferences.contains(referenceType)) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
-                }
-
                 tmpXmlEventList.clear();
-                processedReferences.add(referenceType);
-
+                
                 //the following logic reads the encryptedData structure and doesn't pass them further
                 //through the chain
                 InputProcessorChain subInputProcessorChain = inputProcessorChain.createSubChain(this);
@@ -199,7 +209,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     parentXMLSecStartElement = parentXMLSecStartElement.getParentXMLSecStartElement();
                 }
                 AbstractDecryptedEventReaderInputProcessor decryptedEventReaderInputProcessor =
-                        newDecryptedEventReaderInputProccessor(
+                        newDecryptedEventReaderInputProcessor(
                                 encryptedHeader, parentXMLSecStartElement, encryptedDataType, securityToken,
                                 inputProcessorChain.getSecurityContext()
                         );
@@ -235,29 +245,31 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
                 InputStream decryptInputStream = decryptionThread.getPipedInputStream();
 
-                TransformsType transformsType =
-                        XMLSecurityUtils.getQNameType(referenceType.getAny(), XMLSecurityConstants.TAG_dsig_Transforms);
-                if (transformsType != null) {
-                    List<TransformType> transformTypes = transformsType.getTransform();
-                    if (transformTypes.size() > 1) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
-                    }
-                    TransformType transformType = transformTypes.get(0);
-                    @SuppressWarnings("unchecked")
-                    Class<InputStream> transformerClass =
-                            (Class<InputStream>) TransformerAlgorithmMapper.getTransformerClass(
-                                    transformType.getAlgorithm(), XMLSecurityConstants.DIRECTION.IN);
-                    try {
-                        Constructor<InputStream> constructor = transformerClass.getConstructor(InputStream.class);
-                        decryptInputStream = constructor.newInstance(decryptInputStream);
-                    } catch (InvocationTargetException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
-                    } catch (NoSuchMethodException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
-                    } catch (InstantiationException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
-                    } catch (IllegalAccessException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                if (referenceType != null) {
+                    TransformsType transformsType =
+                            XMLSecurityUtils.getQNameType(referenceType.getAny(), XMLSecurityConstants.TAG_dsig_Transforms);
+                    if (transformsType != null) {
+                        List<TransformType> transformTypes = transformsType.getTransform();
+                        if (transformTypes.size() > 1) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+                        }
+                        TransformType transformType = transformTypes.get(0);
+                        @SuppressWarnings("unchecked")
+                        Class<InputStream> transformerClass =
+                                (Class<InputStream>) TransformerAlgorithmMapper.getTransformerClass(
+                                        transformType.getAlgorithm(), XMLSecurityConstants.DIRECTION.IN);
+                        try {
+                            Constructor<InputStream> constructor = transformerClass.getConstructor(InputStream.class);
+                            decryptInputStream = constructor.newInstance(decryptInputStream);
+                        } catch (InvocationTargetException e) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                        } catch (NoSuchMethodException e) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                        } catch (InstantiationException e) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                        } catch (IllegalAccessException e) {
+                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                        }
                     }
                 }
 
@@ -465,7 +477,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         return xmlSecEvent;
     }
 
-    protected abstract AbstractDecryptedEventReaderInputProcessor newDecryptedEventReaderInputProccessor(
+    protected abstract AbstractDecryptedEventReaderInputProcessor newDecryptedEventReaderInputProcessor(
             boolean encryptedHeader, XMLSecStartElement xmlSecStartElement, EncryptedDataType currentEncryptedDataType,
             SecurityToken securityToken, SecurityContext securityContext) throws XMLSecurityException;
 
@@ -488,11 +500,13 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
         //here we check if all references where processed.
-        Iterator<Map.Entry<String, ReferenceType>> refEntryIterator = this.references.entrySet().iterator();
-        while (refEntryIterator.hasNext()) {
-            Map.Entry<String, ReferenceType> referenceTypeEntry = refEntryIterator.next();
-            if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedEncryptionReferences");
+        if (references != null) {
+            Iterator<Map.Entry<String, ReferenceType>> refEntryIterator = this.references.entrySet().iterator();
+            while (refEntryIterator.hasNext()) {
+                Map.Entry<String, ReferenceType> referenceTypeEntry = refEntryIterator.next();
+                if (!processedReferences.contains(referenceTypeEntry.getValue())) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedEncryptionReferences");
+                }
             }
         }
         inputProcessorChain.doFinal();
