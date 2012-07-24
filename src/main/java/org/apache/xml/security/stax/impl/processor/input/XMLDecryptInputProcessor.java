@@ -18,16 +18,29 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
 import org.apache.xml.security.binding.xmlenc.ReferenceList;
+import org.apache.xml.security.stax.ext.DocumentContext;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.EncryptedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 
 
 /**
@@ -60,37 +73,45 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
 
     @Override
     protected void handleSecurityToken(
-            SecurityToken securityToken, SecurityContext securityContext, EncryptedDataType encryptedDataType) throws XMLSecurityException {
-        /*
-         *  securityToken.addTokenUsage(SecurityToken.TokenUsage.Encryption);
-        TokenSecurityEvent tokenSecurityEvent = WSSUtils.createTokenSecurityEvent(securityToken);
+            SecurityToken securityToken, SecurityContext securityContext, EncryptedDataType encryptedDataType
+    ) throws XMLSecurityException {
+        securityToken.addTokenUsage(SecurityToken.TokenUsage.Encryption);
+        XMLSecurityConstants.TokenType tokenType = securityToken.getTokenType();
+        
+        TokenSecurityEvent tokenSecurityEvent = null;
+        if (tokenType == XMLSecurityConstants.X509V1Token
+                || tokenType == XMLSecurityConstants.X509V3Token
+                || tokenType == XMLSecurityConstants.X509Pkcs7Token
+                || tokenType == XMLSecurityConstants.X509PkiPathV1Token) {
+            tokenSecurityEvent = new X509TokenSecurityEvent();
+        } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
+            tokenSecurityEvent = new KeyValueTokenSecurityEvent();
+        } else if (tokenType == XMLSecurityConstants.KeyNameToken) {
+            tokenSecurityEvent = new KeyNameTokenSecurityEvent();
+        } else if (tokenType == XMLSecurityConstants.DefaultToken) {
+            tokenSecurityEvent = new DefaultTokenSecurityEvent();
+        } else {
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
+        }
+        
+        tokenSecurityEvent.setSecurityToken(securityToken);
         securityContext.registerSecurityEvent(tokenSecurityEvent);
-         */
     }
     
     @Override
     protected void handleEncryptedContent(InputProcessorChain inputProcessorChain,
                                                    XMLSecStartElement parentXMLSecStartElement,
                                                    SecurityToken securityToken) throws XMLSecurityException {
-        // TODO
-        /*
-         * final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
-        List<QName> elementPath = parentStartXMLEvent.getElementPath();
-        if (elementPath.size() == 2 && WSSUtils.isInSOAPBody(elementPath)) {
-            //soap:body content encryption counts as EncryptedPart
-            EncryptedPartSecurityEvent encryptedPartSecurityEvent =
-                    new EncryptedPartSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
-            encryptedPartSecurityEvent.setElementPath(elementPath);
-            encryptedPartSecurityEvent.setXmlSecEvent(parentStartXMLEvent);
-            ((WSSecurityContext) inputProcessorChain.getSecurityContext()).registerSecurityEvent(encryptedPartSecurityEvent);
-        } else {
-            ContentEncryptedElementSecurityEvent contentEncryptedElementSecurityEvent =
-                    new ContentEncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
-            contentEncryptedElementSecurityEvent.setElementPath(elementPath);
-            contentEncryptedElementSecurityEvent.setXmlSecEvent(parentStartXMLEvent);
-            ((WSSecurityContext) inputProcessorChain.getSecurityContext()).registerSecurityEvent(contentEncryptedElementSecurityEvent);
-        }
-         */
+        final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
+        List<QName> elementPath = parentXMLSecStartElement.getElementPath();
+        
+        ContentEncryptedElementSecurityEvent contentEncryptedElementSecurityEvent =
+                new ContentEncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
+        contentEncryptedElementSecurityEvent.setElementPath(elementPath);
+        contentEncryptedElementSecurityEvent.setXmlSecEvent(parentXMLSecStartElement);
+        
+        contentEncryptedElementSecurityEvent.setSecurityToken(securityToken);
+        inputProcessorChain.getSecurityContext().registerSecurityEvent(contentEncryptedElementSecurityEvent);
     }
 
     /**
@@ -112,13 +133,16 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
         protected void handleEncryptedElement(InputProcessorChain inputProcessorChain, XMLSecStartElement xmlSecStartElement,
                                               SecurityToken securityToken) throws XMLSecurityException {
             //fire a SecurityEvent:
-            /* TODO
-             *  EncryptedElementSecurityEvent encryptedElementSecurityEvent =
-                        new EncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
-                encryptedElementSecurityEvent.setElementPath(elementPath);
-                encryptedElementSecurityEvent.setXmlSecEvent(xmlSecStartElement);
-                ((WSSecurityContext) inputProcessorChain.getSecurityContext()).registerSecurityEvent(encryptedElementSecurityEvent);
-             */
+            final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
+            List<QName> elementPath = xmlSecStartElement.getElementPath();
+            
+            EncryptedElementSecurityEvent encryptedElementSecurityEvent =
+                    new EncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
+            encryptedElementSecurityEvent.setElementPath(elementPath);
+            encryptedElementSecurityEvent.setXmlSecEvent(xmlSecStartElement);
+            
+            encryptedElementSecurityEvent.setSecurityToken(securityToken);
+            inputProcessorChain.getSecurityContext().registerSecurityEvent(encryptedElementSecurityEvent);
         }
 
     }

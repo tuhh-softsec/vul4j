@@ -21,6 +21,8 @@ package org.apache.xml.security.test.stax.encryption;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.security.Key;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +50,13 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.EncryptedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
@@ -134,7 +142,10 @@ public class DecryptionTest extends org.junit.Assert {
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // TODO Check the SecurityEvents
+        // Check the SecurityEvents
+        checkEncryptedElementSecurityEvents(securityEventListener);
+        checkEncryptionToken(securityEventListener, null, secretKey, 
+                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
     }
     
 
@@ -185,7 +196,10 @@ public class DecryptionTest extends org.junit.Assert {
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // TODO Check the SecurityEvents
+        // Check the SecurityEvents
+        checkEncryptedContentSecurityEvents(securityEventListener);
+        checkEncryptionToken(securityEventListener, null, secretKey, 
+                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
     }
     
     @Test
@@ -237,7 +251,10 @@ public class DecryptionTest extends org.junit.Assert {
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // TODO Check the SecurityEvents
+        // Check the SecurityEvents
+        checkEncryptedElementSecurityEvents(securityEventListener);
+        checkEncryptionToken(securityEventListener, null, secretKey, 
+                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
     }
     
     @Test
@@ -292,7 +309,10 @@ public class DecryptionTest extends org.junit.Assert {
         nodeList = document.getElementsByTagNameNS("urn:example:po", "ShippingAddress");
         Assert.assertEquals(nodeList.getLength(), 1);
         
-        // TODO Check the SecurityEvents
+        // Check the SecurityEvents
+        checkMultipleEncryptedElementSecurityEvents(securityEventListener);
+        checkEncryptionToken(securityEventListener, null, secretKey, 
+                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
     }
     
     // TODO
@@ -490,4 +510,60 @@ public class DecryptionTest extends org.junit.Assert {
         Assert.assertTrue(nodeList.getLength() > 0);
     }
     
+    protected void checkEncryptedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
+        EncryptedElementSecurityEvent encryptedElementEvent =
+                (EncryptedElementSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.EncryptedElement);
+        assertNotNull(encryptedElementEvent);
+        assertEquals(encryptedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}PaymentInfo", encryptedElementEvent.getElementPath().get(1).toString());
+        assertTrue(encryptedElementEvent.isEncrypted());
+    }
+    
+    protected void checkMultipleEncryptedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
+        List<SecurityEvent> encryptedElements =
+                securityEventListener.getTokenEvents(SecurityEventConstants.EncryptedElement);
+        assertTrue(encryptedElements.size() == 2);
+        
+        EncryptedElementSecurityEvent encryptedElementEvent =
+                (EncryptedElementSecurityEvent)encryptedElements.get(0);
+        assertNotNull(encryptedElementEvent);
+        assertEquals(encryptedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}ShippingAddress", encryptedElementEvent.getElementPath().get(1).toString());
+        assertTrue(encryptedElementEvent.isEncrypted());
+        
+        encryptedElementEvent =
+                (EncryptedElementSecurityEvent)encryptedElements.get(1);
+        assertNotNull(encryptedElementEvent);
+        assertEquals(encryptedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}PaymentInfo", encryptedElementEvent.getElementPath().get(1).toString());
+        assertTrue(encryptedElementEvent.isEncrypted());
+    }
+    
+    protected void checkEncryptedContentSecurityEvents(TestSecurityEventListener securityEventListener) {
+        ContentEncryptedElementSecurityEvent encryptedElementEvent =
+                (ContentEncryptedElementSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.ContentEncrypted);
+        assertNotNull(encryptedElementEvent);
+        assertEquals(encryptedElementEvent.getElementPath().size(), 2);
+        assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
+        assertEquals("{urn:example:po}PaymentInfo", encryptedElementEvent.getElementPath().get(1).toString());
+        assertTrue(encryptedElementEvent.isEncrypted());
+    }
+    
+    protected void checkEncryptionToken(
+            TestSecurityEventListener securityEventListener,
+            X509Certificate cert,
+            Key key,
+            XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
+    ) throws XMLSecurityException {
+        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
+            DefaultTokenSecurityEvent tokenEvent =
+                    (DefaultTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+            assertNotNull(tokenEvent);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            assertEquals(processedKey, key);
+        } 
+    }
 }
