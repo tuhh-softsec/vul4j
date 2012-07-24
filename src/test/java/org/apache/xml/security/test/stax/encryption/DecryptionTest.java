@@ -52,6 +52,7 @@ import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.EncryptedElementSecurityEvent;
@@ -146,6 +147,7 @@ public class DecryptionTest extends org.junit.Assert {
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey, 
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+        checkEncryptionMethod(securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc");
     }
     
 
@@ -200,6 +202,7 @@ public class DecryptionTest extends org.junit.Assert {
         checkEncryptedContentSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey, 
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+        checkEncryptionMethod(securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc");
     }
     
     @Test
@@ -255,6 +258,7 @@ public class DecryptionTest extends org.junit.Assert {
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey, 
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+        checkEncryptionMethod(securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc");
     }
     
     @Test
@@ -313,6 +317,7 @@ public class DecryptionTest extends org.junit.Assert {
         checkMultipleEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey, 
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+        checkEncryptionMethod(securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc");
     }
     
     // TODO
@@ -566,4 +571,21 @@ public class DecryptionTest extends org.junit.Assert {
             assertEquals(processedKey, key);
         } 
     }
+    
+    protected void checkEncryptionMethod(
+            TestSecurityEventListener securityEventListener,
+            String encryptionAlgorithm
+    ) {
+        List<SecurityEvent> algorithmEvents =
+                securityEventListener.getTokenEvents(SecurityEventConstants.AlgorithmSuite);
+        assertFalse(algorithmEvents.isEmpty());
+        
+        for (SecurityEvent event : algorithmEvents) {
+            AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent) event;
+            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Enc) {
+                assertEquals(encryptionAlgorithm, algorithmEvent.getAlgorithmURI());
+            }
+        }
+    }
+    
 }

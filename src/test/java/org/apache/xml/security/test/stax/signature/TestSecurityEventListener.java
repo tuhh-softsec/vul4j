@@ -32,7 +32,9 @@ public class TestSecurityEventListener implements SecurityEventListener {
     @Override
     public void registerSecurityEvent(SecurityEvent securityEvent)
             throws XMLSecurityException {
-        events.add(securityEvent);
+        if (!events.contains(securityEvent)) {
+            events.add(securityEvent);
+        }
     }
     
     public SecurityEvent getTokenEvent(Event securityEvent) {
