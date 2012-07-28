@@ -233,6 +233,9 @@ public class CharIter implements Iterable<Character>, Iterator<Character> {
 			if (end >= length) {
 				end = length - 1;
 			}
+			if (position + diff >= end) {
+			        return false;
+			}
 			return buffer.substring(position + diff, end).equalsIgnoreCase(
 			        prefix);
 		}
