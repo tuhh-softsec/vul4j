@@ -365,27 +365,27 @@ public class HttpClientHelper implements Extension {
 		} catch (HttpHostConnectException e) {
 			int statusCode = HttpStatus.SC_BAD_GATEWAY;
 			String statusText = "Connection refused";
-			LOG.error(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
 			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (ConnectionPoolTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Connection pool timeout";
-			LOG.error(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
 			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (ConnectTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Connect timeout";
-			LOG.error(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
 			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (SocketTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Socket timeout";
-			LOG.error(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
 			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (IOException e) {
 			int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
 			String statusText = "Error retrieving URL";
-			LOG.error(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
 			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		}
 
