@@ -63,7 +63,7 @@ public class XMLX509SubjectName extends SignatureElementProxy implements XMLX509
      * @param x509certificate
      */
     public XMLX509SubjectName(Document doc, X509Certificate x509certificate) {
-        this(doc, RFC2253Parser.normalize(x509certificate.getSubjectDN().getName()));
+        this(doc, x509certificate.getSubjectX500Principal().getName());
     }
 
     /**

@@ -91,7 +91,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy implements XMLX50
     public XMLX509IssuerSerial(Document doc, X509Certificate x509certificate) {
         this(
             doc,
-            RFC2253Parser.normalize(x509certificate.getIssuerDN().getName()),
+            x509certificate.getIssuerX500Principal().getName(),
             x509certificate.getSerialNumber()
         );
     }

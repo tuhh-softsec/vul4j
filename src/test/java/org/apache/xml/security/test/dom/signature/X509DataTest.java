@@ -27,7 +27,6 @@ import java.security.cert.X509Certificate;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.RFC2253Parser;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,8 +60,8 @@ public class X509DataTest extends org.junit.Assert {
         
         // Add these three lines
         org.apache.xml.security.keys.KeyInfo ki = sig.getKeyInfo();
-        ki.itemX509Data(0).addSubjectName(cert.getSubjectDN().toString());
-        ki.itemX509Data(0).addIssuerSerial(cert.getIssuerDN().toString(), cert.getSerialNumber());
+        ki.itemX509Data(0).addSubjectName(cert.getSubjectX500Principal().getName());
+        ki.itemX509Data(0).addIssuerSerial(cert.getIssuerX500Principal().getName(), cert.getSerialNumber());
         
         sig.sign(getPrivateKey());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -70,9 +69,9 @@ public class X509DataTest extends org.junit.Assert {
         XMLSignature newSig = getSignature(os.toByteArray());
         
         assertNotNull(newSig.getKeyInfo().itemX509Data(0));
-        assertEquals(RFC2253Parser.normalize(cert.getSubjectDN().toString()),
+        assertEquals(cert.getSubjectX500Principal().getName(),
                      newSig.getKeyInfo().itemX509Data(0).itemSubjectName(0).getSubjectName());
-        assertEquals(RFC2253Parser.normalize(cert.getIssuerDN().toString()),
+        assertEquals(cert.getIssuerX500Principal().getName(),
                      newSig.getKeyInfo().itemX509Data(0).itemIssuerSerial(0).getIssuerName());
     }
     

@@ -18,15 +18,27 @@
  */
 package org.apache.xml.security.stax.ext;
 
-import org.apache.xml.security.utils.RFC2253Parser;
-import org.apache.xml.security.stax.ext.stax.*;
-import org.apache.xml.security.stax.impl.EncryptionPartDef;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
-import java.security.cert.X509Certificate;
-import java.util.*;
+
+import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
+import org.apache.xml.security.stax.ext.stax.XMLSecCharacters;
+import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
+import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.apache.xml.security.stax.impl.EncryptionPartDef;
 
 /**
  * An abstract OutputProcessor class for reusabilty
@@ -213,7 +225,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerSerial, false, null);
         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerName, false, null);
-        createCharactersAndOutputAsEvent(outputProcessorChain, RFC2253Parser.normalize(x509Certificates[0].getIssuerX500Principal().getName(), true));
+        createCharactersAndOutputAsEvent(outputProcessorChain, x509Certificates[0].getIssuerX500Principal().getName());
         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerName);
         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SerialNumber, false, null);
         createCharactersAndOutputAsEvent(outputProcessorChain, x509Certificates[0].getSerialNumber().toString());

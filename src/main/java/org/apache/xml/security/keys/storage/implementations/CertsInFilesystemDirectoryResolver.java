@@ -113,7 +113,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                 cert.checkValidity();
                 this.certs.add(cert);
 
-                dn = cert.getSubjectDN().getName();
+                dn = cert.getSubjectX500Principal().getName();
                 added = true;
             } catch (FileNotFoundException ex) {
                 if (log.isDebugEnabled()) {
@@ -216,10 +216,10 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
                                + Base64.encode(ski) + "\"");
             System.out.println("cert.getSerialNumber()=        \""
                                + cert.getSerialNumber().toString() + "\"");
-            System.out.println("cert.getSubjectDN().getName()= \""
-                               + cert.getSubjectDN().getName() + "\"");
-            System.out.println("cert.getIssuerDN().getName()=  \""
-                               + cert.getIssuerDN().getName() + "\"");
+            System.out.println("cert.getSubjectX500Principal().getName()= \""
+                               + cert.getSubjectX500Principal().getName() + "\"");
+            System.out.println("cert.getIssuerX500Principal().getName()=  \""
+                               + cert.getIssuerX500Principal().getName() + "\"");
         }
     }
 }

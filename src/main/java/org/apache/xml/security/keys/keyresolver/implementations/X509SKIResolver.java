@@ -123,7 +123,7 @@ public class X509SKIResolver extends KeyResolverSpi {
                 for (int i = 0; i < x509childObject.length; i++) {
                     if (certSKI.equals(x509childObject[i])) {
                         if (log.isDebugEnabled()) {
-                            log.debug("Return PublicKey from " + cert.getSubjectDN().getName());
+                            log.debug("Return PublicKey from " + cert.getSubjectX500Principal().getName());
                         }
 
                         return cert;

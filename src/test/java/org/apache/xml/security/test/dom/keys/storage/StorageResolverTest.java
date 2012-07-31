@@ -81,7 +81,7 @@ public class StorageResolverTest extends org.junit.Assert {
 
         while (iter.hasNext()) {
             X509Certificate cert = (X509Certificate) iter.next();
-            cert.getSubjectDN().getName();
+            cert.getSubjectX500Principal().getName();
             count++;
         }
 

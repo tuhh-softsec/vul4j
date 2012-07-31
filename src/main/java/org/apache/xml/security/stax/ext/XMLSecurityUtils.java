@@ -24,7 +24,6 @@ import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
-import org.apache.xml.security.utils.RFC2253Parser;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -304,7 +303,7 @@ public class XMLSecurityUtils {
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
 
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SubjectName, false, null);
-        String subjectName = RFC2253Parser.normalize(x509Certificates[0].getSubjectDN().getName());
+        String subjectName = x509Certificates[0].getSubjectX500Principal().getName();
         abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, subjectName);
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SubjectName);
         
