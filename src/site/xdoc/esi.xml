@@ -143,7 +143,7 @@
 <td></td>
 <td>src</td>
 <td>Url of the page to include</td>
-<td>&lt;esi:include src="$PROVIDER(...)URI" /&gt;</td>
+<td>&lt;esi:include src=" $(PROVIDER...)URI" /&gt;</td>
 <td>yes</td>
 <td>yes</td>
 </tr>

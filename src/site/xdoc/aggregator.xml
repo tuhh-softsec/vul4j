@@ -167,7 +167,7 @@ This content will be replaced by the block "myblock" from block.html?id=789
 					the "&lt;esi:include&gt;" directive to include complete page into aggregated output. Directive supports following attributes:
 			</p>
 				<ul>
-					<li>src - specifies page and provider which should be used for retrieving (in a "$PROVIDER({'provider-id'})/)/page" format)</li>
+					<li>src - specifies page and provider which should be used for retrieving (in a " $(PROVIDER{'provider-id'})/)/page" format)</li>
 				</ul>
 		</subsection>
 		<subsection name="Processing &lt;!--esi --&gt; comments">

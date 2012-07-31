@@ -23,6 +23,8 @@ import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
 
 class IncludeElement extends BaseElement {
+	private static final String PROVIDER_PATTERN = "$(PROVIDER{";
+
 	private final static Pattern FRAGMENT_REPLACEMENT_PATTERN = Pattern.compile("(<esi:fragment[^>]*>)|(</esi:fragment[^>]*>)");
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
@@ -159,12 +161,12 @@ class IncludeElement extends BaseElement {
 			}
 		}
 
-		int idx = src.indexOf("$PROVIDER({");
+		int idx = src.indexOf(PROVIDER_PATTERN);
 		if (idx < 0) {
 			page = src;
 			driver = ctx.getResourceContext().getDriver();
 		} else {
-			int startIdx = idx + "$PROVIDER({".length();
+			int startIdx = idx + PROVIDER_PATTERN.length();
 			int endIndex = src.indexOf("})", startIdx);
 			String provider = src.substring(startIdx, endIndex);
 			page = src.substring(endIndex + "})".length());
