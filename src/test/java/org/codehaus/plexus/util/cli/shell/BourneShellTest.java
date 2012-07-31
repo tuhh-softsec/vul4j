@@ -101,6 +101,17 @@ public class BourneShellTest
         assertTrue( cli.endsWith( "\'" + args[0] + "\'" ) );
     }
 
+    public void testAddSingleQuotesAndEscapeSingleQuotesOnArgumentWithSpaces()
+    {
+        Shell sh = newShell();
+
+        String[] args = { "some 'arg' with spaces and quotes" };
+
+        List shellCommandLine = sh.getCommandLine("chmod",  args );
+
+        assertEquals("null \'some \\'arg\\' with spaces and quotes\'", shellCommandLine.get(shellCommandLine.size() - 1));
+    }
+
     public void testArgumentsWithsemicolon()
     {
 

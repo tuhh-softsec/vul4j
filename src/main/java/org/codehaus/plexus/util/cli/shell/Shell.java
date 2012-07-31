@@ -160,7 +160,7 @@ public class Shell
 
             if ( isQuotedArgumentsEnabled() )
             {
-                char[] escapeChars = getEscapeChars( isSingleQuotedExecutableEscaped(), isDoubleQuotedExecutableEscaped() );
+                char[] escapeChars = getEscapeChars( isSingleQuotedArgumentEscaped(), isDoubleQuotedArgumentEscaped() );
 
                 sb.append( StringUtils.quoteAndEscape( arguments[i], getArgumentQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
             }
