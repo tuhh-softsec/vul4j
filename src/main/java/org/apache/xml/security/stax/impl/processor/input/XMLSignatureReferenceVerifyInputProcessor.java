@@ -36,8 +36,8 @@ import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
  */
 public class XMLSignatureReferenceVerifyInputProcessor extends AbstractSignatureReferenceVerifyInputProcessor {
 
-    public XMLSignatureReferenceVerifyInputProcessor(SignatureType signatureType, SecurityToken securityToken, XMLSecurityProperties securityProperties) throws XMLSecurityException {
-        super(signatureType, securityToken, securityProperties);
+    public XMLSignatureReferenceVerifyInputProcessor(InputProcessorChain inputProcessorChain, SignatureType signatureType, SecurityToken securityToken, XMLSecurityProperties securityProperties) throws XMLSecurityException {
+        super(inputProcessorChain, signatureType, securityToken, securityProperties);
         this.addAfterProcessor(XMLSignatureReferenceVerifyInputProcessor.class.getName());
     }
     

@@ -384,4 +384,9 @@ public class XMLSecurityConstants {
         SIGNATURE,
         ENCRYPTION
     }
+
+    public enum TransformMethod {
+        XMLSecEvent,
+        InputStream,
+    }
 }

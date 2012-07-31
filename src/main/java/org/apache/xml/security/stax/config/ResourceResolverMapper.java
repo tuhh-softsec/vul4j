@@ -48,12 +48,12 @@ public class ResourceResolverMapper {
         }
     }
 
-    public static ResourceResolver getResourceResolver(String uri) throws XMLSecurityException {
+    public static ResourceResolver getResourceResolver(String uri, String baseURI) throws XMLSecurityException {
         for (int i = 0; i < resourceResolvers.size(); i++) {
             ResourceResolverLookup resourceResolver = resourceResolvers.get(i);
-            ResourceResolverLookup rr = resourceResolver.canResolve(uri);
+            ResourceResolverLookup rr = resourceResolver.canResolve(uri, baseURI);
             if (rr != null) {
-                return rr.newInstance(uri);
+                return rr.newInstance(uri, baseURI);
             }
         }
         throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "resolver.noClass", uri);

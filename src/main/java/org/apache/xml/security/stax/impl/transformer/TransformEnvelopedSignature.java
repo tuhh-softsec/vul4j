@@ -18,48 +18,34 @@
  */
 package org.apache.xml.security.stax.impl.transformer;
 
-import org.apache.xml.security.stax.ext.Transformer;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import java.io.OutputStream;
-import java.util.List;
+import java.io.InputStream;
 
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public class TransformEnvelopedSignature implements Transformer {
+public class TransformEnvelopedSignature extends TransformIdentity {
 
-    private static final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
-    private XMLEventWriter xmlEventWriter;
-    private Transformer transformer;
     private int curLevel = 0;
     private int sigElementLevel = -1;
 
     @Override
-    public void setOutputStream(OutputStream outputStream) throws XMLSecurityException {
-        try {
-            xmlEventWriter = xmlOutputFactory.createXMLEventWriter(outputStream);
-        } catch (XMLStreamException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+    public XMLSecurityConstants.TransformMethod getPreferredTransformMethod(XMLSecurityConstants.TransformMethod forInput) {
+        switch (forInput) {
+            case XMLSecEvent:
+                return XMLSecurityConstants.TransformMethod.XMLSecEvent;
+            case InputStream:
+                return XMLSecurityConstants.TransformMethod.XMLSecEvent;
+            default:
+                throw new IllegalArgumentException("Unsupported class " + forInput.name());
         }
-    }
-
-    @Override
-    public void setList(List list) throws XMLSecurityException {
-    }
-
-    @Override
-    public void setTransformer(Transformer transformer) throws XMLSecurityException {
-        this.transformer = transformer;
     }
 
     @Override
@@ -82,21 +68,13 @@ public class TransformEnvelopedSignature implements Transformer {
                 curLevel--;
         }
         if (sigElementLevel == -1) {
-            if (xmlEventWriter != null) {
-                xmlEventWriter.add(xmlSecEvent);
-            } else if (transformer != null) {
-                transformer.transform(xmlSecEvent);
-            }
+            super.transform(xmlSecEvent);
         }
     }
 
     @Override
-    public void doFinal() throws XMLStreamException {
-        if (xmlEventWriter != null) {
-            xmlEventWriter.close();
-        }
-        if (transformer != null) {
-            transformer.doFinal();
-        }
+    public void transform(InputStream inputStream) throws XMLStreamException {
+        //there is no use case at the moment but can be implemented if needed
+        throw new UnsupportedOperationException("transform(InputStream) not supported");
     }
 }

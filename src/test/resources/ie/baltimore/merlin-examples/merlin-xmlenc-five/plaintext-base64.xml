@@ -12,10 +12,8 @@
     Dig PLC, 1 First Ave, Dublin 1, Ireland
   </ShippingAddress>
   <PaymentInfo>
-      PEJpbGxpbmdBZGRyZXNzPgogICAgICBEaWcgUExDLCAxIEZpcnN0IEF2ZSwgRHVibGluIDEsIEly
-      ZWxhbmQKICAgIDwvQmlsbGluZ0FkZHJlc3M+CiAgICA8Q3JlZGl0Q2FyZCBUeXBlPUFtZXg+CiAg
-      ICAgIDxOYW1lPkZvbyBCIEJhejwvTmFtZT4KICAgICAgPE51bWJlcj4xMjM0IDU2Nzg5MCAxMjM0
-      NTwvTnVtYmVyPgogICAgICA8RXhwaXJlcyBNb250aD0xIFllYXI9MjAwNSAvPgogICAgPC9DcmVk
-      aXRDYXJkPgo=
+      PENyZWRpdENhcmQgVHlwZT0iQW1leCI+CiAgICAgIDxOYW1lPkZvbyBCIEJhejwvTmFtZT4KICAg
+      ICAgPE51bWJlcj4xMjM0IDU2Nzg5MCAxMjM0NTwvTnVtYmVyPgogICAgICA8RXhwaXJlcyBNb250
+      aD0iMSIgWWVhcj0iMjAwNSIgLz4KICAgIDwvQ3JlZGl0Q2FyZD4K
   </PaymentInfo>
 </PurchaseOrder>

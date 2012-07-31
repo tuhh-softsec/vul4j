@@ -352,7 +352,7 @@ public class DecryptionTest extends org.junit.Assert {
         NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
         Assert.assertEquals(nodeList.getLength(), 0);
         
-        XMLUtils.outputDOM(document, System.out);
+        //XMLUtils.outputDOM(document, System.out);
         
         // Convert Document to a Stream Reader
         javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();

@@ -20,23 +20,23 @@ package org.apache.xml.security.stax.impl.transformer.canonicalizer;
 
 import org.apache.xml.security.c14n.implementations.UtfHelpper;
 import org.apache.xml.security.stax.ext.Transformer;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.*;
+import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
+import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
+import javax.xml.stream.*;
+import java.io.*;
 import java.util.*;
 
 /**
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public abstract class CanonicalizerBase implements Transformer {
+public abstract class CanonicalizerBase extends TransformIdentity {
 
     protected static final byte[] _END_PI = {'?', '>'};
     protected static final byte[] _BEGIN_PI = {'<', '?'};
@@ -64,8 +64,6 @@ public abstract class CanonicalizerBase implements Transformer {
         NODE_AFTER_DOCUMENT_ELEMENT
     }
 
-    private OutputStream outputStream;
-
     private static final Map<String, byte[]> cache = new WeakHashMap<String, byte[]>();
     private final C14NStack outputStack = new C14NStack();
     private boolean includeComments = false;
@@ -78,11 +76,6 @@ public abstract class CanonicalizerBase implements Transformer {
     }
 
     @Override
-    public void setOutputStream(OutputStream outputStream) throws XMLSecurityException {
-        this.outputStream = outputStream;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public void setList(List list) throws XMLSecurityException {
         this.inclusiveNamespaces = prefixList2Set(list);
@@ -90,7 +83,9 @@ public abstract class CanonicalizerBase implements Transformer {
 
     @Override
     public void setTransformer(Transformer transformer) throws XMLSecurityException {
-        throw new UnsupportedOperationException("Transformer not supported");
+        //we support only transformers which takes an InputStream otherwise we will break the C14N
+        setOutputStream(new ByteArrayOutputStream());
+        super.setTransformer(transformer);
     }
 
     public static SortedSet<String> prefixList2Set(List<String> inclusiveNamespaces) {
@@ -248,8 +243,23 @@ public abstract class CanonicalizerBase implements Transformer {
         return utilizedAttributes;
     }
 
+    @Override
+    public XMLSecurityConstants.TransformMethod getPreferredTransformMethod(XMLSecurityConstants.TransformMethod forInput) {
+        switch (forInput) {
+            case XMLSecEvent:
+                return XMLSecurityConstants.TransformMethod.XMLSecEvent;
+            case InputStream:
+                return XMLSecurityConstants.TransformMethod.InputStream;
+            default:
+                throw new IllegalArgumentException("Unsupported class " + forInput.name());
+        }
+    }
+
+    @Override
     public void transform(final XMLSecEvent xmlSecEvent) throws XMLStreamException {
         try {
+            OutputStream outputStream = getOutputStream();
+
             switch (xmlSecEvent.getEventType()) {
                 case XMLStreamConstants.START_ELEMENT:
 
@@ -356,21 +366,21 @@ public abstract class CanonicalizerBase implements Transformer {
 
                     break;
                 case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                    outputPItoWriter(((XMLSecProcessingInstruction) xmlSecEvent), this.outputStream, currentDocumentLevel);
+                    outputPItoWriter(((XMLSecProcessingInstruction) xmlSecEvent), outputStream, currentDocumentLevel);
                     break;
                 case XMLStreamConstants.CHARACTERS:
                     if (currentDocumentLevel == DocumentLevel.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT) {
-                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), this.outputStream);
+                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), outputStream);
                     }
                     break;
                 case XMLStreamConstants.COMMENT:
                     if (includeComments) {
-                        outputCommentToWriter(((XMLSecComment) xmlSecEvent), this.outputStream, currentDocumentLevel);
+                        outputCommentToWriter(((XMLSecComment) xmlSecEvent), outputStream, currentDocumentLevel);
                     }
                     break;
                 case XMLStreamConstants.SPACE:
                     if (currentDocumentLevel == DocumentLevel.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT) {
-                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), this.outputStream);
+                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), outputStream);
                     }
                     break;
                 case XMLStreamConstants.START_DOCUMENT:
@@ -385,7 +395,7 @@ public abstract class CanonicalizerBase implements Transformer {
                 case XMLStreamConstants.DTD:
                     break;
                 case XMLStreamConstants.CDATA:
-                    outputTextToWriter(xmlSecEvent.asCharacters().getData(), this.outputStream);
+                    outputTextToWriter(xmlSecEvent.asCharacters().getData(), outputStream);
                     break;
                 case XMLStreamConstants.NAMESPACE:
                     throw new XMLStreamException("illegal event :" + XMLSecurityUtils.getXMLEventAsString(xmlSecEvent));
@@ -400,8 +410,28 @@ public abstract class CanonicalizerBase implements Transformer {
     }
 
     @Override
+    public void transform(InputStream inputStream) throws XMLStreamException {
+        XMLEventReaderInputProcessor xmlEventReaderInputProcessor =
+                new XMLEventReaderInputProcessor(null, getXmlInputFactory().createXMLStreamReader(inputStream));
+
+        try {
+            XMLSecEvent xmlSecEvent;
+            do {
+                xmlSecEvent = xmlEventReaderInputProcessor.processNextEvent(null);
+                this.transform(xmlSecEvent);
+            } while (xmlSecEvent.getEventType() != XMLStreamConstants.END_DOCUMENT);
+        } catch (XMLSecurityException e) {
+            throw new XMLStreamException(e);
+        }
+    }
+
+    @Override
     public void doFinal() throws XMLStreamException {
-        //nothing to do here
+        if (getTransformer() != null) {
+            ByteArrayOutputStream baos = (ByteArrayOutputStream)getOutputStream();
+            getTransformer().transform(new ByteArrayInputStream(baos.toByteArray()));
+            getTransformer().doFinal();
+        }
     }
 
     protected static void outputAttrToWriter(final String name, final String value, final OutputStream writer,

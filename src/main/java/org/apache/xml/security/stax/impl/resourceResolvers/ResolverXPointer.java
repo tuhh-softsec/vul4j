@@ -74,7 +74,7 @@ public class ResolverXPointer implements ResourceResolver, ResourceResolverLooku
     }
 
     @Override
-    public ResourceResolverLookup canResolve(String uri) {
+    public ResourceResolverLookup canResolve(String uri, String baseURI) {
         if (uri != null && pattern.matcher(uri).find()) {
             return this;
         }
@@ -82,7 +82,7 @@ public class ResolverXPointer implements ResourceResolver, ResourceResolverLooku
     }
 
     @Override
-    public ResourceResolver newInstance(String uri) {
+    public ResourceResolver newInstance(String uri, String baseURI) {
         return new ResolverXPointer(uri);
     }
 

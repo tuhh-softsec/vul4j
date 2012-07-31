@@ -36,25 +36,30 @@ import java.net.URI;
 public class ResolverFilesystem implements ResourceResolver, ResourceResolverLookup {
 
     private String uri;
+    private String baseURI;
 
     public ResolverFilesystem() {
     }
 
-    public ResolverFilesystem(String uri) {
+    public ResolverFilesystem(String uri, String baseURI) {
         this.uri = uri;
+        this.baseURI = baseURI;
     }
 
     @Override
-    public ResourceResolverLookup canResolve(String uri) {
-        if (uri != null && uri.startsWith("file:")) {
+    public ResourceResolverLookup canResolve(String uri, String baseURI) {
+        if (uri == null) {
+            return null;
+        }
+        if (uri.startsWith("file:") || (baseURI != null && baseURI.startsWith("file:"))) {
             return this;
         }
         return null;
     }
 
     @Override
-    public ResourceResolver newInstance(String uri) {
-        return new ResolverFilesystem(uri);
+    public ResourceResolver newInstance(String uri, String baseURI) {
+        return new ResolverFilesystem(uri, baseURI);
     }
 
     @Override
@@ -70,7 +75,13 @@ public class ResolverFilesystem implements ResourceResolver, ResourceResolverLoo
     @Override
     public InputStream getInputStreamFromExternalReference() throws XMLSecurityException {
         try {
-            URI tmp = new URI(uri);
+            URI tmp;
+            if (baseURI == null || "".equals(baseURI)) {
+                tmp = new URI(uri);
+            } else {
+                tmp = new URI(baseURI).resolve(uri);
+            }
+
             if (tmp.getFragment() != null) {
                 tmp = new URI(tmp.getScheme(), tmp.getSchemeSpecificPart(), null);
             }

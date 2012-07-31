@@ -41,6 +41,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
@@ -246,26 +247,17 @@ public class IAIKTest extends org.junit.Assert {
     
     // See SANTUARIO-322
     @Test
-    @Ignore
     public void test_transforms_signatures_base64DecodeSignature() throws Exception {
-        // Read in plaintext document
-        InputStream sourceDocument = 
-                this.getClass().getClassLoader().getResourceAsStream(
-                        "at/iaik/ixsil/transforms/signatures/base64DecodeSignature.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-        Document document = builder.parse(sourceDocument);
-        
         // Set up the Key
         Key publicKey = getPublicKey("RSA");
-        
-        // XMLUtils.outputDOM(document, System.out);
-        
-        // Convert Document to a Stream Reader
-        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformer.transform(new DOMSource(document), new StreamResult(baos));
-        final XMLStreamReader xmlStreamReader = 
-                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(
+                        new StreamSource(
+                                this.getClass().getClassLoader().getResource(
+                                        "at/iaik/ixsil/transforms/signatures/base64DecodeSignature.xml").toExternalForm()
+                        )
+                );
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();
@@ -278,26 +270,17 @@ public class IAIKTest extends org.junit.Assert {
     
     // See SANTUARIO-322
     @Test
-    @Ignore
     public void test_transforms_signatures_c14nSignature() throws Exception {
-        // Read in plaintext document
-        InputStream sourceDocument = 
-                this.getClass().getClassLoader().getResourceAsStream(
-                        "at/iaik/ixsil/transforms/signatures/c14nSignature.xml");
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-        Document document = builder.parse(sourceDocument);
-        
         // Set up the Key
         Key publicKey = getPublicKey("RSA");
         
-        // XMLUtils.outputDOM(document, System.out);
-        
-        // Convert Document to a Stream Reader
-        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformer.transform(new DOMSource(document), new StreamResult(baos));
-        final XMLStreamReader xmlStreamReader = 
-                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(
+                        new StreamSource(
+                                this.getClass().getClassLoader().getResource(
+                                        "at/iaik/ixsil/transforms/signatures/c14nSignature.xml").toExternalForm()
+                        )
+                );
   
         // Verify signature
         XMLSecurityProperties properties = new XMLSecurityProperties();

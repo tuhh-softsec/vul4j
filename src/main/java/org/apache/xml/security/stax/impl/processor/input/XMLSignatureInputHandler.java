@@ -104,7 +104,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                                                               XMLSecurityProperties securityProperties,
                                                               SignatureType signatureType, SecurityToken securityToken) throws XMLSecurityException {
         //add processors to verify references
-        inputProcessorChain.addProcessor(new XMLSignatureReferenceVerifyInputProcessor(signatureType, securityToken, securityProperties));
+        inputProcessorChain.addProcessor(new XMLSignatureReferenceVerifyInputProcessor(inputProcessorChain, signatureType, securityToken, securityProperties));
     }
     
     public class XMLSignatureVerifier extends SignatureVerifier {

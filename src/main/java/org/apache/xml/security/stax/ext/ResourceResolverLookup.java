@@ -24,7 +24,7 @@ package org.apache.xml.security.stax.ext;
  */
 public interface ResourceResolverLookup {
 
-    ResourceResolverLookup canResolve(String uri);
+    ResourceResolverLookup canResolve(String uri, String baseURI);
 
-    ResourceResolver newInstance(String uri);
+    ResourceResolver newInstance(String uri, String baseURI);
 }

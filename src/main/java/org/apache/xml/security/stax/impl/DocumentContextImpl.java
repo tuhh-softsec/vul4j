@@ -32,6 +32,7 @@ import java.util.*;
 public class DocumentContextImpl implements DocumentContext, Cloneable {
 
     private String encoding;
+    private String baseURI;
     private final Map<Integer, XMLSecurityConstants.ContentType> contentTypeMap = new TreeMap<Integer, XMLSecurityConstants.ContentType>();
     private final Map<Object, Integer> processorToIndexMap = new HashMap<Object, Integer>();
 
@@ -41,6 +42,14 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+    }
+
+    public String getBaseURI() {
+        return baseURI;
+    }
+
+    public void setBaseURI(String baseURI) {
+        this.baseURI = baseURI;
     }
 
     public synchronized void setIsInEncryptedContent(int index, Object key) {
@@ -88,6 +97,7 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
     protected DocumentContextImpl clone() throws CloneNotSupportedException {
         DocumentContextImpl documentContext = new DocumentContextImpl();
         documentContext.setEncoding(this.encoding);
+        documentContext.setBaseURI(this.baseURI);
         documentContext.setContentTypeMap(getContentTypeMap());
         return documentContext;
     }

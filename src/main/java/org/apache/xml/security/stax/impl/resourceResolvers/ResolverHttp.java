@@ -39,13 +39,15 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
     private static Proxy proxy;
 
     private String uri;
+    private String baseURI;
     private Pattern pattern = Pattern.compile("^http[s]?://.*");
 
     public ResolverHttp() {
     }
 
-    public ResolverHttp(String uri) {
+    public ResolverHttp(String uri, String baseURI) {
         this.uri = uri;
+        this.baseURI = baseURI;
     }
 
     public static void setProxy(Proxy proxy) {
@@ -53,16 +55,19 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
     }
 
     @Override
-    public ResourceResolverLookup canResolve(String uri) {
-        if (uri != null && pattern.matcher(uri).matches()) {
+    public ResourceResolverLookup canResolve(String uri, String baseURI) {
+        if (uri == null) {
+            return null;
+        }
+        if (pattern.matcher(uri).matches() || (baseURI != null && pattern.matcher(baseURI).matches())) {
             return this;
         }
         return null;
     }
 
     @Override
-    public ResourceResolver newInstance(String uri) {
-        return new ResolverHttp(uri);
+    public ResourceResolver newInstance(String uri, String baseURI) {
+        return new ResolverHttp(uri, baseURI);
     }
 
     @Override
@@ -78,7 +83,13 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
     @Override
     public InputStream getInputStreamFromExternalReference() throws XMLSecurityException {
         try {
-            URI tmp = new URI(uri);
+            URI tmp;
+            if (baseURI == null || "".equals(baseURI)) {
+                tmp = new URI(uri);
+            } else {
+                tmp = new URI(baseURI).resolve(uri);
+            }
+
             if (tmp.getFragment() != null) {
                 tmp = new URI(tmp.getScheme(), tmp.getSchemeSpecificPart(), null);
             }

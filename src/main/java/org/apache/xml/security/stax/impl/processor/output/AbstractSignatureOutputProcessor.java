@@ -79,7 +79,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             final SecurePart securePart = securePartEntry.getValue();
             final String externalReference = securePart.getExternalReference();
             if (externalReference != null) {
-                ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(externalReference);
+                ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(externalReference, outputProcessorChain.getDocumentContext().getBaseURI());
 
                 DigestOutputStream digestOutputStream = null;
                 try {
@@ -92,13 +92,27 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
                 InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
 
-                //todo transformers
-
                 try {
-                    IOUtils.copy(inputStream, digestOutputStream);
+                    if (securePart.getTransforms() != null) {
+                        Transformer transformer = buildTransformerChain(digestOutputStream, securePart.getTransforms());
+                        transformer.transform(inputStream);
+                        transformer.doFinal();
+                    } else {
+                        IOUtils.copy(inputStream, digestOutputStream);
+                    }
+                    digestOutputStream.close();
+                } catch (NoSuchMethodException e) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                } catch (InstantiationException e) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                } catch (IllegalAccessException e) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                } catch (InvocationTargetException e) {
+                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
                 } catch (IOException e) {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
                 }
+
                 String calculatedDigest = new String(Base64.encodeBase64(digestOutputStream.getDigestValue()));
                 if (logger.isDebugEnabled()) {
                     logger.debug("Calculated Digest: " + calculatedDigest);
@@ -144,6 +158,31 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         return new DigestOutputStream(messageDigest);
     }
 
+    protected Transformer buildTransformerChain(OutputStream outputStream, String[] transforms)
+            throws XMLSecurityException, NoSuchMethodException, InstantiationException,
+            IllegalAccessException, InvocationTargetException {
+
+        if (transforms == null || transforms.length == 0) {
+            Transformer transformer = new TransformIdentity();
+            transformer.setOutputStream(outputStream);
+            return transformer;
+        }
+
+        Transformer parentTransformer = null;
+        for (int i = transforms.length - 1; i >= 0; i--) {
+            String transform = transforms[i];
+
+            if (parentTransformer != null) {
+                parentTransformer = XMLSecurityUtils.getTransformer(
+                        parentTransformer, null, transform, XMLSecurityConstants.DIRECTION.OUT);
+            } else {
+                parentTransformer = XMLSecurityUtils.getTransformer(
+                        null, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
+            }
+        }
+        return parentTransformer;
+    }
+
     public class InternalSignatureOutputProcessor extends AbstractOutputProcessor {
 
         private SignaturePartDef signaturePartDef;
@@ -181,33 +220,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             } catch (NoSuchProviderException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
             }
-
             super.init(outputProcessorChain);
-        }
-
-        protected Transformer buildTransformerChain(OutputStream outputStream, String[] transforms)
-                throws XMLSecurityException, NoSuchMethodException, InstantiationException,
-                IllegalAccessException, InvocationTargetException {
-
-            if (transforms == null || transforms.length == 0) {
-                Transformer transformer = new TransformIdentity();
-                transformer.setOutputStream(outputStream);
-                return transformer;
-            }
-
-            Transformer parentTransformer = null;
-            for (int i = transforms.length - 1; i >= 0; i--) {
-                String transform = transforms[i];
-
-                if (parentTransformer != null) {
-                    parentTransformer = XMLSecurityUtils.getTransformer(
-                            parentTransformer, null, transform, XMLSecurityConstants.DIRECTION.OUT);
-                } else {
-                    parentTransformer = XMLSecurityUtils.getTransformer(
-                            null, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
-                }
-            }
-            return parentTransformer;
         }
 
         @Override

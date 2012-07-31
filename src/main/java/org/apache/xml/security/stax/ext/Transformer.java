@@ -21,6 +21,7 @@ package org.apache.xml.security.stax.ext;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -32,11 +33,15 @@ public interface Transformer {
 
     void setOutputStream(OutputStream outputStream) throws XMLSecurityException;
 
-    void setList(List list) throws XMLSecurityException;
-
     void setTransformer(Transformer transformer) throws XMLSecurityException;
 
+    void setList(List list) throws XMLSecurityException;
+
+    XMLSecurityConstants.TransformMethod getPreferredTransformMethod(XMLSecurityConstants.TransformMethod forInput);
+
     void transform(XMLSecEvent xmlSecEvent) throws XMLStreamException;
+
+    void transform(InputStream inputStream) throws XMLStreamException;
 
     void doFinal() throws XMLStreamException;
 }

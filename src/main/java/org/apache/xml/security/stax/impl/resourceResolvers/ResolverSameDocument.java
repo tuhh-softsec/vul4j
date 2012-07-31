@@ -47,7 +47,7 @@ public class ResolverSameDocument implements ResourceResolver, ResourceResolverL
     }
 
     @Override
-    public ResourceResolverLookup canResolve(String uri) {
+    public ResourceResolverLookup canResolve(String uri, String baseURI) {
         if (uri != null && (uri.isEmpty() || uri.charAt(0) == '#')) {
             if (uri.startsWith("#xpointer")) {
                 return null;
@@ -58,7 +58,7 @@ public class ResolverSameDocument implements ResourceResolver, ResourceResolverL
     }
 
     @Override
-    public ResourceResolver newInstance(String uri) {
+    public ResourceResolver newInstance(String uri, String baseURI) {
         return new ResolverSameDocument(uri);
     }
 

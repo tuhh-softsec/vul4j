@@ -89,6 +89,8 @@ public class HttpRequestRedirectorProxy {
 
         static {
             paths.add("ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three");
+            paths.add("com/pothole/xmldsig");
+            paths.add("javax/xml/crypto/dsig");
         }
 
         @Override

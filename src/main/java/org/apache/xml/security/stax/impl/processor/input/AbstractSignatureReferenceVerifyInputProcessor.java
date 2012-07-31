@@ -38,10 +38,8 @@ import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
@@ -64,6 +62,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
     private final List<ReferenceType> processedReferences;
 
     public AbstractSignatureReferenceVerifyInputProcessor(
+            InputProcessorChain inputProcessorChain,
             SignatureType signatureType, SecurityToken securityToken,
             XMLSecurityProperties securityProperties) throws XMLSecurityException {
         super(securityProperties);
@@ -81,7 +80,10 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             if (referenceType.getURI() == null) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
             }
-            ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(referenceType.getURI());
+            ResourceResolver resourceResolver =
+                    ResourceResolverMapper.getResourceResolver(
+                            referenceType.getURI(), inputProcessorChain.getDocumentContext().getBaseURI());
+
             if (resourceResolver.isSameDocumentReference()) {
                 sameDocumentReferences.put(resourceResolver, referenceType);
             } else {
@@ -218,18 +220,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
             if (referenceType.getTransforms() != null) {
                 transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
-
-                XMLStreamReader xmlStreamReader =
-                        inputProcessorChain.getSecurityContext().<XMLInputFactory>get(
-                                XMLSecurityConstants.XMLINPUTFACTORY).createXMLStreamReader(inputStream);
-                XMLEventReaderInputProcessor xmlEventReaderInputProcessor = new XMLEventReaderInputProcessor(null, xmlStreamReader);
-
-                XMLSecEvent xmlSecEvent;
-                do {
-                    xmlSecEvent = xmlEventReaderInputProcessor.processNextEvent(null);
-                    transformer.transform(xmlSecEvent);
-                } while (xmlSecEvent.getEventType() != XMLStreamConstants.END_DOCUMENT);
-
+                transformer.transform(inputStream);
                 bufferedDigestOutputStream.close();
             } else {
                 IOUtils.copy(inputStream, bufferedDigestOutputStream);

@@ -118,7 +118,10 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        securePart = new SecurePart("file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class", null, XMLSecurityConstants.NS_XMLDSIG_SHA1);
+        securePart = new SecurePart(
+                "file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
+                null,
+                XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
@@ -147,6 +150,10 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
 
         try {
             ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress)proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress)proxy.address()).getPort());
 
             // Set up the Configuration
             XMLSecurityProperties properties = new XMLSecurityProperties();
@@ -186,10 +193,6 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
 
             Document document =
                     documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
-
-            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
-            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress)proxy.address()).getAddress().getHostAddress());
-            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress)proxy.address()).getPort());
 
             // Verify using DOM
             verifyUsingDOM(document, cert, properties.getSignatureSecureParts(), resolverDirectHTTP);

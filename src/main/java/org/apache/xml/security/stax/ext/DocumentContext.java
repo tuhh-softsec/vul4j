@@ -30,9 +30,14 @@ import java.util.Map;
 public interface DocumentContext {
 
     /**
-     * @return The Encoding of the Document
+     * @return The Encoding of the document
      */
     String getEncoding();
+
+    /**
+     * @return The base URI of the document if known
+     */
+    String getBaseURI();
 
     /**
      * Indicates if we currently stay in an encrypted content
