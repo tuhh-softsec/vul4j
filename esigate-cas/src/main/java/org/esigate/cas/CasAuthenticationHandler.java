@@ -35,6 +35,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		if (principal != null && principal instanceof AttributePrincipal) {
 			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
+			String springRedirectParam = "";
 
 			if (springSecurity) {
 				String params = null;
@@ -44,6 +45,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 				}
 				if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
 					resultLocation = requestContext.getBaseURL() + springSecurityUrl + ((params != null) ? params : "");
+					springRedirectParam = "&spring-security-redirect=" + location;
 					LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
 				}
 			}
@@ -51,9 +53,9 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 			LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : " + casProxyTicket);
 			if (casProxyTicket != null) {
 				if (resultLocation.indexOf("?") > 0) {
-					return resultLocation + "&ticket=" + casProxyTicket;
+					return resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
 				} else {
-					return resultLocation + "?ticket=" + casProxyTicket;
+					return resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
 				}
 			}
 		}
