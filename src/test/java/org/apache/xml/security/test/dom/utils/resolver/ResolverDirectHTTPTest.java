@@ -18,30 +18,132 @@
  */
 package org.apache.xml.security.test.dom.utils.resolver;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.xml.security.Init;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 public class ResolverDirectHTTPTest extends org.junit.Assert {
-    
-    @org.junit.Test
-    public void testBug40783() throws Exception{
+
+    //change these properties to match your environment
+    private static final String url = "http://www.apache.org";
+    private static final String proxyHost = "127.0.0.1";
+    private static final String proxyPort = "3128";
+    private static final String proxyUsername = "proxyUser";
+    private static final String proxyPassword = "proxyPass";
+    private static final String serverUsername = "serverUser";
+    private static final String serverPassword = "serverPass";
+
+    @Before
+    public void setUp() {
+        org.apache.xml.security.Init.init();
+    }
+
+    @Test
+    public void testBug40783() throws Exception {
         Init.init();
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();		
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Attr uri = doc.createAttribute("id");
         uri.setNodeValue("urn:ddd:uuu");
-        ((Element)doc.createElement("test")).setAttributeNode(uri);
+        ((Element) doc.createElement("test")).setAttributeNode(uri);
         try {
-            ResourceResolver resolver = ResourceResolver.getInstance(uri, null);		  
+            ResourceResolver resolver = ResourceResolver.getInstance(uri, null);
             fail("No exception thrown, but resolver found: " + resolver);
         } catch (ResourceResolverException e) {
             //
         }
     }
 
+    @Test
+    @Ignore
+    public void testProxyAuth() throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Attr uri = doc.createAttribute("URI");
+        uri.setNodeValue(url);
+
+        ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+        resolverDirectHTTP.engineSetProperty("http.proxy.host",proxyHost);
+        resolverDirectHTTP.engineSetProperty("http.proxy.port", proxyPort);
+        resolverDirectHTTP.engineSetProperty("http.proxy.username", proxyUsername);
+        resolverDirectHTTP.engineSetProperty("http.proxy.password", proxyPassword);
+        XMLSignatureInput xmlSignatureInput = resolverDirectHTTP.engineResolve(uri, url);
+    }
+
+    @Test
+    @Ignore
+    public void testProxyAuthWithWrongPassword() throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Attr uri = doc.createAttribute("URI");
+        uri.setNodeValue(url);
+
+        ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+        resolverDirectHTTP.engineSetProperty("http.proxy.host",proxyHost);
+        resolverDirectHTTP.engineSetProperty("http.proxy.port", proxyPort);
+        resolverDirectHTTP.engineSetProperty("http.proxy.username", proxyUsername);
+        resolverDirectHTTP.engineSetProperty("http.proxy.password", "wrongPassword");
+        try {
+            XMLSignatureInput xmlSignatureInput = resolverDirectHTTP.engineResolve(uri, url);
+            Assert.fail("Expected ResourceResolverException");
+        } catch (ResourceResolverException e) {
+            Assert.assertEquals("Server returned HTTP response code: 407 for URL: " + url, e.getMessage());
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testServerAuth() throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Attr uri = doc.createAttribute("URI");
+        uri.setNodeValue(url);
+
+        ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+        resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
+        resolverDirectHTTP.engineSetProperty("http.basic.password", serverPassword);
+        XMLSignatureInput xmlSignatureInput = resolverDirectHTTP.engineResolve(uri, url);
+    }
+
+    @Test
+    @Ignore
+    public void testServerAuthWithWrongPassword() throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Attr uri = doc.createAttribute("URI");
+        uri.setNodeValue(url);
+
+        ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+        resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
+        resolverDirectHTTP.engineSetProperty("http.basic.password", "wrongPassword");
+        try {
+            XMLSignatureInput xmlSignatureInput = resolverDirectHTTP.engineResolve(uri, url);
+            Assert.fail("Expected ResourceResolverException");
+        } catch (ResourceResolverException e) {
+            Assert.assertEquals("Server returned HTTP response code: 401 for URL: " + url, e.getMessage());
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testProxyAndServerAuth() throws Exception {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Attr uri = doc.createAttribute("URI");
+        uri.setNodeValue(url);
+
+        ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+        resolverDirectHTTP.engineSetProperty("http.proxy.host",proxyHost);
+        resolverDirectHTTP.engineSetProperty("http.proxy.port", proxyPort);
+        resolverDirectHTTP.engineSetProperty("http.proxy.username", proxyUsername);
+        resolverDirectHTTP.engineSetProperty("http.proxy.password", proxyPassword);
+        resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
+        resolverDirectHTTP.engineSetProperty("http.basic.password", serverPassword);
+        XMLSignatureInput xmlSignatureInput = resolverDirectHTTP.engineResolve(uri, url);
+    }
 }
