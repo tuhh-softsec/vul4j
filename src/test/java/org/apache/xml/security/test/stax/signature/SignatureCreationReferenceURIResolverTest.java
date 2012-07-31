@@ -18,30 +18,33 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
-import org.apache.xml.security.stax.ext.*;
-import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
-import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
-import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
-import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.xml.security.stax.ext.OutboundXMLSec;
+import org.apache.xml.security.stax.ext.SecurePart;
+import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
+import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
+import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author $Author$

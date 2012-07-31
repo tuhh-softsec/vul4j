@@ -139,9 +139,15 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, null, getPublicKey(),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
     
     

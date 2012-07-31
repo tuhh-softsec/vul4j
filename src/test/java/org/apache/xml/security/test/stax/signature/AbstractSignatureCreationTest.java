@@ -18,17 +18,9 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.stax.ext.SecurePart;
-import org.apache.xml.security.test.dom.DSNamespaceContext;
-import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.utils.resolver.ResourceResolver;
-import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.junit.Assert;
-import org.junit.Before;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.File;
+import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,9 +28,17 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.security.cert.X509Certificate;
-import java.util.List;
+
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.stax.ext.SecurePart;
+import org.apache.xml.security.test.dom.DSNamespaceContext;
+import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.junit.Assert;
+import org.junit.Before;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author $Author$

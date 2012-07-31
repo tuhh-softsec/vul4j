@@ -18,31 +18,6 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.stax.config.ResourceResolverMapper;
-import org.apache.xml.security.stax.ext.InboundXMLSec;
-import org.apache.xml.security.stax.ext.ResourceResolver;
-import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
-import org.apache.xml.security.stax.impl.resourceResolvers.ResolverXPointer;
-import org.apache.xml.security.test.dom.DSNamespaceContext;
-import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
-import org.apache.xml.security.test.stax.utils.StAX2DOM;
-import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -54,6 +29,28 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.stax.ext.InboundXMLSec;
+import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
+import org.apache.xml.security.test.dom.DSNamespaceContext;
+import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
+import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.junit.Assert;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author $Author$

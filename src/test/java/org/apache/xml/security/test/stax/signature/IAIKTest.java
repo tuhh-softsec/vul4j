@@ -61,7 +61,6 @@ import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -263,9 +262,15 @@ public class IAIKTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("RSA"),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }    
     
     // See SANTUARIO-322
@@ -286,9 +291,15 @@ public class IAIKTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("RSA"),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }    
     
     @Test
@@ -316,9 +327,15 @@ public class IAIKTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader = 
+            inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("RSA"),
+                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }    
     
     private static PublicKey getPublicKey(String algo) 

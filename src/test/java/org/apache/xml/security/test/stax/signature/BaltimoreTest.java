@@ -18,37 +18,6 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
-import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.ext.*;
-import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
-import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509SecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.X509SubjectNameSecurityToken;
-import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
-import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
-import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
-import org.apache.xml.security.test.stax.utils.StAX2DOM;
-import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.w3c.dom.Document;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -65,6 +34,41 @@ import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.RSAPublicKeySpec;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.ext.InboundXMLSec;
+import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
+import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509SecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.X509SubjectNameSecurityToken;
+import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
+import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
+import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
+import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * This test is to ensure interoperability with the examples provided by Merlin Huges
@@ -357,9 +361,15 @@ public class BaltimoreTest extends org.junit.Assert {
             XMLSecurityProperties properties = new XMLSecurityProperties();
             properties.setSignatureVerificationKey(publicKey);
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -400,9 +410,15 @@ public class BaltimoreTest extends org.junit.Assert {
             XMLSecurityProperties properties = new XMLSecurityProperties();
             properties.setSignatureVerificationKey(publicKey);
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -508,9 +524,15 @@ public class BaltimoreTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("DSA", 23),
+                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
 
     @Test
@@ -538,9 +560,15 @@ public class BaltimoreTest extends org.junit.Assert {
         XMLSecurityProperties properties = new XMLSecurityProperties();
         properties.setSignatureVerificationKey(publicKey);
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-        XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        
+        // Check the SecurityEvents
+        checkSignatureToken(securityEventListener, getPublicKey("DSA", 23),
+                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
     }
 
     @Test
@@ -643,9 +671,15 @@ public class BaltimoreTest extends org.junit.Assert {
             XMLSecurityProperties properties = new XMLSecurityProperties();
             properties.setSignatureVerificationKey(publicKey);
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -687,9 +721,15 @@ public class BaltimoreTest extends org.junit.Assert {
             XMLSecurityProperties properties = new XMLSecurityProperties();
             properties.setSignatureVerificationKey(publicKey);
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -736,9 +776,15 @@ public class BaltimoreTest extends org.junit.Assert {
             XMLSecurityProperties properties = new XMLSecurityProperties();
             properties.setSignatureVerificationKey(cert.getPublicKey());
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -875,7 +921,6 @@ public class BaltimoreTest extends org.junit.Assert {
 
     // See SANTUARIO-319
     @Test
-    @Ignore
     public void test_signature_x509_is() throws Exception {
 
         Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
@@ -896,8 +941,14 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // XMLUtils.outputDOM(document, System.out);
 
-            // TODO need to set up key as it's using Issuer Serial
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/macha.crt");
 
+            Certificate cert = cf.generateCertificate(sourceCert);
+            
             // Convert Document to a Stream Reader
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -907,10 +958,17 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // Verify signature
             XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -918,7 +976,6 @@ public class BaltimoreTest extends org.junit.Assert {
 
     // See SANTUARIO-319
     @Test
-    @Ignore
     public void test_signature_x509_ski() throws Exception {
 
         Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
@@ -939,7 +996,13 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // XMLUtils.outputDOM(document, System.out);
 
-            // TODO need to set up key as it's using Issuer Serial
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/nemain.crt");
+            
+            Certificate cert = cf.generateCertificate(sourceCert);
 
             // Convert Document to a Stream Reader
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
@@ -950,6 +1013,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // Verify signature
             XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
             XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
@@ -961,7 +1025,6 @@ public class BaltimoreTest extends org.junit.Assert {
 
     // See SANTUARIO-319
     @Test
-    @Ignore
     public void test_signature_x509_sn() throws Exception {
 
         Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
@@ -982,7 +1045,13 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // XMLUtils.outputDOM(document, System.out);
 
-            // TODO need to set up key as it's using Issuer Serial
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/certs/badb.crt");
+            
+            Certificate cert = cf.generateCertificate(sourceCert);
 
             // Convert Document to a Stream Reader
             javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
@@ -993,10 +1062,17 @@ public class BaltimoreTest extends org.junit.Assert {
 
             // Verify signature
             XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
             InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
-            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
         } finally {
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
@@ -1076,8 +1152,13 @@ public class BaltimoreTest extends org.junit.Assert {
             KeyNameTokenSecurityEvent tokenEvent =
                     (KeyNameTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.KeyNameToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
-            assertEquals(processedKey, key);
+            if (key instanceof SecretKey) {
+                Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+                assertEquals(processedKey, key);
+            } else {
+                Key processedKey = tokenEvent.getSecurityToken().getPublicKey("", null);
+                assertEquals(processedKey, key);
+            }
             assertNotNull(((KeyNameSecurityToken) tokenEvent.getSecurityToken()).getKeyName());
         } else {
             X509TokenSecurityEvent tokenEvent =

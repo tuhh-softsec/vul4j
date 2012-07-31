@@ -171,7 +171,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             );
         if (issuerSerialType != null) {
             if (issuerSerialType.getX509IssuerName() == null
-                || issuerSerialType.getX509SerialNumber() == null) {
+                || issuerSerialType.getX509SerialNumber() == null
+                || securityProperties.getSignatureVerificationKey() == null) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
             }
             X509IssuerSerialSecurityToken token = 
@@ -190,6 +191,9 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 XMLSecurityConstants.TAG_dsig_X509SKI
             );
         if (skiBytes != null) {
+            if (securityProperties.getSignatureVerificationKey() == null) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+            }
             X509SKISecurityToken token = 
                 new X509SKISecurityToken(XMLSecurityConstants.X509V3Token, securityContext,
                      securityProperties.getCallbackHandler(), "", XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
@@ -205,6 +209,9 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 XMLSecurityConstants.TAG_dsig_X509SubjectName
             );
         if (subjectName != null) {
+            if (securityProperties.getSignatureVerificationKey() == null) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+            }
             String normalizedSubjectName = 
                 RFC2253Parser.normalize(subjectName);
             X509SubjectNameSecurityToken token = 
