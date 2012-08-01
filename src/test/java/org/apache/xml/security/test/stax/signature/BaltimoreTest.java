@@ -1103,6 +1103,348 @@ public class BaltimoreTest extends org.junit.Assert {
 
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
     }
+    
+    @Test
+    public void test_signature_keyname_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-keyname.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/certs/lugh.crt");
+
+            Certificate cert = cf.generateCertificate(sourceCert);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+ // See SANTUARIO-319
+    @Test
+    public void test_signature_retrievalmethod_rawx509crt_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-retrievalmethod-rawx509crt.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/certs/balor.crt");
+
+            Certificate cert = cf.generateCertificate(sourceCert);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+    // See SANTUARIO-319
+    @Test
+    public void test_signature_x509_crt_crl_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-x509-crt-crl.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+    // See SANTUARIO-319
+    @Test
+    public void test_signature_x509_crt_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-x509-crt.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+    // See SANTUARIO-319
+    @Test
+    public void test_signature_x509_is_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-x509-is.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/certs/macha.crt");
+
+            Certificate cert = cf.generateCertificate(sourceCert);
+            
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+    // See SANTUARIO-319
+    @Test
+    public void test_signature_x509_ski_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-x509-ski.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/certs/nemain.crt");
+            
+            Certificate cert = cf.generateCertificate(sourceCert);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
+
+    // See SANTUARIO-319
+    @Test
+    public void test_signature_x509_sn_18() throws Exception {
+
+        Proxy proxy = HttpRequestRedirectorProxy.startHttpEngine();
+
+        try {
+            ResolverHttp.setProxy(proxy);
+
+            ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
+            resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
+            resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            // Read in plaintext document
+            InputStream sourceDocument =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/signature-x509-sn.xml");
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+            Document document = builder.parse(sourceDocument);
+
+            // XMLUtils.outputDOM(document, System.out);
+
+            // Set up the Key
+            CertificateFactory cf = CertificateFactory.getInstance("X509");
+            InputStream sourceCert =
+                    this.getClass().getClassLoader().getResourceAsStream(
+                            "ie/baltimore/merlin-examples/merlin-xmldsig-eighteen/certs/badb.crt");
+            
+            Certificate cert = cf.generateCertificate(sourceCert);
+
+            // Convert Document to a Stream Reader
+            javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            transformer.transform(new DOMSource(document), new StreamResult(baos));
+            final XMLStreamReader xmlStreamReader =
+                    xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+            // Verify signature
+            XMLSecurityProperties properties = new XMLSecurityProperties();
+            properties.setSignatureVerificationKey(cert.getPublicKey());
+            InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+            TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+            XMLStreamReader securityStreamReader =
+                    inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+            
+            // Check the SecurityEvents
+            checkSignatureToken(securityEventListener, cert.getPublicKey(),
+                    XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+        } finally {
+            HttpRequestRedirectorProxy.stopHttpEngine();
+        }
+    }
 
 
     private static PublicKey getPublicKey(String algo, int number)
