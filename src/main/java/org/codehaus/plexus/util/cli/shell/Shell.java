@@ -66,6 +66,8 @@ public class Shell
 
     private char exeQuoteDelimiter = '\"';
 
+    private String argumentEscapePattern = "\\%s";
+
     /**
      * Set the command to execute the shell (eg. COMMAND.COM, /bin/bash,...)
      *
@@ -162,7 +164,7 @@ public class Shell
             {
                 char[] escapeChars = getEscapeChars( isSingleQuotedArgumentEscaped(), isDoubleQuotedArgumentEscaped() );
 
-                sb.append( StringUtils.quoteAndEscape( arguments[i], getArgumentQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), '\\', false ) );
+                sb.append( StringUtils.quoteAndEscape( arguments[i], getArgumentQuoteDelimiter(), escapeChars, getQuotingTriggerChars(), getArgumentEscapePattern(), false ) );
             }
             else
             {
@@ -242,6 +244,15 @@ public class Shell
     protected char getExecutableQuoteDelimiter()
     {
         return exeQuoteDelimiter;
+    }
+
+    protected void setArgumentEscapePattern(String argumentEscapePattern)
+    {
+        this.argumentEscapePattern = argumentEscapePattern;
+    }
+
+    protected String getArgumentEscapePattern() {
+        return argumentEscapePattern;
     }
 
     /**
@@ -395,5 +406,4 @@ public class Shell
     {
         this.singleQuotedExecutableEscaped = singleQuotedExecutableEscaped;
     }
-
 }

@@ -2288,18 +2288,37 @@ public class StringUtils
                                 char escapeChar,
                                 boolean force )
     {
+        return quoteAndEscape(source, quoteChar, escapedChars, quotingTriggers, escapeChar + "%s", force);
+    }
+
+    /**
+     * @param source
+     * @param quoteChar
+     * @param escapedChars
+     * @param quotingTriggers
+     * @param escapePattern
+     * @param force
+     * @return the String quoted and escaped
+     * @since 3.0.4
+     */
+    public static String quoteAndEscape(String source,
+                                        char quoteChar,
+                                        final char[] escapedChars,
+                                        final char[] quotingTriggers,
+                                        String escapePattern,
+                                        boolean force) {
         if ( source == null )
         {
             return null;
         }
 
         if ( !force && source.startsWith( Character.toString( quoteChar ) )
-             && source.endsWith( Character.toString( quoteChar ) ) )
+                && source.endsWith( Character.toString( quoteChar ) ) )
         {
             return source;
         }
 
-        String escaped = escape( source, escapedChars, escapeChar );
+        String escaped = escape( source, escapedChars, escapePattern );
 
         boolean quote = false;
         if ( force )
@@ -2339,6 +2358,18 @@ public class StringUtils
      */
     public static String escape( String source, final char[] escapedChars, char escapeChar )
     {
+        return escape(source, escapedChars, escapeChar + "%s");
+    }
+
+    /**
+     * @param source
+     * @param escapedChars
+     * @param escapePattern
+     * @return the String escaped
+     * @since 3.0.4
+     */
+    public static String escape( String source, final char[] escapedChars, String escapePattern )
+    {
         if ( source == null )
         {
             return null;
@@ -2357,10 +2388,12 @@ public class StringUtils
 
             if ( result > -1 )
             {
-                buffer.append( escapeChar );
+                buffer.append( String.format(escapePattern, c) );
             }
-
-            buffer.append( c );
+            else
+            {
+                buffer.append( c );
+            }
         }
 
         return buffer.toString();

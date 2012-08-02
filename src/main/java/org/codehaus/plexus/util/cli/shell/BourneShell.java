@@ -60,6 +60,7 @@ public class BourneShell
         setSingleQuotedArgumentEscaped( true );
         setSingleQuotedExecutableEscaped( false );
         setQuotedExecutableEnabled( true );
+        setArgumentEscapePattern("'\\%s'");
 
         if ( isLoginShell )
         {

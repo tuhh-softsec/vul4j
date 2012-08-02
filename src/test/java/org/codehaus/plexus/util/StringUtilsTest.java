@@ -123,6 +123,17 @@ public class StringUtilsTest
         assertEquals( check, result );
     }
 
+    public void testQuote_EscapeEmbeddedSingleQuotesWithPattern()
+    {
+        String src = "This \'is a\' test";
+        String check = "\'This pre'postis apre'post test\'";
+
+        char[] escaped = { '\'', '\"' };
+        String result = StringUtils.quoteAndEscape( src, '\'', escaped, new char[]{ ' ' }, "pre%spost", false );
+
+        assertEquals( check, result );
+    }
+
     public void testQuote_EscapeEmbeddedDoubleQuotesAndSpaces()
     {
         String src = "This \"is a\" test";
