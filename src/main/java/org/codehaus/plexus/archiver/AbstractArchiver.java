@@ -504,7 +504,7 @@ public abstract class AbstractArchiver
                     {
                         if ( nextEntry.getType() == ArchiveEntry.FILE )
                         {
-                            getLogger().info( path + " already added, skipping" );
+                            getLogger().debug( path + " already added, skipping" );
                         }
 
                         nextEntry = null;
