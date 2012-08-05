@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="xslthl" default="build">
+<project name="xslthl" default="rebuild">
+
+	<property name="outputDir" value="${project.build.directory}/site/examples" />
+
+	<target name="rebuild" depends="clean,build" />
 
 	<target name="clean" description="Clean built examples">
-		<delete dir="build" />
+		<delete dir="${outputDir}" />
 	</target>
 
 	<target name="init">
-		<mkdir dir="build" />
+		<mkdir dir="${outputDir}" />
 
 		<property name="configfile" value="file:///${basedir}/../dist/highlighters/xslthl-config.xml" />
 
+		<echoproperties />
+
 		<path id="classpath.xalan">
-			<fileset dir="../dist">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../lib/xalan-2.7">
-				<include name="**/*.jar" />
-			</fileset>
+			<filelist>
+				<file name="${xalan:xalan:jar}" />
+				<file name="${project.build.outputDirectory}" />
+			</filelist>
 		</path>
 		<available classname="org.apache.xalan.processor.TransformerFactoryImpl" property="xalan.present" classpathref="classpath.xalan" />
 
 		<path id="classpath.saxon6">
-			<fileset dir="../dist">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../lib/saxon-6">
-				<include name="**/*.jar" />
-			</fileset>
+			<filelist>
+				<file name="${saxon:saxon:jar}" />
+				<file name="${project.build.outputDirectory}" />
+			</filelist>
 		</path>
 		<available classname="com.icl.saxon.TransformerFactoryImpl" property="saxon6.present" classpathref="classpath.saxon6" />
 
 		<path id="classpath.saxonb">
-			<fileset dir="../dist">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../lib/saxon-9">
-				<include name="**/*.jar" />
-			</fileset>
+			<filelist>
+				<file name="${net.sf.saxon:saxon:jar}" />
+				<file name="${project.build.outputDirectory}" />
+			</filelist>
 		</path>
 		<available classname="net.sf.saxon.TransformerFactoryImpl" property="saxonb.present" classpathref="classpath.saxonb" />
 
@@ -64,7 +64,7 @@
 				System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			]]>
 		</script>
-		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".xalan.html" force="true" classpathref="classpath.xalan">
+		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="${outputDir}" extension=".xalan.html" force="true" classpathref="classpath.xalan">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.xalan" />
 			<param name="xslthl.config" expression="${configfile}" />
@@ -84,7 +84,7 @@
 				System.setProperty("javax.xml.transform.TransformerFactory", "com.icl.saxon.TransformerFactoryImpl");
 			]]>
 		</script>
-		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon6.html" force="true">
+		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="${outputDir}" extension=".saxon6.html" force="true">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.saxon6" />
 			<param name="xslthl.config" expression="${configfile}" />
@@ -104,7 +104,7 @@
 					System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 				]]>
 		</script>
-		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="build" extension=".saxon.html" force="true">
+		<xslt style="xsl/example-to-xhtml.xsl" basedir="sources" destdir="${outputDir}" extension=".saxon.html" force="true">
 			<include name="example-*.xml" />
 			<classpath refid="classpath.saxonb" />
 			<param name="xslthl.config" expression="${configfile}" />
@@ -130,7 +130,7 @@
 				System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 			]]>
 		</script>
-		<xslt style="docbook/custom-docbook.xsl" extension=".html" basedir="docbook" destdir="build" force="true">
+		<xslt style="docbook/custom-docbook.xsl" extension=".html" basedir="docbook" destdir="${outputDir}" force="true">
 			<include name="sample-article.xml" />
 			<classpath refid="classpath.xalan" />
 			<classpath>

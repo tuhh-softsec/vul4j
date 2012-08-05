@@ -31,6 +31,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -213,25 +215,23 @@ public class Config {
 					} else {
 						// no highlighter found, which is not a major problem
 						// (i.e. fail silently)
-						logger
-						        .info(String
-						                .format(
-						                        "%s is not an known language id, valid URI, or existing file name",
-						                        id));
+						logger.info(String
+						        .format("%s is not an known language id, valid URI, or existing file name",
+						                id));
 					}
 				}
 				if (uri != null) {
 					try {
 						logger.info(String.format(
-						        "Loading external highlighter from %s", uri
-						                .toString()));
+						        "Loading external highlighter from %s",
+						        uri.toString()));
 						MainHighlighter hl = loadHl(id, uri);
 						highlighters.put(id, hl);
 						return hl;
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, String.format(
-						        "Unable to load highlighter from %s: %s", id, e
-						                .getMessage()), e);
+						        "Unable to load highlighter from %s: %s", id,
+						        e.getMessage()), e);
 					}
 				}
 			}
@@ -255,8 +255,8 @@ public class Config {
 		Set<String> tagNames = new HashSet<String>();
 		tagNames.add("highlighter");
 		tagNames.add("wholehighlighter");
-		createHighlighters(main, new FilteredElementIterator(doc
-		        .getDocumentElement(), tagNames));
+		createHighlighters(main,
+		        new FilteredElementIterator(doc.getDocumentElement(), tagNames));
 		return main;
 	}
 
@@ -276,8 +276,8 @@ public class Config {
 				Class<? extends Highlighter> hlClass = highlighterClasses
 				        .get(type);
 				if (hlClass == null && type.startsWith(PLUGIN_PREFIX)) {
-					hlClass = loadPlugin(main, type, hl
-					        .getAttribute("classpath"));
+					hlClass = loadPlugin(main, type,
+					        hl.getAttribute("classpath"));
 				}
 				if (hlClass != null) {
 					Highlighter hlinstance = hlClass.newInstance();
@@ -289,16 +289,16 @@ public class Config {
 				}
 			} catch (HighlighterConfigurationException e) {
 				logger.log(Level.SEVERE, String.format(
-				        "Invalid configuration for highlighter %s: %s", type, e
-				                .getMessage()), e);
+				        "Invalid configuration for highlighter %s: %s", type,
+				        e.getMessage()), e);
 			} catch (InstantiationException e) {
 				logger.log(Level.SEVERE, String.format(
-				        "Error constructing highlighter %s: %s", type, e
-				                .getMessage()), e);
+				        "Error constructing highlighter %s: %s", type,
+				        e.getMessage()), e);
 			} catch (IllegalAccessException e) {
 				logger.log(Level.SEVERE, String.format(
-				        "IError constructing highlighter %s: %s", type, e
-				                .getMessage()), e);
+				        "IError constructing highlighter %s: %s", type,
+				        e.getMessage()), e);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ public class Config {
 		ClassLoader cl = Config.class.getClassLoader();
 		if (classpath != null && classpath.length() > 0) {
 			String[] paths = classpath.split(";");
-			List<URL> urls = new ArrayList<URL>();
+			final List<URL> urls = new ArrayList<URL>();
 			for (String path : paths) {
 				path = path.trim();
 				if (path.length() == 0) {
@@ -333,12 +333,26 @@ public class Config {
 					urls.add(url);
 				} catch (MalformedURLException e) {
 					logger.log(Level.WARNING, String.format(
-					        "Invalid classpath entry %s: %s", path, e
-					                .getMessage()), e);
+					        "Invalid classpath entry %s: %s", path,
+					        e.getMessage()), e);
 				}
 			}
 			if (urls.size() > 0) {
-				cl = new URLClassLoader(urls.toArray(new URL[urls.size()]), cl);
+				final ClassLoader parentCl = cl;
+				PrivilegedAction<URLClassLoader> getCl = new PrivilegedAction<URLClassLoader>() {
+					public URLClassLoader run() {
+						return new URLClassLoader(urls.toArray(new URL[urls
+						        .size()]), parentCl);
+					}
+				};
+				try {
+					cl = AccessController.doPrivileged(getCl);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, String.format(
+					        "Unable to create class loader with urls %s. %s",
+					        urls, e.getMessage()), e);
+					return null;
+				}
 			}
 		}
 		try {
@@ -347,14 +361,16 @@ public class Config {
 			if (Highlighter.class.isAssignableFrom(tmp)) {
 				return tmp.asSubclass(Highlighter.class);
 			} else {
-				logger.log(Level.SEVERE, String.format(
-				        "Class %s is not a subclass of %s", tmp.getName(),
-				        Highlighter.class.getName()));
+				logger.log(
+				        Level.SEVERE,
+				        String.format("Class %s is not a subclass of %s",
+				                tmp.getName(), Highlighter.class.getName()));
 			}
 		} catch (ClassNotFoundException e) {
-			logger.log(Level.SEVERE, String.format(
-			        "Unable to resolve highlighter class: %s", e.getMessage()),
-			        e);
+			logger.log(
+			        Level.SEVERE,
+			        String.format("Unable to resolve highlighter class: %s",
+			                e.getMessage()), e);
 		}
 		return null;
 	}
@@ -389,8 +405,7 @@ public class Config {
 
 			// Find the configuration filename
 			if (configFilename == null || "".equals(configFilename)) {
-				logger
-				        .config("No config file specified, falling back to default behavior");
+				logger.config("No config file specified, falling back to default behavior");
 				if (System.getProperty(CONFIG_PROPERTY) != null) {
 					configFilename = System.getProperty(CONFIG_PROPERTY);
 				} else {
@@ -448,8 +463,8 @@ public class Config {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, String.format(
-			        "Cannot read configuration %s: %s", configFilename, e
-			                .getMessage()), e);
+			        "Cannot read configuration %s: %s", configFilename,
+			        e.getMessage()), e);
 		}
 
 		if (!highlighters.containsKey("xml")) {
