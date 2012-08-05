@@ -12,7 +12,7 @@
 	<target name="init">
 		<mkdir dir="${outputDir}" />
 
-		<property name="configfile" value="file:///${basedir}/../dist/highlighters/xslthl-config.xml" />
+		<property name="configfile" value="file:///${basedir}/../highlighters/xslthl-config.xml" />
 
 		<echoproperties />
 

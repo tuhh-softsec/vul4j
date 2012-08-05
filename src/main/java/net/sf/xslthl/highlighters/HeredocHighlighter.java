@@ -47,6 +47,9 @@ import net.sf.xslthl.Params;
  * <dd>whitespace after start is not allowed.</dd>
  * <dt>looseTerminator</dt>
  * <dd>if set the identifier does not have to start on a new line</dd>
+ * <dt>flag</dt>
+ * <dd>Flags that can be put after the 'start'. This parameter can be used more
+ * than once.</dd>
  * </dl>
  * See http://en.wikipedia.org/wiki/Heredoc
  */
@@ -66,6 +69,10 @@ public class HeredocHighlighter extends Highlighter {
 
 	protected boolean looseTerminator;
 
+	protected boolean indentFlag;
+
+	protected Set<String> flags;
+
 	@Override
 	public void init(Params params) throws HighlighterConfigurationException {
 		super.init(params);
@@ -78,6 +85,8 @@ public class HeredocHighlighter extends Highlighter {
 		params.getMutliParams("quote", quoteChar);
 		noWhiteSpace = params.isSet("noWhiteSpace");
 		looseTerminator = params.isSet("looseTerminator");
+		flags = new HashSet<String>();
+		params.getMutliParams("flag", flags);
 	}
 
 	/*
@@ -105,6 +114,10 @@ public class HeredocHighlighter extends Highlighter {
 	@Override
 	public boolean highlight(CharIter in, List<Block> out) {
 		in.moveNext(start.length()); // skip start
+		// skip flags
+		while (flags.contains(in.current().toString())) {
+			in.moveNext();
+		}
 		// skip whitespace
 		if (!noWhiteSpace) {
 			while (!in.finished() && Character.isWhitespace(in.current())) {
