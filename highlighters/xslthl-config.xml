@@ -3,7 +3,7 @@
 
 xslthl - XSLT Syntax Highlighting
 http://sourceforge.net/projects/xslthl/
-Copyright (C) 2005-2008 Michal Molhanec, Jirka Kosek, Michiel Hendriks
+Copyright (C) 2005-2012 Michal Molhanec, Jirka Kosek, Michiel Hendriks
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -42,5 +42,6 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="ruby" file="ruby-hl.xml" />
 	<highlighter id="perl" file="perl-hl.xml" />	
 	<highlighter id="javascript" file="javascript-hl.xml" />
+	<highlighter id="bourne" file="bourne-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>
