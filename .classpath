@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry including="**/*.xml" kind="src" output="dist/highlighters" path="highlighters"/>
-	<classpathentry kind="src" output="test" path="test"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="lib/xalan-2.7/xalan-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/saxon-6/saxon.jar" sourcepath="lib/saxon-6/source.zip"/>
