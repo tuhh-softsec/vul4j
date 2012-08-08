@@ -32,6 +32,7 @@ public class SecurityEventConstants {
     public static final Event DefaultToken = new Event("DefaultToken");
     public static final Event ContentEncrypted = new Event("ContentEncrypted");
     public static final Event EncryptedElement = new Event("EncryptedElement");
+    public static final Event EncryptedKeyToken = new Event("EncryptedKeyToken");
 
     public static class Event implements Comparable<Event> {
         private final String name;

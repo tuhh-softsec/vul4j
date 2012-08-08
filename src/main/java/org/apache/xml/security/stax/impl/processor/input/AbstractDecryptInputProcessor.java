@@ -25,6 +25,7 @@ import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmldsig.TransformType;
 import org.apache.xml.security.binding.xmldsig.TransformsType;
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
+import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
 import org.apache.xml.security.binding.xmlenc.ReferenceList;
 import org.apache.xml.security.binding.xmlenc.ReferenceType;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
@@ -187,7 +188,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 EncryptedDataType encryptedDataType =
                         parseEncryptedDataStructure(isSecurityHeaderEvent, xmlSecEvent, subInputProcessorChain);
 
-                SecurityToken securityToken = getSecurityToken(inputProcessorChain, encryptedDataType);
+                SecurityToken securityToken = 
+                        getSecurityToken(inputProcessorChain, xmlSecStartElement, encryptedDataType);
                 handleSecurityToken(securityToken, inputProcessorChain.getSecurityContext(), encryptedDataType);
 
                 //only fire here ContentEncryptedElementEvents
@@ -398,6 +400,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     }
 
     private SecurityToken getSecurityToken(InputProcessorChain inputProcessorChain,
+                                           XMLSecStartElement xmlSecStartElement,
                                            EncryptedDataType encryptedDataType) throws XMLSecurityException {
         KeyInfoType keyInfoType;
         if (this.keyInfoType != null) {
@@ -406,6 +409,19 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             keyInfoType = encryptedDataType.getKeyInfo();
         }
 
+        if (keyInfoType != null) {
+            final EncryptedKeyType encryptedKeyType = 
+                    XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_xenc_EncryptedKey);
+            if (encryptedKeyType != null) {
+                XMLEncryptedKeyInputHandler handler = new XMLEncryptedKeyInputHandler();
+                handler.handle(inputProcessorChain, encryptedKeyType, xmlSecStartElement, getSecurityProperties());
+                
+                SecurityTokenProvider securityTokenProvider = 
+                        inputProcessorChain.getSecurityContext().getSecurityTokenProvider(encryptedKeyType.getId());
+                return securityTokenProvider.getSecurityToken();
+            }
+        }
+        
         //retrieve the securityToken which must be used for decryption
         return SecurityTokenFactory.getInstance().getSecurityToken(
                 keyInfoType, SecurityToken.KeyInfoUsage.DECRYPTION,
@@ -421,6 +437,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         xmlSecEvents.push(xmlSecEvent);
         XMLSecEvent encryptedDataXMLSecEvent;
         int count = 0;
+        boolean processedKeyInfo = true;
         do {
             subInputProcessorChain.reset();
             if (isSecurityHeaderEvent) {
@@ -433,9 +450,20 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             if (++count >= 50) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
             }
+            
+            if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
+                && encryptedDataXMLSecEvent.asStartElement().getName().equals(
+                        XMLSecurityConstants.TAG_dsig_KeyInfo)) {
+                processedKeyInfo = false;
+            } else if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.END_ELEMENT
+                && encryptedDataXMLSecEvent.asEndElement().getName().equals(
+                        XMLSecurityConstants.TAG_dsig_KeyInfo)) {
+                processedKeyInfo = true;
+            } 
         }
         while (!(encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
-                && encryptedDataXMLSecEvent.asStartElement().getName().equals(XMLSecurityConstants.TAG_xenc_CipherValue)));
+                && encryptedDataXMLSecEvent.asStartElement().getName().equals(XMLSecurityConstants.TAG_xenc_CipherValue)
+                && processedKeyInfo));
 
         xmlSecEvents.push(XMLSecEventFactory.createXmlSecEndElement(XMLSecurityConstants.TAG_xenc_CipherValue));
         xmlSecEvents.push(XMLSecEventFactory.createXmlSecEndElement(XMLSecurityConstants.TAG_xenc_CipherData));

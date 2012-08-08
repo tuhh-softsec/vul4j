@@ -37,6 +37,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.EncryptedElementSecurityEvent;
+import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
@@ -90,6 +91,8 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
             tokenSecurityEvent = new KeyNameTokenSecurityEvent();
         } else if (tokenType == XMLSecurityConstants.DefaultToken) {
             tokenSecurityEvent = new DefaultTokenSecurityEvent();
+        } else if (tokenType == XMLSecurityConstants.EncryptedKeyToken) {
+            tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
         } else {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
         }

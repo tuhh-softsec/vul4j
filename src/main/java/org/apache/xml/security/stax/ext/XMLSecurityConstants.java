@@ -254,7 +254,8 @@ public class XMLSecurityConstants {
         X509_SKI,
         X509_CERTIFICATE,
         X509_SUBJECT_NAME,
-        NO_KEY_INFO
+        NO_KEY_INFO,
+        ENCRYPTED_KEY
     }
 
     public static class Action implements Comparable<Action> {
@@ -293,6 +294,8 @@ public class XMLSecurityConstants {
         }
     }
 
+    public static final KeyUsage Sym_Key_Wrap = new KeyUsage("Sym_Key_Wrap");
+    public static final KeyUsage Asym_Key_Wrap = new KeyUsage("Asym_Key_Wrap");
     public static final KeyUsage Sym_Sig = new KeyUsage("Sym_Sig");
     public static final KeyUsage Asym_Sig = new KeyUsage("Asym_Sig");
     public static final KeyUsage Enc = new KeyUsage("Enc");
@@ -335,6 +338,7 @@ public class XMLSecurityConstants {
         }
     }
 
+    public static final TokenType EncryptedKeyToken = new TokenType("EncryptedKeyToken");
     public static final TokenType X509V3Token = new TokenType("X509V3Token");
     public static final TokenType X509V1Token = new TokenType("X509V1Token");
     public static final TokenType X509Pkcs7Token = new TokenType("X509Pkcs7Token");

@@ -104,7 +104,7 @@ public class XMLSecurityInputProcessor extends AbstractInputProcessor {
                                                 xmlSecEventList, startIndexForProcessor);
                         } else if (encryptionElementFound
                             && xmlSecEndElement.getName().equals(XMLSecurityConstants.TAG_xenc_EncryptedData)) {
-                            XMLDecryptInputProcessor inputProcessor = new XMLDecryptInputProcessor( getSecurityProperties());
+                            XMLDecryptInputProcessor inputProcessor = new XMLDecryptInputProcessor(getSecurityProperties());
                             subInputProcessorChain.addProcessor(inputProcessor);
                         }
                         
