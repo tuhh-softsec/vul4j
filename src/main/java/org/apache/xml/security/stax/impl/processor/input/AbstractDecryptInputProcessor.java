@@ -437,7 +437,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         xmlSecEvents.push(xmlSecEvent);
         XMLSecEvent encryptedDataXMLSecEvent;
         int count = 0;
-        boolean processedKeyInfo = true;
+        int keyInfoCount = 0;
         do {
             subInputProcessorChain.reset();
             if (isSecurityHeaderEvent) {
@@ -454,16 +454,16 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
                 && encryptedDataXMLSecEvent.asStartElement().getName().equals(
                         XMLSecurityConstants.TAG_dsig_KeyInfo)) {
-                processedKeyInfo = false;
+                keyInfoCount++;
             } else if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.END_ELEMENT
                 && encryptedDataXMLSecEvent.asEndElement().getName().equals(
                         XMLSecurityConstants.TAG_dsig_KeyInfo)) {
-                processedKeyInfo = true;
-            } 
+                keyInfoCount--;
+            }
         }
         while (!(encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
                 && encryptedDataXMLSecEvent.asStartElement().getName().equals(XMLSecurityConstants.TAG_xenc_CipherValue)
-                && processedKeyInfo));
+                && keyInfoCount == 0));
 
         xmlSecEvents.push(XMLSecEventFactory.createXmlSecEndElement(XMLSecurityConstants.TAG_xenc_CipherValue));
         xmlSecEvents.push(XMLSecEventFactory.createXmlSecEndElement(XMLSecurityConstants.TAG_xenc_CipherData));

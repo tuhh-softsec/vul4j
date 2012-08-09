@@ -78,7 +78,11 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 KeyNameSecurityToken token = 
                     new KeyNameSecurityToken(keyName, securityContext, securityProperties.getCallbackHandler(), 
                             XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
-                token.setKey(securityProperties.getSignatureVerificationKey());
+                if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
+                    token.setKey(securityProperties.getSignatureVerificationKey());
+                } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
+                    token.setKey(securityProperties.getDecryptionKey());
+                }
                 return token;
             }
             
@@ -87,7 +91,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_X509Data);
             if (x509DataType != null) {
                 try {
-                    return getSecurityToken(x509DataType, securityProperties, securityContext);
+                    return getSecurityToken(x509DataType, securityProperties, securityContext, keyInfoUsage);
                 } catch (Base64DecodingException e) {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo", e);
                 }
@@ -141,7 +145,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
     
     private static SecurityToken getSecurityToken(X509DataType x509DataType,
                                                   XMLSecurityProperties securityProperties, 
-                                                  SecurityContext securityContext)
+                                                  SecurityContext securityContext,
+                                                  SecurityToken.KeyInfoUsage keyInfoUsage)
                                               throws XMLSecurityException, Base64DecodingException {
         // X509Certificate
         byte[] certBytes = 
@@ -160,6 +165,13 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                         securityProperties.getCallbackHandler(), "", 
                         XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
             token.setX509Certificates(new X509Certificate[]{cert});
+            
+            if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
+                token.setKey(securityProperties.getSignatureVerificationKey());
+            } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
+                token.setKey(securityProperties.getDecryptionKey());
+            }
+            
             return token;
         }
         
@@ -180,7 +192,12 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                      securityProperties.getCallbackHandler(), "", XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
             token.setIssuerName(issuerSerialType.getX509IssuerName());
             token.setSerialNumber(issuerSerialType.getX509SerialNumber());
-            token.setKey(securityProperties.getSignatureVerificationKey());
+
+            if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
+                token.setKey(securityProperties.getSignatureVerificationKey());
+            } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
+                token.setKey(securityProperties.getDecryptionKey());
+            }
             return token;
         }
         
@@ -198,7 +215,12 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 new X509SKISecurityToken(XMLSecurityConstants.X509V3Token, securityContext,
                      securityProperties.getCallbackHandler(), "", XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
             token.setSkiBytes(skiBytes);
-            token.setKey(securityProperties.getSignatureVerificationKey());
+            
+            if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
+                token.setKey(securityProperties.getSignatureVerificationKey());
+            } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
+                token.setKey(securityProperties.getDecryptionKey());
+            }
             return token;
         }
         
@@ -219,7 +241,12 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                         securityProperties.getCallbackHandler(), "", 
                         XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
             token.setSubjectName(normalizedSubjectName);
-            token.setKey(securityProperties.getSignatureVerificationKey());
+            
+            if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
+                token.setKey(securityProperties.getSignatureVerificationKey());
+            } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
+                token.setKey(securityProperties.getDecryptionKey());
+            }
             return token;
         }
         
