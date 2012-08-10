@@ -214,6 +214,7 @@
                                 <schemaInclude>xmldsig-core-schema.xsd</schemaInclude>
                                 <schemaInclude>xmldsig11-schema.xsd</schemaInclude>
                                 <schemaInclude>xenc-schema.xsd</schemaInclude>
+                                <schemaInclude>xenc-schema-11.xsd</schemaInclude>
                             </schemaIncludes>
                             <bindingDirectory>${basedir}/src/main/resources/bindings/</bindingDirectory>
                             <bindingIncludes>
@@ -221,6 +222,7 @@
                                 <bindingInclude>dsig.xjb</bindingInclude>
                                 <bindingInclude>dsig11.xjb</bindingInclude>
                                 <bindingInclude>xenc.xjb</bindingInclude>
+                                <bindingInclude>xenc11.xjb</bindingInclude>
                             </bindingIncludes>
                             <catalog>${basedir}/src/main/resources/bindings/bindings.cat</catalog>
                             <forceRegenerate>false</forceRegenerate>
