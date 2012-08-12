@@ -43,5 +43,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="perl" file="perl-hl.xml" />	
 	<highlighter id="javascript" file="javascript-hl.xml" />
 	<highlighter id="bourne" file="bourne-hl.xml" />
+	<highlighter id="css" file="css21-hl.xml" />
+	<highlighter id="css21" file="css21-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>
