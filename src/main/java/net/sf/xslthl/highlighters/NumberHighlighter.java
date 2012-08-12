@@ -34,6 +34,10 @@ import net.sf.xslthl.Params;
  * point.</dd>
  * <dt>ignoreCase</dt>
  * <dd>all strings parameters are case insensitive</dd>
+ * <dt>letterNoFollow</dt>
+ * <dd>If set, numbers may not contain a letter at the end. For example:
+ * <code>123kg</code> will not be seen as a number. This was the default before
+ * version 2.1</dd>
  * </dl>
  */
 public class NumberHighlighter extends Highlighter {
@@ -73,6 +77,8 @@ public class NumberHighlighter extends Highlighter {
 	 */
 	protected boolean pointStarts;
 
+	protected boolean letterNoFollow;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,6 +95,7 @@ public class NumberHighlighter extends Highlighter {
 		suffix = new ArrayList<String>();
 		params.getMutliParams("suffix", suffix);
 		prefix = params.getParam("prefix");
+		letterNoFollow = params.isSet("cleanEnd");
 	}
 
 	/**
@@ -187,11 +194,11 @@ public class NumberHighlighter extends Highlighter {
 				break;
 			}
 		}
-		if (!in.finished() && Character.isLetter(in.current())) {
+		if (letterNoFollow
+		        && (!in.finished() && Character.isLetter(in.current()))) {
 			return false;
 		}
 		out.add(in.markedToStyledBlock(styleName));
 		return true;
 	}
-
 }
