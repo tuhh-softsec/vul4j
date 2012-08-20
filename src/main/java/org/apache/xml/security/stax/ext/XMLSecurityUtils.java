@@ -117,9 +117,9 @@ public class XMLSecurityUtils {
         try {
             callbackHandler.handle(new Callback[]{callback});
         } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noPassword", e);
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
         } catch (UnsupportedCallbackException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noPassword", e);
+            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
         }
     }
 
