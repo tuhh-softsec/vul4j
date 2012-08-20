@@ -22,8 +22,8 @@ import java.io.File;
 /**
  * Scan a directory tree for files, with specified inclusions and exclusions.
  */
-public abstract class AbstractScanner 
-    implements Scanner 
+public abstract class AbstractScanner
+    implements Scanner
 {
     /**
      * Patterns which should be excluded by default, like SCM files
@@ -50,90 +50,73 @@ public abstract class AbstractScanner
      */
     public static final String[] DEFAULTEXCLUDES = {
         // Miscellaneous typical temporary files
-        "**/*~",
-        "**/#*#",
-        "**/.#*",
-        "**/%*%",
-        "**/._*",
-  
+        "**/*~", "**/#*#", "**/.#*", "**/%*%", "**/._*",
+
         // CVS
-        "**/CVS",
-        "**/CVS/**",
-        "**/.cvsignore",
-  
+        "**/CVS", "**/CVS/**", "**/.cvsignore",
+
         // RCS
-        "**/RCS",
-        "**/RCS/**",
-  
+        "**/RCS", "**/RCS/**",
+
         // SCCS
-        "**/SCCS",
-        "**/SCCS/**",
-  
+        "**/SCCS", "**/SCCS/**",
+
         // Visual SourceSafe
         "**/vssver.scc",
-  
+
         // MKS
         "**/project.pj",
 
         // Subversion
-        "**/.svn",
-        "**/.svn/**",
-  
+        "**/.svn", "**/.svn/**",
+
         // Arch
-        "**/.arch-ids",
-        "**/.arch-ids/**",
-  
+        "**/.arch-ids", "**/.arch-ids/**",
+
         //Bazaar
-        "**/.bzr",
-        "**/.bzr/**",
-  
+        "**/.bzr", "**/.bzr/**",
+
         //SurroundSCM
         "**/.MySCMServerInfo",
-  
+
         // Mac
         "**/.DS_Store",
-  
+
         // Serena Dimensions Version 10
-        "**/.metadata",
-        "**/.metadata/**",
-  
+        "**/.metadata", "**/.metadata/**",
+
         // Mercurial
-        "**/.hg",
-        "**/.hg/**",
-  
+        "**/.hg", "**/.hg/**",
+
         // git
-        "**/.git",
-        "**/.gitignore",
-        "**/.gitattributes",
-        "**/.git/**",
-  
+        "**/.git", "**/.gitignore", "**/.gitattributes", "**/.git/**",
+
         // BitKeeper
-        "**/BitKeeper",
-        "**/BitKeeper/**",
-        "**/ChangeSet",
-        "**/ChangeSet/**",
-  
+        "**/BitKeeper", "**/BitKeeper/**", "**/ChangeSet", "**/ChangeSet/**",
+
         // darcs
-        "**/_darcs",
-        "**/_darcs/**",
-        "**/.darcsrepo",
-        "**/.darcsrepo/**",
-        "**/-darcs-backup*",
-        "**/.darcs-temp-mail"
-    };
-  
-    /** The patterns for the files to be included. */
+        "**/_darcs", "**/_darcs/**", "**/.darcsrepo", "**/.darcsrepo/**", "**/-darcs-backup*", "**/.darcs-temp-mail" };
+
+    /**
+     * The patterns for the files to be included.
+     */
     protected String[] includes;
-  
-    /** The patterns for the files to be excluded. */
+
+    private MatchPatterns includesPatterns;
+
+    /**
+     * The patterns for the files to be excluded.
+     */
     protected String[] excludes;
-  
+
+    private MatchPatterns excludesPatterns;
+
     /**
      * Whether or not the file system should be treated as a case sensitive
      * one.
      */
     protected boolean isCaseSensitive = true;
-  
+
     /**
      * Sets whether or not the file system should be regarded as case sensitive.
      *
@@ -144,11 +127,11 @@ public abstract class AbstractScanner
     {
         this.isCaseSensitive = isCaseSensitive;
     }
-  
+
     /**
      * Tests whether or not a given path matches the start of a given
      * pattern up to the first "**".
-     * <p>
+     * <p/>
      * This is not a general purpose test and should only be used if you
      * can live with false positives. For example, <code>pattern=**\a</code>
      * and <code>str=b</code> will yield <code>true</code>.
@@ -157,39 +140,36 @@ public abstract class AbstractScanner
      *                <code>null</code>.
      * @param str     The path to match, as a String. Must not be
      *                <code>null</code>.
-     *
      * @return whether or not a given path matches the start of a given
-     * pattern up to the first "**".
+     *         pattern up to the first "**".
      */
     protected static boolean matchPatternStart( String pattern, String str )
     {
         return SelectorUtils.matchPatternStart( pattern, str );
     }
-  
+
     /**
      * Tests whether or not a given path matches the start of a given
      * pattern up to the first "**".
-     * <p>
+     * <p/>
      * This is not a general purpose test and should only be used if you
      * can live with false positives. For example, <code>pattern=**\a</code>
      * and <code>str=b</code> will yield <code>true</code>.
      *
-     * @param pattern The pattern to match against. Must not be
-     *                <code>null</code>.
-     * @param str     The path to match, as a String. Must not be
-     *                <code>null</code>.
+     * @param pattern         The pattern to match against. Must not be
+     *                        <code>null</code>.
+     * @param str             The path to match, as a String. Must not be
+     *                        <code>null</code>.
      * @param isCaseSensitive Whether or not matching should be performed
      *                        case sensitively.
-     *
      * @return whether or not a given path matches the start of a given
-     * pattern up to the first "**".
+     *         pattern up to the first "**".
      */
-    protected static boolean matchPatternStart( String pattern, String str,
-                                                boolean isCaseSensitive )
+    protected static boolean matchPatternStart( String pattern, String str, boolean isCaseSensitive )
     {
         return SelectorUtils.matchPatternStart( pattern, str, isCaseSensitive );
     }
-  
+
     /**
      * Tests whether or not a given path matches a given pattern.
      *
@@ -197,7 +177,6 @@ public abstract class AbstractScanner
      *                <code>null</code>.
      * @param str     The path to match, as a String. Must not be
      *                <code>null</code>.
-     *
      * @return <code>true</code> if the pattern matches against the string,
      *         or <code>false</code> otherwise.
      */
@@ -205,26 +184,24 @@ public abstract class AbstractScanner
     {
         return SelectorUtils.matchPath( pattern, str );
     }
-  
+
     /**
      * Tests whether or not a given path matches a given pattern.
      *
-     * @param pattern The pattern to match against. Must not be
-     *                <code>null</code>.
-     * @param str     The path to match, as a String. Must not be
-     *                <code>null</code>.
+     * @param pattern         The pattern to match against. Must not be
+     *                        <code>null</code>.
+     * @param str             The path to match, as a String. Must not be
+     *                        <code>null</code>.
      * @param isCaseSensitive Whether or not matching should be performed
      *                        case sensitively.
-     *
      * @return <code>true</code> if the pattern matches against the string,
      *         or <code>false</code> otherwise.
      */
-    protected static boolean matchPath( String pattern, String str,
-                                        boolean isCaseSensitive )
+    protected static boolean matchPath( String pattern, String str, boolean isCaseSensitive )
     {
         return SelectorUtils.matchPath( pattern, str, isCaseSensitive );
     }
-  
+
     /**
      * Tests whether or not a string matches against a pattern.
      * The pattern may contain two special characters:<br>
@@ -235,7 +212,6 @@ public abstract class AbstractScanner
      *                Must not be <code>null</code>.
      * @param str     The string which must be matched against the pattern.
      *                Must not be <code>null</code>.
-     *
      * @return <code>true</code> if the string matches against the pattern,
      *         or <code>false</code> otherwise.
      */
@@ -243,43 +219,40 @@ public abstract class AbstractScanner
     {
         return SelectorUtils.match( pattern, str );
     }
-  
+
     /**
      * Tests whether or not a string matches against a pattern.
      * The pattern may contain two special characters:<br>
      * '*' means zero or more characters<br>
      * '?' means one and only one character
      *
-     * @param pattern The pattern to match against.
-     *                Must not be <code>null</code>.
-     * @param str     The string which must be matched against the pattern.
-     *                Must not be <code>null</code>.
+     * @param pattern         The pattern to match against.
+     *                        Must not be <code>null</code>.
+     * @param str             The string which must be matched against the pattern.
+     *                        Must not be <code>null</code>.
      * @param isCaseSensitive Whether or not matching should be performed
      *                        case sensitively.
-     *
-     *
      * @return <code>true</code> if the string matches against the pattern,
      *         or <code>false</code> otherwise.
      */
-    protected static boolean match( String pattern, String str,
-                                    boolean isCaseSensitive )
+    protected static boolean match( String pattern, String str, boolean isCaseSensitive )
     {
         return SelectorUtils.match( pattern, str, isCaseSensitive );
     }
-  
-  
+
+
     /**
      * Sets the list of include patterns to use. All '/' and '\' characters
      * are replaced by <code>File.separatorChar</code>, so the separator used
      * need not match <code>File.separatorChar</code>.
-     * <p>
+     * <p/>
      * When a pattern ends with a '/' or '\', "**" is appended.
      *
      * @param includes A list of include patterns.
      *                 May be <code>null</code>, indicating that all files
      *                 should be included. If a non-<code>null</code>
      *                 list is given, all elements must be
-     * non-<code>null</code>.
+     *                 non-<code>null</code>.
      */
     public void setIncludes( String[] includes )
     {
@@ -296,12 +269,12 @@ public abstract class AbstractScanner
             }
         }
     }
-  
+
     /**
      * Sets the list of exclude patterns to use. All '/' and '\' characters
      * are replaced by <code>File.separatorChar</code>, so the separator used
      * need not match <code>File.separatorChar</code>.
-     * <p>
+     * <p/>
      * When a pattern ends with a '/' or '\', "**" is appended.
      *
      * @param excludes A list of exclude patterns.
@@ -327,7 +300,7 @@ public abstract class AbstractScanner
 
     /**
      * Normalizes the pattern, e.g. converts forward and backward slashes to the platform-specific file separator.
-     * 
+     *
      * @param pattern The pattern to normalize, must not be <code>null</code>.
      * @return The normalized pattern, never <code>null</code>.
      */
@@ -369,16 +342,9 @@ public abstract class AbstractScanner
      */
     protected boolean isIncluded( String name )
     {
-        for ( int i = 0; i < includes.length; i++ )
-        {
-            if ( matchPath( includes[i], name, isCaseSensitive ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        return includesPatterns.matches( name, isCaseSensitive );
     }
-  
+
     /**
      * Tests whether or not a name matches the start of at least one include
      * pattern.
@@ -389,16 +355,9 @@ public abstract class AbstractScanner
      */
     protected boolean couldHoldIncluded( String name )
     {
-        for ( int i = 0; i < includes.length; i++ )
-        {
-            if ( matchPatternStart( includes[i], name, isCaseSensitive ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        return includesPatterns.matchesPatternStart(name, isCaseSensitive);
     }
-  
+
     /**
      * Tests whether or not a name matches against at least one exclude
      * pattern.
@@ -409,16 +368,9 @@ public abstract class AbstractScanner
      */
     protected boolean isExcluded( String name )
     {
-        for ( int i = 0; i < excludes.length; i++ )
-        {
-            if ( matchPath( excludes[i], name, isCaseSensitive ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        return excludesPatterns.matches( name, isCaseSensitive );
     }
-  
+
     /**
      * Adds default exclusions to the current exclusions set.
      */
@@ -437,8 +389,8 @@ public abstract class AbstractScanner
         }
         excludes = newExcludes;
     }
-    
-    protected void setupDefaultFilters() 
+
+    protected void setupDefaultFilters()
     {
         if ( includes == null )
         {
@@ -450,5 +402,11 @@ public abstract class AbstractScanner
         {
             excludes = new String[0];
         }
+    }
+
+    protected void setupMatchPatterns()
+    {
+        includesPatterns = MatchPatterns.from( includes );
+        excludesPatterns = MatchPatterns.from( excludes );
     }
 }

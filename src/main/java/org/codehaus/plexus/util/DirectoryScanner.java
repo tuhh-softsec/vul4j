@@ -61,12 +61,12 @@ import java.util.Vector;
 /**
  * Class for scanning a directory for files/directories which match certain
  * criteria.
- * <p>
+ * <p/>
  * These criteria consist of selectors and patterns which have been specified.
  * With the selectors you can select which files you want to have included.
  * Files which are not selected are excluded. With patterns you can include
  * or exclude files based on their filename.
- * <p>
+ * <p/>
  * The idea is simple. A given directory is recursively scanned for all files
  * and directories. Each file/directory is matched against a set of selectors,
  * including special support for matching against filenames with include and
@@ -74,12 +74,12 @@ import java.util.Vector;
  * pattern of the include pattern list or other file selector, and don't match
  * any pattern of the exclude pattern list or fail to match against a required
  * selector will be placed in the list of files/directories found.
- * <p>
+ * <p/>
  * When no list of include patterns is supplied, "**" will be used, which
  * means that everything will be matched. When no list of exclude patterns is
  * supplied, an empty list is used, such that nothing will be excluded. When
  * no selectors are supplied, none are applied.
- * <p>
+ * <p/>
  * The filename pattern matching is done as follows:
  * The name to be matched is split up in path segments. A path segment is the
  * name of a directory or file, which is bounded by
@@ -87,11 +87,11 @@ import java.util.Vector;
  * For example, "abc/def/ghi/xyz.java" is split up in the segments "abc",
  * "def","ghi" and "xyz.java".
  * The same is done for the pattern against which should be matched.
- * <p>
+ * <p/>
  * The segments of the name and the pattern are then matched against each
  * other. When '**' is used for a path segment in the pattern, it matches
  * zero or more path segments of the name.
- * <p>
+ * <p/>
  * There is a special case regarding the use of <code>File.separator</code>s
  * at the beginning of the pattern and the string to match:<br>
  * When a pattern starts with a <code>File.separator</code>, the string
@@ -100,27 +100,27 @@ import java.util.Vector;
  * string to match may not start with a <code>File.separator</code>.
  * When one of these rules is not obeyed, the string will not
  * match.
- * <p>
+ * <p/>
  * When a name path segment is matched against a pattern path segment, the
  * following special characters can be used:<br>
  * '*' matches zero or more characters<br>
  * '?' matches one character.
- * <p>
+ * <p/>
  * Examples:
- * <p>
+ * <p/>
  * "**\*.class" matches all .class files/dirs in a directory tree.
- * <p>
+ * <p/>
  * "test\a??.java" matches all files/dirs which start with an 'a', then two
  * more characters and then ".java", in a directory called test.
- * <p>
+ * <p/>
  * "**" matches everything in a directory tree.
- * <p>
+ * <p/>
  * "**\test\**\XYZ*" matches all files/dirs which start with "XYZ" and where
  * there is a parent directory called test (e.g. "abc\test\def\ghi\XYZ123").
- * <p>
+ * <p/>
  * Case sensitivity may be turned off if necessary. By default, it is
  * turned on.
- * <p>
+ * <p/>
  * Example of usage:
  * <pre>
  *   String[] includes = {"**\\*.class"};
@@ -141,23 +141,29 @@ import java.util.Vector;
  * files in all proper subdirectories of a directory called "modules"
  *
  * @author Arnout J. Kuiper
- * <a href="mailto:ajkuiper@wxs.nl">ajkuiper@wxs.nl</a>
+ *         <a href="mailto:ajkuiper@wxs.nl">ajkuiper@wxs.nl</a>
  * @author Magesh Umasankar
  * @author <a href="mailto:bruce@callenish.com">Bruce Atherton</a>
  * @author <a href="mailto:levylambert@tiscali-dsl.de">Antoine Levy-Lambert</a>
  */
-public class DirectoryScanner extends AbstractScanner
+public class DirectoryScanner
+    extends AbstractScanner
 {
 
-    /** The base directory to be scanned. */
+    /**
+     * The base directory to be scanned.
+     */
     protected File basedir;
 
-    /** The files which matched at least one include and no excludes
-     *  and were selected.
+    /**
+     * The files which matched at least one include and no excludes
+     * and were selected.
      */
     protected Vector<String> filesIncluded;
 
-    /** The files which did not match any includes or selectors. */
+    /**
+     * The files which did not match any includes or selectors.
+     */
     protected Vector<String> filesNotIncluded;
 
     /**
@@ -166,12 +172,15 @@ public class DirectoryScanner extends AbstractScanner
      */
     protected Vector<String> filesExcluded;
 
-    /** The directories which matched at least one include and no excludes
-     *  and were selected.
+    /**
+     * The directories which matched at least one include and no excludes
+     * and were selected.
      */
     protected Vector<String> dirsIncluded;
 
-    /** The directories which were found and did not match any includes. */
+    /**
+     * The directories which were found and did not match any includes.
+     */
     protected Vector<String> dirsNotIncluded;
 
     /**
@@ -180,17 +189,21 @@ public class DirectoryScanner extends AbstractScanner
      */
     protected Vector<String> dirsExcluded;
 
-    /** The files which matched at least one include and no excludes and
-     *  which a selector discarded.
+    /**
+     * The files which matched at least one include and no excludes and
+     * which a selector discarded.
      */
     protected Vector<String> filesDeselected;
 
-    /** The directories which matched at least one include and no excludes
-     *  but which a selector discarded.
+    /**
+     * The directories which matched at least one include and no excludes
+     * but which a selector discarded.
      */
     protected Vector<String> dirsDeselected;
 
-    /** Whether or not our results were built by a slow scan. */
+    /**
+     * Whether or not our results were built by a slow scan.
+     */
     protected boolean haveSlowResults = false;
 
     /**
@@ -200,7 +213,9 @@ public class DirectoryScanner extends AbstractScanner
      */
     private boolean followSymlinks = true;
 
-    /** Whether or not everything tested so far has been included. */
+    /**
+     * Whether or not everything tested so far has been included.
+     */
     protected boolean everythingIncluded = true;
 
     /**
@@ -221,8 +236,7 @@ public class DirectoryScanner extends AbstractScanner
      */
     public void setBasedir( String basedir )
     {
-        setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace(
-            '\\', File.separatorChar ) ) );
+        setBasedir( new File( basedir.replace( '/', File.separatorChar ).replace( '\\', File.separatorChar ) ) );
     }
 
     /**
@@ -275,11 +289,12 @@ public class DirectoryScanner extends AbstractScanner
      * pattern and don't match any exclude patterns. If there are selectors
      * then the files must pass muster there, as well.
      *
-     * @exception IllegalStateException if the base directory was set
-     *            incorrectly (i.e. if it is <code>null</code>, doesn't exist,
-     *            or isn't a directory).
+     * @throws IllegalStateException if the base directory was set
+     *                               incorrectly (i.e. if it is <code>null</code>, doesn't exist,
+     *                               or isn't a directory).
      */
-    public void scan() throws IllegalStateException
+    public void scan()
+        throws IllegalStateException
     {
         if ( basedir == null )
         {
@@ -287,16 +302,15 @@ public class DirectoryScanner extends AbstractScanner
         }
         if ( !basedir.exists() )
         {
-            throw new IllegalStateException( "basedir " + basedir
-                                             + " does not exist" );
+            throw new IllegalStateException( "basedir " + basedir + " does not exist" );
         }
         if ( !basedir.isDirectory() )
         {
-            throw new IllegalStateException( "basedir " + basedir
-                                             + " is not a directory" );
+            throw new IllegalStateException( "basedir " + basedir + " is not a directory" );
         }
 
         setupDefaultFilters();
+        setupMatchPatterns();
 
         filesIncluded = new Vector<String>();
         filesNotIncluded = new Vector<String>();
@@ -337,7 +351,7 @@ public class DirectoryScanner extends AbstractScanner
      * list of excluded/included files/directories, whereas a fast scan
      * will only have full results for included files, as it ignores
      * directories which can't possibly hold any included files/directories.
-     * <p>
+     * <p/>
      * Returns immediately if a slow scan has already been completed.
      */
     protected void slowScan()
@@ -383,7 +397,6 @@ public class DirectoryScanner extends AbstractScanner
      *              prevent problems with an absolute path when using
      *              dir). Must not be <code>null</code>.
      * @param fast  Whether or not this call is part of a fast scan.
-     *
      * @see #filesIncluded
      * @see #filesNotIncluded
      * @see #filesExcluded
@@ -406,15 +419,14 @@ public class DirectoryScanner extends AbstractScanner
              *     then???)
              */
 
-
             /*
-             * [jdcasey] (2) is apparently happening to me, as this is killing one of my tests...
-             * this is affecting the assembly plugin, fwiw. I will initialize the newfiles array as
-             * zero-length for now.
-             *
-             * NOTE: I can't find the problematic code, as it appears to come from a native method
-             * in UnixFileSystem...
-             */
+            * [jdcasey] (2) is apparently happening to me, as this is killing one of my tests...
+            * this is affecting the assembly plugin, fwiw. I will initialize the newfiles array as
+            * zero-length for now.
+            *
+            * NOTE: I can't find the problematic code, as it appears to come from a native method
+            * in UnixFileSystem...
+            */
             /*
              * [bentmann] A null array will also be returned from list() on NTFS when dir refers to a soft link or
              * junction point whose target is not existent.
@@ -580,7 +592,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @return the names of the files which matched none of the include
      *         patterns.
-     *
      * @see #slowScan
      */
     public String[] getNotIncludedFiles()
@@ -599,7 +610,6 @@ public class DirectoryScanner extends AbstractScanner
      *
      * @return the names of the files which matched at least one of the
      *         include patterns and at at least one of the exclude patterns.
-     *
      * @see #slowScan
      */
     public String[] getExcludedFiles()
@@ -613,12 +623,11 @@ public class DirectoryScanner extends AbstractScanner
     /**
      * <p>Returns the names of the files which were selected out and
      * therefore not ultimately included.</p>
-     *
+     * <p/>
      * <p>The names are relative to the base directory. This involves
      * performing a slow scan if one has not already been completed.</p>
      *
      * @return the names of the files which were deselected.
-     *
      * @see #slowScan
      */
     public String[] getDeselectedFiles()
@@ -635,7 +644,7 @@ public class DirectoryScanner extends AbstractScanner
      * The names are relative to the base directory.
      *
      * @return the names of the directories which matched at least one of the
-     * include patterns and none of the exclude patterns.
+     *         include patterns and none of the exclude patterns.
      */
     public String[] getIncludedDirectories()
     {
@@ -650,8 +659,7 @@ public class DirectoryScanner extends AbstractScanner
      * performing a slow scan if one has not already been completed.
      *
      * @return the names of the directories which matched none of the include
-     * patterns.
-     *
+     *         patterns.
      * @see #slowScan
      */
     public String[] getNotIncludedDirectories()
@@ -669,8 +677,7 @@ public class DirectoryScanner extends AbstractScanner
      * performing a slow scan if one has not already been completed.
      *
      * @return the names of the directories which matched at least one of the
-     * include patterns and at least one of the exclude patterns.
-     *
+     *         include patterns and at least one of the exclude patterns.
      * @see #slowScan
      */
     public String[] getExcludedDirectories()
@@ -684,12 +691,11 @@ public class DirectoryScanner extends AbstractScanner
     /**
      * <p>Returns the names of the directories which were selected out and
      * therefore not ultimately included.</p>
-     *
+     * <p/>
      * <p>The names are relative to the base directory. This involves
      * performing a slow scan if one has not already been completed.</p>
      *
      * @return the names of the directories which were deselected.
-     *
      * @see #slowScan
      */
     public String[] getDeselectedDirectories()
@@ -702,17 +708,16 @@ public class DirectoryScanner extends AbstractScanner
 
     /**
      * Checks whether a given file is a symbolic link.
-     *
+     * <p/>
      * <p>It doesn't really test for symbolic links but whether the
      * canonical and absolute paths of the file are identical - this
      * may lead to false positives on some platforms.</p>
      *
      * @param parent the parent directory of the file to test
-     * @param name the name of the file to test.
-     *
-     * @since Ant 1.5
+     * @param name   the name of the file to test.
      * @return true if it's a symbolic link
      * @throws java.io.IOException .
+     * @since Ant 1.5
      */
     public boolean isSymbolicLink( File parent, String name )
         throws IOException
