@@ -19,15 +19,11 @@
 package org.apache.xml.security.stax.ext;
 
 import java.net.URISyntaxException;
-import java.security.Provider;
-import java.security.Security;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 
 import javax.crypto.SecretKey;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.stax.config.Init;
 
 /**
@@ -40,24 +36,10 @@ import org.apache.xml.security.stax.config.Init;
  */
 public class XMLSec {
     
-    private static final transient Log logger = LogFactory.getLog(XMLSec.class);
-
-
     //todo crl check
     //todo outgoing client setup per policy
 
     static {
-        try {
-            Class<?> c = 
-                XMLSec.class.getClassLoader().loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider");
-            if (null == Security.getProvider("BC")) {
-                Security.addProvider((Provider) c.newInstance());
-            }
-        } catch (Throwable e) {
-            logger.debug("Adding BouncyCastle provider failed", e);
-            // throw new RuntimeException("Adding BouncyCastle provider failed", e);
-        }
-
         try {
             Init.init(XMLSec.class.getClassLoader().getResource("security-config.xml").toURI());
         } catch (XMLSecurityException e) {
