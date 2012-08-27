@@ -26,7 +26,7 @@
   </issueManagement>
 
   <properties>
-    <useJvmChmod>false</useJvmChmod>
+    <useJvmChmod>true</useJvmChmod>
   </properties>
 
   <contributors>
