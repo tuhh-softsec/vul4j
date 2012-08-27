@@ -129,6 +129,7 @@ public final class ArchiveEntryUtils
     }
 
     private static void applyPermissionsWithJvm( final File file, final String mode, final Logger logger )
+        throws ArchiverException
     {
         final FilePermission filePermission = FilePermissionUtils.getFilePermissionFromMode( mode, logger );
 
@@ -154,7 +155,7 @@ public final class ArchiveEntryUtils
         catch ( final Exception e )
         {
             logger.error( "error calling dynamically file permissons with jvm " + e.getMessage(), e );
-            throw new RuntimeException( "error calling dynamically file permissons with jvm " + e.getMessage(), e );
+            throw new ArchiverException( "error calling dynamically file permissons with jvm " + e.getMessage(), e );
         }
     }
 
