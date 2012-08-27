@@ -53,7 +53,6 @@ public final class ArchiveEntryUtils
 
         if ( useJvmChmod && !jvmFilePermAvailable )
         {
-            logger.info( "you want to use jvmChmod but it's not possible where your current jvm" );
             useJvmChmod = false;
         }
 

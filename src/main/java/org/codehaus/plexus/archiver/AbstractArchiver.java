@@ -99,9 +99,10 @@ public abstract class AbstractArchiver
     private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
 
     /**
+     *
      * @since 1.1
      */
-    private boolean useJvmChmod = false;
+    private boolean useJvmChmod = true;
 
     // contextualized.
     private ArchiverManager archiverManager;
