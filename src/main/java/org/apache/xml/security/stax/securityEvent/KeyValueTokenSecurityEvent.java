@@ -38,7 +38,7 @@ public class KeyValueTokenSecurityEvent extends TokenSecurityEvent {
 
     public KeyValueTokenType getKeyValueTokenType() {
         try {
-            String algo = getSecurityToken().getPublicKey(null, null).getAlgorithm();
+            String algo = getSecurityToken().getPublicKey(null, null, null).getAlgorithm();
             return KeyValueTokenType.valueOf(algo);
         } catch (IllegalArgumentException e) {
             return null;

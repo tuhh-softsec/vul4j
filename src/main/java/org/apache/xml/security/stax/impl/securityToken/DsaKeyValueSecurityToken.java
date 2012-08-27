@@ -65,12 +65,14 @@ public class DsaKeyValueSecurityToken extends AbstractSecurityToken {
     }
 
     @Override
-    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                         String correlationID) throws XMLSecurityException {
         return null;
     }
 
     @Override
-    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                  String correlationID) throws XMLSecurityException {
         return this.publicKey;
     }
 

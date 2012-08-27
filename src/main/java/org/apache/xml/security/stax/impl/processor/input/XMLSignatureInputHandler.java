@@ -81,15 +81,18 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                     throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
                 }
                 tokenSecurityEvent.setSecurityToken(securityToken);
+                tokenSecurityEvent.setCorrelationID(signatureType.getId());
                 securityContext.registerSecurityEvent(tokenSecurityEvent);
                 
                 SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
                 signatureValueSecurityEvent.setSignatureValue(signatureType.getSignatureValue().getValue());
+                signatureValueSecurityEvent.setCorrelationID(signatureType.getId());
                 securityContext.registerSecurityEvent(signatureValueSecurityEvent);
 
                 AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
                 algorithmSuiteSecurityEvent.setAlgorithmURI(signatureType.getSignedInfo().getCanonicalizationMethod().getAlgorithm());
                 algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+                algorithmSuiteSecurityEvent.setCorrelationID(signatureType.getId());
                 securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
                 
                 super.handleSecurityToken(securityToken);

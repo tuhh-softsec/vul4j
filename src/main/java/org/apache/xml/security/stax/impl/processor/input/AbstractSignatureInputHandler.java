@@ -26,6 +26,7 @@ import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
 
 import javax.xml.bind.JAXBElement;
@@ -56,6 +57,9 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
 
         @SuppressWarnings("unchecked")
         final SignatureType signatureType = ((JAXBElement<SignatureType>) parseStructure(eventQueue, index, securityProperties)).getValue();
+        if (signatureType.getId() == null) {
+            signatureType.setId(IDGenerator.generateID(null));
+        }
         SecurityToken securityToken = verifySignedInfo(inputProcessorChain, securityProperties, signatureType, eventQueue, index);
         addSignatureReferenceInputProcessorToChain(inputProcessorChain, securityProperties, signatureType, securityToken);
     }
@@ -201,10 +205,10 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             Key verifyKey;
             final String algorithmURI = signatureType.getSignedInfo().getSignatureMethod().getAlgorithm();
             if (securityToken.isAsymmetric()) {
-                verifyKey = securityToken.getPublicKey(algorithmURI, XMLSecurityConstants.Asym_Sig);
+                verifyKey = securityToken.getPublicKey(algorithmURI, XMLSecurityConstants.Asym_Sig, signatureType.getId());
             } else {
                 verifyKey = securityToken.getSecretKey(
-                        algorithmURI, XMLSecurityConstants.Sym_Sig);
+                        algorithmURI, XMLSecurityConstants.Sym_Sig, signatureType.getId());
             }
 
             SignatureAlgorithm signatureAlgorithm =

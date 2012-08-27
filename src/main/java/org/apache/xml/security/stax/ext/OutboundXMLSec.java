@@ -268,7 +268,7 @@ public class OutboundXMLSec {
         }
 
         public Key getSecretKey(
-            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage
+            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID
         ) throws XMLSecurityException {
             if (key instanceof SecretKey || key instanceof PrivateKey) {
                 return key;
@@ -277,7 +277,7 @@ public class OutboundXMLSec {
         }
 
         public PublicKey getPublicKey(
-            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage
+            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID
         ) throws XMLSecurityException {
             if (key instanceof PublicKey) {
                 return (PublicKey)key;

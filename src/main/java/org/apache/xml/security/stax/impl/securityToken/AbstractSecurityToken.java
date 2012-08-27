@@ -122,16 +122,20 @@ public abstract class AbstractSecurityToken implements SecurityToken {
         return callbackHandler;
     }
 
-    protected abstract Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException;
+    protected abstract Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                  String correlationID) throws XMLSecurityException;
 
     @Override
-    public Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    public Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                            String correlationID) throws XMLSecurityException {
         incrementAndTestInvocationCount();
-        Key key = getKey(algorithmURI, keyUsage);
-        if (key != null && this.securityContext != null) {
+        Key key = getKey(algorithmURI, keyUsage, correlationID);
+        //todo remove correlationID null check when we have implemented a better api to access the key
+        if (key != null && this.securityContext != null && correlationID != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
+            algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
             if (key instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) key).getModulus().bitLength());
             } else if (key instanceof SecretKey) {
@@ -145,16 +149,20 @@ public abstract class AbstractSecurityToken implements SecurityToken {
         return key;
     }
 
-    protected abstract PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException;
+    protected abstract PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                           String correlationID) throws XMLSecurityException;
 
     @Override
-    public PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    public PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                  String correlationID) throws XMLSecurityException {
         incrementAndTestInvocationCount();
-        PublicKey publicKey = getPubKey(algorithmURI, keyUsage);
-        if (publicKey != null) {
+        PublicKey publicKey = getPubKey(algorithmURI, keyUsage, correlationID);
+        //todo remove correlationID null check when we have implemented a better api to access the key
+        if (publicKey != null && this.securityContext != null && correlationID != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
+            algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
             if (publicKey instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) publicKey).getModulus().bitLength());
             } else if (publicKey instanceof DSAKey) {

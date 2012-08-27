@@ -81,7 +81,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         encryptionPartDef.setModifier(securePart.getModifier());
                         encryptionPartDef.setEncRefId(IDGenerator.generateID(null));
                         encryptionPartDef.setKeyId(securityTokenProvider.getId());
-                        encryptionPartDef.setSymmetricKey(securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null));
+                        encryptionPartDef.setSymmetricKey(securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null, null));
                         outputProcessorChain.getSecurityContext().putAsList(EncryptionPartDef.class, encryptionPartDef);
                         
                         internalEncryptionOutputProcessor =
@@ -130,9 +130,9 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         return;
                     }
                     PublicKey pubKey = keyWrappingToken.getPublicKey(
-                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null);
+                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null, null);
                     SecretKey secretKey = (SecretKey)keyWrappingToken.getSecretKey(
-                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null);
+                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null, null);
                     if (pubKey == null && secretKey == null) {
                         // Do not write out a KeyInfo element
                         return;
@@ -169,7 +169,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
                         
                         Key ephemeralKey = 
-                            securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null);
+                            securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null, null);
                         if (pubKey != null) {
                             int blockSize = cipher.getBlockSize();
                             if (blockSize > 0 && blockSize < ephemeralKey.getEncoded().length) {

@@ -27,6 +27,7 @@ import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
 public abstract class SecurityEvent {
     
     private final Event securityEventType;
+    private String correlationID;
 
     protected SecurityEvent(Event securityEventType) {
         this.securityEventType = securityEventType;
@@ -34,5 +35,13 @@ public abstract class SecurityEvent {
 
     public Event getSecurityEventType() {
         return securityEventType;
+    }
+
+    public String getCorrelationID() {
+        return correlationID;
+    }
+
+    public void setCorrelationID(String correlationID) {
+        this.correlationID = correlationID;
     }
 }

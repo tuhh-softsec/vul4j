@@ -69,7 +69,7 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
             SecurityToken securityToken, SecurityContext securityContext) throws XMLSecurityException {
         return new DecryptedEventReaderInputProcessor(getSecurityProperties(),
                 SecurePart.Modifier.getModifier(currentEncryptedDataType.getType()),
-                 encryptedHeader, xmlSecStartElement, this, securityToken);
+                 encryptedHeader, xmlSecStartElement, currentEncryptedDataType, this, securityToken);
     }
 
     @Override
@@ -98,22 +98,26 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
         }
         
         tokenSecurityEvent.setSecurityToken(securityToken);
+        tokenSecurityEvent.setCorrelationID(encryptedDataType.getId());
         securityContext.registerSecurityEvent(tokenSecurityEvent);
     }
-    
+
     @Override
     protected void handleEncryptedContent(InputProcessorChain inputProcessorChain,
-                                                   XMLSecStartElement parentXMLSecStartElement,
-                                                   SecurityToken securityToken) throws XMLSecurityException {
+                                          XMLSecStartElement parentXMLSecStartElement,
+                                          SecurityToken securityToken,
+                                          EncryptedDataType encryptedDataType)
+            throws XMLSecurityException {
+
         final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
         List<QName> elementPath = parentXMLSecStartElement.getElementPath();
-        
+
         ContentEncryptedElementSecurityEvent contentEncryptedElementSecurityEvent =
                 new ContentEncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
         contentEncryptedElementSecurityEvent.setElementPath(elementPath);
         contentEncryptedElementSecurityEvent.setXmlSecEvent(parentXMLSecStartElement);
-        
         contentEncryptedElementSecurityEvent.setSecurityToken(securityToken);
+        contentEncryptedElementSecurityEvent.setCorrelationID(encryptedDataType.getId());
         inputProcessorChain.getSecurityContext().registerSecurityEvent(contentEncryptedElementSecurityEvent);
     }
 
@@ -126,15 +130,18 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
         public DecryptedEventReaderInputProcessor(
                 XMLSecurityProperties securityProperties, SecurePart.Modifier encryptionModifier,
                 boolean encryptedHeader, XMLSecStartElement xmlSecStartElement,
+                EncryptedDataType encryptedDataType,
                 XMLDecryptInputProcessor decryptInputProcessor,
                 SecurityToken securityToken
         ) {
-            super(securityProperties, encryptionModifier, encryptedHeader, xmlSecStartElement, decryptInputProcessor, securityToken);
+            super(securityProperties, encryptionModifier, encryptedHeader, xmlSecStartElement, encryptedDataType, decryptInputProcessor, securityToken);
         }
 
         @Override
-        protected void handleEncryptedElement(InputProcessorChain inputProcessorChain, XMLSecStartElement xmlSecStartElement,
-                                              SecurityToken securityToken) throws XMLSecurityException {
+        protected void handleEncryptedElement(InputProcessorChain inputProcessorChain,
+                                              XMLSecStartElement xmlSecStartElement,
+                                              SecurityToken securityToken,
+                                              EncryptedDataType encryptedDataType) throws XMLSecurityException {
             //fire a SecurityEvent:
             final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
             List<QName> elementPath = xmlSecStartElement.getElementPath();
@@ -143,8 +150,8 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
                     new EncryptedElementSecurityEvent(securityToken, true, documentContext.getProtectionOrder());
             encryptedElementSecurityEvent.setElementPath(elementPath);
             encryptedElementSecurityEvent.setXmlSecEvent(xmlSecStartElement);
-            
             encryptedElementSecurityEvent.setSecurityToken(securityToken);
+            encryptedElementSecurityEvent.setCorrelationID(encryptedDataType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(encryptedElementSecurityEvent);
         }
 

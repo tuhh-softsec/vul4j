@@ -34,6 +34,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
@@ -79,6 +80,9 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             ReferenceType referenceType = referenceTypeIterator.next();
             if (referenceType.getURI() == null) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+            }
+            if (referenceType.getId() == null) {
+                referenceType.setId(IDGenerator.generateID(null));
             }
             ResourceResolver resourceResolver =
                     ResourceResolverMapper.getResourceResolver(
@@ -140,7 +144,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
                         // Fire a SecurityEvent
                         List<QName> elementPath = xmlSecStartElement.getElementPath();
-                        processElementPath(elementPath, inputProcessorChain, xmlSecEvent);
+                        processElementPath(elementPath, inputProcessorChain, xmlSecEvent, referenceType);
                     }
                 }
                 break;
@@ -149,8 +153,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
     }
 
     protected abstract void processElementPath(
-            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
-    ) throws XMLSecurityException;
+            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent,
+            ReferenceType referenceType) throws XMLSecurityException;
 
     protected List<ReferenceType> resolvesResource(XMLSecStartElement xmlSecStartElement) {
         List<ReferenceType> referenceTypes = Collections.emptyList();
@@ -265,6 +269,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
         algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
         algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
+        algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
         securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
         return new DigestOutputStream(messageDigest);
@@ -308,6 +313,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
             algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
             if (parentTransformer != null) {

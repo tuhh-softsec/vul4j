@@ -1033,7 +1033,7 @@ public class DecryptionTest extends org.junit.Assert {
     
     protected void checkEncryptedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
         EncryptedElementSecurityEvent encryptedElementEvent =
-                (EncryptedElementSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.EncryptedElement);
+                (EncryptedElementSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.EncryptedElement);
         assertNotNull(encryptedElementEvent);
         assertEquals(encryptedElementEvent.getElementPath().size(), 2);
         assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
@@ -1043,7 +1043,7 @@ public class DecryptionTest extends org.junit.Assert {
     
     protected void checkMultipleEncryptedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
         List<SecurityEvent> encryptedElements =
-                securityEventListener.getTokenEvents(SecurityEventConstants.EncryptedElement);
+                securityEventListener.getSecurityEvents(SecurityEventConstants.EncryptedElement);
         assertTrue(encryptedElements.size() == 2);
         
         EncryptedElementSecurityEvent encryptedElementEvent =
@@ -1065,7 +1065,7 @@ public class DecryptionTest extends org.junit.Assert {
     
     protected void checkEncryptedContentSecurityEvents(TestSecurityEventListener securityEventListener) {
         ContentEncryptedElementSecurityEvent encryptedElementEvent =
-                (ContentEncryptedElementSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.ContentEncrypted);
+                (ContentEncryptedElementSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.ContentEncrypted);
         assertNotNull(encryptedElementEvent);
         assertEquals(encryptedElementEvent.getElementPath().size(), 2);
         assertEquals("{urn:example:po}PurchaseOrder", encryptedElementEvent.getElementPath().get(0).toString());
@@ -1082,16 +1082,16 @@ public class DecryptionTest extends org.junit.Assert {
     ) throws XMLSecurityException {
         if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
             DefaultTokenSecurityEvent tokenEvent =
-                    (DefaultTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+                    (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
             assertEquals(processedKey, key);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY) {
             EncryptedKeyTokenSecurityEvent tokenEvent =
-                    (EncryptedKeyTokenSecurityEvent) securityEventListener.getTokenEvent(
+                    (EncryptedKeyTokenSecurityEvent) securityEventListener.getSecurityEvent(
                             SecurityEventConstants.EncryptedKeyToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey(algorithm, null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey(algorithm, null, null);
             assertEquals(processedKey, key);
         } 
     }
@@ -1102,7 +1102,7 @@ public class DecryptionTest extends org.junit.Assert {
             String keywrapAlgorithm
     ) {
         List<SecurityEvent> algorithmEvents =
-                securityEventListener.getTokenEvents(SecurityEventConstants.AlgorithmSuite);
+                securityEventListener.getSecurityEvents(SecurityEventConstants.AlgorithmSuite);
         assertFalse(algorithmEvents.isEmpty());
         
         boolean matchedEncryptionAlgorithm = false;

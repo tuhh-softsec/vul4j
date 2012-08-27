@@ -187,6 +187,9 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
                 EncryptedDataType encryptedDataType =
                         parseEncryptedDataStructure(isSecurityHeaderEvent, xmlSecEvent, subInputProcessorChain);
+                if (encryptedDataType.getId() == null) {
+                    encryptedDataType.setId(IDGenerator.generateID(null));
+                }
 
                 SecurityToken securityToken = 
                         getSecurityToken(inputProcessorChain, xmlSecStartElement, encryptedDataType);
@@ -195,7 +198,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 //only fire here ContentEncryptedElementEvents
                 //the other ones will be fired later, because we don't know the encrypted element name yet
                 if (SecurePart.Modifier.Content.getModifier().equals(encryptedDataType.getType())) {
-                    handleEncryptedContent(inputProcessorChain, xmlSecStartElement.getParentXMLSecStartElement(), securityToken);
+                    handleEncryptedContent(inputProcessorChain, xmlSecStartElement.getParentXMLSecStartElement(),
+                            securityToken, encryptedDataType);
                 }
 
                 final String algorithmURI = encryptedDataType.getEncryptionMethod().getAlgorithm();
@@ -204,7 +208,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 //create a new Thread for streaming decryption
                 DecryptionThread decryptionThread =
                         new DecryptionThread(subInputProcessorChain, isSecurityHeaderEvent);
-                decryptionThread.setSecretKey(securityToken.getSecretKey(algorithmURI, XMLSecurityConstants.Enc));
+                decryptionThread.setSecretKey(securityToken.getSecretKey(algorithmURI, XMLSecurityConstants.Enc, encryptedDataType.getId()));
                 decryptionThread.setSymmetricCipher(symCipher);
                 XMLSecStartElement parentXMLSecStartElement = xmlSecStartElement.getParentXMLSecStartElement();
                 if (encryptedHeader) {
@@ -514,7 +518,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
     protected abstract void handleEncryptedContent(InputProcessorChain inputProcessorChain,
                                                    XMLSecStartElement parentXMLSecStartElement,
-                                                   SecurityToken securityToken) throws XMLSecurityException;
+                                                   SecurityToken securityToken,
+                                                   EncryptedDataType encryptedDataType) throws XMLSecurityException;
 
     protected ReferenceType matchesReferenceId(XMLSecStartElement xmlSecStartElement) {
         Attribute refId = getReferenceIDAttribute(xmlSecStartElement);
@@ -552,10 +557,12 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         private boolean encryptedHeader = false;
         private final SecurityToken securityToken;
         private boolean rootElementProcessed;
+        private EncryptedDataType encryptedDataType;
 
         public AbstractDecryptedEventReaderInputProcessor(
                 XMLSecurityProperties securityProperties, SecurePart.Modifier encryptionModifier,
                 boolean encryptedHeader, XMLSecStartElement xmlSecStartElement,
+                EncryptedDataType encryptedDataType,
                 AbstractDecryptInputProcessor abstractDecryptInputProcessor,
                 SecurityToken securityToken
         ) {
@@ -565,6 +572,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             this.encryptedHeader = encryptedHeader;
             this.securityToken = securityToken;
             this.parentXmlSecStartElement = xmlSecStartElement;
+            this.encryptedDataType = encryptedDataType;
         }
 
         public void setXmlStreamReader(XMLStreamReader xmlStreamReader) {
@@ -596,7 +604,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     parentXmlSecStartElement = xmlSecEvent.asStartElement();
 
                     if (!rootElementProcessed) {
-                        handleEncryptedElement(inputProcessorChain, parentXmlSecStartElement, this.securityToken);
+                        handleEncryptedElement(inputProcessorChain, parentXmlSecStartElement, this.securityToken, encryptedDataType);
                         rootElementProcessed = true;
                     }
                     break;
@@ -647,8 +655,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         }
 
         protected abstract void handleEncryptedElement(
-                InputProcessorChain inputProcessorChain,
-                XMLSecStartElement xmlSecStartElement, SecurityToken securityToken) throws XMLSecurityException;
+                InputProcessorChain inputProcessorChain, XMLSecStartElement xmlSecStartElement,
+                SecurityToken securityToken, EncryptedDataType encryptedDataType) throws XMLSecurityException;
 
         private volatile Throwable thrownException;
 

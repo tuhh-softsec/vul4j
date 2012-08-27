@@ -193,6 +193,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             token.setIssuerName(issuerSerialType.getX509IssuerName());
             token.setSerialNumber(issuerSerialType.getX509SerialNumber());
 
+            //todo review: setKey should always be a secret resp. priv-key
             if (keyInfoUsage == SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION) {
                 token.setKey(securityProperties.getSignatureVerificationKey());
             } else if (keyInfoUsage == SecurityToken.KeyInfoUsage.DECRYPTION) {
@@ -282,7 +283,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         }
 
         @Override
-        protected Key getKey(String algorithmURI, KeyUsage keyUsage)
+        protected Key getKey(String algorithmURI, KeyUsage keyUsage, String correlationID)
                 throws XMLSecurityException {
             return key;
         }
@@ -292,7 +293,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         }
 
         @Override
-        protected PublicKey getPubKey(String algorithmURI, KeyUsage keyUsage)
+        protected PublicKey getPubKey(String algorithmURI, KeyUsage keyUsage, String correlationID)
                 throws XMLSecurityException {
             if (key instanceof PublicKey) {
                 return (PublicKey)key;

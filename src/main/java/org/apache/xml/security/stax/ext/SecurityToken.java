@@ -101,7 +101,7 @@ public interface SecurityToken {
      * @return The requested key for the specified algorithmURI, or null if no matching key is found
      * @throws XMLSecurityException if the key can't be loaded
      */
-    Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException;
+    Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException;
 
     /**
      * Returns the public key if one exist for this token type
@@ -111,7 +111,7 @@ public interface SecurityToken {
      * @return The Public-Key for asymmetric algorithms
      * @throws XMLSecurityException if the key can't be loaded
      */
-    PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException;
+    PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException;
 
     /**
      * Returns the certificate chain if one exists for this token type

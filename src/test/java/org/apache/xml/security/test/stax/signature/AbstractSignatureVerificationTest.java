@@ -279,12 +279,12 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             String signatureMethod
     ) {
         SignatureValueSecurityEvent sigValueEvent =
-                (SignatureValueSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.SignatureValue);
+                (SignatureValueSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.SignatureValue);
         assertNotNull(sigValueEvent);
         assertNotNull(sigValueEvent.getSignatureValue());
 
         List<SecurityEvent> algorithmEvents =
-                securityEventListener.getTokenEvents(SecurityEventConstants.AlgorithmSuite);
+                securityEventListener.getSecurityEvents(SecurityEventConstants.AlgorithmSuite);
         assertFalse(algorithmEvents.isEmpty());
 
         // C14n algorithm
@@ -315,7 +315,7 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
 
     protected void checkSignedElementSecurityEvents(TestSecurityEventListener securityEventListener) {
         SignedElementSecurityEvent signedElementEvent =
-                (SignedElementSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.SignedElement);
+                (SignedElementSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         assertNotNull(signedElementEvent);
         assertEquals(signedElementEvent.getElementPath().size(), 2);
         assertEquals("{urn:example:po}PurchaseOrder", signedElementEvent.getElementPath().get(0).toString());
@@ -327,7 +327,7 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             TestSecurityEventListener securityEventListener
     ) {
         List<SecurityEvent> signedElements =
-                securityEventListener.getTokenEvents(SecurityEventConstants.SignedElement);
+                securityEventListener.getSecurityEvents(SecurityEventConstants.SignedElement);
         assertTrue(signedElements.size() == 2);
         SignedElementSecurityEvent signedElementEvent =
                 (SignedElementSecurityEvent) signedElements.get(0);
@@ -355,24 +355,24 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
     ) throws XMLSecurityException {
         if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
             KeyValueTokenSecurityEvent tokenEvent = 
-                    (KeyValueTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.KeyValueToken);
+                    (KeyValueTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.KeyValueToken);
             assertNotNull(tokenEvent);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
             DefaultTokenSecurityEvent tokenEvent =
-                    (DefaultTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+                    (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
             assertEquals(processedKey, key);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
             KeyNameTokenSecurityEvent tokenEvent =
-                    (KeyNameTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.KeyNameToken);
+                    (KeyNameTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.KeyNameToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
             assertEquals(processedKey, key);
             assertNotNull(((KeyNameSecurityToken) tokenEvent.getSecurityToken()).getKeyName());
         } else {
             X509TokenSecurityEvent tokenEvent =
-                    (X509TokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
+                    (X509TokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
             assertNotNull(tokenEvent);
             X509SecurityToken x509SecurityToken =
                     (X509SecurityToken) tokenEvent.getSecurityToken();
@@ -382,12 +382,12 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
                 assertEquals(cert, x509SecurityToken.getX509Certificates()[0]);
             } else if (keyIdentifierType ==
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
-                Key processedKey = x509SecurityToken.getKey("", null);
+                Key processedKey = x509SecurityToken.getKey("", null, null);
                 assertEquals(processedKey, cert.getPublicKey());
                 assertNotNull(((X509SubjectNameSecurityToken) x509SecurityToken).getSubjectName());
             } else if (keyIdentifierType ==
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
-                Key processedKey = x509SecurityToken.getKey("", null);
+                Key processedKey = x509SecurityToken.getKey("", null, null);
                 assertEquals(processedKey, cert.getPublicKey());
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getIssuerName());
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getSerialNumber());

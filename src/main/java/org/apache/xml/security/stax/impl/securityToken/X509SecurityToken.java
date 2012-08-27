@@ -51,20 +51,22 @@ public class X509SecurityToken extends AbstractSecurityToken {
     }
 
     @Override
-    public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException {
         return key;
     }
-    
+
     public void setKey(Key key) {
         this.key = key;
     }
 
     @Override
-    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException {
         X509Certificate[] x509Certificates = getX509Certificates();
         if (x509Certificates == null || x509Certificates.length == 0) {
-            if (getKey(algorithmURI, keyUsage) instanceof PublicKey) {
-                return (PublicKey)getKey(algorithmURI, keyUsage);
+            //todo review: getKey should always return the priv-key resp. the secret and not a public key
+            //todo review SecurityTokenFactoryImpl too where setKey() is called.
+            if (getKey(algorithmURI, keyUsage, correlationID) instanceof PublicKey) {
+                return (PublicKey)getKey(algorithmURI, keyUsage, correlationID);
             }
             return null;
         }

@@ -45,10 +45,13 @@ import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
  */
 public class ECKeyValueSecurityToken extends AbstractSecurityToken {
 
+    private ECKeyValueType ecKeyValueType;
     private PublicKey publicKey;
 
-    public ECKeyValueSecurityToken(ECKeyValueType ecKeyValueType, SecurityContext securityContext, CallbackHandler callbackHandler,
+    public ECKeyValueSecurityToken(ECKeyValueType ecKeyValueType, SecurityContext securityContext,
+                                   CallbackHandler callbackHandler,
                                    XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
+
         super(securityContext, callbackHandler, null, keyIdentifierType);
 
         if (ecKeyValueType.getECParameters() != null) {
@@ -57,17 +60,12 @@ public class ECKeyValueSecurityToken extends AbstractSecurityToken {
         if (ecKeyValueType.getNamedCurve() == null) {
             throw new XMLSecurityException("NamedCurve is missing");
         }
-
-        try {
-            this.publicKey = buildPublicKey(ecKeyValueType);
-        } catch (InvalidKeySpecException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
-        }
+        this.ecKeyValueType = ecKeyValueType;
     }
 
-    private PublicKey buildPublicKey(ECKeyValueType ecKeyValueType) throws InvalidKeySpecException, NoSuchAlgorithmException, XMLSecurityException {
+    private PublicKey buildPublicKey(ECKeyValueType ecKeyValueType)
+            throws InvalidKeySpecException, NoSuchAlgorithmException, XMLSecurityException {
+
         String oid = ecKeyValueType.getNamedCurve().getURI();
         if (oid.startsWith("urn:oid:")) {
             oid = oid.substring(8);
@@ -104,12 +102,23 @@ public class ECKeyValueSecurityToken extends AbstractSecurityToken {
     }
 
     @Override
-    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                         String correlationID) throws XMLSecurityException {
         return null;
     }
 
     @Override
-    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage) throws XMLSecurityException {
+    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                  String correlationID) throws XMLSecurityException {
+        if (this.publicKey == null) {
+            try {
+                this.publicKey = buildPublicKey(this.ecKeyValueType);
+            } catch (InvalidKeySpecException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+            }
+        }
         return this.publicKey;
     }
 

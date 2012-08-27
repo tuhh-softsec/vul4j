@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.stax.ext.DocumentContext;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
@@ -43,13 +44,14 @@ public class XMLSignatureReferenceVerifyInputProcessor extends AbstractSignature
     
     @Override
     protected void processElementPath(
-            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent
-    ) throws XMLSecurityException {
+            List<QName> elementPath, InputProcessorChain inputProcessorChain, XMLSecEvent xmlSecEvent,
+            ReferenceType referenceType) throws XMLSecurityException {
         final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
         SignedElementSecurityEvent signedElementSecurityEvent =
                 new SignedElementSecurityEvent(getSecurityToken(), true, documentContext.getProtectionOrder());
         signedElementSecurityEvent.setElementPath(elementPath);
         signedElementSecurityEvent.setXmlSecEvent(xmlSecEvent);
+        signedElementSecurityEvent.setCorrelationID(referenceType.getId());
         inputProcessorChain.getSecurityContext().registerSecurityEvent(signedElementSecurityEvent);
     }
 

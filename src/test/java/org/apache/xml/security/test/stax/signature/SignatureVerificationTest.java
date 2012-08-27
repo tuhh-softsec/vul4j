@@ -46,6 +46,8 @@ import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
+import org.apache.xml.security.stax.securityEvent.*;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Assert;
@@ -129,6 +131,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -183,6 +207,35 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementMultipleSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        List<SignedElementSecurityEvent> signedElementSecurityEventList = securityEventListener.getSecurityEvents(SecurityEventConstants.SignedElement);
+        Assert.assertEquals(2, signedElementSecurityEventList.size());
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID1 = signedElementSecurityEventList.get(0).getCorrelationID();
+        String signedElementCorrelationID2 = signedElementSecurityEventList.get(1).getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents1 = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents2 = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID1)) {
+                signedElementSecurityEvents1.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(signedElementCorrelationID2)) {
+                signedElementSecurityEvents2.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents1.size());
+        Assert.assertEquals(3, signedElementSecurityEvents2.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(),
+                signatureSecurityEvents.size() + signedElementSecurityEvents1.size() + signedElementSecurityEvents2.size());
     }
     
     @Test
@@ -237,6 +290,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, null, key,
                             XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        KeyNameTokenSecurityEvent keyNameSecurityToken = securityEventListener.getSecurityEvent(SecurityEventConstants.KeyNameToken);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = keyNameSecurityToken.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -351,6 +426,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -408,6 +505,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -465,6 +584,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -522,6 +663,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -581,6 +744,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -638,6 +823,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -695,6 +902,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
                             XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
     
     @Test
@@ -749,6 +978,28 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, null, cert.getPublicKey(),
                             XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        KeyValueTokenSecurityEvent keyValueTokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.KeyValueToken);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = keyValueTokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
 
     @Test
@@ -797,5 +1048,27 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
         document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+
+        SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
+        X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
+        String signedElementCorrelationID = signedElementSecurityEvent.getCorrelationID();
+        String x509TokenCorrelationID = x509TokenSecurityEvent.getCorrelationID();
+
+        List<SecurityEvent> signatureSecurityEvents = new ArrayList<SecurityEvent>();
+        List<SecurityEvent> signedElementSecurityEvents = new ArrayList<SecurityEvent>();
+
+        List<SecurityEvent> securityEvents = securityEventListener.getSecurityEvents();
+        for (int i = 0; i < securityEvents.size(); i++) {
+            SecurityEvent securityEvent = securityEvents.get(i);
+            if (securityEvent.getCorrelationID().equals(signedElementCorrelationID)) {
+                signedElementSecurityEvents.add(securityEvent);
+            } else if (securityEvent.getCorrelationID().equals(x509TokenCorrelationID)) {
+                signatureSecurityEvents.add(securityEvent);
+            }
+        }
+
+        Assert.assertEquals(4, signatureSecurityEvents.size());
+        Assert.assertEquals(3, signedElementSecurityEvents.size());
+        Assert.assertEquals(securityEventListener.getSecurityEvents().size(), signatureSecurityEvents.size() + signedElementSecurityEvents.size());
     }
 }

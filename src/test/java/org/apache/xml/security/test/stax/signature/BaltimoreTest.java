@@ -1486,37 +1486,37 @@ public class BaltimoreTest extends org.junit.Assert {
 
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
             DefaultTokenSecurityEvent tokenEvent =
-                    (DefaultTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.DefaultToken);
+                    (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
             assertEquals(processedKey, key);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
             KeyNameTokenSecurityEvent tokenEvent =
-                    (KeyNameTokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.KeyNameToken);
+                    (KeyNameTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.KeyNameToken);
             assertNotNull(tokenEvent);
             if (key instanceof SecretKey) {
-                Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null);
+                Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
                 assertEquals(processedKey, key);
             } else {
-                Key processedKey = tokenEvent.getSecurityToken().getPublicKey("", null);
+                Key processedKey = tokenEvent.getSecurityToken().getPublicKey("", null, null);
                 assertEquals(processedKey, key);
             }
             assertNotNull(((KeyNameSecurityToken) tokenEvent.getSecurityToken()).getKeyName());
         } else {
             X509TokenSecurityEvent tokenEvent =
-                    (X509TokenSecurityEvent) securityEventListener.getTokenEvent(SecurityEventConstants.X509Token);
+                    (X509TokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
             assertNotNull(tokenEvent);
             X509SecurityToken x509SecurityToken =
                     (X509SecurityToken) tokenEvent.getSecurityToken();
             assertNotNull(x509SecurityToken);
             if (keyIdentifierType ==
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
-                Key processedKey = x509SecurityToken.getKey("", null);
+                Key processedKey = x509SecurityToken.getKey("", null, null);
                 assertEquals(processedKey, key);
                 assertNotNull(((X509SubjectNameSecurityToken) x509SecurityToken).getSubjectName());
             } else if (keyIdentifierType ==
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
-                Key processedKey = x509SecurityToken.getKey("", null);
+                Key processedKey = x509SecurityToken.getKey("", null, null);
                 assertEquals(processedKey, key);
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getIssuerName());
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getSerialNumber());

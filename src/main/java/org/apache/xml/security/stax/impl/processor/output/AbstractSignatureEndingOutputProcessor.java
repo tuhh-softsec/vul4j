@@ -119,7 +119,8 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
         }
 
-        signatureAlgorithm.engineInitSign(wrappingSecurityToken.getSecretKey(getSecurityProperties().getSignatureAlgorithm(), null));
+        signatureAlgorithm.engineInitSign(wrappingSecurityToken
+                .getSecretKey(getSecurityProperties().getSignatureAlgorithm(), null, null));
 
         SignedInfoProcessor signedInfoProcessor = newSignedInfoProcessor(signatureAlgorithm, subOutputProcessorChain);
 

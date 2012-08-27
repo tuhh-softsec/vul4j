@@ -21,6 +21,7 @@ package org.apache.xml.security.test.stax.signature;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
@@ -32,27 +33,32 @@ public class TestSecurityEventListener implements SecurityEventListener {
     @Override
     public void registerSecurityEvent(SecurityEvent securityEvent)
             throws XMLSecurityException {
-        if (!events.contains(securityEvent)) {
-            events.add(securityEvent);
-        }
+
+        Assert.assertNotNull("CorrelationID of SecurityEvent is null: " + securityEvent.getSecurityEventType(), securityEvent.getCorrelationID());
+        Assert.assertTrue("CorrelationID of SecurityEvent is empty: " + securityEvent.getSecurityEventType(), securityEvent.getCorrelationID().length() > 0);
+        events.add(securityEvent);
     }
     
-    public SecurityEvent getTokenEvent(Event securityEvent) {
+    public <T> T getSecurityEvent(Event securityEvent) {
         for (SecurityEvent event : events) {
             if (event.getSecurityEventType() == securityEvent) {
-                return event;
+                return (T)event;
             }
         }
         return null;
     }
     
-    public List<SecurityEvent> getTokenEvents(Event securityEvent) {
-        List<SecurityEvent> foundEvents = new ArrayList<SecurityEvent>();
+    public <T> List<T> getSecurityEvents(Event securityEvent) {
+        List<T> foundEvents = new ArrayList<T>();
         for (SecurityEvent event : events) {
             if (event.getSecurityEventType() == securityEvent) {
-                foundEvents.add(event);
+                foundEvents.add((T)event);
             }
         }
         return foundEvents;
+    }
+
+    public List<SecurityEvent> getSecurityEvents() {
+        return events;
     }
 }

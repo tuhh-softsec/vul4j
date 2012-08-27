@@ -107,20 +107,21 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         return false;
                     }
 
-                    public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage)
+                    public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID)
                             throws XMLSecurityException {
                         if (keyTable.containsKey(algorithmURI)) {
                             return keyTable.get(algorithmURI);
                         } else {
                             String algoFamily = JCEAlgorithmMapper.getJCERequiredKeyFromURI(algorithmURI);
-                            Key key = new SecretKeySpec(getSecret(this), algoFamily);
+                            Key key = new SecretKeySpec(getSecret(this, correlationID), algoFamily);
                             keyTable.put(algorithmURI, key);
                             return key;
                         }
                     }
 
                     @Override
-                    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage)
+                    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+                                               String correlationID)
                             throws XMLSecurityException {
                         return null;
                     }
@@ -151,7 +152,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         return this.wrappingSecurityToken;
                     }
 
-                    private byte[] getSecret(SecurityToken wrappedSecurityToken) throws XMLSecurityException {
+                    private byte[] getSecret(SecurityToken wrappedSecurityToken, String correlationID) throws XMLSecurityException {
 
                         String algorithmURI = encryptedKeyType.getEncryptionMethod().getAlgorithm();
                         if (algorithmURI == null) {
@@ -177,7 +178,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             } else {
                                 cipher = Cipher.getInstance(asyncEncAlgo.getJCEName(), asyncEncAlgo.getJCEProvider());
                             }
-                            cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage));
+                            cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage, correlationID));
                             if (encryptedKeyType.getCipherData() == null
                                     || encryptedKeyType.getCipherData().getCipherValue() == null) {
                                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noCipher");
@@ -221,6 +222,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
         //fire a tokenSecurityEvent
         TokenSecurityEvent tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
         tokenSecurityEvent.setSecurityToken(securityTokenProvider.getSecurityToken());
+        tokenSecurityEvent.setCorrelationID(encryptedKeyType.getId());
         securityContext.registerSecurityEvent(tokenSecurityEvent);
 
         //if this EncryptedKey structure contains a reference list, delegate it to a subclass
