@@ -145,10 +145,11 @@ public class XMLSecurityConstants {
 
     public static final String NS_XML = "http://www.w3.org/2000/xmlns/";
     public static final String NS_XMLENC = "http://www.w3.org/2001/04/xmlenc#";
+    public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11";
     public static final String NS_DSIG = "http://www.w3.org/2000/09/xmldsig#";
     public static final String NS_DSIG11 = "http://www.w3.org/2009/xmldsig11#";
     public static final String NS_WSSE11 = "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd";
-
+            
     public static final String PREFIX_XENC = "xenc";
     public static final QName TAG_xenc_EncryptedKey = new QName(NS_XMLENC, "EncryptedKey", PREFIX_XENC);
     public static final QName ATT_NULL_Id = new QName(null, "Id");
@@ -170,7 +171,7 @@ public class XMLSecurityConstants {
     public static final QName ATT_NULL_URI = new QName(null, "URI");
 
     public static final QName TAG_xenc_EncryptedData = new QName(NS_XMLENC, "EncryptedData", PREFIX_XENC);
-
+    
     public static final String PREFIX_WSSE11 = "wsse11";
     public static final QName TAG_wsse11_EncryptedHeader = new QName(NS_WSSE11, "EncryptedHeader", PREFIX_WSSE11);
 
@@ -225,7 +226,13 @@ public class XMLSecurityConstants {
 
     public static final String NS_XENC_TRIPLE_DES = NS_XMLENC + "tripledes-cbc";
     public static final String NS_XENC_AES128 = NS_XMLENC + "aes128-cbc";
+    public static final String NS_XENC11_AES128_GCM = NS_XMLENC11 + "aes128-gcm";
+    public static final String NS_XENC_AES192 = NS_XMLENC + "aes192-cbc";
+    public static final String NS_XENC11_AES192_GCM = NS_XMLENC11 + "aes192-gcm";
     public static final String NS_XENC_AES256 = NS_XMLENC + "aes256-cbc";
+    public static final String NS_XENC11_AES256_GCM = NS_XMLENC11 + "aes256-gcm";
+    public static final String NS_XENC_RSA15 = NS_XMLENC + "rsa-1_5";
+    public static final String NS_XENC_RSAOAEP = NS_XMLENC + "rsa-oaep-mgf1p";
 
     public static final String PREFIX_C14N_EXCL = "c14nEx";
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");
