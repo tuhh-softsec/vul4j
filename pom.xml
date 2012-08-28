@@ -121,14 +121,6 @@
 		<url>https://sourceforge.net/tracker/?group_id=153524&amp;atid=788111</url>
 	</issueManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>xslthl-sourceforge</id>
-			<name>XSLT syntax highlighting Repository</name>
-			<url>sftp://web.sourceforge.net/home/groups/x/xs/xslthl/htdocs/maven/repository</url>
-		</repository>
-	</distributionManagement>
-
 	<developers>
 		<developer>
 			<id>mol1111</id>
