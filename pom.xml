@@ -8,13 +8,15 @@
 	<version>2.1.0-SNAPSHOT</version>
 	<name>XSLT syntax highlighting</name>
 	<description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted during the XSLT processing phase.</description>
-	<url>http://sourceforge.net/apps/mediawiki/xslthl</url>
+	<url>http://xslthl.sourceforge.net</url>
+	<inceptionYear>2005</inceptionYear>
+
 	<packaging>jar</packaging>
 
 	<licenses>
 		<license>
 			<name>zlib License</name>
-			<url>http://www.gzip.org/zlib/zlib_license.html</url>
+			<url>http://www.spdx.org/licenses/Zlib</url>
 		</license>
 	</licenses>
 
@@ -46,6 +48,24 @@
 						</configuration>
 						<goals>
 							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/dist.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -109,7 +129,22 @@
 		</repository>
 	</distributionManagement>
 
-	<properties>
-		<findbugs-maven-plugin>2.5.2</findbugs-maven-plugin>
-	</properties>
+	<developers>
+		<developer>
+			<id>mol1111</id>
+			<name>Michal Molhanec</name>
+			<email>mol1111 at users.sourceforge.net</email>
+		</developer>
+		<developer>
+			<id>kosek</id>
+			<name>Jirka Kosek</name>
+			<email>kosek at users.sourceforge.net</email>
+		</developer>
+		<developer>
+			<id>elmuerte</id>
+			<name>Michiel Hendriks</name>
+			<email>elmuerte at users.sourceforge.net</email>
+		</developer>
+	</developers>
+
 </project>
