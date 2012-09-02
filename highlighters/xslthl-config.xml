@@ -46,5 +46,6 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="css" file="css21-hl.xml" />
 	<highlighter id="css21" file="css21-hl.xml" />
 	<highlighter id="cmake" file="cmake-hl.xml" />
+	<highlighter id="upc" file="upc-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>
