@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>Lua</header>
+	<code xml:whitespace="preserve" language="lua">
+		<![CDATA[
+-- Lua 99 Bottles of Beer
+-- by Philippe Lhoste <PhiLho@GMX.net> http://jove.prohosting.com/~philho/
+
+function PrintBottleNumber(n)
+  local bs
+  if n == 0 then
+    bs = "No more bottles"
+  elseif n == 1 then
+    bs = "One bottle"
+  else
+    bs = n .. " bottles"
+  end
+  return bs .. " of beer"
+end
+
+for bn = 99, 1, -1 do
+  write(PrintBottleNumber(bn), " on the wall, \n")
+  write(PrintBottleNumber(bn), "\n")
+  write("Take one down and pass it around,\n")
+  write(PrintBottleNumber(bn-1), " on the wall, \n\n")
+end
+write("No more bottles of beer on the wall,\nNo more bottles of beer\n")
+write("Go to the store, buy some more!\n")
+		]]>
+	</code>
+	<para>Origin: http://99-bottles-of-beer.net/language-lua-365.html</para>
+	
+	<code xml:whitespace="preserve" language="lua">
+		<![CDATA[
+phrase  = "Take one down and pass it around,"
+none    = "No more bottles of beer"
+justone = "1 bottle of beer"
+
+bottles = setmetatable({0,
+	drink = {
+		phrase .. "\n" .. none .. " on the wall,",
+		"Go to the store and buy some more!"
+	}},{
+	__index = function(crate,num)
+		crate[num] = nil
+		print(crate[num] .. " on the wall,")
+		print(crate[num] .. ",")
+		print(phrase)
+		crate[num] = crate[num-1]
+		return justone .. " on the wall,\n"
+	end, __newindex = function(crate,num,drink)
+		rawset(crate,num,drink or (num .. " bottles of beer"))
+		if rawget(crate,num+1) then
+			print(crate[num] .. " on the wall,\n")
+		end
+	end, __call = function()
+		return ipairs{justone, none}
+	end}
+)
+
+print(bottles[99])
+
+for it, beer in bottles() do
+	print(beer .. " on the wall,")
+	print(beer .. ",")
+	print(bottles.drink[it])
+	print ""
+end
+		]]>
+	</code>
+	<para>Origin: http://99-bottles-of-beer.net/language-lua-1505.html</para>
+</example-document>
