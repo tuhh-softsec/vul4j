@@ -137,6 +137,11 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<keyword>old_function</keyword>
 		<keyword>true</keyword>
 		<keyword>false</keyword>
+		<!-- PHP 5.3 -->
+		<keyword>namespace</keyword>
+		<keyword>__NAMESPACE__</keyword>
+		<keyword>goto</keyword>
+		<keyword>__DIR__</keyword>
 		<ignoreCase />
 	</highlighter>
 	<highlighter type="word">
