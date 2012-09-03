@@ -48,5 +48,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="cmake" file="cmake-hl.xml" />
 	<highlighter id="upc" file="upc-hl.xml" />
 	<highlighter id="lua" file="lua-hl.xml" />
+	<highlighter id="sql92" file="sql92-hl.xml" />
+	<highlighter id="sql1999" file="sql1999-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>
