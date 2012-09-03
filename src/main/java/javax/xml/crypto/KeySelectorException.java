@@ -117,7 +117,9 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace() {
         super.printStackTrace();
-        cause.printStackTrace();
+        if (cause != null) {
+            cause.printStackTrace();
+        }
     }
 
     /**
@@ -128,7 +130,9 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace(PrintStream s) {
         super.printStackTrace(s);
-        cause.printStackTrace(s);
+        if (cause != null) {
+            cause.printStackTrace(s);
+        }
     }
 
     /**
@@ -139,6 +143,8 @@ public class KeySelectorException extends Exception {
      */
     public void printStackTrace(PrintWriter s) {
         super.printStackTrace(s);
-        cause.printStackTrace(s);
+        if (cause != null) {
+            cause.printStackTrace(s);
+        }
     }
 }
