@@ -50,5 +50,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 	<highlighter id="lua" file="lua-hl.xml" />
 	<highlighter id="sql92" file="sql92-hl.xml" />
 	<highlighter id="sql1999" file="sql1999-hl.xml" />
+	<highlighter id="sql2003" file="sql2003-hl.xml" />
+	<highlighter id="sql" file="sql2003-hl.xml" />
 	<namespace prefix="xslthl" uri="http://xslthl.sf.net" />
 </xslthl-config>

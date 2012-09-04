@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example-document>
+	<header>SQL code</header>
+	<code xml:whitespace="preserve" language="sql">
+		<![CDATA[
+-- 99 bottles of beer
+		
+SELECT 
+  CASE (bottlecount)
+    WHEN 0 THEN 'No more bottle of beer on the wall, no more bottles of beer. ' ||
+                'Go to the store and buy some more, 99 bottles of beer on the wall.'
+    WHEN 1 THEN '1 bottle of beer on the wall, 1 bottle of beer. ' ||
+                'Take one down and pass it around, no more bottles of beer on the wall.'
+    WHEN 2 THEN '2 bottles of beer on the wall, 2 bottles of beer. ' ||
+                'Take one down and pass it around, 1 bottle of beer on the wall.'
+    ELSE 
+      rtrim (cast((BottleCount) as char(2))) || ' bottles of beer on the wall, ' ||
+      rtrim (cast((BottleCount) as char(2))) || ' bottles of beer. ' ||
+      'Take one down and pass it around, ' ||
+      rtrim (cast((BottleCount)-1 as char(2))) || ' bottles of beer on the wall.'
+  END
+FROM
+(
+  SELECT avalue * 10 + bvalue as bottlecount
+  FROM
+    (VALUES (9), (8), (7), (6), (5), (4), (3), (2), (1), (0)) a(avalue),
+    (VALUES (9), (8), (7), (6), (5), (4), (3), (2), (1), (0)) b(bvalue)
+) as valuelist;
+		]]>
+	</code>
+	<para>Origin: http://99-bottles-of-beer.net/language-sql-967.html</para>
+</example-document>
