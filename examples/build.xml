@@ -49,7 +49,13 @@
 		</script>
 	</target>
 
-	<target name="build" depends="build-xalan,build-saxon6,build-saxonb,build-docbook" description="Build the examples" />
+	<target name="build" depends="build-xalan,build-saxon6,build-saxonb,build-docbook" description="Build the examples">
+		<copy todir="${outputDir}">
+			<fileset dir="sources">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+	</target>
 
 	<target name="build-xalan" depends="init,-build-xalan,-build-no-xalan" description="Build examples using Xalan" />
 

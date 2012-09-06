@@ -7,7 +7,9 @@
 	<artifactId>xslthl</artifactId>
 	<version>2.1.0-SNAPSHOT</version>
 	<name>XSLT syntax highlighting</name>
-	<description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted during the XSLT processing phase.</description>
+	<description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted during the XSLT processing phase.
+
+This version of XsltHl provides extensions of the Apache Xalan and Saxon XSLT processors.</description>
 	<url>http://xslthl.sourceforge.net</url>
 	<inceptionYear>2005</inceptionYear>
 
@@ -72,6 +74,20 @@
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>

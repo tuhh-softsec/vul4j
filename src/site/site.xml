@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<body>
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+			<item name="Documentation" href="http://sourceforge.net/apps/mediawiki/xslthl/" />
+			<item name="Examples" href="examples" />
+			<item name="Project Page" href="http://sourceforge.net/projects/xslthl/" />
+		</menu>
+		<menu ref="reports" />
+	</body>
+</project>

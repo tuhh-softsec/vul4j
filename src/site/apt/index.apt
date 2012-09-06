@@ -1,0 +1,29 @@
+  ---
+  XSLT syntax highlighting
+  ---
+  
+XSLT syntax highlighting
+
+  Xslthl is an implementation of syntax highlighting as an extension module for Java based XSLT processors. 
+  So if you have, for example, an article about programming written in {{{http://wiki.docbook.org/topic/DocBook}DocBook}}, 
+  code examples can be automatically syntax highlighted when you use {{{http://docbook.sourceforge.net/}DocBook XSL}} 
+  to transform the DocBook code to HTML, Rtf, etc.
+
+  DocBook XSL ships with {{{http://sagehill.net/docbookxsl/SyntaxHighlighting.html}built in support}} 
+  for syntax highlighting using xslthl. 
+  But xslthl is not limited to be used just with DocBook Xsl, you can use it for anything that used XSLT 
+  and one of the supported XSLT processors. More information about how to use xslthl with your own xslt processing 
+  can be found on the {{{http://sourceforge.net/apps/mediawiki/xslthl/index.php?title=Usage}wiki}}, 
+  just like information about how to configure xslthl to 
+  {{{http://sourceforge.net/apps/mediawiki/xslthl/index.php?title=Syntax_Highlighters}support new languages}}.
+
+
+* Supported XSLT Processors
+
+  Xslthl supports the following Java based XSLT Processors:
+  
+    * {{{http://xml.apache.org/xalan-j/}Apache Xalan-J}} (2.7 and later)
+    
+    * {{{http://saxon.sourceforge.net/}Saxon for Xslt 1}} (6.5, and 7)
+    
+    * {{{http://saxon.sourceforge.net/}Saxon for Xslt 2}} (8.5 and later)
