@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.xslthl</groupId>
 	<artifactId>xslthl</artifactId>
-	<version>2.1.0</version>
+	<version>2.1.1-SNAPSHOT</version>
 	<name>XSLT syntax highlighting</name>
 	<description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted during the XSLT processing phase.
 
@@ -152,9 +152,9 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/tags/xslthl-2.1.0</connection>
-		<developerConnection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/tags/xslthl-2.1.0</developerConnection>
-		<url>http://xslthl.svn.sourceforge.net/viewvc/xslthl/tags/xslthl-2.1.0</url>
+		<connection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/xslthl/</connection>
+		<developerConnection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/xslthl/</developerConnection>
+		<url>http://xslthl.svn.sourceforge.net/viewvc/xslthl/trunk/xslthl/</url>
 	</scm>
 
 	<issueManagement>
