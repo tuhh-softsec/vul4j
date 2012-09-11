@@ -18,35 +18,26 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
-import java.math.BigInteger;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.ECFieldFp;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.ECPoint;
-import java.security.spec.ECPublicKeySpec;
-import java.security.spec.EllipticCurve;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.security.auth.callback.CallbackHandler;
-
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
 import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
+
+import javax.security.auth.callback.CallbackHandler;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.*;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
-public class ECKeyValueSecurityToken extends AbstractSecurityToken {
+public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private ECKeyValueType ecKeyValueType;
-    private PublicKey publicKey;
 
     public ECKeyValueSecurityToken(ECKeyValueType ecKeyValueType, SecurityContext securityContext,
                                    CallbackHandler callbackHandler,
@@ -102,24 +93,17 @@ public class ECKeyValueSecurityToken extends AbstractSecurityToken {
     }
 
     @Override
-    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                         String correlationID) throws XMLSecurityException {
-        return null;
-    }
-
-    @Override
-    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                                  String correlationID) throws XMLSecurityException {
-        if (this.publicKey == null) {
+    public PublicKey getPublicKey() throws XMLSecurityException {
+        if (super.getPublicKey() == null) {
             try {
-                this.publicKey = buildPublicKey(this.ecKeyValueType);
+                setPublicKey(buildPublicKey(this.ecKeyValueType));
             } catch (InvalidKeySpecException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
             } catch (NoSuchAlgorithmException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
             }
         }
-        return this.publicKey;
+        return super.getPublicKey();
     }
 
     @Override
@@ -130,11 +114,5 @@ public class ECKeyValueSecurityToken extends AbstractSecurityToken {
     @Override
     public XMLSecurityConstants.TokenType getTokenType() {
         return XMLSecurityConstants.KeyValueToken;
-    }
-
-    //todo move to super class?
-    @Override
-    public SecurityToken getKeyWrappingToken() throws XMLSecurityException {
-        return null;
     }
 }

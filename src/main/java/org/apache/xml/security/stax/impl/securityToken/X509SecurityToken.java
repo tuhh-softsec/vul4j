@@ -18,24 +18,18 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
-import java.security.Key;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-
-import javax.security.auth.callback.CallbackHandler;
-
 import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
+
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
-public class X509SecurityToken extends AbstractSecurityToken {
-    private X509Certificate[] x509Certificates;
-    private Key key;
+public class X509SecurityToken extends AbstractInboundSecurityToken {
+
     private final XMLSecurityConstants.TokenType tokenType;
 
     protected X509SecurityToken(XMLSecurityConstants.TokenType tokenType, SecurityContext securityContext,
@@ -46,45 +40,8 @@ public class X509SecurityToken extends AbstractSecurityToken {
     }
 
     @Override
-    public boolean isAsymmetric() {
+    public boolean isAsymmetric() throws XMLSecurityException {
         return true;
-    }
-
-    @Override
-    public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException {
-        return key;
-    }
-
-    public void setKey(Key key) {
-        this.key = key;
-    }
-
-    @Override
-    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException {
-        X509Certificate[] x509Certificates = getX509Certificates();
-        if (x509Certificates == null || x509Certificates.length == 0) {
-            //todo review: getKey should always return the priv-key resp. the secret and not a public key
-            //todo review SecurityTokenFactoryImpl too where setKey() is called.
-            if (getKey(algorithmURI, keyUsage, correlationID) instanceof PublicKey) {
-                return (PublicKey)getKey(algorithmURI, keyUsage, correlationID);
-            }
-            return null;
-        }
-        return x509Certificates[0].getPublicKey();
-    }
-
-    @Override
-    public X509Certificate[] getX509Certificates() throws XMLSecurityException {
-        return this.x509Certificates;
-    }
-    
-    public void setX509Certificates(X509Certificate[] x509Certificates) {
-        this.x509Certificates = x509Certificates;
-    }
-
-    @Override
-    public SecurityToken getKeyWrappingToken() {
-        return null;
     }
 
     @Override

@@ -29,7 +29,6 @@ import java.util.List;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
@@ -39,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.SecurityTokenProvider;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
@@ -47,6 +45,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
+import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 
 /**
@@ -77,18 +76,20 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                     try {
                         String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
                         SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
+                        final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
+
                         EncryptionPartDef encryptionPartDef = new EncryptionPartDef();
                         encryptionPartDef.setModifier(securePart.getModifier());
                         encryptionPartDef.setEncRefId(IDGenerator.generateID(null));
                         encryptionPartDef.setKeyId(securityTokenProvider.getId());
-                        encryptionPartDef.setSymmetricKey(securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null, null));
+                        encryptionPartDef.setSymmetricKey(securityToken.getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm()));
                         outputProcessorChain.getSecurityContext().putAsList(EncryptionPartDef.class, encryptionPartDef);
                         
                         internalEncryptionOutputProcessor =
                                 createInternalEncryptionOutputProcessor(
-                                        encryptionPartDef, xmlSecStartElement, 
+                                        encryptionPartDef, xmlSecStartElement,
                                         outputProcessorChain.getDocumentContext().getEncoding(),
-                                        securityTokenProvider.getSecurityToken().getKeyWrappingToken()
+                                        securityToken.getKeyWrappingToken()
                                 );
                         internalEncryptionOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
                         internalEncryptionOutputProcessor.setAction(getAction());
@@ -114,7 +115,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
         EncryptionPartDef encryptionPartDef,
         XMLSecStartElement startElement,
         String encoding,
-        final SecurityToken keyWrappingToken
+        final OutboundSecurityToken keyWrappingToken
     ) throws XMLStreamException, XMLSecurityException {
         try {
             final AbstractInternalEncryptionOutputProcessor processor = 
@@ -129,10 +130,8 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         // Do not write out a KeyInfo element
                         return;
                     }
-                    PublicKey pubKey = keyWrappingToken.getPublicKey(
-                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null, null);
-                    SecretKey secretKey = (SecretKey)keyWrappingToken.getSecretKey(
-                            getSecurityProperties().getEncryptionKeyTransportAlgorithm(), null, null);
+                    PublicKey pubKey = keyWrappingToken.getPublicKey();
+                    Key secretKey = keyWrappingToken.getSecretKey(getSecurityProperties().getEncryptionKeyTransportAlgorithm());
                     if (pubKey == null && secretKey == null) {
                         // Do not write out a KeyInfo element
                         return;
@@ -167,9 +166,10 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
 
                         String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
                         SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
-                        
-                        Key ephemeralKey = 
-                            securityTokenProvider.getSecurityToken().getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm(), null, null);
+
+                        final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
+                        Key ephemeralKey =
+                            securityToken.getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm());
                         if (pubKey != null) {
                             int blockSize = cipher.getBlockSize();
                             if (blockSize > 0 && blockSize < ephemeralKey.getEncoded().length) {

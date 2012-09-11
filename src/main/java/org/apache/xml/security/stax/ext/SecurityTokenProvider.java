@@ -32,7 +32,7 @@ public interface SecurityTokenProvider {
      * @return The SecurityToken
      * @throws XMLSecurityException if the token couldn't be loaded
      */
-    public SecurityToken getSecurityToken() throws XMLSecurityException;
+    public <T> T getSecurityToken() throws XMLSecurityException;
 
     public String getId();
 }

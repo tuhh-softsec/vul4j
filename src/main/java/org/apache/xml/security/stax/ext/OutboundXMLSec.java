@@ -22,17 +22,13 @@ import java.io.OutputStream;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
 import org.apache.xml.security.stax.impl.SecurityContextImpl;
@@ -40,6 +36,8 @@ import org.apache.xml.security.stax.impl.XMLSecurityStreamWriter;
 import org.apache.xml.security.stax.impl.processor.output.FinalOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLEncryptOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLSignatureOutputProcessor;
+import org.apache.xml.security.stax.impl.securityToken.GenericOutboundSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 
 /**
@@ -163,14 +161,15 @@ public class OutboundXMLSec {
         if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
         }
-        
-        final SecurityToken securityToken = new XMLSecSecurityToken(key, x509Certificates);
+
         final String securityTokenid = IDGenerator.generateID("SIG");
-        
+        final OutboundSecurityToken securityToken = new GenericOutboundSecurityToken(securityTokenid, XMLSecurityConstants.DefaultToken, key, x509Certificates);
+
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
+            @SuppressWarnings("unchecked")
             @Override
-            public SecurityToken getSecurityToken() throws XMLSecurityException {
+            public OutboundSecurityToken getSecurityToken() throws XMLSecurityException {
                 return securityToken;
             }
 
@@ -192,7 +191,9 @@ public class OutboundXMLSec {
         if (transportCert != null) {
             transportCerts = new X509Certificate[]{transportCert};
         }
-        final SecurityToken transportSecurityToken = new XMLSecSecurityToken(transportKey, transportCerts);
+
+        final OutboundSecurityToken transportSecurityToken =
+                new GenericOutboundSecurityToken("", XMLSecurityConstants.DefaultToken, transportKey, transportCerts);
         
         // Now sort out the session key
         Key key = securityProperties.getEncryptionKey();
@@ -219,15 +220,16 @@ public class OutboundXMLSec {
 
             key = keyGen.generateKey();
         }
-        
-        final XMLSecSecurityToken securityToken = new XMLSecSecurityToken(key, null);
-        securityToken.setKeyWrappingToken(transportSecurityToken);
+
         final String securityTokenid = IDGenerator.generateID(null);
-        
+        final GenericOutboundSecurityToken securityToken = new GenericOutboundSecurityToken(securityTokenid, XMLSecurityConstants.DefaultToken, key);
+        securityToken.setKeyWrappingToken(transportSecurityToken);
+
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
+            @SuppressWarnings("unchecked")
             @Override
-            public SecurityToken getSecurityToken() throws XMLSecurityException {
+            public OutboundSecurityToken getSecurityToken() throws XMLSecurityException {
                 return securityToken;
             }
 
@@ -237,123 +239,6 @@ public class OutboundXMLSec {
             }
         };
         securityContextImpl.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
-        
         securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, securityTokenid);
     }
-    
-    private static class XMLSecSecurityToken implements SecurityToken {
-        private Key key;
-        private X509Certificate[] certs;
-        private boolean asymmetric;
-        private SecurityToken keyWrappingToken;
-        
-        public XMLSecSecurityToken(Key key, X509Certificate[] certs) {
-            this.key = key;
-            this.certs = certs;
-            if (key instanceof PrivateKey || key instanceof PublicKey || certs != null) {
-                asymmetric = true;
-            }
-        }
-
-        public String getId() {
-            return null;
-        }
-
-        public Object getProcessor() {
-            return null;
-        }
-
-        public boolean isAsymmetric() {
-            return asymmetric;
-        }
-
-        public Key getSecretKey(
-            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID
-        ) throws XMLSecurityException {
-            if (key instanceof SecretKey || key instanceof PrivateKey) {
-                return key;
-            }
-            return null;
-        }
-
-        public PublicKey getPublicKey(
-            String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID
-        ) throws XMLSecurityException {
-            if (key instanceof PublicKey) {
-                return (PublicKey)key;
-            } else if (certs != null && certs.length > 0) {
-                return certs[0].getPublicKey();
-            }
-            return null;
-        }
-
-        public X509Certificate[] getX509Certificates() throws XMLSecurityException {
-            return certs;
-        }
-
-        public void verify() throws XMLSecurityException {
-        }
-        
-        public void setKeyWrappingToken(SecurityToken keyWrappingToken) {
-            this.keyWrappingToken = keyWrappingToken;
-        }
-
-        public SecurityToken getKeyWrappingToken() {
-            return keyWrappingToken;
-        }
-
-        public XMLSecurityConstants.TokenType getTokenType() {
-            return null;
-        }
-
-        @Override
-        public List<QName> getElementPath() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public XMLSecEvent getXMLSecEvent() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public List<SecurityToken> getWrappedTokens()
-                throws XMLSecurityException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void addWrappedToken(SecurityToken securityToken) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void addTokenUsage(TokenUsage tokenUsage)
-                throws XMLSecurityException {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public List<TokenUsage> getTokenUsages() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void setElementPath(List<QName> elementPath) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void setXMLSecEvent(XMLSecEvent xmlSecEvent) {
-            // TODO Auto-generated method stub
-            
-        }
-    };
 }

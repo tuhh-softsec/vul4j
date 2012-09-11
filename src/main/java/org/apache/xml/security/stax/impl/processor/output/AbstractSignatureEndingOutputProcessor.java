@@ -25,6 +25,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
+import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
 
@@ -114,13 +115,12 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         if (wrappingSecurityTokenProvider == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
         }
-        final SecurityToken wrappingSecurityToken = wrappingSecurityTokenProvider.getSecurityToken();
+        final OutboundSecurityToken wrappingSecurityToken = wrappingSecurityTokenProvider.getSecurityToken();
         if (wrappingSecurityToken == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
         }
 
-        signatureAlgorithm.engineInitSign(wrappingSecurityToken
-                .getSecretKey(getSecurityProperties().getSignatureAlgorithm(), null, null));
+        signatureAlgorithm.engineInitSign(wrappingSecurityToken.getSecretKey(getSecurityProperties().getSignatureAlgorithm()));
 
         SignedInfoProcessor signedInfoProcessor = newSignedInfoProcessor(signatureAlgorithm, subOutputProcessorChain);
 
@@ -194,7 +194,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
 
     protected abstract void createKeyInfoStructureForSignature(
             OutputProcessorChain outputProcessorChain,
-            SecurityToken securityToken,
+            OutboundSecurityToken securityToken,
             boolean useSingleCertificate) throws XMLStreamException, XMLSecurityException;
 
 

@@ -18,56 +18,24 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
-import java.security.Key;
-import java.security.PublicKey;
-
-import javax.security.auth.callback.CallbackHandler;
-
 import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
+
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
-public class KeyNameSecurityToken extends AbstractSecurityToken {
+public class KeyNameSecurityToken extends AbstractInboundSecurityToken {
 
-    private Key key;
     private String keyName;
 
     public KeyNameSecurityToken(String keyName, SecurityContext securityContext, CallbackHandler callbackHandler,
-                                    XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
+                                XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
         super(securityContext, callbackHandler, null, keyIdentifierType);
         this.keyName = keyName;
-    }
-
-    @Override
-    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                         String correlationID) throws XMLSecurityException {
-        return key;
-    }
-
-    @Override
-    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                                  String correlationID) throws XMLSecurityException {
-        if (key instanceof PublicKey) {
-            return (PublicKey)key;
-        }
-        return null;
-    }
-
-    public void setKey(Key key) {
-        this.key = key;
-    }
-    
-    @Override
-    public boolean isAsymmetric() {
-        if (key instanceof PublicKey) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -75,12 +43,6 @@ public class KeyNameSecurityToken extends AbstractSecurityToken {
         return XMLSecurityConstants.KeyNameToken;
     }
 
-    //todo move to super class?
-    @Override
-    public SecurityToken getKeyWrappingToken() throws XMLSecurityException {
-        return null;
-    }
-    
     public String getKeyName() {
         return keyName;
     }

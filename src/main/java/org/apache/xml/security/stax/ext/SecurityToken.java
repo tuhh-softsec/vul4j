@@ -25,6 +25,7 @@ import java.security.Key;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents the different token types which can occur in WS-Security
@@ -65,14 +66,6 @@ public interface SecurityToken {
     String getId();
 
     /**
-     * Returns the responsible processor for this token
-     *
-     * @return
-     */
-    Object getProcessor();
-
-
-    /**
      * Returns the absolute path to the XMLElement
      *
      * @return A list containing full qualified element names
@@ -91,7 +84,14 @@ public interface SecurityToken {
      *
      * @return true if asymmetric token, false if symmetric token
      */
-    boolean isAsymmetric();
+    boolean isAsymmetric() throws XMLSecurityException;
+
+    /**
+     * Returns the secret key's if already initialized, null otherwise
+     * @return Algorithm-URI key map
+     * @throws XMLSecurityException
+     */
+    Map<String, Key> getSecretKey() throws XMLSecurityException;
 
     /**
      * Returns the secret key
@@ -102,6 +102,13 @@ public interface SecurityToken {
      * @throws XMLSecurityException if the key can't be loaded
      */
     Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID) throws XMLSecurityException;
+
+    /**
+     * Returns the public key if one exists and already initialized, null otherwise
+     * @return
+     * @throws XMLSecurityException
+     */
+    PublicKey getPublicKey() throws XMLSecurityException;
 
     /**
      * Returns the public key if one exist for this token type
@@ -149,8 +156,4 @@ public interface SecurityToken {
     void addTokenUsage(TokenUsage tokenUsage) throws XMLSecurityException;
 
     List<TokenUsage> getTokenUsages();
-    
-    void setElementPath(List<QName> elementPath);
-
-    void setXMLSecEvent(XMLSecEvent xmlSecEvent);
 }

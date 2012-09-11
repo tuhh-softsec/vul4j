@@ -150,8 +150,8 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+        checkEncryptionToken(securityEventListener, null, secretKey,
+                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO , "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
     }
@@ -206,7 +206,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
@@ -263,7 +263,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc", null);
@@ -323,7 +323,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkMultipleEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
@@ -388,7 +388,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
                 "http://www.w3.org/2001/04/xmlenc#aes128-cbc");
         checkEncryptionMethod(
@@ -453,11 +453,11 @@ public class DecryptionTest extends org.junit.Assert {
          
         // Check the CreditCard decrypted ok
         nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
-        Assert.assertEquals(nodeList.getLength(), 1);
+        Assert.assertEquals(1, nodeList.getLength());
         
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
                 "http://www.w3.org/2001/04/xmlenc#aes256-cbc");
         checkEncryptionMethod(
@@ -526,7 +526,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
                 "http://www.w3.org/2001/04/xmlenc#aes192-cbc");
         checkEncryptionMethod(
@@ -586,7 +586,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
@@ -646,7 +646,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes128-cbc", "");
@@ -708,7 +708,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes192-cbc", "");
@@ -772,7 +772,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc", "");
@@ -831,7 +831,7 @@ public class DecryptionTest extends org.junit.Assert {
         Assert.assertEquals(nodeList.getLength(), 1);
         
         // Check the SecurityEvents
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
@@ -896,7 +896,7 @@ public class DecryptionTest extends org.junit.Assert {
         assertEquals("ns2.com", attr.getValue());
         
         // Check the SecurityEvents
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
@@ -961,7 +961,7 @@ public class DecryptionTest extends org.junit.Assert {
         assertEquals("", attr.getValue());
         
         // Check the SecurityEvents
-        checkEncryptionToken(securityEventListener, null, secretKey, 
+        checkEncryptionToken(securityEventListener, null, secretKey,
                 XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
@@ -1075,23 +1075,21 @@ public class DecryptionTest extends org.junit.Assert {
     
     protected void checkEncryptionToken(
             TestSecurityEventListener securityEventListener,
-            X509Certificate cert,
-            Key key,
+            X509Certificate cert, Key key,
             XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType,
-            String algorithm
-    ) throws XMLSecurityException {
+            String algorithm) throws XMLSecurityException {
         if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
             DefaultTokenSecurityEvent tokenEvent =
                     (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey("", null, null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey().values().iterator().next();
             assertEquals(processedKey, key);
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY) {
             EncryptedKeyTokenSecurityEvent tokenEvent =
                     (EncryptedKeyTokenSecurityEvent) securityEventListener.getSecurityEvent(
                             SecurityEventConstants.EncryptedKeyToken);
             assertNotNull(tokenEvent);
-            Key processedKey = tokenEvent.getSecurityToken().getSecretKey(algorithm, null, null);
+            Key processedKey = tokenEvent.getSecurityToken().getSecretKey().values().iterator().next();
             assertEquals(processedKey, key);
         } 
     }

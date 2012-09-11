@@ -26,7 +26,6 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
@@ -34,6 +33,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
+import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
 
 /**
@@ -82,7 +82,7 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
     @Override
     protected void createKeyInfoStructureForSignature(
             OutputProcessorChain outputProcessorChain,
-            SecurityToken securityToken,
+            OutboundSecurityToken securityToken,
             boolean useSingleCertificate)
             throws XMLStreamException, XMLSecurityException {
         XMLSecurityConstants.KeyIdentifierType keyIdentifierType = getSecurityProperties().getSignatureKeyIdentifierType();

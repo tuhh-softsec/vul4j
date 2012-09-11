@@ -18,22 +18,22 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
-import javax.security.auth.callback.CallbackHandler;
-
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+
+import javax.security.auth.callback.CallbackHandler;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
 public class X509SKISecurityToken extends X509SecurityToken {
-    
+
     private byte[] skiBytes;
 
     protected X509SKISecurityToken(XMLSecurityConstants.TokenType tokenType, SecurityContext securityContext,
-                                CallbackHandler callbackHandler, String id,
-                                XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
+                                   CallbackHandler callbackHandler, String id,
+                                   XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
         super(tokenType, securityContext, callbackHandler, id, keyIdentifierType);
     }
 
@@ -44,6 +44,4 @@ public class X509SKISecurityToken extends X509SecurityToken {
     public void setSkiBytes(byte[] skiBytes) {
         this.skiBytes = skiBytes;
     }
-
-
 }

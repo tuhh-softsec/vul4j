@@ -22,10 +22,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PublicKey;
 import java.util.Deque;
-import java.util.Hashtable;
-import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -44,7 +41,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.impl.securityToken.AbstractSecurityToken;
+import org.apache.xml.security.stax.impl.securityToken.AbstractInboundSecurityToken;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
@@ -90,46 +87,40 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
 
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
-            private SecurityToken securityToken = null;
+            private AbstractInboundSecurityToken securityToken = null;
 
+            @SuppressWarnings("unchecked")
             public SecurityToken getSecurityToken() throws XMLSecurityException {
 
                 if (this.securityToken != null) {
                     return this.securityToken;
                 }
 
-                this.securityToken = new AbstractSecurityToken(
+                this.securityToken = new AbstractInboundSecurityToken(
                         securityContext, null, encryptedKeyType.getId(), null) {
 
-                    private final Map<String, Key> keyTable = new Hashtable<String, Key>();
+                    private byte[] decryptedKey = null;
 
-                    public boolean isAsymmetric() {
-                        return false;
-                    }
-
+                    @Override
                     public Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage, String correlationID)
                             throws XMLSecurityException {
-                        if (keyTable.containsKey(algorithmURI)) {
-                            return keyTable.get(algorithmURI);
-                        } else {
-                            String algoFamily = JCEAlgorithmMapper.getJCERequiredKeyFromURI(algorithmURI);
-                            Key key = new SecretKeySpec(getSecret(this, correlationID), algoFamily);
-                            keyTable.put(algorithmURI, key);
+                        Key key = getSecretKey().get(algorithmURI);
+                        if (key != null) {
                             return key;
                         }
+
+                        String algoFamily = JCEAlgorithmMapper.getJCERequiredKeyFromURI(algorithmURI);
+                        key = new SecretKeySpec(getSecret(this, correlationID), algoFamily);
+                        setSecretKey(algorithmURI, key);
+                        return key;
                     }
 
                     @Override
-                    public PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                                               String correlationID)
-                            throws XMLSecurityException {
-                        return null;
-                    }
-
                     public SecurityToken getKeyWrappingToken() throws XMLSecurityException {
                         return getWrappingSecurityToken(this);
                     }
 
+                    @Override
                     public XMLSecurityConstants.TokenType getTokenType() {
                         return XMLSecurityConstants.EncryptedKeyToken;
                     }
@@ -153,6 +144,10 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                     }
 
                     private byte[] getSecret(SecurityToken wrappedSecurityToken, String correlationID) throws XMLSecurityException {
+
+                        if (this.decryptedKey != null) {
+                            return this.decryptedKey;
+                        }
 
                         String algorithmURI = encryptedKeyType.getEncryptionMethod().getAlgorithm();
                         if (algorithmURI == null) {
@@ -186,7 +181,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
                                     asyncEncAlgo.getJCEName(),
                                     Cipher.SECRET_KEY);
-                            return key.getEncoded();
+                            return this.decryptedKey = key.getEncoded();
 
                         } catch (NoSuchPaddingException e) {
                             throw new XMLSecurityException(
@@ -221,7 +216,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
 
         //fire a tokenSecurityEvent
         TokenSecurityEvent tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
-        tokenSecurityEvent.setSecurityToken(securityTokenProvider.getSecurityToken());
+        tokenSecurityEvent.setSecurityToken((SecurityToken)securityTokenProvider.getSecurityToken());
         tokenSecurityEvent.setCorrelationID(encryptedKeyType.getId());
         securityContext.registerSecurityEvent(tokenSecurityEvent);
 
