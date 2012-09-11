@@ -9,7 +9,7 @@
 	<name>XSLT syntax highlighting</name>
 	<description>This is an implementation of syntax highlighting as an extension module for XSLT processors, so if you have e.g. article about programming written in DocBook, code examples can be automatically syntax highlighted during the XSLT processing phase.
 
-This version of XsltHl provides extensions of the Apache Xalan and Saxon XSLT processors.</description>
+This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT processors.</description>
 	<url>http://xslthl.sourceforge.net</url>
 	<inceptionYear>2005</inceptionYear>
 
@@ -133,9 +133,9 @@ This version of XsltHl provides extensions of the Apache Xalan and Saxon XSLT pr
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/</connection>
-		<developerConnection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/</developerConnection>
-		<url>http://xslthl.svn.sourceforge.net/viewvc/xslthl/trunk/</url>
+		<connection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/xslthl/</connection>
+		<developerConnection>scm:svn:https://xslthl.svn.sourceforge.net/svnroot/xslthl/trunk/xslthl/</developerConnection>
+		<url>http://xslthl.svn.sourceforge.net/viewvc/xslthl/trunk/xslthl/</url>
 	</scm>
 
 	<issueManagement>
