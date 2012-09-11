@@ -5,7 +5,6 @@
 	<id>dist</id>
 	<formats>
 		<format>tar.gz</format>
-		<format>tar.bz2</format>
 		<format>zip</format>
 	</formats>
 	<fileSets>
@@ -16,6 +15,7 @@
 				<include>README*</include>
 				<include>LICENSE*</include>
 				<include>NOTICE*</include>
+				<include>CHANGES*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
