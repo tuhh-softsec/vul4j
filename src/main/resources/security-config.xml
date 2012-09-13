@@ -4,8 +4,12 @@
     <Properties>
         <Property NAME="securityTokenFactory" VAL="org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactoryImpl"/>
         <Property NAME="CACertKeyStorePassword" VAL="changeit"/>
-        <!--<Property NAME="CertProvider" VAL="BC"/>-->
-        <!--<Property NAME="DefaultX509Alias" VAL="sigEnc"/>-->
+        <Property NAME="MaximumAllowedTransformsPerReference" VAL="5"/>
+        <Property NAME="MaximumAllowedReferencesPerManifest" VAL="30"/>
+        <Property NAME="DoNotThrowExceptionForManifests" VAL="false"/>
+        <Property NAME="AllowMD5Algorithm" VAL="false"/>
+        <Property NAME="AllowNotSameDocumentReferences" VAL="false"/>
+        <Property NAME="MaximumAllowedXMLStructureDepth" VAL="100"/>
     </Properties>
     <SecurityHeaderHandlers>
     </SecurityHeaderHandlers>

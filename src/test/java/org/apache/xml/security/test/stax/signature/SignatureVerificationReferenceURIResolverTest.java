@@ -46,6 +46,7 @@ import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.TestUtils;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
 import org.junit.Test;
@@ -114,7 +115,12 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        try {
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
+        }
     }
 
     @Test
@@ -173,7 +179,12 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
         InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
         XMLStreamReader securityStreamReader = inboundXMLSec.processInMessage(xmlStreamReader);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        try {
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
+        }
     }
 
     @Test
@@ -187,6 +198,8 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress)proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress)proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -245,6 +258,7 @@ public class SignatureVerificationReferenceURIResolverTest extends AbstractSigna
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }

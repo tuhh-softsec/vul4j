@@ -26,6 +26,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.TestUtils;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
@@ -88,6 +89,8 @@ public class PhaosTest extends org.junit.Assert {
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
 
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -113,6 +116,7 @@ public class PhaosTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -187,6 +191,8 @@ public class PhaosTest extends org.junit.Assert {
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
 
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -217,6 +223,7 @@ public class PhaosTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -285,7 +292,12 @@ public class PhaosTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader =
                 inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        try {
+            TestUtils.switchDoNotThrowExceptionForManifests(true);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            TestUtils.switchDoNotThrowExceptionForManifests(false);
+        }
     }
 
     // See SANTUARIO-319
@@ -300,6 +312,8 @@ public class PhaosTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -326,6 +340,7 @@ public class PhaosTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }

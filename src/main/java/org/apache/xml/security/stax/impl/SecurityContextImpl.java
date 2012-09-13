@@ -18,10 +18,13 @@
  */
 package org.apache.xml.security.stax.impl;
 
+import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityTokenProvider;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
+import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
 import java.util.*;
@@ -34,11 +37,11 @@ import java.util.*;
  */
 public class SecurityContextImpl implements SecurityContext {
 
+    private static final Boolean allowMD5Algorithm = Boolean.valueOf(ConfigurationProperties.getProperty("AllowMD5Algorithm"));
     private final Map<String, SecurityTokenProvider> securityTokenProviders = new HashMap<String, SecurityTokenProvider>();
 
     @SuppressWarnings("unchecked")
     private final Map content = Collections.synchronizedMap(new HashMap());
-    
     private final List<SecurityEventListener> securityEventListeners = new ArrayList<SecurityEventListener>(2);
 
     public void addSecurityEventListener(SecurityEventListener securityEventListener) {
@@ -52,6 +55,16 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     protected void forwardSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
+        if (!allowMD5Algorithm && SecurityEventConstants.AlgorithmSuite.equals(securityEvent.getSecurityEventType())) {
+            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = (AlgorithmSuiteSecurityEvent)securityEvent;
+            if (algorithmSuiteSecurityEvent.getAlgorithmURI().contains("md5") ||
+                    algorithmSuiteSecurityEvent.getAlgorithmURI().contains("MD5")) {
+                throw new XMLSecurityException(
+                        XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                        "secureProcessing.AllowMD5Algorithm"
+                );
+            }
+        }
         for (int i = 0; i < securityEventListeners.size(); i++) {
             SecurityEventListener securityEventListener = securityEventListeners.get(i);
             securityEventListener.registerSecurityEvent(securityEvent);

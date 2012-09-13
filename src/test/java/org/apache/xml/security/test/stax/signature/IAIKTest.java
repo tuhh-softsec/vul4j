@@ -58,6 +58,7 @@ import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.TestUtils;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -266,7 +267,12 @@ public class IAIKTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
             inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        try {
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
+        }
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),
@@ -295,7 +301,12 @@ public class IAIKTest extends org.junit.Assert {
         XMLStreamReader securityStreamReader = 
             inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
 
-        StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        try {
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+            StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
+        }
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),

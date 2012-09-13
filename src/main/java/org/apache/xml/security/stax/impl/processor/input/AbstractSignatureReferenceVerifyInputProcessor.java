@@ -26,6 +26,7 @@ import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
 import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.TransformType;
+import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.ResourceResolverMapper;
 import org.apache.xml.security.stax.ext.*;
@@ -56,6 +57,15 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     private static final transient Log logger = LogFactory.getLog(AbstractSignatureReferenceVerifyInputProcessor.class);
 
+    protected static final Integer maximumAllowedReferencesPerManifest =
+            Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedReferencesPerManifest"));
+    protected static final Integer maximumAllowedTransformsPerReference =
+            Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedTransformsPerReference"));
+    protected static final Boolean doNotThrowExceptionForManifests =
+            Boolean.valueOf(ConfigurationProperties.getProperty("DoNotThrowExceptionForManifests"));
+    protected static final Boolean allowNotSameDocumentReferences =
+            Boolean.valueOf(ConfigurationProperties.getProperty("AllowNotSameDocumentReferences"));
+
     private final SignatureType signatureType;
     private final SecurityToken securityToken;
     private final Map<ResourceResolver, ReferenceType> sameDocumentReferences;
@@ -71,6 +81,13 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         this.securityToken = securityToken;
 
         List<ReferenceType> referencesTypeList = signatureType.getSignedInfo().getReference();
+        if (referencesTypeList.size() > maximumAllowedReferencesPerManifest) {
+            throw new XMLSecurityException(
+                    XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                    "secureProcessing.MaximumAllowedReferencesPerManifest",
+                    referencesTypeList.size(),
+                    maximumAllowedReferencesPerManifest);
+        }
         sameDocumentReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
         externalReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
         processedReferences = new ArrayList<ReferenceType>(referencesTypeList.size());
@@ -78,6 +95,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         Iterator<ReferenceType> referenceTypeIterator = referencesTypeList.iterator();
         while (referenceTypeIterator.hasNext()) {
             ReferenceType referenceType = referenceTypeIterator.next();
+            if (!doNotThrowExceptionForManifests && XMLSecurityConstants.NS_XMLDSIG_MANIFEST.equals(referenceType.getType())) {
+                throw new XMLSecurityException(
+                        XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                        "secureProcessing.DoNotThrowExceptionForManifests"
+                );
+            }
             if (referenceType.getURI() == null) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
             }
@@ -91,6 +114,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             if (resourceResolver.isSameDocumentReference()) {
                 sameDocumentReferences.put(resourceResolver, referenceType);
             } else {
+                if (!allowNotSameDocumentReferences) {
+                    throw new XMLSecurityException(
+                            XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                            "secureProcessing.AllowNotSameDocumentReferences"
+                    );
+                }
                 externalReferences.put(resourceResolver, referenceType);
             }
         }
@@ -298,6 +327,14 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             transformTypeList.add(transformType);
         }
 
+        if (transformTypeList.size() > maximumAllowedTransformsPerReference) {
+            throw new XMLSecurityException(
+                    XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                    "secureProcessing.MaximumAllowedTransformsPerReference",
+                    transformTypeList.size(),
+                    maximumAllowedTransformsPerReference);
+        }
+
         Transformer parentTransformer = null;
         for (int i = transformTypeList.size() - 1; i >= 0; i--) {
             TransformType transformType = transformTypeList.get(i);
@@ -359,7 +396,19 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                 this.digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
                 this.bufferedDigestOutputStream = new BufferedOutputStream(this.getDigestOutputStream());
                 this.transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain);
-            } catch (Exception e) {
+            } catch (NoSuchMethodException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (IllegalAccessException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (InstantiationException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (XMLStreamException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (NoSuchProviderException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (InvocationTargetException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
             }
         }

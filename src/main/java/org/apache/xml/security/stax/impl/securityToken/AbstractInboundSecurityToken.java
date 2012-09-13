@@ -44,7 +44,7 @@ import java.util.*;
 public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     //prevent recursive key references
-    private boolean invocated = false;
+    private boolean invoked = false;
 
     private SecurityContext securityContext;
     private CallbackHandler callbackHandler;
@@ -68,14 +68,14 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     }
 
     private void testAndSetInvocation() throws XMLSecurityException {
-        if (invocated) {
+        if (invoked) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN);
         }
-        invocated = true;
+        invoked = true;
     }
 
     private void unsetInvocation() {
-        invocated = false;
+        invoked = false;
     }
 
     public XMLSecurityConstants.KeyIdentifierType getKeyIdentifierType() {

@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
+import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
@@ -37,6 +38,9 @@ import java.util.NoSuchElementException;
  */
 public class XMLEventReaderInputProcessor extends AbstractInputProcessor {
 
+    private static final Integer maximumAllowedXMLStructureDepth =
+            Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedXMLStructureDepth"));
+    private int currentXMLStructureDepth = 0;
     private final XMLStreamReader xmlStreamReader;
     private XMLSecStartElement parentXmlSecStartElement;
     private boolean EOF = false;
@@ -63,9 +67,21 @@ public class XMLEventReaderInputProcessor extends AbstractInputProcessor {
         XMLSecEvent xmlSecEvent = XMLSecEventFactory.allocate(xmlStreamReader, parentXmlSecStartElement);
         switch (xmlSecEvent.getEventType()) {
             case XMLStreamConstants.START_ELEMENT:
+                currentXMLStructureDepth++;
+                if (currentXMLStructureDepth > maximumAllowedXMLStructureDepth) {
+                    XMLSecurityException xmlSecurityException = new XMLSecurityException(
+                            XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                            "secureProcessing.MaximumAllowedXMLStructureDepth",
+                            maximumAllowedXMLStructureDepth
+                    );
+                    throw new XMLStreamException(xmlSecurityException);
+                }
+
                 parentXmlSecStartElement = (XMLSecStartElement) xmlSecEvent;
                 break;
             case XMLStreamConstants.END_ELEMENT:
+                currentXMLStructureDepth--;
+
                 if (parentXmlSecStartElement != null) {
                     parentXmlSecStartElement = parentXmlSecStartElement.getParentXMLSecStartElement();
                 }

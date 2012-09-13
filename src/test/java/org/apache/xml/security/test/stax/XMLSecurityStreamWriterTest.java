@@ -18,7 +18,9 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.stax.config.Init;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
@@ -42,6 +44,11 @@ import java.util.*;
  * @version $Revision$ $Date$
  */
 public class XMLSecurityStreamWriterTest extends org.junit.Assert {
+
+    @Before
+    public void setUp() throws Exception {
+        Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI());
+    }
 
     @Test
     public void testIdentityTransformResult() throws Exception {

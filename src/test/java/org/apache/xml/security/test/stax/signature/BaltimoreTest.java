@@ -63,6 +63,7 @@ import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.TestUtils;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
@@ -338,6 +339,8 @@ public class BaltimoreTest extends org.junit.Assert {
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
 
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -371,6 +374,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -387,6 +391,9 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -420,6 +427,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -648,6 +656,8 @@ public class BaltimoreTest extends org.junit.Assert {
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
 
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -681,6 +691,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -697,6 +708,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -731,6 +744,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -747,6 +761,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -786,6 +802,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -802,6 +819,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -835,6 +854,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -851,6 +871,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -875,6 +897,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -891,6 +914,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -915,6 +940,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -931,6 +957,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -970,6 +998,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -986,6 +1015,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1019,6 +1050,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1035,6 +1067,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1074,6 +1108,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1116,6 +1151,8 @@ public class BaltimoreTest extends org.junit.Assert {
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
 
+            TestUtils.switchAllowNotSameDocumentReferences(true);
+
             // Read in plaintext document
             InputStream sourceDocument =
                     this.getClass().getClassLoader().getResourceAsStream(
@@ -1154,6 +1191,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1170,6 +1208,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1203,6 +1243,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1219,6 +1260,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1243,6 +1286,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1259,6 +1303,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1283,6 +1329,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1299,6 +1346,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1338,6 +1387,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1354,6 +1404,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1387,6 +1439,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
             StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }
@@ -1403,6 +1456,8 @@ public class BaltimoreTest extends org.junit.Assert {
             ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
             resolverDirectHTTP.engineSetProperty("http.proxy.host", ((InetSocketAddress) proxy.address()).getAddress().getHostAddress());
             resolverDirectHTTP.engineSetProperty("http.proxy.port", "" + ((InetSocketAddress) proxy.address()).getPort());
+
+            TestUtils.switchAllowNotSameDocumentReferences(true);
 
             // Read in plaintext document
             InputStream sourceDocument =
@@ -1442,6 +1497,7 @@ public class BaltimoreTest extends org.junit.Assert {
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
                     XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
         } finally {
+            TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
         }
     }

@@ -35,6 +35,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
@@ -227,16 +228,19 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
 
         for (String localName : localNames) {
             String expression = "//*[local-name()='" + localName + "']";
-            Element elementToSign =
-                    (Element) xpath.evaluate(expression, document, XPathConstants.NODE);
-            Assert.assertNotNull(elementToSign);
-            String id = UUID.randomUUID().toString();
-            elementToSign.setAttributeNS(null, "Id", id);
-            elementToSign.setIdAttributeNS(null, "Id", true);
+            NodeList elementsToSign =
+                    (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+            for (int i = 0; i < elementsToSign.getLength(); i++) {
+                Element elementToSign = (Element)elementsToSign.item(i);
+                Assert.assertNotNull(elementToSign);
+                String id = UUID.randomUUID().toString();
+                elementToSign.setAttributeNS(null, "Id", id);
+                elementToSign.setIdAttributeNS(null, "Id", true);
 
-            Transforms transforms = new Transforms(document);
-            transforms.addTransform(referenceC14NMethod);
-            sig.addDocument("#" + id, transforms, digestMethod);
+                Transforms transforms = new Transforms(document);
+                transforms.addTransform(referenceC14NMethod);
+                sig.addDocument("#" + id, transforms, digestMethod);
+            }
         }
 
         if (additionalReferences != null) {

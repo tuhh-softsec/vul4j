@@ -20,6 +20,7 @@ package org.apache.xml.security.test.stax.transformer;
 
 import junit.framework.Assert;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.Transformer;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
@@ -50,6 +51,7 @@ public class TransformIdentityTest extends org.junit.Assert {
 
     @Before
     public void setUp() throws Exception {
+        Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI());
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
     }

@@ -28,6 +28,7 @@ import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
 import org.apache.xml.security.binding.xmlenc.ReferenceList;
 import org.apache.xml.security.binding.xmlenc.ReferenceType;
+import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.*;
@@ -72,6 +73,9 @@ import java.util.*;
 public abstract class AbstractDecryptInputProcessor extends AbstractInputProcessor {
 
     private static final transient Log logger = LogFactory.getLog(AbstractDecryptInputProcessor.class);
+
+    protected static final Integer maximumAllowedXMLStructureDepth =
+            Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedXMLStructureDepth"));
 
     private final KeyInfoType keyInfoType;
     private final Map<String, ReferenceType> references;
@@ -256,6 +260,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             XMLSecurityUtils.getQNameType(referenceType.getAny(), XMLSecurityConstants.TAG_dsig_Transforms);
                     if (transformsType != null) {
                         List<TransformType> transformTypes = transformsType.getTransform();
+                        //to do don't forget to limit the count of transformations if more transformations will be supported!
                         if (transformTypes.size() > 1) {
                             throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
                         }
@@ -552,6 +557,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     public abstract class AbstractDecryptedEventReaderInputProcessor
             extends AbstractInputProcessor implements Thread.UncaughtExceptionHandler {
 
+        private int currentXMLStructureDepth = 0;
         private XMLStreamReader xmlStreamReader;
         private XMLSecStartElement parentXmlSecStartElement;
         private boolean encryptedHeader = false;
@@ -573,6 +579,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             this.securityToken = securityToken;
             this.parentXmlSecStartElement = xmlSecStartElement;
             this.encryptedDataType = encryptedDataType;
+            //xmlSecStartElement can be null when the root element is the EncryptedData element:
+            if (xmlSecStartElement != null) {
+                this.currentXMLStructureDepth = xmlSecStartElement.getDocumentLevel();
+            }
         }
 
         public void setXmlStreamReader(XMLStreamReader xmlStreamReader) {
@@ -601,14 +611,24 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             //instead from the processor-chain as we normally would do
             switch (xmlSecEvent.getEventType()) {
                 case XMLStreamConstants.START_ELEMENT:
-                    parentXmlSecStartElement = xmlSecEvent.asStartElement();
+                    currentXMLStructureDepth++;
+                    if (currentXMLStructureDepth > maximumAllowedXMLStructureDepth) {
+                        throw  new XMLSecurityException(
+                                XMLSecurityException.ErrorCode.INVALID_SECURITY,
+                                "secureProcessing.MaximumAllowedXMLStructureDepth",
+                                maximumAllowedXMLStructureDepth
+                        );
+                    }
 
+                    parentXmlSecStartElement = xmlSecEvent.asStartElement();
                     if (!rootElementProcessed) {
                         handleEncryptedElement(inputProcessorChain, parentXmlSecStartElement, this.securityToken, encryptedDataType);
                         rootElementProcessed = true;
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
+                    currentXMLStructureDepth--;
+
                     if (parentXmlSecStartElement != null) {
                         parentXmlSecStartElement = parentXmlSecStartElement.getParentXMLSecStartElement();
                     }

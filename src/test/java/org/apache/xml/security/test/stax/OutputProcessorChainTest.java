@@ -18,7 +18,9 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.stax.config.Init;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.apache.xml.security.stax.ext.*;
@@ -35,6 +37,11 @@ import java.util.Set;
  * @version $Revision$ $Date$
  */
 public class OutputProcessorChainTest extends org.junit.Assert {
+
+    @Before
+    public void setUp() throws Exception {
+        Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI());
+    }
 
     abstract class AbstractOutputProcessor implements OutputProcessor {
 
