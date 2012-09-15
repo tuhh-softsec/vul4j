@@ -67,6 +67,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.channels.Channel;
 
 /**
  * General IO Stream manipulation.
@@ -738,6 +739,28 @@ public final class IOUtil
         try
         {
             inputStream.close();
+        }
+        catch( IOException ex )
+        {
+            // ignore
+        }
+    }
+
+    /**
+     * Closes a channel. Channel can be null and any IOException's will be swallowed.
+     *
+     * @param channel The stream to close.
+     */
+    public static void close( Channel channel )
+    {
+        if ( channel == null )
+        {
+            return;
+        }
+
+        try
+        {
+            channel.close();
         }
         catch( IOException ex )
         {
