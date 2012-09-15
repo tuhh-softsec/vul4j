@@ -1045,7 +1045,7 @@ public class FileUtils
             //if they are equal, we can exit the method without doing any work
             return;
         }
-
+        mkdirsFor( destination );
         doCopyFile( source, destination );
 
         if ( source.length() != destination.length() )
