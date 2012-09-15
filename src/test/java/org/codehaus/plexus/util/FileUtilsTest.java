@@ -379,6 +379,25 @@ public final class FileUtilsTest
         assertTrue( "Check Full copy", destination.length() == testFile2Size );
     }
 
+    /**
+     * ensure we create  directory tree for destination
+     *
+     * @throws Exception
+     */
+    public void testCopyFile3()
+        throws Exception
+    {
+        File destDirectory = new File( getTestDirectory(), "foo/bar/testcopy" );
+        if ( destDirectory.exists() )
+        {
+            destDirectory.delete();
+        }
+        final File destination = new File( destDirectory, "copy2.txt" );
+        FileUtils.copyFile( testFile1, destination );
+        assertTrue( "Check Exist", destination.exists() );
+        assertTrue( "Check Full copy", destination.length() == testFile2Size );
+    }
+
     // copyFileIfModified
 
     public void testCopyIfModifiedWhenSourceIsNewer()
