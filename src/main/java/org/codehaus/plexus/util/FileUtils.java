@@ -479,7 +479,7 @@ public class FileUtils
      * Writes data to a file. The file will be created if it does not exist.
      * Note: the data is written with platform encoding
      *
-     * @param fileName The path of the file to write.
+     * @param file     The file to write.
      * @param data     The content to write to the file.
      * @throws IOException if any
      * @since 2.0.6
@@ -493,7 +493,7 @@ public class FileUtils
     /**
      * Writes data to a file. The file will be created if it does not exist.
      *
-     * @param fileName The path of the file to write.
+     * @param file     The file to write.
      * @param encoding The encoding of the file.
      * @param data     The content to write to the file.
      * @throws IOException if any
@@ -1097,8 +1097,6 @@ public class FileUtils
      * @return true if no problem occured
      * @throws IOException           if <code>source</code> does not exist, <code>destination</code> cannot be
      *                               written to, or an IO error occurs during copying.
-     * @throws FileNotFoundException if <code>destination</code> is a directory
-     *                               (use {@link #copyFileToDirectory}).
      */
     public static boolean copyFileIfModified( final File source, final File destination )
         throws IOException
@@ -1483,7 +1481,7 @@ public class FileUtils
     /**
      * Recursively schedule directory for deletion on JVM exit.
      *
-     * @param file a directory
+     * @param directory a directory
      * @throws IOException if any
      */
     private static void deleteDirectoryOnExit( final File directory )
@@ -1501,7 +1499,7 @@ public class FileUtils
     /**
      * Clean a directory without deleting it.
      *
-     * @param file a directory
+     * @param directory a directory
      * @throws IOException if any
      */
     private static void cleanDirectoryOnExit( final File directory )
