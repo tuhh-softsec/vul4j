@@ -55,9 +55,11 @@ package org.codehaus.plexus.util;
  *
  */
 
+import org.codehaus.plexus.util.io.InputStreamFacade;
+import org.codehaus.plexus.util.io.URLInputStreamFacade;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.nio.channels.FileChannel;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -70,15 +72,13 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
-import org.codehaus.plexus.util.io.InputStreamFacade;
-import org.codehaus.plexus.util.io.URLInputStreamFacade;
 
 /**
  * This class provides basic facilities for manipulating files and file paths.
@@ -479,8 +479,8 @@ public class FileUtils
      * Writes data to a file. The file will be created if it does not exist.
      * Note: the data is written with platform encoding
      *
-     * @param file     The file to write.
-     * @param data     The content to write to the file.
+     * @param file The file to write.
+     * @param data The content to write to the file.
      * @throws IOException if any
      * @since 2.0.6
      */
@@ -1095,8 +1095,8 @@ public class FileUtils
      * @param destination A non-directory <code>File</code> to write bytes to (possibly
      *                    overwriting).
      * @return true if no problem occured
-     * @throws IOException           if <code>source</code> does not exist, <code>destination</code> cannot be
-     *                               written to, or an IO error occurs during copying.
+     * @throws IOException if <code>source</code> does not exist, <code>destination</code> cannot be
+     *                     written to, or an IO error occurs during copying.
      */
     public static boolean copyFileIfModified( final File source, final File destination )
         throws IOException
