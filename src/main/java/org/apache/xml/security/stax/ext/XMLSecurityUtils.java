@@ -23,6 +23,8 @@ import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
 
 import javax.security.auth.callback.Callback;
@@ -42,9 +44,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author $Author$
@@ -308,5 +308,50 @@ public class XMLSecurityUtils {
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SubjectName);
         
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data);
+    }
+
+    public static Set<String> getExcC14NInclusiveNamespacePrefixes(XMLSecStartElement xmlSecStartElement, boolean excludeVisible) {
+
+        if (xmlSecStartElement == null) {
+            return Collections.emptySet();
+        }
+        Set<String> prefixes = new HashSet<String>();
+
+        XMLSecStartElement parentXMXmlSecStartElement = xmlSecStartElement.getParentXMLSecStartElement();
+        if (parentXMXmlSecStartElement != null) {
+            List<XMLSecNamespace> onElementDeclaredNamespaces = parentXMXmlSecStartElement.getOnElementDeclaredNamespaces();
+            List<XMLSecNamespace> xmlSecNamespaces = new ArrayList<XMLSecNamespace>();
+            parentXMXmlSecStartElement.getNamespacesFromCurrentScope(xmlSecNamespaces);
+            xmlSecNamespaces = xmlSecNamespaces.subList(0, xmlSecNamespaces.size() - onElementDeclaredNamespaces.size());
+
+            //reverse iteration -> From current element namespaces to parent namespaces
+            for (int i = xmlSecNamespaces.size() - 1; i >= 0; i--) {
+                XMLSecNamespace xmlSecNamespace = xmlSecNamespaces.get(i);
+                String prefix = xmlSecNamespace.getPrefix();
+                if (prefix == null || prefix.isEmpty()) {
+                    prefixes.add("#default");
+                } else {
+                    prefixes.add(xmlSecNamespace.getPrefix());
+                }
+            }
+
+            if (excludeVisible) {
+                for (int i = 0; i < onElementDeclaredNamespaces.size(); i++) {
+                    XMLSecNamespace xmlSecNamespace = onElementDeclaredNamespaces.get(i);
+                    String prefix = xmlSecNamespace.getPrefix();
+                    if (prefix == null || prefix.isEmpty()) {
+                        prefixes.remove("#default");
+                    } else {
+                        prefixes.remove(prefix);
+                    }
+                }
+                if (xmlSecStartElement.getName().getPrefix() == null || xmlSecStartElement.getName().getPrefix().isEmpty()) {
+                    prefixes.remove("#default");
+                } else {
+                    prefixes.remove(xmlSecStartElement.getName().getPrefix());
+                }
+            }
+        }
+        return prefixes;
     }
 }

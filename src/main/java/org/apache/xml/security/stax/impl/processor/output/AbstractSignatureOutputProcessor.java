@@ -26,12 +26,12 @@ import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.ResourceResolverMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedOutputStream;
@@ -42,10 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author $Author$
@@ -92,9 +89,21 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
                 InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
 
+                SignaturePartDef signaturePartDef = new SignaturePartDef();
+                signaturePartDef.setSigRefId(externalReference);
+                signaturePartDef.setExternalResource(true);
+                signaturePartDef.setTransforms(securePart.getTransforms());
+                String digestMethod = securePart.getDigestMethod();
+                if (digestMethod == null) {
+                    digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
+                }
+                signaturePartDef.setDigestAlgo(digestMethod);
+                getSignaturePartDefList().add(signaturePartDef);
+
                 try {
                     if (securePart.getTransforms() != null) {
-                        Transformer transformer = buildTransformerChain(digestOutputStream, securePart.getTransforms());
+                        signaturePartDef.setExcludeVisibleC14Nprefixes(true);
+                        Transformer transformer = buildTransformerChain(digestOutputStream, signaturePartDef, null);
                         transformer.transform(inputStream);
                         transformer.doFinal();
                     } else {
@@ -118,17 +127,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     logger.debug("Calculated Digest: " + calculatedDigest);
                 }
 
-                SignaturePartDef signaturePartDef = new SignaturePartDef();
-                signaturePartDef.setSigRefId(externalReference);
                 signaturePartDef.setDigestValue(calculatedDigest);
-                signaturePartDef.setExternalResource(true);
-                signaturePartDef.setTransforms(securePart.getTransforms());
-                String digestMethod = securePart.getDigestMethod();
-                if (digestMethod == null) {
-                    digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
-                }
-                signaturePartDef.setDigestAlgo(digestMethod);
-                getSignaturePartDefList().add(signaturePartDef);
             }
         }
 
@@ -144,7 +143,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         this.activeInternalSignatureOutputProcessor = activeInternalSignatureOutputProcessor;
     }
 
-    private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm) throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+    private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm)
+            throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+
         AlgorithmType algorithmType = JCEAlgorithmMapper.getAlgorithmMapping(digestAlgorithm);
         if (algorithmType == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unknownSignatureAlgorithm", digestAlgorithm);
@@ -158,9 +159,13 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         return new DigestOutputStream(messageDigest);
     }
 
-    protected Transformer buildTransformerChain(OutputStream outputStream, String[] transforms)
+    protected Transformer buildTransformerChain(OutputStream outputStream,
+                                                SignaturePartDef signaturePartDef,
+                                                XMLSecStartElement xmlSecStartElement)
             throws XMLSecurityException, NoSuchMethodException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
+
+        String[] transforms = signaturePartDef.getTransforms();
 
         if (transforms == null || transforms.length == 0) {
             Transformer transformer = new TransformIdentity();
@@ -172,12 +177,31 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         for (int i = transforms.length - 1; i >= 0; i--) {
             String transform = transforms[i];
 
+            List<String> inclusiveNamespacePrefixes = null;
+            if (getSecurityProperties().isAddExcC14NInclusivePrefixes() &&
+                    XMLSecurityConstants.NS_C14N_EXCL.equals(transform)) {
+
+                Set<String> prefixSet = XMLSecurityUtils.getExcC14NInclusiveNamespacePrefixes(
+                        xmlSecStartElement, signaturePartDef.isExcludeVisibleC14Nprefixes()
+                );
+                StringBuilder prefixes = new StringBuilder();
+                for (Iterator<String> iterator = prefixSet.iterator(); iterator.hasNext(); ) {
+                    String prefix = iterator.next();
+                    if (prefixes.length() != 0) {
+                        prefixes.append(" ");
+                    }
+                    prefixes.append(prefix);
+                }
+                inclusiveNamespacePrefixes = new ArrayList<String>(prefixSet);
+                signaturePartDef.setInclusiveNamespacesPrefixes(prefixes.toString());
+            }
+
             if (parentTransformer != null) {
                 parentTransformer = XMLSecurityUtils.getTransformer(
                         parentTransformer, null, transform, XMLSecurityConstants.DIRECTION.OUT);
             } else {
                 parentTransformer = XMLSecurityUtils.getTransformer(
-                        null, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
+                        inclusiveNamespacePrefixes, outputStream, transform, XMLSecurityConstants.DIRECTION.OUT);
             }
         }
         return parentTransformer;
@@ -186,19 +210,19 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
     public class InternalSignatureOutputProcessor extends AbstractOutputProcessor {
 
         private SignaturePartDef signaturePartDef;
-        private QName startElement;
+        private XMLSecStartElement xmlSecStartElement;
         private int elementCounter = 0;
 
         private OutputStream bufferedDigestOutputStream;
         private DigestOutputStream digestOutputStream;
         private Transformer transformer;
 
-        public InternalSignatureOutputProcessor(SignaturePartDef signaturePartDef, QName startElement)
+        public InternalSignatureOutputProcessor(SignaturePartDef signaturePartDef, XMLSecStartElement xmlSecStartElement)
                 throws XMLSecurityException, NoSuchProviderException, NoSuchAlgorithmException {
             super();
             this.addBeforeProcessor(InternalSignatureOutputProcessor.class.getName());
             this.signaturePartDef = signaturePartDef;
-            this.startElement = startElement;
+            this.xmlSecStartElement = xmlSecStartElement;
         }
 
         @Override
@@ -206,7 +230,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             try {
                 this.digestOutputStream = createMessageDigestOutputStream(signaturePartDef.getDigestAlgo());
                 this.bufferedDigestOutputStream = new BufferedOutputStream(digestOutputStream);
-                this.transformer = buildTransformerChain(this.bufferedDigestOutputStream, signaturePartDef.getTransforms());
+                this.transformer = buildTransformerChain(this.bufferedDigestOutputStream, signaturePartDef, xmlSecStartElement);
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
             } catch (InstantiationException e) {
@@ -236,7 +260,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                 case XMLStreamConstants.END_ELEMENT:
                     elementCounter--;
 
-                    if (elementCounter == 0 && xmlSecEvent.asEndElement().getName().equals(this.startElement)) {
+                    if (elementCounter == 0 &&
+                            xmlSecEvent.asEndElement().getName().equals(this.xmlSecStartElement.getName())) {
+
                         transformer.doFinal();
                         try {
                             bufferedDigestOutputStream.close();

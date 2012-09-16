@@ -198,6 +198,7 @@ public class XMLSecurityProperties {
     private boolean useSingleCert = true;
     private Key signatureKey;
     private X509Certificate[] signatureCerts;
+    private boolean addExcC14NInclusivePrefixes = false;
 
     public X509Certificate[] getSignatureCerts() {
         return signatureCerts;
@@ -246,6 +247,14 @@ public class XMLSecurityProperties {
 
     public void setUseSingleCert(boolean useSingleCert) {
         this.useSingleCert = useSingleCert;
+    }
+
+    public boolean isAddExcC14NInclusivePrefixes() {
+        return addExcC14NInclusivePrefixes;
+    }
+
+    public void setAddExcC14NInclusivePrefixes(boolean addExcC14NInclusivePrefixes) {
+        this.addExcC14NInclusivePrefixes = addExcC14NInclusivePrefixes;
     }
 
     /**

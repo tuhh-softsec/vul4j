@@ -155,7 +155,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         outputAsEvent(outputProcessorChain, xmlSecStartElement);
     }
 
-    public void createStartElementAndOutputAsEvent(
+    public XMLSecStartElement createStartElementAndOutputAsEvent(
             OutputProcessorChain outputProcessorChain, QName element,
             boolean outputLocalNs, List<XMLSecAttribute> attributes) throws XMLStreamException, XMLSecurityException {
 
@@ -186,6 +186,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         XMLSecStartElement xmlSecStartElement
                 = XMLSecEventFactory.createXmlSecStartElement(element, attributes, comparableNamespaces);
         outputAsEvent(outputProcessorChain, xmlSecStartElement);
+        return xmlSecStartElement;
     }
 
     public XMLSecEndElement createEndElement(QName element) {

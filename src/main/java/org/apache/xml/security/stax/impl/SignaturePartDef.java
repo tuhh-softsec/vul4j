@@ -30,7 +30,8 @@ public class SignaturePartDef {
     private String digestValue;
     private String[] transforms;
     private String digestAlgo;
-    private String inclusiveNamespaces;
+    private String inclusiveNamespacesPrefixes;
+    private boolean excludeVisibleC14Nprefixes;
     private boolean externalResource;
     private boolean generateXPointer;
 
@@ -66,12 +67,20 @@ public class SignaturePartDef {
         this.digestAlgo = digestAlgo;
     }
 
-    public String getInclusiveNamespaces() {
-        return inclusiveNamespaces;
+    public String getInclusiveNamespacesPrefixes() {
+        return inclusiveNamespacesPrefixes;
     }
 
-    public void setInclusiveNamespaces(String inclusiveNamespaces) {
-        this.inclusiveNamespaces = inclusiveNamespaces;
+    public void setInclusiveNamespacesPrefixes(String inclusiveNamespacesPrefixes) {
+        this.inclusiveNamespacesPrefixes = inclusiveNamespacesPrefixes;
+    }
+
+    public boolean isExcludeVisibleC14Nprefixes() {
+        return excludeVisibleC14Nprefixes;
+    }
+
+    public void setExcludeVisibleC14Nprefixes(boolean excludeVisibleC14Nprefixes) {
+        this.excludeVisibleC14Nprefixes = excludeVisibleC14Nprefixes;
     }
 
     public boolean isExternalResource() {

@@ -74,6 +74,7 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                     try {
                         SignaturePartDef signaturePartDef = new SignaturePartDef();
                         signaturePartDef.setTransforms(securePart.getTransforms());
+                        signaturePartDef.setExcludeVisibleC14Nprefixes(true);
                         String digestMethod = securePart.getDigestMethod();
                         if (digestMethod == null) {
                             digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
@@ -115,7 +116,7 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                         }
 
                         getSignaturePartDefList().add(signaturePartDef);
-                        internalSignatureOutputProcessor = new InternalSignatureOutputProcessor(signaturePartDef, xmlSecStartElement.getName());
+                        internalSignatureOutputProcessor = new InternalSignatureOutputProcessor(signaturePartDef, xmlSecStartElement);
                         internalSignatureOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
                         internalSignatureOutputProcessor.setAction(getAction());
                         internalSignatureOutputProcessor.addAfterProcessor(XMLSignatureOutputProcessor.class.getName());
@@ -137,5 +138,4 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
         }
         outputProcessorChain.processEvent(xmlSecEvent);
     }
-
 }

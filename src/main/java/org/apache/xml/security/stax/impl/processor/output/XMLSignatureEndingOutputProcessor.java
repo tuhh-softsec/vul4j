@@ -31,6 +31,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
+import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
@@ -49,8 +50,11 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
     }
 
     @Override
-    protected SignedInfoProcessor newSignedInfoProcessor(SignatureAlgorithm signatureAlgorithm, OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
-        this.signedInfoProcessor = new SignedInfoProcessor(signatureAlgorithm);
+    protected SignedInfoProcessor newSignedInfoProcessor(
+            SignatureAlgorithm signatureAlgorithm, XMLSecStartElement xmlSecStartElement,
+            OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
+
+        this.signedInfoProcessor = new SignedInfoProcessor(signatureAlgorithm, xmlSecStartElement);
         this.signedInfoProcessor.setXMLSecurityProperties(getSecurityProperties());
         this.signedInfoProcessor.setAction(getAction());
         this.signedInfoProcessor.addAfterProcessor(XMLSignatureEndingOutputProcessor.class.getName());
@@ -120,6 +124,14 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
                 List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
                 attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, transform));
                 createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transform, false, attributes);
+
+                if (getSecurityProperties().isAddExcC14NInclusivePrefixes()) {
+                    attributes = new ArrayList<XMLSecAttribute>(1);
+                    attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_PrefixList, signaturePartDef.getInclusiveNamespacesPrefixes()));
+                    createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces, true, attributes);
+                    createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_c14nExcl_InclusiveNamespaces);
+                }
+
                 createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transform);
             }
             createEndElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms);
