@@ -31,6 +31,8 @@ import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.content.DEREncodedKeyValue;
+import org.apache.xml.security.keys.content.KeyInfoReference;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.KeyValue;
 import org.apache.xml.security.keys.content.MgmtData;
@@ -333,6 +335,46 @@ public class KeyInfo extends SignatureElementProxy {
         XMLCipher cipher = XMLCipher.getInstance();
         this.constructionElement.appendChild(cipher.martial(encryptedKey));
     }
+    
+    /**
+     * Method addDEREncodedKeyValue
+     *
+     * @param pk
+     * @throws XMLSecurityException 
+     */
+    public void addDEREncodedKeyValue(PublicKey pk) throws XMLSecurityException {
+        this.add(new DEREncodedKeyValue(this.doc, pk));
+    }
+
+    /**
+     * Method add
+     *
+     * @param derEncodedKeyValue
+     */
+    public void add(DEREncodedKeyValue derEncodedKeyValue) {
+        this.constructionElement.appendChild(derEncodedKeyValue.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
+    }
+    
+    /**
+     * Method addKeyInfoReference
+     *
+     * @param URI
+     * @throws XMLSecurityException 
+     */
+    public void addKeyInfoReference(String URI) throws XMLSecurityException {
+        this.add(new KeyInfoReference(this.doc, URI));
+    }
+
+    /**
+     * Method add
+     *
+     * @param keyInfoReference
+     */
+    public void add(KeyInfoReference keyInfoReference) {
+        this.constructionElement.appendChild(keyInfoReference.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
+    }
 
     /**
      * Method addUnknownElement
@@ -408,6 +450,24 @@ public class KeyInfo extends SignatureElementProxy {
             return x509Datas.size(); 
         }
         return this.length(Constants.SignatureSpecNS, Constants._TAG_X509DATA);
+    }
+
+    /**
+     * Method lengthDEREncodedKeyValue
+     *
+     *@return the number of the DEREncodedKeyValue tags
+     */
+    public int lengthDEREncodedKeyValue() {
+        return this.length(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
+    }
+
+    /**
+     * Method lengthKeyInfoReference
+     *
+     *@return the number of the KeyInfoReference tags
+     */
+    public int lengthKeyInfoReference() {
+        return this.length(Constants.SignatureSpec11NS, Constants._TAG_KEYINFOREFERENCE);
     }
 
     /**
@@ -542,7 +602,7 @@ public class KeyInfo extends SignatureElementProxy {
         } 
         return null;     
     }
-
+    
     /**
      * Method itemX509Data
      * 
@@ -585,6 +645,42 @@ public class KeyInfo extends SignatureElementProxy {
             return cipher.loadEncryptedKey(e);
         }
         return null;
+    }
+    
+    /**
+     * Method itemDEREncodedKeyValue
+     *
+     * @param i
+     * @return the asked DEREncodedKeyValue element, null if the index is too big
+     * @throws XMLSecurityException
+     */
+    public DEREncodedKeyValue itemDEREncodedKeyValue(int i) throws XMLSecurityException {
+        Element e = 
+            XMLUtils.selectDs11Node(
+                this.constructionElement.getFirstChild(), Constants._TAG_DERENCODEDKEYVALUE, i);
+
+        if (e != null) {
+            return new DEREncodedKeyValue(e, this.baseURI);
+        } 
+        return null;     
+    }
+
+    /**
+     * Method itemKeyInfoReference
+     *
+     * @param i
+     * @return the asked KeyInfoReference element, null if the index is too big
+     * @throws XMLSecurityException
+     */
+    public KeyInfoReference itemKeyInfoReference(int i) throws XMLSecurityException {
+        Element e = 
+            XMLUtils.selectDs11Node(
+                this.constructionElement.getFirstChild(), Constants._TAG_KEYINFOREFERENCE, i);
+
+        if (e != null) {
+            return new KeyInfoReference(e, this.baseURI);
+        } 
+        return null;     
     }
 
     /**
@@ -697,7 +793,25 @@ public class KeyInfo extends SignatureElementProxy {
     public boolean containsX509Data() {
         return this.lengthX509Data() > 0;
     }
+    
+    /**
+     * Method containsDEREncodedKeyValue
+     *
+     * @return If the KeyInfo contains a DEREncodedKeyValue node
+     */
+    public boolean containsDEREncodedKeyValue() {
+        return this.lengthDEREncodedKeyValue() > 0;
+    }
 
+    /**
+     * Method containsKeyInfoReference
+     *
+     * @return If the KeyInfo contains a KeyInfoReference node
+     */
+    public boolean containsKeyInfoReference() {
+        return this.lengthKeyInfoReference() > 0;
+    }
+    
     /**
      * This method returns the public key.
      *

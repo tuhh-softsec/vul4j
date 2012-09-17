@@ -56,6 +56,7 @@ public class XMLUtils {
         }).booleanValue();
     
     private static volatile String dsPrefix = "ds";
+    private static volatile String ds11Prefix = "dsig11";
     private static volatile String xencPrefix = "xenc";
     private static volatile String xenc11Prefix = "xenc11";
     
@@ -78,6 +79,14 @@ public class XMLUtils {
      */
     public static void setDsPrefix(String prefix) {
         dsPrefix = prefix;
+    }
+    
+    /**
+     * Set the prefix for the digital signature 1.1 namespace 
+     * @param prefix the new prefix for the digital signature 1.1 namespace
+     */
+    public static void setDs11Prefix(String prefix) {
+        ds11Prefix = prefix;
     }
     
     /**
@@ -278,6 +287,24 @@ public class XMLUtils {
         } 
         return doc.createElementNS(Constants.SignatureSpecNS, dsPrefix + ":" + elementName);
     }
+    
+    /**
+     * Creates an Element in the XML Signature 1.1 specification namespace.
+     *
+     * @param doc the factory Document
+     * @param elementName the local name of the Element
+     * @return the Element
+     */
+    public static Element createElementInSignature11Space(Document doc, String elementName) {
+        if (doc == null) {
+            throw new RuntimeException("Document is null");
+        }
+
+        if ((ds11Prefix == null) || (ds11Prefix.length() == 0)) {
+            return doc.createElementNS(Constants.SignatureSpec11NS, elementName);
+        } 
+        return doc.createElementNS(Constants.SignatureSpec11NS, ds11Prefix + ":" + elementName);
+    }
 
     /**
      * Creates an Element in the XML Encryption specification namespace.
@@ -336,6 +363,24 @@ public class XMLUtils {
         }
 
         return Constants.SignatureSpecNS.equals(element.getNamespaceURI()) 
+            && element.getLocalName().equals(localName);
+    }
+    
+    /**
+     * Returns true if the element is in XML Signature 1.1 namespace and the local
+     * name equals the supplied one.
+     *
+     * @param element
+     * @param localName
+     * @return true if the element is in XML Signature namespace and the local name equals 
+     * the supplied one
+     */
+    public static boolean elementIsInSignature11Space(Element element, String localName) {
+        if (element == null) {
+            return false;
+        }
+
+        return Constants.SignatureSpec11NS.equals(element.getNamespaceURI()) 
             && element.getLocalName().equals(localName);
     }
 
@@ -583,7 +628,7 @@ public class XMLUtils {
             sibling = node.getNextSibling();
         } while (true);
     }
-
+    
     /**
      * @param sibling
      * @param nodeName
@@ -593,6 +638,26 @@ public class XMLUtils {
     public static Element selectDsNode(Node sibling, String nodeName, int number) {
         while (sibling != null) {
             if (Constants.SignatureSpecNS.equals(sibling.getNamespaceURI()) 
+                && sibling.getLocalName().equals(nodeName)) {
+                if (number == 0){
+                    return (Element)sibling;
+                }
+                number--;
+            }
+            sibling = sibling.getNextSibling();
+        }
+        return null;
+    }
+
+    /**
+     * @param sibling
+     * @param nodeName
+     * @param number
+     * @return nodes with the constraint
+     */
+    public static Element selectDs11Node(Node sibling, String nodeName, int number) {
+        while (sibling != null) {
+            if (Constants.SignatureSpec11NS.equals(sibling.getNamespaceURI()) 
                 && sibling.getLocalName().equals(nodeName)) {
                 if (number == 0){
                     return (Element)sibling;
@@ -633,6 +698,24 @@ public class XMLUtils {
      */
     public static Text selectDsNodeText(Node sibling, String nodeName, int number) {
         Node n = selectDsNode(sibling,nodeName,number);
+        if (n == null) {
+            return null;
+        }
+        n = n.getFirstChild();
+        while (n != null && n.getNodeType() != Node.TEXT_NODE) {
+            n = n.getNextSibling();
+        }
+        return (Text)n;
+    }
+    
+    /**
+     * @param sibling
+     * @param nodeName
+     * @param number
+     * @return nodes with the constrain
+     */
+    public static Text selectDs11NodeText(Node sibling, String nodeName, int number) {
+        Node n = selectDs11Node(sibling,nodeName,number);
         if (n == null) {
             return null;
         }
@@ -690,6 +773,15 @@ public class XMLUtils {
      */
     public static Element[] selectDsNodes(Node sibling, String nodeName) {
         return selectNodes(sibling, Constants.SignatureSpecNS, nodeName);
+    }
+    
+    /**
+     * @param sibling
+     * @param nodeName    
+     * @return nodes with the constrain
+     */
+    public static Element[] selectDs11Nodes(Node sibling, String nodeName) {
+        return selectNodes(sibling, Constants.SignatureSpec11NS, nodeName);
     }
     
     /**

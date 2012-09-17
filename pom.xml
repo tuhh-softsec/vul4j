@@ -116,7 +116,7 @@
                     <targetJdk>1.6</targetJdk>
                     <excludes>
                         <exclude>
-                            **/XMLX509SKI.java,**/CryptoBase.java, **/XPathFactory.java,**/MultiInputStream.java,**/AbstractDecryptInputProcessor.java
+                            **/XMLX509SKI.java,**/CryptoBase.java, **/XPathFactory.java,**/MultiInputStream.java,**/AbstractDecryptInputProcessor.java,**/DEREncodedKeyValue.java
                         </exclude>
                     </excludes>
                 </configuration>

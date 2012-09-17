@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509CRL;
 import org.apache.xml.security.keys.content.x509.XMLX509Certificate;
+import org.apache.xml.security.keys.content.x509.XMLX509Digest;
 import org.apache.xml.security.keys.content.x509.XMLX509IssuerSerial;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.apache.xml.security.keys.content.x509.XMLX509SubjectName;
@@ -223,6 +224,38 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     }
 
     /**
+     * Method addDigest
+     *
+     * @param x509certificate
+     * @param algorithmURI
+     * @throws XMLSecurityException
+     */
+    public void addDigest(X509Certificate x509certificate, String algorithmURI)
+        throws XMLSecurityException {
+        this.add(new XMLX509Digest(this.doc, x509certificate, algorithmURI));
+    }
+
+    /**
+     * Method addDigest
+     *
+     * @param x509CertificateDigestByes
+     * @param algorithmURI
+     */
+    public void addDigest(byte[] x509certificateDigestBytes, String algorithmURI) {
+        this.add(new XMLX509Digest(this.doc, x509certificateDigestBytes, algorithmURI));
+    }
+    
+    /**
+     * Method add
+     *
+     * @param XMLX509Digest
+     */
+    public void add(XMLX509Digest xmlX509Digest) {
+        this.constructionElement.appendChild(xmlX509Digest.getElement());
+        XMLUtils.addReturnToElement(this.constructionElement);
+    }
+
+    /**
      * Method addUnknownElement
      *
      * @param element
@@ -275,6 +308,15 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
      */
     public int lengthCRL() {
         return this.length(Constants.SignatureSpecNS, Constants._TAG_X509CRL);
+    }
+
+    /**
+     * Method lengthDigest
+     *
+     * @return the number of X509Digest elements in this X509Data
+     */
+    public int lengthDigest() {
+        return this.length(Constants.SignatureSpec11NS, Constants._TAG_X509DIGEST);
     }
 
     /**
@@ -391,6 +433,25 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
     }
 
     /**
+     * Method itemDigest
+     *
+     * @param i
+     * @return the X509Digest, null if not present
+     * @throws XMLSecurityException
+     */
+    public XMLX509Digest itemDigest(int i) throws XMLSecurityException {
+
+        Element e = 
+            XMLUtils.selectDs11Node(
+                this.constructionElement.getFirstChild(), Constants._TAG_X509DIGEST, i);
+
+        if (e != null) {
+            return new XMLX509Digest(e, this.baseURI);
+        } 
+        return null;
+    }
+
+    /**
      * Method itemUnknownElement
      *
      * @param i
@@ -438,6 +499,15 @@ public class X509Data extends SignatureElementProxy implements KeyInfoContent {
      */
     public boolean containsCertificate() {
         return this.lengthCertificate() > 0;
+    }
+
+    /**
+     * Method containsDigest
+     *
+     * @return true if this X509Data contains an X509Digest
+     */
+    public boolean containsDigest() {
+        return this.lengthDigest() > 0;
     }
 
     /**

@@ -1,0 +1,11 @@
+<ds:Keyinfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+
+  <ds:X509Data xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+
+    <dsig11:X509Digest xmlns:dsig11="http://www.w3.org/2009/xmldsig11#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" >
+    jToLQ/K7aaLHy/aXLFnjEfCwSQd9z0MrBOH6Ru/aJyY=
+    </dsig11:X509Digest>
+
+  </ds:X509Data>
+
+</ds:Keyinfo>

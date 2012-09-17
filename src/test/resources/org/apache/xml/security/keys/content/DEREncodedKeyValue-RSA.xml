@@ -1,0 +1,12 @@
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+
+<dsig11:DEREncodedKeyValue xmlns:dsig11="http://www.w3.org/2009/xmldsig11#" Id="abc123">
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmDnHagSzfia3N7jOaMSp4VIZjK2lxZgN
+X/2z98YLp1XE3cvpP+mOvX3gENWQuX3uoix+2qroZ0BFHzhzf4E7is5Q9+42ZFi5naFk3c/B0Q8A
+jtHtWUEZ8VPPBZggz6uJ1ttJS7YDP6XVjaw6SN1bJSD4/lWNIVsh95kuhunbOef6x/kyIbBz9wF4
+S0//G6zPD4GG7/jJ+sDXe+bAgPB1qwhLhrK3N1jGuDZkGGcY/c4b7aba0B0rognwKlygv16GoA/n
+zWehxih7clhmMTzP2VWa3Q2GcN8ETe00dz68KtS7GF6W15qftjUvRXEKSoPz86ZsP30jIH1tvIrs
+qSh/kwIDAQAB
+</dsig11:DEREncodedKeyValue>
+
+</ds:KeyInfo>
