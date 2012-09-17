@@ -140,6 +140,12 @@ public class XMLSec {
                     //@see http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/Overview.html#rsa-oaep-mgf1p
                     securityProperties.setEncryptionKeyTransportAlgorithm("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p");
                 }
+                if (securityProperties.getEncryptionKeyTransportDigestAlgorithm() == null) {
+                    securityProperties.setEncryptionKeyTransportDigestAlgorithm("http://www.w3.org/2000/09/xmldsig#sha1");
+                }
+                if (securityProperties.getEncryptionKeyTransportMGFAlgorithm() == null) {
+                    securityProperties.setEncryptionKeyTransportMGFAlgorithm("http://www.w3.org/2009/xmlenc11#mgf1sha1");
+                }
                 if (securityProperties.getEncryptionSymAlgorithm() == null) {
                     securityProperties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#aes256-cbc");
                 }

@@ -18,28 +18,13 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.Deque;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.JAXBElement;
-
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.binding.xmldsig.DigestMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
+import org.apache.xml.security.binding.xmlenc11.MGFType;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.ext.AbstractInputSecurityHeaderHandler;
-import org.apache.xml.security.stax.ext.InputProcessorChain;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
-import org.apache.xml.security.stax.ext.SecurityTokenProvider;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
-import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.securityToken.AbstractInboundSecurityToken;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
@@ -47,6 +32,16 @@ import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.JAXBElement;
+import java.security.*;
+import java.security.spec.MGF1ParameterSpec;
+import java.util.Deque;
 
 /**
  * An input handler for the EncryptedKey XML Structure
@@ -64,14 +59,14 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                 ((JAXBElement<EncryptedKeyType>) parseStructure(eventQueue, index, securityProperties)).getValue();
 
         final XMLSecEvent responsibleXMLSecStartXMLEvent = getResponsibleStartXMLEvent(eventQueue, index);
-        
+
         handle(inputProcessorChain, encryptedKeyType, responsibleXMLSecStartXMLEvent, securityProperties);
     }
-    
-    public void handle(final InputProcessorChain inputProcessorChain, 
-            final EncryptedKeyType encryptedKeyType, 
-            final XMLSecEvent responsibleXMLSecStartXMLEvent,
-            final XMLSecurityProperties securityProperties) throws XMLSecurityException {
+
+    public void handle(final InputProcessorChain inputProcessorChain,
+                       final EncryptedKeyType encryptedKeyType,
+                       final XMLSecEvent responsibleXMLSecStartXMLEvent,
+                       final XMLSecurityProperties securityProperties) throws XMLSecurityException {
 
         if (encryptedKeyType.getEncryptionMethod() == null) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
@@ -153,8 +148,8 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         if (algorithmURI == null) {
                             throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
                         }
-                        AlgorithmType asyncEncAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
-                        if (asyncEncAlgo == null) {
+                        AlgorithmType encAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
+                        if (encAlgo == null) {
                             throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
                         }
 
@@ -168,18 +163,51 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             }
 
                             Cipher cipher;
-                            if (asyncEncAlgo.getJCEProvider() == null) {
-                                cipher = Cipher.getInstance(asyncEncAlgo.getJCEName());
+                            if (encAlgo.getJCEProvider() == null) {
+                                cipher = Cipher.getInstance(encAlgo.getJCEName());
                             } else {
-                                cipher = Cipher.getInstance(asyncEncAlgo.getJCEName(), asyncEncAlgo.getJCEProvider());
+                                cipher = Cipher.getInstance(encAlgo.getJCEName(), encAlgo.getJCEProvider());
                             }
-                            cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage, correlationID));
+                            if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(algorithmURI) ||
+                                    XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(algorithmURI)) {
+
+                                final DigestMethodType digestMethodType =
+                                        XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_dsig_DigestMethod);
+                                String jceDigestAlgorithm = "SHA-1";
+                                if (digestMethodType != null) {
+                                    jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestMethodType.getAlgorithm());
+                                }
+
+                                PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
+                                final byte[] oaepParams =
+                                        XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_xenc_OAEPparams);
+                                if (oaepParams != null) {
+                                    pSource = new PSource.PSpecified(oaepParams);
+                                }
+
+                                MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
+                                final MGFType mgfType =
+                                        XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_xenc11_MGF);
+                                if (mgfType != null) {
+                                    if (XMLSecurityConstants.NS_MGF1_SHA256.equals(mgfType.getAlgorithm())) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
+                                    } else if (XMLSecurityConstants.NS_MGF1_SHA384.equals(mgfType.getAlgorithm())) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
+                                    } else if (XMLSecurityConstants.NS_MGF1_SHA512.equals(mgfType.getAlgorithm())) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
+                                    }
+                                }
+                                OAEPParameterSpec oaepParameterSpec = new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
+                                cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage, correlationID), oaepParameterSpec);
+                            } else {
+                                cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage, correlationID));
+                            }
                             if (encryptedKeyType.getCipherData() == null
                                     || encryptedKeyType.getCipherData().getCipherValue() == null) {
                                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noCipher");
                             }
                             Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
-                                    asyncEncAlgo.getJCEName(),
+                                    encAlgo.getJCEName(),
                                     Cipher.SECRET_KEY);
                             return this.decryptedKey = key.getEncoded();
 
@@ -189,6 +217,11 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                     e, "No such padding: " + algorithmURI
                             );
                         } catch (NoSuchAlgorithmException e) {
+                            throw new XMLSecurityException(
+                                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
+                                    e, "No such algorithm: " + algorithmURI
+                            );
+                        } catch (InvalidAlgorithmParameterException e) {
                             throw new XMLSecurityException(
                                     XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
                                     e, "No such algorithm: " + algorithmURI
@@ -216,7 +249,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
 
         //fire a tokenSecurityEvent
         TokenSecurityEvent tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
-        tokenSecurityEvent.setSecurityToken((SecurityToken)securityTokenProvider.getSecurityToken());
+        tokenSecurityEvent.setSecurityToken((SecurityToken) securityTokenProvider.getSecurityToken());
         tokenSecurityEvent.setCorrelationID(encryptedKeyType.getId());
         securityContext.registerSecurityEvent(tokenSecurityEvent);
 
@@ -230,10 +263,10 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
             throws XMLSecurityException {
         // do nothing
     }
-    
-    protected void handleReferenceList(final InputProcessorChain inputProcessorChain, 
-            final EncryptedKeyType encryptedKeyType,
-            final XMLSecurityProperties securityProperties) throws XMLSecurityException {
+
+    protected void handleReferenceList(final InputProcessorChain inputProcessorChain,
+                                       final EncryptedKeyType encryptedKeyType,
+                                       final XMLSecurityProperties securityProperties) throws XMLSecurityException {
         // do nothing
     }
 

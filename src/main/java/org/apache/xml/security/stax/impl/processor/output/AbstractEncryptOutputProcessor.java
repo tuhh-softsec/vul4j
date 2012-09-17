@@ -32,6 +32,7 @@ import org.apache.xml.security.stax.impl.util.TrimmerOutputStream;
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -120,8 +122,17 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 String jceAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(securityProperties.getEncryptionSymAlgorithm());
                 Cipher symmetricCipher = Cipher.getInstance(jceAlgorithm);
 
+                // The Spec mandates a 96-bit IV for GCM algorithms
+                if ("AES/GCM/NoPadding".equals(symmetricCipher.getAlgorithm())) {
+                    //todo we should extend the security-config.xml with an iv-length parameter
+                    byte[] temp = new byte[12];
+                    XMLSecurityConstants.secureRandom.nextBytes(temp);
+                    IvParameterSpec ivParameterSpec = new IvParameterSpec(temp);
+                    symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey(), ivParameterSpec);
+                } else {
+                    symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey());
+                }
                 //Should internally generate an IV
-                symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey());
                 byte[] iv = symmetricCipher.getIV();
 
                 characterEventGeneratorOutputStream = new CharacterEventGeneratorOutputStream(getEncoding());
@@ -156,6 +167,8 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
             } catch (XMLStreamException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
             } catch (InvalidKeyException e) {
+                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+            } catch (InvalidAlgorithmParameterException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
             } catch (InvocationTargetException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);

@@ -18,35 +18,32 @@
  */
 package org.apache.xml.security.stax.impl.processor.output;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.ext.OutputProcessorChain;
-import org.apache.xml.security.stax.ext.SecurePart;
-import org.apache.xml.security.stax.ext.SecurityTokenProvider;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
 import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
+
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.security.*;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.MGF1ParameterSpec;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Processor to encrypt XML structures
@@ -57,11 +54,11 @@ import org.apache.xml.security.stax.impl.util.IDGenerator;
 public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
 
     private static final transient Log logger = LogFactory.getLog(XMLEncryptOutputProcessor.class);
-    
+
     public XMLEncryptOutputProcessor() throws XMLSecurityException {
         super();
     }
-    
+
     @Override
     public void processEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         if (xmlSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT) {
@@ -84,7 +81,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         encryptionPartDef.setKeyId(securityTokenProvider.getId());
                         encryptionPartDef.setSymmetricKey(securityToken.getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm()));
                         outputProcessorChain.getSecurityContext().putAsList(EncryptionPartDef.class, encryptionPartDef);
-                        
+
                         internalEncryptionOutputProcessor =
                                 createInternalEncryptionOutputProcessor(
                                         encryptionPartDef, xmlSecStartElement,
@@ -94,7 +91,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         internalEncryptionOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
                         internalEncryptionOutputProcessor.setAction(getAction());
                         internalEncryptionOutputProcessor.init(outputProcessorChain);
-                        
+
                     } catch (IOException e) {
                         throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
                     }
@@ -106,102 +103,158 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
 
         outputProcessorChain.processEvent(xmlSecEvent);
     }
-    
+
     /**
      * Override this method to return a different AbstractInternalEncryptionOutputProcessor instance
      * which will write out the KeyInfo contents in the EncryptedData.
      */
     protected AbstractInternalEncryptionOutputProcessor createInternalEncryptionOutputProcessor(
-        EncryptionPartDef encryptionPartDef,
-        XMLSecStartElement startElement,
-        String encoding,
-        final OutboundSecurityToken keyWrappingToken
+            EncryptionPartDef encryptionPartDef,
+            XMLSecStartElement startElement,
+            String encoding,
+            final OutboundSecurityToken keyWrappingToken
     ) throws XMLStreamException, XMLSecurityException {
         try {
-            final AbstractInternalEncryptionOutputProcessor processor = 
+            final AbstractInternalEncryptionOutputProcessor processor =
                     new AbstractInternalEncryptionOutputProcessor(encryptionPartDef,
-                                        startElement,
-                                        encoding) {
+                            startElement,
+                            encoding) {
 
-                @Override
-                protected void createKeyInfoStructure(OutputProcessorChain outputProcessorChain)
-                        throws XMLStreamException, XMLSecurityException {
-                    if (keyWrappingToken == null) {
-                        // Do not write out a KeyInfo element
-                        return;
-                    }
-                    PublicKey pubKey = keyWrappingToken.getPublicKey();
-                    Key secretKey = keyWrappingToken.getSecretKey(getSecurityProperties().getEncryptionKeyTransportAlgorithm());
-                    if (pubKey == null && secretKey == null) {
-                        // Do not write out a KeyInfo element
-                        return;
-                    }
-                    
-                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, true, null);
-                    
-                    List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
-                    String keyId = getEncryptionPartDef().getKeyId();
-                    if (keyId == null) {
-                        keyId = IDGenerator.generateID("EK");
-                    }
-                    attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, keyId));
-                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey, true, attributes);
-
-                    attributes = new ArrayList<XMLSecAttribute>(1);
-                    attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, getSecurityProperties().getEncryptionKeyTransportAlgorithm()));
-                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod, false, attributes);
-                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod);
-                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherData, false, null);
-                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherValue, false, null);
-
-                    try {
-                        //encrypt the symmetric session key with the public key from the receiver:
-                        String jceid = JCEAlgorithmMapper.translateURItoJCEID(getSecurityProperties().getEncryptionKeyTransportAlgorithm());
-                        Cipher cipher = Cipher.getInstance(jceid);
-                        if (pubKey != null) {
-                            cipher.init(Cipher.WRAP_MODE, pubKey);
-                        } else {
-                            cipher.init(Cipher.WRAP_MODE, secretKey);
-                        }
-
-                        String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
-                        SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
-
-                        final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
-                        Key ephemeralKey =
-                            securityToken.getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm());
-                        if (pubKey != null) {
-                            int blockSize = cipher.getBlockSize();
-                            if (blockSize > 0 && blockSize < ephemeralKey.getEncoded().length) {
-                                throw new XMLSecurityException(
-                                    XMLSecurityException.ErrorCode.FAILURE, 
-                                    "unsupportedKeyTransp", 
-                                    "public key algorithm too weak to encrypt symmetric key"
-                                );
+                        @Override
+                        protected void createKeyInfoStructure(OutputProcessorChain outputProcessorChain)
+                                throws XMLStreamException, XMLSecurityException {
+                            if (keyWrappingToken == null) {
+                                // Do not write out a KeyInfo element
+                                return;
                             }
+
+                            final String encryptionKeyTransportAlgorithm = getSecurityProperties().getEncryptionKeyTransportAlgorithm();
+
+                            PublicKey pubKey = keyWrappingToken.getPublicKey();
+                            Key secretKey = keyWrappingToken.getSecretKey(encryptionKeyTransportAlgorithm);
+                            if (pubKey == null && secretKey == null) {
+                                // Do not write out a KeyInfo element
+                                return;
+                            }
+
+                            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo, true, null);
+
+                            List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
+                            String keyId = getEncryptionPartDef().getKeyId();
+                            if (keyId == null) {
+                                keyId = IDGenerator.generateID("EK");
+                            }
+                            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, keyId));
+                            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey, true, attributes);
+
+                            attributes = new ArrayList<XMLSecAttribute>(1);
+                            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportAlgorithm));
+                            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod, false, attributes);
+
+                            final String encryptionKeyTransportMGFAlgorithm = getSecurityProperties().getEncryptionKeyTransportMGFAlgorithm();
+
+                            if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(encryptionKeyTransportAlgorithm) ||
+                                    XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)) {
+
+                                byte[] oaepParams = getSecurityProperties().getEncryptionKeyTransportOAEPParams();
+                                if (oaepParams != null) {
+                                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_OAEPparams, false, null);
+                                    createCharactersAndOutputAsEvent(outputProcessorChain, Base64.encodeBase64String(oaepParams));
+                                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_OAEPparams);
+                                }
+
+                                attributes = new ArrayList<XMLSecAttribute>(1);
+                                attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm()));
+                                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod, true, attributes);
+                                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod);
+
+                                attributes = new ArrayList<XMLSecAttribute>(1);
+                                attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportMGFAlgorithm));
+                                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF, true, attributes);
+                                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF);
+                            }
+
+                            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod);
+                            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherData, false, null);
+                            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherValue, false, null);
+
+                            try {
+                                //encrypt the symmetric session key with the public key from the receiver:
+                                String jceid = JCEAlgorithmMapper.translateURItoJCEID(encryptionKeyTransportAlgorithm);
+                                Cipher cipher = Cipher.getInstance(jceid);
+
+                                AlgorithmParameterSpec algorithmParameterSpec = null;
+                                if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(encryptionKeyTransportAlgorithm) ||
+                                        XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)) {
+
+                                    String jceDigestAlgorithm = JCEMapper.translateURItoJCEID(getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm());
+
+                                    PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
+                                    byte[] oaepParams = getSecurityProperties().getEncryptionKeyTransportOAEPParams();
+                                    if (oaepParams != null) {
+                                        pSource = new PSource.PSpecified(oaepParams);
+                                    }
+
+                                    MGF1ParameterSpec mgfParameterSpec = null;
+
+                                    if (XMLSecurityConstants.NS_MGF1_SHA1.equals(encryptionKeyTransportMGFAlgorithm)) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
+                                    } else if (XMLSecurityConstants.NS_MGF1_SHA256.equals(encryptionKeyTransportMGFAlgorithm)) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
+                                    } else if (XMLSecurityConstants.NS_MGF1_SHA384.equals(encryptionKeyTransportMGFAlgorithm)) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
+                                    } else if (XMLSecurityConstants.NS_MGF1_SHA512.equals(encryptionKeyTransportMGFAlgorithm)) {
+                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
+                                    }
+                                    algorithmParameterSpec = new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
+                                }
+
+                                if (pubKey != null) {
+                                    cipher.init(Cipher.WRAP_MODE, pubKey, algorithmParameterSpec);
+                                } else {
+                                    cipher.init(Cipher.WRAP_MODE, secretKey, algorithmParameterSpec);
+                                }
+
+                                String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
+                                SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
+
+                                final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
+                                Key sessionKey =
+                                        securityToken.getSecretKey(getSecurityProperties().getEncryptionSymAlgorithm());
+                                if (pubKey != null) {
+                                    int blockSize = cipher.getBlockSize();
+                                    if (blockSize > 0 && blockSize < sessionKey.getEncoded().length) {
+                                        throw new XMLSecurityException(
+                                                XMLSecurityException.ErrorCode.FAILURE,
+                                                "unsupportedKeyTransp",
+                                                "public key algorithm too weak to encrypt symmetric key"
+                                        );
+                                    }
+                                }
+                                byte[] encryptedEphemeralKey = cipher.wrap(sessionKey);
+
+                                createCharactersAndOutputAsEvent(outputProcessorChain, new Base64(76, new byte[]{'\n'}).encodeToString(encryptedEphemeralKey));
+
+                            } catch (NoSuchPaddingException e) {
+                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                            } catch (NoSuchAlgorithmException e) {
+                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                            } catch (InvalidKeyException e) {
+                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                            } catch (IllegalBlockSizeException e) {
+                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                            } catch (InvalidAlgorithmParameterException e) {
+                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                            }
+
+                            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherValue);
+                            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherData);
+
+                            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey);
+
+                            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
                         }
-                        byte[] encryptedEphemeralKey = cipher.wrap(ephemeralKey);
-
-                        createCharactersAndOutputAsEvent(outputProcessorChain, new Base64(76, new byte[]{'\n'}).encodeToString(encryptedEphemeralKey));
-
-                    } catch (NoSuchPaddingException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
-                    } catch (InvalidKeyException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
-                    } catch (IllegalBlockSizeException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
-                    }
-
-                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherValue);
-                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_CipherData);
-
-                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptedKey);
-                    
-                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_KeyInfo);
-                }
-            };
+                    };
             return processor;
         } catch (NoSuchAlgorithmException e) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
@@ -213,6 +266,4 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
         }
     }
-    
-
 }

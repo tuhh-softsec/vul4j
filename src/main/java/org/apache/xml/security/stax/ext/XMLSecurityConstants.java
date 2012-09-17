@@ -65,7 +65,7 @@ public class XMLSecurityConstants {
         }
 
         try {
-            setJaxbContext(JAXBContext.newInstance("org.apache.xml.security.binding.xmlenc:org.apache.xml.security.binding.xmldsig:org.apache.xml.security.binding.xmldsig11:org.apache.xml.security.binding.excc14n"));
+            setJaxbContext(JAXBContext.newInstance("org.apache.xml.security.binding.xmlenc:org.apache.xml.security.binding.xmlenc11:org.apache.xml.security.binding.xmldsig:org.apache.xml.security.binding.xmldsig11:org.apache.xml.security.binding.excc14n"));
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new LSResourceResolver() {
                 @Override
@@ -99,6 +99,7 @@ public class XMLSecurityConstants {
                             new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/exc-c14n.xsd")),
                             new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd")),
                             new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xenc-schema.xsd")),
+                            new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xenc-schema-11.xsd")),
                             new StreamSource(XMLSecurityConstants.class.getClassLoader().getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd")),
                     }
             );
@@ -145,12 +146,13 @@ public class XMLSecurityConstants {
 
     public static final String NS_XML = "http://www.w3.org/2000/xmlns/";
     public static final String NS_XMLENC = "http://www.w3.org/2001/04/xmlenc#";
-    public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11";
+    public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11#";
     public static final String NS_DSIG = "http://www.w3.org/2000/09/xmldsig#";
     public static final String NS_DSIG11 = "http://www.w3.org/2009/xmldsig11#";
     public static final String NS_WSSE11 = "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd";
             
     public static final String PREFIX_XENC = "xenc";
+    public static final String PREFIX_XENC11 = "xenc11";
     public static final QName TAG_xenc_EncryptedKey = new QName(NS_XMLENC, "EncryptedKey", PREFIX_XENC);
     public static final QName ATT_NULL_Id = new QName(null, "Id");
     public static final QName ATT_NULL_Type = new QName(null, "Type");
@@ -159,6 +161,10 @@ public class XMLSecurityConstants {
 
     public static final QName TAG_xenc_EncryptionMethod = new QName(NS_XMLENC, "EncryptionMethod", PREFIX_XENC);
     public static final QName ATT_NULL_Algorithm = new QName(null, "Algorithm");
+
+    public static final QName TAG_xenc_OAEPparams = new QName(NS_XMLENC, "OAEPparams", PREFIX_XENC);
+
+    public static final QName TAG_xenc11_MGF = new QName(NS_XMLENC11, "MGF", PREFIX_XENC11);
 
     public static final String PREFIX_DSIG = "dsig";
     public static final QName TAG_dsig_KeyInfo = new QName(NS_DSIG, "KeyInfo", PREFIX_DSIG);
@@ -233,7 +239,14 @@ public class XMLSecurityConstants {
     public static final String NS_XENC_AES256 = NS_XMLENC + "aes256-cbc";
     public static final String NS_XENC11_AES256_GCM = NS_XMLENC11 + "aes256-gcm";
     public static final String NS_XENC_RSA15 = NS_XMLENC + "rsa-1_5";
-    public static final String NS_XENC_RSAOAEP = NS_XMLENC + "rsa-oaep-mgf1p";
+    public static final String NS_XENC_RSAOAEPMGF1P = NS_XMLENC + "rsa-oaep-mgf1p";
+    public static final String NS_XENC11_RSAOAEP = NS_XMLENC11 + "rsa-oaep";
+
+    public static final String NS_MGF1_SHA1 = NS_XMLENC11 + "mgf1sha1";
+    public static final String NS_MGF1_SHA224 = NS_XMLENC11 + "mgf1sha224";
+    public static final String NS_MGF1_SHA256 = NS_XMLENC11 + "mgf1sha256";
+    public static final String NS_MGF1_SHA384 = NS_XMLENC11 + "mgf1sha384";
+    public static final String NS_MGF1_SHA512 = NS_XMLENC11 + "mgf1sha512";
 
     public static final String PREFIX_C14N_EXCL = "c14nEx";
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");

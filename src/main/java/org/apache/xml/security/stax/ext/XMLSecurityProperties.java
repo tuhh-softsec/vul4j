@@ -91,6 +91,9 @@ public class XMLSecurityProperties {
     private String encryptionSymAlgorithm;
     private String encryptionCompressionAlgorithm;
     private String encryptionKeyTransportAlgorithm;
+    private String encryptionKeyTransportDigestAlgorithm;
+    private String encryptionKeyTransportMGFAlgorithm;
+    private byte[] encryptionKeyTransportOAEPParams;
     private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
     private Key encryptionKey;
     private Key encryptionTransportKey;
@@ -173,6 +176,30 @@ public class XMLSecurityProperties {
      */
     public void setEncryptionKeyTransportAlgorithm(String encryptionKeyTransportAlgorithm) {
         this.encryptionKeyTransportAlgorithm = encryptionKeyTransportAlgorithm;
+    }
+
+    public String getEncryptionKeyTransportDigestAlgorithm() {
+        return encryptionKeyTransportDigestAlgorithm;
+    }
+
+    public void setEncryptionKeyTransportDigestAlgorithm(String encryptionKeyTransportDigestAlgorithm) {
+        this.encryptionKeyTransportDigestAlgorithm = encryptionKeyTransportDigestAlgorithm;
+    }
+
+    public String getEncryptionKeyTransportMGFAlgorithm() {
+        return encryptionKeyTransportMGFAlgorithm;
+    }
+
+    public void setEncryptionKeyTransportMGFAlgorithm(String encryptionKeyTransportMGFAlgorithm) {
+        this.encryptionKeyTransportMGFAlgorithm = encryptionKeyTransportMGFAlgorithm;
+    }
+
+    public byte[] getEncryptionKeyTransportOAEPParams() {
+        return encryptionKeyTransportOAEPParams;
+    }
+
+    public void setEncryptionKeyTransportOAEPParams(byte[] encryptionKeyTransportOAEPParams) {
+        this.encryptionKeyTransportOAEPParams = encryptionKeyTransportOAEPParams;
     }
 
     public X509Certificate getEncryptionUseThisCertificate() {

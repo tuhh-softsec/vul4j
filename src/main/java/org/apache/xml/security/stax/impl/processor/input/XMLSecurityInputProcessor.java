@@ -127,6 +127,7 @@ public class XMLSecurityInputProcessor extends AbstractInputProcessor {
 
         } while (!xmlSecEvent.isEndDocument());
         //if we reach this state we didn't find a signature
+        //todo exception is wrong. We don't miss a signature when we are decrypting but we miss EncryptedData
         throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "missingSignature");
     }
 

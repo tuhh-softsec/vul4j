@@ -48,7 +48,12 @@ public class IVSplittingOutputStream extends FilterOutputStream {
 
     public IVSplittingOutputStream(OutputStream out, Cipher cipher, Key secretKey) {
         super(out);
-        ivLength = cipher.getBlockSize();
+        //todo we should extend the security-config.xml with an iv-length parameter
+        if ("AES/GCM/NoPadding".equals(cipher.getAlgorithm())) {
+            ivLength = 12;
+        } else {
+            ivLength = cipher.getBlockSize();
+        }
         iv = new byte[ivLength];
         this.cipher = cipher;
         this.secretKey = secretKey;

@@ -386,6 +386,12 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         Cipher symCipher;
         try {
             AlgorithmType symEncAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
+            if (symEncAlgo == null) {
+                throw new XMLSecurityException(
+                        XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
+                        "No such algorithm: " + algorithmURI
+                );
+            }
             if (symEncAlgo.getJCEProvider() != null) {
                 symCipher = Cipher.getInstance(symEncAlgo.getJCEName(), symEncAlgo.getJCEProvider());
             } else {
