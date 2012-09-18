@@ -487,8 +487,13 @@ public class XMLSignatureInput {
         } else {
             byte[] buffer = new byte[4 * 1024];
             int bytesread = 0;
-            while ((bytesread = inputOctetStreamProxy.read(buffer)) != -1) {
-                diOs.write(buffer, 0, bytesread);
+            try {
+                while ((bytesread = inputOctetStreamProxy.read(buffer)) != -1) {
+                    diOs.write(buffer, 0, bytesread);
+                }
+            } catch (IOException ex) {
+                inputOctetStreamProxy.close();
+                throw ex;
             }
         }
     }
@@ -507,8 +512,11 @@ public class XMLSignatureInput {
         if (inputOctetStreamProxy == null) {
             return null;
         }
-        bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
-        inputOctetStreamProxy.close();
+        try {
+            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
+        } finally {
+            inputOctetStreamProxy.close();
+        }
         return bytes;
     }
         
@@ -568,9 +576,13 @@ public class XMLSignatureInput {
             byte result[] = baos.toByteArray();
             Document document = db.parse(new ByteArrayInputStream(result));
             this.subNode = document.getDocumentElement().getFirstChild().getFirstChild();				
+        } finally {
+            if (this.inputOctetStreamProxy != null) {
+                this.inputOctetStreamProxy.close();
+            }
+            this.inputOctetStreamProxy = null;
+            this.bytes = null;
         }
-        this.inputOctetStreamProxy = null;
-        this.bytes = null;
     }
     
 }

@@ -35,8 +35,8 @@ import java.util.List;
  */
 public class TransformIdentity implements Transformer {
 
-    private static XMLOutputFactory xmlOutputFactory;
-    private static XMLInputFactory xmlInputFactory;
+    private static volatile XMLOutputFactory xmlOutputFactory;
+    private static volatile XMLInputFactory xmlInputFactory;
     private OutputStream outputStream;
     private XMLEventWriter xmlEventWriterForOutputStream;
     private Transformer transformer;

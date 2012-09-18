@@ -93,6 +93,7 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
     @Override
     public void close() throws IOException {
         bufCache.remove();
+        buf = null;
     }
 
     private void expandSize(int newPos) {
