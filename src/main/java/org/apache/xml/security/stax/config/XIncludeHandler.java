@@ -43,6 +43,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,13 +66,13 @@ public class XIncludeHandler extends DefaultHandler {
     private URL systemId = null;
     private boolean skipEvents = false;
 
-    Map<URL, Document> uriDocMap = new HashMap<URL, Document>();
+    Map<URI, Document> uriDocMap = new HashMap<URI, Document>();
 
     public XIncludeHandler(ContentHandler contentHandler) {
         this.contentHandler = contentHandler;
     }
 
-    private XIncludeHandler(ContentHandler contentHandler, Map<URL, Document> uriDocMap) {
+    private XIncludeHandler(ContentHandler contentHandler, Map<URI, Document> uriDocMap) {
         this.contentHandler = contentHandler;
         this.uriDocMap = uriDocMap;
     }
@@ -150,7 +152,11 @@ public class XIncludeHandler extends DefaultHandler {
 
                 document = (Document) domResult.getNode();
                 document.setDocumentURI(url.toExternalForm());
-                uriDocMap.put(url, document);
+                try {
+                    uriDocMap.put(url.toURI(), document);
+                } catch (URISyntaxException e) {
+                    throw new SAXException(e);
+                }
             }
 
             SAXResult saxResult = new SAXResult(this);

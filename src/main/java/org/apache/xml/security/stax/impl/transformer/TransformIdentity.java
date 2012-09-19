@@ -35,8 +35,8 @@ import java.util.List;
  */
 public class TransformIdentity implements Transformer {
 
-    private static volatile XMLOutputFactory xmlOutputFactory;
-    private static volatile XMLInputFactory xmlInputFactory;
+    private static XMLOutputFactory xmlOutputFactory;
+    private static XMLInputFactory xmlInputFactory;
     private OutputStream outputStream;
     private XMLEventWriter xmlEventWriterForOutputStream;
     private Transformer transformer;
@@ -44,15 +44,19 @@ public class TransformIdentity implements Transformer {
     private List list;
 
     protected static XMLOutputFactory getXmlOutputFactory() {
-        if (xmlOutputFactory == null) {
-            xmlOutputFactory = XMLOutputFactory.newInstance();
+        synchronized(TransformIdentity.class) {
+            if (xmlOutputFactory == null) {
+                xmlOutputFactory = XMLOutputFactory.newInstance();
+            }
         }
         return xmlOutputFactory;
     }
 
     public static XMLInputFactory getXmlInputFactory() {
-        if (xmlInputFactory == null) {
-            xmlInputFactory = XMLInputFactory.newInstance();
+        synchronized(TransformIdentity.class) {
+            if (xmlInputFactory == null) {
+                xmlInputFactory = XMLInputFactory.newInstance();
+            }
         }
         return xmlInputFactory;
     }
