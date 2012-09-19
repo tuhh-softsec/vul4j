@@ -44,6 +44,21 @@ public class WarArchiverTest
         assertTrue( new File( getTargetRarFolder(), "test.war" ).exists() );
     }
 
+    public void testInfiniteRecursion()
+        throws Exception
+    {
+        WarArchiver archiver = (WarArchiver) lookup( Archiver.ROLE, "war" );
+        archiver.setDestFile( new File( getTargetRarFolder(), "test.war" ) );
+
+        // Easy to produce infinite recursion if you just add existing files again and again
+
+        File dummyContent = getTestFile( "src/test/resources/folders", "File.txt" );
+        for (int i = 0; i < 100000; i++){
+            archiver.addFile( dummyContent, "testZ" );
+        }
+        assertEquals( 1, count( archiver.getResources() ) ); // I wonder what the first entry is
+    }
+
     public File getTargetRarFolder()
     {
         return new File( getBasedir(), "/target/wartest/" );
