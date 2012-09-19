@@ -17,7 +17,6 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,6 +60,8 @@ public abstract class AbstractZipArchiver
     private String encoding;
 
     private boolean doCompress = true;
+
+    private boolean recompressAddedZips = true;
 
     private boolean doUpdate = false;
 
@@ -140,6 +141,16 @@ public abstract class AbstractZipArchiver
     public boolean isCompress()
     {
         return doCompress;
+    }
+
+    public boolean isRecompressAddedZips()
+    {
+        return recompressAddedZips;
+    }
+
+    public void setRecompressAddedZips( boolean recompressAddedZips )
+    {
+        this.recompressAddedZips = recompressAddedZips;
     }
 
     public void setUpdateMode( boolean update )
@@ -438,6 +449,50 @@ public abstract class AbstractZipArchiver
         }
     }
 
+    private void readWithZipStats(InputStream in, byte[] header, ZipEntry ze, ByteArrayOutputStream bos) throws IOException {
+        byte[] buffer = new byte[8 * 1024];
+
+        CRC32 cal2 = new CRC32();
+
+        long size = 0;
+
+        for (byte aHeader : header) {
+            cal2.update(aHeader);
+            size++;
+        }
+
+        int count = 0;
+        do
+        {
+            size += count;
+            cal2.update( buffer, 0, count );
+            if (bos != null)
+            {
+                bos.write( buffer, 0, count );
+            }
+            count = in.read( buffer, 0, buffer.length );
+        }
+        while ( count != -1 );
+        ze.setSize(size);
+        ze.setCrc(cal2.getValue());
+    }
+
+    public static long copy( final InputStream input,
+                             final OutputStream output,
+                             final int bufferSize )
+            throws IOException
+    {
+        final byte[] buffer = new byte[bufferSize];
+        long size = 0;
+        int n;
+        while ( -1 != ( n = input.read( buffer ) ) )
+        {
+            size += n;
+            output.write( buffer, 0, n );
+        }
+        return size;
+    }
+
     /**
      * Adds a new entry to the archive, takes care of duplicates as well.
      *
@@ -462,8 +517,17 @@ public abstract class AbstractZipArchiver
         {
             ZipEntry ze = new ZipEntry( vPath );
             ze.setTime( lastModified );
-            ze.setMethod( doCompress ? ZipEntry.DEFLATED : ZipEntry.STORED );
 
+            byte[] header = new byte[4];
+            int read = in.read(header);
+
+            boolean compressThis = doCompress;
+            if (!recompressAddedZips && isZipHeader(header)){
+                compressThis = false;
+            }
+
+            ze.setMethod( compressThis ? ZipEntry.DEFLATED : ZipEntry.STORED );
+            ze.setUnixMode( UnixStat.FILE_FLAG | mode );
             /*
              * ZipOutputStream.putNextEntry expects the ZipEntry to
              * know its size and the CRC sum before you start writing
@@ -471,64 +535,38 @@ public abstract class AbstractZipArchiver
              *
              * This forces us to process the data twice.
              */
-            if ( !zOut.isSeekable() && !doCompress )
-            {
-                long size = 0;
-                CRC32 cal = new CRC32();
-                if ( !in.markSupported() )
+
+
+
+            if (zOut.isSeekable() || compressThis) {
+                zOut.putNextEntry( ze );
+                if (read > 0) zOut.write(header, 0, read);
+                IOUtil.copy( in, zOut, 8 * 1024);
+            } else {
+                if (in.markSupported())
                 {
-                    // Store data into a byte[]
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    byte[] buffer = new byte[8 * 1024];
-                    int count = 0;
-
-                    do
-                    {
-                        size += count;
-                        cal.update( buffer, 0, count );
-                        bos.write( buffer, 0, count );
-                        count = in.read( buffer, 0, buffer.length );
-                    }
-                    while ( count != -1 );
-
-                    in = new ByteArrayInputStream( bos.toByteArray() );
+                    in.mark( Integer.MAX_VALUE );
+                    readWithZipStats(in, header, ze, null);
+                    in.reset();
+                    zOut.putNextEntry(ze);
+                    if (read > 0) zOut.write(header, 0, read);
+                    IOUtil.copy(in, zOut, 8 * 1024);
                 }
                 else
                 {
-                    in.mark( Integer.MAX_VALUE );
-                    byte[] buffer = new byte[8 * 1024];
-                    int count = 0;
-
-                    do
-                    {
-                        size += count;
-                        cal.update( buffer, 0, count );
-                        count = in.read( buffer, 0, buffer.length );
-                    }
-                    while ( count != -1 );
-
-                    in.reset();
+                    // Store data into a byte[]
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream(128 * 1024);
+                    readWithZipStats(in, header, ze, bos);
+                    zOut.putNextEntry(ze);
+                    if (read > 0) zOut.write(header, 0, read);
+                    bos.writeTo( zOut);
                 }
-                ze.setSize( size );
-                ze.setCrc( cal.getValue() );
             }
-
-            ze.setUnixMode( UnixStat.FILE_FLAG | mode );
-            zOut.putNextEntry( ze );
-
-            byte[] buffer = new byte[8 * 1024];
-            int count = 0;
-            do
-            {
-                if ( count != 0 )
-                {
-                    zOut.write( buffer, 0, count );
-                }
-                count = in.read( buffer, 0, buffer.length );
-            }
-            while ( count != -1 );
         }
+    }
+
+    private boolean isZipHeader(byte[] header) {
+        return header[0] == 0x50 && header[1] == 0x4b && header[2] == 03 && header[3] == 04;
     }
 
     /**
