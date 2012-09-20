@@ -428,7 +428,7 @@ public class Reference extends SignatureElementProxy {
             XMLSignatureInput output = null;
 
             if (transforms != null) {
-                output = transforms.performTransforms(input,os);
+                output = transforms.performTransforms(input, os);
                 this.transformsOutput = output;//new XMLSignatureInput(output.getBytes());
 
                 //this.transformsOutput.setSourceURI(output.getSourceURI());
@@ -702,6 +702,11 @@ public class Reference extends SignatureElementProxy {
                 output.updateOutputStream(os);
             }
             os.flush();
+            
+            if (output.getOctetStreamReal() != null) {
+                output.getOctetStreamReal().close();
+            }
+            
             //this.getReferencedBytes(diOs);
             //mda.update(data);
 

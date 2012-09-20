@@ -252,7 +252,7 @@ public class XMLSignatureInput {
     /**
      * @return real octet stream
      */
-    public InputStream getOctetStreamReal () {
+    public InputStream getOctetStreamReal() {
         return inputOctetStreamProxy;
     }
 
