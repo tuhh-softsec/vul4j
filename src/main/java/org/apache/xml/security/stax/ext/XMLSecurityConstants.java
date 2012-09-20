@@ -65,7 +65,15 @@ public class XMLSecurityConstants {
         }
 
         try {
-            setJaxbContext(JAXBContext.newInstance("org.apache.xml.security.binding.xmlenc:org.apache.xml.security.binding.xmlenc11:org.apache.xml.security.binding.xmldsig:org.apache.xml.security.binding.xmldsig11:org.apache.xml.security.binding.excc14n"));
+            setJaxbContext(
+                    JAXBContext.newInstance(
+                            "org.apache.xml.security.binding.xmlenc:" +
+                                    "org.apache.xml.security.binding.xmlenc11:" +
+                                    "org.apache.xml.security.binding.xmldsig:" +
+                                    "org.apache.xml.security.binding.xmldsig11:" +
+                                    "org.apache.xml.security.binding.excc14n"
+                    )
+            );
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new LSResourceResolver() {
                 @Override

@@ -108,6 +108,41 @@
                     KeyLength="512"
                     JCEName="SHA-512"/>
 
+       <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha1"
+                  Description="Mask Generation Function with SHA-1 used with the RSA-OAEP key transport algorithm"
+                  AlgorithmClass="MessageDigest"
+                  RequirementLevel="OPTIONAL"
+                  KeyLength="160"
+                  JCEName="SHA-1"/>
+
+       <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha224"
+                  Description="Mask Generation Function with SHA-224 used with the RSA-OAEP key transport algorithm"
+                  AlgorithmClass="MessageDigest"
+                  RequirementLevel="OPTIONAL"
+                  KeyLength="224"
+                  JCEName="SHA-224"/>
+
+       <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha256"
+                  Description="Mask Generation Function with SHA-256 used with the RSA-OAEP key transport algorithm"
+                  AlgorithmClass="MessageDigest"
+                  RequirementLevel="OPTIONAL"
+                  KeyLength="256"
+                  JCEName="SHA-256"/>
+
+       <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha384"
+                  Description="Mask Generation Function with SHA-384 used with the RSA-OAEP key transport algorithm"
+                  AlgorithmClass="MessageDigest"
+                  RequirementLevel="OPTIONAL"
+                  KeyLength="384"
+                  JCEName="SHA-384"/>
+
+       <Algorithm URI="http://www.w3.org/2009/xmlenc11#mgf1sha512"
+                  Description="Mask Generation Function with SHA-512 used with the RSA-OAEP key transport algorithm"
+                  AlgorithmClass="MessageDigest"
+                  RequirementLevel="OPTIONAL"
+                  KeyLength="512"
+                  JCEName="SHA-512"/>
+
          <!-- Signature Algorithms -->
          <Algorithm URI="http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     Description="Digital Signature Algorithm with SHA-1 message digest"

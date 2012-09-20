@@ -21,7 +21,6 @@ package org.apache.xml.security.stax.impl.processor.output;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
@@ -151,6 +150,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                             attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportAlgorithm));
                             createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod, false, attributes);
 
+                            final String encryptionKeyTransportDigestAlgorithm = getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm();
                             final String encryptionKeyTransportMGFAlgorithm = getSecurityProperties().getEncryptionKeyTransportMGFAlgorithm();
 
                             if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(encryptionKeyTransportAlgorithm) ||
@@ -163,15 +163,19 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                                     createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_OAEPparams);
                                 }
 
-                                attributes = new ArrayList<XMLSecAttribute>(1);
-                                attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm()));
-                                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod, true, attributes);
-                                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod);
+                                if (encryptionKeyTransportDigestAlgorithm != null) {
+                                    attributes = new ArrayList<XMLSecAttribute>(1);
+                                    attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportDigestAlgorithm));
+                                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod, true, attributes);
+                                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_DigestMethod);
+                                }
 
-                                attributes = new ArrayList<XMLSecAttribute>(1);
-                                attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportMGFAlgorithm));
-                                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF, true, attributes);
-                                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF);
+                                if (encryptionKeyTransportMGFAlgorithm != null) {
+                                    attributes = new ArrayList<XMLSecAttribute>(1);
+                                    attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, encryptionKeyTransportMGFAlgorithm));
+                                    createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF, true, attributes);
+                                    createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc11_MGF);
+                                }
                             }
 
                             createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod);
@@ -187,7 +191,10 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                                 if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(encryptionKeyTransportAlgorithm) ||
                                         XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)) {
 
-                                    String jceDigestAlgorithm = JCEMapper.translateURItoJCEID(getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm());
+                                    String jceDigestAlgorithm = "SHA-1";
+                                    if (encryptionKeyTransportDigestAlgorithm != null) {
+                                        jceDigestAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(encryptionKeyTransportDigestAlgorithm);
+                                    }
 
                                     PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
                                     byte[] oaepParams = getSecurityProperties().getEncryptionKeyTransportOAEPParams();
@@ -195,16 +202,10 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                                         pSource = new PSource.PSpecified(oaepParams);
                                     }
 
-                                    MGF1ParameterSpec mgfParameterSpec = null;
-
-                                    if (XMLSecurityConstants.NS_MGF1_SHA1.equals(encryptionKeyTransportMGFAlgorithm)) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
-                                    } else if (XMLSecurityConstants.NS_MGF1_SHA256.equals(encryptionKeyTransportMGFAlgorithm)) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
-                                    } else if (XMLSecurityConstants.NS_MGF1_SHA384.equals(encryptionKeyTransportMGFAlgorithm)) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
-                                    } else if (XMLSecurityConstants.NS_MGF1_SHA512.equals(encryptionKeyTransportMGFAlgorithm)) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
+                                    MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
+                                    if (encryptionKeyTransportMGFAlgorithm != null) {
+                                        String jceMGFAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(encryptionKeyTransportMGFAlgorithm);
+                                            mgfParameterSpec = new MGF1ParameterSpec(jceMGFAlgorithm);
                                     }
                                     algorithmParameterSpec = new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
                                 }

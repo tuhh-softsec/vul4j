@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
-import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.binding.xmldsig.DigestMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
@@ -175,7 +174,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                         XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_dsig_DigestMethod);
                                 String jceDigestAlgorithm = "SHA-1";
                                 if (digestMethodType != null) {
-                                    jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestMethodType.getAlgorithm());
+                                    jceDigestAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(digestMethodType.getAlgorithm());
                                 }
 
                                 PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
@@ -189,13 +188,8 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                 final MGFType mgfType =
                                         XMLSecurityUtils.getQNameType(encryptedKeyType.getEncryptionMethod().getContent(), XMLSecurityConstants.TAG_xenc11_MGF);
                                 if (mgfType != null) {
-                                    if (XMLSecurityConstants.NS_MGF1_SHA256.equals(mgfType.getAlgorithm())) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
-                                    } else if (XMLSecurityConstants.NS_MGF1_SHA384.equals(mgfType.getAlgorithm())) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
-                                    } else if (XMLSecurityConstants.NS_MGF1_SHA512.equals(mgfType.getAlgorithm())) {
-                                        mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
-                                    }
+                                    String jceMGFAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(mgfType.getAlgorithm());
+                                    mgfParameterSpec = new MGF1ParameterSpec(jceMGFAlgorithm);
                                 }
                                 OAEPParameterSpec oaepParameterSpec = new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
                                 cipher.init(Cipher.UNWRAP_MODE, wrappingSecurityToken.getSecretKey(algorithmURI, keyUsage, correlationID), oaepParameterSpec);
