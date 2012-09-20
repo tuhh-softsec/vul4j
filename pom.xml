@@ -16,7 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,7 +30,9 @@ limitations under the License.
   <version>3.0.8-SNAPSHOT</version>
 
   <name>Plexus Common Utilities</name>
-  <description>A collection of various utility classes to ease working with strings, files, command lines, XML and more.</description>
+  <description>A collection of various utility classes to ease working with strings, files, command lines, XML and
+    more.
+  </description>
   <url>http://plexus.codehaus.org/plexus-utils</url>
 
   <scm>
@@ -65,6 +68,26 @@ limitations under the License.
             </property>
           </systemProperties>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.1.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>1.7.0</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
