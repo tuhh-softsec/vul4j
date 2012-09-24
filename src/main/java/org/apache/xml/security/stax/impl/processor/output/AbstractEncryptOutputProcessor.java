@@ -35,7 +35,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedOutputStream;
@@ -58,13 +57,10 @@ import java.util.List;
  */
 public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProcessor {
 
-    private static final XMLOutputFactory xmlOutputFactory;
     private static final XMLSecStartElement wrapperStartElement;
     private static final XMLSecEndElement wrapperEndElement;
 
     static {
-        xmlOutputFactory = XMLOutputFactory.newInstance();
-        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
         wrapperStartElement = XMLSecEventFactory.createXmlSecStartElement(new QName("a"), null, null);
         wrapperEndElement = XMLSecEventFactory.createXmlSecEndElement(new QName("a"));
     }
@@ -155,7 +151,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
                 //we create a new StAX writer for optimized namespace writing.
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-                xmlEventWriter = xmlOutputFactory.createXMLEventWriter(new BufferedOutputStream(cipherOutputStream, 8192 * 5), "UTF-8");
+                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(new BufferedOutputStream(cipherOutputStream, 8192 * 5), "UTF-8");
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {

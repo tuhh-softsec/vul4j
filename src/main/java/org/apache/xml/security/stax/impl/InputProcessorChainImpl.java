@@ -39,7 +39,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     protected static final transient Log log = LogFactory.getLog(InputProcessorChainImpl.class);
     protected static final transient boolean isDebugEnabled = log.isDebugEnabled();
 
-    private List<InputProcessor> inputProcessors = Collections.synchronizedList(new ArrayList<InputProcessor>(20));//the default of ten entries is not enough
+    private List<InputProcessor> inputProcessors;
     private int startPos = 0;
     private int curPos = 0;
 
@@ -51,17 +51,19 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     }
 
     public InputProcessorChainImpl(SecurityContext securityContext, int startPos) {
-        this(securityContext, new DocumentContextImpl(), startPos);
+        this(securityContext, new DocumentContextImpl(), startPos, new ArrayList<InputProcessor>(20));
     }
 
     public InputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContext) {
-        this(securityContext, documentContext, 0);
+        this(securityContext, documentContext, 0, new ArrayList<InputProcessor>(20));
     }
 
-    protected InputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl, int startPos) {
+    protected InputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl,
+                                      int startPos, List<InputProcessor> inputProcessors) {
         this.securityContext = securityContext;
         this.curPos = this.startPos = startPos;
-        documentContext = documentContextImpl;
+        this.documentContext = documentContextImpl;
+        this.inputProcessors = Collections.synchronizedList(inputProcessors);
     }
 
     public void reset() {
@@ -74,10 +76,6 @@ public class InputProcessorChainImpl implements InputProcessorChain {
 
     public DocumentContext getDocumentContext() {
         return this.documentContext;
-    }
-
-    private void setInputProcessors(List<InputProcessor> inputProcessors) {
-        this.inputProcessors = inputProcessors;
     }
 
     public void addProcessor(InputProcessor newInputProcessor) {
@@ -195,11 +193,10 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         InputProcessorChainImpl inputProcessorChain;
         try {
             inputProcessorChain = new InputProcessorChainImpl(securityContext, documentContext.clone(),
-                    inputProcessors.indexOf(inputProcessor) + 1);
+                    inputProcessors.indexOf(inputProcessor) + 1, new ArrayList<InputProcessor>(this.inputProcessors));
         } catch (CloneNotSupportedException e) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
         }
-        inputProcessorChain.setInputProcessors(new ArrayList<InputProcessor>(this.inputProcessors));
         return inputProcessorChain;
     }
 }

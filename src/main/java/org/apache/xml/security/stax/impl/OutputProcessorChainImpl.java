@@ -40,7 +40,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
     protected static final transient Log log = LogFactory.getLog(OutputProcessorChainImpl.class);
     protected static final transient boolean isDebugEnabled = log.isDebugEnabled();
 
-    private List<OutputProcessor> outputProcessors = new ArrayList<OutputProcessor>(20); //the default of ten entries is not enough
+    private List<OutputProcessor> outputProcessors;
     private int startPos = 0;
     private int curPos = 0;
     private XMLSecStartElement parentXmlSecStartElement;
@@ -53,17 +53,19 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
     }
 
     public OutputProcessorChainImpl(SecurityContext securityContext, int startPos) {
-        this(securityContext, new DocumentContextImpl(), startPos);
+        this(securityContext, new DocumentContextImpl(), startPos, new ArrayList<OutputProcessor>(20));
     }
 
     public OutputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContext) {
-        this(securityContext, documentContext, 0);
+        this(securityContext, documentContext, 0, new ArrayList<OutputProcessor>(20));
     }
 
-    protected OutputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl, int startPos) {
+    protected OutputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl,
+                                       int startPos, List<OutputProcessor> outputProcessors) {
         this.securityContext = securityContext;
         this.curPos = this.startPos = startPos;
         documentContext = documentContextImpl;
+        this.outputProcessors = outputProcessors;
     }
 
     public void reset() {
@@ -76,10 +78,6 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
 
     public DocumentContext getDocumentContext() {
         return this.documentContext;
-    }
-
-    private void setOutputProcessors(List<OutputProcessor> outputProcessors) {
-        this.outputProcessors = outputProcessors;
     }
 
     public void addProcessor(OutputProcessor newOutputProcessor) {
@@ -227,11 +225,10 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         OutputProcessorChainImpl outputProcessorChain;
         try {
             outputProcessorChain = new OutputProcessorChainImpl(securityContext, documentContext.clone(),
-                    outputProcessors.indexOf(outputProcessor) + 1);
+                    outputProcessors.indexOf(outputProcessor) + 1, this.outputProcessors);
         } catch (CloneNotSupportedException e) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
         }
-        outputProcessorChain.setOutputProcessors(this.outputProcessors);
         if (parentXMLSecStartElement != null) {
             outputProcessorChain.setParentXmlSecStartElement(parentXMLSecStartElement);
         } else {

@@ -26,7 +26,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.XMLSecurityEventWriter;
 
 import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
@@ -41,17 +40,12 @@ import java.io.OutputStream;
 public class FinalOutputProcessor extends AbstractOutputProcessor {
 
     private XMLEventWriter xmlEventWriter;
-    private static final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
-
-    static {
-        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
-    }
 
     public FinalOutputProcessor(OutputStream outputStream, String encoding) throws XMLSecurityException {
         super();
         setPhase(XMLSecurityConstants.Phase.POSTPROCESSING);
         try {
-            xmlEventWriter = xmlOutputFactory.createXMLEventWriter(outputStream, encoding);
+            xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(outputStream, encoding);
         } catch (XMLStreamException e) {
             throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
         }

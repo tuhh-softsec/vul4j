@@ -30,6 +30,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -50,6 +51,7 @@ public class XMLSecurityConstants {
     private static Schema schema;
 
     public static final DatatypeFactory datatypeFactory;
+    public static final XMLOutputFactory xmlOutputFactory;
 
     static {
         try {
@@ -63,6 +65,9 @@ public class XMLSecurityConstants {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
+
+        xmlOutputFactory = XMLOutputFactory.newInstance();
+        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
 
         try {
             setJaxbContext(

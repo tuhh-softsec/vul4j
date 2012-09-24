@@ -36,7 +36,6 @@ import java.util.List;
  */
 public abstract class XMLSecEventBaseImpl implements XMLSecEvent {
 
-    protected static final Location location = new LocationImpl();
     protected XMLSecStartElement parentXMLSecStartELement;
 
     @Override
@@ -81,7 +80,7 @@ public abstract class XMLSecEventBaseImpl implements XMLSecEvent {
 
     @Override
     public Location getLocation() {
-        return location;
+        return new LocationImpl();
     }
 
     @Override

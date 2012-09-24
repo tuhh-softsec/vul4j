@@ -20,7 +20,7 @@ package org.apache.xml.security.stax.impl.processor.output;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Deque;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -72,15 +72,15 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
 
     @Override
     protected void flushBufferAndCallbackAfterTokenID(
-            OutputProcessorChain outputProcessorChain, Iterator<XMLSecEvent> xmlSecEventIterator)
+            OutputProcessorChain outputProcessorChain, Deque<XMLSecEvent> xmlSecEventDeque)
             throws XMLStreamException, XMLSecurityException {
 
         //@see SANTUARIO-324
         //output root element...
         outputProcessorChain.reset();
-        outputProcessorChain.processEvent(xmlSecEventIterator.next());
+        outputProcessorChain.processEvent(xmlSecEventDeque.pop());
         //...then call super to append the signature and flush the rest
-        super.flushBufferAndCallbackAfterTokenID(outputProcessorChain, xmlSecEventIterator);
+        super.flushBufferAndCallbackAfterTokenID(outputProcessorChain, xmlSecEventDeque);
     }
 
     @Override

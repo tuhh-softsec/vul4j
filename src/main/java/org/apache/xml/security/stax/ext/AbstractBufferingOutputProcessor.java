@@ -69,14 +69,13 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
     @Override
     public void processEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain)
             throws XMLStreamException, XMLSecurityException {
-        xmlSecEventBuffer.push(xmlSecEvent);
+        xmlSecEventBuffer.offer(xmlSecEvent);
     }
 
     @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
-        final Iterator<XMLSecEvent> xmlSecEventIterator = getXmlSecEventBuffer().descendingIterator();
-        flushBufferAndCallbackAfterTokenID(subOutputProcessorChain, xmlSecEventIterator);
+        flushBufferAndCallbackAfterTokenID(subOutputProcessorChain, getXmlSecEventBuffer());
         //call final on the rest of the chain
         subOutputProcessorChain.doFinal();
         //this processor is now finished and we can remove it now
@@ -87,7 +86,7 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
             throws XMLStreamException, XMLSecurityException;
 
     protected void flushBufferAndCallbackAfterTokenID(OutputProcessorChain outputProcessorChain,
-                                                      Iterator<XMLSecEvent> xmlSecEventIterator)
+                                                      Deque<XMLSecEvent> xmlSecEventDeque)
             throws XMLStreamException, XMLSecurityException {
 
         String appendAfterThisTokenId = getAppendAfterThisTokenId();
@@ -100,8 +99,8 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
             QName matchingElementName = null;
 
             loop:
-            while (xmlSecEventIterator.hasNext()) {
-                XMLSecEvent xmlSecEvent = xmlSecEventIterator.next();
+            while (!xmlSecEventDeque.isEmpty()) {
+                XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
 
                 outputProcessorChain.reset();
                 outputProcessorChain.processEvent(xmlSecEvent);
@@ -127,8 +126,8 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
             //we found the token and...
             int level = 0;
             loop:
-            while (xmlSecEventIterator.hasNext()) {
-                XMLSecEvent xmlSecEvent = xmlSecEventIterator.next();
+            while (!xmlSecEventDeque.isEmpty()) {
+                XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
 
                 outputProcessorChain.reset();
                 outputProcessorChain.processEvent(xmlSecEvent);
@@ -151,8 +150,8 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
         }
 
         //loop through the rest of the document
-        while (xmlSecEventIterator.hasNext()) {
-            XMLSecEvent xmlSecEvent = xmlSecEventIterator.next();
+        while (!xmlSecEventDeque.isEmpty()) {
+            XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
             outputProcessorChain.reset();
             outputProcessorChain.processEvent(xmlSecEvent);
         }
