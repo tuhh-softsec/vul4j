@@ -552,8 +552,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
         if (nodeFilter != null) {
             Iterator<NodeFilter> it = nodeFilter.iterator();
             while (it.hasNext()) {   			
-                int i = (
-                    it.next()).isNodeInclude(currentNode);
+                int i = (it.next()).isNodeInclude(currentNode);
                 if (i != 1) {
                     return i;
                 }
@@ -623,7 +622,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             return;
         }
         //Obtain all the parents of the element
-        List<Element> parents = new ArrayList<Element>(10);
+        List<Element> parents = new ArrayList<Element>();
         Node parent = n1;
         while (parent != null && Node.ELEMENT_NODE == parent.getNodeType()) {
             parents.add((Element)parent);
@@ -635,6 +634,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             Element ele = it.previous();
             handleParent(ele, ns);
         }
+        parents.clear();
         Attr nsprefix;
         if (((nsprefix = ns.getMappingWithoutRendered(XMLNS)) != null) 
             && "".equals(nsprefix.getValue())) {

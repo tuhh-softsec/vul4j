@@ -72,7 +72,7 @@ public class UnsyncBufferedOutputStream extends OutputStream {
         if (pointer > 0) {
             out.write(buf, 0, pointer);
         }
-        pointer=0;
+        pointer = 0;
 
     }
 
@@ -94,6 +94,7 @@ public class UnsyncBufferedOutputStream extends OutputStream {
     /** @inheritDoc */
     public void close() throws IOException {
         flush();
+        out.close();
         bufCache.remove();
     }
 
