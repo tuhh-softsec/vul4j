@@ -65,7 +65,6 @@ public class ClassLoaderTest extends org.junit.Assert {
     }
 
     @org.junit.Test
-    @SuppressWarnings("unchecked")
     public void testProviderMultipleLoaders() throws Exception {
         String baseDir = System.getProperty("basedir");
         String fs = System.getProperty("file.separator");
@@ -79,7 +78,7 @@ public class ClassLoaderTest extends org.junit.Assert {
             (urls, Thread.currentThread().getContextClassLoader());
         //load security provider using current class loader
         final Provider provider = new XMLDSigRI();
-        AccessController.doPrivileged(new java.security.PrivilegedAction() {
+        AccessController.doPrivileged(new java.security.PrivilegedAction<Object>() {
             public Object run() {
                 Security.addProvider(provider);
                 return null;

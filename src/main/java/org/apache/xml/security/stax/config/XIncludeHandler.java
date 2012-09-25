@@ -134,7 +134,13 @@ public class XIncludeHandler extends DefaultHandler {
             if (url == null) {
                 throw new SAXException("XML file not found: " + href);
             }
-            Document document = uriDocMap.get(url);
+            Document document = null;
+            try {
+                document = uriDocMap.get(url.toURI());
+            } catch (URISyntaxException ex) {
+                throw new SAXException(ex);
+            }
+            
             if (document == null) {
                 DOMResult domResult = new DOMResult();
                 try {

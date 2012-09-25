@@ -54,10 +54,10 @@ public class BobKeyResolver extends KeyResolverSpi {
      *
      */
     public boolean engineCanResolve(Element element, String BaseURI, StorageResolver storage) {
-        log.debug("Can I resolve " + element.getTagName());
         if (element == null) {
             return false;
         }
+        log.debug("Can I resolve " + element.getTagName());
 
         boolean isKeyName = XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYNAME);
         try {

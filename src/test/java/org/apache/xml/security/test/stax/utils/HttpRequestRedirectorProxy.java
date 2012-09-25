@@ -84,6 +84,10 @@ public class HttpRequestRedirectorProxy {
 
     static class TestingHttpProxyServlet extends HttpServlet {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -6720321975901047227L;
         private static MimeTypes mimeTypes = new MimeTypes();
         private static List<String> paths = new ArrayList<String>();
 

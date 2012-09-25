@@ -1101,8 +1101,9 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
             FileOutputStream fos = new FileOutputStream(f);
 
             fos.write(c14nBytes);
-            log.debug("Wrote errorneous result to file " + f.toURI().toURL().toString());
+            log.debug("Wrote erroneous result to file " + f.toURI().toURL().toString());
             assertEquals(new String(refBytes),new String(c14nBytes));
+            fos.close();
         }
 
         return result;

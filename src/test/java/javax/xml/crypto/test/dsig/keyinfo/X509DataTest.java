@@ -46,7 +46,7 @@ public class X509DataTest extends org.junit.Assert {
     @SuppressWarnings("unchecked")
     public void testgetTypes() {
         X509Data x509 = fac.newX509Data(Collections.singletonList("cn=foo"));
-        List li = x509.getContent();
+        List<Object> li = x509.getContent();
         assertNotNull(li);
         if (!li.isEmpty()) {
             Object[] content = li.toArray();

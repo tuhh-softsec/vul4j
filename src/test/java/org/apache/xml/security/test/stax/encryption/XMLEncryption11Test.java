@@ -18,24 +18,18 @@
  */
 package org.apache.xml.security.test.stax.encryption;
 
-import org.apache.xml.security.encryption.EncryptedData;
-import org.apache.xml.security.encryption.EncryptedKey;
-import org.apache.xml.security.encryption.XMLCipher;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.stax.ext.*;
-import org.apache.xml.security.test.dom.DSNamespaceContext;
-import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
-import org.apache.xml.security.test.stax.utils.StAX2DOM;
-import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
-import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
-import org.apache.xml.security.utils.Base64;
-import org.apache.xml.security.utils.XMLUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -50,14 +44,29 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.xml.security.encryption.EncryptedData;
+import org.apache.xml.security.encryption.EncryptedKey;
+import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.stax.ext.InboundXMLSec;
+import org.apache.xml.security.stax.ext.OutboundXMLSec;
+import org.apache.xml.security.stax.ext.SecurePart;
+import org.apache.xml.security.stax.ext.XMLSec;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.test.dom.DSNamespaceContext;
+import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
+import org.apache.xml.security.test.stax.utils.StAX2DOM;
+import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
+import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.apache.xml.security.utils.Base64;
+import org.junit.Assert;
+import org.junit.Before;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author $Author: $

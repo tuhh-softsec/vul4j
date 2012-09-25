@@ -248,7 +248,7 @@ public class ReferenceTest extends org.junit.Assert {
                 assertTrue(result);
      
                 Iterator<?> iter = sig.getSignedInfo().getReferences().iterator();
-                for (int j=0; iter.hasNext(); j++) {
+                while (iter.hasNext()) {
                     Reference validated_ref = (Reference) iter.next();
                     if (!cache) {
                         assertNull(validated_ref.getDereferencedData());

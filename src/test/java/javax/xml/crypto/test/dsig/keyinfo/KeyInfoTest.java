@@ -62,7 +62,7 @@ public class KeyInfoTest extends org.junit.Assert {
             (Collections.singletonList(fac.newKeyName("foo")));
         for (int j = 0; j < infos.length; j++) {
             KeyInfo ki = infos[j];
-            List li = ki.getContent();
+            List<Object> li = ki.getContent();
             assertNotNull(ki.getContent());
             if (!li.isEmpty()) {
                 Object[] content = li.toArray();

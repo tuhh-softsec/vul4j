@@ -70,7 +70,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(List list) throws XMLSecurityException {
+            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
             }
 
             @Override
@@ -129,7 +129,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(List list) throws XMLSecurityException {
+            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
             }
 
             @Override
@@ -219,7 +219,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(List list) throws XMLSecurityException {
+            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
             }
 
             @Override
@@ -271,7 +271,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             }
 
             @Override
-            public void setList(List list) throws XMLSecurityException {
+            public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
             }
 
             @Override
