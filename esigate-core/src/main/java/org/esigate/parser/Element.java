@@ -28,15 +28,22 @@ public interface Element {
 	 * 
 	 * @param tag
 	 *            The tag
+	 * @param ctx 
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
 
-	/** @return <code>true</code> if error has been handled by this element and it should not be propagated further. */
+	/** @param e 
+	 * @param ctx 
+	 * @return <code>true</code> if error has been handled by this element and it should not be propagated further. */
 	public boolean onError(Exception e, ParserContext ctx);
 
-	/** Method called by the parser when it finds characters between starting and closing tags. */
+	/** Method called by the parser when it finds characters between starting and closing tags. 
+	 * @param csq 
+	 * @param start 
+	 * @param end 
+	 * @throws IOException */
     void characters(CharSequence csq, int start, int end)throws IOException;
 
 	/** @return Returns true if the tag is already closed, that means that it does not need a matching closing tag.

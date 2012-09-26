@@ -34,6 +34,8 @@ public class ExtensionFactory {
 
 	/**
 	 * Get an extension using its interface.
+	 * @param properties 
+	 * @param parameter 
 	 * 
 	 * @param <T>
 	 *            class which extends Extension

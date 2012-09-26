@@ -19,12 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.HttpResponse;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Reverse Proxy servlet with rewrite abilities. It will usually be mapped on * in a webapp deployed on the ROOT context. Other configurations will also work.
+ * Reverse Proxy servlet with rewrite abilities. It will usually be mapped on *
+ * in a webapp deployed on the ROOT context. Other configurations will also
+ * work.
  * 
  * <p>
  * Configuration in <strong>org/esigate/rewrite-proxy.properties</strong> : <br/>
@@ -287,7 +290,8 @@ public class RewriteProxyServlet extends HttpServlet {
 	}
 
 	/**
-	 * {@inheritDoc} javax.servlet.http.HttpServlet#service(javax.servlet.http. HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * {@inheritDoc} javax.servlet.http.HttpServlet#service(javax.servlet.http.
+	 * HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -373,16 +377,16 @@ public class RewriteProxyServlet extends HttpServlet {
 
 					if (conf.getProvider() != null) {
 						// Proxy request and return.
+						HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 						try {
 							// Nice log
 							if (LOG.isDebugEnabled()) {
 								LOG.debug("Proxying " + relUrl + " to " + newUrl + " w/ query " + targetQueryString);
 							}
-							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString)), HttpResponseImpl.wrap(response));
+							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString)), httpResponse);
 							return;
 						} catch (HttpErrorPage e) {
-							response.setStatus(e.getStatusCode());
-							response.getWriter().write(e.getErrorPageContent());
+							e.render(httpResponse);
 						}
 					} else {
 						// Create target

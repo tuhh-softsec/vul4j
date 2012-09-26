@@ -126,6 +126,8 @@ public class DriverFactory {
 
 	/**
 	 * Registers new {@linkplain Driver} under provided name with specified properties.
+	 * @param name 
+	 * @param props 
 	 */
 	public static void configure(String name, Properties props) {
 		INSTANCES.put(name, new Driver(name, props));

@@ -28,91 +28,57 @@ import org.esigate.servlet.HttpResponseImpl;
  */
 public class DriverUtils {
 
-	public final static String getBaseUrl(String provider, HttpRequest request,
-			HttpResponse responce) {
-		BaseUrlRetrieveStrategy baseUrlRetrieveStrategy = DriverFactory
-				.getInstance(provider).getConfiguration()
-				.getBaseUrlRetrieveStrategy();
+	public final static String getBaseUrl(String provider, HttpRequest request, HttpResponse responce) {
+		BaseUrlRetrieveStrategy baseUrlRetrieveStrategy = DriverFactory.getInstance(provider).getConfiguration().getBaseUrlRetrieveStrategy();
 		return baseUrlRetrieveStrategy.getBaseURL(request, responce);
 	}
 
-	public final static void renderBlock(String provider, String page,
-			String name, PageContext pageContext,
-			Map<String, String> replaceRules, Map<String, String> parameters,
-			boolean copyOriginalRequestParameters) throws JspException,
-			HttpErrorPage {
+	public final static void renderBlock(String provider, String page, String name, PageContext pageContext, Map<String, String> replaceRules, Map<String, String> parameters,
+			boolean copyOriginalRequestParameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderBlock(page, name, pageContext.getOut(),
-					HttpRequestImpl.wrap((HttpServletRequest) pageContext
-							.getRequest()), HttpResponseImpl
-							.wrap((HttpServletResponse) pageContext
-									.getResponse()), replaceRules, parameters,
-					copyOriginalRequestParameters);
+			driver.renderBlock(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules, parameters, copyOriginalRequestParameters);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 	}
 
-	public final static void renderEsi(String provider, String source,
-			PageContext pageContext) throws JspException, HttpErrorPage {
+	public final static void renderEsi(String provider, String source, PageContext pageContext) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderEsi(source, pageContext.getOut(), HttpRequestImpl
-					.wrap((HttpServletRequest) pageContext.getRequest()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext
-							.getResponse()));
+			driver.renderEsi(source, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()), HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 	}
 
-	public final static void renderTemplate(String provider, String page,
-			String name, PageContext pageContext, Map<String, String> params,
-			Map<String, String> replaceRules, Map<String, String> parameters)
-			throws JspException, HttpErrorPage {
+	public final static void renderTemplate(String provider, String page, String name, PageContext pageContext, Map<String, String> params, Map<String, String> replaceRules,
+			Map<String, String> parameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			boolean propagateJsessionId = ((HttpServletResponse) pageContext
-					.getResponse()).encodeURL("/").contains("jsessionid");
-			driver.renderTemplate(page, name, pageContext.getOut(),
-					HttpRequestImpl.wrap((HttpServletRequest) pageContext
-							.getRequest()), HttpResponseImpl
-							.wrap((HttpServletResponse) pageContext
-									.getResponse()), params, replaceRules,
-					parameters, propagateJsessionId);
+			driver.renderTemplate(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), params, replaceRules, parameters);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 	}
 
-	public final static void renderXml(String provider, String source,
-			String template, PageContext pageContext,
-			Map<String, String> replaceRules) throws JspException,
-			HttpErrorPage {
+	public final static void renderXml(String provider, String source, String template, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderXml(source, template, pageContext.getOut(),
-					HttpRequestImpl.wrap((HttpServletRequest) pageContext
-							.getRequest()), HttpResponseImpl
-							.wrap((HttpServletResponse) pageContext
-									.getResponse()), replaceRules);
+			driver.renderXml(source, template, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 	}
 
-	public final static void renderXpath(String provider, String source,
-			String xpath, PageContext pageContext,
-			Map<String, String> replaceRules) throws JspException,
-			HttpErrorPage {
+	public final static void renderXpath(String provider, String source, String xpath, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderXpath(source, xpath, pageContext.getOut(),
-					HttpRequestImpl.wrap((HttpServletRequest) pageContext
-							.getRequest()), HttpResponseImpl
-							.wrap((HttpServletResponse) pageContext
-									.getResponse()), replaceRules);
+			driver.renderXpath(source, xpath, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);
 		}

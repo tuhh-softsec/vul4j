@@ -65,6 +65,7 @@ public interface HttpSession {
      *
      * @param template
 	 *            The path to the resource template, relative to the context root
+     * @return the inputStream
      **/
     public InputStream getResourceTemplate(String template);
 }

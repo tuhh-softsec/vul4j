@@ -36,6 +36,7 @@ import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.ResourceContext;
+import org.esigate.api.HttpResponse;
 import org.esigate.esi.EsiRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,11 +77,11 @@ public class ProxyFilter implements Filter {
 		for (int i = 0; i < mappings.length; i++) {
 			if (mappings[i].matcher(relUrl).matches()) {
 				LOG.debug("Proxying " + relUrl);
+				HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
 				try {
-					providers[i].proxy(relUrl, HttpRequestImpl.wrap(httpServletRequest), HttpResponseImpl.wrap(httpServletResponse), new EsiRenderer());
+					providers[i].proxy(relUrl, HttpRequestImpl.wrap(httpServletRequest), httpResponse, new EsiRenderer());
 				} catch (HttpErrorPage e) {
-					httpServletResponse.setStatus(e.getStatusCode());
-					httpServletResponse.getWriter().write(e.getErrorPageContent());
+					e.render(httpResponse);
 				}
 				return;
 			}
@@ -90,12 +91,12 @@ public class ProxyFilter implements Filter {
 		chain.doFilter(httpServletRequest, wrappedResponse);
 		String result = wrappedResponse.getResult();
 		if (result != null) {
-			ResourceContext resourceContext = new ResourceContext(null, relUrl, null, HttpRequestImpl.wrap(httpServletRequest), HttpResponseImpl.wrap(httpServletResponse));
+			HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
+			ResourceContext resourceContext = new ResourceContext(null, relUrl, null, HttpRequestImpl.wrap(httpServletRequest), httpResponse);
 			try {
 				new EsiRenderer().render(resourceContext, result, response.getWriter());
 			} catch (HttpErrorPage e) {
-				httpServletResponse.setStatus(e.getStatusCode());
-				httpServletResponse.getWriter().write(e.getErrorPageContent());
+				e.render(httpResponse);
 			}
 		}
 	}

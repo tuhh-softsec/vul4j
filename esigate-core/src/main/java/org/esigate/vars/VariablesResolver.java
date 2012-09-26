@@ -107,6 +107,7 @@ public class VariablesResolver {
 	 * 
 	 * @param strVars
 	 *            a String containing variables.
+	 * @param request 
 	 * @return The resulting String
 	 */
 	public static String replaceAllVariables(String strVars, HttpRequest request) {

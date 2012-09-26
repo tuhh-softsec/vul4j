@@ -59,10 +59,6 @@ public final class Parameter {
 		return PropertiesUtil.getPropertyValue(properties, name, defaultValue);
 	}
 
-	public <T> T getValueExtension(Properties properties, Class<T> clazz) {
-		return null;
-	}
-
 	public Collection<String> getValueList(Properties properties) {
 		return PropertiesUtil.getPropertyValueAsList(properties, name);
 	}

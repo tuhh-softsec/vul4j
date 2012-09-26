@@ -24,7 +24,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -43,8 +42,6 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.DeflateDecompressingEntity;
-import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.ClientParamBean;
 import org.apache.http.client.params.CookiePolicy;
@@ -58,16 +55,11 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.cookie.CookieOrigin;
-import org.apache.http.cookie.CookieSpec;
-import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.BasicHttpParams;
@@ -76,7 +68,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
@@ -90,8 +81,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * HttpClientHelper is responsible for creating Apache HttpClient requests from incoming requests. It can copy a request with its method and entity or simply create a new GET request to the same URI.
- * Some parameters enable to control which http headers have to be copied and wether or not to preserve the original host header.
+ * HttpClientHelper is responsible for creating Apache HttpClient requests from
+ * incoming requests. It can copy a request with its method and entity or simply
+ * create a new GET request to the same URI. Some parameters enable to control
+ * which http headers have to be copied and wether or not to preserve the
+ * original host header.
  * 
  * @author frbon
  * 
@@ -108,7 +102,7 @@ public class HttpClientHelper implements Extension {
 	private HttpHost proxyHost;
 	private Credentials proxyCredentials;
 
-	protected void init(HttpClient defaultHttpClient, Properties properties) {
+	public void init(HttpClient defaultHttpClient, Properties properties) {
 		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
 		if (useCache) {
 			httpClient = CacheConfigHelper.addCache(properties, defaultHttpClient);
@@ -195,8 +189,11 @@ public class HttpClientHelper implements Extension {
 		if (preserveHost) {
 			virtualHost = UriUtils.extractHost(originalRequest.getUri());
 			targetHost = virtualHost;
-			// force the route to the server in case of load balancing because. The request and the host header (virtualHost) will be the same as in original request but the request will be routed to
-			// the host in the original url. We need to do this if we don't want a separate cache entry for each node.
+			// force the route to the server in case of load balancing because.
+			// The request and the host header (virtualHost) will be the same as
+			// in original request but the request will be routed to
+			// the host in the original url. We need to do this if we don't want
+			// a separate cache entry for each node.
 			if (proxyHost == null)
 				route = new HttpRoute(uriHost);
 			else
@@ -275,7 +272,8 @@ public class HttpClientHelper implements Extension {
 				}
 			}
 		}
-		// process X-Forwarded-For header (is missing in request and not blacklisted) -> use remote address instead
+		// process X-Forwarded-For header (is missing in request and not
+		// blacklisted) -> use remote address instead
 		if (originalRequest.getHeader("X-Forwarded-For") == null && isForwardedRequestHeader("X-Forwarded-For") && originalRequest.getRemoteAddr() != null) {
 			httpRequest.addHeader("X-Forwarded-For", originalRequest.getRemoteAddr());
 		}
@@ -298,42 +296,15 @@ public class HttpClientHelper implements Extension {
 				// Some headers containing an URI have to be rewritten
 				if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
 					value = UriUtils.translateUrl(value, uri, originalUri);
-					value = removeSessionId(value, httpClientResponse);
+					value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
 					output.addHeader(name, value);
 				} else if (HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
-					// Ignore it, it will be copied only when the entity is unchanged
+					// Ignore it, it will be copied only when the entity is
+					// unchanged
 				} else {
 					output.addHeader(header.getName(), header.getValue());
 				}
 			}
-		}
-	}
-
-	private String removeSessionId(String src, HttpResponse httpResponse) {
-		CookieSpec cookieSpec = new BrowserCompatSpec();
-		// Dummy origin, used only by CookieSpec for setting the domain for the cookie but we don't need it
-		CookieOrigin cookieOrigin = new CookieOrigin("dummy", 80, "/", false);
-		Header[] responseHeaders = httpResponse.getHeaders("Set-cookie");
-		String jsessionid = null;
-		for (int i = 0; i < responseHeaders.length; i++) {
-			Header header = responseHeaders[i];
-			try {
-				List<Cookie> cookies = cookieSpec.parse(header, cookieOrigin);
-				for (Cookie cookie : cookies) {
-					if ("JSESSIONID".equalsIgnoreCase(cookie.getName()))
-						jsessionid = cookie.getValue();
-					break;
-				}
-			} catch (MalformedCookieException ex) {
-				LOG.warn("Malformed header: " + header.getName() + ": " + header.getValue());
-			}
-			if (jsessionid != null)
-				break;
-		}
-		if (jsessionid == null) {
-			return src;
-		} else {
-			return UriUtils.removeSessionId(jsessionid, src);
 		}
 	}
 
@@ -398,7 +369,8 @@ public class HttpClientHelper implements Extension {
 	}
 
 	public void render(HttpResponse httpResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest request) throws IOException {
-		// As the entity is sent unchanged it has not been decompressed so we can copy Accept-encoding header
+		// As the entity is sent unchanged it has not been decompressed so we
+		// can copy Accept-encoding header
 		String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
 		if (contentEncoding != null)
 			output.addHeader(HttpHeaders.CONTENT_ENCODING, contentEncoding);
@@ -422,27 +394,5 @@ public class HttpClientHelper implements Extension {
 		} finally {
 			content.close();
 		}
-	}
-
-	public String toString(HttpResponse httpResponse) throws IOException {
-		HttpEntity httpEntity = httpResponse.getEntity();
-		String result;
-		if (httpEntity == null) {
-			result = httpResponse.getStatusLine().getReasonPhrase();
-		} else {
-			// Unzip the stream if necessary
-			String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
-			if (contentEncoding != null) {
-				if ("gzip".equalsIgnoreCase(contentEncoding) || "x-gzip".equalsIgnoreCase(contentEncoding)) {
-					httpEntity = new GzipDecompressingEntity(httpEntity);
-				} else if ("deflate".equalsIgnoreCase(contentEncoding)) {
-					httpEntity = new DeflateDecompressingEntity(httpEntity);
-				} else {
-					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");
-				}
-			}
-			result = EntityUtils.toString(httpEntity);
-		}
-		return removeSessionId(result, httpResponse);
 	}
 }

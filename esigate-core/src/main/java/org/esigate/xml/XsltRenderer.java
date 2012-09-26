@@ -44,21 +44,22 @@ public class XsltRenderer implements Renderer {
 	 *            The path to the xsl template, relative to the context root
 	 * @param driver
 	 *            driver
+	 * @param resourceContext
 	 * @throws IOException
 	 *             If an error occurs while writing to the output
-	 * @throws HttpErrorPage 
+	 * @throws HttpErrorPage
 	 */
-	public XsltRenderer(String template, Driver driver, ResourceContext resourceContext) throws IOException, HttpErrorPage {	
+	public XsltRenderer(String template, Driver driver, ResourceContext resourceContext) throws IOException, HttpErrorPage {
 		try {
 			InputStream templateStream = resourceContext.getOriginalRequest().getSession(true).getResourceTemplate(template);
-			if(templateStream == null)
+			if (templateStream == null)
 				throw new ProcessingFailedException("Template " + template + " not found");
 			transformer = createTransformer(templateStream);
 		} catch (Exception e) {
 			transformer = createTransformer(IOUtils.toInputStream(driver.getResourceAsString(template, resourceContext)));
 		}
 	}
-	
+
 	/**
 	 * @param template
 	 *            The path to the xsl template, relative to the context root
@@ -69,7 +70,7 @@ public class XsltRenderer implements Renderer {
 	 */
 	public XsltRenderer(String template, HttpRequest request) throws IOException {
 		InputStream templateStream = request.getSession(true).getResourceTemplate(template);
-		if(templateStream == null)
+		if (templateStream == null)
 			throw new ProcessingFailedException("Template " + template + " not found");
 		transformer = createTransformer(templateStream);
 	}
@@ -84,7 +85,7 @@ public class XsltRenderer implements Renderer {
 		InputStream templateStream = IOUtils.toInputStream(xsl);
 		transformer = createTransformer(templateStream);
 	}
-	
+
 	private static Transformer createTransformer(InputStream templateStream) throws IOException {
 		try {
 			return TRANSFORMER_FACTORY.newTransformer(new StreamSource(templateStream));

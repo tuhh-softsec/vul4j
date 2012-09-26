@@ -306,7 +306,5 @@ public class BasicClientCookie implements Cloneable, Serializable, Cookie{
     public void setCommentURL(final String commentURL) {
         this.commentURL = commentURL;
     }
-
-    public void setDiscard(boolean discard) {}
 	
 }

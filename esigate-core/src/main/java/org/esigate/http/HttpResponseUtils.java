@@ -17,13 +17,23 @@ package org.esigate.http;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.entity.DeflateDecompressingEntity;
+import org.apache.http.client.entity.GzipDecompressingEntity;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.cookie.CookieOrigin;
+import org.apache.http.cookie.CookieSpec;
+import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
+import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.util.EntityUtils;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +42,7 @@ public class HttpResponseUtils {
 
 	public static boolean isError(HttpResponse httpResponse) {
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
-		return statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_MOVED_TEMPORARILY && statusCode != HttpStatus.SC_MOVED_PERMANENTLY
-				&& statusCode != HttpStatus.SC_NOT_MODIFIED;
+		return statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_MOVED_TEMPORARILY && statusCode != HttpStatus.SC_MOVED_PERMANENTLY && statusCode != HttpStatus.SC_NOT_MODIFIED;
 	}
 
 	public static String getFirstHeader(String headerName, HttpResponse httpResponse) {
@@ -61,5 +70,56 @@ public class HttpResponseUtils {
 			} catch (IOException e) {
 				LOG.debug("Could not release request. Usualy this is due to a client abort.");
 			}
+	}
+
+	public static String removeSessionId(String src, HttpResponse httpResponse) {
+		CookieSpec cookieSpec = new BrowserCompatSpec();
+		// Dummy origin, used only by CookieSpec for setting the domain for the
+		// cookie but we don't need it
+		CookieOrigin cookieOrigin = new CookieOrigin("dummy", 80, "/", false);
+		Header[] responseHeaders = httpResponse.getHeaders("Set-cookie");
+		String jsessionid = null;
+		for (int i = 0; i < responseHeaders.length; i++) {
+			Header header = responseHeaders[i];
+			try {
+				List<Cookie> cookies = cookieSpec.parse(header, cookieOrigin);
+				for (Cookie cookie : cookies) {
+					if ("JSESSIONID".equalsIgnoreCase(cookie.getName()))
+						jsessionid = cookie.getValue();
+					break;
+				}
+			} catch (MalformedCookieException ex) {
+				LOG.warn("Malformed header: " + header.getName() + ": " + header.getValue());
+			}
+			if (jsessionid != null)
+				break;
+		}
+		if (jsessionid == null) {
+			return src;
+		} else {
+			return UriUtils.removeSessionId(jsessionid, src);
+		}
+	}
+
+	public static String toString(HttpResponse httpResponse) throws IOException {
+		HttpEntity httpEntity = httpResponse.getEntity();
+		String result;
+		if (httpEntity == null) {
+			result = httpResponse.getStatusLine().getReasonPhrase();
+		} else {
+			// Unzip the stream if necessary
+			String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
+			if (contentEncoding != null) {
+				if ("gzip".equalsIgnoreCase(contentEncoding) || "x-gzip".equalsIgnoreCase(contentEncoding)) {
+					httpEntity = new GzipDecompressingEntity(httpEntity);
+				} else if ("deflate".equalsIgnoreCase(contentEncoding)) {
+					httpEntity = new DeflateDecompressingEntity(httpEntity);
+				} else {
+					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");
+				}
+			}
+			result = EntityUtils.toString(httpEntity);
+		}
+		return removeSessionId(result, httpResponse);
 	}
 }

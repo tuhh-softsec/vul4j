@@ -37,6 +37,7 @@ public interface Cookie {
     /**
      * If a user agent (web browser) presents this cookie to a user, the
      * cookie's purpose will be described by the information at this URL.
+     * @return the comment
      */
     String getCommentURL();
 
@@ -70,6 +71,7 @@ public interface Cookie {
     /**
      * Get the Port attribute. It restricts the ports to which a cookie
      * may be returned in a Cookie request header.
+     * @return the ports
      */
     int[] getPorts();
 
@@ -100,12 +102,14 @@ public interface Cookie {
     /**
      * If a user agent (web browser) presents this cookie to a user, the
      * cookie's purpose will be described by the information at this URL.
+     * @param commentURL 
      */
     void setCommentURL(String commentURL);
 
     /**
      * Sets the Port attribute. It restricts the ports to which a cookie
      * may be returned in a Cookie request header.
+     * @param ports 
      */
     void setPorts(int[] ports);
 

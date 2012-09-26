@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.api.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +32,11 @@ public class ProxyServlet extends HttpServlet {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
 		LOG.debug("Proxying " + relUrl);
+		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 		try {
-			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response));
+			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), httpResponse);
 		} catch (HttpErrorPage e) {
-			response.setStatus(e.getStatusCode());
-			response.getWriter().write(e.getErrorPageContent());
+			e.render(httpResponse);
 		}
 	}
 

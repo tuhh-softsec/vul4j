@@ -64,6 +64,7 @@ public class ResourceFixupRenderer implements Renderer {
 	 * <ul>
 	 * <li>images/image.png is replaced by /context/images/image.png</li>
 	 * </ul>
+	 * @param baseUrl 
 	 * 
 	 * @param visibleBaseUrl
 	 *            Base url (same as configured in provider).
@@ -89,6 +90,7 @@ public class ResourceFixupRenderer implements Renderer {
 	 * <ul>
 	 * <li>images/image.png is replaced by /context/images/image.png</li>
 	 * </ul>
+	 * @param baseUrl 
 	 * 
 	 * @param visibleBaseUrl
 	 *            Base url (same as configured in provider).

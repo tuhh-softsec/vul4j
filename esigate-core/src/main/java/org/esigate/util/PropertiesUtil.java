@@ -26,6 +26,7 @@ public class PropertiesUtil {
 	 * 
 	 * @param properties
 	 * @param propertyName
+	 * @return the values
 	 */
 	public static Collection<String> getPropertyValueAsList(Properties properties, String propertyName) {
 		return getPropertyValueAsList(properties, propertyName, null);
@@ -36,6 +37,8 @@ public class PropertiesUtil {
 	 * 
 	 * @param properties
 	 * @param propertyName
+	 * @param defaultValue 
+	 * @return the values
 	 */
 	public static Collection<String> getPropertyValueAsList(Properties properties, String propertyName, String defaultValue) {
 		String propertyValue = properties.getProperty(propertyName);
@@ -89,6 +92,8 @@ public class PropertiesUtil {
 	 * @param properties
 	 * @param toAddPropertyName
 	 * @param toRemovePropertyName
+	 * @param defaultToAddString 
+	 * @param defaultToRemoveString 
 	 */
 	public static void populate(FilterList list, Properties properties, String toAddPropertyName, String toRemovePropertyName, String defaultToAddString, String defaultToRemoveString) {
 		Collection<String> defaultToAdd = toCollection(defaultToAddString);

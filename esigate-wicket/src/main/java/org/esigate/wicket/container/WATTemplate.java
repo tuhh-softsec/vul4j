@@ -84,8 +84,7 @@ public class WATTemplate extends AbstractWatDriverContainer {
 	}
 
 	@Override
-	public void process(Map<String, String> blocks, Map<String, String> params,
-			Map<String, String> replaceRules) {
+	public void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules) {
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
 		HttpServletRequest request = servletWebRequest.getHttpServletRequest();
 
@@ -94,10 +93,7 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = getDriver();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(webResponse),
-					HttpRequestImpl.wrap(request),
-					HttpResponseImpl.wrap(response), blocks, replaceRules,
-					params, false);
+			driver.renderTemplate(page, name, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response), blocks, replaceRules, params);
 		} catch (IOException e) {
 			logger.error("io error", e);
 		} catch (HttpErrorPage e) {

@@ -22,28 +22,12 @@ public class MockHttpSession implements HttpSession {
 		throw new RuntimeException("Method not implemented");
 	}
 
-//	public ServletContext getServletContext() {
-//		throw new RuntimeException("Method not implemented");
-//	}
-
-	public void setMaxInactiveInterval(int interval) {
-		throw new RuntimeException("Method not implemented");
-	}
-
 	public int getMaxInactiveInterval() {
 		throw new RuntimeException("Method not implemented");
 	}
 
-//	public HttpSessionContext getSessionContext() {
-//		throw new RuntimeException("Method not implemented");
-//	}
-
 	public Object getAttribute(String name) {
 		return attributes.get(name);
-	}
-
-	public Object getValue(String name) {
-		throw new RuntimeException("Method not implemented");
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -57,18 +41,6 @@ public class MockHttpSession implements HttpSession {
 
 	public void setAttribute(String name, Object value) {
 		attributes.put(name, value);
-	}
-
-	public void putValue(String name, Object value) {
-		throw new RuntimeException("Method not implemented");
-	}
-
-	public void removeAttribute(String name) {
-		throw new RuntimeException("Method not implemented");
-	}
-
-	public void removeValue(String name) {
-		throw new RuntimeException("Method not implemented");
 	}
 
 	public void invalidate() {

@@ -22,6 +22,7 @@ public class DefaultCookieManagerTest extends TestCase {
 	private MockHttpResponse httpResponse;
 	private ResourceContext resourceContext;
 
+	@Override
 	protected void setUp() {
 		Properties properties = new Properties();
 		properties.setProperty(Parameters.FORWARD_COOKIES.name, "a, c");
@@ -34,6 +35,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		resourceContext = new ResourceContext(driver, "/", null, httpRequest, httpResponse);
 	}
 
+	@Override
 	protected void tearDown() {
 		cookieManager = null;
 	}

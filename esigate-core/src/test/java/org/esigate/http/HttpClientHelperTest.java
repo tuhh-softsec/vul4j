@@ -55,7 +55,8 @@ public class HttpClientHelperTest extends TestCase {
 	private Properties properties;
 
 	public void testIsBlackListed() {
-		// by default only DriverConfiguration#DEFAULT_BLACK_LISTED_HEADERS are blacklisted
+		// by default only DriverConfiguration#DEFAULT_BLACK_LISTED_HEADERS are
+		// blacklisted
 		Properties properties = new Properties();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		httpClientHelper.init(properties);
@@ -74,7 +75,8 @@ public class HttpClientHelperTest extends TestCase {
 		assertResponseHeaderIsBlacklisted(httpClientHelper, "Trailer", true);
 		assertRequestHeaderIsBlacklisted(httpClientHelper, "Upgrade", true);
 
-		// blacklisted headers are specified via 'blackListedHeaders' property -> they are merged with default
+		// blacklisted headers are specified via 'blackListedHeaders' property
+		// -> they are merged with default
 		properties = new Properties();
 		properties.setProperty(Parameters.DISCARD_REQUEST_HEADERS.name, "header");
 		httpClientHelper = new HttpClientHelper();
@@ -208,7 +210,8 @@ public class HttpClientHelperTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
-		// Second request should reuse the cache entry even if it uses a different node
+		// Second request should reuse the cache entry even if it uses a
+		// different node
 		HttpResponse response1 = createMockResponse("1");
 		mockHttpClient.setResponse(response1);
 		result = executeRequest();
@@ -225,8 +228,23 @@ public class HttpClientHelperTest extends TestCase {
 		createHttpClientHelper();
 		// First request
 		HttpResponse response = createMockResponse("0");
-		response.setHeader("Last-modified", "Fri, 20 May 2011 00:00:00 GMT"); // HttpClient should store in cache and send a conditional request next time
-		response.setHeader("Cache-control", "max-age=0"); // HttpClient should store in cache and send a conditional request next time
+		response.setHeader("Last-modified", "Fri, 20 May 2011 00:00:00 GMT"); // HttpClient
+																				// should
+																				// store
+																				// in
+																				// cache
+																				// and
+																				// send
+																				// a
+																				// conditional
+																				// request
+																				// next
+																				// time
+		response.setHeader("Cache-control", "max-age=0"); // HttpClient should
+															// store in cache
+															// and send a
+															// conditional
+															// request next time
 		mockHttpClient.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
@@ -235,7 +253,8 @@ public class HttpClientHelperTest extends TestCase {
 		mockHttpClient.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
-		// Third request no more error but stale-while-refresh should trigger a background revalidation and serve the old version.
+		// Third request no more error but stale-while-refresh should trigger a
+		// background revalidation and serve the old version.
 		HttpResponse response2 = createMockResponse(200, "2");
 		mockHttpClient.setResponse(response2);
 		result = executeRequest();
@@ -293,7 +312,8 @@ public class HttpClientHelperTest extends TestCase {
 
 	public void testEhCache() throws Exception {
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
-		properties.put(Parameters.CACHE_STORAGE.name, EhcacheCacheStorage.class.getName()); // Default value
+		properties.put(Parameters.CACHE_STORAGE.name, EhcacheCacheStorage.class.getName()); // Default
+																							// value
 		createHttpClientHelper();
 		// First request
 		HttpResponse response = createMockResponse("0");
@@ -301,7 +321,8 @@ public class HttpClientHelperTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
-		// Second request should reuse the cache entry even if it uses a different node
+		// Second request should reuse the cache entry even if it uses a
+		// different node
 		HttpResponse response1 = createMockResponse("1");
 		mockHttpClient.setResponse(response1);
 		result = executeRequest();
@@ -329,7 +350,8 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testXCacheHeaderWithLoadBalancingNoCache() throws Exception {
-		// Use load balancing in round robin mode and check that the header indicates properly the host that was used for the request
+		// Use load balancing in round robin mode and check that the header
+		// indicates properly the host that was used for the request
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.X_CACHE_HEADER.name, "true");
 		properties.put(Parameters.REMOTE_URL_BASE_STRATEGY.name, Parameters.ROUNDROBIN);
@@ -358,7 +380,8 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void testXCacheHeaderWithLoadBalancing() throws Exception {
-		// Use load balancing in round robin mode and check that the header indicates properly the host that was used for the request
+		// Use load balancing in round robin mode and check that the header
+		// indicates properly the host that was used for the request
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.PRESERVE_HOST.name, "true");
 		properties.put(Parameters.X_CACHE_HEADER.name, "true");
@@ -394,7 +417,7 @@ public class HttpClientHelperTest extends TestCase {
 		HttpResponse httpResponse = createMockGzippedResponse(content);
 		mockHttpClient.setResponse(httpResponse);
 		HttpResponse result = executeRequest();
-		String entityString = httpClientHelper.toString(result);
+		String entityString = HttpResponseUtils.toString(result);
 		assertEquals("Content should have been decompressed", content, entityString);
 	}
 

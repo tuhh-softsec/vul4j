@@ -14,7 +14,9 @@ abstract class BaseElement implements Element {
 	}
 
 	/** Additional tag initialization callback. */
+	@SuppressWarnings("unused")
 	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+		// Default implementation does nothing
 	}
 
 	public boolean isClosed() {

@@ -49,8 +49,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main class used to retrieve data from a provider application using HTTP requests. Data can be retrieved as binary streams or as String for text data. To improve performance, the Driver uses a cache
- * that can be configured depending on the needs.
+ * Main class used to retrieve data from a provider application using HTTP
+ * requests. Data can be retrieved as binary streams or as String for text data.
+ * To improve performance, the Driver uses a cache that can be configured
+ * depending on the needs.
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
@@ -91,7 +93,8 @@ public class Driver {
 	}
 
 	/**
-	 * Get current user context in session or request. Context will be saved to session only if not empty.
+	 * Get current user context in session or request. Context will be saved to
+	 * session only if not empty.
 	 * 
 	 * @param httpRequest
 	 *            http request
@@ -103,16 +106,20 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a page from the provider application, evaluates XPath expression if exists, applies XSLT transformation and writes result to a Writer.
+	 * Retrieves a page from the provider application, evaluates XPath
+	 * expression if exists, applies XSLT transformation and writes result to a
+	 * Writer.
 	 * 
 	 * @param source
 	 *            external page used for inclusion
 	 * @param template
-	 *            path to the XSLT template (may be <code>null</code>) will be evaluated against current web application context
+	 *            path to the XSLT template (may be <code>null</code>) will be
+	 *            evaluated against current web application context
 	 * @param out
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
+	 * @param response 
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
@@ -126,7 +133,9 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a page from the provider application, evaluates XPath expression if exists, applies XSLT transformation and writes result to a Writer.
+	 * Retrieves a page from the provider application, evaluates XPath
+	 * expression if exists, applies XSLT transformation and writes result to a
+	 * Writer.
 	 * 
 	 * @param source
 	 *            external page used for inclusion
@@ -136,6 +145,7 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
+	 * @param response 
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
@@ -149,8 +159,11 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a block from the provider application and writes it to a Writer. Block can be defined in the provider application using HTML comments.<br />
-	 * eg: a block name "myblock" should be delimited with "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
+	 * Retrieves a block from the provider application and writes it to a
+	 * Writer. Block can be defined in the provider application using HTML
+	 * comments.<br />
+	 * eg: a block name "myblock" should be delimited with
+	 * "&lt;!--$beginblock$myblock$--&gt;" and "&lt;!--$endblock$myblock$--&gt;
 	 * 
 	 * @param page
 	 *            Page containing the block
@@ -160,12 +173,14 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
+	 * @param response 
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @param parameters
 	 *            Additional parameters
 	 * @param copyOriginalRequestParameters
-	 *            indicates whether the original request parameters should be copied in the new request
+	 *            indicates whether the original request parameters should be
+	 *            copied in the new request
 	 * @return {@link ResourceContext}
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
@@ -179,11 +194,15 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a template from the provider application and renders it to the writer replacing the parameters with the given map. If "name" param is null, the whole page will be used as the
-	 * template.<br />
-	 * eg: The template "mytemplate" can be delimited in the provider page by comments "&lt;!--$begintemplate$mytemplate$--&gt;" and "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
+	 * Retrieves a template from the provider application and renders it to the
+	 * writer replacing the parameters with the given map. If "name" param is
+	 * null, the whole page will be used as the template.<br />
+	 * eg: The template "mytemplate" can be delimited in the provider page by
+	 * comments "&lt;!--$begintemplate$mytemplate$--&gt;" and
+	 * "&lt;!--$endtemplate$mytemplate$--&gt;".<br />
 	 * Inside the template, the parameters can be defined by comments.<br />
-	 * eg: parameter named "myparam" should be delimited by comments "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
+	 * eg: parameter named "myparam" should be delimited by comments
+	 * "&lt;!--$beginparam$myparam$--&gt;" and "&lt;!--$endparam$myparam$--&gt;"
 	 * 
 	 * @param page
 	 *            Address of the page containing the template
@@ -193,21 +212,20 @@ public class Driver {
 	 *            Writer where to write the result
 	 * @param request
 	 *            originating request object
+	 * @param response 
 	 * @param params
 	 *            Blocks to replace inside the template
 	 * @param replaceRules
 	 *            The replace rules to be applied on the block
 	 * @param parameters
 	 *            Parameters to be added to the request
-	 * @param propagateJsessionId
-	 *            indicates whether <code>jsessionid</code> should be propagated or just removed from generated output
 	 * @throws IOException
 	 *             If an IOException occurs while writing to the writer
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
 	public final void renderTemplate(String page, String name, Appendable writer, HttpRequest request, HttpResponse response, Map<String, String> params, Map<String, String> replaceRules,
-			Map<String, String> parameters, boolean propagateJsessionId) throws IOException, HttpErrorPage {
+			Map<String, String> parameters) throws IOException, HttpErrorPage {
 		LOG.info("renderTemplate provider=" + config.getInstanceName() + " page=" + page + " name=" + name);
 		render(page, parameters, writer, request, response, new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 	}
@@ -269,7 +287,8 @@ public class Driver {
 	}
 
 	/**
-	 * Retrieves a resource from the provider application and transforms it using the Renderer passed as a parameter.
+	 * Retrieves a resource from the provider application and transforms it
+	 * using the Renderer passed as a parameter.
 	 * 
 	 * @param relUrl
 	 *            the relative URL to the resource
@@ -295,16 +314,13 @@ public class Driver {
 		HttpRequest originalRequest = resourceContext.getOriginalRequest();
 		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext, true);
 		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, true);
-		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, resourceContext);
-		if (HttpResponseUtils.isError(httpResponse)) {
-			String errorPageContent = httpClientHelper.toString(httpResponse);
-			throw new HttpErrorPage(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase(), errorPageContent);
-		} else if (!isTextContentType(httpResponse)) {
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest, resourceContext);
+		if (!isTextContentType(httpResponse)) {
 			LOG.debug("'" + relUrl + "' is binary on no transformation to apply: was forwarded without modification.");
 			httpClientHelper.render(httpResponse, response, originalRequest, httpRequest);
 		} else {
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
-			String currentValue = httpClientHelper.toString(httpResponse);
+			String currentValue = HttpResponseUtils.toString(httpResponse);
 
 			List<Renderer> listOfRenderers = new ArrayList<Renderer>(renderers.length + 1);
 			if (config.isFixResources()) {
@@ -318,7 +334,8 @@ public class Driver {
 				renderer.render(resourceContext, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
 			}
-			// Write the result to the OutpuStream using default charset ISO-8859-1 if not defined
+			// Write the result to the OutpuStream using default charset
+			// ISO-8859-1 if not defined
 			String charsetName = HttpResponseUtils.getContentCharset(httpResponse);
 			if (charsetName == null) {
 				charsetName = "ISO-8859-1";
@@ -328,8 +345,9 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a StringOutput. The result is cached into the request scope in order not to send several requests if you need several blocks in the same page to
-	 * build the final page.
+	 * This method returns the content of an url as a StringOutput. The result
+	 * is cached into the request scope in order not to send several requests if
+	 * you need several blocks in the same page to build the final page.
 	 * 
 	 * @param context
 	 *            the target resource
@@ -349,11 +367,8 @@ public class Driver {
 		}
 		HttpRequest originalRequest = context.getOriginalRequest();
 		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, false);
-		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest, context);
-		result = httpClientHelper.toString(httpResponse);
-		if (HttpResponseUtils.isError(httpResponse)) {
-			throw new HttpErrorPage(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase(), result);
-		}
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest, context);
+		result = HttpResponseUtils.toString(httpResponse);
 		if (cacheable) {
 			request.setAttribute(url, result);
 		}
@@ -361,8 +376,9 @@ public class Driver {
 	}
 
 	/**
-	 * This method returns the content of an url as a String. The result is cached into the request scope in order not to send several requests if you need several blocks in the same page to build the
-	 * final page.
+	 * This method returns the content of an url as a String. The result is
+	 * cached into the request scope in order not to send several requests if
+	 * you need several blocks in the same page to build the final page.
 	 * 
 	 * @param page
 	 *            Address of the page containing the template
@@ -387,8 +403,9 @@ public class Driver {
 	 * <p>
 	 * This method is not intended to get a WRITE access to the configuration.
 	 * <p>
-	 * This may be supported in future versions (testing is needed). For the time being, changing configuration settings after getting access through this method is <b>UNSUPPORTED</b> and <b>SHOULD
-	 * NOT</b> be used.
+	 * This may be supported in future versions (testing is needed). For the
+	 * time being, changing configuration settings after getting access through
+	 * this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
 	 * 
 	 * @return current configuration
 	 */
@@ -397,7 +414,8 @@ public class Driver {
 	}
 
 	/**
-	 * Check whether the given content-type value corresponds to "parsable" text.
+	 * Check whether the given content-type value corresponds to "parsable"
+	 * text.
 	 * 
 	 * @param httpResponse
 	 *            the response to analyze depending on its content-type
@@ -434,13 +452,16 @@ public class Driver {
 		return result;
 	}
 
-	private org.apache.http.HttpResponse execute(GenericHttpRequest httpRequest, HttpRequest originalRequest, ResourceContext resourceContext) throws HttpErrorPage {
+	private org.apache.http.HttpResponse execute(GenericHttpRequest httpRequest, ResourceContext resourceContext) throws HttpErrorPage, IOException {
 		CookieStore cookieStore = new RequestCookieStore(cookieManager, resourceContext);
 		HttpContext httpContext = httpClientHelper.createHttpContext(cookieStore);
 		org.apache.http.HttpResponse httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
 		while (authenticationHandler.needsNewRequest(httpResponse, resourceContext)) {
 			HttpResponseUtils.release(httpResponse);
 			httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
+		}
+		if (HttpResponseUtils.isError(httpResponse)) {
+			throw new HttpErrorPage(httpResponse);
 		}
 		return httpResponse;
 	}

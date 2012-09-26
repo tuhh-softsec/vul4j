@@ -35,6 +35,7 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 		super(response);
 	}
 
+	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
 		if (!capturing)
 			return super.getOutputStream();
@@ -47,11 +48,18 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 				public void write(int b) throws IOException {
 					writerOutputStream.write(b);
 				}
+
+				@Override
+				public void close() throws IOException {
+					writerOutputStream.close();
+					super.close();
+				}
 			};
 		}
 		return outputStream;
 	}
 
+	@Override
 	public PrintWriter getWriter() throws IOException {
 		if (!capturing)
 			return super.getWriter();
@@ -63,12 +71,14 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 		return printWriter;
 	}
 
+	@Override
 	public void setContentLength(int len) {
 		// Don't forward it if we are about to transform the contents.
 		if (!capturing)
 			super.setContentLength(len);
 	}
 
+	@Override
 	public void setContentType(String type) {
 		// TODO create configuration parameter
 		if (!type.startsWith("text") && outputStream == null && printWriter == null)
@@ -76,27 +86,31 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 		super.setContentType(type);
 	}
 
+	@Override
 	public void setHeader(String name, String value) {
 		if (!capturing || !name.equalsIgnoreCase("Content-length"))
 			super.setHeader(name, value);
 	}
 
+	@Override
 	public void addHeader(String name, String value) {
 		if (!capturing || !name.equalsIgnoreCase("Content-length"))
 			super.addHeader(name, value);
-		}
+	}
 
+	@Override
 	public void setIntHeader(String name, int value) {
 		if (!capturing || !name.equalsIgnoreCase("Content-length"))
 			super.setIntHeader(name, value);
 	}
 
+	@Override
 	public void addIntHeader(String name, int value) {
 		if (!capturing || !name.equalsIgnoreCase("Content-length"))
 			super.addIntHeader(name, value);
 	}
-	
-	public String getResult(){
+
+	public String getResult() {
 		return writer.toString();
 	}
 }

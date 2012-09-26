@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.aggregator.AggregateRenderer;
+import org.esigate.api.HttpResponse;
 import org.esigate.esi.EsiRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,11 @@ public class AggregatorServlet extends HttpServlet {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
 		LOG.debug("Aggregating " + relUrl);
+		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 		try {
-			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response), new AggregateRenderer(), new EsiRenderer());
+			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), httpResponse, new AggregateRenderer(), new EsiRenderer());
 		} catch (HttpErrorPage e) {
-			response.setStatus(e.getStatusCode());
-			response.getOutputStream().print(e.getErrorPageContent());
+			e.render(httpResponse);
 		}
 	}
 

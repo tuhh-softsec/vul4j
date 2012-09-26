@@ -44,6 +44,7 @@ public interface AuthenticationHandler extends Extension {
 	 * 
 	 * @param requestContext
 	 * @return true if the processing must continue, false if the response has already been sent to the client.
+	 * @throws IOException 
 	 */
 	public boolean beforeProxy(ResourceContext requestContext) throws IOException;
 

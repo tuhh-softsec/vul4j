@@ -22,6 +22,16 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpResponse;
+import org.esigate.http.HttpClientHelper;
+import org.esigate.http.MockHttpClient;
+import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
+
 public class DriverTest extends TestCase {
 
 	@Override
@@ -52,7 +62,7 @@ public class DriverTest extends TestCase {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("key", "'value'");
 		params.put("some other key", "'another value'");
-		DriverFactory.getInstance("mock").renderTemplate("/testTemplateFullPage", null, out, null, null, params, null, null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/testTemplateFullPage", null, out, null, null, params, null, null);
 		assertFalse(out.toString().contains("key"));
 		assertTrue(out.toString().contains("'value'"));
 		assertFalse(out.toString().contains("some other key"));
@@ -61,15 +71,14 @@ public class DriverTest extends TestCase {
 
 	public void testRenderTemplate() throws IOException, HttpErrorPage {
 		StringWriter out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A", out, null, null, null, null, null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A", out, null, null, null, null, null);
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)", "A", out, null, null, null, null, null, false);
+		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)", "A", out, null, null, null, null, null);
 		assertEquals("some text goes here", out.toString());
 
 	}
-
 
 	/** Test default configuration */
 	public void testDefaultConfig() {
@@ -110,6 +119,31 @@ public class DriverTest extends TestCase {
 		assertParsableContentType(driver, "text/plain");
 		assertParsableContentType(driver, "text/html");
 		assertParsableContentType(driver, "application/x");
+	}
+
+	public void testHeadersPreservedWhenError500() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpClientHelper httpClientHelper = new HttpClientHelper();
+		httpClientHelper.init(mockHttpClient, properties);
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
+		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
+		response.addHeader("Dummy", "dummy");
+		HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		Driver driver = new Driver("tested", properties, httpClientHelper);
+		MockHttpRequest mockRequest = new MockHttpRequest();
+		MockHttpResponse mockResponse = new MockHttpResponse();
+		try {
+			driver.proxy("/", mockRequest, mockResponse);
+			fail("We should get an HttpErrorPage");
+		} catch (HttpErrorPage e) {
+			e.render(mockResponse);
+		}
+		assertEquals("Status code", 500, mockResponse.getStatusCode());
+		assertTrue("Header 'Dummy'", mockResponse.containsHeader("Dummy"));
 	}
 
 }
