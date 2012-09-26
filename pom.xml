@@ -64,13 +64,19 @@
         <developerConnection>
             scm:svn:https://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/
         </developerConnection>
-        <url>http://svn.apache.org/viewvc/santuario/xml-security-java/trunk/</url>
+        <url>http://svn.apache.org/repos/asf/santuario/xml-security-java/trunk/</url>
     </scm>
     <organization>
         <name>The Apache Software Foundation</name>
         <url>http://www.apache.org/</url>
     </organization>
-    
+
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>11</version>
+    </parent>
+
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
@@ -308,6 +314,18 @@
                             <product.version>${project.version}</product.version>
                             <log4j.configuration>log4j-xmlsec.xml</log4j.configuration>
                         </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.2.1</version>
+                    <configuration>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <preparationGoals>clean install</preparationGoals>
+                        <goals>deploy</goals>
+                        <arguments>-Papache-release</arguments>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
 
