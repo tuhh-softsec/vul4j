@@ -14,7 +14,6 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.ResourceContext;
 import org.esigate.parser.ElementType;
-import org.esigate.parser.Parser;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.util.UriUtils;
@@ -24,8 +23,6 @@ import org.esigate.xml.XsltRenderer;
 
 class IncludeElement extends BaseElement {
 	private static final String PROVIDER_PATTERN = "$(PROVIDER{";
-
-	private final static Pattern FRAGMENT_REPLACEMENT_PATTERN = Pattern.compile("(<esi:fragment[^>]*>)|(</esi:fragment[^>]*>)");
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
 		public IncludeElement newInstance() {
@@ -50,29 +47,44 @@ class IncludeElement extends BaseElement {
 		}
 	};
 	private StringBuilder buf;
-	private Map<String, CharSequence> fragmentRepacements;
-	private Map<String, CharSequence> regexpRepacements;
+	private Map<String, CharSequence> fragmentReplacements;
+	private Map<String, CharSequence> regexpReplacements;
+	private Tag includeTag;
+	private boolean write = false;
 
 	IncludeElement() {
 	}
 
 	@Override
 	public void characters(CharSequence csq, int start, int end) {
-		buf.append(csq, start, end);
+		if (write)
+			buf.append(csq, start, end);
 	}
 
 	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		// apply fragment replacements
-		if (!fragmentRepacements.isEmpty()) {
-			StringBuilder tmp = new StringBuilder(buf.length());
-			Parser fragmentReplacementParser = new Parser(FRAGMENT_REPLACEMENT_PATTERN, FragmentReplacementElement.createType(fragmentRepacements));
-			fragmentReplacementParser.parse(buf, tmp);
-			buf = tmp;
+		write = true;
+		String src = includeTag.getAttribute("src");
+		String alt = includeTag.getAttribute("alt");
+		boolean ignoreError = "continue".equals(includeTag.getAttribute("onerror"));
+		try {
+			processPage(src, includeTag, ctx);
+		} catch (IOException e) {
+			if (alt != null) {
+				processPage(alt, includeTag, ctx);
+			} else if (!ignoreError && !ctx.reportError(e)) {
+				throw e;
+			}
+		} catch (HttpErrorPage e) {
+			if (alt != null) {
+				processPage(alt, includeTag, ctx);
+			} else if (!ignoreError && !ctx.reportError(e)) {
+				throw e;
+			}
 		}
 		// apply regexp replacements
-		if (!regexpRepacements.isEmpty()) {
-			for (Entry<String, CharSequence> entry : regexpRepacements.entrySet()) {
+		if (!regexpReplacements.isEmpty()) {
+			for (Entry<String, CharSequence> entry : regexpReplacements.entrySet()) {
 				buf = new StringBuilder(Pattern.compile(entry.getKey()).matcher(buf).replaceAll(entry.getValue().toString()));
 			}
 		}
@@ -81,37 +93,16 @@ class IncludeElement extends BaseElement {
 		ctx.getCurrent().characters(buf, 0, buf.length());
 
 		buf = null;
-		fragmentRepacements = null;
-		regexpRepacements = null;
+		fragmentReplacements = null;
+		regexpReplacements = null;
 	}
 
 	@Override
 	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		buf = new StringBuilder();
-		fragmentRepacements = new HashMap<String, CharSequence>();
-		regexpRepacements = new HashMap<String, CharSequence>();
-
-		String src = tag.getAttribute("src");
-		String alt = tag.getAttribute("alt");
-
-		boolean ignoreError = "continue".equals(tag.getAttribute("onerror"));
-		try {
-			try {
-				processPage(src, tag, ctx);
-			} catch (Exception e) {
-				if (alt != null) {
-					processPage(alt, tag, ctx);
-				} else {
-					throw e;
-				}
-			}
-		} catch (Exception e) {
-			if (!ignoreError && !ctx.reportError(e)) {
-				HttpErrorPage httpErrorPage = new HttpErrorPage(404, "Not found", "The page: " + src + " does not exist");
-				httpErrorPage.initCause(e);
-				throw httpErrorPage;
-			}
-		}
+		fragmentReplacements = new HashMap<String, CharSequence>();
+		regexpReplacements = new HashMap<String, CharSequence>();
+		includeTag = tag;
 	}
 
 	void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
@@ -202,25 +193,29 @@ class IncludeElement extends BaseElement {
 			String cache = ic.getFragment();
 			characters(cache, 0, cache.length());
 		} else {
-			if (fragment != null) {
-				rendererList.add(new EsiFragmentRenderer(page, fragment));
-			} else if (xpath != null) {
+			EsiRenderer esiRenderer;
+			if (fragment != null)
+				esiRenderer = new EsiRenderer(page, fragment);
+			else
+				esiRenderer = new EsiRenderer();
+			if (fragmentReplacements != null && !fragmentReplacements.isEmpty())
+				esiRenderer.setFragmentsToReplace(fragmentReplacements);
+			rendererList.add(esiRenderer);
+			if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
 				rendererList.add(new XsltRenderer(xslt, driver, resourceContext));
 			}
-			rendererList.add(new EsiRenderer());
-
 			driver.render(page, outAdapter, resourceContext, rendererList.toArray(new Renderer[rendererList.size()]));
 		}
 	}
 
 	void addFragmentReplacement(String fragment, CharSequence replacement) {
-		fragmentRepacements.put(fragment, replacement);
+		fragmentReplacements.put(fragment, replacement);
 	}
 
 	void addRegexpReplacement(String regexp, CharSequence replacement) {
-		regexpRepacements.put(regexp, replacement);
+		regexpReplacements.put(regexp, replacement);
 	}
 
 }

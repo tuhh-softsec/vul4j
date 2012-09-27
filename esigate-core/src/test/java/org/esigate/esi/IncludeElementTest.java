@@ -131,7 +131,7 @@ public class IncludeElementTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals(
-				"before -incl-page-start fragment replaced <esi:fragment name='untouched-fragment' /> incl-page-end- after",
+				"before -incl-page-start fragment replaced  incl-page-end- after",
 				out.toString());
 	}
 
@@ -148,7 +148,7 @@ public class IncludeElementTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(ctx, page, out);
 		assertEquals(
-				"before -incl-page-start <esi:fragment name='untouched-fragment'>zzz</esi:fragment> regexp replaced incl-page-end- after",
+				"before -incl-page-start zzz regexp replaced incl-page-end- after",
 				out.toString());
 	}
 
@@ -288,4 +288,12 @@ public class IncludeElementTest extends TestCase {
 		assertEquals(ctx.getOriginalRequest().getFetchMaxWait(), Integer.valueOf(2000));
 	}
 	
+	public void testIncludeTagContentShouldBeRemoved() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"$(PROVIDER{mock})/testFragment\" fragment =\"myFragment\">Content to be removed</esi:include> after";
+		provider.addResource("/testFragment", "before fragment <esi:fragment name=\"myFragment\">---fragment content---</esi:fragment> after fragment");
+		StringWriter out = new StringWriter();
+		tested.render(ctx, page, out);
+		assertEquals("before ---fragment content--- after", out.toString());
+	}
+
 }

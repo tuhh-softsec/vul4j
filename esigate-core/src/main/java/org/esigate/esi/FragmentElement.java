@@ -14,31 +14,43 @@ class FragmentElement extends BaseElement {
 
 	};
 
-	private EsiFragmentRenderer esiFragmentRenderer;
+	private EsiRenderer esiRenderer;
 	private boolean nameMatches;
+	private CharSequence replacement = null;
+	private boolean initialStateWrite = false;
 
-	FragmentElement() { }
+	FragmentElement() {
+	}
 
 	@Override
-	public void onTagEnd(String tag, ParserContext ctx) {
-		if (nameMatches) {
-			esiFragmentRenderer.setWrite(false);
+	public void onTagEnd(String tag, ParserContext ctx) throws IOException {
+		if (replacement != null) {
+			esiRenderer.setWrite(true);
+			characters(replacement, 0, replacement.length());
 		}
+		esiRenderer.setWrite(initialStateWrite);
 	}
 
 	@Override
 	protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String name = tag.getAttribute("name");
-		this.esiFragmentRenderer = ctx.findAncestor(EsiFragmentRenderer.class);
+		esiRenderer = ctx.findAncestor(EsiRenderer.class);
+		initialStateWrite = esiRenderer.isWrite();
 		// If name matches, start writing
-		nameMatches = name.equals(esiFragmentRenderer.getName());
-		if (nameMatches) {
-			esiFragmentRenderer.setWrite(true);
+		if (esiRenderer != null) {
+			nameMatches = name.equals(esiRenderer.getName());
+			if (nameMatches) {
+				esiRenderer.setWrite(true);
+			} else if (esiRenderer.getFragmentsToReplace() != null) {
+				replacement = esiRenderer.getFragmentsToReplace().get(name);
+				if (replacement != null)
+					esiRenderer.setWrite(false);
+			}
 		}
 	}
 
 	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
-		esiFragmentRenderer.append(csq, start, end);
+		esiRenderer.append(csq, start, end);
 	}
 }
