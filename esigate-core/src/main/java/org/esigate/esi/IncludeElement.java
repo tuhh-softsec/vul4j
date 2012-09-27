@@ -23,6 +23,7 @@ import org.esigate.xml.XsltRenderer;
 
 class IncludeElement extends BaseElement {
 	private static final String PROVIDER_PATTERN = "$(PROVIDER{";
+	private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
 		public IncludeElement newInstance() {
@@ -153,11 +154,18 @@ class IncludeElement extends BaseElement {
 		}
 
 		int idx = src.indexOf(PROVIDER_PATTERN);
-		if (idx < 0) {
+		int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
+		if (idx < 0 && idxLegacyPattern < 0) {
 			page = src;
 			driver = ctx.getResourceContext().getDriver();
-		} else {
+		} else if (idx >= 0) {
 			int startIdx = idx + PROVIDER_PATTERN.length();
+			int endIndex = src.indexOf("})", startIdx);
+			String provider = src.substring(startIdx, endIndex);
+			page = src.substring(endIndex + "})".length());
+			driver = DriverFactory.getInstance(provider);
+		} else {
+			int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
 			int endIndex = src.indexOf("})", startIdx);
 			String provider = src.substring(startIdx, endIndex);
 			page = src.substring(endIndex + "})".length());

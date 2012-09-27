@@ -54,6 +54,13 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before test after", out.toString());
 	}
 
+	public void testIncludeProviderLegacy() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";
+		StringWriter out = new StringWriter();
+		tested.render(ctx, page, out);
+		assertEquals("before test after", out.toString());
+	}
+
 	public void testIncludeAbsolute() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"http://www.foo.com/test\" /> after";
 		StringWriter out = new StringWriter();
