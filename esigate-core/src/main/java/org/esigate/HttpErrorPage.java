@@ -27,10 +27,10 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.apache.http.util.EntityUtils;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
 
@@ -51,26 +51,16 @@ public class HttpErrorPage extends Exception {
 		// Consume the entity and replace it with a StringEntity
 		HttpEntity httpEntity = httpResponse.getEntity();
 		if (httpEntity != null) {
-			Header contentType = httpEntity.getContentType();
-			Header contentEncoding = httpEntity.getContentEncoding();
 			String content;
 			try {
-				content = EntityUtils.toString(httpEntity);
+				content = HttpResponseUtils.toString(httpResponse);
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));
 				content = out.toString();
 			}
-			try {
-				StringEntity stringEntity = new StringEntity(content);
-				stringEntity.setContentType(contentType);
-				stringEntity.setContentEncoding(contentEncoding);
-				this.errorResponse.setEntity(stringEntity);
-			} catch (UnsupportedEncodingException e) {
-				// This will never happen as the problem would have been
-				// detected before
-				throw new RuntimeException(e);
-			}
+			StringEntity stringEntity = new StringEntity(content, ContentType.getOrDefault(httpEntity));
+			this.errorResponse.setEntity(stringEntity);
 		}
 	}
 

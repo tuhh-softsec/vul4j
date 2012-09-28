@@ -14,17 +14,20 @@
 
 package org.esigate;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.zip.GZIPOutputStream;
 
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.http.HttpClientHelper;
@@ -145,6 +148,7 @@ public class DriverTest extends TestCase {
 		assertEquals("Status code", 500, mockResponse.getStatusCode());
 		assertTrue("Header 'Dummy'", mockResponse.containsHeader("Dummy"));
 	}
+
 	public void testHeadersFilteredWhenError500() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
@@ -168,6 +172,59 @@ public class DriverTest extends TestCase {
 		}
 		assertEquals("Status code", 500, mockResponse.getStatusCode());
 		assertFalse("Header 'Transfer-Encoding'", mockResponse.containsHeader("Transfer-Encoding"));
+	}
+
+	public void testSpecialCharacterInErrorPage() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpClientHelper httpClientHelper = new HttpClientHelper();
+		httpClientHelper.init(mockHttpClient, properties);
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
+		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
+		HttpEntity httpEntity = new StringEntity("é", "UTF-8");
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		Driver driver = new Driver("tested", properties, httpClientHelper);
+		MockHttpRequest mockRequest = new MockHttpRequest();
+		MockHttpResponse mockResponse = new MockHttpResponse();
+		try {
+			driver.proxy("/", mockRequest, mockResponse);
+			fail("We should get an HttpErrorPage");
+		} catch (HttpErrorPage e) {
+			e.render(mockResponse);
+		}
+		assertEquals("é", mockResponse.getBodyAsString());
+	}
+
+	public void testGzipErrorPage() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpClientHelper httpClientHelper = new HttpClientHelper();
+		httpClientHelper.init(mockHttpClient, properties);
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
+		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
+		response.addHeader("Content-encoding", "gzip");
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		GZIPOutputStream gzos = new GZIPOutputStream(baos);
+		byte[] uncompressedBytes = "é".getBytes("UTF-8");
+		gzos.write(uncompressedBytes, 0, uncompressedBytes.length);
+		gzos.close();
+		byte[] compressedBytes = baos.toByteArray();
+		ByteArrayEntity httpEntity = new ByteArrayEntity(compressedBytes);
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		Driver driver = new Driver("tested", properties, httpClientHelper);
+		MockHttpRequest mockRequest = new MockHttpRequest();
+		MockHttpResponse mockResponse = new MockHttpResponse();
+		try {
+			driver.proxy("/", mockRequest, mockResponse);
+			fail("We should get an HttpErrorPage");
+		} catch (HttpErrorPage e) {
+			e.render(mockResponse);
+		}
+		assertEquals("é", mockResponse.getBodyAsString());
 	}
 
 }

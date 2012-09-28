@@ -36,7 +36,6 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.EhcacheCacheStorage;
@@ -144,8 +143,8 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	private boolean compare(HttpResponse response1, HttpResponse response2) throws Exception, IOException {
-		String entity1 = EntityUtils.toString(response1.getEntity());
-		String entity2 = EntityUtils.toString(response2.getEntity());
+		String entity1 = HttpResponseUtils.toString(response1);
+		String entity2 = HttpResponseUtils.toString(response2);
 		return entity1.equals(entity2);
 	}
 
