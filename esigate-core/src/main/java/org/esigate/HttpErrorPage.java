@@ -27,11 +27,11 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.StatusLine;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
+import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
 
 /**
@@ -42,12 +42,13 @@ import org.esigate.http.HttpResponseUtils;
 public class HttpErrorPage extends Exception {
 	private static final long serialVersionUID = 1L;
 	private final HttpResponse errorResponse;
+	private final HttpClientHelper httpClientHelper;
 
-	public HttpErrorPage(HttpResponse httpResponse) {
+	public HttpErrorPage(HttpResponse httpResponse, HttpClientHelper httpClientHelper) {
 		super(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
-		StatusLine statusLine = httpResponse.getStatusLine();
-		this.errorResponse = new BasicHttpResponse(statusLine);
-		this.errorResponse.setHeaders(httpResponse.getAllHeaders());
+		this.httpClientHelper = httpClientHelper;
+		this.errorResponse = httpResponse;
+		// Consume the entity and replace it with a StringEntity
 		HttpEntity httpEntity = httpResponse.getEntity();
 		if (httpEntity != null) {
 			Header contentType = httpEntity.getContentType();
@@ -75,6 +76,7 @@ public class HttpErrorPage extends Exception {
 
 	public HttpErrorPage(int statusCode, String statusMessage, String content) {
 		super(statusCode + " " + statusMessage);
+		this.httpClientHelper = null;
 		this.errorResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
 		try {
 			this.errorResponse.setEntity(new StringEntity(content, "UTF-8"));
@@ -86,6 +88,7 @@ public class HttpErrorPage extends Exception {
 
 	public HttpErrorPage(int statusCode, String statusMessage, Exception exception) {
 		super(statusCode + " " + statusMessage, exception);
+		this.httpClientHelper = null;
 		this.errorResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
 		StringWriter out = new StringWriter();
 		exception.printStackTrace(new PrintWriter(out));
@@ -103,20 +106,23 @@ public class HttpErrorPage extends Exception {
 	}
 
 	public void render(org.esigate.api.HttpResponse httpResponse) throws IOException {
-		httpResponse.setStatus(errorResponse.getStatusLine().getStatusCode());
-		// FIXME We should filter the headers and rewrite urls here
-		for (Header header : errorResponse.getAllHeaders()) {
-			String name = header.getName();
-			String value = header.getValue();
-			httpResponse.addHeader(name, value);
-		}
-		HttpEntity httpEntity = errorResponse.getEntity();
-		if (httpEntity != null) {
-			InputStream content = httpEntity.getContent();
-			try {
-				IOUtils.copy(content, httpResponse.getOutputStream());
-			} finally {
-				content.close();
+		if (httpClientHelper != null)
+			httpClientHelper.render(errorResponse, httpResponse);
+		else {
+			httpResponse.setStatus(errorResponse.getStatusLine().getStatusCode());
+			for (Header header : errorResponse.getAllHeaders()) {
+				String name = header.getName();
+				String value = header.getValue();
+				httpResponse.addHeader(name, value);
+			}
+			HttpEntity httpEntity = errorResponse.getEntity();
+			if (httpEntity != null) {
+				InputStream content = httpEntity.getContent();
+				try {
+					IOUtils.copy(content, httpResponse.getOutputStream());
+				} finally {
+					content.close();
+				}
 			}
 		}
 	}

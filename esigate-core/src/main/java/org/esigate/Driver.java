@@ -119,7 +119,7 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
-	 * @param response 
+	 * @param response
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
@@ -145,7 +145,7 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
-	 * @param response 
+	 * @param response
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @throws IOException
@@ -173,7 +173,7 @@ public class Driver {
 	 *            Writer to write the block to
 	 * @param request
 	 *            original client request
-	 * @param response 
+	 * @param response
 	 * @param replaceRules
 	 *            the replace rules to be applied on the block
 	 * @param parameters
@@ -212,7 +212,7 @@ public class Driver {
 	 *            Writer where to write the result
 	 * @param request
 	 *            originating request object
-	 * @param response 
+	 * @param response
 	 * @param params
 	 *            Blocks to replace inside the template
 	 * @param replaceRules
@@ -317,7 +317,7 @@ public class Driver {
 		org.apache.http.HttpResponse httpResponse = execute(httpRequest, resourceContext);
 		if (!isTextContentType(httpResponse)) {
 			LOG.debug("'" + relUrl + "' is binary on no transformation to apply: was forwarded without modification.");
-			httpClientHelper.render(httpResponse, response, originalRequest, httpRequest);
+			httpClientHelper.render(httpResponse, response);
 		} else {
 			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
 			String currentValue = HttpResponseUtils.toString(httpResponse);
@@ -340,7 +340,7 @@ public class Driver {
 			if (charsetName == null) {
 				charsetName = "ISO-8859-1";
 			}
-			httpClientHelper.render(currentValue, httpResponse, response, originalRequest, httpRequest);
+			httpClientHelper.render(currentValue, httpResponse, response);
 		}
 	}
 
@@ -461,7 +461,7 @@ public class Driver {
 			httpResponse = executeSingleRequest(httpRequest, httpContext, resourceContext);
 		}
 		if (HttpResponseUtils.isError(httpResponse)) {
-			throw new HttpErrorPage(httpResponse);
+			throw new HttpErrorPage(httpResponse, httpClientHelper);
 		}
 		return httpResponse;
 	}

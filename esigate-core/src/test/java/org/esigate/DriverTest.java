@@ -145,5 +145,29 @@ public class DriverTest extends TestCase {
 		assertEquals("Status code", 500, mockResponse.getStatusCode());
 		assertTrue("Header 'Dummy'", mockResponse.containsHeader("Dummy"));
 	}
+	public void testHeadersFilteredWhenError500() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpClientHelper httpClientHelper = new HttpClientHelper();
+		httpClientHelper.init(mockHttpClient, properties);
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
+		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
+		response.addHeader("Transfer-Encoding", "dummy");
+		HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		Driver driver = new Driver("tested", properties, httpClientHelper);
+		MockHttpRequest mockRequest = new MockHttpRequest();
+		MockHttpResponse mockResponse = new MockHttpResponse();
+		try {
+			driver.proxy("/", mockRequest, mockResponse);
+			fail("We should get an HttpErrorPage");
+		} catch (HttpErrorPage e) {
+			e.render(mockResponse);
+		}
+		assertEquals("Status code", 500, mockResponse.getStatusCode());
+		assertFalse("Header 'Transfer-Encoding'", mockResponse.containsHeader("Transfer-Encoding"));
+	}
 
 }

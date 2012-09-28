@@ -95,6 +95,8 @@ public class HttpClientHelper implements Extension {
 	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
 	private static final Set<String> ENTITY_METHODS = Collections
 			.unmodifiableSet(new HashSet<String>(Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
+	private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
+	private static final String SENT_REQUEST_KEY = "SENT_REQUEST";
 	private boolean preserveHost;
 	private FilterList requestHeadersFilterList;
 	private FilterList responseHeadersFilterList;
@@ -244,6 +246,9 @@ public class HttpClientHelper implements Extension {
 			clientParamBean.setVirtualHost(virtualHost);
 			httpRequest.getParams().setParameter(ConnRoutePNames.FORCED_ROUTE, route);
 		}
+		httpRequest.getParams().setParameter(ORIGINAL_REQUEST_KEY, originalRequest);
+		httpRequest.getParams().setParameter(SENT_REQUEST_KEY, httpRequest);
+
 		return httpRequest;
 	}
 
@@ -286,7 +291,9 @@ public class HttpClientHelper implements Extension {
 	 * @param output
 	 * @throws MalformedURLException
 	 */
-	private void copyHeaders(HttpResponse httpClientResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest httpRequest) throws MalformedURLException {
+	private void copyHeaders(HttpResponse httpClientResponse, org.esigate.api.HttpResponse output) throws MalformedURLException {
+		org.apache.http.HttpRequest httpRequest = (org.apache.http.HttpRequest) httpClientResponse.getParams().getParameter(SENT_REQUEST_KEY);
+		HttpRequest originalRequest = (HttpRequest) httpClientResponse.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		String originalUri = originalRequest.getUri().toString();
 		String uri = httpRequest.getRequestLine().getUri();
 		for (Header header : httpClientResponse.getAllHeaders()) {
@@ -309,6 +316,7 @@ public class HttpClientHelper implements Extension {
 	}
 
 	public HttpResponse execute(org.apache.http.HttpRequest httpRequest, HttpContext httpContext) {
+		HttpResponse result;
 		try {
 			HttpHost httpHost = UriUtils.extractHost(httpRequest.getRequestLine().getUri());
 			HttpResponse httpResponse = httpClient.execute(httpHost, httpRequest, httpContext);
@@ -332,33 +340,36 @@ public class HttpClientHelper implements Extension {
 					LOG.warn(lastRequest.getRequestLine() + " -> " + httpResponse.getStatusLine());
 				}
 			}
-			return httpResponse;
+			result = httpResponse;
 		} catch (HttpHostConnectException e) {
 			int statusCode = HttpStatus.SC_BAD_GATEWAY;
 			String statusText = "Connection refused";
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (ConnectionPoolTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Connection pool timeout";
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (ConnectTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Connect timeout";
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (SocketTimeoutException e) {
 			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
 			String statusText = "Socket timeout";
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		} catch (IOException e) {
 			int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
 			String statusText = "Error retrieving URL";
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
-			return new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		}
+		// FIXME workaround for a bug in http client cache that does not keep params in response
+		result.setParams(httpRequest.getParams());
+		return result;
 
 	}
 
@@ -368,24 +379,23 @@ public class HttpClientHelper implements Extension {
 		return httpContext;
 	}
 
-	public void render(HttpResponse httpResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest request) throws IOException {
+	public void render(HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
 		// As the entity is sent unchanged it has not been decompressed so we
 		// can copy Accept-encoding header
 		String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
 		if (contentEncoding != null)
 			output.addHeader(HttpHeaders.CONTENT_ENCODING, contentEncoding);
-		render(httpResponse.getEntity(), httpResponse, output, originalRequest, request);
+		render(httpResponse.getEntity(), httpResponse, output);
 	}
 
-	public void render(String transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest request) throws IOException {
+	public void render(String transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
 		HttpEntity httpEntity = new StringEntity(transformedEntity, ContentType.get(httpResponse.getEntity()));
-		render(httpEntity, httpResponse, output, originalRequest, request);
+		render(httpEntity, httpResponse, output);
 	}
 
-	private void render(HttpEntity transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output, HttpRequest originalRequest, org.apache.http.HttpRequest request)
-			throws IOException {
+	private void render(HttpEntity transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
 		output.setStatus(httpResponse.getStatusLine().getStatusCode());
-		copyHeaders(httpResponse, output, originalRequest, request);
+		copyHeaders(httpResponse, output);
 		if (transformedEntity == null)
 			return;
 		InputStream content = transformedEntity.getContent();
