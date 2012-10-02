@@ -22,9 +22,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
-import org.apache.xml.security.binding.xmlenc.ReferenceList;
 import org.apache.xml.security.stax.ext.DocumentContext;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
@@ -54,13 +52,6 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
     
     public XMLDecryptInputProcessor(XMLSecurityProperties securityProperties) throws XMLSecurityException {
         super(securityProperties);
-    }
-    
-    public XMLDecryptInputProcessor(
-            KeyInfoType keyInfoType, ReferenceList referenceList, 
-            XMLSecurityProperties securityProperties
-    ) throws XMLSecurityException {
-        super(keyInfoType, referenceList, securityProperties);
     }
     
     @Override

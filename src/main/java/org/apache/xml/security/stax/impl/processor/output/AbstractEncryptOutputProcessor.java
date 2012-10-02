@@ -28,6 +28,7 @@ import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
 import org.apache.xml.security.stax.impl.util.TrimmerOutputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -37,7 +38,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -151,7 +151,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
                 //we create a new StAX writer for optimized namespace writing.
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(new BufferedOutputStream(cipherOutputStream, 8192 * 5), "UTF-8");
+                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(new UnsynchronizedBufferedOutputStream(cipherOutputStream, 8192), "UTF-8");
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {
@@ -240,11 +240,11 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                     final List<XMLSecCharacters> charactersBuffer = characterEventGeneratorOutputStream.getCharactersBuffer();
                     if (!charactersBuffer.isEmpty()) {
                         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
-                        Iterator<XMLSecCharacters> charactersIterator = charactersBuffer.iterator();
-                        while (charactersIterator.hasNext()) {
-                            XMLSecCharacters characters = charactersIterator.next();
-                            outputAsEvent(subOutputProcessorChain, characters);
-                            charactersIterator.remove();
+                        int size = charactersBuffer.size();
+                        int i = 0;
+                        while (i < size) {
+                            XMLSecCharacters xmlSecCharacters = charactersBuffer.remove(i++);
+                            outputAsEvent(subOutputProcessorChain, xmlSecCharacters);
                         }
                     }
                     break;

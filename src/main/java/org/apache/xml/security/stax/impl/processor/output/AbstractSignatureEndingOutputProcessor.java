@@ -29,9 +29,9 @@ import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
 import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -223,7 +223,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         public void init(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
 
             this.signerOutputStream = new SignerOutputStream(this.signatureAlgorithm);
-            this.bufferedSignerOutputStream = new BufferedOutputStream(this.signerOutputStream);
+            this.bufferedSignerOutputStream = new UnsynchronizedBufferedOutputStream(this.signerOutputStream);
 
             final String canonicalizationAlgorithm = getSecurityProperties().getSignatureCanonicalizationAlgorithm();
 

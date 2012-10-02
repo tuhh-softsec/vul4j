@@ -26,6 +26,8 @@ import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
 import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayOutputStream;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
@@ -84,7 +86,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     @Override
     public void setTransformer(Transformer transformer) throws XMLSecurityException {
         //we support only transformers which takes an InputStream otherwise we will break the C14N
-        setOutputStream(new ByteArrayOutputStream());
+        setOutputStream(new UnsynchronizedByteArrayOutputStream());
         super.setTransformer(transformer);
     }
 
@@ -306,11 +308,11 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     outputStream.write('<');
                     final String prefix = xmlSecStartElement.getName().getPrefix();
                     if (prefix != null && !prefix.isEmpty()) {
-                        UtfHelpper.writeByte(prefix, outputStream, cache);
+                        UtfHelpper.writeUTF8String(prefix, outputStream, cache);
                         outputStream.write(DOUBLEPOINT);
                     }
                     final String name = xmlSecStartElement.getName().getLocalPart();
-                    UtfHelpper.writeByte(name, outputStream, cache);
+                    UtfHelpper.writeUTF8String(name, outputStream, cache);
 
                     if (!utilizedNamespaces.isEmpty()) {
                         final Iterator<XMLSecNamespace> namespaceIterator = utilizedNamespaces.iterator();
@@ -352,10 +354,10 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     final String localPrefix = xmlSecEndElement.getName().getPrefix();
                     outputStream.write(_END_TAG);
                     if (localPrefix != null && !localPrefix.isEmpty()) {
-                        UtfHelpper.writeByte(localPrefix, outputStream, cache);
+                        UtfHelpper.writeUTF8String(localPrefix, outputStream, cache);
                         outputStream.write(DOUBLEPOINT);
                     }
-                    UtfHelpper.writeStringToUtf8(xmlSecEndElement.getName().getLocalPart(), outputStream);
+                    UtfHelpper.writeUTF8String(xmlSecEndElement.getName().getLocalPart(), outputStream, cache);
                     outputStream.write('>');
 
                     //We finished with this level, pop to the previous definitions.
@@ -428,8 +430,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     @Override
     public void doFinal() throws XMLStreamException {
         if (getTransformer() != null) {
-            ByteArrayOutputStream baos = (ByteArrayOutputStream)getOutputStream();
-            getTransformer().transform(new ByteArrayInputStream(baos.toByteArray()));
+            UnsynchronizedByteArrayOutputStream baos = (UnsynchronizedByteArrayOutputStream)getOutputStream();
+            getTransformer().transform(new UnsynchronizedByteArrayInputStream(baos.toByteArray()));
             getTransformer().doFinal();
         }
     }
@@ -437,7 +439,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     protected static void outputAttrToWriter(final String name, final String value, final OutputStream writer,
                                              final Map<String, byte[]> cache) throws IOException {
         writer.write(' ');
-        UtfHelpper.writeByte(name, writer, cache);
+        UtfHelpper.writeUTF8String(name, writer, cache);
         writer.write(EQUAL_STRING);
         byte[] toWrite;
         final int length = value.length();

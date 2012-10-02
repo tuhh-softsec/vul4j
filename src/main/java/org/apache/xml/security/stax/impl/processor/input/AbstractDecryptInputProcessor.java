@@ -38,10 +38,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
-import org.apache.xml.security.stax.impl.util.IDGenerator;
-import org.apache.xml.security.stax.impl.util.IVSplittingOutputStream;
-import org.apache.xml.security.stax.impl.util.MultiInputStream;
-import org.apache.xml.security.stax.impl.util.ReplaceableOuputStream;
+import org.apache.xml.security.stax.impl.util.*;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.crypto.Cipher;
@@ -308,21 +305,19 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
     private InputStream writeWrapperStartElement(XMLSecStartElement xmlSecStartElement) throws IOException {
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         //temporary writer to write the dummy wrapper element with all namespaces in the current scope
         //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-        Writer writer = new OutputStreamWriter(byteArrayOutputStream, "UTF-8");
-
-        writer.write('<');
-        writer.write(wrapperElementName.getPrefix());
-        writer.write(':');
-        writer.write(wrapperElementName.getLocalPart());
-        writer.write(' ');
-        writer.write("xmlns:");
-        writer.write(wrapperElementName.getPrefix());
-        writer.write("=\"");
-        writer.write(wrapperElementName.getNamespaceURI());
-        writer.write('\"');
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append('<');
+        stringBuilder.append(wrapperElementName.getPrefix());
+        stringBuilder.append(':');
+        stringBuilder.append(wrapperElementName.getLocalPart());
+        stringBuilder.append(' ');
+        stringBuilder.append("xmlns:");
+        stringBuilder.append(wrapperElementName.getPrefix());
+        stringBuilder.append("=\"");
+        stringBuilder.append(wrapperElementName.getNamespaceURI());
+        stringBuilder.append('\"');
 
         //apply all namespaces from current scope to get a valid documentfragment:
         List<XMLSecNamespace> comparableNamespacesToApply = new ArrayList<XMLSecNamespace>();
@@ -333,42 +328,37 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             XMLSecNamespace comparableNamespace = comparableNamespaceList.get(i);
             if (!comparableNamespacesToApply.contains(comparableNamespace)) {
                 comparableNamespacesToApply.add(comparableNamespace);
-                writer.write(' ');
+                stringBuilder.append(' ');
 
                 String prefix = comparableNamespace.getPrefix();
                 String uri = comparableNamespace.getNamespaceURI();
                 if (prefix == null || prefix.isEmpty()) {
-                    writer.write("xmlns=\"");
-                    writer.write(uri);
-                    writer.write("\"");
+                    stringBuilder.append("xmlns=\"");
+                    stringBuilder.append(uri);
+                    stringBuilder.append("\"");
                 } else {
-                    writer.write("xmlns:");
-                    writer.write(prefix);
-                    writer.write("=\"");
-                    writer.write(uri);
-                    writer.write("\"");
+                    stringBuilder.append("xmlns:");
+                    stringBuilder.append(prefix);
+                    stringBuilder.append("=\"");
+                    stringBuilder.append(uri);
+                    stringBuilder.append("\"");
                 }
             }
         }
 
-        writer.write('>');
-        writer.close();
-        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        stringBuilder.append('>');
+        return new UnsynchronizedByteArrayInputStream(stringBuilder.toString().getBytes("UTF-8"));
     }
 
     private InputStream writeWrapperEndElement() throws IOException {
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        Writer writer = new OutputStreamWriter(byteArrayOutputStream, "UTF-8");
-
+        StringBuilder stringBuilder = new StringBuilder();
         //close the dummy wrapper element:
-        writer.write("</");
-        writer.write(wrapperElementName.getPrefix());
-        writer.write(':');
-        writer.write(wrapperElementName.getLocalPart());
-        writer.write('>');
-        writer.close();
-        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        stringBuilder.append("</");
+        stringBuilder.append(wrapperElementName.getPrefix());
+        stringBuilder.append(':');
+        stringBuilder.append(wrapperElementName.getLocalPart());
+        stringBuilder.append('>');
+        return new UnsynchronizedByteArrayInputStream(stringBuilder.toString().getBytes("UTF-8"));
     }
 
     private void forwardToWrapperElement(XMLStreamReader xmlStreamReader) throws XMLStreamException {

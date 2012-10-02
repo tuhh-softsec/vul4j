@@ -74,6 +74,9 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public Iterator<XMLSecAttribute> getAttributes() {
+        if (attributes.isEmpty()) {
+            return getEmptyIterator();
+        }
         return attributes.iterator();
     }
 
@@ -115,6 +118,9 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public Iterator<XMLSecNamespace> getNamespaces() {
+        if (namespaces.isEmpty()) {
+            return getEmptyIterator();
+        }
         return namespaces.iterator();
     }
 

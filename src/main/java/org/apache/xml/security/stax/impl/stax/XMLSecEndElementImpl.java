@@ -23,7 +23,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -46,7 +45,7 @@ public class XMLSecEndElementImpl extends XMLSecEventBaseImpl implements XMLSecE
 
     @Override
     public Iterator getNamespaces() {
-        return Collections.emptyList().iterator();
+        return getEmptyIterator();
     }
 
     @Override

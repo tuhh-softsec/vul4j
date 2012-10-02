@@ -203,7 +203,7 @@ public abstract class AbstractPerformanceTest {
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(signedFile));
         XMLStreamWriter xmlStreamWriter = outboundSignatureXMLSec.processOutMessage(outputStream, "UTF-8");
 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        InputStream inputStream = new FileInputStream(file);
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
 
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
@@ -216,7 +216,7 @@ public abstract class AbstractPerformanceTest {
 
     protected void doStreamingSignatureInbound(File file, int tagCount) throws Exception {
 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        InputStream inputStream = new FileInputStream(file);
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
         XMLStreamReader securityStreamReader = inboundSignatureXMLSec.processInMessage(xmlStreamReader);
 
@@ -261,7 +261,7 @@ public abstract class AbstractPerformanceTest {
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(signedFile));
         XMLStreamWriter xmlStreamWriter = outboundEncryptionXMLSec.processOutMessage(outputStream, "UTF-8");
 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        InputStream inputStream = new FileInputStream(file);
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
 
         XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
@@ -274,7 +274,7 @@ public abstract class AbstractPerformanceTest {
 
     protected void doStreamingDecryptionInbound(File file, int tagCount) throws Exception {
 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        InputStream inputStream = new FileInputStream(file);
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
         XMLStreamReader securityStreamReader = inboundDecryptionXMLSec.processInMessage(xmlStreamReader);
 

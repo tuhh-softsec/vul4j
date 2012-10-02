@@ -25,7 +25,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,7 +62,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         this.securityContext = securityContext;
         this.curPos = this.startPos = startPos;
         this.documentContext = documentContextImpl;
-        this.inputProcessors = Collections.synchronizedList(inputProcessors);
+        this.inputProcessors = inputProcessors;
     }
 
     public void reset() {
@@ -78,7 +77,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         return this.documentContext;
     }
 
-    public void addProcessor(InputProcessor newInputProcessor) {
+    public synchronized void addProcessor(InputProcessor newInputProcessor) {
         int startPhaseIdx = 0;
         int endPhaseIdx = inputProcessors.size();
 
@@ -163,7 +162,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         }
     }
 
-    public void removeProcessor(InputProcessor inputProcessor) {
+    public synchronized void removeProcessor(InputProcessor inputProcessor) {
         if (isDebugEnabled) {
             log.debug("Removing processor " + inputProcessor.getClass().getName() + " from input chain");
         }

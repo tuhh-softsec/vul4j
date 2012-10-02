@@ -36,6 +36,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
@@ -249,7 +250,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         InputStream inputStream = new BufferedInputStream(resourceResolver.getInputStreamFromExternalReference());
         try {
             digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
-            bufferedDigestOutputStream = new BufferedOutputStream(digestOutputStream);
+            bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(digestOutputStream);
 
             if (referenceType.getTransforms() != null) {
                 transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
@@ -394,7 +395,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             this.setReferenceType(referenceType);
             try {
                 this.digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
-                this.bufferedDigestOutputStream = new BufferedOutputStream(this.getDigestOutputStream());
+                this.bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(this.getDigestOutputStream());
                 this.transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain);
             } catch (NoSuchMethodException e) {
                 throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);

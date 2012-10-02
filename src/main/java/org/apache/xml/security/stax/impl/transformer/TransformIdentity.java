@@ -24,6 +24,8 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayOutputStream;
 
 import javax.xml.stream.*;
 import java.io.*;
@@ -147,13 +149,13 @@ public class TransformIdentity implements Transformer {
                     case InputStream: {
                         childOutputMethod = new ChildOutputMethod() {
 
-                            private ByteArrayOutputStream baos;
+                            private UnsynchronizedByteArrayOutputStream baos;
                             private XMLEventWriter xmlEventWriter;
 
                             @Override
                             public void transform(Object object) throws XMLStreamException {
                                 if (xmlEventWriter == null) {
-                                    baos = new ByteArrayOutputStream();
+                                    baos = new UnsynchronizedByteArrayOutputStream();
                                     xmlEventWriter = getXmlOutputFactory().createXMLEventWriter(baos);
                                 }
 
@@ -163,7 +165,7 @@ public class TransformIdentity implements Transformer {
                             @Override
                             public void doFinal() throws XMLStreamException {
                                 xmlEventWriter.close();
-                                getTransformer().transform(new ByteArrayInputStream(baos.toByteArray()));
+                                getTransformer().transform(new UnsynchronizedByteArrayInputStream(baos.toByteArray()));
                                 getTransformer().doFinal();
                             }
                         };

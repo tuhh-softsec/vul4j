@@ -177,4 +177,14 @@ public final class UtfHelpper {
         return result;
     }
 
+    public static void writeUTF8String(final String str, final OutputStream out, Map<String, byte[]> cache)
+            throws IOException {
+
+        byte[] result = cache.get(str);
+        if (result == null) {
+            result = str.getBytes("UTF-8");
+            cache.put(str, result);
+        }
+        out.write(result);
+    }
 }

@@ -28,7 +28,9 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * @author $Author$
@@ -36,7 +38,13 @@ import java.util.List;
  */
 public abstract class XMLSecEventBaseImpl implements XMLSecEvent {
 
+    private static final EmptyIterator EMPTY_ITERATOR = new EmptyIterator();
     protected XMLSecStartElement parentXMLSecStartELement;
+
+    @SuppressWarnings("unchecked")
+    protected static <T> EmptyIterator<T> getEmptyIterator() {
+        return (EmptyIterator<T>)EMPTY_ITERATOR;
+    }
 
     @Override
     public void setParentXMLSecStartElement(XMLSecStartElement xmlSecStartElement) {
@@ -178,6 +186,23 @@ public abstract class XMLSecEventBaseImpl implements XMLSecEvent {
         @Override
         public String getSystemId() {
             return null;
+        }
+    }
+
+    private static final class EmptyIterator<E> implements Iterator<E> {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public E next() {
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove() {
+            throw new IllegalStateException();
         }
     }
 }

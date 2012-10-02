@@ -23,10 +23,10 @@ import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.TokenType;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;
 import org.apache.xml.security.utils.RFC2253Parser;
 
 import javax.security.auth.callback.CallbackHandler;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.Key;
 import java.security.PublicKey;
@@ -254,7 +254,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
      */
     private static X509Certificate getCertificateFromBytes(byte[] data)
             throws XMLSecurityException {
-        InputStream in = new ByteArrayInputStream(data);
+        InputStream in = new UnsynchronizedByteArrayInputStream(data);
         try {
             CertificateFactory factory = CertificateFactory.getInstance("X.509");
             return (X509Certificate) factory.generateCertificate(in);

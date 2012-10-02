@@ -28,11 +28,11 @@ import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
+import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -216,7 +216,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                             algorithmURI);
             signatureAlgorithm.engineInitVerify(verifyKey);
             signerOutputStream = new SignerOutputStream(signatureAlgorithm);
-            bufferedSignerOutputStream = new BufferedOutputStream(signerOutputStream);
+            bufferedSignerOutputStream = new UnsynchronizedBufferedOutputStream(signerOutputStream);
 
             try {
                 final CanonicalizationMethodType canonicalizationMethodType =
