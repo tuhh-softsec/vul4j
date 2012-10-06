@@ -33,9 +33,13 @@ public interface XMLSecStartElement extends XMLSecEvent, StartElement {
 
     List<XMLSecNamespace> getOnElementDeclaredNamespaces();
 
+    void addNamespace(XMLSecNamespace xmlSecNamespace);
+
     void getAttributesFromCurrentScope(List<XMLSecAttribute> comparableAttributeList);
 
     List<XMLSecAttribute> getOnElementDeclaredAttributes();
+
+    void addAttribute(XMLSecAttribute xmlSecAttribute);
 
     @Override
     XMLSecStartElement asStartElement();

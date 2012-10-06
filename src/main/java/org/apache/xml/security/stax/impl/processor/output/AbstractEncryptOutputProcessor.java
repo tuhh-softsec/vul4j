@@ -28,7 +28,6 @@ import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
 import org.apache.xml.security.stax.impl.util.TrimmerOutputStream;
-import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -45,9 +44,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Processor to encrypt XML structures
@@ -147,11 +144,11 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                     outputStream = constructor.newInstance(outputStream);
                 }
                 //the trimmer output stream is needed to strip away the dummy wrapping element which must be added
-                cipherOutputStream = new TrimmerOutputStream(outputStream, 1024, 3, 4);
+                cipherOutputStream = new TrimmerOutputStream(outputStream, 8192 * 10, 3, 4);
 
                 //we create a new StAX writer for optimized namespace writing.
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(new UnsynchronizedBufferedOutputStream(cipherOutputStream, 8192), "UTF-8");
+                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(cipherOutputStream, "UTF-8");
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {
@@ -237,14 +234,14 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                     encryptEvent(xmlSecEvent);
 
                     //push all buffered encrypted character events through the chain
-                    final List<XMLSecCharacters> charactersBuffer = characterEventGeneratorOutputStream.getCharactersBuffer();
-                    if (!charactersBuffer.isEmpty()) {
+                    final Deque<XMLSecCharacters> charactersBuffer = characterEventGeneratorOutputStream.getCharactersBuffer();
+                    if (charactersBuffer.size() > 5) {
                         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
-                        int size = charactersBuffer.size();
-                        int i = 0;
-                        while (i < size) {
-                            XMLSecCharacters xmlSecCharacters = charactersBuffer.remove(i++);
-                            outputAsEvent(subOutputProcessorChain, xmlSecCharacters);
+                        Iterator<XMLSecCharacters> charactersIterator = charactersBuffer.iterator();
+                        while (charactersIterator.hasNext()) {
+                            XMLSecCharacters characters = charactersIterator.next();
+                            outputAsEvent(subOutputProcessorChain, characters);
+                            charactersIterator.remove();
                         }
                     }
                     break;
@@ -311,7 +308,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
             }
 
             //push all buffered encrypted character events through the chain
-            final List<XMLSecCharacters> charactersBuffer = characterEventGeneratorOutputStream.getCharactersBuffer();
+            final Deque<XMLSecCharacters> charactersBuffer = characterEventGeneratorOutputStream.getCharactersBuffer();
             if (!charactersBuffer.isEmpty()) {
                 Iterator<XMLSecCharacters> charactersIterator = charactersBuffer.iterator();
                 while (charactersIterator.hasNext()) {
@@ -356,30 +353,30 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
      */
     public class CharacterEventGeneratorOutputStream extends OutputStream {
 
-        private final List<XMLSecCharacters> charactersBuffer = new ArrayList<XMLSecCharacters>();
+        private final Deque<XMLSecCharacters> charactersBuffer = new ArrayDeque<XMLSecCharacters>();
         private final String encoding;
 
         public CharacterEventGeneratorOutputStream(String encoding) {
             this.encoding = encoding;
         }
 
-        public List<XMLSecCharacters> getCharactersBuffer() {
+        public Deque<XMLSecCharacters> getCharactersBuffer() {
             return charactersBuffer;
         }
 
         @Override
         public void write(int b) throws IOException {
-            charactersBuffer.add(createCharacters(new String(new byte[]{((byte) b)}, encoding)));
+            charactersBuffer.offer(createCharacters(new String(new byte[]{((byte) b)}, encoding)));
         }
 
         @Override
         public void write(byte[] b) throws IOException {
-            charactersBuffer.add(createCharacters(new String(b, encoding)));
+            charactersBuffer.offer(createCharacters(new String(b, encoding)));
         }
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            charactersBuffer.add(createCharacters(new String(b, off, len, encoding)));
+            charactersBuffer.offer(createCharacters(new String(b, off, len, encoding)));
         }
     }
 }

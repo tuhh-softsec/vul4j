@@ -73,7 +73,7 @@ public class XMLSecAttributeImpl extends XMLSecEventBaseImpl implements XMLSecAt
     @Override
     public XMLSecNamespace getAttributeNamespace() {
         if (this.attributeNamespace == null) {
-            this.attributeNamespace = new XMLSecNamespaceImpl(this.name.getPrefix(), this.name.getNamespaceURI());
+            this.attributeNamespace = XMLSecNamespaceImpl.getInstance(this.name.getPrefix(), this.name.getNamespaceURI());
         }
         return this.attributeNamespace;
     }

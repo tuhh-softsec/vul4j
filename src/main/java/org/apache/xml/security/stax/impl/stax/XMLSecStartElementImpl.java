@@ -67,7 +67,7 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
     @Override
     public XMLSecNamespace getElementNamespace() {
         if (this.elementNamespace == null) {
-            this.elementNamespace = new XMLSecNamespaceImpl(this.elementName.getPrefix(), this.elementName.getNamespaceURI());
+            this.elementNamespace = XMLSecNamespaceImpl.getInstance(this.elementName.getPrefix(), this.elementName.getNamespaceURI());
         }
         return this.elementNamespace;
     }
@@ -90,10 +90,15 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public List<XMLSecAttribute> getOnElementDeclaredAttributes() {
-        if (this.attributes == Collections.<XMLSecAttribute>emptyList()) {
-            this.attributes = new ArrayList<XMLSecAttribute>();
-        }
         return this.attributes;
+    }
+
+    @Override
+    public void addAttribute(XMLSecAttribute xmlSecAttribute) {
+        if (this.attributes == Collections.<XMLSecAttribute>emptyList()) {
+            this.attributes = new ArrayList<XMLSecAttribute>(1);
+        }
+        this.attributes.add(xmlSecAttribute);
     }
 
     public int getDocumentLevel() {
@@ -134,10 +139,15 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public List<XMLSecNamespace> getOnElementDeclaredNamespaces() {
-        if (this.namespaces == Collections.<XMLSecNamespace>emptyList()) {
-            this.namespaces = new ArrayList<XMLSecNamespace>();
-        }
         return this.namespaces;
+    }
+
+    @Override
+    public void addNamespace(XMLSecNamespace xmlSecNamespace) {
+        if (this.namespaces == Collections.<XMLSecNamespace>emptyList()) {
+            this.namespaces = new ArrayList<XMLSecNamespace>(1);
+        }
+        this.namespaces.add(xmlSecNamespace);
     }
 
     @Override

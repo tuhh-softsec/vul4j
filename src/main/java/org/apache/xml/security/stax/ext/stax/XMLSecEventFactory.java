@@ -55,7 +55,7 @@ public class XMLSecEventFactory {
                 if (namespaceCount > 0) {
                     comparableNamespaces = new ArrayList<XMLSecNamespace>(namespaceCount);
                     for (int i = 0; i < namespaceCount; i++) {
-                        comparableNamespaces.add(new XMLSecNamespaceImpl(xmlStreamReader.getNamespacePrefix(i), xmlStreamReader.getNamespaceURI(i)));
+                        comparableNamespaces.add(XMLSecNamespaceImpl.getInstance(xmlStreamReader.getNamespacePrefix(i), xmlStreamReader.getNamespaceURI(i)));
                     }
                 }
                 return new XMLSecStartElementImpl(xmlStreamReader.getName(), comparableAttributes, comparableNamespaces, parentXMLSecStartElement);
@@ -142,6 +142,6 @@ public class XMLSecEventFactory {
     }
 
     public static XMLSecNamespace createXMLSecNamespace(String prefix, String uri) {
-        return new XMLSecNamespaceImpl(prefix, uri);
+        return XMLSecNamespaceImpl.getInstance(prefix, uri);
     }
 }

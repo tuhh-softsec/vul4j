@@ -23,6 +23,8 @@ import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Class to let XML-Namespaces be comparable how it is requested by C14N
@@ -32,14 +34,39 @@ import javax.xml.stream.XMLStreamConstants;
  */
 public class XMLSecNamespaceImpl extends XMLSecEventBaseImpl implements XMLSecNamespace {
 
-    private String prefix = "";
-    private final String uri;
+    private static final Map<String, Map<String, XMLSecNamespace>> xmlSecNamespaceMap =
+            new WeakHashMap<String, Map<String, XMLSecNamespace>>();
 
-    public XMLSecNamespaceImpl(String prefix, String uri) {
-        if (prefix != null) {
-            this.prefix = prefix;
-        }
+    private String prefix;
+    private final String uri;
+    private QName qName;
+
+    private XMLSecNamespaceImpl(String prefix, String uri) {
+        this.prefix = prefix;
         this.uri = uri;
+    }
+
+    public static XMLSecNamespace getInstance(String prefix, String uri) {
+        if (prefix == null) {
+            prefix = "";
+        }
+        Map<String, XMLSecNamespace> nsMap = xmlSecNamespaceMap.get(prefix);
+        if (nsMap != null) {
+            XMLSecNamespace xmlSecNamespace = nsMap.get(uri);
+            if (xmlSecNamespace != null) {
+                return xmlSecNamespace;
+            } else {
+                xmlSecNamespace = new XMLSecNamespaceImpl(prefix, uri);
+                nsMap.put(uri, xmlSecNamespace);
+                return xmlSecNamespace;
+            }
+        } else {
+            nsMap = new WeakHashMap<String, XMLSecNamespace>();
+            XMLSecNamespace xmlSecNamespace = new XMLSecNamespaceImpl(prefix, uri);
+            nsMap.put(uri, xmlSecNamespace);
+            xmlSecNamespaceMap.put(prefix, nsMap);
+            return xmlSecNamespace;
+        }
     }
 
     public int compareTo(XMLSecNamespace o) {
@@ -70,7 +97,10 @@ public class XMLSecNamespaceImpl extends XMLSecEventBaseImpl implements XMLSecNa
 
     @Override
     public QName getName() {
-        return new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, this.prefix);
+        if (this.qName == null) {
+            this.qName = new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, this.prefix);
+        }
+        return this.qName;
     }
 
     @Override

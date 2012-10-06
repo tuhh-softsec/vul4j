@@ -132,15 +132,16 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
 
     public XMLSecStartElement addAttributes(XMLSecStartElement xmlSecStartElement,
                                             List<XMLSecAttribute> attributeList) throws XMLStreamException {
-        xmlSecStartElement.getOnElementDeclaredAttributes().addAll(attributeList);
 
         List<XMLSecNamespace> declaredNamespaces = xmlSecStartElement.getOnElementDeclaredNamespaces();
         for (int i = 0; i < attributeList.size(); i++) {
             XMLSecAttribute xmlSecAttribute = attributeList.get(i);
+            xmlSecStartElement.addAttribute(xmlSecAttribute);
+
             final QName attributeName = xmlSecAttribute.getName();
             if (attributeName.getNamespaceURI() != null && !"".equals(attributeName.getNamespaceURI()) 
                 && !declaredNamespaces.contains(xmlSecAttribute.getAttributeNamespace())) {
-                declaredNamespaces.add(xmlSecAttribute.getAttributeNamespace());
+                xmlSecStartElement.addNamespace(xmlSecAttribute.getAttributeNamespace());
             }
         }
         return xmlSecStartElement;
