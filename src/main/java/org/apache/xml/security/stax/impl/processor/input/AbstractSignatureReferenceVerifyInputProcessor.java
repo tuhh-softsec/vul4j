@@ -26,6 +26,7 @@ import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
 import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.TransformType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.ResourceResolverMapper;
@@ -44,7 +45,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -84,7 +84,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         List<ReferenceType> referencesTypeList = signatureType.getSignedInfo().getReference();
         if (referencesTypeList.size() > maximumAllowedReferencesPerManifest) {
             throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.INVALID_SECURITY,
                     "secureProcessing.MaximumAllowedReferencesPerManifest",
                     referencesTypeList.size(),
                     maximumAllowedReferencesPerManifest);
@@ -98,12 +97,11 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             ReferenceType referenceType = referenceTypeIterator.next();
             if (!doNotThrowExceptionForManifests && XMLSecurityConstants.NS_XMLDSIG_MANIFEST.equals(referenceType.getType())) {
                 throw new XMLSecurityException(
-                        XMLSecurityException.ErrorCode.INVALID_SECURITY,
                         "secureProcessing.DoNotThrowExceptionForManifests"
                 );
             }
             if (referenceType.getURI() == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("stax.emptyReferenceURI");
             }
             if (referenceType.getId() == null) {
                 referenceType.setId(IDGenerator.generateID(null));
@@ -117,7 +115,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             } else {
                 if (!allowNotSameDocumentReferences) {
                     throw new XMLSecurityException(
-                            XMLSecurityException.ErrorCode.INVALID_SECURITY,
                             "secureProcessing.AllowNotSameDocumentReferences"
                     );
                 }
@@ -158,7 +155,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                         ReferenceType referenceType = referenceTypes.get(i);
 
                         if (processedReferences.contains(referenceType)) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
+                            throw new XMLSecurityException("signature.Verification.MultipleIDs", referenceType.getURI());
                         }
                         InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
                                 getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
@@ -219,7 +216,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             while (externalReferenceIterator.hasNext()) {
                 Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = externalReferenceIterator.next();
                 if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedSignatureReferences");
+                    throw new XMLSecurityException("stax.signature.unprocessedReferences");
                 }
             }
         }
@@ -228,7 +225,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         while (sameDocumentReferenceIterator.hasNext()) {
             Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = sameDocumentReferenceIterator.next();
             if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedSignatureReferences");
+                throw new XMLSecurityException("stax.signature.unprocessedReferences");
             }
         }
         inputProcessorChain.doFinal();
@@ -261,19 +258,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                 bufferedDigestOutputStream.close();
             }
         } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (NoSuchMethodException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (IllegalAccessException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (InstantiationException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (NoSuchProviderException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-        } catch (InvocationTargetException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         } finally {
             try {
                 inputStream.close();
@@ -285,15 +270,26 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
     }
 
     protected DigestOutputStream createMessageDigestOutputStream(ReferenceType referenceType, SecurityContext securityContext)
-            throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+            throws XMLSecurityException {
+
+        String digestMethodAlgorithm = referenceType.getDigestMethod().getAlgorithm();
         AlgorithmType digestAlgorithm =
-                JCEAlgorithmMapper.getAlgorithmMapping(referenceType.getDigestMethod().getAlgorithm());
+                JCEAlgorithmMapper.getAlgorithmMapping(digestMethodAlgorithm);
+        if (digestAlgorithm == null) {
+            throw new XMLSecurityException("algorithms.NoSuchMap", digestMethodAlgorithm);
+        }
 
         MessageDigest messageDigest;
-        if (digestAlgorithm.getJCEProvider() != null) {
-            messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName(), digestAlgorithm.getJCEProvider());
-        } else {
-            messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName());
+        try {
+            if (digestAlgorithm.getJCEProvider() != null) {
+                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName(), digestAlgorithm.getJCEProvider());
+            } else {
+                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName());
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new XMLSecurityException(e);
+        } catch (NoSuchProviderException e) {
+            throw new XMLSecurityException(e);
         }
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
@@ -308,8 +304,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
     protected Transformer buildTransformerChain(ReferenceType referenceType, OutputStream outputStream,
                                                 InputProcessorChain inputProcessorChain,
                                                 InternalSignatureReferenceVerifier internalSignatureReferenceVerifier)
-            throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
-            IllegalAccessException, InvocationTargetException {
+            throws XMLSecurityException {
 
         if (referenceType.getTransforms() == null || referenceType.getTransforms().getTransform().isEmpty()) {
             // If no Transforms then just default to an Inclusive without comments transform
@@ -330,7 +325,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
         if (transformTypeList.size() > maximumAllowedTransformsPerReference) {
             throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.INVALID_SECURITY,
                     "secureProcessing.MaximumAllowedTransformsPerReference",
                     transformTypeList.size(),
                     maximumAllowedTransformsPerReference);
@@ -355,10 +349,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
             if (parentTransformer != null) {
-                parentTransformer = XMLSecurityUtils.getTransformer(parentTransformer, inclusiveNamespaces, algorithm, XMLSecurityConstants.DIRECTION.IN);
+                parentTransformer = XMLSecurityUtils.getTransformer(
+                        parentTransformer, inclusiveNamespaces, algorithm, XMLSecurityConstants.DIRECTION.IN);
             } else {
                 parentTransformer =
-                        XMLSecurityUtils.getTransformer(inclusiveNamespaces, outputStream, algorithm, XMLSecurityConstants.DIRECTION.IN);
+                        XMLSecurityUtils.getTransformer(
+                                inclusiveNamespaces, outputStream, algorithm, XMLSecurityConstants.DIRECTION.IN);
             }
         }
         return parentTransformer;
@@ -372,8 +368,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
         if (!MessageDigest.isEqual(referenceType.getDigestValue(), calculatedDigest)) {
             throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.FAILED_CHECK,
-                    "digestVerificationFailed", referenceType.getURI());
+                    "signature.Verification.InvalidDigestOrReference", referenceType.getURI());
         }
     }
 
@@ -393,30 +388,13 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             super(securityProperties);
             this.setStartElement(startElement);
             this.setReferenceType(referenceType);
-            try {
-                this.digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
-                this.bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(this.getDigestOutputStream());
-                this.transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain);
-            } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (XMLStreamException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (NoSuchProviderException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            }
+            this.digestOutputStream = createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
+            this.bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(this.getDigestOutputStream());
+            this.transformer = buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain);
         }
 
         public Transformer buildTransformerChain(ReferenceType referenceType, OutputStream outputStream, InputProcessorChain inputProcessorChain)
-                throws XMLSecurityException, XMLStreamException, NoSuchMethodException, InstantiationException,
-                IllegalAccessException, InvocationTargetException {
+                throws XMLSecurityException {
             return AbstractSignatureReferenceVerifyInputProcessor.this.buildTransformerChain(
                     referenceType, outputStream, inputProcessorChain, this);
         }
@@ -452,7 +430,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                         try {
                             getBufferedDigestOutputStream().close();
                         } catch (IOException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+                            throw new XMLSecurityException(e);
                         }
 
                         compareDigest(this.getDigestOutputStream().getDigestValue(), getReferenceType());

@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.ext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
 
@@ -48,7 +49,10 @@ public abstract class AbstractInputSecurityHeaderHandler implements XMLSecurityH
             return (T) unmarshaller.unmarshal(new XMLSecurityEventReader(eventDeque, index));
 
         } catch (JAXBException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, e);
+            if (e.getCause() != null && e.getCause() instanceof Exception) {
+                throw new XMLSecurityException((Exception)e.getCause());
+            }
+            throw new XMLSecurityException(e);
         }
     }
 

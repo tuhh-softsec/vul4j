@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
+
 /**
  * A SecurityTokenProvider is a object which provides a Token for cryptographic operations
  *

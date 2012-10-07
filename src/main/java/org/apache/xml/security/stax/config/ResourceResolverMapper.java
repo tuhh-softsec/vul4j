@@ -18,9 +18,9 @@
  */
 package org.apache.xml.security.stax.config;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.ResourceResolver;
 import org.apache.xml.security.stax.ext.ResourceResolverLookup;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.xmlsecurity.ns.configuration.ResolverType;
 import org.xmlsecurity.ns.configuration.ResourceResolversType;
@@ -56,6 +56,6 @@ public class ResourceResolverMapper {
                 return rr.newInstance(uri, baseURI);
             }
         }
-        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "resolver.noClass", uri);
+        throw new XMLSecurityException("utils.resolver.noClass", uri, baseURI);
     }
 }

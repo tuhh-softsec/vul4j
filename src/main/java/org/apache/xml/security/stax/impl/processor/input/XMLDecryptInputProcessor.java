@@ -23,13 +23,13 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.DocumentContext;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
@@ -85,7 +85,7 @@ public class XMLDecryptInputProcessor extends AbstractDecryptInputProcessor {
         } else if (tokenType == XMLSecurityConstants.EncryptedKeyToken) {
             tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
         } else {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
+            throw new XMLSecurityException("stax.unsupportedToken", tokenType);
         }
         
         tokenSecurityEvent.setSecurityToken(securityToken);

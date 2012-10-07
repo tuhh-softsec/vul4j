@@ -19,7 +19,7 @@
 package org.apache.xml.security.stax.securityEvent;
 
 
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 /**
  * @author $Author: giger $

@@ -161,4 +161,17 @@ public class I18n {
             );
         alreadyInitialized = true;
     }
+
+    /**
+     * Method init
+     * @param resourceBundle
+     */
+    public synchronized static void init(ResourceBundle resourceBundle) {
+        if (alreadyInitialized) {
+            return;
+        }
+
+        I18n.resourceBundle = resourceBundle;
+        alreadyInitialized = true;
+    }
 }

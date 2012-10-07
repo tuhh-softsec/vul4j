@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
@@ -227,7 +228,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
             outputProcessorChain = new OutputProcessorChainImpl(securityContext, documentContext.clone(),
                     outputProcessors.indexOf(outputProcessor) + 1, this.outputProcessors);
         } catch (CloneNotSupportedException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+            throw new XMLSecurityException(e);
         }
         if (parentXMLSecStartElement != null) {
             outputProcessorChain.setParentXmlSecStartElement(parentXMLSecStartElement);

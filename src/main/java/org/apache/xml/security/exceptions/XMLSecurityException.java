@@ -20,7 +20,6 @@ package org.apache.xml.security.exceptions;
 
 import java.text.MessageFormat;
 
-import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
 
 /**
@@ -92,7 +91,7 @@ public class XMLSecurityException extends Exception {
      * @param msgID
      * @param exArgs
      */
-    public XMLSecurityException(String msgID, Object exArgs[]) {
+    public XMLSecurityException(String msgID, Object ... exArgs) {
 
         super(MessageFormat.format(I18n.getExceptionMessage(msgID), exArgs));
 
@@ -106,11 +105,7 @@ public class XMLSecurityException extends Exception {
      */
     public XMLSecurityException(Exception originalException) {
 
-        super("Missing message ID to locate message string in resource bundle \""
-              + Constants.exceptionMessagesResourceBundleBase
-              + "\". Original Exception was a "
-              + originalException.getClass().getName() + " and message "
-              + originalException.getMessage(), originalException);
+        super(originalException.getMessage(), originalException);
     }
 
     /**

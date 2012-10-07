@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
+
 /**
  * Exception when configuration errors are detected
  *
@@ -26,31 +28,19 @@ package org.apache.xml.security.stax.ext;
  */
 public class XMLSecurityConfigurationException extends XMLSecurityException {
 
-    public XMLSecurityConfigurationException(ErrorCode errorCode, String msgId, Object[] args, Throwable exception) {
-        super(errorCode, msgId, exception, args);
+    public XMLSecurityConfigurationException(Exception originalException) {
+        super(originalException);
     }
 
-    public XMLSecurityConfigurationException(ErrorCode errorCode, String msgId, Throwable exception) {
-        super(errorCode, msgId, exception);
+    public XMLSecurityConfigurationException(String msgID) {
+        super(msgID);
     }
 
-    public XMLSecurityConfigurationException(ErrorCode errorCode, String msgId, Object[] args) {
-        super(errorCode, msgId, args);
+    public XMLSecurityConfigurationException(String msgID, Object... exArgs) {
+        super(msgID, exArgs);
     }
 
-    public XMLSecurityConfigurationException(ErrorCode errorCode, String msgId) {
-        super(errorCode, msgId);
-    }
-
-    public XMLSecurityConfigurationException(ErrorCode errorCode) {
-        super(errorCode);
-    }
-
-    public XMLSecurityConfigurationException(String errorMessage) {
-        super(errorMessage);
-    }
-
-    public XMLSecurityConfigurationException(String errorMessage, Throwable t) {
-        super(errorMessage, t);
+    public XMLSecurityConfigurationException(String msgID, Exception originalException) {
+        super(msgID, originalException);
     }
 }

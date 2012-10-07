@@ -18,9 +18,9 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 
 import javax.security.auth.callback.CallbackHandler;
 

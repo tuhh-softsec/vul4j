@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.algorithms;
 
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.crypto.Mac;
@@ -57,7 +57,7 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         try {
             mac.init(signingKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -65,7 +65,7 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         try {
             mac.init(signingKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -73,9 +73,9 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         try {
             mac.init(signingKey, algorithmParameterSpec);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         } catch (InvalidAlgorithmParameterException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -87,7 +87,7 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         try {
             mac.init(verificationKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
     }
 

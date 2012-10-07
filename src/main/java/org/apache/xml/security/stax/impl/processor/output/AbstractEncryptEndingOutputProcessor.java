@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.processor.output;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.AbstractBufferingOutputProcessor;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 
 /**
  * Processor buffers encrypted XMLEvents and forwards them when final is called

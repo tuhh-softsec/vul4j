@@ -28,6 +28,7 @@ import java.util.List;
 import javax.crypto.KeyGenerator;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
@@ -159,7 +160,7 @@ public class OutboundXMLSec {
         Key key = securityProperties.getSignatureKey();
         X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
         if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "noUserCertsFound");
+            throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
         }
 
         final String securityTokenid = IDGenerator.generateID("SIG");
@@ -199,7 +200,7 @@ public class OutboundXMLSec {
         Key key = securityProperties.getEncryptionKey();
         if (key == null) {
             if (transportCert == null && transportKey == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, "encryptionKeyMissing");
+                throw new XMLSecurityException("stax.encryption.encryptionKeyMissing");
             }
             // If none is configured then generate one
             String keyAlgorithm = 
@@ -208,7 +209,7 @@ public class OutboundXMLSec {
             try {
                 keyGen = KeyGenerator.getInstance(keyAlgorithm);
             } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             }
             //the sun JCE provider expects the real key size for 3DES (112 or 168 bit)
             //whereas bouncy castle expects the block size of 128 or 192 bits

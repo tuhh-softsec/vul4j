@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.algorithms;
 
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.update(input);
         } catch (SignatureException e) {
-            throw new XMLSecurityException(e.getMessage(), e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -55,7 +55,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.update(input);
         } catch (SignatureException e) {
-            throw new XMLSecurityException(e.getMessage(), e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -63,7 +63,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.update(buf, offset, len);
         } catch (SignatureException e) {
-            throw new XMLSecurityException(e.getMessage(), e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -71,7 +71,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.initSign((PrivateKey) signingKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.initSign((PrivateKey) signingKey, secureRandom);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -87,7 +87,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.initSign((PrivateKey) signingKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -101,9 +101,9 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
             }
             return jcebytes;
         } catch (SignatureException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -111,7 +111,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.initVerify((PublicKey) verificationKey);
         } catch (InvalidKeyException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -125,9 +125,9 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
             }
             return this.signature.verify(jcebytes);
         } catch (SignatureException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -135,7 +135,7 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
         try {
             signature.setParameter(params);
         } catch (InvalidAlgorithmParameterException e) {
-            throw new XMLSecurityException(e.getMessage(), e);
+            throw new XMLSecurityException(e);
         }
     }
 }

@@ -25,10 +25,10 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.AbstractInputProcessor;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -126,9 +126,8 @@ public class XMLSecurityInputProcessor extends AbstractInputProcessor {
             }
 
         } while (!xmlSecEvent.isEndDocument());
-        //if we reach this state we didn't find a signature
-        //todo exception is wrong. We don't miss a signature when we are decrypting but we miss EncryptedData
-        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "missingSignature");
+        //if we reach this state we didn't find a signature nor a encryptedData Element
+        throw new XMLSecurityException("stax.unsecuredMessage");
     }
 
     /**

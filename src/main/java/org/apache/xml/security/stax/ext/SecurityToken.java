@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 import javax.xml.namespace.QName;

@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.stax.impl;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityTokenProvider;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
@@ -59,10 +59,7 @@ public class SecurityContextImpl implements SecurityContext {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = (AlgorithmSuiteSecurityEvent)securityEvent;
             if (algorithmSuiteSecurityEvent.getAlgorithmURI().contains("md5") ||
                     algorithmSuiteSecurityEvent.getAlgorithmURI().contains("MD5")) {
-                throw new XMLSecurityException(
-                        XMLSecurityException.ErrorCode.INVALID_SECURITY,
-                        "secureProcessing.AllowMD5Algorithm"
-                );
+                throw new XMLSecurityException("secureProcessing.AllowMD5Algorithm");
             }
         }
         for (int i = 0; i < securityEventListeners.size(); i++) {

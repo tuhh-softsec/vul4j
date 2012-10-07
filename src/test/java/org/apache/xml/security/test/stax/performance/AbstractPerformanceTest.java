@@ -19,6 +19,7 @@
 package org.apache.xml.security.test.stax.performance;
 
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
@@ -200,7 +201,7 @@ public abstract class AbstractPerformanceTest {
     protected File doStreamingSignatureOutbound(File file, int tagCount) throws Exception {
 
         final File signedFile = new File(getTmpFilePath(), "signature-stax-" + tagCount + ".xml");
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(signedFile));
+        OutputStream outputStream = new FileOutputStream(signedFile);
         XMLStreamWriter xmlStreamWriter = outboundSignatureXMLSec.processOutMessage(outputStream, "UTF-8");
 
         InputStream inputStream = new FileInputStream(file);
@@ -258,7 +259,7 @@ public abstract class AbstractPerformanceTest {
     protected File doStreamingEncryptionOutbound(File file, int tagCount) throws Exception {
 
         final File signedFile = new File(getTmpFilePath(), "encryption-stax-" + tagCount + ".xml");
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(signedFile));
+        OutputStream outputStream = new FileOutputStream(signedFile);
         XMLStreamWriter xmlStreamWriter = outboundEncryptionXMLSec.processOutMessage(outputStream, "UTF-8");
 
         InputStream inputStream = new FileInputStream(file);

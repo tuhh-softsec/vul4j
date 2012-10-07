@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.stax.impl.processor.output;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.XMLSecurityEventWriter;
 
@@ -47,7 +47,7 @@ public class FinalOutputProcessor extends AbstractOutputProcessor {
         try {
             xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(outputStream, encoding);
         } catch (XMLStreamException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class FinalOutputProcessor extends AbstractOutputProcessor {
             xmlEventWriter.flush();
             xmlEventWriter.close();
         } catch (XMLStreamException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+            throw new XMLSecurityException(e);
         }
     }
 }

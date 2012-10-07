@@ -22,6 +22,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.ResourceResolverMapper;
 import org.apache.xml.security.stax.ext.*;
@@ -38,7 +39,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -78,15 +78,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             if (externalReference != null) {
                 ResourceResolver resourceResolver = ResourceResolverMapper.getResourceResolver(externalReference, outputProcessorChain.getDocumentContext().getBaseURI());
 
-                DigestOutputStream digestOutputStream = null;
-                try {
-                    digestOutputStream = createMessageDigestOutputStream(securePart.getDigestMethod());
-                } catch (NoSuchAlgorithmException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-                } catch (NoSuchProviderException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-                }
-
+                DigestOutputStream digestOutputStream = createMessageDigestOutputStream(securePart.getDigestMethod());
                 InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
 
                 SignaturePartDef signaturePartDef = new SignaturePartDef();
@@ -110,16 +102,8 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                         IOUtils.copy(inputStream, digestOutputStream);
                     }
                     digestOutputStream.close();
-                } catch (NoSuchMethodException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-                } catch (InstantiationException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-                } catch (IllegalAccessException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-                } catch (InvocationTargetException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
                 } catch (IOException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                    throw new XMLSecurityException(e);
                 }
 
                 String calculatedDigest = new String(Base64.encodeBase64(digestOutputStream.getDigestValue()));
@@ -144,17 +128,23 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
     }
 
     private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm)
-            throws XMLSecurityException, NoSuchAlgorithmException, NoSuchProviderException {
+            throws XMLSecurityException {
 
         AlgorithmType algorithmType = JCEAlgorithmMapper.getAlgorithmMapping(digestAlgorithm);
         if (algorithmType == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unknownSignatureAlgorithm", digestAlgorithm);
+            throw new XMLSecurityException("algorithms.NoSuchMap", digestAlgorithm);
         }
         MessageDigest messageDigest;
-        if (algorithmType.getJCEProvider() != null) {
-            messageDigest = MessageDigest.getInstance(algorithmType.getJCEName(), algorithmType.getJCEProvider());
-        } else {
-            messageDigest = MessageDigest.getInstance(algorithmType.getJCEName());
+        try {
+            if (algorithmType.getJCEProvider() != null) {
+                messageDigest = MessageDigest.getInstance(algorithmType.getJCEName(), algorithmType.getJCEProvider());
+            } else {
+                messageDigest = MessageDigest.getInstance(algorithmType.getJCEName());
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new XMLSecurityException(e);
+        } catch (NoSuchProviderException e) {
+            throw new XMLSecurityException(e);
         }
         return new DigestOutputStream(messageDigest);
     }
@@ -162,8 +152,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
     protected Transformer buildTransformerChain(OutputStream outputStream,
                                                 SignaturePartDef signaturePartDef,
                                                 XMLSecStartElement xmlSecStartElement)
-            throws XMLSecurityException, NoSuchMethodException, InstantiationException,
-            IllegalAccessException, InvocationTargetException {
+            throws XMLSecurityException {
 
         String[] transforms = signaturePartDef.getTransforms();
 
@@ -218,7 +207,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
         private Transformer transformer;
 
         public InternalSignatureOutputProcessor(SignaturePartDef signaturePartDef, XMLSecStartElement xmlSecStartElement)
-                throws XMLSecurityException, NoSuchProviderException, NoSuchAlgorithmException {
+                throws XMLSecurityException {
             super();
             this.addBeforeProcessor(InternalSignatureOutputProcessor.class.getName());
             this.signaturePartDef = signaturePartDef;
@@ -227,23 +216,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
         @Override
         public void init(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
-            try {
-                this.digestOutputStream = createMessageDigestOutputStream(signaturePartDef.getDigestAlgo());
-                this.bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(digestOutputStream);
-                this.transformer = buildTransformerChain(this.bufferedDigestOutputStream, signaturePartDef, xmlSecStartElement);
-            } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (NoSuchProviderException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            }
+            this.digestOutputStream = createMessageDigestOutputStream(signaturePartDef.getDigestAlgo());
+            this.bufferedDigestOutputStream = new UnsynchronizedBufferedOutputStream(digestOutputStream);
+            this.transformer = buildTransformerChain(this.bufferedDigestOutputStream, signaturePartDef, xmlSecStartElement);
             super.init(outputProcessorChain);
         }
 
@@ -267,7 +242,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                         try {
                             bufferedDigestOutputStream.close();
                         } catch (IOException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                            throw new XMLSecurityException(e);
                         }
                         String calculatedDigest = new String(Base64.encodeBase64(this.digestOutputStream.getDigestValue()));
                         if (logger.isDebugEnabled()) {

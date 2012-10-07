@@ -19,9 +19,9 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
 
 import javax.security.auth.callback.CallbackHandler;
@@ -46,10 +46,10 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
         super(securityContext, callbackHandler, null, keyIdentifierType);
 
         if (ecKeyValueType.getECParameters() != null) {
-            throw new XMLSecurityException("ECParameters not supported");
+            throw new XMLSecurityException("stax.ecParametersNotSupported");
         }
         if (ecKeyValueType.getNamedCurve() == null) {
-            throw new XMLSecurityException("NamedCurve is missing");
+            throw new XMLSecurityException("stax.namedCurveMissing");
         }
         this.ecKeyValueType = ecKeyValueType;
     }
@@ -63,7 +63,7 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
         }
         ECDSAUtils.ECCurveDefinition ecCurveDefinition = ECDSAUtils.getECCurveDefinition(oid);
         if (ecCurveDefinition == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN);
+            throw new XMLSecurityException("stax.unsupportedKeyValue");
         }
         final EllipticCurve curve = new EllipticCurve(
                 new ECFieldFp(
@@ -98,9 +98,9 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
             try {
                 setPublicKey(buildPublicKey(this.ecKeyValueType));
             } catch (InvalidKeySpecException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+                throw new XMLSecurityException(e);
             } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+                throw new XMLSecurityException(e);
             }
         }
         return super.getPublicKey();

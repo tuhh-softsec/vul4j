@@ -19,9 +19,9 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.RSAKeyValueType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 
 import javax.security.auth.callback.CallbackHandler;
 import java.math.BigInteger;
@@ -59,9 +59,9 @@ public class RsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
             try {
                 setPublicKey(buildPublicKey(this.rsaKeyValueType));
             } catch (InvalidKeySpecException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+                throw new XMLSecurityException(e);
             } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN, e);
+                throw new XMLSecurityException(e);
             }
         }
         return super.getPublicKey();

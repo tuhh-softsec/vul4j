@@ -46,11 +46,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
@@ -194,7 +194,7 @@ public class BaltimoreTest extends org.junit.Assert {
             fail("Failure expected on a short HMAC length");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
+            Assert.assertEquals("INVALID signature -- core validation failed.", ex.getCause().getMessage());
         }
     }
 
@@ -502,7 +502,7 @@ public class BaltimoreTest extends org.junit.Assert {
             fail("Failure expected on a short HMAC length");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
+            Assert.assertEquals("INVALID signature -- core validation failed.", ex.getCause().getMessage());
         }
     }
 

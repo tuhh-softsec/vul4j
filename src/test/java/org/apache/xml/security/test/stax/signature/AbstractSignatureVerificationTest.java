@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
 import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
 import org.apache.xml.security.stax.impl.securityToken.X509SecurityToken;

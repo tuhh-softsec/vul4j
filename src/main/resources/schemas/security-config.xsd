@@ -69,15 +69,6 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="ResourceBundleType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="LanguageCode" use="required"/>
-        <xs:attribute type="xs:string" name="CountryCode" use="required"/>
-        <xs:attribute type="xs:string" name="LOCATION" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
   <xs:complexType name="SecurityHeaderHandlersType">
     <xs:sequence>
       <xs:element type="con:HandlerType" name="Handler" maxOccurs="unbounded" minOccurs="0" xmlns:con="http://www.xmlsecurity.org/NS/configuration"/>

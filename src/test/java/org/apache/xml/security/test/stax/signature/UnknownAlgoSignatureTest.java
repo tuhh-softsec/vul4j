@@ -33,10 +33,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
@@ -148,7 +148,7 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
             fail("Failure expected on a bad c14n algorithm");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("General security error (An unknown transform algorithm was specified: http://www.apache.org/bad-c14n-algo)", ex.getCause().getMessage());
+            Assert.assertEquals("Unknown transformation. No handler installed for URI http://www.apache.org/bad-c14n-algo", ex.getCause().getMessage());
         }
         
         // XMLUtils.outputDOM(document, System.out);
@@ -191,7 +191,8 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
             fail("Failure expected on a bad signature algorithm");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("An unsupported signature or encryption algorithm was used (An unknown signature algorithm was specified: http://www.apache.org/bad-sig-algo)", ex.getCause().getMessage());
+            Assert.assertEquals("The algorithm URI \"http://www.apache.org/bad-sig-algo\" could not be mapped to a JCE algorithm",
+                    ex.getCause().getMessage());
         }
         
         // XMLUtils.outputDOM(document, System.out);
@@ -234,7 +235,7 @@ public class UnknownAlgoSignatureTest extends org.junit.Assert {
             fail("Failure expected on a bad transform algorithm");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
+            Assert.assertEquals("INVALID signature -- core validation failed.", ex.getCause().getMessage());
         }
         
         // XMLUtils.outputDOM(document, System.out);

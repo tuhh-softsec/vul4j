@@ -18,11 +18,11 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.junit.Assert;
 import org.junit.Test;
 
 import org.apache.xml.security.stax.config.Init;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 
 import java.net.URL;
 
@@ -41,8 +41,8 @@ public class UncategorizedTest extends org.junit.Assert {
             Init.init(url.toURI());
             Assert.fail();
         } catch (XMLSecurityException e) {
-            Assert.assertEquals(e.getMessage(), "General security error; nested exception is: \n" +
-                    "\torg.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element 'doc'.");
+            Assert.assertEquals("cvc-elt.1: Cannot find the declaration of element 'doc'.",
+                    e.getMessage());
         }
     }
 }

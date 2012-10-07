@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +27,6 @@ import org.junit.Test;
 import org.apache.xml.security.stax.ext.InputProcessor;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
 import org.apache.xml.security.stax.impl.SecurityContextImpl;

@@ -18,8 +18,6 @@
  */
 package org.apache.xml.security.stax.impl.processor.output;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +27,10 @@ import javax.xml.stream.events.Attribute;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
@@ -71,66 +69,57 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                     logger.debug("Matched securePart for signature");
 
                     InternalSignatureOutputProcessor internalSignatureOutputProcessor = null;
-                    try {
-                        SignaturePartDef signaturePartDef = new SignaturePartDef();
-                        signaturePartDef.setTransforms(securePart.getTransforms());
-                        signaturePartDef.setExcludeVisibleC14Nprefixes(true);
-                        String digestMethod = securePart.getDigestMethod();
-                        if (digestMethod == null) {
-                            digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
-                        }
-                        signaturePartDef.setDigestAlgo(digestMethod);
 
-                        if (securePart.getIdToSign() == null) {
-                            signaturePartDef.setGenerateXPointer(securePart.isGenerateXPointer());
-                            signaturePartDef.setSigRefId(IDGenerator.generateID(null));
-
-                            Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
-                            if (attribute != null) {
-                                signaturePartDef.setSigRefId(attribute.getValue());
-                            } else {
-                                List<XMLSecAttribute> attributeList = new ArrayList<XMLSecAttribute>(1);
-                                attributeList.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, signaturePartDef.getSigRefId()));
-                                xmlSecEvent = addAttributes(xmlSecStartElement, attributeList);
-                            }
-                            String signatureAppendId = 
-                                    outputProcessorChain.getSecurityContext().get(
-                                            XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
-                            if (signatureAppendId == null || "".equals(signatureAppendId)) {
-                                outputProcessorChain.getSecurityContext().put(
-                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID, 
-                                    signaturePartDef.getSigRefId()
-                                );
-                            }
-                        } else {
-                            signaturePartDef.setSigRefId(securePart.getIdToSign());
-                            String signatureAppendId =
-                                    outputProcessorChain.getSecurityContext().get(
-                                            XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
-                            if (signatureAppendId == null || "".equals(signatureAppendId)) {
-                                outputProcessorChain.getSecurityContext().put(
-                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID, 
-                                    securePart.getIdToSign()
-                                );
-                            }
-                        }
-
-                        getSignaturePartDefList().add(signaturePartDef);
-                        internalSignatureOutputProcessor = new InternalSignatureOutputProcessor(signaturePartDef, xmlSecStartElement);
-                        internalSignatureOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
-                        internalSignatureOutputProcessor.setAction(getAction());
-                        internalSignatureOutputProcessor.addAfterProcessor(XMLSignatureOutputProcessor.class.getName());
-                        internalSignatureOutputProcessor.addBeforeProcessor(XMLSignatureEndingOutputProcessor.class.getName());
-                        internalSignatureOutputProcessor.init(outputProcessorChain);
-
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new XMLSecurityException(
-                                XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                                e, "No such algorithm: " + getSecurityProperties().getSignatureAlgorithm()
-                        );
-                    } catch (NoSuchProviderException e) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noSecProvider", e);
+                    SignaturePartDef signaturePartDef = new SignaturePartDef();
+                    signaturePartDef.setTransforms(securePart.getTransforms());
+                    signaturePartDef.setExcludeVisibleC14Nprefixes(true);
+                    String digestMethod = securePart.getDigestMethod();
+                    if (digestMethod == null) {
+                        digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
                     }
+                    signaturePartDef.setDigestAlgo(digestMethod);
+
+                    if (securePart.getIdToSign() == null) {
+                        signaturePartDef.setGenerateXPointer(securePart.isGenerateXPointer());
+                        signaturePartDef.setSigRefId(IDGenerator.generateID(null));
+
+                        Attribute attribute = xmlSecStartElement.getAttributeByName(XMLSecurityConstants.ATT_NULL_Id);
+                        if (attribute != null) {
+                            signaturePartDef.setSigRefId(attribute.getValue());
+                        } else {
+                            List<XMLSecAttribute> attributeList = new ArrayList<XMLSecAttribute>(1);
+                            attributeList.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, signaturePartDef.getSigRefId()));
+                            xmlSecEvent = addAttributes(xmlSecStartElement, attributeList);
+                        }
+                        String signatureAppendId =
+                                outputProcessorChain.getSecurityContext().get(
+                                        XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
+                        if (signatureAppendId == null || "".equals(signatureAppendId)) {
+                            outputProcessorChain.getSecurityContext().put(
+                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID,
+                                    signaturePartDef.getSigRefId()
+                            );
+                        }
+                    } else {
+                        signaturePartDef.setSigRefId(securePart.getIdToSign());
+                        String signatureAppendId =
+                                outputProcessorChain.getSecurityContext().get(
+                                        XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
+                        if (signatureAppendId == null || "".equals(signatureAppendId)) {
+                            outputProcessorChain.getSecurityContext().put(
+                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID,
+                                    securePart.getIdToSign()
+                            );
+                        }
+                    }
+
+                    getSignaturePartDefList().add(signaturePartDef);
+                    internalSignatureOutputProcessor = new InternalSignatureOutputProcessor(signaturePartDef, xmlSecStartElement);
+                    internalSignatureOutputProcessor.setXMLSecurityProperties(getSecurityProperties());
+                    internalSignatureOutputProcessor.setAction(getAction());
+                    internalSignatureOutputProcessor.addAfterProcessor(XMLSignatureOutputProcessor.class.getName());
+                    internalSignatureOutputProcessor.addBeforeProcessor(XMLSignatureEndingOutputProcessor.class.getName());
+                    internalSignatureOutputProcessor.init(outputProcessorChain);
 
                     setActiveInternalSignatureOutputProcessor(internalSignatureOutputProcessor);
                 }

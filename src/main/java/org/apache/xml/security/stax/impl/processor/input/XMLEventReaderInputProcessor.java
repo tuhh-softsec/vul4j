@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -70,7 +71,6 @@ public class XMLEventReaderInputProcessor extends AbstractInputProcessor {
                 currentXMLStructureDepth++;
                 if (currentXMLStructureDepth > maximumAllowedXMLStructureDepth) {
                     XMLSecurityException xmlSecurityException = new XMLSecurityException(
-                            XMLSecurityException.ErrorCode.INVALID_SECURITY,
                             "secureProcessing.MaximumAllowedXMLStructureDepth",
                             maximumAllowedXMLStructureDepth
                     );

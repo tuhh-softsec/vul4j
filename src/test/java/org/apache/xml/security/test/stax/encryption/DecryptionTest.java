@@ -50,11 +50,11 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.ContentEncryptedElementSecurityEvent;
@@ -1166,9 +1166,8 @@ public class DecryptionTest extends org.junit.Assert {
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
-            assertEquals("An error was discovered processing the <wsse:Security> header " +
-                    "(Maximum depth (100) of the XML structure reached. You can raise the maximum via the " +
-                    "\"MaximumAllowedXMLStructureDepth\" property in the configuration.)", e.getCause().getMessage());
+            assertEquals("Maximum depth (100) of the XML structure reached. You can raise the maximum via the " +
+                    "\"MaximumAllowedXMLStructureDepth\" property in the configuration.", e.getCause().getMessage());
         }
     }
 }

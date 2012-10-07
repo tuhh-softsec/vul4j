@@ -19,12 +19,12 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64OutputStream;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
 import org.apache.xml.security.stax.impl.util.TrimmerOutputStream;
@@ -97,7 +97,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
         public AbstractInternalEncryptionOutputProcessor(EncryptionPartDef encryptionPartDef,
                                                          XMLSecStartElement xmlSecStartElement, String encoding)
-                throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException, XMLStreamException {
+                throws XMLSecurityException {
 
             super();
             this.addBeforeProcessor(AbstractEncryptEndingOutputProcessor.class.getName());
@@ -110,9 +110,14 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
         @Override
         public void init(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
+
+            String encryptionSymAlgorithm = securityProperties.getEncryptionSymAlgorithm();
             try {
                 //initialize the cipher
-                String jceAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(securityProperties.getEncryptionSymAlgorithm());
+                String jceAlgorithm = JCEAlgorithmMapper.translateURItoJCEID(encryptionSymAlgorithm);
+                if (jceAlgorithm == null) {
+                    throw new XMLSecurityException("algorithms.NoSuchMap", encryptionSymAlgorithm);
+                }
                 Cipher symmetricCipher = Cipher.getInstance(jceAlgorithm);
 
                 // The Spec mandates a 96-bit IV for GCM algorithms
@@ -152,25 +157,25 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (IOException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (XMLStreamException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (InvalidKeyException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (InvalidAlgorithmParameterException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_ENCRYPTION, e);
+                throw new XMLSecurityException(e);
             } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                throw new XMLSecurityException(e);
             } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                throw new XMLSecurityException(e);
             } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                throw new XMLSecurityException(e);
             } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                throw new XMLSecurityException(e);
             }
 
             super.init(outputProcessorChain);

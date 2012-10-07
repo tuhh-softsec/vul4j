@@ -20,8 +20,8 @@ package org.apache.xml.security.stax.impl.transformer;
 
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;

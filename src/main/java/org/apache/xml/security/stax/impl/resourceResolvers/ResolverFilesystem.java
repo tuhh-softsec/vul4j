@@ -18,9 +18,9 @@
  */
 package org.apache.xml.security.stax.impl.resourceResolvers;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.ResourceResolver;
 import org.apache.xml.security.stax.ext.ResourceResolverLookup;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import java.io.InputStream;
@@ -87,7 +87,7 @@ public class ResolverFilesystem implements ResourceResolver, ResourceResolverLoo
             }
             return tmp.toURL().openStream();
         } catch (Exception e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
     }
 }

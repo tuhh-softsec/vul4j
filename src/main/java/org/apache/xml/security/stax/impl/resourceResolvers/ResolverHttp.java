@@ -18,9 +18,9 @@
  */
 package org.apache.xml.security.stax.impl.resourceResolvers;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.ResourceResolver;
 import org.apache.xml.security.stax.ext.ResourceResolverLookup;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import java.io.IOException;
@@ -100,17 +100,13 @@ public class ResolverHttp implements ResourceResolver, ResourceResolverLookup {
             } else {
                 urlConnection = (HttpURLConnection)url.openConnection();
             }
-            InputStream inputStream = urlConnection.getInputStream();
-            if (urlConnection.getResponseCode() != 200) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
-            }
-            return inputStream;
+            return urlConnection.getInputStream();
         } catch (MalformedURLException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         } catch (URISyntaxException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
     }
 }

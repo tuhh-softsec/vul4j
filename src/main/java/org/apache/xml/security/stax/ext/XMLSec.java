@@ -24,6 +24,7 @@ import java.security.interfaces.RSAPrivateKey;
 
 import javax.crypto.SecretKey;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 
 /**
@@ -61,7 +62,7 @@ public class XMLSec {
      */
     public static OutboundXMLSec getOutboundXMLSec(XMLSecurityProperties securityProperties) throws XMLSecurityException {
         if (securityProperties == null) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "missingSecurityProperties");
+            throw new XMLSecurityConfigurationException("stax.missingSecurityProperties");
         }
 
         securityProperties = validateAndApplyDefaultsToOutboundSecurityProperties(securityProperties);
@@ -80,7 +81,7 @@ public class XMLSec {
      */
     public static InboundXMLSec getInboundWSSec(XMLSecurityProperties securityProperties) throws XMLSecurityException {
         if (securityProperties == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "missingSecurityProperties");
+            throw new XMLSecurityConfigurationException("stax.missingSecurityProperties");
         }
 
         securityProperties = validateAndApplyDefaultsToInboundSecurityProperties(securityProperties);
@@ -97,7 +98,7 @@ public class XMLSec {
      */
     public static XMLSecurityProperties validateAndApplyDefaultsToOutboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
         if (securityProperties.getOutAction() == null) {
-            throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, "noOutputAction");
+            throw new XMLSecurityConfigurationException("stax.noOutputAction");
         }
 
         for (int i = 0; i < securityProperties.getOutAction().length; i++) {

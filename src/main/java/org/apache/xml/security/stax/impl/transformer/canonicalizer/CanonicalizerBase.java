@@ -19,9 +19,9 @@
 package org.apache.xml.security.stax.impl.transformer.canonicalizer;
 
 import org.apache.xml.security.c14n.implementations.UtfHelpper;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.Transformer;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;

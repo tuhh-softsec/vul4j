@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.resourceResolvers;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 

@@ -20,7 +20,7 @@ package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.*;
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
-import org.apache.xml.security.exceptions.Base64DecodingException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.TokenType;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;
@@ -73,11 +73,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             final X509DataType x509DataType =
                     XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_X509Data);
             if (x509DataType != null) {
-                try {
-                    return getSecurityToken(x509DataType, securityProperties, securityContext, keyInfoUsage);
-                } catch (Base64DecodingException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo", e);
-                }
+                return getSecurityToken(x509DataType, securityProperties, securityContext, keyInfoUsage);
             }
         }
 
@@ -108,9 +104,10 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             return token;
         }
 
-        throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo");
+        throw new XMLSecurityException("stax.noKey", keyInfoUsage);
     }
 
+    //todo can the callbackhandler be eliminated?
     private static SecurityToken getSecurityToken(KeyValueType keyValueType,
                                                   final CallbackHandler callbackHandler, SecurityContext securityContext)
             throws XMLSecurityException {
@@ -133,14 +130,14 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             return new ECKeyValueSecurityToken(ecKeyValueType, securityContext,
                     callbackHandler, XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
         }
-        throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "unsupportedKeyInfo");
+        throw new XMLSecurityException("stax.unsupportedKeyValue");
     }
 
     private static SecurityToken getSecurityToken(X509DataType x509DataType,
                                                   XMLSecurityProperties securityProperties,
                                                   SecurityContext securityContext,
                                                   SecurityToken.KeyInfoUsage keyInfoUsage)
-            throws XMLSecurityException, Base64DecodingException {
+            throws XMLSecurityException {
         // X509Certificate
         byte[] certBytes =
                 XMLSecurityUtils.getQNameType(
@@ -173,7 +170,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             if (issuerSerialType.getX509IssuerName() == null
                     || issuerSerialType.getX509SerialNumber() == null
                     || securityProperties.getSignatureVerificationKey() == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("stax.noKey", keyInfoUsage);
             }
             X509IssuerSerialSecurityToken token =
                     new X509IssuerSerialSecurityToken(XMLSecurityConstants.X509V3Token, securityContext,
@@ -193,7 +190,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 );
         if (skiBytes != null) {
             if (securityProperties.getSignatureVerificationKey() == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("stax.noKey", keyInfoUsage);
             }
             X509SKISecurityToken token =
                     new X509SKISecurityToken(XMLSecurityConstants.X509V3Token, securityContext,
@@ -212,7 +209,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 );
         if (subjectName != null) {
             if (securityProperties.getSignatureVerificationKey() == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("stax.noKey", keyInfoUsage);
             }
             String normalizedSubjectName =
                     RFC2253Parser.normalize(subjectName);
@@ -226,7 +223,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             return token;
         }
 
-        throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noKeyinfo");
+        throw new XMLSecurityException("stax.noKey", keyInfoUsage);
     }
 
     private static void setTokenKey(XMLSecurityProperties securityProperties, SecurityToken.KeyInfoUsage keyInfoUsage,
@@ -259,10 +256,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             CertificateFactory factory = CertificateFactory.getInstance("X.509");
             return (X509Certificate) factory.generateCertificate(in);
         } catch (CertificateException e) {
-            throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.SECURITY_TOKEN_UNAVAILABLE, "parseError",
-                    null, e
-            );
+            throw new XMLSecurityException(e);
         }
     }
 }

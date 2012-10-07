@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -108,7 +108,7 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
         } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
             XMLSecurityUtils.createX509SubjectNameStructure(this, outputProcessorChain, x509Certificates);
         } else {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "unsupportedSecurityToken");
+            throw new XMLSecurityException("stax.unsupportedToken", keyIdentifierType);
         }
     }
 

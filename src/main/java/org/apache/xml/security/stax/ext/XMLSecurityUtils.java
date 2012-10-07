@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.ext;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
@@ -27,16 +28,11 @@ import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
 
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
@@ -103,61 +99,30 @@ public class XMLSecurityUtils {
         }
     }
 
-    /**
-     * Executes the Callback handling. Typically used to fetch passwords
-     *
-     * @param callbackHandler
-     * @param callback
-     * @throws XMLSecurityException if the callback couldn't be executed
-     */
-    public static void doPasswordCallback(CallbackHandler callbackHandler, Callback callback) throws XMLSecurityException {
-        if (callbackHandler == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noCallback");
-        }
-        try {
-            callbackHandler.handle(new Callback[]{callback});
-        } catch (IOException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
-        } catch (UnsupportedCallbackException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
-        }
-    }
-
-    /**
-     * Try to get the secret key from a CallbackHandler implementation
-     *
-     * @param callbackHandler a CallbackHandler implementation
-     * @return An array of bytes corresponding to the secret key (can be null)
-     * @throws XMLSecurityException
-     */
-    public static void doSecretKeyCallback(CallbackHandler callbackHandler, Callback callback, String id) throws XMLSecurityException {
-        if (callbackHandler != null) {
-            try {
-                callbackHandler.handle(new Callback[]{callback});
-            } catch (IOException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noPassword", e);
-            } catch (UnsupportedCallbackException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noPassword", e);
-            }
-        }
-    }
-
     public static Class loadClass(String className) throws ClassNotFoundException {
         return Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
     //todo transformer factory?
-    public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm, XMLSecurityConstants.DIRECTION direction)
-            throws XMLSecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm,
+                                             XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
 
         @SuppressWarnings("unchecked")
         Class<Transformer> transformerClass = (Class<Transformer>) TransformerAlgorithmMapper.getTransformerClass(algorithm, direction);
-        Transformer childTransformer = transformerClass.newInstance();
-        if (methodParameter2 != null) {
-            childTransformer.setList((List) methodParameter1);
-            childTransformer.setOutputStream((OutputStream) methodParameter2);
-        } else {
-            childTransformer.setTransformer((Transformer) methodParameter1);
+        Transformer childTransformer = null;
+
+        try {
+            childTransformer = transformerClass.newInstance();
+            if (methodParameter2 != null) {
+                childTransformer.setList((List) methodParameter1);
+                childTransformer.setOutputStream((OutputStream) methodParameter2);
+            } else {
+                childTransformer.setTransformer((Transformer) methodParameter1);
+            }
+        } catch (InstantiationException e) {
+            throw new XMLSecurityException(e);
+        } catch (IllegalAccessException e) {
+            throw new XMLSecurityException(e);
         }
         return childTransformer;
     }
@@ -256,19 +221,15 @@ public class XMLSecurityUtils {
             X509Certificate[] x509Certificates)
         throws XMLSecurityException, XMLStreamException {
         // SKI can only be used for a V3 certificate
-        if (x509Certificates[0].getVersion() != 3) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "invalidCertForSKI", x509Certificates[0].getVersion());
+        int version = x509Certificates[0].getVersion();
+        if (version != 3) {
+            throw new XMLSecurityException("certificate.noSki.lowVersion", version);
         }
         
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
 
         abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SKI, false, null);
-        byte[] data = null;
-        try {
-            data = XMLX509SKI.getSKIBytesFromCert(x509Certificates[0]);
-        } catch (org.apache.xml.security.exceptions.XMLSecurityException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "invalidCertForSKI", e);
-        }
+        byte[] data = XMLX509SKI.getSKIBytesFromCert(x509Certificates[0]);
         abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, new Base64(76, new byte[]{'\n'}).encodeToString(data));
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SKI);
         
@@ -287,7 +248,7 @@ public class XMLSecurityUtils {
         try {
             data = x509Certificates[0].getEncoded();
         } catch (CertificateEncodingException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, "invalidCertForSKI", e);
+            throw new XMLSecurityException(e);
         }
         abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, new Base64(76, new byte[]{'\n'}).encodeToString(data));
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Certificate);

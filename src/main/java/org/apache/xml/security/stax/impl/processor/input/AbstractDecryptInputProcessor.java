@@ -28,6 +28,7 @@ import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
 import org.apache.xml.security.binding.xmlenc.ReferenceList;
 import org.apache.xml.security.binding.xmlenc.ReferenceType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
@@ -103,7 +104,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         while (referenceTypeIterator.hasNext()) {
             ReferenceType referenceType = referenceTypeIterator.next().getValue();
             if (referenceType.getURI() == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("stax.emptyReferenceURI");
             }
             references.put(XMLSecurityUtils.dropReferenceMarker(referenceType.getURI()), referenceType);
         }
@@ -175,7 +176,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     }
                     //duplicate id's are forbidden
                     if (processedReferences.contains(referenceType)) {
-                        throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "duplicateId");
+                        throw new XMLSecurityException("signature.Verification.MultipleIDs");
                     }
     
                     processedReferences.add(referenceType);
@@ -245,9 +246,9 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     prologInputStream = writeWrapperStartElement(xmlSecStartElement);
                     epilogInputStream = writeWrapperEndElement();
                 } catch (UnsupportedEncodingException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                    throw new XMLSecurityException(e);
                 } catch (IOException e) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                    throw new XMLSecurityException(e);
                 }
 
                 InputStream decryptInputStream = decryptionThread.getPipedInputStream();
@@ -259,7 +260,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                         List<TransformType> transformTypes = transformsType.getTransform();
                         //to do don't forget to limit the count of transformations if more transformations will be supported!
                         if (transformTypes.size() > 1) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+                            throw new XMLSecurityException("stax.encryption.Transforms.NotYetImplemented");
                         }
                         TransformType transformType = transformTypes.get(0);
                         @SuppressWarnings("unchecked")
@@ -270,13 +271,13 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             Constructor<InputStream> constructor = transformerClass.getConstructor(InputStream.class);
                             decryptInputStream = constructor.newInstance(decryptInputStream);
                         } catch (InvocationTargetException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                            throw new XMLSecurityException(e);
                         } catch (NoSuchMethodException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                            throw new XMLSecurityException(e);
                         } catch (InstantiationException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                            throw new XMLSecurityException(e);
                         } catch (IllegalAccessException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+                            throw new XMLSecurityException(e);
                         }
                     }
                 }
@@ -377,10 +378,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         try {
             AlgorithmType symEncAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
             if (symEncAlgo == null) {
-                throw new XMLSecurityException(
-                        XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                        "No such algorithm: " + algorithmURI
-                );
+                throw new XMLSecurityException("algorithms.NoSuchMap", algorithmURI);
             }
             if (symEncAlgo.getJCEProvider() != null) {
                 symCipher = Cipher.getInstance(symEncAlgo.getJCEName(), symEncAlgo.getJCEProvider());
@@ -389,17 +387,11 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             }
             //we have to defer the initialization of the cipher until we can extract the IV...
         } catch (NoSuchAlgorithmException e) {
-            throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                    e, "No such algorithm: " + algorithmURI
-            );
+            throw new XMLSecurityException(e);
         } catch (NoSuchPaddingException e) {
-            throw new XMLSecurityException(
-                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                    e, "No such padding: " + algorithmURI
-            );
+            throw new XMLSecurityException(e);
         } catch (NoSuchProviderException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noSecProvider", e);
+            throw new XMLSecurityException(e);
         }
         return symCipher;
     }
@@ -453,7 +445,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
             xmlSecEvents.push(encryptedDataXMLSecEvent);
             if (++count >= 50) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+                throw new XMLSecurityException("stax.xmlStructureSizeExceeded", 50);
             }
             
             if (encryptedDataXMLSecEvent.getEventType() == XMLStreamConstants.START_ELEMENT
@@ -485,7 +477,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             encryptedDataType = encryptedDataTypeJAXBElement.getValue();
 
         } catch (JAXBException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, e);
+            throw new XMLSecurityException(e);
         }
         return encryptedDataType;
     }
@@ -539,7 +531,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             while (refEntryIterator.hasNext()) {
                 Map.Entry<String, ReferenceType> referenceTypeEntry = refEntryIterator.next();
                 if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, "unprocessedEncryptionReferences");
+                    throw new XMLSecurityException("stax.encryption.unprocessedReferences");
                 }
             }
         }
@@ -610,7 +602,6 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     currentXMLStructureDepth++;
                     if (currentXMLStructureDepth > maximumAllowedXMLStructureDepth) {
                         throw  new XMLSecurityException(
-                                XMLSecurityException.ErrorCode.INVALID_SECURITY,
                                 "secureProcessing.MaximumAllowedXMLStructureDepth",
                                 maximumAllowedXMLStructureDepth
                         );
@@ -761,8 +752,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             outputStreamWriter.write(data, 0, data.length());
                             break;
                         default:
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK,
-                                    "unexpectedXMLEvent", XMLSecurityUtils.getXMLEventAsString(xmlSecEvent));
+                            throw new XMLSecurityException(
+                                    "stax.unexpectedXMLEvent",
+                                    XMLSecurityUtils.getXMLEventAsString(xmlSecEvent)
+                            );
                     }
                 }
 

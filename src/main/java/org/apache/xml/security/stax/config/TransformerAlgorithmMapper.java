@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.config;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.xmlsecurity.ns.configuration.TransformAlgorithmType;
 import org.xmlsecurity.ns.configuration.TransformAlgorithmsType;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 /**
  * Mapping between JCE id and xmlsec uri's for algorithms
- * Class lent from apache santuario (xmlsec)
  *
  * @author $Author$
  * @version $Revision$ $Date$
@@ -80,7 +79,7 @@ public class TransformerAlgorithmMapper {
             clazz = algorithmsClassMapInOut.get(algoURI);
         }
         if (clazz == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "unknownTransformAlgorithm", algoURI);
+            throw new XMLSecurityException("signature.Transform.UnknownTransform", algoURI);
         }
         return clazz;
     }

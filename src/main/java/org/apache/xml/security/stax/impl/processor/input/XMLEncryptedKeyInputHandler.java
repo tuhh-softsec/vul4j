@@ -22,6 +22,7 @@ import org.apache.xml.security.binding.xmldsig.DigestMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
 import org.apache.xml.security.binding.xmlenc11.MGFType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -68,7 +69,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                        final XMLSecurityProperties securityProperties) throws XMLSecurityException {
 
         if (encryptedKeyType.getEncryptionMethod() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
+            throw new XMLSecurityException("stax.encryption.noEncAlgo");
         }
 
         checkBSPCompliance(inputProcessorChain, encryptedKeyType);
@@ -145,11 +146,11 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
 
                         String algorithmURI = encryptedKeyType.getEncryptionMethod().getAlgorithm();
                         if (algorithmURI == null) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
+                            throw new XMLSecurityException("stax.encryption.noEncAlgo");
                         }
                         AlgorithmType encAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
                         if (encAlgo == null) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "noEncAlgo");
+                            throw new XMLSecurityException("algorithms.NoSuchMap", algorithmURI);
                         }
 
                         final SecurityToken wrappingSecurityToken = getWrappingSecurityToken(wrappedSecurityToken);
@@ -198,7 +199,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             }
                             if (encryptedKeyType.getCipherData() == null
                                     || encryptedKeyType.getCipherData().getCipherValue() == null) {
-                                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "noCipher");
+                                throw new XMLSecurityException("stax.encryption.noCipherValue");
                             }
                             Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
                                     encAlgo.getJCEName(),
@@ -206,24 +207,15 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             return this.decryptedKey = key.getEncoded();
 
                         } catch (NoSuchPaddingException e) {
-                            throw new XMLSecurityException(
-                                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                                    e, "No such padding: " + algorithmURI
-                            );
+                            throw new XMLSecurityException(e);
                         } catch (NoSuchAlgorithmException e) {
-                            throw new XMLSecurityException(
-                                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                                    e, "No such algorithm: " + algorithmURI
-                            );
+                            throw new XMLSecurityException(e);
                         } catch (InvalidAlgorithmParameterException e) {
-                            throw new XMLSecurityException(
-                                    XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unsupportedKeyTransp",
-                                    e, "No such algorithm: " + algorithmURI
-                            );
+                            throw new XMLSecurityException(e);
                         } catch (InvalidKeyException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+                            throw new XMLSecurityException(e);
                         } catch (NoSuchProviderException e) {
-                            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noSecProvider", e);
+                            throw new XMLSecurityException(e);
                         }
                     }
                 };

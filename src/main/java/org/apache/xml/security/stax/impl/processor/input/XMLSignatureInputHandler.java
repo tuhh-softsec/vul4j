@@ -20,11 +20,11 @@ package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
@@ -46,16 +46,16 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                                                      final SignatureType signatureType) throws XMLSecurityException {
 
         if (signatureType.getSignedInfo() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+            throw new XMLSecurityException("stax.signature.signedInfoMissing");
         }
         if (signatureType.getSignedInfo().getSignatureMethod() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+            throw new XMLSecurityException("stax.signature.signatureMethodMissing");
         }
         if (signatureType.getSignedInfo().getCanonicalizationMethod() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+            throw new XMLSecurityException("stax.signature.canonicalizationMethodMissing");
         }
         if (signatureType.getSignatureValue() == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY);
+            throw new XMLSecurityException("stax.signature.signatureValueMissing");
         }
         final SecurityContext securityContext = inputProcessorChain.getSecurityContext();
         final SignatureVerifier signatureVerifier = 
@@ -78,7 +78,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                 } else if (tokenType == XMLSecurityConstants.DefaultToken) {
                     tokenSecurityEvent = new DefaultTokenSecurityEvent();
                 } else {
-                    throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_SECURITY_TOKEN);
+                    throw new XMLSecurityException("stax.unsupportedToken", tokenType);
                 }
                 tokenSecurityEvent.setSecurityToken(securityToken);
                 tokenSecurityEvent.setCorrelationID(signatureType.getId());

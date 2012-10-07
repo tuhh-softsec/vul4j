@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.stax.impl.algorithms;
 
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
 import java.security.Key;
 import java.security.SecureRandom;

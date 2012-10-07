@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -34,7 +35,6 @@ import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
@@ -100,26 +100,25 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         XMLSecStartElement signatureElement = createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Signature, true, attributes);
 
         SignatureAlgorithm signatureAlgorithm;
-
         try {
             signatureAlgorithm = SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(getSecurityProperties().getSignatureAlgorithm());
         } catch (NoSuchAlgorithmException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+            throw new XMLSecurityException(e);
         } catch (NoSuchProviderException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, "noSecProvider", e);
+            throw new XMLSecurityException(e);
         }
 
         String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE);
         if (tokenId == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
+            throw new XMLSecurityException("stax.keyNotFound");
         }
         SecurityTokenProvider wrappingSecurityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
         if (wrappingSecurityTokenProvider == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
+            throw new XMLSecurityException("stax.keyNotFound");
         }
         final OutboundSecurityToken wrappingSecurityToken = wrappingSecurityTokenProvider.getSecurityToken();
         if (wrappingSecurityToken == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE);
+            throw new XMLSecurityException("stax.keyNotFound");
         }
 
         signatureAlgorithm.engineInitSign(wrappingSecurityToken.getSecretKey(getSecurityProperties().getSignatureAlgorithm()));
@@ -244,18 +243,8 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
                 this.inclusiveNamespacePrefixes = prefixes.toString();
             }
 
-            try {
-                this.transformer = XMLSecurityUtils.getTransformer(inclusiveNamespacePrefixes, this.bufferedSignerOutputStream,
-                        canonicalizationAlgorithm, XMLSecurityConstants.DIRECTION.OUT);
-            } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
-            }
+            this.transformer = XMLSecurityUtils.getTransformer(inclusiveNamespacePrefixes, this.bufferedSignerOutputStream,
+                    canonicalizationAlgorithm, XMLSecurityConstants.DIRECTION.OUT);
 
             super.init(outputProcessorChain);
         }
@@ -270,9 +259,9 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
                 signatureValue = signerOutputStream.sign();
                 return signatureValue;
             } catch (IOException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                throw new XMLSecurityException(e);
             } catch (XMLStreamException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_SIGNATURE, e);
+                throw new XMLSecurityException(e);
             }
         }
 

@@ -22,6 +22,7 @@ import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
 import org.apache.xml.security.binding.xmldsig.CanonicalizationMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
@@ -35,12 +36,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateException;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -109,7 +107,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                 }
             }
         } catch (XMLStreamException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            throw new XMLSecurityException(e);
         }
         signatureVerifier.doFinal();
         return signatureVerifier.getSecurityToken();
@@ -173,17 +171,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             securityToken.verify();
 
             handleSecurityToken(securityToken);
-            try {
-                createSignatureAlgorithm(securityToken, signatureType);
-            } catch (InvalidKeyException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (NoSuchProviderException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (CertificateException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            }
+            createSignatureAlgorithm(securityToken, signatureType);
             this.securityToken = securityToken;
         }
         
@@ -199,8 +187,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
         }
 
         protected void createSignatureAlgorithm(SecurityToken securityToken, SignatureType signatureType)
-                throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException,
-                CertificateException, XMLSecurityException {
+                throws XMLSecurityException {
 
             Key verifyKey;
             final String algorithmURI = signatureType.getSignedInfo().getSignatureMethod().getAlgorithm();
@@ -211,14 +198,14 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                         algorithmURI, XMLSecurityConstants.Sym_Sig, signatureType.getId());
             }
 
-            SignatureAlgorithm signatureAlgorithm =
-                    SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(
-                            algorithmURI);
-            signatureAlgorithm.engineInitVerify(verifyKey);
-            signerOutputStream = new SignerOutputStream(signatureAlgorithm);
-            bufferedSignerOutputStream = new UnsynchronizedBufferedOutputStream(signerOutputStream);
-
             try {
+                SignatureAlgorithm signatureAlgorithm =
+                        SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(
+                                algorithmURI);
+                signatureAlgorithm.engineInitVerify(verifyKey);
+                signerOutputStream = new SignerOutputStream(signatureAlgorithm);
+                bufferedSignerOutputStream = new UnsynchronizedBufferedOutputStream(signerOutputStream);
+
                 final CanonicalizationMethodType canonicalizationMethodType =
                         signatureType.getSignedInfo().getCanonicalizationMethod();
                 InclusiveNamespaces inclusiveNamespacesType =
@@ -234,14 +221,10 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                         this.bufferedSignerOutputStream,
                         canonicalizationMethodType.getAlgorithm(),
                         XMLSecurityConstants.DIRECTION.IN);
-            } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
-            } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+            } catch (NoSuchAlgorithmException e) {
+                throw new XMLSecurityException(e);
+            } catch (NoSuchProviderException e) {
+                throw new XMLSecurityException(e);
             }
         }
 
@@ -254,12 +237,12 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                 transformer.doFinal();
                 bufferedSignerOutputStream.close();
             } catch (IOException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+                throw new XMLSecurityException(e);
             } catch (XMLStreamException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK, e);
+                throw new XMLSecurityException(e);
             }
             if (!signerOutputStream.verify(signatureType.getSignatureValue().getValue())) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILED_CHECK);
+                throw new XMLSecurityException("errorMessages.InvalidSignatureValueException");
             }
         }
     }

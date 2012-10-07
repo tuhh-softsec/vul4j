@@ -39,6 +39,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.content.KeyName;
 import org.apache.xml.security.keys.content.X509Data;
@@ -364,7 +365,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             fail("Failure expected on a bad key");
         } catch (XMLStreamException ex) {
             Assert.assertTrue(ex.getCause() instanceof XMLSecurityException);
-            Assert.assertEquals("The signature or decryption was invalid", ex.getCause().getMessage());
+            Assert.assertEquals("INVALID signature -- core validation failed.", ex.getCause().getMessage());
         }
     }
     
@@ -1134,9 +1135,9 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
-            assertEquals("An error was discovered processing the <wsse:Security> header (4 references are contained in " +
-                    "the Manifest, maximum 2 are allowed. You can raise the maximum via the " +
-                    "\"MaximumAllowedReferencesPerManifest\" property in the configuration.)", e.getCause().getMessage());
+            assertEquals("4 references are contained in the Manifest, maximum 2 are allowed. You can raise the maximum " +
+                    "via the \"MaximumAllowedReferencesPerManifest\" property in the configuration.",
+                    e.getCause().getMessage());
         } finally {
             TestUtils.changeValueOfMaximumAllowedReferencesPerManifest(oldval);
         }
@@ -1191,9 +1192,8 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
-            assertEquals("An error was discovered processing the <wsse:Security> header " +
-                    "(1 transforms are contained in the Reference, maximum 0 are allowed. You can raise the maximum " +
-                    "via the \"MaximumAllowedTransformsPerReference\" property in the configuration.)",
+            assertEquals("1 transforms are contained in the Reference, maximum 0 are allowed. You can raise the maximum " +
+                    "via the \"MaximumAllowedTransformsPerReference\" property in the configuration.",
                     e.getCause().getMessage());
         } finally {
             TestUtils.changeValueOfMaximumAllowedTransformsPerReference(oldval);
@@ -1247,9 +1247,9 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
-            assertEquals("An error was discovered processing the <wsse:Security> header " +
-                    "(The use of MD5 algorithm is strongly discouraged. Nonetheless can it be enabled via the " +
-                    "\"AllowMD5Algorithm\" property in the configuration.)", e.getCause().getMessage());
+            assertEquals("The use of MD5 algorithm is strongly discouraged. Nonetheless can it be enabled via the " +
+                    "\"AllowMD5Algorithm\" property in the configuration.",
+                    e.getCause().getMessage());
         }
     }
 
@@ -1352,9 +1352,9 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
             fail("Exception expected");
         } catch (XMLStreamException e) {
             assertTrue(e.getCause() instanceof XMLSecurityException);
-            assertEquals("An error was discovered processing the <wsse:Security> header " +
-                    "(Maximum depth (5) of the XML structure reached. You can raise the maximum via the " +
-                    "\"MaximumAllowedXMLStructureDepth\" property in the configuration.)", e.getCause().getMessage());
+            assertEquals("Maximum depth (5) of the XML structure reached. You can raise the maximum via the " +
+                    "\"MaximumAllowedXMLStructureDepth\" property in the configuration.",
+                    e.getCause().getMessage());
         } finally {
             TestUtils.changeValueOfMaximumAllowedXMLStructureDepth(oldval);
         }

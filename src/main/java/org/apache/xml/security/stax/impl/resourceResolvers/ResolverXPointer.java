@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.stax.impl.resourceResolvers;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.ResourceResolver;
 import org.apache.xml.security.stax.ext.ResourceResolverLookup;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import javax.xml.stream.events.Attribute;

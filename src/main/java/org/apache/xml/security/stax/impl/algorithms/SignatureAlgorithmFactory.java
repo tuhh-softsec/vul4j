@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.algorithms;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +46,7 @@ public class SignatureAlgorithmFactory {
     public SignatureAlgorithm getSignatureAlgorithm(String algoURI) throws XMLSecurityException, NoSuchProviderException, NoSuchAlgorithmException {
         AlgorithmType algorithmType = JCEAlgorithmMapper.getAlgorithmMapping(algoURI);
         if (algorithmType == null) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "unknownSignatureAlgorithm", algoURI);
+            throw new XMLSecurityException("algorithms.NoSuchMap", algoURI);
         }
         String algorithmClass = algorithmType.getAlgorithmClass();
         if ("MAC".equalsIgnoreCase(algorithmClass)) {

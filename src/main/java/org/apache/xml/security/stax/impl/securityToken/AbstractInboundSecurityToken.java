@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.stax.impl.securityToken;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 
@@ -69,7 +69,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     private void testAndSetInvocation() throws XMLSecurityException {
         if (invoked) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY_TOKEN);
+            throw new XMLSecurityException("stax.recursiveKeyReference");
         }
         invoked = true;
     }
@@ -154,12 +154,13 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
             algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
+            //todo what's with a DSA key?
             if (key instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) key).getModulus().bitLength());
             } else if (key instanceof SecretKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(key.getEncoded().length * 8);
             } else {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, "invalidKeySize");
+                throw new XMLSecurityException("java.security.UnknownKeyType", key.getClass().getName());
             }
             this.securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
         }
@@ -206,7 +207,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
             } else if (publicKey instanceof ECKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((ECKey) publicKey).getParams().getOrder().bitLength());
             } else {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM);
+                throw new XMLSecurityException("java.security.UnknownKeyType", publicKey.getClass().getName());
             }
             securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
         }

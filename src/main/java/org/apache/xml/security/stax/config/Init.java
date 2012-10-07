@@ -18,8 +18,9 @@
  */
 package org.apache.xml.security.stax.config;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConfigurationException;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.utils.I18n;
 import org.xmlsecurity.ns.configuration.ConfigurationType;
 
 import javax.xml.XMLConstants;
@@ -71,8 +72,12 @@ public class Init {
                 TransformerAlgorithmMapper.init(configurationTypeJAXBElement.getValue().getTransformAlgorithms());
                 ResourceResolverMapper.init(configurationTypeJAXBElement.getValue().getResourceResolvers());
 
+                I18n.init(ConfigurationProperties.getProperty("DefaultLanguageCode"), ConfigurationProperties.getProperty("DefaultCountryCode"));
+
             } catch (Exception e) {
-                throw new XMLSecurityConfigurationException(XMLSecurityException.ErrorCode.FAILURE, null, e);
+                //kind of chicken-egg problem here
+                I18n.init("en", "US");
+                throw new XMLSecurityConfigurationException(e);
             }
             initialized = uri;
         }

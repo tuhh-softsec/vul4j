@@ -20,6 +20,7 @@ package org.apache.xml.security.stax.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
@@ -194,7 +195,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
             inputProcessorChain = new InputProcessorChainImpl(securityContext, documentContext.clone(),
                     inputProcessors.indexOf(inputProcessor) + 1, new ArrayList<InputProcessor>(this.inputProcessors));
         } catch (CloneNotSupportedException e) {
-            throw new XMLSecurityException(XMLSecurityException.ErrorCode.FAILURE, e);
+            throw new XMLSecurityException(e);
         }
         return inputProcessorChain;
     }

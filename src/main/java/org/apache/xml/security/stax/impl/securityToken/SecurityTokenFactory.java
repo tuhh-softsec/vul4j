@@ -19,10 +19,10 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.SecurityToken;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 
 /**
@@ -39,7 +39,7 @@ public abstract class SecurityTokenFactory {
         if (securityTokenFactory == null) {
             String stf = ConfigurationProperties.getProperty("securityTokenFactory");
             if (stf == null) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "missingSecurityTokenFactory");
+                throw new XMLSecurityException("algorithm.ClassDoesNotExist", "null");
             }
 
             try {
@@ -47,11 +47,11 @@ public abstract class SecurityTokenFactory {
                 Class<SecurityTokenFactory> securityTokenFactoryClass = (Class<SecurityTokenFactory>) SecurityTokenFactory.class.getClassLoader().loadClass(stf);
                 securityTokenFactory = securityTokenFactoryClass.newInstance();
             } catch (ClassNotFoundException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "missingSecurityTokenFactory", e);
+                throw new XMLSecurityException("algorithm.ClassDoesNotExist", new Object[]{stf}, e);
             } catch (InstantiationException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "missingSecurityTokenFactory", e);
+                throw new XMLSecurityException("algorithm.ClassDoesNotExist", new Object[]{stf}, e);
             } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(XMLSecurityException.ErrorCode.INVALID_SECURITY, "missingSecurityTokenFactory", e);
+                throw new XMLSecurityException("algorithm.ClassDoesNotExist", new Object[]{stf}, e);
             }
         }
         return securityTokenFactory;

@@ -20,7 +20,7 @@ package org.apache.xml.security.stax.impl.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.stax.ext.XMLSecurityException;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 
 import java.io.OutputStream;
