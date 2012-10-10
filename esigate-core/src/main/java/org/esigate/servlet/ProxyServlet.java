@@ -34,7 +34,7 @@ public class ProxyServlet extends HttpServlet {
 		LOG.debug("Proxying " + relUrl);
 		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 		try {
-			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), httpResponse);
+			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request, getServletContext()), httpResponse);
 		} catch (HttpErrorPage e) {
 			e.render(httpResponse);
 		}
@@ -42,6 +42,7 @@ public class ProxyServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 		provider = config.getInitParameter("provider");
 	}
 }

@@ -233,33 +233,6 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", out.toString());
 	}
 
-	public void testNoStore() throws IOException, HttpErrorPage {
-		String page = "before <esi:include src=\"http://www.foo.com/test\" no-store=\"on\"/> after";
-		ctx = new ResourceContext(provider, null, null, request, null);
-
-		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
-		assertEquals(ctx.getOriginalRequest().isNoStoreResource(), Boolean.TRUE);
-	}
-
-	public void testTtl() throws IOException, HttpErrorPage {
-		String page = "before <esi:include src=\"http://www.foo.com/test\" ttl=\"2h\"/> after";
-		ctx = new ResourceContext(provider, null, null, request, null);
-
-		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
-		assertEquals(ctx.getOriginalRequest().getResourceTtl(), Long.valueOf(2 * 60 * 60 * 1000));
-	}
-
-	public void testMaxWait() throws IOException, HttpErrorPage {
-		String page = "before <esi:include src=\"http://www.foo.com/test\" maxwait=\"2000\"/> after";
-		ctx = new ResourceContext(provider, null, null, request, null);
-
-		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
-		assertEquals(ctx.getOriginalRequest().getFetchMaxWait(), Integer.valueOf(2000));
-	}
-
 	public void testIncludeTagContentShouldBeRemoved() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/testFragment\" fragment =\"myFragment\">Content to be removed</esi:include> after";
 		provider.addResource("/testFragment", "before fragment <esi:fragment name=\"myFragment\">---fragment content---</esi:fragment> after fragment");

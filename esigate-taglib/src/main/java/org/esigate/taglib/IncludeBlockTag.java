@@ -21,8 +21,7 @@ import org.esigate.servlet.HttpResponseImpl;
  * 
  * @author Francois-Xavier Bonnet
  */
-public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
-		ParametrizableTag, ErrorManageableTag {
+public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, ParametrizableTag, ErrorManageableTag {
 	private static final long serialVersionUID = 1L;
 	private boolean addQuery = false;
 	private String defaultErrorMessage;
@@ -39,10 +38,8 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 	public int doEndTag() throws JspException {
 
 		if (parseAbsoluteUrl) {
-			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl
-					.wrap((HttpServletRequest) pageContext.getRequest()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext
-							.getResponse()));
+			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
 			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
 			}
@@ -50,14 +47,11 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 			if (baseUrlEnd > 0) {
 				baseUrl = baseUrl.substring(0, baseUrlEnd);
 			}
-			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
-					+ "/$2$3");
-			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
-					+ "/$2$3");
+			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl + "/$2$3");
+			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl + "/$2$3");
 		}
 		try {
-			DriverUtils.renderBlock(provider, page, name, pageContext,
-					replaceRules, parameters, addQuery);
+			DriverUtils.renderBlock(provider, page, name, pageContext, replaceRules, parameters, addQuery);
 
 		} catch (HttpErrorPage re) {
 			if (displayErrorPage) {
@@ -68,8 +62,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 				}
 			} else if (errorMap.containsKey(re.getStatusCode())) {
 				try {
-					pageContext.getOut().append(
-							errorMap.get(re.getStatusCode()));
+					pageContext.getOut().append(errorMap.get(re.getStatusCode()));
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
@@ -81,8 +74,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag,
 				}
 			} else {
 				try {
-					pageContext.getOut().write(
-							re.getStatusCode() + " " + re.getStatusMessage());
+					pageContext.getOut().write(re.getStatusCode() + " " + re.getStatusMessage());
 				} catch (IOException e) {
 					throw new JspException(e);
 				}

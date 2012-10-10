@@ -218,6 +218,7 @@ public class RewriteProxyServlet extends HttpServlet {
 	 */
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 		TreeMap<String, ReverseConfiguration> confTree = new TreeMap<String, ReverseConfiguration>();
 		InputStream propertiesInput = null;
 		try {
@@ -383,7 +384,7 @@ public class RewriteProxyServlet extends HttpServlet {
 							if (LOG.isDebugEnabled()) {
 								LOG.debug("Proxying " + relUrl + " to " + newUrl + " w/ query " + targetQueryString);
 							}
-							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString)), httpResponse);
+							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString), getServletContext()), httpResponse);
 							return;
 						} catch (HttpErrorPage e) {
 							e.render(httpResponse);

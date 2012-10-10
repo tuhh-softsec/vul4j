@@ -30,11 +30,8 @@ public class IncludeBaseTag extends TagSupport {
 		JspWriter out = pageContext.getOut();
 		try {
 
-			String baseURL = DriverUtils.getBaseUrl(provider, HttpRequestImpl
-					.wrap((HttpServletRequest) this.pageContext.getRequest()),
-					HttpResponseImpl
-							.wrap((HttpServletResponse) this.pageContext
-									.getResponse()));
+			String baseURL = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) this.pageContext.getRequest(), pageContext.getServletContext()),
+					HttpResponseImpl.wrap((HttpServletResponse) this.pageContext.getResponse()));
 
 			String strpage = VariablesResolver.replaceAllVariables(page);
 			out.write("<base href=\"" + baseURL + strpage + "\" />");

@@ -33,10 +33,8 @@ public class IncludeXmlTag extends BodyTagSupport implements ReplaceableTag {
 	@Override
 	public int doEndTag() throws JspException {
 		if (parseAbsoluteUrl) {
-			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl
-					.wrap((HttpServletRequest) pageContext.getRequest()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext
-							.getResponse()));
+			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
 			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
 			}
@@ -44,21 +42,16 @@ public class IncludeXmlTag extends BodyTagSupport implements ReplaceableTag {
 			if (baseUrlEnd > 0) {
 				baseUrl = baseUrl.substring(0, baseUrlEnd);
 			}
-			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
-					+ "/$2$3");
-			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
-					+ "/$2$3");
+			replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl + "/$2$3");
+			replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl + "/$2$3");
 		}
 		try {
 			if (xpath != null && template == null) {
-				DriverUtils.renderXpath(provider, source, xpath, pageContext,
-						replaceRules);
+				DriverUtils.renderXpath(provider, source, xpath, pageContext, replaceRules);
 			} else if (template != null && xpath == null) {
-				DriverUtils.renderXml(provider, source, template, pageContext,
-						replaceRules);
+				DriverUtils.renderXml(provider, source, template, pageContext, replaceRules);
 			} else {
-				throw new JspException(
-						"One and only one of the attributes \"xpath\" or \"template\" must be defined");
+				throw new JspException("One and only one of the attributes \"xpath\" or \"template\" must be defined");
 			}
 			return EVAL_BODY_INCLUDE;
 		} catch (HttpErrorPage e) {

@@ -9,6 +9,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +19,7 @@ import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.taglib.ReplaceableTag;
 
-public class IncludeBlockComponent extends UIComponentBase implements
-		ReplaceableTag {
+public class IncludeBlockComponent extends UIComponentBase implements ReplaceableTag {
 	private Boolean displayErrorPage;
 	private String name;
 	private String page;
@@ -43,14 +43,12 @@ public class IncludeBlockComponent extends UIComponentBase implements
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
 		ResponseWriter writer = context.getResponseWriter();
-		HttpServletRequest request = (HttpServletRequest) context
-				.getExternalContext().getRequest();
-		HttpServletResponse response = (HttpServletResponse) context
-				.getExternalContext().getResponse();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+		ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
 		try {
-			DriverFactory.getInstance(getProvider()).renderBlock(getPage(),
-					getName(), writer, HttpRequestImpl.wrap(request),
-					HttpResponseImpl.wrap(response), replaceRules, null, false);
+			DriverFactory.getInstance(getProvider()).renderBlock(getPage(), getName(), writer, HttpRequestImpl.wrap(request, servletContext), HttpResponseImpl.wrap(response), replaceRules, null,
+					false);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());
@@ -85,8 +83,7 @@ public class IncludeBlockComponent extends UIComponentBase implements
 	}
 
 	public boolean isDisplayErrorPage() {
-		return UIComponentUtils.getParam(this, "displayErrorPage",
-				displayErrorPage);
+		return UIComponentUtils.getParam(this, "displayErrorPage", displayErrorPage);
 	}
 
 	@Override

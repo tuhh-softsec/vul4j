@@ -2,8 +2,6 @@ package org.esigate.api;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
 public interface HttpResponse {
     /**
@@ -36,9 +34,6 @@ public interface HttpResponse {
      *
      * <p> Calling flush() on the OutputStream commits the response.
      *
-     * Either this method or {@link #getWriter} may
-     * be called to write the body, not both.
-     *
      * @return a {@link OutputStream} for writing binary data
      *
      * @exception IllegalStateException if the <code>getWriter</code> method
@@ -46,37 +41,8 @@ public interface HttpResponse {
      *
      * @exception IOException if an input or output exception occurred
      *
-     * @see #getWriter
      */
     public OutputStream getOutputStream() throws IOException;
-
-    /**
-     * Returns a <code>Writer</code> object that
-     * can send character text to the client.
-     * If the response's character encoding has not been
-     * specified as described in <code>getCharacterEncoding</code>
-     * (i.e., the method just returns the default value
-     * <code>ISO-8859-1</code>), <code>getWriter</code>
-     * updates it to <code>ISO-8859-1</code>.
-     * <p>Calling flush() on the <code>PrintWriter</code>
-     * commits the response.
-     * <p>Either this method or {@link #getOutputStream} may be called
-     * to write the body, not both.
-     *
-     * @return a <code>PrintWriter</code> object that
-     * can return character data to the client
-     *
-     * @exception UnsupportedEncodingException if the character encoding
-     * returned by <code>getCharacterEncoding</code> cannot be used
-     *
-     * @exception IllegalStateException if the <code>getOutputStream</code>
-     * method has already been called for this response object
-     *
-     * @exception IOException if an input or output exception occurred
-     *
-     * @see #getOutputStream
-     */
-    public Writer getWriter() throws IOException;
 
     /**
      * Adds a response header with the given name and value.

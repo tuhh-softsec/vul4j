@@ -27,10 +27,12 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
+import org.apache.http.util.EntityUtils;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
 
@@ -48,19 +50,19 @@ public class HttpErrorPage extends Exception {
 		super(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
 		this.httpClientHelper = httpClientHelper;
 		this.errorResponse = httpResponse;
-		// Consume the entity and replace it with a StringEntity
+		// Consume the entity and replace it with an in memory Entity
 		HttpEntity httpEntity = httpResponse.getEntity();
+		HttpEntity memoryEntity;
 		if (httpEntity != null) {
-			String content;
 			try {
-				content = HttpResponseUtils.toString(httpResponse);
+				byte[] content = EntityUtils.toByteArray(httpEntity);
+				memoryEntity = new ByteArrayEntity(content, ContentType.getOrDefault(httpEntity));
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));
-				content = out.toString();
+				memoryEntity = new StringEntity(out.toString(), ContentType.getOrDefault(httpEntity));
 			}
-			StringEntity stringEntity = new StringEntity(content, ContentType.getOrDefault(httpEntity));
-			this.errorResponse.setEntity(stringEntity);
+			this.errorResponse.setEntity(memoryEntity);
 		}
 	}
 

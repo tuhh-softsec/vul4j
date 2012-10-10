@@ -93,7 +93,7 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = getDriver();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response), blocks, replaceRules, params);
+			driver.renderTemplate(page, name, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request, null), HttpResponseImpl.wrap(response), blocks, replaceRules, params);
 		} catch (IOException e) {
 			logger.error("io error", e);
 		} catch (HttpErrorPage e) {

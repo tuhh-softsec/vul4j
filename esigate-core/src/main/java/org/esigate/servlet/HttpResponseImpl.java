@@ -2,28 +2,27 @@ package org.esigate.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.esigate.api.Cookie;
 import org.esigate.api.HttpResponse;
 
-public class HttpResponseImpl implements HttpResponse{
+public class HttpResponseImpl implements HttpResponse {
 	private final HttpServletResponse parent;
 
 	private HttpResponseImpl(HttpServletResponse parent) {
 		this.parent = parent;
 	}
-	
+
 	public static HttpResponse wrap(HttpServletResponse parent) {
 		return new HttpResponseImpl(parent);
 	}
 
 	public void addCookie(Cookie src) {
 		javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
-		
-		if(src.getDomain() != null)
+
+		if (src.getDomain() != null)
 			servletCookie.setDomain(src.getDomain());
 		servletCookie.setPath(src.getPath());
 		servletCookie.setSecure(src.isSecure());
@@ -50,23 +49,7 @@ public class HttpResponseImpl implements HttpResponse{
 		return parent.getOutputStream();
 	}
 
-	public Writer getWriter() throws IOException {
-		return parent.getWriter();
-	}
-
 	public void addHeader(String name, String value) {
 		parent.addHeader(name, value);
-	}
-
-	public void setCharacterEncoding(String charset) {
-		parent.setCharacterEncoding(charset);
-	}
-
-	public void setContentLength(int len) {
-		parent.setContentLength(len);
-	}
-
-	public void setContentType(String type) {
-		parent.setContentType(type);
 	}
 }

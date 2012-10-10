@@ -39,14 +39,7 @@ public class MockHttpRequest implements HttpRequest {
 	private final HashMap<String, String> headers = new HashMap<String, String>();
 	private byte[] content;
 	private boolean consumed = false;
-	private Long ttl;
-	private Integer maxWait;
-	private boolean noStore;
 	private String remoteUser;
-
-	public void setMethod(String method) {
-		this.method = method;
-	}
 
 	public MockHttpRequest(String uri) {
 		setUri(uri);
@@ -156,30 +149,6 @@ public class MockHttpRequest implements HttpRequest {
 		return session;
 	}
 
-	public Long getResourceTtl() {
-		return ttl;
-	}
-
-	public Boolean isNoStoreResource() {
-		return noStore;
-	}
-
-	public Integer getFetchMaxWait() {
-		return maxWait;
-	}
-
-	public void setResourceTtl(Long ttl) {
-		this.ttl = ttl;
-	}
-
-	public void setNoStoreResource(boolean noStore) {
-		this.noStore = noStore;
-	}
-
-	public void setFetchMaxWait(Integer maxWait) {
-		this.maxWait = maxWait;
-	}
-
 	public URI getUri() {
 		return uri;
 	}
@@ -187,6 +156,10 @@ public class MockHttpRequest implements HttpRequest {
 	@Override
 	public String toString() {
 		return method + " " + uri.toString();
+	}
+
+	public InputStream getResourceAsStream(String path) {
+		throw new RuntimeException("Method not implemented");
 	}
 
 }

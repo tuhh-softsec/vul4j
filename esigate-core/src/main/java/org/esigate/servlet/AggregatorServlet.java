@@ -36,7 +36,7 @@ public class AggregatorServlet extends HttpServlet {
 		LOG.debug("Aggregating " + relUrl);
 		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 		try {
-			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request), httpResponse, new AggregateRenderer(), new EsiRenderer());
+			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request, getServletContext()), httpResponse, new AggregateRenderer(), new EsiRenderer());
 		} catch (HttpErrorPage e) {
 			e.render(httpResponse);
 		}
@@ -44,6 +44,7 @@ public class AggregatorServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 		provider = config.getInitParameter("provider");
 	}
 }

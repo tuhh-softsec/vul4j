@@ -112,8 +112,7 @@ public class WATBlock extends AbstractWatDriverContainer {
 	 *      (java.util.Map, java.util.Map, java.util.Map)
 	 */
 	@Override
-	public void process(Map<String, String> blocks, Map<String, String> params,
-			Map<String, String> replaceRules) {
+	public void process(Map<String, String> blocks, Map<String, String> params, Map<String, String> replaceRules) {
 
 		// Get web request and response.
 		ServletWebRequest servletWebRequest = (ServletWebRequest) getRequest();
@@ -121,30 +120,22 @@ public class WATBlock extends AbstractWatDriverContainer {
 
 		WebResponse webResponse = (WebResponse) getResponse();
 		HttpServletResponse response = webResponse.getHttpServletResponse();
-
 		// Create driver
 		Driver driver = getDriver();
 
 		// Render Block
 		try {
-			ResourceContext resourceContext = driver.renderBlock(page,
-					blockName, new ResponseWriter(webResponse),
-					HttpRequestImpl.wrap(request),
-					HttpResponseImpl.wrap(response),
-					new HashMap<String, String>(),
-					new HashMap<String, String>(), false);
+			ResourceContext resourceContext = driver.renderBlock(page, blockName, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request, null), HttpResponseImpl.wrap(response),
+					new HashMap<String, String>(), new HashMap<String, String>(), false);
 			if (parseAbsoluteUrl) {
 
 				String baseUrl = resourceContext.getBaseURL();
-				int baseUrlEnd = baseUrl
-						.indexOf('/', baseUrl.indexOf("//") + 2);
+				int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
 				if (baseUrlEnd > 0) {
 					baseUrl = baseUrl.substring(0, baseUrlEnd);
 				}
-				replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl
-						+ "/$2$3");
-				replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl
-						+ "/$2$3");
+				replaceRules.put("href=(\"|')/(.*)(\"|')", "href=$1" + baseUrl + "/$2$3");
+				replaceRules.put("src=(\"|')/(.*)(\"|')", "src=$1" + baseUrl + "/$2$3");
 			}
 		} catch (IOException e) {
 			this.sendErrorContent(blocks, webResponse, null);

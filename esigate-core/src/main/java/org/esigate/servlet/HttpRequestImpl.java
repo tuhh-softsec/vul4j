@@ -8,6 +8,7 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.esigate.api.Cookie;
@@ -19,20 +20,16 @@ import org.esigate.util.UriUtils;
 public class HttpRequestImpl implements HttpRequest {
 
 	private final HttpServletRequest parent;
-	private Long ttl;
-	private Integer maxWait;
-	private boolean noStore;
+	private final ServletContext servletContext;
 
-	private HttpRequestImpl(HttpServletRequest parent) {
+	private HttpRequestImpl(HttpServletRequest parent, ServletContext servletContext) {
 		this.parent = parent;
+		this.servletContext = servletContext;
 	}
 
-	public static HttpRequest wrap(HttpServletRequest parent) {
-		return new HttpRequestImpl(parent);
-	}
+	public static HttpRequest wrap(HttpServletRequest parent, ServletContext servletContext) {
+		return new HttpRequestImpl(parent, servletContext);
 
-	public String getQueryString() {
-		return parent.getQueryString();
 	}
 
 	public String getParameter(String name) {
@@ -73,18 +70,6 @@ public class HttpRequestImpl implements HttpRequest {
 		return parent.getMethod();
 	}
 
-	public int getServerPort() {
-		return parent.getServerPort();
-	}
-
-	public String getServerName() {
-		return parent.getServerName();
-	}
-
-	public String getScheme() {
-		return parent.getScheme();
-	}
-
 	public String getRemoteAddr() {
 		return parent.getRemoteAddr();
 	}
@@ -95,14 +80,6 @@ public class HttpRequestImpl implements HttpRequest {
 
 	public String getContentType() {
 		return parent.getContentType();
-	}
-
-	public String getRequestURI() {
-		return parent.getRequestURI();
-	}
-
-	public String getRequestURL() {
-		return parent.getRequestURL().toString();
 	}
 
 	public boolean isSecure() {
@@ -138,32 +115,12 @@ public class HttpRequestImpl implements HttpRequest {
 		return session != null ? HttpSessionImpl.wrap(session) : null;
 	}
 
-	public Long getResourceTtl() {
-		return ttl;
-	}
-
-	public Boolean isNoStoreResource() {
-		return noStore;
-	}
-
-	public Integer getFetchMaxWait() {
-		return maxWait;
-	}
-
-	public void setResourceTtl(Long ttl) {
-		this.ttl = ttl;
-	}
-
-	public void setNoStoreResource(boolean noStore) {
-		this.noStore = noStore;
-	}
-
-	public void setFetchMaxWait(Integer maxWait) {
-		this.maxWait = maxWait;
-	}
-
 	public URI getUri() {
 		return UriUtils.createURI(parent.getScheme(), parent.getServerName(), parent.getServerPort(), parent.getRequestURI(), parent.getQueryString(), null);
+	}
+
+	public InputStream getResourceAsStream(String path) {
+		return servletContext.getResourceAsStream(path);
 	}
 
 }

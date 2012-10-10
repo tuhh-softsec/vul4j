@@ -45,8 +45,10 @@ public class ProxyFilter implements Filter {
 	private static final Logger LOG = LoggerFactory.getLogger(ProxyFilter.class);
 	private Pattern[] mappings;
 	private Driver[] providers;
+	private FilterConfig config;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
+		this.config = filterConfig;
 		Properties properties = new Properties();
 		InputStream inputStream = this.getClass().getResourceAsStream("/esigate-mapping.properties");
 		if (inputStream != null) {
@@ -79,7 +81,7 @@ public class ProxyFilter implements Filter {
 				LOG.debug("Proxying " + relUrl);
 				HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
 				try {
-					providers[i].proxy(relUrl, HttpRequestImpl.wrap(httpServletRequest), httpResponse, new EsiRenderer());
+					providers[i].proxy(relUrl, HttpRequestImpl.wrap(httpServletRequest, config.getServletContext()), httpResponse, new EsiRenderer());
 				} catch (HttpErrorPage e) {
 					e.render(httpResponse);
 				}
@@ -92,7 +94,7 @@ public class ProxyFilter implements Filter {
 		String result = wrappedResponse.getResult();
 		if (result != null) {
 			HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
-			ResourceContext resourceContext = new ResourceContext(null, relUrl, null, HttpRequestImpl.wrap(httpServletRequest), httpResponse);
+			ResourceContext resourceContext = new ResourceContext(null, relUrl, null, HttpRequestImpl.wrap(httpServletRequest, config.getServletContext()), httpResponse);
 			try {
 				new EsiRenderer().render(resourceContext, result, response.getWriter());
 			} catch (HttpErrorPage e) {

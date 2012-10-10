@@ -234,11 +234,6 @@ public class HttpClientHelper implements Extension {
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
 
-		Integer maxWait = originalRequest.getFetchMaxWait();
-		if (maxWait != null) {
-			HttpConnectionParams.setSoTimeout(httpRequest.getParams(), maxWait);
-		}
-
 		copyHeaders(originalRequest, httpRequest);
 
 		if (virtualHost != null) {

@@ -311,9 +311,8 @@ public class Driver {
 		if (!authenticationHandler.beforeProxy(resourceContext)) {
 			return;
 		}
-		HttpRequest originalRequest = resourceContext.getOriginalRequest();
 		String url = ResourceUtils.getHttpUrlWithQueryString(resourceContext, true);
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, true);
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(request, url, true);
 		org.apache.http.HttpResponse httpResponse = execute(httpRequest, resourceContext);
 		if (!isTextContentType(httpResponse)) {
 			LOG.debug("'" + relUrl + "' is binary on no transformation to apply: was forwarded without modification.");

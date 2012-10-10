@@ -1,7 +1,5 @@
 package org.esigate.servlet;
 
-import java.io.InputStream;
-
 import org.esigate.api.HttpSession;
 
 class HttpSessionImpl implements HttpSession {
@@ -26,10 +24,6 @@ class HttpSessionImpl implements HttpSession {
 
 	public void setAttribute(String name, Object value) {
 		parent.setAttribute(name, value);
-	}
-	
-	public InputStream getResourceTemplate(String template){
-		return parent.getServletContext().getResourceAsStream(template);
 	}
 	
 }

@@ -7,6 +7,6 @@
 <%@taglib uri="http://www.esigate.org/taglib" prefix="assemble"%>
 
 <%
-	UserContext context = DriverFactory.getInstance().getUserContext(HttpRequestImpl.wrap(request));	
+	UserContext context = DriverFactory.getInstance().getUserContext(HttpRequestImpl.wrap(request, config.getServletContext()));	
 	context.setUser("test");
 %><assemble:includeTemplate page="user.jsp" />

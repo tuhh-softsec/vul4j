@@ -37,7 +37,7 @@ public class DriverUtils {
 			boolean copyOriginalRequestParameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderBlock(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+			driver.renderBlock(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
 					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules, parameters, copyOriginalRequestParameters);
 		} catch (IOException e) {
 			throw new JspException(e);
@@ -47,7 +47,8 @@ public class DriverUtils {
 	public final static void renderEsi(String provider, String source, PageContext pageContext) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderEsi(source, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()), HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
+			driver.renderEsi(source, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
+					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
@@ -57,7 +58,7 @@ public class DriverUtils {
 			Map<String, String> parameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderTemplate(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+			driver.renderTemplate(page, name, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
 					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), params, replaceRules, parameters);
 		} catch (IOException e) {
 			throw new JspException(e);
@@ -67,7 +68,7 @@ public class DriverUtils {
 	public final static void renderXml(String provider, String source, String template, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderXml(source, template, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+			driver.renderXml(source, template, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
 					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);
@@ -77,7 +78,7 @@ public class DriverUtils {
 	public final static void renderXpath(String provider, String source, String xpath, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.renderXpath(source, xpath, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest()),
+			driver.renderXpath(source, xpath, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
 					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), replaceRules);
 		} catch (IOException e) {
 			throw new JspException(e);

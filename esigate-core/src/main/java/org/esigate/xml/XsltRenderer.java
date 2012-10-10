@@ -51,7 +51,7 @@ public class XsltRenderer implements Renderer {
 	 */
 	public XsltRenderer(String template, Driver driver, ResourceContext resourceContext) throws IOException, HttpErrorPage {
 		try {
-			InputStream templateStream = resourceContext.getOriginalRequest().getSession(true).getResourceTemplate(template);
+			InputStream templateStream = resourceContext.getOriginalRequest().getResourceAsStream(template);
 			if (templateStream == null)
 				throw new ProcessingFailedException("Template " + template + " not found");
 			transformer = createTransformer(templateStream);
@@ -69,7 +69,7 @@ public class XsltRenderer implements Renderer {
 	 *             If an error occurs while writing to the output
 	 */
 	public XsltRenderer(String template, HttpRequest request) throws IOException {
-		InputStream templateStream = request.getSession(true).getResourceTemplate(template);
+		InputStream templateStream = request.getResourceAsStream(template);
 		if (templateStream == null)
 			throw new ProcessingFailedException("Template " + template + " not found");
 		transformer = createTransformer(templateStream);

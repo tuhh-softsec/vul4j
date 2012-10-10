@@ -9,6 +9,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,8 +51,10 @@ public class IncludeTemplateComponent extends UIComponentBase implements Replace
 		ResponseWriter writer = context.getResponseWriter();
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+		ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
 		try {
-			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(), getName(), writer, HttpRequestImpl.wrap(request), HttpResponseImpl.wrap(response), params, replaceRules, null);
+			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(), getName(), writer, HttpRequestImpl.wrap(request, servletContext), HttpResponseImpl.wrap(response), params, replaceRules,
+					null);
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());

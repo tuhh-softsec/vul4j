@@ -1,6 +1,5 @@
 package org.esigate.api;
 
-import java.io.InputStream;
 
 public interface HttpSession {
     /**
@@ -55,17 +54,4 @@ public interface HttpSession {
      */
     public void setAttribute(String name, Object value);
     
-    /**
-     * Returns the resource located at the named path as an InputStream object.
-     *
-     * The data in the InputStream can be of any type or length. The path must be specified according to the rules given in getResource.
-     * This method returns null if no resource exists at the specified path.
-
-     * Meta-information such as content length and content type that is available via getResource method is lost when using this method.
-     *
-     * @param template
-	 *            The path to the resource template, relative to the context root
-     * @return the inputStream
-     **/
-    public InputStream getResourceTemplate(String template);
 }
