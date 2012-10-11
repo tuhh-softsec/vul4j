@@ -37,6 +37,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
+import org.apache.xml.security.stax.impl.util.KeyValue;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
@@ -69,9 +70,9 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     private final SignatureType signatureType;
     private final SecurityToken securityToken;
-    private final Map<ResourceResolver, ReferenceType> sameDocumentReferences;
-    private final Map<ResourceResolver, ReferenceType> externalReferences;
-    private final List<ReferenceType> processedReferences;
+    private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> sameDocumentReferences;
+    private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> externalReferences;
+    private final ArrayList<ReferenceType> processedReferences;
 
     public AbstractSignatureReferenceVerifyInputProcessor(
             InputProcessorChain inputProcessorChain,
@@ -88,8 +89,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                     referencesTypeList.size(),
                     maximumAllowedReferencesPerManifest);
         }
-        sameDocumentReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
-        externalReferences = new HashMap<ResourceResolver, ReferenceType>(referencesTypeList.size() + 1);
+        sameDocumentReferences = new ArrayList<KeyValue<ResourceResolver, ReferenceType>>(referencesTypeList.size());
+        externalReferences = new ArrayList<KeyValue<ResourceResolver, ReferenceType>>(referencesTypeList.size());
         processedReferences = new ArrayList<ReferenceType>(referencesTypeList.size());
 
         Iterator<ReferenceType> referenceTypeIterator = referencesTypeList.iterator();
@@ -111,14 +112,14 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                             referenceType.getURI(), inputProcessorChain.getDocumentContext().getBaseURI());
 
             if (resourceResolver.isSameDocumentReference()) {
-                sameDocumentReferences.put(resourceResolver, referenceType);
+                sameDocumentReferences.add(new KeyValue<ResourceResolver, ReferenceType>(resourceResolver, referenceType));
             } else {
                 if (!allowNotSameDocumentReferences) {
                     throw new XMLSecurityException(
                             "secureProcessing.AllowNotSameDocumentReferences"
                     );
                 }
-                externalReferences.put(resourceResolver, referenceType);
+                externalReferences.add(new KeyValue<ResourceResolver, ReferenceType>(resourceResolver, referenceType));
             }
         }
     }
@@ -185,15 +186,13 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     protected List<ReferenceType> resolvesResource(XMLSecStartElement xmlSecStartElement) {
         List<ReferenceType> referenceTypes = Collections.emptyList();
-
-        Iterator<Map.Entry<ResourceResolver, ReferenceType>> resourceResolverIterator = sameDocumentReferences.entrySet().iterator();
-        while (resourceResolverIterator.hasNext()) {
-            Map.Entry<ResourceResolver, ReferenceType> entry = resourceResolverIterator.next();
-            if (entry.getKey().matches(xmlSecStartElement)) {
+        for (int i = 0; i < sameDocumentReferences.size(); i++) {
+            KeyValue<ResourceResolver, ReferenceType> keyValue = sameDocumentReferences.get(i);
+            if (keyValue.getKey().matches(xmlSecStartElement)) {
                 if (referenceTypes == Collections.<ReferenceType>emptyList()) {
                     referenceTypes = new ArrayList<ReferenceType>();
                 }
-                referenceTypes.add(entry.getValue());
+                referenceTypes.add(keyValue.getValue());
             }
         }
         return referenceTypes;
@@ -201,33 +200,29 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
-        if (externalReferences.size() > 0) {
-            Iterator<Map.Entry<ResourceResolver, ReferenceType>> externalReferenceIterator = externalReferences.entrySet().iterator();
-            while (externalReferenceIterator.hasNext()) {
-                Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = externalReferenceIterator.next();
-                ResourceResolver resourceResolver = referenceTypeEntry.getKey();
-                ReferenceType referenceType = referenceTypeEntry.getValue();
 
-                verifyExternalReference(inputProcessorChain, resourceResolver, referenceType);
-                processedReferences.add(referenceType);
+        for (int i = 0; i < sameDocumentReferences.size(); i++) {
+            KeyValue<ResourceResolver, ReferenceType> keyValue = sameDocumentReferences.get(i);
+            if (!processedReferences.contains(keyValue.getValue())) {
+                throw new XMLSecurityException("stax.signature.unprocessedReferences");
+            }
+        }
+
+        if (externalReferences.size() > 0) {
+            for (int i = 0; i < externalReferences.size(); i++) {
+                KeyValue<ResourceResolver, ReferenceType> keyValue = externalReferences.get(i);
+                verifyExternalReference(inputProcessorChain, keyValue.getKey(), keyValue.getValue());
+                processedReferences.add(keyValue.getValue());
             }
 
-            externalReferenceIterator = externalReferences.entrySet().iterator();
-            while (externalReferenceIterator.hasNext()) {
-                Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = externalReferenceIterator.next();
-                if (!processedReferences.contains(referenceTypeEntry.getValue())) {
+            for (int i = 0; i < externalReferences.size(); i++) {
+                KeyValue<ResourceResolver, ReferenceType> keyValue = externalReferences.get(i);
+                if (!processedReferences.contains(keyValue.getValue())) {
                     throw new XMLSecurityException("stax.signature.unprocessedReferences");
                 }
             }
         }
 
-        Iterator<Map.Entry<ResourceResolver, ReferenceType>> sameDocumentReferenceIterator = sameDocumentReferences.entrySet().iterator();
-        while (sameDocumentReferenceIterator.hasNext()) {
-            Map.Entry<ResourceResolver, ReferenceType> referenceTypeEntry = sameDocumentReferenceIterator.next();
-            if (!processedReferences.contains(referenceTypeEntry.getValue())) {
-                throw new XMLSecurityException("stax.signature.unprocessedReferences");
-            }
-        }
         inputProcessorChain.doFinal();
     }
 
