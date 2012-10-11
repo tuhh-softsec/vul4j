@@ -32,7 +32,7 @@
 		<section name="Configuration">
 			<p>
 				Target applications configuration is achieved through the usual
-				driver.properties file. See configuration chapter for more details.
+				esigate.properties file. See configuration chapter for more details.
 				Eg for 2 applications:
 		</p>
 <source>
@@ -131,9 +131,9 @@ This content will be replaced by the block "myblock"
 
             <subsection name="Including a block with variables">
                 <p>
-                    Page accept variables $(variable_name) that will be resolved from vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
+                    Page accept variables $(variable_name) that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
                 </p>
-                in vars.properties :
+                in esigate-vars.properties :
 <source>
 myblock=block.html
 myattributid=789
@@ -213,9 +213,9 @@ Some text from aggregated1
 
             <subsection name="Including a template with variables">
                 <p>
-                    Page accept variables $(variable_name) that will be resolved from vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
+                    Page accept variables $(variable_name) that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
                 </p>
-                in vars.properties :
+                in esigate-vars.properties :
 <source>mytemplate=template.html</source>
 <source>
 <strong>&lt;!--$includetemplate$aggregated2$$(mytemplate)$--&gt;</strong>&#160;

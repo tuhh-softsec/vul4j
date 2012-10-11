@@ -43,7 +43,7 @@ public class ResourceUtilsTest extends TestCase {
 
 	public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
 		Properties props = new Properties();
-		props.put(Parameters.REMOTE_URL_BASE, "http://www.foo.com/");
+		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		Driver driver = new Driver("test", props);
 		HttpRequest request = EasyMock.createMock(HttpRequest.class);
 		EasyMock.expect(request.getCharacterEncoding()).andStubReturn("ISO-8859-1");

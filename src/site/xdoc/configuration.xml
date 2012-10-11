@@ -9,8 +9,7 @@
 		<section name="Configuration file">
 			<p>
 				The tools default behavior is to load a configuration file from
-				the
-				classpath org/esigate/driver.properties
+				the	classpath /esigate.properties
 	</p>
 			<p>
 				Alternatively you can use method
@@ -356,7 +355,7 @@ appli2.remoteUrlBase=http://localhost:8080/appli2/
                 <section name="Variables resolver">
 			<p>
 				You can define variables in
-				classpath org/esigate/vars.properties
+				classpath esigate-vars.properties
                                 </p>
 <source>
 variable_name=variable_value

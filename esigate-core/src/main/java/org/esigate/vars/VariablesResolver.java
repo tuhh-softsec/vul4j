@@ -52,13 +52,16 @@ public class VariablesResolver {
 	}
 
 	/**
-	 * Loads variables according to default configuration file org/esigate/vars.properties.
+	 * Loads variables according to default configuration file
+	 * org/esigate/vars.properties.
 	 */
 	public final static void configure() {
 		InputStream inputStream = null;
 		try {
-			LOG.debug("Loading vars.properties file {}", Driver.class.getResource("vars.properties"));
-			inputStream = Driver.class.getResourceAsStream("vars.properties");
+			LOG.debug("Loading esigate-vars.properties file");
+			inputStream = Driver.class.getResourceAsStream("/esigate-vars.properties");
+			if (inputStream == null)
+				inputStream = Driver.class.getResourceAsStream("vars.properties");
 			if (inputStream != null) {
 				properties = new Properties();
 				properties.load(inputStream);
@@ -92,7 +95,8 @@ public class VariablesResolver {
 	}
 
 	/**
-	 * Replace all ESI variables found in strVars by their matching value in vars.properties
+	 * Replace all ESI variables found in strVars by their matching value in
+	 * vars.properties
 	 * 
 	 * @param strVars
 	 *            a String containing variables.
@@ -103,11 +107,12 @@ public class VariablesResolver {
 	}
 
 	/**
-	 * Replace all ESI variables found in strVars by their matching value in vars.properties
+	 * Replace all ESI variables found in strVars by their matching value in
+	 * vars.properties
 	 * 
 	 * @param strVars
 	 *            a String containing variables.
-	 * @param request 
+	 * @param request
 	 * @return The resulting String
 	 */
 	public static String replaceAllVariables(String strVars, HttpRequest request) {

@@ -42,13 +42,27 @@ public class DriverFactory {
 
 	}
 
-	/** Loads all instancies according to default configuration file */
+	/** Loads all instances according to default configuration file */
 	public final static void configure() {
-		InputStream inputStream = Driver.class.getResourceAsStream("driver.properties");
+		InputStream inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
+
+		// For backward compatibility
+		if (inputStream == null)
+			inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
+		if (inputStream == null)
+			inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
+
+		if (inputStream == null)
+			throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
 
 		// load driver-ext.properties if exists
+		InputStream extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
 
-		InputStream extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("driver-ext.properties");
+		// For backward compatibility
+		if (extInputStream == null)
+			extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
+		if (extInputStream == null)
+			extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
 
 		try {
 			Properties merged = new Properties();
@@ -118,26 +132,30 @@ public class DriverFactory {
 				properties.putAll(entry.getValue());
 				configure(name, properties);
 			}
-			if (INSTANCES.get(DEFAULT_INSTANCE_NAME) == null) {
+			if (INSTANCES.get(DEFAULT_INSTANCE_NAME) == null && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
 				configure(DEFAULT_INSTANCE_NAME, defaultProperties);
 			}
 		}
 	}
 
 	/**
-	 * Registers new {@linkplain Driver} under provided name with specified properties.
-	 * @param name 
-	 * @param props 
+	 * Registers new {@linkplain Driver} under provided name with specified
+	 * properties.
+	 * 
+	 * @param name
+	 * @param props
 	 */
 	public static void configure(String name, Properties props) {
 		INSTANCES.put(name, new Driver(name, props));
 	}
 
 	/**
-	 * Retrieves the default instance of this class that is configured according to the properties file (driver.properties)
+	 * Retrieves the default instance of this class that is configured according
+	 * to the properties file (driver.properties)
 	 * 
 	 * @param instanceName
-	 *            The name of the instance (corresponding to the prefix in the driver.properties file)
+	 *            The name of the instance (corresponding to the prefix in the
+	 *            driver.properties file)
 	 * 
 	 * @return the named instance
 	 */
@@ -157,7 +175,8 @@ public class DriverFactory {
 	}
 
 	/**
-	 * Retrieves the default instance of this class that is configured according to the properties file (driver.properties)
+	 * Retrieves the default instance of this class that is configured according
+	 * to the properties file (driver.properties)
 	 * 
 	 * @return the default instance
 	 */

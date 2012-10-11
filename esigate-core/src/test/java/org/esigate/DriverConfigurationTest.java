@@ -33,13 +33,9 @@ public class DriverConfigurationTest extends TestCase {
 
 	public void testBaseUrl() {
 		Properties properties = new Properties();
-
-		DriverConfiguration config = new DriverConfiguration("test-baseurl", properties);
-
-		assertEquals(null, config.getBaseUrlRetrieveStrategy());
-
+		
 		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com");
-		config = new DriverConfiguration("test-baseurl", properties);
+		DriverConfiguration config = new DriverConfiguration("test-baseurl", properties);
 		assertTrue(config.getBaseUrlRetrieveStrategy() instanceof SingleBaseUrlRetrieveStrategy);
 
 		properties.setProperty(Parameters.REMOTE_URL_BASE.name, "http://example.com, http://example1.com");

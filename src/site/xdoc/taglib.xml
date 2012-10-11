@@ -44,9 +44,9 @@ Some other HTML
             <p><i><b>NOTE</b>: do not forget to add the taglib declaration at the beging of the page.</i></p>
 
 <p>
-    In page attribute, you can put variables that will be resolved from vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
+    In page attribute, you can put variables that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
 </p>
-in vars.properties :
+in esigate-vars.properties :
 <source>
 myvar=mypage.php
 myattributid=789

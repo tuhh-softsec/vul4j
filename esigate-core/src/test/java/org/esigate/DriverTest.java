@@ -86,6 +86,7 @@ public class DriverTest extends TestCase {
 	/** Test default configuration */
 	public void testDefaultConfig() {
 		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		Driver driver = new Driver("dummy", properties);
 		// Parsable contentTypes
 		assertParsableContentType(driver, "text/html; charset=utf-8");
@@ -106,17 +107,20 @@ public class DriverTest extends TestCase {
 	 */
 	public void testParsableContentTypes() {
 		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain");
 		Driver driver = new Driver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");
 
 		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html");
 		driver = new Driver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");
 		assertParsableContentType(driver, "text/html");
 
 		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		properties.put(Parameters.PARSABLE_CONTENT_TYPES.name, "text/plain, text/html,application/x");
 		driver = new Driver("dummy", properties);
 		assertParsableContentType(driver, "text/plain");

@@ -111,10 +111,10 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 &lt;/web-app&gt; </source>
 					
 					
-					<p>Then the proxy has to be configured in both org/esigate/driver.properties and org/esigate/rewrite-proxy.properties :</p>
-					<p>driver.properties</p>
+					<p>Then the proxy has to be configured in both /esigate.properties and org/esigate/rewrite-proxy.properties :</p>
+					<p>esigate.properties</p>
 						<source>
-#org/esigate/driver.properties
+#esigate.properties
 
 
 webapp.remoteUrlBase=http://localhost:8080/webappcontext/
