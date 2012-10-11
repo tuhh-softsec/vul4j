@@ -32,5 +32,10 @@
 			<artifactId>cas-server-webapp</artifactId>
 			<type>war</type>
 		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project> 

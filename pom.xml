@@ -572,6 +572,12 @@
 				<type>war</type>
 			</dependency>
 			<dependency>
+				<groupId>org.jasig.cas</groupId>
+				<artifactId>cas-server-core</artifactId>
+				<version>3.3.1</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient-cache</artifactId>
 				<version>4.2</version>
