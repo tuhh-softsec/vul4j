@@ -23,6 +23,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
+import org.apache.xml.security.transforms.Transforms;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.w3c.dom.Document;
@@ -153,6 +154,7 @@ public abstract class AbstractPerformanceTest {
 
         xmlSecurityProperties.setSignatureKey(key);
         xmlSecurityProperties.setSignatureCerts(new X509Certificate[]{cert});
+        xmlSecurityProperties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
 
         SecurePart securePart = new SecurePart(
                 new QName("http://www.example.com", "test"),
@@ -237,6 +239,11 @@ public abstract class AbstractPerformanceTest {
         XMLSignature sig = new XMLSignature(document, "", "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         Element root = document.getDocumentElement();
         root.insertBefore(sig.getElement(), root.getFirstChild());
+
+        Transforms transforms = new Transforms(document);
+        transforms.addTransform(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
+        transforms.addTransform(Transforms.TRANSFORM_C14N_OMIT_COMMENTS);
+        sig.addDocument("", transforms, "http://www.w3.org/2000/09/xmldsig#sha1");
 
         sig.sign(key);
         sig.addKeyInfo(cert);
