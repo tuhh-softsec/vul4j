@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Collection;
 
+import org.apache.http.cookie.Cookie;
+
 public interface HttpRequest {
 	/**
 	 * Returns the value of a request parameter as a <code>String</code>, or

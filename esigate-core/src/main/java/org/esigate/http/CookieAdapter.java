@@ -15,13 +15,12 @@
 
 package org.esigate.http;
 
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie2;
-import org.esigate.api.Cookie;
-import org.esigate.cookie.BasicClientCookie;
 
 public class CookieAdapter {
 
-	public static org.apache.http.cookie.Cookie toApacheCookie(Cookie cookie) {
+	public static Cookie toApacheCookie(Cookie cookie) {
 		BasicClientCookie2 newCookie = new BasicClientCookie2(cookie.getName(), cookie.getValue());
 		newCookie.setComment(cookie.getComment());
 		newCookie.setCommentURL(cookie.getCommentURL());
@@ -35,8 +34,8 @@ public class CookieAdapter {
 		return newCookie;
 	}
 
-	public static Cookie toCustomCookie(org.apache.http.cookie.Cookie cookie) {
-		BasicClientCookie newCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
+	public static org.apache.http.cookie.Cookie toCustomCookie(org.apache.http.cookie.Cookie cookie) {
+		BasicClientCookie2 newCookie = new BasicClientCookie2(cookie.getName(), cookie.getValue());
 		newCookie.setComment(cookie.getComment());
 		newCookie.setCommentURL(cookie.getCommentURL());
 		newCookie.setDomain(cookie.getDomain());

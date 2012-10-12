@@ -22,9 +22,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
-import org.esigate.api.Cookie;
 import org.esigate.api.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

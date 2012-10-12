@@ -3,6 +3,8 @@ package org.esigate.api;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.http.cookie.Cookie;
+
 public interface HttpResponse {
     /**
      * Adds the specified cookie to the response.  This method can be called

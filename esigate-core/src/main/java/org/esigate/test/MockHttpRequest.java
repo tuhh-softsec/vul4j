@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.esigate.api.Cookie;
+import org.apache.http.cookie.Cookie;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 import org.esigate.util.UriUtils;

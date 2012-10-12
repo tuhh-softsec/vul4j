@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;

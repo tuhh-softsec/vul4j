@@ -22,7 +22,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.esigate.api.Cookie;
+import org.apache.http.cookie.Cookie;
 import org.esigate.api.HttpResponse;
 
 public class MockHttpResponse implements HttpResponse {

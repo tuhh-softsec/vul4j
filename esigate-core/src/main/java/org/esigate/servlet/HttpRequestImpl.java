@@ -11,10 +11,10 @@ import java.util.Collections;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.esigate.api.Cookie;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
-import org.esigate.cookie.BasicClientCookie;
 import org.esigate.util.UriUtils;
 
 public class HttpRequestImpl implements HttpRequest {
@@ -52,7 +52,7 @@ public class HttpRequestImpl implements HttpRequest {
 			result = new Cookie[src.length];
 			for (int i = 0; i < src.length; i++) {
 				javax.servlet.http.Cookie c = src[i];
-				Cookie dest = new BasicClientCookie(c.getName(), c.getValue());
+				BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
 				dest.setSecure(c.getSecure());
 				dest.setDomain(c.getDomain());
 				dest.setPath(c.getPath());

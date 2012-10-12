@@ -1,13 +1,12 @@
 package org.esigate.url;
 
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.api.BaseUrlRetrieveStrategy;
-import org.esigate.api.Cookie;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.esigate.cookie.BasicClientCookie;
 
-public class StickySessionBaseUrlRetrieveStrategy implements
-		BaseUrlRetrieveStrategy {
+public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStrategy {
 	public static final String ESI_SESSION_COOKIE_NAME = "_esigate_session_cookie";
 	private final String[] urls;
 
@@ -16,9 +15,8 @@ public class StickySessionBaseUrlRetrieveStrategy implements
 		this.urls = urls;
 	}
 
-	public String getBaseURL(HttpRequest originalRequest,
-			HttpResponse originalResponse) {
-		
+	public String getBaseURL(HttpRequest originalRequest, HttpResponse originalResponse) {
+
 		Cookie sessionCookie = getEsiSessionCookie(originalRequest.getCookies());
 		int index = 0;
 		boolean toGenerate = true;
@@ -26,12 +24,12 @@ public class StickySessionBaseUrlRetrieveStrategy implements
 		if (null != sessionCookie) {
 			toGenerate = false;
 			String indexStr = sessionCookie.getValue();
-			
+
 			if (null != indexStr) {
-				try{
-				Integer indexInt = Integer.parseInt(indexStr);
-				index = indexInt.intValue();
-				}catch (Exception e) {
+				try {
+					Integer indexInt = Integer.parseInt(indexStr);
+					index = indexInt.intValue();
+				} catch (Exception e) {
 					index = -1;
 				}
 				if (index < 0 || index >= urls.length) {
@@ -43,13 +41,8 @@ public class StickySessionBaseUrlRetrieveStrategy implements
 		}
 		if (toGenerate) {
 			index = generateIndex();
-			if(null != sessionCookie){
-				sessionCookie.setValue(Integer.toString(index));
-			}else{
-				Cookie cookie = new BasicClientCookie(ESI_SESSION_COOKIE_NAME, Integer.toString(index));
-				originalResponse.addCookie(cookie);
-			}
-			
+			Cookie cookie = new BasicClientCookie(ESI_SESSION_COOKIE_NAME, Integer.toString(index));
+			originalResponse.addCookie(cookie);
 		}
 
 		return urls[index];

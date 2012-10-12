@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.esigate.api.Cookie;
+import org.apache.http.cookie.Cookie;
 import org.esigate.api.HttpResponse;
 
 public class HttpResponseImpl implements HttpResponse {

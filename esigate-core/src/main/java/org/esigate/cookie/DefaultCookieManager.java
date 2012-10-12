@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.ResourceContext;
 import org.esigate.UserContext;
-import org.esigate.http.SerializableBasicClientCookie2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class DefaultCookieManager implements CookieManager {
 			LOG.info("Cookie " + toString(cookie) + " -> discarding");
 		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
 			LOG.info("Cookie " + toString(cookie) + " -> forwarding");
-			resourceContext.getOriginalResponse().addCookie(rewrite(cookie, resourceContext));
+			resourceContext.getOriginalResponse().addCookie(rewriteForBrowser(cookie, resourceContext));
 		} else {
 			LOG.info("Cookie " + toString(cookie) + " -> storing to context");
 			UserContext userContext = resourceContext.getUserContext();
@@ -64,24 +65,24 @@ public class DefaultCookieManager implements CookieManager {
 		List<Cookie> sessionCookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (sessionCookies != null)
 			cookies.addAll(sessionCookies);
-		org.esigate.api.Cookie[] requestCookies = resourceContext.getOriginalRequest().getCookies();
+		Cookie[] requestCookies = resourceContext.getOriginalRequest().getCookies();
 		if (requestCookies != null) {
-			for (org.esigate.api.Cookie cookie : requestCookies) {
+			for (Cookie cookie : requestCookies) {
 				String name = cookie.getName();
 				if (forwardCookies.contains(name) || (forwardCookies.contains("*") && !discardCookies.contains(name))) {
-					cookies.add(toApacheCookie(cookie, resourceContext));
+					cookies.add(rewriteForServer(cookie, resourceContext));
 				}
 			}
 		}
 		return cookies;
 	}
 
-	private static Cookie toApacheCookie(org.esigate.api.Cookie cookie, ResourceContext resourceContext) {
+	private static Cookie rewriteForServer(Cookie cookie, ResourceContext resourceContext) {
 		String name = cookie.getName();
 		if ("_JSESSIONID".equalsIgnoreCase(name)) {
 			name = name.substring(1);
 		}
-		SerializableBasicClientCookie2 httpClientCookie = new SerializableBasicClientCookie2(name, cookie.getValue());
+		BasicClientCookie2 httpClientCookie = new BasicClientCookie2(name, cookie.getValue());
 		httpClientCookie.setSecure(false);
 		String domain;
 		if (resourceContext.getDriver().getConfiguration().isPreserveHost()) {
@@ -119,9 +120,10 @@ public class DefaultCookieManager implements CookieManager {
 		return domain;
 	}
 
-	private static org.esigate.api.Cookie rewrite(Cookie cookie, ResourceContext resourceContext) {
+	private static Cookie rewriteForBrowser(Cookie cookie, ResourceContext resourceContext) {
 		String name = cookie.getName();
-		// Rewrite name if JSESSIONID because it will interfere with current server session
+		// Rewrite name if JSESSIONID because it will interfere with current
+		// server session
 		if ("JSESSIONID".equalsIgnoreCase(name)) {
 			name = "_" + name;
 		}
@@ -140,7 +142,7 @@ public class DefaultCookieManager implements CookieManager {
 		// Rewrite secure
 		boolean secure = (cookie.isSecure() && resourceContext.getOriginalRequest().isSecure());
 
-		org.esigate.api.Cookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
+		BasicClientCookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
 		if (domain != null) {
 			cookieToForward.setDomain(domain);
 		}

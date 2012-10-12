@@ -5,10 +5,10 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.ResourceContext;
-import org.esigate.cookie.BasicClientCookie;
 import org.esigate.test.MockHttpRequest;
 
 public class VarsElementTest extends TestCase {
