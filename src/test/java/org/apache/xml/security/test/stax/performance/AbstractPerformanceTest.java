@@ -24,6 +24,7 @@ import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.utils.XMLUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.w3c.dom.Document;
@@ -37,9 +38,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.security.Key;
 import java.security.KeyStore;
@@ -54,7 +52,6 @@ public abstract class AbstractPerformanceTest {
     private static Key encryptionSymKey;
     protected XMLInputFactory xmlInputFactory;
     protected DocumentBuilderFactory documentBuilderFactory;
-    protected TransformerFactory transformerFactory;
     protected Key key;
     protected X509Certificate cert;
     private OutboundXMLSec outboundSignatureXMLSec;
@@ -77,8 +74,6 @@ public abstract class AbstractPerformanceTest {
 
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
-
-        transformerFactory = TransformerFactory.newInstance();
 
         org.apache.xml.security.Init.init();
 
@@ -248,8 +243,7 @@ public abstract class AbstractPerformanceTest {
         sig.sign(key);
         sig.addKeyInfo(cert);
 
-        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-        transformer.transform(new DOMSource(document), new StreamResult(new File(getTmpFilePath(), "signature-dom-" + tagCount + ".xml")));
+        XMLUtils.outputDOM(document, new BufferedOutputStream(new FileOutputStream(new File(getTmpFilePath(), "signature-dom-" + tagCount + ".xml"))));
     }
 
     protected void doDOMSignatureInbound(File file, int tagCount) throws Exception {
@@ -303,8 +297,7 @@ public abstract class AbstractPerformanceTest {
         cipher.init(XMLCipher.ENCRYPT_MODE, encryptionSymKey);
         document = cipher.doFinal(document, document.getDocumentElement());
 
-        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
-        transformer.transform(new DOMSource(document), new StreamResult(new File(getTmpFilePath(), "encryption-dom-" + tagCount + ".xml")));
+        XMLUtils.outputDOM(document, new BufferedOutputStream(new FileOutputStream(new File(getTmpFilePath(), "encryption-dom-" + tagCount + ".xml"))));
     }
 
     protected void doDOMDecryptionInbound(File file, int tagCount) throws Exception {

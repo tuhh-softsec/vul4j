@@ -27,6 +27,7 @@ import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
+import org.apache.xml.security.stax.impl.XMLSecurityEventWriter;
 import org.apache.xml.security.stax.impl.util.TrimmerOutputStream;
 
 import javax.crypto.Cipher;
@@ -133,7 +134,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 //Should internally generate an IV
                 byte[] iv = symmetricCipher.getIV();
 
-                characterEventGeneratorOutputStream = new CharacterEventGeneratorOutputStream(getEncoding());
+                characterEventGeneratorOutputStream = new CharacterEventGeneratorOutputStream();
                 Base64OutputStream base64EncoderStream =
                         new Base64OutputStream(characterEventGeneratorOutputStream, true, 0, null);
                 base64EncoderStream.write(iv);
@@ -153,7 +154,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
                 //we create a new StAX writer for optimized namespace writing.
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-                xmlEventWriter = XMLSecurityConstants.xmlOutputFactory.createXMLEventWriter(cipherOutputStream, "UTF-8");
+                xmlEventWriter = new XMLSecurityEventWriter(XMLSecurityConstants.xmlOutputFactory.createXMLStreamWriter(cipherOutputStream, "UTF-8"));
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {
@@ -359,11 +360,6 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
     public class CharacterEventGeneratorOutputStream extends OutputStream {
 
         private final Deque<XMLSecCharacters> charactersBuffer = new ArrayDeque<XMLSecCharacters>();
-        private final String encoding;
-
-        public CharacterEventGeneratorOutputStream(String encoding) {
-            this.encoding = encoding;
-        }
 
         public Deque<XMLSecCharacters> getCharactersBuffer() {
             return charactersBuffer;
@@ -371,17 +367,25 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
         @Override
         public void write(int b) throws IOException {
-            charactersBuffer.offer(createCharacters(new String(new byte[]{((byte) b)}, encoding)));
+            charactersBuffer.offer(createCharacters(new char[]{(char)b}));
         }
 
         @Override
         public void write(byte[] b) throws IOException {
-            charactersBuffer.offer(createCharacters(new String(b, encoding)));
+            charactersBuffer.offer(createCharacters(byteToCharArray(b, 0, b.length)));
         }
 
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            charactersBuffer.offer(createCharacters(new String(b, off, len, encoding)));
+            charactersBuffer.offer(createCharacters(byteToCharArray(b, off, len)));
         }
+    }
+
+    private char[] byteToCharArray(byte[]  bytes, int off, int len) {
+        char[] chars = new char[len];
+        for (int i = off; i < len; i++) {
+            chars[i] = (char)bytes[i];
+        }
+        return chars;
     }
 }

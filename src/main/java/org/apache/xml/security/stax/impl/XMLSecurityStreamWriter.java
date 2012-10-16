@@ -420,7 +420,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
         outputOpenStartElement();
-        chainProcessEvent(XMLSecEventFactory.createXmlSecCharacters(new String(text, start, len)));
+        chainProcessEvent(XMLSecEventFactory.createXmlSecCharacters(text, start, len));
     }
 
     public String getPrefix(String uri) throws XMLStreamException {

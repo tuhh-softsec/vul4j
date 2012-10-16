@@ -394,7 +394,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case CDATA:
             case SPACE:
             case CHARACTERS:
-                return xmlSecEvent.asCharacters().getData().toCharArray();
+                return xmlSecEvent.asCharacters().getText();
             default:
                 throw new IllegalStateException("Current state not TEXT");
         }

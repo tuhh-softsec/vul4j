@@ -205,8 +205,17 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         outputAsEvent(outputProcessorChain, createCharacters(characters));
     }
 
+    public void createCharactersAndOutputAsEvent(OutputProcessorChain outputProcessorChain, char[] text)
+            throws XMLStreamException, XMLSecurityException {
+        outputAsEvent(outputProcessorChain, createCharacters(text));
+    }
+
     public XMLSecCharacters createCharacters(String characters) {
         return XMLSecEventFactory.createXmlSecCharacters(characters);
+    }
+
+    public XMLSecCharacters createCharacters(char[] text) {
+        return XMLSecEventFactory.createXmlSecCharacters(text);
     }
 
     public XMLSecAttribute createAttribute(QName attribute, String attributeValue) {

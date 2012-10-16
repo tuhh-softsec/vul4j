@@ -22,9 +22,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author $Author$
@@ -37,15 +35,15 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
     }
 
     @Override
-    protected SortedSet<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
-        SortedSet<XMLSecNamespace> utilizedNamespaces = emptySortedSet();
+        List<XMLSecNamespace> utilizedNamespaces = Collections.emptyList();
 
         XMLSecNamespace elementNamespace = xmlSecStartElement.getElementNamespace();
         final XMLSecNamespace found = (XMLSecNamespace) outputStack.containsOnStack(elementNamespace);
         //found means the prefix matched. so check the ns further
         if (found == null || found.getNamespaceURI() == null || !found.getNamespaceURI().equals(elementNamespace.getNamespaceURI())) {
-            utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+            utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
             utilizedNamespaces.add(elementNamespace);
             outputStack.peek().add(elementNamespace);
         }
@@ -65,8 +63,8 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
             if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
                     || !resultNamespace.getNamespaceURI().equals(attributeNamespace.getNamespaceURI())) {
 
-                if (utilizedNamespaces == (Object) emptySortedSet()) {
-                    utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+                if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                    utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
                 }
                 utilizedNamespaces.add(attributeNamespace);
                 outputStack.peek().add(attributeNamespace);
@@ -77,21 +75,21 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
     }
 
     @Override
-    protected SortedSet<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
         return getCurrentUtilizedNamespaces(xmlSecStartElement, outputStack);
     }
 
     @Override
-    protected SortedSet<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
-        SortedSet<XMLSecAttribute> utilizedAttributes = emptySortedSet();
+        List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
         @SuppressWarnings("unchecked")
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
         for (int i = 0; i < comparableAttributes.size(); i++) {
             XMLSecAttribute comparableAttribute = comparableAttributes.get(i);
-            if (utilizedAttributes == (Object) emptySortedSet()) {
-                utilizedAttributes = new TreeSet<XMLSecAttribute>();
+            if (utilizedAttributes == (Object)Collections.emptyList()) {
+                utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
         }

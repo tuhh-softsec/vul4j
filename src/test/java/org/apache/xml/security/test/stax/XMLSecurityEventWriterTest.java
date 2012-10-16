@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.junit.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
@@ -44,14 +45,15 @@ public class XMLSecurityEventWriterTest extends org.junit.Assert {
         XMLEventWriter stdXmlEventWriter = xmlOutputFactory.createXMLEventWriter(stdStringWriter);
 
         XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        XMLEventReader xmlEventReader = 
-            xmlInputFactory.createXMLEventReader(this.getClass().getClassLoader().getResourceAsStream(
-                "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
+        XMLStreamReader xmlStreamReader =
+            xmlInputFactory.createXMLStreamReader(this.getClass().getClassLoader().getResourceAsStream(
+                    "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
 
-        while (xmlEventReader.hasNext()) {
-            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+        while (xmlStreamReader.hasNext()) {
+            XMLEvent xmlEvent = XMLSecEventFactory.allocate(xmlStreamReader, null);
             xmlSecurityEventWriter.add(xmlEvent);
             stdXmlEventWriter.add(xmlEvent);
+            xmlStreamReader.next();
         }
 
         xmlSecurityEventWriter.close();

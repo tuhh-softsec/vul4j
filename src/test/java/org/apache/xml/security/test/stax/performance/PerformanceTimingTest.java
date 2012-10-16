@@ -60,14 +60,12 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
             File signedFile = doStreamingSignatureOutbound(file, startTagCount);
             outSignatureSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
             signedFiles.put(startTagCount, signedFile);
-            System.gc();
-            System.gc();
+            doGC();
 
             start = System.currentTimeMillis();
             doDOMSignatureOutbound(file, startTagCount);
             outSignatureSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             outSignatureSamplesWriter.write("\n");
         }
@@ -92,14 +90,12 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
             long start = System.currentTimeMillis();
             doStreamingSignatureInbound(file, startTagCount);
             inSignatureSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             start = System.currentTimeMillis();
             doDOMSignatureInbound(file, startTagCount);
             inSignatureSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             inSignatureSamplesWriter.write("\n");
         }
@@ -122,14 +118,12 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
             File encryptedFile = doStreamingEncryptionOutbound(file, startTagCount);
             outEncryptionSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
             encryptedFiles.put(startTagCount, encryptedFile);
-            System.gc();
-            System.gc();
+            doGC();
 
             start = System.currentTimeMillis();
             doDOMEncryptionOutbound(file, startTagCount);
             outEncryptionSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             outEncryptionSamplesWriter.write("\n");
         }
@@ -154,17 +148,21 @@ public class PerformanceTimingTest extends AbstractPerformanceTest {
             long start = System.currentTimeMillis();
             doStreamingDecryptionInbound(file, startTagCount);
             inEncryptionSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             start = System.currentTimeMillis();
             doDOMDecryptionInbound(file, startTagCount);
             inEncryptionSamplesWriter.write(" " + ((System.currentTimeMillis() - start) / 1000.0));
-            System.gc();
-            System.gc();
+            doGC();
 
             inEncryptionSamplesWriter.write("\n");
         }
         inEncryptionSamplesWriter.close();
+    }
+
+    private void doGC() {
+        Runtime.getRuntime().runFinalization();
+        System.gc();
+        System.gc();
     }
 }

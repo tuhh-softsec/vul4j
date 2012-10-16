@@ -22,10 +22,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author $Author$
@@ -37,10 +34,10 @@ public class Canonicalizer11 extends CanonicalizerBase {
     }
 
     @Override
-    protected SortedSet<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
 
-        SortedSet<XMLSecAttribute> utilizedAttributes = emptySortedSet();
+        List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
 
         List<XMLSecAttribute> visibleAttributes = new ArrayList<XMLSecAttribute>();
         xmlSecStartElement.getAttributesFromCurrentScope(visibleAttributes);
@@ -58,8 +55,8 @@ public class Canonicalizer11 extends CanonicalizerBase {
             if (outputStack.containsOnStack(comparableAttribute) != null) {
                 continue;
             }
-            if (utilizedAttributes == (Object) emptySortedSet()) {
-                utilizedAttributes = new TreeSet<XMLSecAttribute>();
+            if (utilizedAttributes == (Object)Collections.emptyList()) {
+                utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
             outputStack.peek().add(comparableAttribute);
@@ -74,8 +71,8 @@ public class Canonicalizer11 extends CanonicalizerBase {
             if (XML.equals(attributeName.getPrefix())) {
                 continue;
             }
-            if (utilizedAttributes == (Object) emptySortedSet()) {
-                utilizedAttributes = new TreeSet<XMLSecAttribute>();
+            if (utilizedAttributes == (Object)Collections.emptyList()) {
+                utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
         }

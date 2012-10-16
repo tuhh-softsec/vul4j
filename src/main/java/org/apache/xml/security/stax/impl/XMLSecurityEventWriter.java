@@ -18,11 +18,13 @@
  */
 package org.apache.xml.security.stax.impl;
 
+import org.apache.xml.security.stax.ext.stax.*;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author $Author$
@@ -37,22 +39,27 @@ public class XMLSecurityEventWriter implements XMLEventWriter {
     }
 
     public void add(XMLEvent event) throws XMLStreamException {
-        switch (event.getEventType()) {
+        if (!(event instanceof XMLSecEvent)) {
+            throw new IllegalArgumentException("XMLEvent must be an instance of XMLSecEvent");
+        }
+
+        XMLSecEvent xmlSecEvent = (XMLSecEvent)event;
+        switch (xmlSecEvent.getEventType()) {
             case XMLStreamConstants.START_ELEMENT:
-                StartElement startElement = event.asStartElement();
-                QName n = startElement.getName();
+                XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
+                QName n = xmlSecStartElement.getName();
                 this.xmlStreamWriter.writeStartElement(n.getPrefix(), n.getLocalPart(), n.getNamespaceURI());
 
-                @SuppressWarnings("unchecked")
-                Iterator<Namespace> namespaceIterator = startElement.getNamespaces();
-                while (namespaceIterator.hasNext()) {
-                    add(namespaceIterator.next());
+                List<XMLSecNamespace> xmlSecNamespaces = xmlSecStartElement.getOnElementDeclaredNamespaces();
+                for (int i = 0; i < xmlSecNamespaces.size(); i++) {
+                    Namespace namespace = xmlSecNamespaces.get(i);
+                    add(namespace);
                 }
 
-                @SuppressWarnings("unchecked")
-                Iterator<Attribute> attributeIterator = startElement.getAttributes();
-                while (attributeIterator.hasNext()) {
-                    add(attributeIterator.next());
+                List<XMLSecAttribute> xmlSecAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
+                for (int i = 0; i < xmlSecAttributes.size(); i++) {
+                    XMLSecAttribute xmlSecAttribute = xmlSecAttributes.get(i);
+                    add(xmlSecAttribute);
                 }
                 break;
 
@@ -61,25 +68,26 @@ public class XMLSecurityEventWriter implements XMLEventWriter {
                 break;
 
             case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                ProcessingInstruction pi = (ProcessingInstruction) event;
+                ProcessingInstruction pi = (ProcessingInstruction) xmlSecEvent;
                 this.xmlStreamWriter.writeProcessingInstruction(pi.getTarget(), pi.getData());
                 break;
 
             case XMLStreamConstants.CHARACTERS:
-                Characters characters = event.asCharacters();
-                if (characters.isCData()) {
-                    this.xmlStreamWriter.writeCData(characters.getData());
+                XMLSecCharacters characters = xmlSecEvent.asCharacters();
+                if (!characters.isCData()) {
+                    final char[] text = characters.getText();
+                    this.xmlStreamWriter.writeCharacters(text, 0, text.length);
                 } else {
-                    this.xmlStreamWriter.writeCharacters(characters.getData());
+                    this.xmlStreamWriter.writeCData(characters.getData());
                 }
                 break;
 
             case XMLStreamConstants.COMMENT:
-                this.xmlStreamWriter.writeComment(((Comment) event).getText());
+                this.xmlStreamWriter.writeComment(((Comment) xmlSecEvent).getText());
                 break;
 
             case XMLStreamConstants.START_DOCUMENT:
-                StartDocument startDocument = (StartDocument) event;
+                StartDocument startDocument = (StartDocument) xmlSecEvent;
                 if (!startDocument.encodingSet()) {
                     this.xmlStreamWriter.writeStartDocument(startDocument.getVersion());
                 } else {
@@ -92,25 +100,25 @@ public class XMLSecurityEventWriter implements XMLEventWriter {
                 break;
 
             case XMLStreamConstants.ENTITY_REFERENCE:
-                this.xmlStreamWriter.writeEntityRef(((EntityReference) event).getName());
+                this.xmlStreamWriter.writeEntityRef(((EntityReference) xmlSecEvent).getName());
                 break;
 
             case XMLStreamConstants.ATTRIBUTE:
-                Attribute attribute = (Attribute) event;
+                Attribute attribute = (Attribute) xmlSecEvent;
                 QName name = attribute.getName();
                 this.xmlStreamWriter.writeAttribute(name.getPrefix(), name.getNamespaceURI(), name.getLocalPart(), attribute.getValue());
                 break;
 
             case XMLStreamConstants.DTD:
-                this.xmlStreamWriter.writeDTD(((DTD) event).getDocumentTypeDeclaration());
+                this.xmlStreamWriter.writeDTD(((DTD) xmlSecEvent).getDocumentTypeDeclaration());
                 break;
 
             case XMLStreamConstants.CDATA:
-                this.xmlStreamWriter.writeCData(event.asCharacters().getData());
+                this.xmlStreamWriter.writeCData(xmlSecEvent.asCharacters().getData());
                 break;
 
             case XMLStreamConstants.NAMESPACE:
-                Namespace ns = (Namespace) event;
+                Namespace ns = (Namespace) xmlSecEvent;
                 this.xmlStreamWriter.writeNamespace(ns.getPrefix(), ns.getNamespaceURI());
                 break;
 

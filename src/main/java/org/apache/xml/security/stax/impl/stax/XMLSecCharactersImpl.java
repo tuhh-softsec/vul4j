@@ -29,7 +29,8 @@ import javax.xml.stream.XMLStreamConstants;
  */
 public class XMLSecCharactersImpl extends XMLSecEventBaseImpl implements XMLSecCharacters {
 
-    private final String data;
+    private String data;
+    private char[] text;
     private final boolean isCData;
     private final boolean isIgnorableWhiteSpace;
     private final boolean isWhiteSpace;
@@ -42,9 +43,27 @@ public class XMLSecCharactersImpl extends XMLSecEventBaseImpl implements XMLSecC
         setParentXMLSecStartElement(parentXmlSecStartElement);
     }
 
+    public XMLSecCharactersImpl(char[] text, boolean isCData, boolean isIgnorableWhiteSpace, boolean isWhiteSpace, XMLSecStartElement parentXmlSecStartElement) {
+        this.text = text;
+        this.isCData = isCData;
+        this.isIgnorableWhiteSpace = isIgnorableWhiteSpace;
+        this.isWhiteSpace = isWhiteSpace;
+        setParentXMLSecStartElement(parentXmlSecStartElement);
+    }
+
     @Override
     public String getData() {
+        if (data == null) {
+            data = new String(text);
+        }
         return data;
+    }
+
+    public char[] getText() {
+        if (text == null) {
+            text = data.toCharArray();
+        }
+        return text;
     }
 
     @Override

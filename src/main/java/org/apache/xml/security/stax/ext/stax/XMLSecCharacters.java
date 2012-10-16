@@ -28,4 +28,6 @@ public interface XMLSecCharacters extends XMLSecEvent, Characters {
 
     @Override
     XMLSecCharacters asCharacters();
+
+    char[] getText();
 }

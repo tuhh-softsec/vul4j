@@ -230,6 +230,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                         decryptedEventReaderInputProcessor);
 
                 Thread thread = new Thread(decryptionThread);
+                thread.setPriority(Thread.NORM_PRIORITY + 1);
                 thread.setName("decrypting thread");
                 //when an exception in the decryption thread occurs, we want to forward them:
                 thread.setUncaughtExceptionHandler(decryptedEventReaderInputProcessor);
@@ -748,8 +749,8 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                             //this must be the CipherValue EndElement.                            
                             break exitLoop;
                         case XMLStreamConstants.CHARACTERS:
-                            final String data = xmlSecEvent.asCharacters().getData();
-                            outputStreamWriter.write(data, 0, data.length());
+                            final char[] data = xmlSecEvent.asCharacters().getText();
+                            outputStreamWriter.write(data);
                             break;
                         default:
                             throw new XMLSecurityException(

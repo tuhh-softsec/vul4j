@@ -58,7 +58,6 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     protected static final String XML = "xml";
     protected static final String XMLNS = "xmlns";
     protected static final char DOUBLEPOINT = ':';
-    protected static final String XMLNS_DOUBLEPOINT = XMLNS + DOUBLEPOINT;
 
     private enum DocumentLevel {
         NODE_BEFORE_DOCUMENT_ELEMENT,
@@ -109,10 +108,10 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         return prefixes;
     }
 
-    protected SortedSet<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
 
-        SortedSet<XMLSecNamespace> utilizedNamespaces = emptySortedSet();
+        List<XMLSecNamespace> utilizedNamespaces = Collections.emptyList();
 
         XMLSecNamespace elementNamespace = xmlSecStartElement.getElementNamespace();
         final XMLSecNamespace found = (XMLSecNamespace) outputStack.containsOnStack(elementNamespace);
@@ -120,7 +119,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         if (found == null || found.getNamespaceURI() == null
                 || !found.getNamespaceURI().equals(elementNamespace.getNamespaceURI())) {
 
-            utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+            utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
             utilizedNamespaces.add(elementNamespace);
             outputStack.peek().add(elementNamespace);
         }
@@ -135,8 +134,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                 continue;
             }
 
-            if (utilizedNamespaces == (Object) emptySortedSet()) {
-                utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+            if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
             }
             utilizedNamespaces.add(comparableNamespace);
             outputStack.peek().add(comparableNamespace);
@@ -157,8 +156,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
                     || !resultNamespace.getNamespaceURI().equals(attributeNamespace.getNamespaceURI())) {
 
-                if (utilizedNamespaces == (Object) emptySortedSet()) {
-                    utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+                if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                    utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
                 }
                 utilizedNamespaces.add(attributeNamespace);
                 outputStack.peek().add(attributeNamespace);
@@ -168,20 +167,20 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         return utilizedNamespaces;
     }
 
-    protected SortedSet<XMLSecAttribute> getCurrentUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecAttribute> getCurrentUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
         if (comparableAttributes.isEmpty()) {
-            return emptySortedSet();
+            return Collections.emptyList();
         }
 
-        return new TreeSet<XMLSecAttribute>(comparableAttributes);
+        return new ArrayList<XMLSecAttribute>(comparableAttributes);
     }
 
-    protected SortedSet<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
 
-        final SortedSet<XMLSecNamespace> utilizedNamespaces = new TreeSet<XMLSecNamespace>();
+        final List<XMLSecNamespace> utilizedNamespaces = new ArrayList<XMLSecNamespace>();
         List<XMLSecNamespace> visibleNamespaces = new ArrayList<XMLSecNamespace>();
         xmlSecStartElement.getNamespacesFromCurrentScope(visibleNamespaces);
         for (int i = 0; i < visibleNamespaces.size(); i++) {
@@ -206,10 +205,10 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         return utilizedNamespaces;
     }
 
-    protected SortedSet<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
+    protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
                                                                       final C14NStack outputStack) {
 
-        SortedSet<XMLSecAttribute> utilizedAttributes = emptySortedSet();
+        List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
 
         List<XMLSecAttribute> comparableAttributes = new ArrayList<XMLSecAttribute>();
         xmlSecStartElement.getAttributesFromCurrentScope(comparableAttributes);
@@ -221,8 +220,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (outputStack.containsOnStack(comparableAttribute) != null) {
                 continue;
             }
-            if (utilizedAttributes == (Object) emptySortedSet()) {
-                utilizedAttributes = new TreeSet<XMLSecAttribute>();
+            if (utilizedAttributes == (Object)Collections.emptyList()) {
+                utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
             outputStack.peek().add(comparableAttribute);
@@ -237,8 +236,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (XML.equals(attributeName.getPrefix())) {
                 continue;
             }
-            if (utilizedAttributes == (Object) emptySortedSet()) {
-                utilizedAttributes = new TreeSet<XMLSecAttribute>();
+            if (utilizedAttributes == (Object)Collections.emptyList()) {
+                utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
         }
@@ -270,12 +269,12 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     currentDocumentLevel = DocumentLevel.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
                     outputStack.push(Collections.<Comparable>emptyList());
 
-                    final SortedSet<XMLSecNamespace> utilizedNamespaces;
-                    final SortedSet<XMLSecAttribute> utilizedAttributes;
+                    final List<XMLSecNamespace> utilizedNamespaces;
+                    final List<XMLSecAttribute> utilizedAttributes;
 
                     if (firstCall) {
-                        utilizedNamespaces = new TreeSet<XMLSecNamespace>();
-                        utilizedAttributes = new TreeSet<XMLSecAttribute>();
+                        utilizedNamespaces = new ArrayList<XMLSecNamespace>();
+                        utilizedAttributes = new ArrayList<XMLSecAttribute>();
                         outputStack.peek().add(XMLSecEventFactory.createXMLSecNamespace(null, ""));
                         outputStack.push(Collections.<Comparable>emptyList());
                         firstCall = false;
@@ -308,41 +307,39 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     outputStream.write('<');
                     final String prefix = xmlSecStartElement.getName().getPrefix();
                     if (prefix != null && !prefix.isEmpty()) {
-                        UtfHelpper.writeUTF8String(prefix, outputStream, cache);
+                        UtfHelpper.writeByte(prefix, outputStream, cache);
                         outputStream.write(DOUBLEPOINT);
                     }
                     final String name = xmlSecStartElement.getName().getLocalPart();
-                    UtfHelpper.writeUTF8String(name, outputStream, cache);
+                    UtfHelpper.writeByte(name, outputStream, cache);
 
                     if (!utilizedNamespaces.isEmpty()) {
-                        final Iterator<XMLSecNamespace> namespaceIterator = utilizedNamespaces.iterator();
-                        while (namespaceIterator.hasNext()) {
-                            final XMLSecNamespace namespace = namespaceIterator.next();
-
-                            if (!namespaceIsAbsolute(namespace.getNamespaceURI())) {
-                                throw new XMLStreamException("namespace is relative encountered: " + namespace.getNamespaceURI());
+                        Collections.sort(utilizedNamespaces);
+                        for (int i = 0; i < utilizedNamespaces.size(); i++) {
+                            final XMLSecNamespace xmlSecNamespace = utilizedNamespaces.get(i);
+                            if (!namespaceIsAbsolute(xmlSecNamespace.getNamespaceURI())) {
+                                throw new XMLStreamException("namespace is relative encountered: " + xmlSecNamespace.getNamespaceURI());
                             }
 
-                            if (namespace.isDefaultNamespaceDeclaration()) {
-                                outputAttrToWriter(XMLNS, namespace.getNamespaceURI(), outputStream, cache);
+                            if (xmlSecNamespace.isDefaultNamespaceDeclaration()) {
+                                outputAttrToWriter(null, XMLNS, xmlSecNamespace.getNamespaceURI(), outputStream, cache);
                             } else {
-                                outputAttrToWriter(XMLNS_DOUBLEPOINT + namespace.getPrefix(), namespace.getNamespaceURI(), outputStream, cache);
+                                outputAttrToWriter(XMLNS, xmlSecNamespace.getPrefix(), xmlSecNamespace.getNamespaceURI(), outputStream, cache);
                             }
                         }
                     }
 
                     if (!utilizedAttributes.isEmpty()) {
-                        final Iterator<XMLSecAttribute> attributeIterator = utilizedAttributes.iterator();
-                        while (attributeIterator.hasNext()) {
-                            final XMLSecAttribute attribute = attributeIterator.next();
+                        Collections.sort(utilizedAttributes);
+                        for (int i = 0; i < utilizedAttributes.size(); i++) {
+                            final XMLSecAttribute xmlSecAttribute = utilizedAttributes.get(i);
 
-                            final QName attributeName = attribute.getName();
+                            final QName attributeName = xmlSecAttribute.getName();
                             final String attributeNamePrefix = attributeName.getPrefix();
                             if (attributeNamePrefix != null && !attributeNamePrefix.isEmpty()) {
-                                final String localPart = attributeNamePrefix + DOUBLEPOINT + attributeName.getLocalPart();
-                                outputAttrToWriter(localPart, attribute.getValue(), outputStream, cache);
+                                outputAttrToWriter(attributeNamePrefix, attributeName.getLocalPart(), xmlSecAttribute.getValue(), outputStream, cache);
                             } else {
-                                outputAttrToWriter(attributeName.getLocalPart(), attribute.getValue(), outputStream, cache);
+                                outputAttrToWriter(null, attributeName.getLocalPart(), xmlSecAttribute.getValue(), outputStream, cache);
                             }
                         }
                     }
@@ -354,10 +351,10 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     final String localPrefix = xmlSecEndElement.getName().getPrefix();
                     outputStream.write(_END_TAG);
                     if (localPrefix != null && !localPrefix.isEmpty()) {
-                        UtfHelpper.writeUTF8String(localPrefix, outputStream, cache);
+                        UtfHelpper.writeByte(localPrefix, outputStream, cache);
                         outputStream.write(DOUBLEPOINT);
                     }
-                    UtfHelpper.writeUTF8String(xmlSecEndElement.getName().getLocalPart(), outputStream, cache);
+                    UtfHelpper.writeByte(xmlSecEndElement.getName().getLocalPart(), outputStream, cache);
                     outputStream.write('>');
 
                     //We finished with this level, pop to the previous definitions.
@@ -372,7 +369,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     break;
                 case XMLStreamConstants.CHARACTERS:
                     if (currentDocumentLevel == DocumentLevel.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT) {
-                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), outputStream);
+                        outputTextToWriter(xmlSecEvent.asCharacters().getText(), outputStream);
                     }
                     break;
                 case XMLStreamConstants.COMMENT:
@@ -382,7 +379,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                     break;
                 case XMLStreamConstants.SPACE:
                     if (currentDocumentLevel == DocumentLevel.NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT) {
-                        outputTextToWriter(xmlSecEvent.asCharacters().getData(), outputStream);
+                        outputTextToWriter(xmlSecEvent.asCharacters().getText(), outputStream);
                     }
                     break;
                 case XMLStreamConstants.START_DOCUMENT:
@@ -436,10 +433,14 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         }
     }
 
-    protected static void outputAttrToWriter(final String name, final String value, final OutputStream writer,
+    protected static void outputAttrToWriter(final String prefix, final String name, final String value, final OutputStream writer,
                                              final Map<String, byte[]> cache) throws IOException {
         writer.write(' ');
-        UtfHelpper.writeUTF8String(name, writer, cache);
+        if (prefix != null) {
+            UtfHelpper.writeByte(prefix, writer, cache);
+            UtfHelpper.writeCharToUtf8(DOUBLEPOINT, writer);
+        }
+        UtfHelpper.writeByte(name, writer, cache);
         writer.write(EQUAL_STRING);
         byte[] toWrite;
         final int length = value.length();
@@ -499,6 +500,42 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         byte[] toWrite;
         for (int i = 0; i < length; i++) {
             final char c = text.charAt(i);
+
+            switch (c) {
+
+                case '&':
+                    toWrite = _AMP_;
+                    break;
+
+                case '<':
+                    toWrite = _LT_;
+                    break;
+
+                case '>':
+                    toWrite = _GT_;
+                    break;
+
+                case 0xD:
+                    toWrite = __XD_;
+                    break;
+
+                default:
+                    if (c < 0x80) {
+                        writer.write(c);
+                    } else {
+                        UtfHelpper.writeCharToUtf8(c, writer);
+                    }
+                    continue;
+            }
+            writer.write(toWrite);
+        }
+    }
+
+    protected static void outputTextToWriter(final char[] text, final OutputStream writer) throws IOException {
+        final int length = text.length;
+        byte[] toWrite;
+        for (int i = 0; i < length; i++) {
+            final char c = text[i];
 
             switch (c) {
 
@@ -658,102 +695,6 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         @Override
         public List<Comparable> peekFirst() {
             throw new UnsupportedOperationException("Use peek()");
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected static <T> SortedSet<T> emptySortedSet() {
-        return (SortedSet<T>) EMPTY_SORTEDSET;
-    }
-
-    private static final SortedSet EMPTY_SORTEDSET = new EmptySortedSet();
-
-    private static class EmptySortedSet extends AbstractSet<Object> implements SortedSet<Object>, Serializable {
-
-        @Override
-        public Iterator<Object> iterator() {
-            return new Iterator<Object>() {
-                @Override
-                public boolean hasNext() {
-                    return false;
-                }
-
-                @Override
-                public Object next() {
-                    throw new NoSuchElementException();
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException();
-                }
-            };
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean contains(Object obj) {
-            return false;
-        }
-
-        @Override
-        public Comparator<? super Object> comparator() {
-            return null;
-        }
-
-        @Override
-        public SortedSet<Object> subSet(Object fromElement, Object toElement) {
-            return this;
-        }
-
-        @Override
-        public SortedSet<Object> headSet(Object toElement) {
-            return this;
-        }
-
-        @Override
-        public SortedSet<Object> tailSet(Object fromElement) {
-            return this;
-        }
-
-        @Override
-        public Object first() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public Object last() {
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public <T> T[] toArray(T[] a) {
-            return (T[]) new Object[0];
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(Collection c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            return false;
         }
     }
 }

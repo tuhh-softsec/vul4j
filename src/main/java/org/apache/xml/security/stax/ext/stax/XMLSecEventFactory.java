@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.EntityDeclaration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,7 +66,9 @@ public class XMLSecEventFactory {
             case XMLStreamConstants.PROCESSING_INSTRUCTION:
                 return new XMLSecProcessingInstructionImpl(xmlStreamReader.getPITarget(), xmlStreamReader.getPIData(), parentXMLSecStartElement);
             case XMLStreamConstants.CHARACTERS:
-                return new XMLSecCharactersImpl(xmlStreamReader.getText(), false, false, xmlStreamReader.isWhiteSpace(), parentXMLSecStartElement);
+                char[] text = new char[xmlStreamReader.getTextLength()];
+                xmlStreamReader.getTextCharacters(0, text, 0, xmlStreamReader.getTextLength());
+                return new XMLSecCharactersImpl(text, false, false, xmlStreamReader.isWhiteSpace(), parentXMLSecStartElement);
             case XMLStreamConstants.COMMENT:
                 return new XMLSecCommentImpl(xmlStreamReader.getText(), parentXMLSecStartElement);
             case XMLStreamConstants.SPACE:
@@ -115,6 +118,14 @@ public class XMLSecEventFactory {
 
     public static XMLSecCharacters createXmlSecCharacters(String data) {
         return new XMLSecCharactersImpl(data, false, false, false, null);
+    }
+
+    public static XMLSecCharacters createXmlSecCharacters(char[] text) {
+        return new XMLSecCharactersImpl(text, false, false, false, null);
+    }
+
+    public static XMLSecCharacters createXmlSecCharacters(char[] text, int off, int len) {
+        return new XMLSecCharactersImpl(Arrays.copyOfRange(text, off, off + len), false, false, false, null);
     }
 
     public static XMLSecComment createXMLSecComment(String data) {
