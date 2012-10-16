@@ -77,8 +77,14 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
 
         //@see SANTUARIO-324
         //output root element...
+        XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
+        while (!xmlSecEvent.isStartElement()) {
+            outputProcessorChain.reset();
+            outputProcessorChain.processEvent(xmlSecEvent);
+            xmlSecEvent = xmlSecEventDeque.pop();
+        }
         outputProcessorChain.reset();
-        outputProcessorChain.processEvent(xmlSecEventDeque.pop());
+        outputProcessorChain.processEvent(xmlSecEvent);
         //...then call super to append the signature and flush the rest
         super.flushBufferAndCallbackAfterTokenID(outputProcessorChain, xmlSecEventDeque);
     }
