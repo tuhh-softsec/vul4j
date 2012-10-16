@@ -50,6 +50,10 @@ public class XMLSecNamespaceImpl extends XMLSecEventBaseImpl implements XMLSecNa
         if (prefix == null) {
             prefix = "";
         }
+        //sun's stax parser returns null for the default namespace
+        if (uri == null) {
+            uri = "";
+        }
         Map<String, XMLSecNamespace> nsMap = xmlSecNamespaceMap.get(prefix);
         if (nsMap != null) {
             XMLSecNamespace xmlSecNamespace = nsMap.get(uri);

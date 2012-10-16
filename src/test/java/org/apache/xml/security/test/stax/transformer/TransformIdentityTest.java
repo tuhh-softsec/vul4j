@@ -54,6 +54,7 @@ public class TransformIdentityTest extends org.junit.Assert {
         Init.init(this.getClass().getClassLoader().getResource("security-config.xml").toURI());
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
+        this.xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
     }
 
     @Test

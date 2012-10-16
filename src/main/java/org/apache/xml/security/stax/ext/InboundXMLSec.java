@@ -30,6 +30,7 @@ import org.apache.xml.security.stax.impl.processor.input.XMLSecurityInputProcess
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -126,7 +127,11 @@ public class InboundXMLSec {
 
         DocumentContextImpl documentContext = new DocumentContextImpl();
         documentContext.setEncoding(xmlStreamReader.getEncoding() != null ? xmlStreamReader.getEncoding() : "UTF-8");
-        documentContext.setBaseURI(xmlStreamReader.getLocation().getSystemId());
+        //woodstox 3.2.9 returns null when used with a DOMSource
+        Location location = xmlStreamReader.getLocation();
+        if (location != null) {
+            documentContext.setBaseURI(location.getSystemId());
+        }
         
         InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContextImpl, documentContext);
         inputProcessorChain.addProcessor(new XMLEventReaderInputProcessor(securityProperties, xmlStreamReader));

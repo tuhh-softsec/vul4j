@@ -51,6 +51,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     private NamespaceContext namespaceContext;
     private final NamespaceContext defaultNamespaceContext;
     private boolean haveToWriteEndElement = false;
+    private boolean endDocumentWritten = false;
 
     public XMLSecurityStreamWriter(OutputProcessorChain outputProcessorChain) {
         this.outputProcessorChain = outputProcessorChain;
@@ -176,10 +177,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         outputOpenStartElement();
         String prefix = getNamespaceContext().getPrefix(namespaceURI);
+        QName qName;
         if (prefix == null) {
-            throw new XMLStreamException("Unbound namespace URI '" + namespaceURI + "'");
+            qName = new QName(namespaceURI, localName);
+        } else {
+            qName = new QName(namespaceURI, localName, prefix);
         }
-        QName qName = new QName(namespaceURI, localName, prefix);
         startElementStack.push(qName);
         openStartElement = qName;
     }
@@ -217,15 +220,18 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     }
 
     public void writeEndDocument() throws XMLStreamException {
-        outputOpenStartElement();
-        Iterator<QName> startElements = startElementStack.iterator();
-        while (startElements.hasNext()) {
-            // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
-            nsStack.pop();
-            //todo namespaces which are going out of scope for endElement?
-            chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(startElements.next()));
+        if (!endDocumentWritten) {
+            outputOpenStartElement();
+            Iterator<QName> startElements = startElementStack.iterator();
+            while (startElements.hasNext()) {
+                // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
+                nsStack.pop();
+                //todo namespaces which are going out of scope for endElement?
+                chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(startElements.next()));
+            }
+            chainProcessEvent(XMLSecEventFactory.createXMLSecEndDocument());
+            endDocumentWritten = true;
         }
-        chainProcessEvent(XMLSecEventFactory.createXMLSecEndDocument());
     }
 
     public void close() throws XMLStreamException {
@@ -258,7 +264,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     }
 
     public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
+        //workaround for sun's stax parser:
+        if (this.openStartElement != null && this.openStartElement.getPrefix().equals("")) {
+            this.openStartElement = new QName(namespaceURI, openStartElement.getLocalPart(), "");
+        }
         putNamespaceOntoStack("", XMLSecEventFactory.createXMLSecNamespace(null, namespaceURI));
+
     }
 
     public void writeComment(String data) throws XMLStreamException {
@@ -268,7 +279,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     public void writeProcessingInstruction(String target) throws XMLStreamException {
         outputOpenStartElement();
-        chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, null));
+        chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, ""));
     }
 
     public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
