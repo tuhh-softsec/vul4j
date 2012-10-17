@@ -22,7 +22,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * @author $Author: coheigea $
@@ -32,9 +31,9 @@ public class KeyNameSecurityToken extends AbstractInboundSecurityToken {
 
     private String keyName;
 
-    public KeyNameSecurityToken(String keyName, SecurityContext securityContext, CallbackHandler callbackHandler,
+    public KeyNameSecurityToken(String keyName, SecurityContext securityContext,
                                 XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
-        super(securityContext, callbackHandler, null, keyIdentifierType);
+        super(securityContext, null, keyIdentifierType);
         this.keyName = keyName;
     }
 

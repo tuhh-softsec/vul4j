@@ -123,7 +123,6 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
                 // The Spec mandates a 96-bit IV for GCM algorithms
                 if ("AES/GCM/NoPadding".equals(symmetricCipher.getAlgorithm())) {
-                    //todo we should extend the security-config.xml with an iv-length parameter
                     byte[] temp = new byte[12];
                     XMLSecurityConstants.secureRandom.nextBytes(temp);
                     IvParameterSpec ivParameterSpec = new IvParameterSpec(temp);

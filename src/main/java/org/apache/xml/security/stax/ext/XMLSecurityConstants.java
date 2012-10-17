@@ -265,6 +265,13 @@ public class XMLSecurityConstants {
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");
     public static final QName TAG_c14nExcl_InclusiveNamespaces = new QName(NS_C14N_EXCL, "InclusiveNamespaces", PREFIX_C14N_EXCL);
 
+    public static final String NS_C14N_OMIT_COMMENTS = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315";
+    public static final String NS_C14N_WITH_COMMENTS = NS_C14N_OMIT_COMMENTS + "#WithComments";
+    public static final String NS_C14N_EXCL_OMIT_COMMENTS = "http://www.w3.org/2001/10/xml-exc-c14n#";
+    public static final String NS_C14N_EXCL_WITH_COMMENTS = NS_C14N_EXCL_OMIT_COMMENTS + "WithComments";
+    public static final String NS_C14N11_OMIT_COMMENTS = "http://www.w3.org/2006/12/xml-c14n11";
+    public static final String NS_C14N11_WITH_COMMENTS = NS_C14N11_OMIT_COMMENTS + "#WithComments";
+
     public static final String PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE = "PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE";
     public static final String PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION = "PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION";
     public static final String PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTED_KEY = "PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTED_KEY";

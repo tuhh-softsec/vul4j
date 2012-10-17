@@ -301,11 +301,17 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                                                 InternalSignatureReferenceVerifier internalSignatureReferenceVerifier)
             throws XMLSecurityException {
 
+        // If no Transforms then just default to an Inclusive without comments transform
         if (referenceType.getTransforms() == null || referenceType.getTransforms().getTransform().isEmpty()) {
-            // If no Transforms then just default to an Inclusive without comments transform
+
+            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+            algorithmSuiteSecurityEvent.setAlgorithmURI(XMLSecurityConstants.NS_C14N_OMIT_COMMENTS);
+            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
+            inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
+
             Transformer transformer = new Canonicalizer20010315_OmitCommentsTransformer();
             transformer.setOutputStream(outputStream);
-            //todo algoSecEvent??
             return transformer;
         }
 
@@ -314,7 +320,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         if (transformTypeList.size() == 1 &&
                 XMLSecurityConstants.NS_XMLDSIG_ENVELOPED_SIGNATURE.equals(transformTypeList.get(0).getAlgorithm())) {
             TransformType transformType = new TransformType();
-            transformType.setAlgorithm("http://www.w3.org/TR/2001/REC-xml-c14n-20010315");
+            transformType.setAlgorithm(XMLSecurityConstants.NS_C14N_OMIT_COMMENTS);
             transformTypeList.add(transformType);
         }
 

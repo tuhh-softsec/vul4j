@@ -130,7 +130,6 @@ public class XIncludeHandler extends DefaultHandler {
             String xpointer = atts.getValue("xpointer");
 
             URL url = this.getClass().getClassLoader().getResource(href);
-            //todo implement fallback with parent systemId when xml is not in the classpath
             if (url == null) {
                 throw new SAXException("XML file not found: " + href);
             }

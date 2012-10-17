@@ -163,8 +163,52 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
 
     @Override
     public NamespaceContext getNamespaceContext() {
-        //todo implement me. Needed by XMLSecurityStreamReader!
-        return null;
+        return new NamespaceContext() {
+            @Override
+            public String getNamespaceURI(String prefix) {
+                for (int i = 0; i < namespaces.size(); i++) {
+                    XMLSecNamespace comparableNamespace = namespaces.get(i);
+                    if (prefix.equals(comparableNamespace.getPrefix())) {
+                        return comparableNamespace.getNamespaceURI();
+                    }
+                }
+                if (parentXMLSecStartELement != null) {
+                    return parentXMLSecStartELement.getNamespaceURI(prefix);
+                }
+                return null;
+            }
+
+            @Override
+            public String getPrefix(String namespaceURI) {
+                for (int i = 0; i < namespaces.size(); i++) {
+                    XMLSecNamespace comparableNamespace = namespaces.get(i);
+                    if (namespaceURI.equals(comparableNamespace.getNamespaceURI())) {
+                        return comparableNamespace.getPrefix();
+                    }
+                }
+                if (parentXMLSecStartELement != null) {
+                    return parentXMLSecStartELement.getNamespaceContext().getPrefix(namespaceURI);
+                }
+                return null;
+            }
+
+            @Override
+            public Iterator getPrefixes(String namespaceURI) {
+
+                Set<String> prefixes = new HashSet<String>();
+
+                List<XMLSecNamespace> xmlSecNamespaces = new ArrayList<XMLSecNamespace>();
+                getNamespacesFromCurrentScope(xmlSecNamespaces);
+
+                for (int i = 0; i < xmlSecNamespaces.size(); i++) {
+                    XMLSecNamespace xmlSecNamespace = xmlSecNamespaces.get(i);
+                    if (namespaceURI.equals(xmlSecNamespace.getNamespaceURI())) {
+                        prefixes.add(xmlSecNamespace.getPrefix());
+                    }
+                }
+                return prefixes.iterator();
+            }
+        };
     }
 
     @Override

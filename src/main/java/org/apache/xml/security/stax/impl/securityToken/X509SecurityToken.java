@@ -22,8 +22,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
-import javax.security.auth.callback.CallbackHandler;
-
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
@@ -33,9 +31,8 @@ public class X509SecurityToken extends AbstractInboundSecurityToken {
     private final XMLSecurityConstants.TokenType tokenType;
 
     protected X509SecurityToken(XMLSecurityConstants.TokenType tokenType, SecurityContext securityContext,
-                                CallbackHandler callbackHandler, String id,
-                                XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
-        super(securityContext, callbackHandler, id, keyIdentifierType);
+                                String id, XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
+        super(securityContext, id, keyIdentifierType);
         this.tokenType = tokenType;
     }
 

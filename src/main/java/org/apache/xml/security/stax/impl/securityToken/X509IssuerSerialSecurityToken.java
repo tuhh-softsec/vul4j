@@ -21,7 +21,6 @@ package org.apache.xml.security.stax.impl.securityToken;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
-import javax.security.auth.callback.CallbackHandler;
 import java.math.BigInteger;
 
 /**
@@ -33,9 +32,8 @@ public class X509IssuerSerialSecurityToken extends X509SecurityToken {
     private BigInteger serialNumber;
 
     protected X509IssuerSerialSecurityToken(XMLSecurityConstants.TokenType tokenType, SecurityContext securityContext,
-                                            CallbackHandler callbackHandler, String id,
-                                            XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
-        super(tokenType, securityContext, callbackHandler, id, keyIdentifierType);
+                                            String id, XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
+        super(tokenType, securityContext, id, keyIdentifierType);
     }
 
     public String getIssuerName() {

@@ -26,7 +26,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 
 import javax.crypto.SecretKey;
-import javax.security.auth.callback.CallbackHandler;
 import javax.xml.namespace.QName;
 import java.security.Key;
 import java.security.PrivateKey;
@@ -47,7 +46,6 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     private boolean invoked = false;
 
     private SecurityContext securityContext;
-    private CallbackHandler callbackHandler;
     private final String id;
     private List<QName> elementPath;
     private XMLSecEvent xmlSecEvent;
@@ -59,10 +57,9 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
 
-    public AbstractInboundSecurityToken(SecurityContext securityContext, CallbackHandler callbackHandler,
-                                        String id, XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
+    public AbstractInboundSecurityToken(SecurityContext securityContext, String id,
+                                        XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
         this.securityContext = securityContext;
-        this.callbackHandler = callbackHandler;
         this.id = id;
         this.keyIdentifierType = keyIdentifierType;
     }
@@ -104,10 +101,6 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         this.xmlSecEvent = xmlSecEvent;
     }
 
-    protected CallbackHandler getCallbackHandler() {
-        return callbackHandler;
-    }
-
     @Override
     public boolean isAsymmetric() throws XMLSecurityException {
         if (getSecretKey() instanceof PrivateKey || getPublicKey() != null) {
@@ -145,18 +138,23 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     @Override
     public final Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                            String correlationID) throws XMLSecurityException {
+                                  String correlationID) throws XMLSecurityException {
+        if (correlationID == null) {
+            throw new IllegalArgumentException("correlationID must not be null");
+        }
         testAndSetInvocation();
         Key key = getKey(algorithmURI, keyUsage, correlationID);
-        //todo remove correlationID null check when we have implemented a better api to access the key
-        if (key != null && this.securityContext != null && correlationID != null) {
+        if (key != null && this.securityContext != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
             algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
-            //todo what's with a DSA key?
             if (key instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) key).getModulus().bitLength());
+            } else if (key instanceof DSAKey) {
+                algorithmSuiteSecurityEvent.setKeyLength(((DSAKey) key).getParams().getP().bitLength());
+            } else if (key instanceof ECKey) {
+                algorithmSuiteSecurityEvent.setKeyLength(((ECKey) key).getParams().getOrder().bitLength());
             } else if (key instanceof SecretKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(key.getEncoded().length * 8);
             } else {
@@ -191,11 +189,13 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     @Override
     public final PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
-                                  String correlationID) throws XMLSecurityException {
+                                        String correlationID) throws XMLSecurityException {
+        if (correlationID == null) {
+            throw new IllegalArgumentException("correlationID must not be null");
+        }
         testAndSetInvocation();
         PublicKey publicKey = getPubKey(algorithmURI, keyUsage, correlationID);
-        //todo remove correlationID null check when we have implemented a better api to access the key
-        if (publicKey != null && this.securityContext != null && correlationID != null) {
+        if (publicKey != null && this.securityContext != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
             algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);

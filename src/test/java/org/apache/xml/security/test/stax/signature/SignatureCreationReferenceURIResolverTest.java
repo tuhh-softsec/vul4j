@@ -75,8 +75,12 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
                 new SecurePart(new QName("urn:example:po", "PaymentInfo"), SecurePart.Modifier.Element);
         properties.addSignaturePart(securePart);
 
-        //todo remove null-c14n when external transformation is implemented
-        securePart = new SecurePart("file://" + BASEDIR + "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml", null, XMLSecurityConstants.NS_XMLDSIG_SHA1);
+        securePart = new SecurePart(
+                "file://" +
+                        BASEDIR +
+                        "/src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml",
+                new String[]{"http://www.w3.org/TR/2001/REC-xml-c14n-20010315"},
+                XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);
 
         OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
@@ -122,7 +126,9 @@ public class SignatureCreationReferenceURIResolverTest extends AbstractSignature
         properties.addSignaturePart(securePart);
 
         securePart = new SecurePart(
-                "file://" + BASEDIR + "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
+                "file://" +
+                        BASEDIR +
+                        "/target/test-classes/org/apache/xml/security/test/stax/signature/SignatureVerificationReferenceURIResolverTest.class",
                 null,
                 XMLSecurityConstants.NS_XMLDSIG_SHA1);
         properties.addSignaturePart(securePart);

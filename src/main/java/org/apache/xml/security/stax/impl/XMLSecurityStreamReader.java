@@ -71,10 +71,6 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         } catch (XMLSecurityException e) {
             throw new XMLStreamException(e);
         }
-        /*todo why was this needed? Because of the Sun Stax impl?
-         if (currentEvent.isCharacters() && currentEvent.asCharacters().isIgnorableWhiteSpace()) {
-            return XMLStreamConstants.SPACE;
-        }*/
         return eventType;
     }
 
@@ -191,7 +187,14 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
             case START_ELEMENT:
                 return xmlSecEvent.asStartElement().getNamespaceURI(prefix);
             case END_ELEMENT:
-                //todo somehow...
+                @SuppressWarnings("unchecked")
+                Iterator<Namespace> namespaceIterator = xmlSecEvent.asEndElement().getNamespaces();
+                while (namespaceIterator.hasNext()) {
+                    Namespace namespace = namespaceIterator.next();
+                    if (prefix.equals(namespace.getPrefix())) {
+                        return namespace.getNamespaceURI();
+                    }
+                }
                 return null;
             default:
                 throw new IllegalStateException(ERR_STATE_NOT_ELEM);

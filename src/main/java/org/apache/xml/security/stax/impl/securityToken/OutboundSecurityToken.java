@@ -50,8 +50,7 @@ public interface OutboundSecurityToken {
      * Returns the secret key
      *
      * @return The key
-     * @throws XMLSecurityException
-     *          if the key can't be loaded
+     * @throws XMLSecurityException if the key can't be loaded
      */
     Key getSecretKey(String algorithmURI) throws XMLSecurityException;
 
@@ -59,8 +58,7 @@ public interface OutboundSecurityToken {
      * Returns the public key if one exist for this token type
      *
      * @return The Public-Key for asymmetric algorithms
-     * @throws XMLSecurityException
-     *          if the key can't be loaded
+     * @throws XMLSecurityException if the key can't be loaded
      */
     PublicKey getPublicKey() throws XMLSecurityException;
 
@@ -68,8 +66,7 @@ public interface OutboundSecurityToken {
      * Returns the certificate chain if one exists for this token type
      *
      * @return The certificate chain
-     * @throws XMLSecurityException
-     *          if the certificates can't be retrieved
+     * @throws XMLSecurityException if the certificates can't be retrieved
      */
     X509Certificate[] getX509Certificates() throws XMLSecurityException;
 

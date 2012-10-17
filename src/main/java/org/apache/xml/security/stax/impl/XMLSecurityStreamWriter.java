@@ -27,12 +27,9 @@ import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.*;
-import java.io.Writer;
 import java.util.*;
 
 /**
@@ -212,9 +209,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
     public void writeEndElement() throws XMLStreamException {
         outputOpenStartElement();
         QName element = startElementStack.pop();
-        // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
         nsStack.pop();
-        //todo namespaces which are going out of scope for endElement?
         chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(element));
 
     }
@@ -224,9 +219,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
             outputOpenStartElement();
             Iterator<QName> startElements = startElementStack.iterator();
             while (startElements.hasNext()) {
-                // Map<String, XMLSecNamespace> namespaceMap = nsStack.pop();
                 nsStack.pop();
-                //todo namespaces which are going out of scope for endElement?
                 chainProcessEvent(XMLSecEventFactory.createXmlSecEndElement(startElements.next()));
             }
             chainProcessEvent(XMLSecEventFactory.createXMLSecEndDocument());
@@ -299,117 +292,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     public void writeEntityRef(final String name) throws XMLStreamException {
         outputOpenStartElement();
-        //todo implement correctly or throw UnsupportedException
-        chainProcessEvent(XMLSecEventFactory.createXMLSecEntityReference(name, new EntityDeclaration() {
-            @Override
-            public String getPublicId() {
-                return null;
-            }
-
-            @Override
-            public String getSystemId() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public String getNotationName() {
-                return null;
-            }
-
-            @Override
-            public String getReplacementText() {
-                return null;
-            }
-
-            @Override
-            public String getBaseURI() {
-                return null;
-            }
-
-            @Override
-            public int getEventType() {
-                return XMLStreamConstants.ENTITY_REFERENCE;
-            }
-
-            @Override
-            public Location getLocation() {
-                return null;
-            }
-
-            @Override
-            public boolean isStartElement() {
-                return false;
-            }
-
-            @Override
-            public boolean isAttribute() {
-                return false;
-            }
-
-            @Override
-            public boolean isNamespace() {
-                return false;
-            }
-
-            @Override
-            public boolean isEndElement() {
-                return false;
-            }
-
-            @Override
-            public boolean isEntityReference() {
-                return true;
-            }
-
-            @Override
-            public boolean isProcessingInstruction() {
-                return false;
-            }
-
-            @Override
-            public boolean isCharacters() {
-                return false;
-            }
-
-            @Override
-            public boolean isStartDocument() {
-                return false;
-            }
-
-            @Override
-            public boolean isEndDocument() {
-                return false;
-            }
-
-            @Override
-            public StartElement asStartElement() {
-                return null;
-            }
-
-            @Override
-            public EndElement asEndElement() {
-                return null;
-            }
-
-            @Override
-            public Characters asCharacters() {
-                return null;
-            }
-
-            @Override
-            public QName getSchemaType() {
-                return null;
-            }
-
-            @Override
-            public void writeAsEncodedUnicode(Writer writer) throws XMLStreamException {
-            }
-        }));
+        chainProcessEvent(
+                XMLSecEventFactory.createXMLSecEntityReference(
+                        name,
+                        XMLSecEventFactory.createXmlSecEntityDeclaration(name)
+                )
+        );
     }
 
     public void writeStartDocument() throws XMLStreamException {

@@ -37,9 +37,6 @@ import org.apache.xml.security.stax.config.Init;
  */
 public class XMLSec {
     
-    //todo crl check
-    //todo outgoing client setup per policy
-
     static {
         try {
             Init.init(XMLSec.class.getClassLoader().getResource("security-config.xml").toURI());
@@ -117,7 +114,7 @@ public class XMLSec {
                     securityProperties.setSignatureDigestAlgorithm("http://www.w3.org/2000/09/xmldsig#sha1");
                 }
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
-                    securityProperties.setSignatureCanonicalizationAlgorithm("http://www.w3.org/2001/10/xml-exc-c14n#");
+                    securityProperties.setSignatureCanonicalizationAlgorithm(XMLSecurityConstants.NS_C14N_EXCL_OMIT_COMMENTS);
                 }
                 if (securityProperties.getSignatureKeyIdentifierType() == null) {
                     securityProperties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);

@@ -45,18 +45,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                                                      final XMLSecurityProperties securityProperties,
                                                      final SignatureType signatureType) throws XMLSecurityException {
 
-        if (signatureType.getSignedInfo() == null) {
-            throw new XMLSecurityException("stax.signature.signedInfoMissing");
-        }
-        if (signatureType.getSignedInfo().getSignatureMethod() == null) {
-            throw new XMLSecurityException("stax.signature.signatureMethodMissing");
-        }
-        if (signatureType.getSignedInfo().getCanonicalizationMethod() == null) {
-            throw new XMLSecurityException("stax.signature.canonicalizationMethodMissing");
-        }
-        if (signatureType.getSignatureValue() == null) {
-            throw new XMLSecurityException("stax.signature.signatureValueMissing");
-        }
+
         final SecurityContext securityContext = inputProcessorChain.getSecurityContext();
         final SignatureVerifier signatureVerifier = 
                 new XMLSignatureVerifier(signatureType, securityContext, securityProperties) {

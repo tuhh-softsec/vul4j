@@ -23,7 +23,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
-import javax.security.auth.callback.CallbackHandler;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -39,9 +38,9 @@ public class DsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private DSAKeyValueType dsaKeyValueType;
 
-    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, SecurityContext securityContext, CallbackHandler callbackHandler,
+    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, SecurityContext securityContext,
                                     XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
-        super(securityContext, callbackHandler, null, keyIdentifierType);
+        super(securityContext, null, keyIdentifierType);
         this.dsaKeyValueType = dsaKeyValueType;
     }
 

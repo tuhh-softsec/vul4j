@@ -24,7 +24,6 @@ import org.apache.xml.security.stax.ext.SecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
 
-import javax.security.auth.callback.CallbackHandler;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -39,11 +38,11 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private ECKeyValueType ecKeyValueType;
 
-    public ECKeyValueSecurityToken(ECKeyValueType ecKeyValueType, SecurityContext securityContext,
-                                   CallbackHandler callbackHandler,
-                                   XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
+    public ECKeyValueSecurityToken(
+            ECKeyValueType ecKeyValueType, SecurityContext securityContext,
+            XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
 
-        super(securityContext, callbackHandler, null, keyIdentifierType);
+        super(securityContext, null, keyIdentifierType);
 
         if (ecKeyValueType.getECParameters() != null) {
             throw new XMLSecurityException("stax.ecParametersNotSupported");

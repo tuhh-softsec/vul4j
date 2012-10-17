@@ -149,6 +149,10 @@ public class XMLSecEventFactory {
         return new XMLSecEntityReferenceImpl(name, entityDeclaration, null);
     }
 
+    public static XMLSecEntityDeclaration createXmlSecEntityDeclaration(String name) {
+        return new XMLSecEntityDeclarationImpl(name);
+    }
+
     public static XMLSecAttribute createXMLSecAttribute(QName name, String value) {
         return new XMLSecAttributeImpl(name, value);
     }

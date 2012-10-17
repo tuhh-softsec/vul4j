@@ -103,7 +103,6 @@ public class XMLSecurityUtils {
         return Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
-    //todo transformer factory?
     public static Transformer getTransformer(Object methodParameter1, Object methodParameter2, String algorithm,
                                              XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
 
