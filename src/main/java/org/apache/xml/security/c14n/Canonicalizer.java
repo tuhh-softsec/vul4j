@@ -163,7 +163,7 @@ public class Canonicalizer {
      * @param implementingClass
      * @throws AlgorithmAlreadyRegisteredException
      */
-    public static void register(String algorithmURI, Class<CanonicalizerSpi> implementingClass)
+    public static void register(String algorithmURI, Class<? extends CanonicalizerSpi> implementingClass)
         throws AlgorithmAlreadyRegisteredException, ClassNotFoundException {
         // check whether URI is already registered
         Class<? extends CanonicalizerSpi> registeredClass = canonicalizerHash.get(algorithmURI);
