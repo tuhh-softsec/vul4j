@@ -43,7 +43,7 @@ public interface SecurityContext extends SecurityEventListener {
 
     <T> List<T> getAsList(Object key);
 
-    public <T, U> void putAsMap(Object key, T mapKey, U mapValue);
+    <T, U> void putAsMap(Object key, T mapKey, U mapValue);
 
     <T, U> Map<T, U> getAsMap(Object key);
 
@@ -68,5 +68,5 @@ public interface SecurityContext extends SecurityEventListener {
      *
      * @param securityEventListener The SecurityEventListener
      */
-    public void addSecurityEventListener(SecurityEventListener securityEventListener);
+    void addSecurityEventListener(SecurityEventListener securityEventListener);
 }

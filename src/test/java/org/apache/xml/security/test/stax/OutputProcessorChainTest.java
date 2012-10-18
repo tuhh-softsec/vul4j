@@ -50,31 +50,39 @@ public class OutputProcessorChainTest extends org.junit.Assert {
         private Set<Object> beforeProcessors = new HashSet<Object>();
         private Set<Object> afterProcessors = new HashSet<Object>();
 
+        @Override
         public void setXMLSecurityProperties(XMLSecurityProperties xmlSecurityProperties) {
         }
 
+        @Override
         public void setAction(XMLSecurityConstants.Action action) {
         }
 
+        @Override
         public void init(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
         }
 
+        @Override
         public void addBeforeProcessor(Object processor) {
             this.beforeProcessors.add(processor);
         }
 
+        @Override
         public Set<Object> getBeforeProcessors() {
             return beforeProcessors;
         }
 
+        @Override
         public void addAfterProcessor(Object processor) {
             this.afterProcessors.add(processor);
         }
 
+        @Override
         public Set<Object> getAfterProcessors() {
             return afterProcessors;
         }
 
+        @Override
         public XMLSecurityConstants.Phase getPhase() {
             return phase;
         }
@@ -83,9 +91,11 @@ public class OutputProcessorChainTest extends org.junit.Assert {
             this.phase = phase;
         }
 
+        @Override
         public void processNextEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         }
 
+        @Override
         public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         }
     }

@@ -668,6 +668,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
         private volatile Throwable thrownException;
 
+        @Override
         public void uncaughtException(Thread t, Throwable e) {
             this.thrownException = e;
         }
@@ -724,6 +725,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             }
         }
 
+        @Override
         public void run() {
 
             try {
@@ -769,7 +771,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                     //we have to close the pipe when an exception occurs. Otherwise we can run into a deadlock when an exception occurs
                     //before we have written any byte to the pipe.
                     this.pipedOutputStream.close();
-                } catch (IOException e1) {
+                } catch (IOException e1) { //NOPMD
                     //ignore since we will throw the original exception below
                 }
                 throw new UncheckedXMLSecurityException(e);

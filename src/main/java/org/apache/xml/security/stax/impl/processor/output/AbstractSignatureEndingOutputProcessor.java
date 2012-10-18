@@ -91,6 +91,7 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         </ds:Signature>
     */
 
+    @Override
     public void processHeaderEvent(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
 
         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);

@@ -164,6 +164,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         nsStack.push(Collections.<String, XMLSecNamespace>emptyMap());
     }
 
+    @Override
     public void writeStartElement(String localName) throws XMLStreamException {
         outputOpenStartElement();
         QName qName = new QName(localName);
@@ -171,6 +172,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         openStartElement = qName;
     }
 
+    @Override
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         outputOpenStartElement();
         String prefix = getNamespaceContext().getPrefix(namespaceURI);
@@ -184,6 +186,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         openStartElement = qName;
     }
 
+    @Override
     public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         outputOpenStartElement();
         QName qName = new QName(namespaceURI, localName, prefix);
@@ -191,21 +194,25 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         openStartElement = qName;
     }
 
+    @Override
     public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
         writeStartElement(namespaceURI, localName);
         haveToWriteEndElement = true;
     }
 
+    @Override
     public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         writeStartElement(prefix, localName, namespaceURI);
         haveToWriteEndElement = true;
     }
 
+    @Override
     public void writeEmptyElement(String localName) throws XMLStreamException {
         writeStartElement(localName);
         haveToWriteEndElement = true;
     }
 
+    @Override
     public void writeEndElement() throws XMLStreamException {
         outputOpenStartElement();
         QName element = startElementStack.pop();
@@ -214,6 +221,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     }
 
+    @Override
     public void writeEndDocument() throws XMLStreamException {
         if (!endDocumentWritten) {
             outputOpenStartElement();
@@ -227,6 +235,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         }
     }
 
+    @Override
     public void close() throws XMLStreamException {
         try {
             writeEndDocument();
@@ -237,25 +246,31 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         }
     }
 
+    @Override
     public void flush() throws XMLStreamException {
     }
 
+    @Override
     public void writeAttribute(String localName, String value) throws XMLStreamException {
         currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(localName), value));
     }
 
+    @Override
     public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
         currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(namespaceURI, localName, prefix), value));
     }
 
+    @Override
     public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
         currentAttributes.add(XMLSecEventFactory.createXMLSecAttribute(new QName(namespaceURI, localName, getNamespaceContext().getPrefix(namespaceURI)), value));
     }
 
+    @Override
     public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
         putNamespaceOntoStack(prefix, XMLSecEventFactory.createXMLSecNamespace(prefix, namespaceURI));
     }
 
+    @Override
     public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
         //workaround for sun's stax parser:
         if (this.openStartElement != null && this.openStartElement.getPrefix().equals("")) {
@@ -265,31 +280,37 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     }
 
+    @Override
     public void writeComment(String data) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXMLSecComment(data));
     }
 
+    @Override
     public void writeProcessingInstruction(String target) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, ""));
     }
 
+    @Override
     public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXMLSecProcessingInstruction(target, data));
     }
 
+    @Override
     public void writeCData(String data) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXMLSecCData(data));
     }
 
+    @Override
     public void writeDTD(String dtd) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXMLSecDTD(dtd));
     }
 
+    @Override
     public void writeEntityRef(final String name) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(
@@ -300,32 +321,39 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         );
     }
 
+    @Override
     public void writeStartDocument() throws XMLStreamException {
         chainProcessEvent(XMLSecEventFactory.createXmlSecStartDocument(null, null, null, null));
     }
 
+    @Override
     public void writeStartDocument(String version) throws XMLStreamException {
         chainProcessEvent(XMLSecEventFactory.createXmlSecStartDocument(null, null, null, version));
     }
 
+    @Override
     public void writeStartDocument(String encoding, String version) throws XMLStreamException {
         chainProcessEvent(XMLSecEventFactory.createXmlSecStartDocument(null, encoding, null, version));
     }
 
+    @Override
     public void writeCharacters(String text) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXmlSecCharacters(text));
     }
 
+    @Override
     public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
         outputOpenStartElement();
         chainProcessEvent(XMLSecEventFactory.createXmlSecCharacters(text, start, len));
     }
 
+    @Override
     public String getPrefix(String uri) throws XMLStreamException {
         return defaultNamespaceContext.getPrefix(uri);
     }
 
+    @Override
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
         putNamespaceOntoStack(prefix, XMLSecEventFactory.createXMLSecNamespace(prefix, uri));
         if (openStartElement != null && openStartElement.getNamespaceURI().equals(uri)) {
@@ -333,10 +361,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         }
     }
 
+    @Override
     public void setDefaultNamespace(String uri) throws XMLStreamException {
         putNamespaceOntoStack("", XMLSecEventFactory.createXMLSecNamespace("", uri));
     }
 
+    @Override
     public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
         if (context == null) {
             throw new NullPointerException("context must not be null");
@@ -344,10 +374,12 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
         this.namespaceContext = context;
     }
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         return defaultNamespaceContext;
     }
 
+    @Override
     public Object getProperty(String name) throws IllegalArgumentException {
         throw new IllegalArgumentException("Properties not supported");
     }

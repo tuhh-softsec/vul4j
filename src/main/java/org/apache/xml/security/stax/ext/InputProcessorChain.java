@@ -39,35 +39,35 @@ public interface InputProcessorChain extends ProcessorChain {
      *
      * @param inputProcessor The InputProcessor which should be placed in the chain
      */
-    public void addProcessor(InputProcessor inputProcessor);
+    void addProcessor(InputProcessor inputProcessor);
 
     /**
      * Removes the specified InputProcessor from this chain.
      *
      * @param inputProcessor to remove
      */
-    public void removeProcessor(InputProcessor inputProcessor);
+    void removeProcessor(InputProcessor inputProcessor);
 
     /**
      * Returns a list with the active processors.
      *
      * @return List<InputProcessor>
      */
-    public List<InputProcessor> getProcessors();
+    List<InputProcessor> getProcessors();
 
     /**
      * The actual processed document's security context
      *
      * @return The SecurityContext
      */
-    public SecurityContext getSecurityContext();
+    SecurityContext getSecurityContext();
 
     /**
      * The actual processed document's document context
      *
      * @return The DocumentContext
      */
-    public DocumentContext getDocumentContext();
+    DocumentContext getDocumentContext();
 
     /**
      * Create a new SubChain. The XMLEvents will be only be processed from the given InputProcessor to the end.
@@ -78,7 +78,7 @@ public interface InputProcessorChain extends ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException;
+    InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException;
 
     /**
      * Requests the next security header XMLEvent from the next processor in the chain.
@@ -87,7 +87,7 @@ public interface InputProcessorChain extends ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public XMLSecEvent processHeaderEvent() throws XMLStreamException, XMLSecurityException;
+    XMLSecEvent processHeaderEvent() throws XMLStreamException, XMLSecurityException;
 
     /**
      * Requests the next XMLEvent from the next processor in the chain.
@@ -96,5 +96,5 @@ public interface InputProcessorChain extends ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public XMLSecEvent processEvent() throws XMLStreamException, XMLSecurityException;
+    XMLSecEvent processEvent() throws XMLStreamException, XMLSecurityException;
 }

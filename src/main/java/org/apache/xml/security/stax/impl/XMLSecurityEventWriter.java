@@ -38,6 +38,7 @@ public class XMLSecurityEventWriter implements XMLEventWriter {
         this.xmlStreamWriter = xmlStreamWriter;
     }
 
+    @Override
     public void add(XMLEvent event) throws XMLStreamException {
         if (!(event instanceof XMLSecEvent)) {
             throw new IllegalArgumentException("XMLEvent must be an instance of XMLSecEvent");
@@ -130,36 +131,44 @@ public class XMLSecurityEventWriter implements XMLEventWriter {
         }
     }
 
+    @Override
     public void add(XMLEventReader reader) throws XMLStreamException {
         while (reader.hasNext()) {
             add(reader.nextEvent());
         }
     }
 
+    @Override
     public void close() throws XMLStreamException {
         this.xmlStreamWriter.close();
     }
 
+    @Override
     public void flush() throws XMLStreamException {
         this.xmlStreamWriter.flush();
     }
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         return this.xmlStreamWriter.getNamespaceContext();
     }
 
+    @Override
     public String getPrefix(String uri) throws XMLStreamException {
         return this.xmlStreamWriter.getPrefix(uri);
     }
 
+    @Override
     public void setDefaultNamespace(String uri) throws XMLStreamException {
         this.xmlStreamWriter.setDefaultNamespace(uri);
     }
 
+    @Override
     public void setNamespaceContext(NamespaceContext namespaceContext) throws XMLStreamException {
         this.xmlStreamWriter.setNamespaceContext(namespaceContext);
     }
 
+    @Override
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
         this.xmlStreamWriter.setPrefix(prefix, uri);
     }

@@ -59,6 +59,7 @@ public class XMLSecCharactersImpl extends XMLSecEventBaseImpl implements XMLSecC
         return data;
     }
 
+    @Override
     public char[] getText() {
         if (text == null) {
             text = data.toCharArray();

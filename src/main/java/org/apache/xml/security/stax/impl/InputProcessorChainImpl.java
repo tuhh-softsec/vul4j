@@ -66,18 +66,22 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         this.inputProcessors = inputProcessors;
     }
 
+    @Override
     public void reset() {
         this.curPos = startPos;
     }
 
+    @Override
     public SecurityContext getSecurityContext() {
         return this.securityContext;
     }
 
+    @Override
     public DocumentContext getDocumentContext() {
         return this.documentContext;
     }
 
+    @Override
     public synchronized void addProcessor(InputProcessor newInputProcessor) {
         int startPhaseIdx = 0;
         int endPhaseIdx = inputProcessors.size();
@@ -163,6 +167,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         }
     }
 
+    @Override
     public synchronized void removeProcessor(InputProcessor inputProcessor) {
         if (isDebugEnabled) {
             log.debug("Removing processor " + inputProcessor.getClass().getName() + " from input chain");
@@ -173,22 +178,27 @@ public class InputProcessorChainImpl implements InputProcessorChain {
         this.inputProcessors.remove(inputProcessor);
     }
 
+    @Override
     public List<InputProcessor> getProcessors() {
         return this.inputProcessors;
     }
 
+    @Override
     public XMLSecEvent processHeaderEvent() throws XMLStreamException, XMLSecurityException {
         return inputProcessors.get(this.curPos++).processNextHeaderEvent(this);
     }
 
+    @Override
     public XMLSecEvent processEvent() throws XMLStreamException, XMLSecurityException {
         return inputProcessors.get(this.curPos++).processNextEvent(this);
     }
 
+    @Override
     public void doFinal() throws XMLStreamException, XMLSecurityException {
         inputProcessors.get(this.curPos++).doFinal(this);
     }
 
+    @Override
     public InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException {
         InputProcessorChainImpl inputProcessorChain;
         try {

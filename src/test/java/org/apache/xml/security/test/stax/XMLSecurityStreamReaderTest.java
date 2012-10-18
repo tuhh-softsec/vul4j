@@ -274,6 +274,7 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
                     "org/apache/xml/security/c14n/inExcl/plain-soap-1.1.xml"));
         }
 
+        @Override
         public void addBeforeProcessor(Object processor) {
         }
 

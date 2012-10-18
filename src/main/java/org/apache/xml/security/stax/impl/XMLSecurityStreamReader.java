@@ -51,6 +51,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         this.skipDocumentEvents = securityProperties.isSkipDocumentEvents();
     }
 
+    @Override
     public Object getProperty(String name) throws IllegalArgumentException {
         if (XMLInputFactory.IS_NAMESPACE_AWARE.equals(name)) {
             return true;
@@ -58,6 +59,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return null;
     }
 
+    @Override
     public int next() throws XMLStreamException {
         int eventType;
         try {
@@ -78,6 +80,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return currentXMLSecEvent;
     }
 
+    @Override
     public void require(int type, String namespaceURI, String localName) throws XMLStreamException {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != type) {
@@ -113,6 +116,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getElementText() throws XMLStreamException {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -144,6 +148,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return stringBuilder.toString();
     }
 
+    @Override
     public int nextTag() throws XMLStreamException {
         while (true) {
             int next = next();
@@ -168,10 +173,12 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public boolean hasNext() throws XMLStreamException {
         return currentXMLSecEvent == null || currentXMLSecEvent.getEventType() != END_DOCUMENT;
     }
 
+    @Override
     public void close() throws XMLStreamException {
         try {
             inputProcessorChain.reset();
@@ -181,6 +188,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getNamespaceURI(String prefix) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -201,23 +209,28 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public boolean isStartElement() {
         return getCurrentEvent().isStartElement();
     }
 
+    @Override
     public boolean isEndElement() {
         return getCurrentEvent().isEndElement();
     }
 
+    @Override
     public boolean isCharacters() {
         return getCurrentEvent().isCharacters();
     }
 
+    @Override
     public boolean isWhiteSpace() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         return xmlSecEvent.isCharacters() && xmlSecEvent.asCharacters().isWhiteSpace();
     }
 
+    @Override
     public String getAttributeValue(String namespaceURI, String localName) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -230,6 +243,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return null;
     }
 
+    @Override
     public int getAttributeCount() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -238,6 +252,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().size();
     }
 
+    @Override
     public QName getAttributeName(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -246,6 +261,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getName();
     }
 
+    @Override
     public String getAttributeNamespace(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -254,6 +270,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getAttributeNamespace().getNamespaceURI();
     }
 
+    @Override
     public String getAttributeLocalName(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -262,6 +279,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getName().getLocalPart();
     }
 
+    @Override
     public String getAttributePrefix(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -270,6 +288,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getName().getPrefix();
     }
 
+    @Override
     public String getAttributeType(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -278,6 +297,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getDTDType();
     }
 
+    @Override
     public String getAttributeValue(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -286,6 +306,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredAttributes().get(index).getValue();
     }
 
+    @Override
     public boolean isAttributeSpecified(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -295,6 +316,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public int getNamespaceCount() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -314,6 +336,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public String getNamespacePrefix(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -335,6 +358,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getNamespaceURI(int index) {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -343,6 +367,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getOnElementDeclaredNamespaces().get(index).getNamespaceURI();
     }
 
+    @Override
     public NamespaceContext getNamespaceContext() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != START_ELEMENT) {
@@ -351,6 +376,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.asStartElement().getNamespaceContext();
     }
 
+    @Override
     public int getEventType() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent == null) {
@@ -366,6 +392,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return xmlSecEvent.getEventType();
     }
 
+    @Override
     public String getText() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
 
@@ -385,6 +412,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public char[] getTextCharacters() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -403,6 +431,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public int getTextCharacters(int sourceStart, char[] target, int targetStart, int length) throws XMLStreamException {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -425,10 +454,12 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public int getTextStart() {
         return 0;
     }
 
+    @Override
     public int getTextLength() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -447,43 +478,52 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getEncoding() {
         return inputProcessorChain.getDocumentContext().getEncoding();
     }
 
-    final private static int MASK_GET_TEXT =
+    private static final int MASK_GET_TEXT =
             (1 << CHARACTERS) | (1 << CDATA) | (1 << SPACE)
                     | (1 << COMMENT) | (1 << DTD) | (1 << ENTITY_REFERENCE);
 
+    @Override
     public boolean hasText() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         return (((1 << xmlSecEvent.getEventType()) & MASK_GET_TEXT) != 0);
     }
 
+    @Override
     public Location getLocation() {
         return new Location() {
+            @Override
             public int getLineNumber() {
                 return -1;
             }
 
+            @Override
             public int getColumnNumber() {
                 return -1;
             }
 
+            @Override
             public int getCharacterOffset() {
                 return -1;
             }
 
+            @Override
             public String getPublicId() {
                 return null;
             }
 
+            @Override
             public String getSystemId() {
                 return null;
             }
         };
     }
 
+    @Override
     public QName getName() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -496,6 +536,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getLocalName() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -508,11 +549,13 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public boolean hasName() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         return xmlSecEvent.getEventType() == START_ELEMENT || xmlSecEvent.getEventType() == END_ELEMENT;
     }
 
+    @Override
     public String getNamespaceURI() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -525,6 +568,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getPrefix() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         switch (xmlSecEvent.getEventType()) {
@@ -537,22 +581,27 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         }
     }
 
+    @Override
     public String getVersion() {
         return null;
     }
 
+    @Override
     public boolean isStandalone() {
         return false;
     }
 
+    @Override
     public boolean standaloneSet() {
         return false;
     }
 
+    @Override
     public String getCharacterEncodingScheme() {
         return null;
     }
 
+    @Override
     public String getPITarget() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != PROCESSING_INSTRUCTION) {
@@ -561,6 +610,7 @@ public class XMLSecurityStreamReader implements XMLStreamReader {
         return ((ProcessingInstruction) xmlSecEvent).getTarget();
     }
 
+    @Override
     public String getPIData() {
         XMLSecEvent xmlSecEvent = getCurrentEvent();
         if (xmlSecEvent.getEventType() != PROCESSING_INSTRUCTION) {

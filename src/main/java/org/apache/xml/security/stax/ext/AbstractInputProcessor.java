@@ -46,6 +46,7 @@ public abstract class AbstractInputProcessor implements InputProcessor {
         this.securityProperties = securityProperties;
     }
 
+    @Override
     public XMLSecurityConstants.Phase getPhase() {
         return phase;
     }
@@ -54,11 +55,13 @@ public abstract class AbstractInputProcessor implements InputProcessor {
         this.phase = phase;
     }
 
+    @Override
     public void addBeforeProcessor(Object processor) {
         this.beforeProcessors = new HashSet<Object>();
         this.beforeProcessors.add(processor);
     }
 
+    @Override
     public Set<Object> getBeforeProcessors() {
         if (this.beforeProcessors == null) {
             return Collections.emptySet();
@@ -66,11 +69,13 @@ public abstract class AbstractInputProcessor implements InputProcessor {
         return this.beforeProcessors;
     }
 
+    @Override
     public void addAfterProcessor(Object processor) {
         this.afterProcessors = new HashSet<Object>();
         this.afterProcessors.add(processor);
     }
 
+    @Override
     public Set<Object> getAfterProcessors() {
         if (this.afterProcessors == null) {
             return Collections.emptySet();
@@ -78,10 +83,13 @@ public abstract class AbstractInputProcessor implements InputProcessor {
         return this.afterProcessors;
     }
 
+    @Override
     public abstract XMLSecEvent processNextHeaderEvent(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException;
 
+    @Override
     public abstract XMLSecEvent processNextEvent(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException;
 
+    @Override
     public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
         inputProcessorChain.doFinal();
     }

@@ -36,6 +36,7 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
     private final Map<Integer, XMLSecurityConstants.ContentType> contentTypeMap = new TreeMap<Integer, XMLSecurityConstants.ContentType>();
     private final Map<Object, Integer> processorToIndexMap = new HashMap<Object, Integer>();
 
+    @Override
     public String getEncoding() {
         return encoding;
     }
@@ -44,6 +45,7 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
         this.encoding = encoding;
     }
 
+    @Override
     public String getBaseURI() {
         return baseURI;
     }
@@ -52,30 +54,36 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
         this.baseURI = baseURI;
     }
 
+    @Override
     public synchronized void setIsInEncryptedContent(int index, Object key) {
         contentTypeMap.put(index, XMLSecurityConstants.ContentType.ENCRYPTION);
         processorToIndexMap.put(key, index);
     }
 
+    @Override
     public synchronized void unsetIsInEncryptedContent(Object key) {
         Integer index = processorToIndexMap.remove(key);
         contentTypeMap.remove(index);
     }
 
+    @Override
     public boolean isInEncryptedContent() {
         return contentTypeMap.containsValue(XMLSecurityConstants.ContentType.ENCRYPTION);
     }
 
+    @Override
     public synchronized void setIsInSignedContent(int index, Object key) {
         contentTypeMap.put(index, XMLSecurityConstants.ContentType.SIGNATURE);
         processorToIndexMap.put(key, index);
     }
 
+    @Override
     public synchronized void unsetIsInSignedContent(Object key) {
         Integer index = processorToIndexMap.remove(key);
         contentTypeMap.remove(index);
     }
 
+    @Override
     public boolean isInSignedContent() {
         return contentTypeMap.containsValue(XMLSecurityConstants.ContentType.SIGNATURE);
     }
@@ -85,6 +93,7 @@ public class DocumentContextImpl implements DocumentContext, Cloneable {
         return new ArrayList<XMLSecurityConstants.ContentType>(contentTypeMap.values());
     }
 
+    @Override
     public Map<Integer, XMLSecurityConstants.ContentType> getContentTypeMap() {
         return Collections.unmodifiableMap(contentTypeMap);
     }

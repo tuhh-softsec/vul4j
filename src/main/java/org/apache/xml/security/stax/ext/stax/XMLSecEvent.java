@@ -41,11 +41,11 @@ public interface XMLSecEvent extends XMLEvent {
     XMLSecStartElement getStartElementAtLevel(int level);
 
     @Override
-    public XMLSecStartElement asStartElement();
+    XMLSecStartElement asStartElement();
 
     @Override
-    public XMLSecEndElement asEndElement();
+    XMLSecEndElement asEndElement();
 
     @Override
-    public XMLSecCharacters asCharacters();
+    XMLSecCharacters asCharacters();
 }

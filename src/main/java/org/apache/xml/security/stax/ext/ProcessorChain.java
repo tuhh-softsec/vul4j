@@ -33,7 +33,7 @@ public interface ProcessorChain {
     /**
      * resets the chain so that the next event will go again to the first processor in the chain.
      */
-    public void reset();
+    void reset();
 
     /**
      * Will finally be called when the whole document is processed
@@ -41,5 +41,5 @@ public interface ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public void doFinal() throws XMLStreamException, XMLSecurityException;
+    void doFinal() throws XMLStreamException, XMLSecurityException;
 }

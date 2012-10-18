@@ -38,66 +38,82 @@ public class ConcreteLSInput implements LSInput {
     private String encoding;
     private boolean certifiedText;
 
+    @Override
     public Reader getCharacterStream() {
         return this.reader;
     }
 
+    @Override
     public void setCharacterStream(Reader characterStream) {
         this.reader = characterStream;
     }
 
+    @Override
     public InputStream getByteStream() {
         return this.inputStream;
     }
 
+    @Override
     public void setByteStream(InputStream byteStream) {
         this.inputStream = byteStream;
     }
 
+    @Override
     public String getStringData() {
         return this.stringData;
     }
 
+    @Override
     public void setStringData(String stringData) {
         this.stringData = stringData;
     }
 
+    @Override
     public String getSystemId() {
         return this.systemId;
     }
 
+    @Override
     public void setSystemId(String systemId) {
         this.systemId = systemId;
     }
 
+    @Override
     public String getPublicId() {
         return this.publicId;
     }
 
+    @Override
     public void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 
+    @Override
     public String getBaseURI() {
         return this.baseURI;
     }
 
+    @Override
     public void setBaseURI(String baseURI) {
         this.baseURI = baseURI;
     }
 
+    @Override
     public String getEncoding() {
         return this.encoding;
     }
 
+    @Override
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
+    @Override
     public boolean getCertifiedText() {
         return this.certifiedText;
     }
 
+    @Override
     public void setCertifiedText(boolean certifiedText) {
         this.certifiedText = certifiedText;
     }

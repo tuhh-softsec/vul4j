@@ -52,22 +52,27 @@ public class InputProcessorChainTest extends org.junit.Assert {
         private Set<Object> beforeProcessors = new HashSet<Object>();
         private Set<Object> afterProcessors = new HashSet<Object>();
 
+        @Override
         public void addBeforeProcessor(Object processor) {
             this.beforeProcessors.add(processor);
         }
 
+        @Override
         public Set<Object> getBeforeProcessors() {
             return beforeProcessors;
         }
 
+        @Override
         public void addAfterProcessor(Object processor) {
             this.afterProcessors.add(processor);
         }
 
+        @Override
         public Set<Object> getAfterProcessors() {
             return afterProcessors;
         }
 
+        @Override
         public XMLSecurityConstants.Phase getPhase() {
             return phase;
         }
@@ -76,14 +81,17 @@ public class InputProcessorChainTest extends org.junit.Assert {
             this.phase = phase;
         }
 
+        @Override
         public XMLSecEvent processNextHeaderEvent(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
             return null;
         }
 
+        @Override
         public XMLSecEvent processNextEvent(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
             return null;
         }
 
+        @Override
         public void doFinal(InputProcessorChain inputProcessorChain) throws XMLStreamException, XMLSecurityException {
         }
     }

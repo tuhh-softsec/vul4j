@@ -53,6 +53,7 @@ public class XMLSecEventAllocator implements XMLEventAllocator {
         }
     }
 
+    @Override
     public XMLEventAllocator newInstance() {
         try {
             return new XMLSecEventAllocator();
@@ -61,6 +62,7 @@ public class XMLSecEventAllocator implements XMLEventAllocator {
         }
     }
 
+    @Override
     public XMLEvent allocate(XMLStreamReader xmlStreamReader) throws XMLStreamException {
         XMLSecEvent xmlSecEvent = XMLSecEventFactory.allocate(xmlStreamReader, parentXmlSecStartElement);
         switch (xmlSecEvent.getEventType()) {
@@ -76,6 +78,7 @@ public class XMLSecEventAllocator implements XMLEventAllocator {
         return xmlSecEvent;
     }
 
+    @Override
     public void allocate(XMLStreamReader reader, XMLEventConsumer consumer) throws XMLStreamException {
         xmlEventAllocator.allocate(reader, consumer);
     }

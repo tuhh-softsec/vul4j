@@ -43,7 +43,7 @@ public class TransformerAlgorithmMapper {
     private TransformerAlgorithmMapper() {
     }
 
-    protected synchronized static void init(TransformAlgorithmsType transformAlgorithms) throws Exception {
+    protected static synchronized void init(TransformAlgorithmsType transformAlgorithms) throws Exception {
         List<TransformAlgorithmType> algorithms = transformAlgorithms.getTransformAlgorithm();
         algorithmsClassMapInOut = new HashMap<String, Class<?>>();
         algorithmsClassMapIn = new HashMap<String, Class<?>>();

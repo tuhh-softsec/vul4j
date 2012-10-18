@@ -46,7 +46,7 @@ public class Init {
     private static URI initialized = null;
 
     @SuppressWarnings("unchecked")
-    public synchronized static void init(URI uri) throws XMLSecurityException {
+    public static synchronized void init(URI uri) throws XMLSecurityException {
         if (initialized == null || (uri != null && !uri.equals(initialized))) {
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance("org.xmlsecurity.ns.configuration");

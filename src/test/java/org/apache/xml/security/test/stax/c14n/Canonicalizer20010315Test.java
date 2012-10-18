@@ -48,6 +48,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         this.xmlInputFactory = XMLInputFactory.newInstance();
         this.xmlInputFactory.setEventAllocator(new XMLSecEventAllocator());
         XMLResolver xmlResolver = new XMLResolver() {
+            @Override
             public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException {
                 return this.getClass().getClassLoader().getResourceAsStream(
                     "org/apache/xml/security/c14n/in/" + systemID);

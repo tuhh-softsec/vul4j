@@ -33,5 +33,5 @@ public interface SecurityEventListener {
      * @param securityEvent The security event for the SecurityEventListener
      * @throws XMLSecurityException when the event will not be accepted (e.g. policy-violation)
      */
-    public void registerSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException;
+    void registerSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException;
 }

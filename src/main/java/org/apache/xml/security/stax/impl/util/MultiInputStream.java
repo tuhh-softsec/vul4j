@@ -75,7 +75,7 @@ public class MultiInputStream extends InputStream {
         for (int i = 0; i < inputStreamCount; i++) {
             try {
                 inputStreams[i].close();
-            } catch (IOException e) {
+            } catch (IOException e) { //NOPMD
                 //ignore and try to close the others
             }
         }

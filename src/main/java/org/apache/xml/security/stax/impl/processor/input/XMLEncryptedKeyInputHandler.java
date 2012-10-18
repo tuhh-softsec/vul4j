@@ -78,13 +78,14 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
             encryptedKeyType.setId(IDGenerator.generateID(null));
         }
 
-        final SecurityContext securityContext = (SecurityContext) inputProcessorChain.getSecurityContext();
+        final SecurityContext securityContext = inputProcessorChain.getSecurityContext();
 
         final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
 
             private AbstractInboundSecurityToken securityToken = null;
 
             @SuppressWarnings("unchecked")
+            @Override
             public SecurityToken getSecurityToken() throws XMLSecurityException {
 
                 if (this.securityToken != null) {

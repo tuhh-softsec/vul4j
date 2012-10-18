@@ -40,7 +40,7 @@ public class SecurityHeaderHandlerMapper {
     private SecurityHeaderHandlerMapper() {
     }
 
-    protected synchronized static void init(SecurityHeaderHandlersType securityHeaderHandlersType) throws Exception {
+    protected static synchronized void init(SecurityHeaderHandlersType securityHeaderHandlersType) throws Exception {
         List<HandlerType> handlerList = securityHeaderHandlersType.getHandler();
         handlerClassMap = new HashMap<QName, Class<?>>(handlerList.size() + 1);
         for (int i = 0; i < handlerList.size(); i++) {

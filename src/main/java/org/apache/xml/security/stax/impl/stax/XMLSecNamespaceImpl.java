@@ -73,6 +73,7 @@ public class XMLSecNamespaceImpl extends XMLSecEventBaseImpl implements XMLSecNa
         }
     }
 
+    @Override
     public int compareTo(XMLSecNamespace o) {
         //An element's namespace nodes are sorted lexicographically by local name
         //(the default namespace node, if one exists, has no local name and is therefore lexicographically least).

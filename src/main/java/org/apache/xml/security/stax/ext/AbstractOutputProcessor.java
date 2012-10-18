@@ -75,6 +75,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         outputProcessorChain.addProcessor(this);
     }
 
+    @Override
     public XMLSecurityConstants.Phase getPhase() {
         return phase;
     }
@@ -83,6 +84,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         this.phase = phase;
     }
 
+    @Override
     public void addBeforeProcessor(Object processor) {
         if (this.beforeProcessors == null) {
             this.beforeProcessors = new HashSet<Object>();
@@ -90,6 +92,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         this.beforeProcessors.add(processor);
     }
 
+    @Override
     public Set<Object> getBeforeProcessors() {
         if (this.beforeProcessors == null) {
             return Collections.emptySet();
@@ -97,6 +100,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         return this.beforeProcessors;
     }
 
+    @Override
     public void addAfterProcessor(Object processor) {
         if (this.afterProcessors == null) {
             this.afterProcessors = new HashSet<Object>();
@@ -104,6 +108,7 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         this.afterProcessors.add(processor);
     }
 
+    @Override
     public Set<Object> getAfterProcessors() {
         if (this.afterProcessors == null) {
             return Collections.emptySet();
@@ -122,11 +127,13 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
     public abstract void processEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain)
             throws XMLStreamException, XMLSecurityException;
 
+    @Override
     public void processNextEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain)
             throws XMLStreamException, XMLSecurityException {
         processEvent(xmlSecEvent, outputProcessorChain);
     }
 
+    @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         outputProcessorChain.doFinal();
     }

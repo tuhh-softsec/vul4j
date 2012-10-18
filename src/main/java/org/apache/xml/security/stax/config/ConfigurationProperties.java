@@ -38,7 +38,7 @@ public class ConfigurationProperties {
         super();
     }
 
-    protected synchronized static void init(PropertiesType propertiesType) throws Exception {
+    protected static synchronized void init(PropertiesType propertiesType) throws Exception {
         properties = new Properties();
         List<PropertyType> handlerList = propertiesType.getProperty();
         for (int i = 0; i < handlerList.size(); i++) {

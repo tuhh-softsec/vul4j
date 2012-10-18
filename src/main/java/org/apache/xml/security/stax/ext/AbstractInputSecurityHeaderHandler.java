@@ -18,8 +18,6 @@
  */
 package org.apache.xml.security.stax.ext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
@@ -38,8 +36,6 @@ import java.util.List;
  * @version $Revision$ $Date$
  */
 public abstract class AbstractInputSecurityHeaderHandler implements XMLSecurityHeaderHandler {
-
-    protected final transient Log logger = LogFactory.getLog(this.getClass());
 
     @SuppressWarnings("unchecked")
     protected <T> T parseStructure(final Deque<XMLSecEvent> eventDeque, final int index,

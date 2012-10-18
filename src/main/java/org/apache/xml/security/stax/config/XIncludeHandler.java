@@ -77,7 +77,7 @@ public class XIncludeHandler extends DefaultHandler {
         this.uriDocMap = uriDocMap;
     }
 
-
+    @Override
     public void setDocumentLocator(Locator locator) {
         //this.systemId could already be set when we do a IdentityTransform (@see below)
         if (locator.getSystemId() == null && this.systemId == null) {
@@ -93,30 +93,35 @@ public class XIncludeHandler extends DefaultHandler {
         this.contentHandler.setDocumentLocator(locator);
     }
 
+    @Override
     public void startDocument() throws SAXException {
         if (!skipEvents) {
             this.contentHandler.startDocument();
         }
     }
 
+    @Override
     public void endDocument() throws SAXException {
         if (!skipEvents) {
             this.contentHandler.endDocument();
         }
     }
 
+    @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
         if (!skipEvents) {
             this.contentHandler.startPrefixMapping(prefix, uri);
         }
     }
 
+    @Override
     public void endPrefixMapping(String prefix) throws SAXException {
         if (!skipEvents) {
             this.contentHandler.endPrefixMapping(prefix);
         }
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         if (xIncludeNS.equals(uri) && xIncludeLN.equals(localName)) {
             String href = atts.getValue("href");
@@ -192,24 +197,29 @@ public class XIncludeHandler extends DefaultHandler {
         }
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (!(xIncludeNS.equals(uri) && xIncludeLN.equals(localName))) {
             this.contentHandler.endElement(uri, localName, qName);
         }
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         this.contentHandler.characters(ch, start, length);
     }
 
+    @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
         this.contentHandler.ignorableWhitespace(ch, start, length);
     }
 
+    @Override
     public void processingInstruction(String target, String data) throws SAXException {
         this.contentHandler.processingInstruction(target, data);
     }
 
+    @Override
     public void skippedEntity(String name) throws SAXException {
         this.contentHandler.skippedEntity(name);
     }
@@ -264,6 +274,7 @@ public class XIncludeHandler extends DefaultHandler {
                     return null;
                 }
 
+                @Override
                 public Iterator<String> getPrefixes(String namespaceURI) {
                     return null;
                 }

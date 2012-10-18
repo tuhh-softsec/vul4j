@@ -69,18 +69,22 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         this.outputProcessors = outputProcessors;
     }
 
+    @Override
     public void reset() {
         this.curPos = startPos;
     }
 
+    @Override
     public SecurityContext getSecurityContext() {
         return this.securityContext;
     }
 
+    @Override
     public DocumentContext getDocumentContext() {
         return this.documentContext;
     }
 
+    @Override
     public void addProcessor(OutputProcessor newOutputProcessor) {
         int startPhaseIdx = 0;
         int endPhaseIdx = outputProcessors.size();
@@ -169,6 +173,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         }
     }
 
+    @Override
     public void removeProcessor(OutputProcessor outputProcessor) {
         if (isDebugEnabled) {
             log.debug("Removing processor " + outputProcessor.getClass().getName() + " from output chain");
@@ -179,6 +184,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         this.outputProcessors.remove(outputProcessor);
     }
 
+    @Override
     public List<OutputProcessor> getProcessors() {
         return this.outputProcessors;
     }
@@ -187,6 +193,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         this.parentXmlSecStartElement = xmlSecStartElement;
     }
 
+    @Override
     public void processEvent(XMLSecEvent xmlSecEvent) throws XMLStreamException, XMLSecurityException {
         boolean reparent = false;
         if (this.curPos == this.startPos) {
@@ -213,14 +220,17 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         }
     }
 
+    @Override
     public void doFinal() throws XMLStreamException, XMLSecurityException {
         outputProcessors.get(this.curPos++).doFinal(this);
     }
 
+    @Override
     public OutputProcessorChain createSubChain(OutputProcessor outputProcessor) throws XMLStreamException, XMLSecurityException {
         return createSubChain(outputProcessor, null);
     }
 
+    @Override
     public OutputProcessorChain createSubChain(OutputProcessor outputProcessor, XMLSecStartElement parentXMLSecStartElement) throws XMLStreamException, XMLSecurityException {
         //we don't clone the processor-list to get updates in the sublist too!
         OutputProcessorChainImpl outputProcessorChain;

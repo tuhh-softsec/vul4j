@@ -41,18 +41,22 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         }
     }
 
+    @Override
     public void engineUpdate(byte[] input) throws XMLSecurityException {
         mac.update(input);
     }
 
+    @Override
     public void engineUpdate(byte input) throws XMLSecurityException {
         mac.update(input);
     }
 
+    @Override
     public void engineUpdate(byte[] buf, int offset, int len) throws XMLSecurityException {
         mac.update(buf, offset, len);
     }
 
+    @Override
     public void engineInitSign(Key signingKey) throws XMLSecurityException {
         try {
             mac.init(signingKey);
@@ -61,6 +65,7 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         }
     }
 
+    @Override
     public void engineInitSign(Key signingKey, SecureRandom secureRandom) throws XMLSecurityException {
         try {
             mac.init(signingKey);
@@ -69,6 +74,7 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         }
     }
 
+    @Override
     public void engineInitSign(Key signingKey, AlgorithmParameterSpec algorithmParameterSpec) throws XMLSecurityException {
         try {
             mac.init(signingKey, algorithmParameterSpec);
@@ -79,10 +85,12 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         }
     }
 
+    @Override
     public byte[] engineSign() throws XMLSecurityException {
         return mac.doFinal();
     }
 
+    @Override
     public void engineInitVerify(Key verificationKey) throws XMLSecurityException {
         try {
             mac.init(verificationKey);
@@ -91,11 +99,13 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
         }
     }
 
+    @Override
     public boolean engineVerify(byte[] signature) throws XMLSecurityException {
         byte[] completeResult = mac.doFinal();
         return MessageDigest.isEqual(completeResult, signature);
     }
 
+    @Override
     public void engineSetParameter(AlgorithmParameterSpec params) throws XMLSecurityException {
     }
 }

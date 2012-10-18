@@ -101,15 +101,18 @@ public class XMLSecStartElementImpl extends XMLSecEventBaseImpl implements XMLSe
         this.attributes.add(xmlSecAttribute);
     }
 
+    @Override
     public int getDocumentLevel() {
         return super.getDocumentLevel() + 1;
     }
 
+    @Override
     public void getElementPath(List<QName> list) {
         super.getElementPath(list);
         list.add(this.getName());
     }
 
+    @Override
     public XMLSecStartElement getStartElementAtLevel(int level) {
         int thisLevel = getDocumentLevel();
         if (thisLevel < level) {

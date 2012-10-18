@@ -45,10 +45,12 @@ public class DigestOutputStream extends OutputStream {
         }
     }
 
+    @Override
     public void write(byte[] arg0) {
         write(arg0, 0, arg0.length);
     }
 
+    @Override
     public void write(int arg0) {
         messageDigest.update((byte) arg0);
         if (isDebugEnabled) {
@@ -56,6 +58,7 @@ public class DigestOutputStream extends OutputStream {
         }
     }
 
+    @Override
     public void write(byte[] arg0, int arg1, int arg2) {
         messageDigest.update(arg0, arg1, arg2);
         if (isDebugEnabled) {

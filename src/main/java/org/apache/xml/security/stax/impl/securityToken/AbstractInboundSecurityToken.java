@@ -79,6 +79,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         return keyIdentifierType;
     }
 
+    @Override
     public String getId() {
         return this.id;
     }
@@ -219,10 +220,12 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         this.x509Certificates = x509Certificates;
     }
 
+    @Override
     public X509Certificate[] getX509Certificates() throws XMLSecurityException {
         return x509Certificates;
     }
 
+    @Override
     public void verify() throws XMLSecurityException {
     }
 

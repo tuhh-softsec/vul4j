@@ -233,6 +233,7 @@ public class PerformanceMemoryTest extends AbstractPerformanceTest {
             this.stop = stop;
         }
 
+        @Override
         public void run() {
             int sleepTime = 50;
             while (!isStop()) {

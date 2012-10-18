@@ -41,6 +41,7 @@ public class XMLSecAttributeImpl extends XMLSecEventBaseImpl implements XMLSecAt
         this.value = value;
     }
 
+    @Override
     public int compareTo(XMLSecAttribute o) {
         //An element's attribute nodes are sorted lexicographically with namespace URI as the primary
         //key and local name as the secondary key (an empty namespace URI is lexicographically least).
@@ -78,18 +79,22 @@ public class XMLSecAttributeImpl extends XMLSecEventBaseImpl implements XMLSecAt
         return this.attributeNamespace;
     }
 
+    @Override
     public QName getName() {
         return name;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public String getDTDType() {
         return "CDATA";
     }
 
+    @Override
     public boolean isSpecified() {
         return true;
     }

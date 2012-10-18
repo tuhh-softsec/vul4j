@@ -44,12 +44,14 @@ public class SecurityContextImpl implements SecurityContext {
     private final Map content = Collections.synchronizedMap(new HashMap());
     private final List<SecurityEventListener> securityEventListeners = new ArrayList<SecurityEventListener>(2);
 
+    @Override
     public void addSecurityEventListener(SecurityEventListener securityEventListener) {
         if (securityEventListener != null) {
             this.securityEventListeners.add(securityEventListener);
         }
     }
 
+    @Override
     public synchronized void registerSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
         forwardSecurityEvent(securityEvent);
     }
@@ -69,21 +71,25 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> void put(String key, T value) {
         content.put(key, value);
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T get(String key) {
         return (T) content.get(key);
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T remove(String key) {
         return (T) content.remove(key);
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T extends List> void putList(Object key, T value) {
         if (value == null) {
             return;
@@ -97,6 +103,7 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> void putAsList(Object key, T value) {
         List<T> entry = (List<T>) content.get(key);
         if (entry == null) {
@@ -107,11 +114,13 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> List<T> getAsList(Object key) {
         return (List<T>) content.get(key);
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T, U> void putAsMap(Object key, T mapKey, U mapValue) {
         Map<T, U> entry = (Map<T, U>) content.get(key);
         if (entry == null) {
@@ -122,10 +131,12 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T, U> Map<T, U> getAsMap(Object key) {
         return (Map<T, U>) content.get(key);
     }
 
+    @Override
     public void registerSecurityTokenProvider(String id, SecurityTokenProvider securityTokenProvider) {
         if (id == null) {
             throw new IllegalArgumentException("Id must not be null");
@@ -133,6 +144,7 @@ public class SecurityContextImpl implements SecurityContext {
         securityTokenProviders.put(id, securityTokenProvider);
     }
 
+    @Override
     public SecurityTokenProvider getSecurityTokenProvider(String id) {
         return securityTokenProviders.get(id);
     }

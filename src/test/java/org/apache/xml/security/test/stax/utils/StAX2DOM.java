@@ -112,27 +112,33 @@ public class StAX2DOM {
                     final String pubId = loc.getPublicId() == null ? doc.getDocumentURI() : loc.getPublicId();
                     final String sysId = loc.getSystemId() == null ? doc.getDocumentURI() : loc.getSystemId();
                     Location loc2 = new Location() {
+                        @Override
                         public int getCharacterOffset() {
                             return charOffset;
                         }
 
+                        @Override
                         public int getColumnNumber() {
                             return colNum;
                         }
 
+                        @Override
                         public int getLineNumber() {
                             return linNum;
                         }
 
+                        @Override
                         public String getPublicId() {
                             return pubId;
                         }
 
+                        @Override
                         public String getSystemId() {
                             return sysId;
                         }
                     };
                     node.setUserData("location", loc2, new UserDataHandler() {
+                        @Override
                         public void handle(short operation, String key, Object data, Node src, Node dst) {
                             if (operation == NODE_CLONED) {
                                 dst.setUserData(key, data, this);

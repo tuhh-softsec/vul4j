@@ -40,35 +40,35 @@ public interface OutputProcessorChain extends ProcessorChain {
      *
      * @param outputProcessor The OutputProcessor which should be placed in the chain
      */
-    public void addProcessor(OutputProcessor outputProcessor);
+    void addProcessor(OutputProcessor outputProcessor);
 
     /**
      * Removes the specified OutputProcessor from this chain.
      *
      * @param outputProcessor to remove
      */
-    public void removeProcessor(OutputProcessor outputProcessor);
+    void removeProcessor(OutputProcessor outputProcessor);
 
     /**
      * Returns a list with the active processors.
      *
      * @return List<InputProcessor>
      */
-    public List<OutputProcessor> getProcessors();
+    List<OutputProcessor> getProcessors();
 
     /**
      * The actual processed document's security context
      *
      * @return The SecurityContext
      */
-    public SecurityContext getSecurityContext();
+    SecurityContext getSecurityContext();
 
     /**
      * The actual processed document's document context
      *
      * @return The DocumentContext
      */
-    public DocumentContext getDocumentContext();
+    DocumentContext getDocumentContext();
 
     /**
      * Create a new SubChain. The XMLEvents will be only be processed from the given OutputProcessor to the end.
@@ -79,9 +79,9 @@ public interface OutputProcessorChain extends ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public OutputProcessorChain createSubChain(OutputProcessor outputProcessor) throws XMLStreamException, XMLSecurityException;
+    OutputProcessorChain createSubChain(OutputProcessor outputProcessor) throws XMLStreamException, XMLSecurityException;
 
-    public OutputProcessorChain createSubChain(OutputProcessor outputProcessor, XMLSecStartElement parentXMLSecStartElement) throws XMLStreamException, XMLSecurityException;
+    OutputProcessorChain createSubChain(OutputProcessor outputProcessor, XMLSecStartElement parentXMLSecStartElement) throws XMLStreamException, XMLSecurityException;
 
     /**
      * Forwards the XMLEvent to the next processor in the chain.
@@ -90,5 +90,5 @@ public interface OutputProcessorChain extends ProcessorChain {
      * @throws XMLStreamException   thrown when a streaming error occurs
      * @throws XMLSecurityException thrown when a Security failure occurs
      */
-    public void processEvent(XMLSecEvent xmlSecEvent) throws XMLStreamException, XMLSecurityException;
+    void processEvent(XMLSecEvent xmlSecEvent) throws XMLStreamException, XMLSecurityException;
 }

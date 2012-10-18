@@ -105,7 +105,8 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                                     XMLSecurityProperties securityProperties) throws XMLSecurityException {
             super(signatureType, securityContext, securityProperties);
         }
-        
+
+        @Override
         protected SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
                                                       XMLSecurityProperties securityProperties,
                                                       SecurityContext securityContext) throws XMLSecurityException {
