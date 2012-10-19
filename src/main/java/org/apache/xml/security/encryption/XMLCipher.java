@@ -312,7 +312,7 @@ public class XMLCipher {
         }
 
         if (serializer == null) {
-            serializer = new DocumentSerializer();
+            serializer = new TransformSerializer();
         }
         serializer.setCanonicalizer(this.canon);
         
