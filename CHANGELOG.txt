@@ -2,6 +2,14 @@ Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v2.0.0-SNAPSHOT:
 
+New in v1.5.3:
+    Fixed SANTUARIO-344 - XMLSignature keeps file-handle on xml-file.
+    Fixed SANTUARIO-345 - Support Signature 1.1 KeyInfo Extensions: DEREncodedKeyValue, KeyInfoReference, X509Digest.
+    Fixed SANTUARIO-342 - NullPointer in javax.xml.crypto.KeySelectorException.printStackTrace
+    Fixed SANTUARIO-336 - Multiple race conditions in the ResolverDirectHttp implementation
+    Fixed SANTUARIO-335 - Remove use of X509Certificate getSubjectDN + getIssuerDN.
+    Fixed SANTUARIO-334 - UnsyncByteArrayOutputStream hangs on messages larger 512 MB.
+
 New in v1.5.2:
     Fixed SANTUARIO-313 - Javadocs warnings.
     Fixed SANTUARIO-309 - Default XMLCipher canonicalizer may decrypt element to the wrong namespace.
