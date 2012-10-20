@@ -52,7 +52,7 @@ public class XMLSec {
      *
      * @param securityProperties The user-defined security configuration
      * @return A new OutboundXMLSec
-     * @throws org.apache.xml.security.stax.ext.XMLSecurityException
+     * @throws XMLSecurityException
      *          if the initialisation failed
      * @throws org.apache.xml.security.stax.ext.XMLSecurityConfigurationException
      *          if the configuration is invalid
@@ -71,7 +71,7 @@ public class XMLSec {
      *
      * @param securityProperties The user-defined security configuration
      * @return A new InboundWSSec
-     * @throws org.apache.xml.security.stax.ext.XMLSecurityException
+     * @throws XMLSecurityException
      *          if the initialisation failed
      * @throws org.apache.xml.security.stax.ext.XMLSecurityConfigurationException
      *          if the configuration is invalid
@@ -131,8 +131,7 @@ public class XMLSec {
                 }
             }
         }
-        //todo clone securityProperties
-        return securityProperties;
+        return new XMLSecurityProperties(securityProperties);
     }
 
     /**
@@ -144,7 +143,6 @@ public class XMLSec {
      *          if the configuration is invalid
      */
     public static XMLSecurityProperties validateAndApplyDefaultsToInboundSecurityProperties(XMLSecurityProperties securityProperties) throws XMLSecurityConfigurationException {
-        //todo clone securityProperties
-        return securityProperties;
+        return new XMLSecurityProperties(securityProperties);
     }
 }

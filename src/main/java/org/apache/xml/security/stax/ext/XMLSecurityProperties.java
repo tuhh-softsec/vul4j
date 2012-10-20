@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.security.auth.callback.CallbackHandler;
 
 /**
  * Main configuration class to supply keys etc.
@@ -35,7 +34,67 @@ import javax.security.auth.callback.CallbackHandler;
  */
 public class XMLSecurityProperties {
 
+    private final List<InputProcessor> inputProcessorList = new ArrayList<InputProcessor>();
+    private boolean skipDocumentEvents = false;
+    private boolean disableSchemaValidation = false;
+
+    private XMLSecurityConstants.Action[] outAction;
+
+    private X509Certificate encryptionUseThisCertificate;
+    private String encryptionSymAlgorithm;
+    private String encryptionCompressionAlgorithm;
+    private String encryptionKeyTransportAlgorithm;
+    private String encryptionKeyTransportDigestAlgorithm;
+    private String encryptionKeyTransportMGFAlgorithm;
+    private byte[] encryptionKeyTransportOAEPParams;
+    private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
+    private Key encryptionKey;
+    private Key encryptionTransportKey;
+
+    private Key decryptionKey;
+
+    private final List<SecurePart> signatureParts = new LinkedList<SecurePart>();
+    private String signatureAlgorithm;
+    private String signatureDigestAlgorithm;
+    private String signatureCanonicalizationAlgorithm;
+    private Key signatureKey;
+    private X509Certificate[] signatureCerts;
+    private boolean addExcC14NInclusivePrefixes = false;
     private XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType;
+    private boolean useSingleCert = true;
+
+    private Key signatureVerificationKey;
+
+    public XMLSecurityProperties() {
+    }
+
+    protected XMLSecurityProperties(XMLSecurityProperties xmlSecurityProperties) {
+        this.inputProcessorList.addAll(xmlSecurityProperties.inputProcessorList);
+        this.skipDocumentEvents = xmlSecurityProperties.skipDocumentEvents;
+        this.disableSchemaValidation = xmlSecurityProperties.disableSchemaValidation;
+        this.outAction = xmlSecurityProperties.outAction;
+        this.encryptionUseThisCertificate = xmlSecurityProperties.encryptionUseThisCertificate;
+        this.encryptionSymAlgorithm = xmlSecurityProperties.encryptionSymAlgorithm;
+        this.encryptionCompressionAlgorithm = xmlSecurityProperties.encryptionCompressionAlgorithm;
+        this.encryptionKeyTransportAlgorithm = xmlSecurityProperties.encryptionKeyTransportAlgorithm;
+        this.encryptionKeyTransportDigestAlgorithm = xmlSecurityProperties.encryptionKeyTransportDigestAlgorithm;
+        this.encryptionKeyTransportMGFAlgorithm = xmlSecurityProperties.encryptionKeyTransportMGFAlgorithm;
+        this.encryptionKeyTransportOAEPParams = xmlSecurityProperties.encryptionKeyTransportOAEPParams;
+        this.encryptionParts.addAll(xmlSecurityProperties.encryptionParts);
+        this.encryptionKey = xmlSecurityProperties.encryptionKey;
+        this.encryptionTransportKey = xmlSecurityProperties.encryptionTransportKey;
+        this.decryptionKey = xmlSecurityProperties.decryptionKey;
+        this.signatureParts.addAll(xmlSecurityProperties.signatureParts);
+        this.signatureAlgorithm = xmlSecurityProperties.signatureAlgorithm;
+        this.signatureDigestAlgorithm = xmlSecurityProperties.signatureDigestAlgorithm;
+        this.signatureCanonicalizationAlgorithm = xmlSecurityProperties.signatureCanonicalizationAlgorithm;
+        this.signatureKey = xmlSecurityProperties.signatureKey;
+        this.signatureCerts = xmlSecurityProperties.signatureCerts;
+        this.addExcC14NInclusivePrefixes = xmlSecurityProperties.addExcC14NInclusivePrefixes;
+        this.signatureKeyIdentifierType = xmlSecurityProperties.signatureKeyIdentifierType;
+        this.useSingleCert = xmlSecurityProperties.useSingleCert;
+        this.signatureVerificationKey = xmlSecurityProperties.signatureVerificationKey;
+    }
 
     public XMLSecurityConstants.KeyIdentifierType getSignatureKeyIdentifierType() {
         return signatureKeyIdentifierType;
@@ -44,8 +103,6 @@ public class XMLSecurityProperties {
     public void setSignatureKeyIdentifierType(XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType) {
         this.signatureKeyIdentifierType = signatureKeyIdentifierType;
     }
-    
-    private final List<InputProcessor> inputProcessorList = new ArrayList<InputProcessor>();
 
     /**
      * Add an additional, non standard, InputProcessor to the chain
@@ -65,52 +122,18 @@ public class XMLSecurityProperties {
         return inputProcessorList;
     }
 
-    private CallbackHandler callbackHandler;
-
-    /**
-     * returns the password callback handler
-     *
-     * @return
-     */
-    public CallbackHandler getCallbackHandler() {
-        return callbackHandler;
-    }
-
-    /**
-     * sets the password callback handler
-     *
-     * @param callbackHandler
-     */
-    public void setCallbackHandler(CallbackHandler callbackHandler) {
-        this.callbackHandler = callbackHandler;
-    }
-
-    private XMLSecurityConstants.Action[] outAction;
-
-    private X509Certificate encryptionUseThisCertificate;
-    private String encryptionSymAlgorithm;
-    private String encryptionCompressionAlgorithm;
-    private String encryptionKeyTransportAlgorithm;
-    private String encryptionKeyTransportDigestAlgorithm;
-    private String encryptionKeyTransportMGFAlgorithm;
-    private byte[] encryptionKeyTransportOAEPParams;
-    private final List<SecurePart> encryptionParts = new LinkedList<SecurePart>();
-    private Key encryptionKey;
-    private Key encryptionTransportKey;
-    private Key decryptionKey;
-    
     public void setDecryptionKey(Key decryptionKey) {
         this.decryptionKey = decryptionKey;
     }
-    
+
     public Key getDecryptionKey() {
         return decryptionKey;
     }
-    
+
     public void setEncryptionTransportKey(Key encryptionTransportKey) {
         this.encryptionTransportKey = encryptionTransportKey;
     }
-    
+
     public Key getEncryptionTransportKey() {
         return encryptionTransportKey;
     }
@@ -118,7 +141,7 @@ public class XMLSecurityProperties {
     public void setEncryptionKey(Key encryptionKey) {
         this.encryptionKey = encryptionKey;
     }
-    
+
     public Key getEncryptionKey() {
         return encryptionKey;
     }
@@ -218,15 +241,6 @@ public class XMLSecurityProperties {
         this.encryptionCompressionAlgorithm = encryptionCompressionAlgorithm;
     }
 
-    private final List<SecurePart> signatureParts = new LinkedList<SecurePart>();
-    private String signatureAlgorithm;
-    private String signatureDigestAlgorithm;
-    private String signatureCanonicalizationAlgorithm;
-    private boolean useSingleCert = true;
-    private Key signatureKey;
-    private X509Certificate[] signatureCerts;
-    private boolean addExcC14NInclusivePrefixes = false;
-
     public X509Certificate[] getSignatureCerts() {
         return signatureCerts;
     }
@@ -234,7 +248,6 @@ public class XMLSecurityProperties {
     public void setSignatureCerts(X509Certificate[] signatureCerts) {
         this.signatureCerts = signatureCerts;
     }
-
 
     public void addSignaturePart(SecurePart securePart) {
         signatureParts.add(securePart);
@@ -263,7 +276,7 @@ public class XMLSecurityProperties {
     public void setSignatureKey(Key signatureKey) {
         this.signatureKey = signatureKey;
     }
-    
+
     public Key getSignatureKey() {
         return signatureKey;
     }
@@ -310,8 +323,6 @@ public class XMLSecurityProperties {
         this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
     }
 
-    private Key signatureVerificationKey;
-    
     public Key getSignatureVerificationKey() {
         return signatureVerificationKey;
     }
@@ -319,8 +330,6 @@ public class XMLSecurityProperties {
     public void setSignatureVerificationKey(Key signatureVerificationKey) {
         this.signatureVerificationKey = signatureVerificationKey;
     }
-
-    private boolean skipDocumentEvents = false;
 
     /**
      * Returns if the framework is skipping document-events
@@ -340,8 +349,6 @@ public class XMLSecurityProperties {
         this.skipDocumentEvents = skipDocumentEvents;
     }
 
-    private boolean disableSchemaValidation = false;
-
     public boolean isDisableSchemaValidation() {
         return disableSchemaValidation;
     }
@@ -349,5 +356,4 @@ public class XMLSecurityProperties {
     public void setDisableSchemaValidation(boolean disableSchemaValidation) {
         this.disableSchemaValidation = disableSchemaValidation;
     }
-
 }
