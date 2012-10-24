@@ -23,7 +23,7 @@ import org.apache.http.HttpResponse;
 import org.esigate.api.HttpRequest;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.http.GenericHttpRequest;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 					LOG.debug("params: " + params.substring(1));
 				}
 				if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-					resultLocation = HttpRequestParams.getBaseUrl(request) + springSecurityUrl + ((params != null) ? params : "");
+					resultLocation = HttpRequestHelper.getBaseUrl(request) + springSecurityUrl + ((params != null) ? params : "");
 					springRedirectParam = "&spring-security-redirect=" + location;
 					LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
 				}

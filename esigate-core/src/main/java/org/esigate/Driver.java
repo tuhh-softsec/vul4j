@@ -41,7 +41,7 @@ import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.RequestCookieStore;
 import org.esigate.http.ResourceUtils;
 import org.esigate.renderers.ResourceFixupRenderer;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +121,7 @@ public class Driver {
 
 		// Fix resources
 		if (config.isFixResources()) {
-			String baseUrl = HttpRequestParams.getBaseUrl(request).toString();
+			String baseUrl = HttpRequestHelper.getBaseUrl(request).toString();
 			ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl), page, config.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(request, currentValue, stringWriter);
@@ -138,14 +138,14 @@ public class Driver {
 	}
 
 	public void initHttpRequestParams(HttpRequest request, HttpResponse response, Map<String, String> parameters) throws HttpErrorPage {
-		HttpRequestParams.setResponse(request, response);
-		HttpRequestParams.setDriver(request, this);
-		HttpRequestParams.setParameters(request, parameters);
+		HttpRequestHelper.setResponse(request, response);
+		HttpRequestHelper.setDriver(request, this);
+		HttpRequestHelper.setParameters(request, parameters);
 		UserContext userContext = new UserContext(request, config.getInstanceName());
-		HttpRequestParams.setUserContext(request, userContext);
+		HttpRequestHelper.setUserContext(request, userContext);
 		try {
 			URL baseUrl = new URL(config.getBaseUrlRetrieveStrategy().getBaseURL(request, response));
-			HttpRequestParams.setBaseUrl(request, baseUrl);
+			HttpRequestHelper.setBaseUrl(request, baseUrl);
 		} catch (MalformedURLException e) {
 			throw new HttpErrorPage(500, "Internal server error", e);
 		}
@@ -188,7 +188,7 @@ public class Driver {
 
 			List<Renderer> listOfRenderers = new ArrayList<Renderer>(renderers.length + 1);
 			if (config.isFixResources()) {
-				String baseUrl = HttpRequestParams.getBaseUrl(request).toString();
+				String baseUrl = HttpRequestHelper.getBaseUrl(request).toString();
 				ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl), relUrl, config.getFixMode());
 				listOfRenderers.add(fixup);
 			}
@@ -225,7 +225,7 @@ public class Driver {
 		String result;
 		url = VariablesResolver.replaceAllVariables(url, originalRequest);
 		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getMethod());
+		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
 		if (cacheable) {
 			result = (String) originalRequest.getParams().getParameter(url);
 			if (result != null)

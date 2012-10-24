@@ -31,7 +31,7 @@ import org.esigate.api.HttpRequest;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
@@ -137,7 +137,7 @@ class IncludeElement extends BaseElement {
 		int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
 		if (idx < 0 && idxLegacyPattern < 0) {
 			page = src;
-			driver = HttpRequestParams.getDriver(httpRequest);
+			driver = HttpRequestHelper.getDriver(httpRequest);
 		} else if (idx >= 0) {
 			int startIdx = idx + PROVIDER_PATTERN.length();
 			int endIndex = src.indexOf("})", startIdx);
@@ -154,7 +154,7 @@ class IncludeElement extends BaseElement {
 
 		if (rewriteAbsoluteUrl) {
 			Map<String, String> replaceRules = new HashMap<String, String>();
-			String baseUrl = HttpRequestParams.getBaseUrl(httpRequest).toString();
+			String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
 			String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
 			String contextBaseUrl;

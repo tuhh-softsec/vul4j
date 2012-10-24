@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 import org.esigate.HttpErrorPage;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ public class Parser {
 
 	public void setHttpRequest(HttpRequest httpRequest) {
 		this.httpRequest = httpRequest;
-		httpResponse = HttpRequestParams.getResponse(httpRequest);
+		httpResponse = HttpRequestHelper.getResponse(httpRequest);
 		if(httpResponse==null)
 			throw new IllegalStateException("HttpRequest has not been initialized properly. HttpResponse is null.");
 	}

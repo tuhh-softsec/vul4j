@@ -23,8 +23,15 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
+import org.apache.http.Header;
+import org.apache.http.HttpVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicRequestLine;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.esigate.api.HttpRequest;
@@ -124,10 +131,6 @@ public class MockHttpRequest implements HttpRequest {
 		return headers.keySet();
 	}
 
-	public String getMethod() {
-		return method;
-	}
-
 	public String getRemoteUser() {
 		return remoteUser;
 	}
@@ -158,6 +161,29 @@ public class MockHttpRequest implements HttpRequest {
 
 	public HttpParams getParams() {
 		return params;
+	}
+
+	public RequestLine getRequestLine() {
+		return new BasicRequestLine(method, uri.toString(), HttpVersion.HTTP_1_1);
+	}
+
+	public Header[] getHeaders(String name) {
+		String value =headers.get(name.toLowerCase());
+		if(value==null)
+			return new Header[]{};
+		return new Header[]{new BasicHeader(name, value)};
+	}
+
+	public Header[] getAllHeaders() {
+		Header[] result = new Header[headers.size()];
+		Iterator<Entry<String, String>> iterator = headers.entrySet().iterator();
+		int i=0;
+		while (iterator.hasNext()) {
+			Entry<String, String> entry = iterator.next();
+			result[i]= new BasicHeader(entry.getKey(), entry.getValue());
+			i++;
+		}
+		return result;
 	}
 
 }

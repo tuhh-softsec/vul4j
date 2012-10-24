@@ -1,19 +1,18 @@
-/*
- *  Copyright 2010 altha.
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- * 
- *       http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
+
 package org.esigate.vars;
 
 import java.io.IOException;
@@ -26,6 +25,8 @@ import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.api.HttpRequest;
+import org.esigate.util.HttpRequestHelper;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,12 +154,12 @@ public class VariablesResolver {
 		String res = null;
 		if (var.indexOf("QUERY_STRING") != -1) {
 			if (arg == null) {
-				res = request.getUri().getRawQuery();
+				res = UriUtils.createUri(request.getRequestLine().getUri()).getRawQuery();
 			} else {
 				res = request.getParameter(arg);
 			}
 		} else if (var.indexOf("HTTP_ACCEPT_LANGUAGE") != -1) {
-			String langs = request.getHeader("Accept-Language");
+			String langs = HttpRequestHelper.getFirstHeader("Accept-Language", request);
 			if (arg == null) {
 				res = langs;
 			} else if (langs.indexOf(arg) == -1) {
@@ -167,12 +168,12 @@ public class VariablesResolver {
 				res = "true";
 			}
 		} else if (var.indexOf("HTTP_HOST") != -1) {
-			res = request.getHeader("Host");
+			res = HttpRequestHelper.getFirstHeader("Host", request);
 		} else if (var.indexOf("HTTP_REFERER") != -1) {
-			res = request.getHeader("Referer");
+			res = HttpRequestHelper.getFirstHeader("Referer", request);
 		} else if (var.indexOf("HTTP_COOKIE") != -1) {
 			if (arg == null) {
-				res = request.getHeader("Cookies");
+				res = HttpRequestHelper.getFirstHeader("Cookies", request);
 			} else {
 				Cookie[] cookies = request.getCookies();
 				for (Cookie c : cookies) {
@@ -184,9 +185,9 @@ public class VariablesResolver {
 			}
 		} else if (var.indexOf("HTTP_USER_AGENT") != -1) {
 			if (arg == null) {
-				res = request.getHeader("User-agent");
+				res = HttpRequestHelper.getFirstHeader("User-agent", request);
 			} else {
-				String userAgent = request.getHeader("User-Agent").toLowerCase();
+				String userAgent = HttpRequestHelper.getFirstHeader("User-Agent", request).toLowerCase();
 				if (arg.equals("os")) {
 					if (userAgent.indexOf("unix") != -1) {
 						res = "UNIX";

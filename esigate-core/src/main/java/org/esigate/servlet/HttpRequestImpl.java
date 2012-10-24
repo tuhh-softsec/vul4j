@@ -18,16 +18,21 @@ package org.esigate.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.Header;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicLineParser;
+import org.apache.http.message.BasicRequestLine;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.esigate.api.HttpRequest;
@@ -39,10 +44,14 @@ public class HttpRequestImpl implements HttpRequest {
 	private final HttpServletRequest parent;
 	private final ServletContext servletContext;
 	private final HttpParams params = new BasicHttpParams();
+	private final RequestLine requestLine;
 
 	private HttpRequestImpl(HttpServletRequest parent, ServletContext servletContext) {
 		this.parent = parent;
 		this.servletContext = servletContext;
+		String uri = UriUtils.createURI(parent.getScheme(), parent.getServerName(), parent.getServerPort(), parent.getRequestURI(), parent.getQueryString(), null).toString();
+		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(parent.getProtocol(), null);
+		this.requestLine = new BasicRequestLine(parent.getMethod(), uri, protocolVersion);
 	}
 
 	public static HttpRequest wrap(HttpServletRequest parent, ServletContext servletContext) {
@@ -52,15 +61,6 @@ public class HttpRequestImpl implements HttpRequest {
 
 	public String getParameter(String name) {
 		return parent.getParameter(name);
-	}
-
-	public String getHeader(String name) {
-		return parent.getHeader(name);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Collection<String> getHeaderNames() {
-		return Collections.<String> list(parent.getHeaderNames());
 	}
 
 	public Cookie[] getCookies() {
@@ -82,10 +82,6 @@ public class HttpRequestImpl implements HttpRequest {
 			}
 		}
 		return result;
-	}
-
-	public String getMethod() {
-		return parent.getMethod();
 	}
 
 	public String getRemoteAddr() {
@@ -125,16 +121,46 @@ public class HttpRequestImpl implements HttpRequest {
 		return session != null ? HttpSessionImpl.wrap(session) : null;
 	}
 
-	public URI getUri() {
-		return UriUtils.createURI(parent.getScheme(), parent.getServerName(), parent.getServerPort(), parent.getRequestURI(), parent.getQueryString(), null);
-	}
-
 	public InputStream getResourceAsStream(String path) {
 		return servletContext.getResourceAsStream(path);
 	}
 
 	public HttpParams getParams() {
 		return params;
+	}
+
+	public RequestLine getRequestLine() {
+		return requestLine;
+	}
+
+	public Header[] getHeaders(String name) {
+		@SuppressWarnings("rawtypes")
+		Enumeration values = parent.getHeaders(name);
+		ArrayList<Header> headers = new ArrayList<Header>();
+		while (values.hasMoreElements()) {
+			String value = (String) values.nextElement();
+			headers.add(new BasicHeader(name, value));
+		}
+		Header[] t = new Header[] {};
+		return headers.toArray(t);
+	}
+
+	public Header[] getAllHeaders() {
+		@SuppressWarnings("rawtypes")
+		Enumeration names = parent.getHeaderNames();
+		ArrayList<Header> headers = new ArrayList<Header>();
+		String name;
+		while (names.hasMoreElements()) {
+			name = (String) names.nextElement();
+			@SuppressWarnings("rawtypes")
+			Enumeration values = parent.getHeaders(name);
+			while (values.hasMoreElements()) {
+				String value = (String) values.nextElement();
+				headers.add(new BasicHeader(name, value));
+			}
+		}
+		Header[] t = new Header[] {};
+		return headers.toArray(t);
 	}
 
 }

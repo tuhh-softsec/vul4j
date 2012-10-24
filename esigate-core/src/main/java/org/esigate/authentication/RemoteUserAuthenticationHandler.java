@@ -21,7 +21,7 @@ import org.apache.http.HttpResponse;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.http.GenericHttpRequest;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 
 /**
  * AuthenticationHandler implementation that retrieves the user passed by the
@@ -38,7 +38,7 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 	}
 
 	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
-		UserContext userContext = HttpRequestParams.getUserContext(httpRequest);
+		UserContext userContext = HttpRequestHelper.getUserContext(httpRequest);
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null) {
 			remoteUser = userContext.getUser();

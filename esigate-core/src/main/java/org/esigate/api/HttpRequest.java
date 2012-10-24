@@ -18,9 +18,9 @@ package org.esigate.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.util.Collection;
 
+import org.apache.http.Header;
+import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.params.HttpParams;
 
@@ -51,38 +51,6 @@ public interface HttpRequest {
 	public String getParameter(String name);
 
 	/**
-	 * Returns the value of the specified request header as a
-	 * <code>String</code>. If the request did not include a header of the
-	 * specified name, this method returns <code>null</code>. If there are
-	 * multiple headers with the same name, this method returns the first head
-	 * in the request. The header name is case insensitive. You can use this
-	 * method with any request header.
-	 * 
-	 * @param name
-	 *            a <code>String</code> specifying the header name
-	 * 
-	 * @return a <code>String</code> containing the value of the requested
-	 *         header, or <code>null</code> if the request does not have a
-	 *         header of that name
-	 */
-	public String getHeader(String name);
-
-	/**
-	 * Returns an enumeration of all the header names this request contains. If
-	 * the request has no headers, this method returns an empty enumeration.
-	 * 
-	 * <p>
-	 * Some servlet containers do not allow servlets to access headers using
-	 * this method, in which case this method returns <code>null</code>
-	 * 
-	 * @return an enumeration of all the header names sent with this request; if
-	 *         the request has no headers, an empty enumeration; if the servlet
-	 *         container does not allow servlets to use this method,
-	 *         <code>null</code>
-	 */
-	public Collection<String> getHeaderNames();
-
-	/**
 	 * Returns an array containing all of the <code>Cookie</code> objects the
 	 * client sent with this request. This method returns <code>null</code> if
 	 * no cookies were sent.
@@ -91,16 +59,6 @@ public interface HttpRequest {
 	 *         request, or <code>null</code> if the request has no cookies
 	 */
 	public Cookie[] getCookies();
-
-	/**
-	 * Returns the name of the HTTP method with which this request was made, for
-	 * example, GET, POST, or PUT. Same as the value of the CGI variable
-	 * REQUEST_METHOD.
-	 * 
-	 * @return a <code>String</code> specifying the name of the method with
-	 *         which this request was made
-	 */
-	public String getMethod();
 
 	/**
 	 * Returns the Internet Protocol (IP) address of the client or last proxy
@@ -207,9 +165,15 @@ public interface HttpRequest {
 	 */
 	public HttpSession getSession(boolean create);
 
-	public URI getUri();
-
 	public InputStream getResourceAsStream(String path);
 
 	public HttpParams getParams();
+	
+	public RequestLine getRequestLine();
+	
+	public Header[] getHeaders(String name);
+	
+	public Header[] getAllHeaders();
+
+
 }

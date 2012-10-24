@@ -24,7 +24,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.test.MockHttpRequest;
 import org.esigate.test.MockHttpResponse;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 
 public class ReplaceElementTest extends TestCase {
 
@@ -35,7 +35,7 @@ public class ReplaceElementTest extends TestCase {
 	protected void setUp() throws IOException, HttpErrorPage {
 		MockDriver provider = new MockDriver("mock");
 		request = new MockHttpRequest();
-		HttpRequestParams.setDriver(request, provider);
+		HttpRequestHelper.setDriver(request, provider);
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
 	}

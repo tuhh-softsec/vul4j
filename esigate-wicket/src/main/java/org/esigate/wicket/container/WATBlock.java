@@ -31,7 +31,7 @@ import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.tags.BlockRenderer;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.esigate.wicket.utils.ResponseWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +135,7 @@ public class WATBlock extends AbstractWatDriverContainer {
 			driver.render(page, null, new ResponseWriter(webResponse), httpRequest, httpResponse, new BlockRenderer(blockName, page), new ReplaceRenderer(replaceRules));
 			if (parseAbsoluteUrl) {
 
-				String baseUrl = HttpRequestParams.getBaseUrl(httpRequest).toString();
+				String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
 				int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
 				if (baseUrlEnd > 0) {
 					baseUrl = baseUrl.substring(0, baseUrlEnd);

@@ -18,12 +18,13 @@ package org.esigate.util;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.http.Header;
 import org.esigate.Driver;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
 
-public class HttpRequestParams {
+public class HttpRequestHelper {
 	private final static String HTTP_RESPONSE = HttpResponse.class.getName();
 	private final static String USER_CONTEXT = UserContext.class.getName();
 	private final static String BASEURLASURL = URL.class.getName();
@@ -69,6 +70,13 @@ public class HttpRequestParams {
 
 	public final static void setParameters(HttpRequest request, Map<String, String> parameters) {
 		request.getParams().setParameter(PARAMETERS, parameters);
+	}
+
+	public final static String getFirstHeader(String name, HttpRequest request) {
+		Header[] values = request.getHeaders(name);
+		if (values.length > 0)
+			return values[0].getValue();
+		return null;
 	}
 
 }

@@ -76,6 +76,7 @@ import org.esigate.api.HttpRequest;
 import org.esigate.cache.CacheConfigHelper;
 import org.esigate.extension.Extension;
 import org.esigate.util.FilterList;
+import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.PropertiesUtil;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -190,7 +191,7 @@ public class HttpClientHelper implements Extension {
 		HttpRoute route = null;
 		// Preserve host if required
 		if (preserveHost) {
-			virtualHost = UriUtils.extractHost(originalRequest.getUri());
+			virtualHost = UriUtils.extractHost(originalRequest.getRequestLine().getUri());
 			targetHost = virtualHost;
 			// force the route to the server in case of load balancing because.
 			// The request and the host header (virtualHost) will be the same as
@@ -203,13 +204,14 @@ public class HttpClientHelper implements Extension {
 				route = new HttpRoute(uriHost, null, proxyHost, false);
 			uri = UriUtils.rewriteURI(uri, targetHost).toString();
 		}
-		String method = (proxy) ? originalRequest.getMethod().toUpperCase() : "GET";
+		String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
 		GenericHttpRequest httpRequest;
 		if (SIMPLE_METHODS.contains(method)) {
 			httpRequest = new GenericHttpRequest(method, uri);
 		} else if (ENTITY_METHODS.contains(method)) {
 			GenericHttpRequest result = new GenericHttpRequest(method, uri);
-			long contentLength = (originalRequest.getHeader(HttpHeaders.CONTENT_LENGTH) != null) ? Long.parseLong(originalRequest.getHeader(HttpHeaders.CONTENT_LENGTH)) : -1;
+			String contentLengthHeader = HttpRequestHelper.getFirstHeader(HttpHeaders.CONTENT_LENGTH, originalRequest);
+			long contentLength = (contentLengthHeader != null) ? Long.parseLong(contentLengthHeader) : -1;
 			InputStreamEntity inputStreamEntity;
 			try {
 				inputStreamEntity = new InputStreamEntity(originalRequest.getInputStream(), contentLength);
@@ -219,8 +221,9 @@ public class HttpClientHelper implements Extension {
 			if (originalRequest.getContentType() != null) {
 				inputStreamEntity.setContentType(originalRequest.getContentType());
 			}
-			if (originalRequest.getHeader(HttpHeaders.CONTENT_ENCODING) != null) {
-				inputStreamEntity.setContentEncoding(originalRequest.getHeader(HttpHeaders.CONTENT_ENCODING));
+			String contentEncodingHeader = HttpRequestHelper.getFirstHeader(HttpHeaders.CONTENT_ENCODING, originalRequest);
+			if (contentEncodingHeader != null) {
+				inputStreamEntity.setContentEncoding(contentEncodingHeader);
 			}
 			result.setEntity(inputStreamEntity);
 			httpRequest = result;
@@ -250,33 +253,30 @@ public class HttpClientHelper implements Extension {
 	}
 
 	private void copyHeaders(HttpRequest originalRequest, org.apache.http.HttpRequest httpRequest) throws HttpErrorPage {
-		String originalUri = originalRequest.getUri().toString();
+		String originalUri = originalRequest.getRequestLine().getUri();
 		String uri = httpRequest.getRequestLine().getUri();
-		for (String name : originalRequest.getHeaderNames()) {
+		for (Header header : originalRequest.getAllHeaders()) {
 			// Special headers
 			// User-agent must be set in a specific way
-			if (HttpHeaders.USER_AGENT.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.USER_AGENT))
-				httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, originalRequest.getHeader(name));
+			if (HttpHeaders.USER_AGENT.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.USER_AGENT))
+				httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, header.getValue());
 			// Referer must be rewritten
-			else if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
-				String value = originalRequest.getHeader(name);
+			else if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
+				String value = header.getValue();
 				try {
 					value = UriUtils.translateUrl(value, originalUri, uri);
 				} catch (MalformedURLException e) {
 					throw new HttpErrorPage(HttpStatus.SC_BAD_REQUEST, "Bad request", e);
 				}
-				httpRequest.addHeader(name, value);
+				httpRequest.addHeader(header.getName(), value);
 				// All other headers are copied if allowed
-			} else if (isForwardedRequestHeader(name)) {
-				String value = originalRequest.getHeader(name);
-				if (value != null) {
-					httpRequest.addHeader(name, value);
-				}
+			} else if (isForwardedRequestHeader(header.getName())) {
+				httpRequest.addHeader(header);
 			}
 		}
 		// process X-Forwarded-For header (is missing in request and not
 		// blacklisted) -> use remote address instead
-		if (originalRequest.getHeader("X-Forwarded-For") == null && isForwardedRequestHeader("X-Forwarded-For") && originalRequest.getRemoteAddr() != null) {
+		if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null && isForwardedRequestHeader("X-Forwarded-For") && originalRequest.getRemoteAddr() != null) {
 			httpRequest.addHeader("X-Forwarded-For", originalRequest.getRemoteAddr());
 		}
 	}
@@ -291,7 +291,7 @@ public class HttpClientHelper implements Extension {
 	private void copyHeaders(HttpResponse httpClientResponse, org.esigate.api.HttpResponse output) throws MalformedURLException {
 		org.apache.http.HttpRequest httpRequest = (org.apache.http.HttpRequest) httpClientResponse.getParams().getParameter(SENT_REQUEST_KEY);
 		HttpRequest originalRequest = (HttpRequest) httpClientResponse.getParams().getParameter(ORIGINAL_REQUEST_KEY);
-		String originalUri = originalRequest.getUri().toString();
+		String originalUri = originalRequest.getRequestLine().getUri();
 		String uri = httpRequest.getRequestLine().getUri();
 		for (Header header : httpClientResponse.getAllHeaders()) {
 			String name = header.getName();
@@ -364,7 +364,8 @@ public class HttpClientHelper implements Extension {
 			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
 			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 		}
-		// FIXME workaround for a bug in http client cache that does not keep params in response
+		// FIXME workaround for a bug in http client cache that does not keep
+		// params in response
 		result.setParams(httpRequest.getParams());
 		return result;
 

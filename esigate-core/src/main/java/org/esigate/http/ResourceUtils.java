@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 
 /**
@@ -46,7 +46,7 @@ public class ResourceUtils {
 			if (charset == null) {
 				charset = "ISO-8859-1";
 			}
-			String originalQuerystring = originalRequest.getUri().getRawQuery();
+			String originalQuerystring = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getRawQuery();
 			if (proxy && originalQuerystring != null) {
 				// Remove jsessionid from request if it is present
 				// As we are in a java application, the container might add
@@ -62,7 +62,7 @@ public class ResourceUtils {
 				}
 				queryString.append(originalQuerystring);
 			}
-			Map<String, String> parameters = HttpRequestParams.getParameters(originalRequest);
+			Map<String, String> parameters = HttpRequestHelper.getParameters(originalRequest);
 			if (parameters != null) {
 				ResourceUtils.appendParameters(queryString, charset, parameters);
 			}
@@ -96,7 +96,7 @@ public class ResourceUtils {
 	public final static String getHttpUrlWithQueryString(String url, HttpRequest originalRequest, boolean proxy) {
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			// Relative URL, we need to add the driver base url
-			String baseUrl = HttpRequestParams.getBaseUrl(originalRequest).toString();
+			String baseUrl = HttpRequestHelper.getBaseUrl(originalRequest).toString();
 			if (baseUrl != null) {
 				url = concatUrl(baseUrl, url);
 			}

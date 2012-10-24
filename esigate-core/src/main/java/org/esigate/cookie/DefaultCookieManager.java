@@ -30,7 +30,8 @@ import org.esigate.Parameters;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
+import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +63,11 @@ public class DefaultCookieManager implements CookieManager {
 			LOG.info("Cookie " + toString(cookie) + " -> discarding");
 		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
 			LOG.info("Cookie " + toString(cookie) + " -> forwarding");
-			HttpResponse response = HttpRequestParams.getResponse(originalRequest);
+			HttpResponse response = HttpRequestHelper.getResponse(originalRequest);
 			response.addCookie(rewriteForBrowser(cookie, originalRequest));
 		} else {
 			LOG.info("Cookie " + toString(cookie) + " -> storing to context");
-			UserContext userContext = HttpRequestParams.getUserContext(originalRequest);
+			UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 			@SuppressWarnings("unchecked")
 			List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 			if (cookies == null)
@@ -78,7 +79,7 @@ public class DefaultCookieManager implements CookieManager {
 
 	public List<Cookie> getCookies(HttpRequest originalRequest) {
 		List<Cookie> cookies = new ArrayList<Cookie>();
-		UserContext userContext = HttpRequestParams.getUserContext(originalRequest);
+		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 		@SuppressWarnings("unchecked")
 		List<Cookie> sessionCookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (sessionCookies != null)
@@ -103,10 +104,10 @@ public class DefaultCookieManager implements CookieManager {
 		BasicClientCookie2 httpClientCookie = new BasicClientCookie2(name, cookie.getValue());
 		httpClientCookie.setSecure(false);
 		String domain;
-		if (HttpRequestParams.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
-			domain = originalRequest.getUri().getHost();
+		if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
+			domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString();
 		} else {
-			domain = HttpRequestParams.getBaseUrl(originalRequest).getHost();
+			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		}
 		httpClientCookie.setDomain(domain);
 		httpClientCookie.setPath("/");
@@ -147,11 +148,11 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestParams.getBaseUrl(originalRequest).getHost(), originalRequest.getUri().getHost());
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),  UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
-		String requestPath = originalRequest.getUri().getRawQuery();
+		String requestPath = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getRawQuery();
 		String path = originalPath;
 		if (requestPath == null || !requestPath.startsWith(originalPath)) {
 			path = "/";
@@ -205,7 +206,7 @@ public class DefaultCookieManager implements CookieManager {
 	public boolean clearExpired(Date date, HttpRequest originalRequest) {
 		if (date == null)
 			return false;
-		UserContext userContext = HttpRequestParams.getUserContext(originalRequest);
+		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 		@SuppressWarnings("unchecked")
 		List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (cookies != null) {
@@ -222,7 +223,7 @@ public class DefaultCookieManager implements CookieManager {
 	}
 
 	public void clear(HttpRequest originalRequest) {
-		UserContext userContext = HttpRequestParams.getUserContext(originalRequest);
+		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 		@SuppressWarnings("unchecked")
 		List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (cookies != null) {

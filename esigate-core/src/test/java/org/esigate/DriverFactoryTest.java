@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.esigate.api.HttpRequest;
 import org.esigate.test.MockHttpRequest;
 import org.esigate.test.MockHttpResponse;
-import org.esigate.util.HttpRequestParams;
+import org.esigate.util.HttpRequestHelper;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -52,7 +52,7 @@ public class DriverFactoryTest extends TestCase {
 
 		HttpRequest request = new MockHttpRequest();
 		instance.initHttpRequestParams(request, new MockHttpResponse(), null);
-		assertEquals("http://base.url", HttpRequestParams.getBaseUrl(request).toString());
+		assertEquals("http://base.url", HttpRequestHelper.getBaseUrl(request).toString());
 	}
 
 	public void testMergeProperties() {
