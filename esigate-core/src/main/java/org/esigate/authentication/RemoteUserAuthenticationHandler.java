@@ -18,29 +18,32 @@ package org.esigate.authentication;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
-import org.esigate.ResourceContext;
 import org.esigate.UserContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.http.GenericHttpRequest;
+import org.esigate.util.HttpRequestParams;
 
 /**
- * AuthenticationHandler implementation that retrieves the user passed by the servlet container or set manually into the RequestContext and transmits it as a HTTP header X_REMOTE_USER in all requests
+ * AuthenticationHandler implementation that retrieves the user passed by the
+ * servlet container or set manually into the RequestContext and transmits it as
+ * a HTTP header X_REMOTE_USER in all requests
  * 
  * @author Francois-Xavier Bonnet
  * 
  */
 public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 
-	public boolean needsNewRequest(HttpResponse response, ResourceContext requestContext) {
+	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
 		return false;
 	}
 
-	public void preRequest(GenericHttpRequest request, ResourceContext requestContext) {
-		UserContext userContext = requestContext.getUserContext();
+	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
+		UserContext userContext = HttpRequestParams.getUserContext(httpRequest);
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null) {
 			remoteUser = userContext.getUser();
-		} else if (requestContext.getOriginalRequest().getRemoteUser() != null) {
-			remoteUser = requestContext.getOriginalRequest().getRemoteUser();
+		} else if (httpRequest.getRemoteUser() != null) {
+			remoteUser = httpRequest.getRemoteUser();
 		}
 		if (remoteUser != null) {
 			request.addHeader("X_REMOTE_USER", remoteUser);
@@ -51,7 +54,7 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 		// Nothing to do
 	}
 
-	public boolean beforeProxy(ResourceContext requestContext) {
+	public boolean beforeProxy(HttpRequest httpRequest) {
 		return true;
 	}
 

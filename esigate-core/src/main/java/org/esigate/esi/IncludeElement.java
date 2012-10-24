@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.esi;
 
 import java.io.IOException;
@@ -12,10 +27,11 @@ import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
+import org.esigate.util.HttpRequestParams;
 import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.esigate.xml.XpathRenderer;
@@ -112,7 +128,7 @@ class IncludeElement extends BaseElement {
 		String xslt = tag.getAttribute("stylesheet");
 		boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-		ResourceContext resourceContext = ctx.getResourceContext();
+		HttpRequest httpRequest = ctx.getHttpRequest();
 		List<Renderer> rendererList = new ArrayList<Renderer>();
 		Driver driver;
 		String page;
@@ -121,7 +137,7 @@ class IncludeElement extends BaseElement {
 		int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
 		if (idx < 0 && idxLegacyPattern < 0) {
 			page = src;
-			driver = ctx.getResourceContext().getDriver();
+			driver = HttpRequestParams.getDriver(httpRequest);
 		} else if (idx >= 0) {
 			int startIdx = idx + PROVIDER_PATTERN.length();
 			int endIndex = src.indexOf("})", startIdx);
@@ -138,7 +154,7 @@ class IncludeElement extends BaseElement {
 
 		if (rewriteAbsoluteUrl) {
 			Map<String, String> replaceRules = new HashMap<String, String>();
-			String baseUrl = resourceContext.getBaseURL();
+			String baseUrl = HttpRequestParams.getBaseUrl(httpRequest).toString();
 			String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL(baseUrl);
 
 			String contextBaseUrl;
@@ -159,7 +175,7 @@ class IncludeElement extends BaseElement {
 			rendererList.add(new ReplaceRenderer(replaceRules));
 		}
 
-		page = VariablesResolver.replaceAllVariables(page, resourceContext.getOriginalRequest());
+		page = VariablesResolver.replaceAllVariables(page, httpRequest);
 		InlineCache ic = InlineCache.getFragment(src);
 		if (ic != null && !ic.isExpired()) {
 			String cache = ic.getFragment();
@@ -176,9 +192,9 @@ class IncludeElement extends BaseElement {
 			if (xpath != null) {
 				rendererList.add(new XpathRenderer(xpath));
 			} else if (xslt != null) {
-				rendererList.add(new XsltRenderer(xslt, driver, resourceContext));
+				rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
 			}
-			driver.render(page, outAdapter, resourceContext, rendererList.toArray(new Renderer[rendererList.size()]));
+			driver.render(page, null, outAdapter, httpRequest, ctx.getHttpResponse(), rendererList.toArray(new Renderer[rendererList.size()]));
 		}
 	}
 

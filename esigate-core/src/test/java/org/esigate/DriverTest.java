@@ -30,12 +30,17 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.esigate.api.HttpRequest;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockHttpClient;
+import org.esigate.tags.BlockRenderer;
+import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.MockHttpRequest;
 import org.esigate.test.MockHttpResponse;
 
 public class DriverTest extends TestCase {
+	
+	HttpRequest httpRequest;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -43,19 +48,21 @@ public class DriverTest extends TestCase {
 		provider.addResource("/testBlock", "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
 		provider.addResource("/testTemplateFullPage", "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
 		provider.addResource("/testTemplate", "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
+		httpRequest = new MockHttpRequest();
 	}
 
 	public void testRenderBlock() throws IOException, HttpErrorPage {
 		Writer out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("/testBlock", "A", out, null, null, new HashMap<String, String>(), null, false);
+		DriverFactory.getInstance("mock").render("/testBlock", null, out, httpRequest, null, new BlockRenderer("A", "/testBlock"));
+
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("$(vartestBlock)", "A", out, null, null, new HashMap<String, String>(), null, false);
+		DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, httpRequest, null, new BlockRenderer("A", "$(vartestBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderBlock("/$(vartest)$(varBlock)", "A", out, null, null, new HashMap<String, String>(), null, false);
+		DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, httpRequest, null, new BlockRenderer("A", "/$(vartest)$(varBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -65,7 +72,7 @@ public class DriverTest extends TestCase {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("key", "'value'");
 		params.put("some other key", "'another value'");
-		DriverFactory.getInstance("mock").renderTemplate("/testTemplateFullPage", null, out, null, null, params, null, null);
+		DriverFactory.getInstance("mock").render("/testTemplateFullPage", null, out, httpRequest, null, new TemplateRenderer(null, params, "/testTemplateFullPage"));
 		assertFalse(out.toString().contains("key"));
 		assertTrue(out.toString().contains("'value'"));
 		assertFalse(out.toString().contains("some other key"));
@@ -74,11 +81,11 @@ public class DriverTest extends TestCase {
 
 	public void testRenderTemplate() throws IOException, HttpErrorPage {
 		StringWriter out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/testTemplate", "A", out, null, null, null, null, null);
+		DriverFactory.getInstance("mock").render("/testTemplate", null, out, httpRequest, null, new TemplateRenderer("A", null, "/testTemplate"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").renderTemplate("/test$(varTemplate)", "A", out, null, null, null, null, null);
+		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, httpRequest, null, new TemplateRenderer("A", null, "/test$(varTemplate)"));
 		assertEquals("some text goes here", out.toString());
 
 	}

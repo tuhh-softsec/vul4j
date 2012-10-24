@@ -64,6 +64,7 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.DefaultedHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
@@ -226,6 +227,7 @@ public class HttpClientHelper implements Extension {
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
+		httpRequest.setParams(new DefaultedHttpParams(originalRequest.getParams(), null));
 		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.

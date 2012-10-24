@@ -20,8 +20,9 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
+import org.esigate.util.HttpRequestParams;
 import org.esigate.util.UriUtils;
 
 /**
@@ -38,21 +39,21 @@ public class ResourceUtils {
 
 	}
 
-	private final static String buildQueryString(ResourceContext target, boolean proxy) {
+	private final static String buildQueryString(HttpRequest originalRequest, boolean proxy) {
 		try {
 			StringBuilder queryString = new StringBuilder();
-			String charset = target.getOriginalRequest().getCharacterEncoding();
+			String charset = originalRequest.getCharacterEncoding();
 			if (charset == null) {
 				charset = "ISO-8859-1";
 			}
-			String originalQuerystring = target.getOriginalRequest().getUri().getRawQuery();
+			String originalQuerystring = originalRequest.getUri().getRawQuery();
 			if (proxy && originalQuerystring != null) {
 				// Remove jsessionid from request if it is present
 				// As we are in a java application, the container might add
 				// jsessionid to the querystring. We must not forward it to
 				// included applications.
 				String jsessionid = null;
-				HttpSession session = target.getOriginalRequest().getSession(false);
+				HttpSession session = originalRequest.getSession(false);
 				if (session != null) {
 					jsessionid = session.getId();
 				}
@@ -61,8 +62,9 @@ public class ResourceUtils {
 				}
 				queryString.append(originalQuerystring);
 			}
-			if (target.getParameters() != null) {
-				ResourceUtils.appendParameters(queryString, charset, target.getParameters());
+			Map<String, String> parameters = HttpRequestParams.getParameters(originalRequest);
+			if (parameters != null) {
+				ResourceUtils.appendParameters(queryString, charset, parameters);
 			}
 			return queryString.toString();
 		} catch (UnsupportedEncodingException e) {
@@ -91,15 +93,15 @@ public class ResourceUtils {
 		return url.toString();
 	}
 
-	public final static String getHttpUrlWithQueryString(ResourceContext target, boolean proxy) {
-		String url = target.getRelUrl();
+	public final static String getHttpUrlWithQueryString(String url, HttpRequest originalRequest, boolean proxy) {
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			// Relative URL, we need to add the driver base url
-			if (target.getBaseURL() != null) {
-				url = concatUrl(target.getBaseURL(), url);
+			String baseUrl = HttpRequestParams.getBaseUrl(originalRequest).toString();
+			if (baseUrl != null) {
+				url = concatUrl(baseUrl, url);
 			}
 		}
-		String queryString = ResourceUtils.buildQueryString(target, proxy);
+		String queryString = ResourceUtils.buildQueryString(originalRequest, proxy);
 		if (queryString.length() == 0) {
 			return url;
 		} else {

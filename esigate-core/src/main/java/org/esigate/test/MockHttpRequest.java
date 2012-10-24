@@ -25,12 +25,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.apache.http.cookie.Cookie;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 import org.esigate.util.UriUtils;
 
 public class MockHttpRequest implements HttpRequest {
-	private final HashMap<String, Object> attributes = new HashMap<String, Object>();
 	private String characterEncoding;
 	private URI uri;
 	private String method = "GET";
@@ -40,6 +41,7 @@ public class MockHttpRequest implements HttpRequest {
 	private byte[] content;
 	private boolean consumed = false;
 	private String remoteUser;
+	private HttpParams params = new BasicHttpParams();
 
 	public MockHttpRequest(String uri) {
 		setUri(uri);
@@ -52,10 +54,6 @@ public class MockHttpRequest implements HttpRequest {
 	public void setUri(String uri) {
 		this.uri = UriUtils.createUri(uri);
 		setHeader("Host", getUri().getHost());
-	}
-
-	public Object getAttribute(String name) {
-		return attributes.get(name);
 	}
 
 	public String getCharacterEncoding() {
@@ -99,10 +97,6 @@ public class MockHttpRequest implements HttpRequest {
 
 	public String getRemoteAddr() {
 		return null;
-	}
-
-	public void setAttribute(String name, Object o) {
-		attributes.put(name, o);
 	}
 
 	public boolean isSecure() {
@@ -160,6 +154,10 @@ public class MockHttpRequest implements HttpRequest {
 
 	public InputStream getResourceAsStream(String path) {
 		throw new RuntimeException("Method not implemented");
+	}
+
+	public HttpParams getParams() {
+		return params;
 	}
 
 }

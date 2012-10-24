@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.cookie.CookieManager;
 
 /**
@@ -34,28 +34,28 @@ import org.esigate.cookie.CookieManager;
  */
 public class RequestCookieStore implements CookieStore {
 
-	private final ResourceContext resourceContext;
+	private final HttpRequest originalRequest;
 	private final CookieManager cookieManager;
 
-	public RequestCookieStore(CookieManager cookieManager, ResourceContext resourceContext) {
-		this.resourceContext = resourceContext;
+	public RequestCookieStore(CookieManager cookieManager, HttpRequest originalRequest) {
+		this.originalRequest = originalRequest;
 		this.cookieManager = cookieManager;
 	}
 
 	public void addCookie(Cookie cookie) {
-		cookieManager.addCookie(cookie, resourceContext);
+		cookieManager.addCookie(cookie, originalRequest);
 	}
 
 	public List<Cookie> getCookies() {
-		return cookieManager.getCookies(resourceContext);
+		return cookieManager.getCookies(originalRequest);
 	}
 
 	public boolean clearExpired(Date date) {
-		return cookieManager.clearExpired(date,resourceContext);
+		return cookieManager.clearExpired(date,originalRequest);
 	}
 
 	public void clear() {
-		cookieManager.clear(resourceContext);
+		cookieManager.clear(originalRequest);
 	}
 
 }

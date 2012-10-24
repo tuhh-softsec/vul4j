@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.esigate.api.HttpRequest;
+
 public class MockDriver extends Driver {
 	private final HashMap<String, String> resources = new HashMap<String, String>();
 
@@ -46,10 +48,10 @@ public class MockDriver extends Driver {
 	}
 
 	@Override
-	protected String getResourceAsString(ResourceContext target) throws HttpErrorPage {
-		String result = resources.get(target.getRelUrl());
+	public String getResourceAsString(String relUrl, HttpRequest httpRequest) throws HttpErrorPage {
+		String result = resources.get(relUrl);
 		if (result == null) {
-			throw new HttpErrorPage(404, "Not found", "The page: " + target.getRelUrl() + " does not exist");
+			throw new HttpErrorPage(404, "Not found", "The page: " + relUrl + " does not exist");
 		}
 		return result;
 	}

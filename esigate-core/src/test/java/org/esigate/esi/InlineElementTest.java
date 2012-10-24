@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.esi;
 
 import java.io.IOException;
@@ -7,8 +22,8 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
 
 public class InlineElementTest extends TestCase {
 	private MockDriver provider;
@@ -20,13 +35,14 @@ public class InlineElementTest extends TestCase {
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		request = new MockHttpRequest();
+		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
 	}
 
 	public void testInlineElement() throws IOException, HttpErrorPage {
 		String page = "begin <esi:inline name=\"someUri\" fetchable=\"yes\">inside inline</esi:inline>end";
 		EsiRenderer tested = new EsiRenderer();
 		StringWriter out = new StringWriter();
-		tested.render(new ResourceContext(provider, null, null, request, null), page, out);
+		tested.render(request, page, out);
 		assertEquals("begin end", out.toString());
 		InlineCache actual = InlineCache.getFragment("someUri");
 		assertNotNull(actual);

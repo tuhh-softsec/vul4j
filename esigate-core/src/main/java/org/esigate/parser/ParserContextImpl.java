@@ -1,10 +1,26 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.parser;
 
 import java.io.IOException;
 import java.util.Stack;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
 
 /**
  * 
@@ -15,13 +31,15 @@ import org.esigate.ResourceContext;
  */
 class ParserContextImpl implements ParserContext {
 	private final RootAdapter root;
-	private final ResourceContext resourceContext;
+	private final HttpRequest httpRequest;
+	private final HttpResponse httpResponse;
 
 	private final Stack<Pair> stack = new Stack<Pair>();
 
-	ParserContextImpl(Appendable root, ResourceContext resourceContext) {
+	ParserContextImpl(Appendable root, HttpRequest httpRequest, HttpResponse httpResponse) {
 		this.root = new RootAdapter(root);
-		this.resourceContext = resourceContext;
+		this.httpRequest = httpRequest;
+		this.httpResponse = httpResponse;
 	}
 
 	public <T> T findAncestor(Class<T> type) {
@@ -47,7 +65,7 @@ class ParserContextImpl implements ParserContext {
 		for (int i = stack.size() - 1; i > -1; i--) {
 			Element element = stack.elementAt(i).element;
 			if (element.onError(e, this)) {
-				result= true;
+				result = true;
 				break;
 			}
 		}
@@ -58,10 +76,12 @@ class ParserContextImpl implements ParserContext {
 		element.onTagStart(tag, this);
 		stack.push(new Pair(type, element));
 	}
+
 	void endElement(String tag) throws IOException, HttpErrorPage {
 		Element element = stack.pop().element;
 		element.onTagEnd(tag, this);
 	}
+
 	boolean isCurrentTagEnd(String tag) {
 		return !stack.isEmpty() && stack.peek().type.isEndTag(tag);
 	}
@@ -70,6 +90,7 @@ class ParserContextImpl implements ParserContext {
 	void characters(CharSequence cs) throws IOException {
 		characters(cs, 0, cs.length());
 	}
+
 	/** Writes characters into current writer. */
 	void characters(CharSequence csq, int start, int end) throws IOException {
 		getCurrent().characters(csq, start, end);
@@ -78,8 +99,9 @@ class ParserContextImpl implements ParserContext {
 	public Element getCurrent() {
 		return (!stack.isEmpty()) ? stack.peek().element : root;
 	}
-	public ResourceContext getResourceContext() {
-		return resourceContext;
+
+	public HttpRequest getHttpRequest() {
+		return httpRequest;
 	}
 
 	private static class Pair {
@@ -91,7 +113,7 @@ class ParserContextImpl implements ParserContext {
 			this.element = element;
 		}
 	}
-	
+
 	private static class RootAdapter implements Element {
 		private final Appendable root;
 
@@ -99,16 +121,26 @@ class ParserContextImpl implements ParserContext {
 			this.root = root;
 		}
 
-		public void onTagStart(String tag, ParserContext ctx) { }
+		public void onTagStart(String tag, ParserContext ctx) {
+		}
 
-		public void onTagEnd(String tag, ParserContext ctx) { }
+		public void onTagEnd(String tag, ParserContext ctx) {
+		}
 
-		public boolean onError(Exception e, ParserContext ctx) { return false; }
+		public boolean onError(Exception e, ParserContext ctx) {
+			return false;
+		}
 
 		public void characters(CharSequence csq, int start, int end) throws IOException {
 			root.append(csq, start, end);
 		}
 
-		public boolean isClosed() { return false; }
+		public boolean isClosed() {
+			return false;
+		}
+	}
+
+	public HttpResponse getHttpResponse() {
+		return httpResponse;
 	}
 }

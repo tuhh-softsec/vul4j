@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.aggregator;
 
 import java.io.IOException;
@@ -8,7 +23,6 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.tags.BlockRenderer;
-
 
 class IncludeBlockElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
@@ -41,8 +55,7 @@ class IncludeBlockElement implements Element {
 		String page = tagAttributes.getPage();
 		String name = tagAttributes.getName();
 
-		driver.render(page, new Adapter(ctx.getCurrent()), ctx.getResourceContext(),
-				new BlockRenderer(name, page), new AggregateRenderer());
+		driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest(), ctx.getHttpResponse(), new BlockRenderer(name, page), new AggregateRenderer());
 	}
 
 	public boolean isClosed() {

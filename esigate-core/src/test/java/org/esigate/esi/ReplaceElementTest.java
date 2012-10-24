@@ -22,27 +22,29 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
+import org.esigate.util.HttpRequestParams;
 
 public class ReplaceElementTest extends TestCase {
 
-	private ResourceContext ctx;
 	private EsiRenderer tested;
+	private MockHttpRequest request;
 
 	@Override
-	protected void setUp() throws IOException {
+	protected void setUp() throws IOException, HttpErrorPage {
 		MockDriver provider = new MockDriver("mock");
-		MockHttpRequest request = new MockHttpRequest();
-		ctx = new ResourceContext(provider, null, null, request, null);
+		request = new MockHttpRequest();
+		HttpRequestParams.setDriver(request, provider);
 		tested = new EsiRenderer();
+		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
 	}
 
 	public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {
 		String page = "begin <esi:replace fragment=\"test\">test</esi:replace> end";
 		StringWriter out = new StringWriter();
 		try {
-			tested.render(ctx, page, out);
+			tested.render(request, page, out);
 		} catch (EsiSyntaxError e) {
 			return;
 		}

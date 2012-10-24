@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.api;
 
 import java.io.IOException;
@@ -7,6 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 
 import org.apache.http.cookie.Cookie;
+import org.apache.http.params.HttpParams;
 
 public interface HttpRequest {
 	/**
@@ -153,48 +169,6 @@ public interface HttpRequest {
 	public String getRemoteUser();
 
 	/**
-	 * Returns the value of the named attribute as an <code>Object</code>, or
-	 * <code>null</code> if no attribute of the given name exists.
-	 * 
-	 * <p>
-	 * Attributes can be set two ways. The servlet container may set attributes
-	 * to make available custom information about a request. Attributes can also
-	 * be set programatically using {@link #setAttribute}. This allows
-	 * information to be embedded into a request before a
-	 * <code>RequestDispatcher</code> call.
-	 * 
-	 * <p>
-	 * Attribute names should follow the same conventions as package names. This
-	 * specification reserves names matching <code>java.*</code>,
-	 * <code>javax.*</code>, and <code>sun.*</code>.
-	 * 
-	 * @param name
-	 *            a <code>String</code> specifying the name of the attribute
-	 * 
-	 * @return an <code>Object</code> containing the value of the attribute, or
-	 *         <code>null</code> if the attribute does not exist
-	 */
-	public Object getAttribute(String name);
-
-	/**
-	 * Stores an attribute in this request. Attributes are reset between
-	 * requests. This method is most often used in conjunction with
-	 * <code>RequestDispatcher</code>.
-	 * 
-	 * <p>
-	 * Attribute names should follow the same conventions as package names.
-	 * Names beginning with <code>java.*</code>, <code>javax.*</code>, and
-	 * <code>com.sun.*</code>, are reserved for use by Sun Microsystems.
-	 * 
-	 * @param name
-	 *            a <code>String</code> specifying the name of the attribute
-	 * 
-	 * @param o
-	 *            the <code>Object</code> to be stored
-	 */
-	public void setAttribute(String name, Object o);
-
-	/**
 	 * Returns a <code>java.security.Principal</code> object containing the name
 	 * of the current authenticated user. If the user has not been
 	 * authenticated, the method returns <code>null</code>.
@@ -236,4 +210,6 @@ public interface HttpRequest {
 	public URI getUri();
 
 	public InputStream getResourceAsStream(String path);
+
+	public HttpParams getParams();
 }

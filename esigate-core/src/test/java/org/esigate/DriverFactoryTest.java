@@ -23,8 +23,10 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.easymock.EasyMock;
 import org.esigate.api.HttpRequest;
+import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
+import org.esigate.util.HttpRequestParams;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -33,7 +35,7 @@ public class DriverFactoryTest extends TestCase {
 		DriverFactory.configure(new Properties());
 	}
 
-	public void testConfigureStringProperties1() {
+	public void testConfigureStringProperties1() throws HttpErrorPage {
 		String id = "foo";
 		try {
 			DriverFactory.getInstance(id);
@@ -48,10 +50,9 @@ public class DriverFactoryTest extends TestCase {
 		Driver instance = DriverFactory.getInstance(id);
 		assertNotNull(instance);
 
-		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		ResourceContext resourceContext = new ResourceContext(instance, "/test", null, request, null);
-
-		assertEquals("http://base.url", resourceContext.getBaseURL());
+		HttpRequest request = new MockHttpRequest();
+		instance.initHttpRequestParams(request, new MockHttpResponse(), null);
+		assertEquals("http://base.url", HttpRequestParams.getBaseUrl(request).toString());
 	}
 
 	public void testMergeProperties() {

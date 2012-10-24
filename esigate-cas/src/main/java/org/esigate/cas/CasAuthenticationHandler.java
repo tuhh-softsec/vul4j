@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.cas;
 
 import java.security.Principal;
@@ -5,10 +20,10 @@ import java.util.Properties;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.esigate.ResourceContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.http.GenericHttpRequest;
+import org.esigate.util.HttpRequestParams;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +44,9 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 	private boolean springSecurity;
 	private String springSecurityUrl;
 
-	private String addCasAuthentication(String location, ResourceContext requestContext) {
+	private String addCasAuthentication(String location, HttpRequest request) {
 		String resultLocation = location;
-		Principal principal = requestContext.getOriginalRequest().getUserPrincipal();
+		Principal principal = request.getUserPrincipal();
 		if (principal != null && principal instanceof AttributePrincipal) {
 			AttributePrincipal casPrincipal = (AttributePrincipal) principal;
 			LOG.debug("User logged in CAS as: " + casPrincipal.getName());
@@ -44,7 +59,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 					LOG.debug("params: " + params.substring(1));
 				}
 				if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-					resultLocation = requestContext.getBaseURL() + springSecurityUrl + ((params != null) ? params : "");
+					resultLocation = HttpRequestParams.getBaseUrl(request) + springSecurityUrl + ((params != null) ? params : "");
 					springRedirectParam = "&spring-security-redirect=" + location;
 					LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
 				}
@@ -63,7 +78,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		return resultLocation;
 	}
 
-	public boolean beforeProxy(ResourceContext requestContext) {
+	public boolean beforeProxy(HttpRequest request) {
 		return true;
 	}
 
@@ -81,10 +96,8 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
 	}
 
-	public boolean needsNewRequest(HttpResponse httpResponse, ResourceContext requestContext) {
-		HttpRequest httpServletRequest = requestContext.getOriginalRequest();
-
-		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
+	public boolean needsNewRequest(HttpResponse httpResponse, HttpRequest request) {
+		if (request.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
 			// Calculating the URL we may have been redirected to, as
 			// automatic redirect following is activated
 			Header LocationHeader = httpResponse.getFirstHeader("Location");
@@ -95,7 +108,7 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 			if (currentLocation != null && currentLocation.contains(loginUrl)) {
 				// If the user is authenticated we need a second request with
 				// the proxy ticket
-				Principal principal = requestContext.getOriginalRequest().getUserPrincipal();
+				Principal principal = request.getUserPrincipal();
 				if (principal != null && principal instanceof AttributePrincipal) {
 					return true;
 				}
@@ -104,11 +117,10 @@ public class CasAuthenticationHandler implements AuthenticationHandler {
 		return false;
 	}
 
-	public void preRequest(GenericHttpRequest request, ResourceContext requestContext) {
-		HttpRequest httpServletRequest = requestContext.getOriginalRequest();
-		if (httpServletRequest.getAttribute(SECOND_REQUEST) != null) {
-			request.setUri(addCasAuthentication(request.getRequestLine().getUri(), requestContext));
+	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
+		if (httpRequest.getParams().getBooleanParameter(SECOND_REQUEST, false)) {
+			request.setUri(addCasAuthentication(request.getRequestLine().getUri(), httpRequest));
 		}
-		httpServletRequest.setAttribute(SECOND_REQUEST, true);
+		httpRequest.getParams().setBooleanParameter(SECOND_REQUEST, true);
 	}
 }

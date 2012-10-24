@@ -50,7 +50,7 @@ class ReplaceElement extends BaseElement {
 		IncludeElement parent = ctx.findAncestor(IncludeElement.class);
 		if (parent == null)
 			throw new EsiSyntaxError("<esi:replace> tag can only be used inside an <esi:include> tag");
-		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getResourceContext().getOriginalRequest());
+		String result = VariablesResolver.replaceAllVariables(buf.toString(), ctx.getHttpRequest());
 		if (fragment != null) {
 			parent.addFragmentReplacement(fragment, (CharSequence) result);
 		} else if (regexp != null) {

@@ -25,15 +25,14 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.Parameters;
-import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
 
 public class IncludeElementTest extends TestCase {
 
 	private MockDriver provider;
 	private MockHttpRequest request;
-
-	private ResourceContext ctx;
+	private MockHttpResponse response;
 	private EsiRenderer tested;
 
 	@Override
@@ -42,29 +41,29 @@ public class IncludeElementTest extends TestCase {
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 		request = new MockHttpRequest();
-
-		ctx = new ResourceContext(provider, null, null, request, null);
+		response = new MockHttpResponse();
+		provider.initHttpRequestParams(request, response, null);
 		tested = new EsiRenderer();
 	}
 
 	public void testIncludeProvider() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/test\" /> after";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
 
 	public void testIncludeProviderLegacy() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$PROVIDER({mock})/test\" /> after";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
 
 	public void testIncludeAbsolute() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"http://www.foo.com/test\" /> after";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
 
@@ -72,7 +71,7 @@ public class IncludeElementTest extends TestCase {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/testFragment\" fragment =\"myFragment\" /> after";
 		provider.addResource("/testFragment", "before fragment <esi:fragment name=\"myFragment\">---fragment content---</esi:fragment> after fragment");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---fragment content--- after", out.toString());
 	}
 
@@ -81,7 +80,7 @@ public class IncludeElementTest extends TestCase {
 		provider.addResource("/test?queryparameter1=test&queryparameter2=test2", "query OK");
 		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before query OK after", out.toString());
 	}
 
@@ -90,7 +89,7 @@ public class IncludeElementTest extends TestCase {
 		provider.addResource("/test2", "queryparameter2 OK");
 		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before queryparameter2 OK after", out.toString());
 	}
 
@@ -98,18 +97,18 @@ public class IncludeElementTest extends TestCase {
 		String page = "before <esi:include src='$(PROVIDER{mock})/inline-cache' /> after";
 		InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", null, false, null, "---inline cache item---");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---inline cache item--- after", out.toString());
 
 		InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() + 10L * 1000L), false, null, "---updated inline cache item---");
 		out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---updated inline cache item--- after", out.toString());
 
 		InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() - 10L * 1000L), false, null, "---expired inline cache item---");
 		out = new StringWriter();
 		provider.addResource("/inline-cache", "---fetched inline cache item---");
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---fetched inline cache item--- after", out.toString());
 	}
 
@@ -118,7 +117,7 @@ public class IncludeElementTest extends TestCase {
 				+ "<esi:inline name='$(PROVIDER{mock})/inline-cache' fetchable='false'>---inline cache item---</esi:inline>" + "<esi:include src='$(PROVIDER{mock})/inline-cache' /> after";
 		provider.addResource("/inline-cache", "---fetched inline cache item---");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---fetched inline cache item--- middle ---inline cache item--- after", out.toString());
 	}
 
@@ -129,7 +128,7 @@ public class IncludeElementTest extends TestCase {
 		request.addCookie(new BasicClientCookie("cookieName", "fragment replaced"));
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before -incl-page-start fragment replaced  incl-page-end- after", out.toString());
 	}
 
@@ -139,7 +138,7 @@ public class IncludeElementTest extends TestCase {
 		request.addCookie(new BasicClientCookie("cookieName", "regexp replaced"));
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before -incl-page-start zzz regexp replaced incl-page-end- after", out.toString());
 	}
 
@@ -147,7 +146,7 @@ public class IncludeElementTest extends TestCase {
 		String page = "before " + "<esi:include src='$(PROVIDER{mock})/inline-xpath' xpath='//html:body/text()' />" + " after";
 		provider.addResource("/inline-xpath", "<html><title>The header</title><body>-the body-<br><ul><li>list item</li></ul></body></html>");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before -the body- after", out.toString());
 	}
 
@@ -159,7 +158,7 @@ public class IncludeElementTest extends TestCase {
 				+ "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\"" + "<xsl:template match=\"//html:body\">" + "<xsl:copy-of select=\".\"/>" + "</xsl:template>"
 				+ "</xsl:stylesheet>");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
 	}
 
@@ -167,14 +166,14 @@ public class IncludeElementTest extends TestCase {
 		String page = "before " + "<esi:include src='$(PROVIDER{mock})/alt-url' alt=\"http://www.foo.com/test\" />" + " after";
 		provider.addResource("/alt-url", "---fetched alt url---");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---fetched alt url--- after", out.toString());
 	}
 
 	public void testIncludeAlt2() throws IOException, HttpErrorPage {
 		String page = "before " + "<esi:include src='$(PROVIDER{mock})/not-found' alt=\"http://www.foo.com/test\" />" + " after";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before test after", out.toString());
 	}
 
@@ -182,7 +181,7 @@ public class IncludeElementTest extends TestCase {
 		String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" /> after";
 		StringWriter out = new StringWriter();
 		try {
-			tested.render(ctx, page, out);
+			tested.render(request, page, out);
 			fail("should throw HttpErrorPage");
 		} catch (HttpErrorPage e) {
 			assertEquals(404, e.getStatusCode());
@@ -192,7 +191,7 @@ public class IncludeElementTest extends TestCase {
 	public void testOnErrorContinue() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" onerror=\"continue\"/> after";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before  after", out.toString());
 	}
 
@@ -209,10 +208,10 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
-		ctx = new ResourceContext(provider, null, null, request, null);
-
+		request = new MockHttpRequest();
+		provider.initHttpRequestParams(request, response, null);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", out.toString());
 	}
 
@@ -226,10 +225,10 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
-		ctx = new ResourceContext(provider, null, null, request, null);
-
+		request = new MockHttpRequest();
+		provider.initHttpRequestParams(request, response, null);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", out.toString());
 	}
 
@@ -237,7 +236,7 @@ public class IncludeElementTest extends TestCase {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/testFragment\" fragment =\"myFragment\">Content to be removed</esi:include> after";
 		provider.addResource("/testFragment", "before fragment <esi:fragment name=\"myFragment\">---fragment content---</esi:fragment> after fragment");
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before ---fragment content--- after", out.toString());
 	}
 
@@ -246,7 +245,7 @@ public class IncludeElementTest extends TestCase {
 		String includedPage = "-incl-page-start <esi:fragment name='test'>-<esi:fragment name='test'>content</esi:fragment>-</esi:fragment> incl-page-end-";
 		provider.addResource("/fragment", includedPage);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before -content- after", out.toString());
 	}
 
@@ -255,7 +254,7 @@ public class IncludeElementTest extends TestCase {
 		String includedPage = "-incl-page-start <esi:fragment name='test'>-<esi:fragment name='test'>content</esi:fragment>-</esi:fragment> incl-page-end-";
 		provider.addResource("/fragment", includedPage);
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("before -incl-page-start replacement incl-page-end- after", out.toString());
 	}
 

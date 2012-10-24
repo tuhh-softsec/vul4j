@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.esi;
 
 import java.io.IOException;
@@ -7,37 +22,35 @@ import junit.framework.TestCase;
 
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpRequest;
+import org.esigate.test.MockHttpResponse;
 
 public class TryElementTest extends TestCase {
 
-	private ResourceContext ctx;
 	private EsiRenderer tested;
+	private MockHttpRequest request;
 
 	@Override
-	protected void setUp() throws IOException {
+	protected void setUp() throws IOException, HttpErrorPage {
 		MockDriver provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-
-		MockHttpRequest request = new MockHttpRequest();
-
-		ctx = new ResourceContext(provider, null, null, request, null);
+		request = new MockHttpRequest();
+		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
 		tested = new EsiRenderer();
 	}
 
 	public void testTry() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>" + "<esi:attempt><esi:include src=\"http://www.foo.com/test\" /></esi:attempt>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin test end", out.toString());
 	}
 
 	public void testAttempt1() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>" + "<esi:attempt>abc <esi:include src=\"http://www.foo.com/test\" /> cba</esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin abc test cba end", out.toString());
 	}
 
@@ -45,14 +58,14 @@ public class TryElementTest extends TestCase {
 		String page = "begin <esi:try>" + "<esi:attempt>abc " + "<esi:include src=\"http://www.foo.com/test\" />" + "<esi:include src='http://www.foo.com/not-found' onerror='continue' />"
 				+ " cba</esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin abc test cba end", out.toString());
 	}
 
 	public void testExcept1() throws IOException, HttpErrorPage {
 		String page = "begin <esi:try>" + "<esi:attempt>abc <esi:include src=\"http://www.foo2.com/test\" /> cba</esi:attempt>" + "<esi:except>inside except</esi:except>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin inside except end", out.toString());
 	}
 
@@ -60,7 +73,7 @@ public class TryElementTest extends TestCase {
 		String page = "begin <esi:try>" + "<esi:attempt> " + "<esi:include src='http://www.foo.com/test' /> abc <esi:include src=\"http://www.foo2.com/test\" /> cba" + "</esi:attempt>"
 				+ "<esi:except>inside except</esi:except>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin inside except end", out.toString());
 	}
 
@@ -69,7 +82,7 @@ public class TryElementTest extends TestCase {
 				+ "<esi:except code='500'>inside incorrect except</esi:except>" + "<esi:except code='404'>inside correct except</esi:except>"
 				+ "<esi:except code='412'>inside incorrect except</esi:except>" + "<esi:except>inside default except</esi:except>" + "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin inside correct except end", out.toString());
 	}
 
@@ -78,7 +91,7 @@ public class TryElementTest extends TestCase {
 				+ "<esi:except code='500'>inside incorrect except</esi:except>" + "<esi:except code='412'>inside incorrect except</esi:except>" + "<esi:except>inside default except</esi:except>"
 				+ "</esi:try> end";
 		StringWriter out = new StringWriter();
-		tested.render(ctx, page, out);
+		tested.render(request, page, out);
 		assertEquals("begin inside default except end", out.toString());
 	}
 }

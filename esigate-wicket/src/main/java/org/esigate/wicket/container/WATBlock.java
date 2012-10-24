@@ -12,10 +12,10 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.wicket.container;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +25,13 @@ import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
+import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.tags.BlockRenderer;
+import org.esigate.util.HttpRequestParams;
 import org.esigate.wicket.utils.ResponseWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,13 +127,15 @@ public class WATBlock extends AbstractWatDriverContainer {
 		// Create driver
 		Driver driver = getDriver();
 
+		HttpRequest httpRequest = HttpRequestImpl.wrap(request, null);
+		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
+
 		// Render Block
 		try {
-			ResourceContext resourceContext = driver.renderBlock(page, blockName, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request, null), HttpResponseImpl.wrap(response),
-					new HashMap<String, String>(), new HashMap<String, String>(), false);
+			driver.render(page, null, new ResponseWriter(webResponse), httpRequest, httpResponse, new BlockRenderer(blockName, page), new ReplaceRenderer(replaceRules));
 			if (parseAbsoluteUrl) {
 
-				String baseUrl = resourceContext.getBaseURL();
+				String baseUrl = HttpRequestParams.getBaseUrl(httpRequest).toString();
 				int baseUrlEnd = baseUrl.indexOf('/', baseUrl.indexOf("//") + 2);
 				if (baseUrlEnd > 0) {
 					baseUrl = baseUrl.substring(0, baseUrlEnd);

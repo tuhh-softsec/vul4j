@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.xml;
 
 import java.io.IOException;
@@ -22,7 +37,6 @@ import org.apache.commons.io.IOUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.ResourceContext;
 import org.esigate.api.HttpRequest;
 import org.xml.sax.InputSource;
 
@@ -44,19 +58,19 @@ public class XsltRenderer implements Renderer {
 	 *            The path to the xsl template, relative to the context root
 	 * @param driver
 	 *            driver
-	 * @param resourceContext
+	 * @param originalRequest
 	 * @throws IOException
 	 *             If an error occurs while writing to the output
 	 * @throws HttpErrorPage
 	 */
-	public XsltRenderer(String template, Driver driver, ResourceContext resourceContext) throws IOException, HttpErrorPage {
+	public XsltRenderer(String template, Driver driver, HttpRequest originalRequest) throws IOException, HttpErrorPage {
 		try {
-			InputStream templateStream = resourceContext.getOriginalRequest().getResourceAsStream(template);
+			InputStream templateStream = originalRequest.getResourceAsStream(template);
 			if (templateStream == null)
 				throw new ProcessingFailedException("Template " + template + " not found");
 			transformer = createTransformer(templateStream);
 		} catch (Exception e) {
-			transformer = createTransformer(IOUtils.toInputStream(driver.getResourceAsString(template, resourceContext)));
+			transformer = createTransformer(IOUtils.toInputStream(driver.getResourceAsString(template, originalRequest)));
 		}
 	}
 
@@ -97,7 +111,7 @@ public class XsltRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(ResourceContext requestContext, String src, Writer out) throws IOException {
+	public void render(HttpRequest httpRequest, String src, Writer out) throws IOException {
 		try {
 			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
 			htmlParser.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);

@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
 import org.esigate.esi.EsiRenderer;
 import org.slf4j.Logger;
@@ -94,9 +94,9 @@ public class ProxyFilter implements Filter {
 		String result = wrappedResponse.getResult();
 		if (result != null) {
 			HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
-			ResourceContext resourceContext = new ResourceContext(null, relUrl, null, HttpRequestImpl.wrap(httpServletRequest, config.getServletContext()), httpResponse);
+			HttpRequest httpRequest = HttpRequestImpl.wrap(httpServletRequest, config.getServletContext());
 			try {
-				new EsiRenderer().render(resourceContext, result, response.getWriter());
+				new EsiRenderer().render(httpRequest, result, response.getWriter());
 			} catch (HttpErrorPage e) {
 				e.render(httpResponse);
 			}

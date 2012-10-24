@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.jsf;
 
 import java.io.IOException;
@@ -15,9 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
+import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
 import org.esigate.taglib.ReplaceableTag;
+import org.esigate.tags.TemplateRenderer;
 
 public class IncludeTemplateComponent extends UIComponentBase implements ReplaceableTag {
 	private Boolean displayErrorPage;
@@ -53,8 +70,8 @@ public class IncludeTemplateComponent extends UIComponentBase implements Replace
 		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 		ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
 		try {
-			DriverFactory.getInstance(getProvider()).renderTemplate(getPage(), getName(), writer, HttpRequestImpl.wrap(request, servletContext), HttpResponseImpl.wrap(response), params, replaceRules,
-					null);
+			DriverFactory.getInstance(getProvider()).render(getPage(), null, writer, HttpRequestImpl.wrap(request, servletContext), HttpResponseImpl.wrap(response),
+					new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());

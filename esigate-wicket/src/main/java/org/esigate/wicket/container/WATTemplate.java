@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.wicket.container;
 
 import java.io.IOException;
@@ -24,8 +25,10 @@ import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
+import org.esigate.regexp.ReplaceRenderer;
 import org.esigate.servlet.HttpRequestImpl;
 import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.tags.TemplateRenderer;
 import org.esigate.wicket.utils.ResponseWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +96,8 @@ public class WATTemplate extends AbstractWatDriverContainer {
 
 		Driver driver = getDriver();
 		try {
-			driver.renderTemplate(page, name, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request, null), HttpResponseImpl.wrap(response), blocks, replaceRules, params);
+			driver.render(page, params, new ResponseWriter(webResponse), HttpRequestImpl.wrap(request, null), HttpResponseImpl.wrap(response), new TemplateRenderer(name, blocks, page),
+					new ReplaceRenderer(replaceRules));
 		} catch (IOException e) {
 			logger.error("io error", e);
 		} catch (HttpErrorPage e) {

@@ -14,17 +14,15 @@
 
 package org.esigate.resource;
 
-import java.net.URI;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.easymock.EasyMock;
 import org.esigate.Driver;
 import org.esigate.Parameters;
-import org.esigate.ResourceContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.http.ResourceUtils;
+import org.esigate.test.MockHttpRequest;
 
 public class ResourceUtilsTest extends TestCase {
 
@@ -32,25 +30,17 @@ public class ResourceUtilsTest extends TestCase {
 		Properties props = new Properties();
 		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		Driver driver = new Driver("test", props);
-		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andStubReturn("ISO-8859-1");
-		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
-		EasyMock.expect(request.getSession(false)).andReturn(null);
-		ResourceContext resourceContext = new ResourceContext(driver, "/test", null, request, null);
-		EasyMock.replay(request);
-		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext, true));
+		HttpRequest request = new MockHttpRequest("http://bar.com");
+		driver.initHttpRequestParams(request, null, null);
+		assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString("/test", request, true));
 	}
 
 	public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
 		Properties props = new Properties();
 		props.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		Driver driver = new Driver("test", props);
-		HttpRequest request = EasyMock.createMock(HttpRequest.class);
-		EasyMock.expect(request.getCharacterEncoding()).andStubReturn("ISO-8859-1");
-		EasyMock.expect(request.getUri()).andReturn(new URI("http://bar.com"));
-		EasyMock.expect(request.getSession(false)).andReturn(null);
-		ResourceContext resourceContext = new ResourceContext(driver, "http://www.bar.com/test", null, request, null);
-		EasyMock.replay(request);
-		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString(resourceContext, true));
+		HttpRequest request = new MockHttpRequest("http://bar.com");
+		driver.initHttpRequestParams(request, null, null);
+		assertEquals("http://www.bar.com/test", ResourceUtils.getHttpUrlWithQueryString("http://www.bar.com/test", request, true));
 	}
 }

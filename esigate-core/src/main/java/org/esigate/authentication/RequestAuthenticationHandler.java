@@ -21,24 +21,28 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.http.HttpResponse;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpSession;
 import org.esigate.http.GenericHttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Forward session and/or request attributes as HTTP request headers. Best when ESIGate is used in embedded mode.
+ * Forward session and/or request attributes as HTTP request headers. Best when
+ * ESIGate is used in embedded mode.
  * <p>
- * Example : Forward the "username" session attribute as "X-ATTR-username" in the request fetching remote content.
+ * Example : Forward the "username" session attribute as "X-ATTR-username" in
+ * the request fetching remote content.
  * <p>
  * Configuration uses the following attributes from driver.properties :
  * <p>
  * <ul>
  * <li>
- * <b>forwardSessionAttributes</b>: comma separated list of session attributes which will be forwarded.</li>
+ * <b>forwardSessionAttributes</b>: comma separated list of session attributes
+ * which will be forwarded.</li>
  * <li>
- * <b>forwardRequestAttributes</b>: comma separated list of request attributes which will be forwarded.</li>
+ * <b>forwardRequestAttributes</b>: comma separated list of request attributes
+ * which will be forwarded.</li>
  * <li><b>headerPrefix</b> : header prefix. Default is "X-ATTR-"</li>
  * </ul>
  * <p>
@@ -53,7 +57,7 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 	private final List<String> requestAttributes = new ArrayList<String>();
 	private String headerPrefix = "X-ATTR-";
 
-	public boolean beforeProxy(ResourceContext requestContext) throws IOException {
+	public boolean beforeProxy(HttpRequest httpRequest) throws IOException {
 		return true;
 	}
 
@@ -89,16 +93,16 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 		}
 	}
 
-	public boolean needsNewRequest(HttpResponse response, ResourceContext requestContext) {
+	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
 		return false;
 	}
 
-	public void preRequest(GenericHttpRequest request, ResourceContext requestContext) {
+	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");
 		}
 		// Process session
-		HttpSession session = requestContext.getOriginalRequest().getSession(false);
+		HttpSession session = httpRequest.getSession(false);
 
 		if (session != null) {
 			for (String attribute : sessionAttributes) {
@@ -114,7 +118,7 @@ public class RequestAuthenticationHandler implements AuthenticationHandler {
 
 		// Process request
 		for (String attribute : requestAttributes) {
-			String value = (String) requestContext.getOriginalRequest().getAttribute(attribute);
+			String value = (String) httpRequest.getParams().getParameter(attribute);
 			if (value != null) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Adding request attribute " + attribute + " (" + value + ") as header (" + headerPrefix + attribute + ")");

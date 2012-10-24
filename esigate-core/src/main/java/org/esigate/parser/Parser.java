@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.parser;
 
 import java.io.IOException;
@@ -5,7 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.esigate.HttpErrorPage;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
+import org.esigate.api.HttpResponse;
+import org.esigate.util.HttpRequestParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +30,8 @@ public class Parser {
 	private final static Logger LOG = LoggerFactory.getLogger(Parser.class);
 	private final Pattern pattern;
 	private final ElementType[] elementTypes;
-	private ResourceContext resourceContext;
+	private HttpRequest httpRequest;
+	private HttpResponse httpResponse;
 
 	/**
 	 * Creates a Parser with a given regular expression pattern and
@@ -40,7 +58,7 @@ public class Parser {
 	 * @throws HttpErrorPage
 	 */
 	public void parse(CharSequence in, Appendable out) throws IOException, HttpErrorPage {
-		ParserContextImpl ctx = new ParserContextImpl(out, resourceContext);
+		ParserContextImpl ctx = new ParserContextImpl(out, httpRequest, httpResponse);
 		Matcher matcher = pattern.matcher(in);
 		int currentPosition = 0;
 		while (matcher.find()) {
@@ -68,7 +86,8 @@ public class Parser {
 						ctx.endElement(tag);
 					}
 				} else {
-					// if no element matches, we just ignore it and write it to the output
+					// if no element matches, we just ignore it and write it to
+					// the output
 					ctx.characters(tag);
 				}
 			}
@@ -77,8 +96,11 @@ public class Parser {
 		ctx.characters(in, currentPosition, in.length());
 	}
 
-	public void setResourceContext(ResourceContext resourceContext) {
-		this.resourceContext = resourceContext;
+	public void setHttpRequest(HttpRequest httpRequest) {
+		this.httpRequest = httpRequest;
+		httpResponse = HttpRequestParams.getResponse(httpRequest);
+		if(httpResponse==null)
+			throw new IllegalStateException("HttpRequest has not been initialized properly. HttpResponse is null.");
 	}
 
 }

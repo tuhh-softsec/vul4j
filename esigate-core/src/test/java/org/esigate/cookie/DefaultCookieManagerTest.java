@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.cookie;
 
 import java.io.IOException;
@@ -13,7 +28,6 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.Parameters;
-import org.esigate.ResourceContext;
 import org.esigate.test.MockHttpRequest;
 import org.esigate.test.MockHttpResponse;
 
@@ -21,10 +35,9 @@ public class DefaultCookieManagerTest extends TestCase {
 	private DefaultCookieManager cookieManager;
 	private MockHttpRequest httpRequest;
 	private MockHttpResponse httpResponse;
-	private ResourceContext resourceContext;
 
 	@Override
-	protected void setUp() {
+	protected void setUp() throws HttpErrorPage {
 		Properties properties = new Properties();
 		properties.setProperty(Parameters.FORWARD_COOKIES.name, "a, c");
 		properties.setProperty(Parameters.DISCARD_COOKIES.name, "D,e");
@@ -33,7 +46,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		httpResponse = new MockHttpResponse();
 		httpRequest = new MockHttpRequest();
 		Driver driver = new MockDriver();
-		resourceContext = new ResourceContext(driver, "/", null, httpRequest, httpResponse);
+		driver.initHttpRequestParams(httpRequest, httpResponse, null);
 	}
 
 	@Override
@@ -42,12 +55,12 @@ public class DefaultCookieManagerTest extends TestCase {
 	}
 
 	public void testAddCookie() {
-		assertNotNull(cookieManager.getCookies(resourceContext));
-		assertEquals(0, cookieManager.getCookies(resourceContext).size());
-		cookieManager.addCookie(new org.apache.http.impl.cookie.BasicClientCookie("b", "value"), resourceContext);
-		assertNotNull(cookieManager.getCookies(resourceContext));
-		assertEquals(1, cookieManager.getCookies(resourceContext).size());
-		org.apache.http.cookie.Cookie cookie = cookieManager.getCookies(resourceContext).get(0);
+		assertNotNull(cookieManager.getCookies(httpRequest));
+		assertEquals(0, cookieManager.getCookies(httpRequest).size());
+		cookieManager.addCookie(new org.apache.http.impl.cookie.BasicClientCookie("b", "value"), httpRequest);
+		assertNotNull(cookieManager.getCookies(httpRequest));
+		assertEquals(1, cookieManager.getCookies(httpRequest).size());
+		org.apache.http.cookie.Cookie cookie = cookieManager.getCookies(httpRequest).get(0);
 		assertNotNull(cookie);
 		assertEquals("b", cookie.getName());
 		assertEquals("value", cookie.getValue());
@@ -67,7 +80,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		httpRequest.addCookie(new BasicClientCookie("a", "value a"));
 		httpRequest.addCookie(new BasicClientCookie("b", "value b"));
 		httpRequest.addCookie(new BasicClientCookie("c", "value c"));
-		List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(resourceContext);
+		List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(httpRequest);
 		assertNotNull(cookies);
 		assertFalse(cookies.isEmpty());
 		assertTrue(cookies.size() == 2);

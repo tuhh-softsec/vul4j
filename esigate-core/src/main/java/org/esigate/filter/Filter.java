@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
-import org.esigate.ResourceContext;
+import org.esigate.api.HttpRequest;
 import org.esigate.extension.Extension;
 import org.esigate.http.GenericHttpRequest;
 
@@ -31,18 +31,18 @@ import org.esigate.http.GenericHttpRequest;
  */
 public interface Filter extends Extension {
 
-	void preRequest(GenericHttpRequest request, HttpContext httpContext, ResourceContext resourceContext);
+	void preRequest(GenericHttpRequest request, HttpContext httpContext, HttpRequest originalRequest);
 
-	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext);
+	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, HttpRequest originalRequest);
 
 	Filter EMPTY = new Filter() {
 		public void init(Properties properties) {
 		}
 
-		public void preRequest(GenericHttpRequest request, HttpContext httpContext, ResourceContext resourceContext) {
+		public void preRequest(GenericHttpRequest request, HttpContext httpContext, HttpRequest originalRequest) {
 		}
 
-		public void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, ResourceContext resourceContext) {
+		public void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, HttpRequest originalRequest) {
 		}
 
 	};
