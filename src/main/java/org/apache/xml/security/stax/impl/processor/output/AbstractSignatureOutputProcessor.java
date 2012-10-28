@@ -19,7 +19,6 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -99,7 +98,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                         transformer.transform(inputStream);
                         transformer.doFinal();
                     } else {
-                        IOUtils.copy(inputStream, digestOutputStream);
+                        XMLSecurityUtils.copy(inputStream, digestOutputStream);
                     }
                     digestOutputStream.close();
                 } catch (IOException e) {

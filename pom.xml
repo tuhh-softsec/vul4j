@@ -400,7 +400,6 @@
         <bcprov.version>1.47</bcprov.version>
         <xmlunit.version>1.3</xmlunit.version>
         <commons.codec.version>1.6</commons.codec.version>
-        <commons.compress.version>1.4.1</commons.compress.version>
         <woodstox.core.asl.version>4.1.4</woodstox.core.asl.version>
         <jetty.version>8.1.4.v20120524</jetty.version>
     </properties>
@@ -422,12 +421,6 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>${commons.codec.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>${commons.compress.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

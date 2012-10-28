@@ -18,10 +18,10 @@
  */
 package org.apache.xml.security.stax.impl.transformer;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.Transformer;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedByteArrayInputStream;
@@ -182,7 +182,7 @@ public class TransformIdentity implements Transformer {
         if (getOutputStream() != null) {
             //we have an output stream
             try {
-                IOUtils.copy(inputStream, getOutputStream());
+                XMLSecurityUtils.copy(inputStream, getOutputStream());
             } catch (IOException e) {
                 throw new XMLStreamException(e);
             }

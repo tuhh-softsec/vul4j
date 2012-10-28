@@ -46,23 +46,6 @@
       <!-- XSLT -->
       <!-- XPath version 2 -->
       <!-- XPath version 2b -->
-
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="IN"
-                           JAVACLASS="org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="IN"
-                           JAVACLASS="org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="IN"
-                           JAVACLASS="org.apache.commons.compress.compressors.xz.XZCompressorInputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="IN"
-                           JAVACLASS="org.apache.commons.compress.compressors.pack200.Pack200CompressorInputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/gzip" INOUT="OUT"
-                           JAVACLASS="org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/bzip2" INOUT="OUT"
-                           JAVACLASS="org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/xz" INOUT="OUT"
-                           JAVACLASS="org.apache.commons.compress.compressors.xz.XZCompressorOutputStream" />
-      <TransformAlgorithm URI="http://www.apache.org/2012/04/xmlsec/pack200" INOUT="OUT"
-                           JAVACLASS="org.apache.commons.compress.compressors.pack200.Pack200CompressorOutputStream" />
    </TransformAlgorithms>
    <JCEAlgorithmMappings>
          <!-- MessageDigest Algorithms -->

@@ -32,6 +32,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -313,5 +315,13 @@ public class XMLSecurityUtils {
             }
         }
         return prefixes;
+    }
+
+    public static void copy(InputStream inputStream, OutputStream outputStream) throws IOException {
+        int read = 0;
+        byte[] buf = new byte[4096];
+        while ((read = inputStream.read(buf)) != -1) {
+            outputStream.write(buf, 0, read);
+        }
     }
 }

@@ -19,11 +19,11 @@
 package org.apache.xml.security.test.stax.transformer;
 
 import junit.framework.Assert;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.Transformer;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
@@ -86,7 +86,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             @Override
             public void transform(InputStream inputStream) throws XMLStreamException {
                 try {
-                    IOUtils.copy(inputStream, byteArrayOutputStream);
+                    XMLSecurityUtils.copy(inputStream, byteArrayOutputStream);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -145,7 +145,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             @Override
             public void transform(InputStream inputStream) throws XMLStreamException {
                 try {
-                    IOUtils.copy(inputStream, byteArrayOutputStream);
+                    XMLSecurityUtils.copy(inputStream, byteArrayOutputStream);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -235,7 +235,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             @Override
             public void transform(InputStream inputStream) throws XMLStreamException {
                 try {
-                    IOUtils.copy(inputStream, byteArrayOutputStream);
+                    XMLSecurityUtils.copy(inputStream, byteArrayOutputStream);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -287,7 +287,7 @@ public class TransformCanonicalizerTest extends org.junit.Assert {
             @Override
             public void transform(InputStream inputStream) throws XMLStreamException {
                 try {
-                    IOUtils.copy(inputStream, byteArrayOutputStream);
+                    XMLSecurityUtils.copy(inputStream, byteArrayOutputStream);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

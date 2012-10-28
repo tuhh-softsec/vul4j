@@ -22,8 +22,6 @@ import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
-import org.apache.xml.security.binding.xmldsig.TransformType;
-import org.apache.xml.security.binding.xmldsig.TransformsType;
 import org.apache.xml.security.binding.xmlenc.EncryptedDataType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
 import org.apache.xml.security.binding.xmlenc.ReferenceList;
@@ -31,7 +29,6 @@ import org.apache.xml.security.binding.xmlenc.ReferenceType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
@@ -55,8 +52,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -253,35 +248,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 }
 
                 InputStream decryptInputStream = decryptionThread.getPipedInputStream();
-
-                if (referenceType != null) {
-                    TransformsType transformsType =
-                            XMLSecurityUtils.getQNameType(referenceType.getAny(), XMLSecurityConstants.TAG_dsig_Transforms);
-                    if (transformsType != null) {
-                        List<TransformType> transformTypes = transformsType.getTransform();
-                        //to do don't forget to limit the count of transformations if more transformations will be supported!
-                        if (transformTypes.size() > 1) {
-                            throw new XMLSecurityException("stax.encryption.Transforms.NotYetImplemented");
-                        }
-                        TransformType transformType = transformTypes.get(0);
-                        @SuppressWarnings("unchecked")
-                        Class<InputStream> transformerClass =
-                                (Class<InputStream>) TransformerAlgorithmMapper.getTransformerClass(
-                                        transformType.getAlgorithm(), XMLSecurityConstants.DIRECTION.IN);
-                        try {
-                            Constructor<InputStream> constructor = transformerClass.getConstructor(InputStream.class);
-                            decryptInputStream = constructor.newInstance(decryptInputStream);
-                        } catch (InvocationTargetException e) {
-                            throw new XMLSecurityException(e);
-                        } catch (NoSuchMethodException e) {
-                            throw new XMLSecurityException(e);
-                        } catch (InstantiationException e) {
-                            throw new XMLSecurityException(e);
-                        } catch (IllegalAccessException e) {
-                            throw new XMLSecurityException(e);
-                        }
-                    }
-                }
+                decryptInputStream = applyTransforms(referenceType, decryptInputStream);
 
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is
                 //interpreted as UTF-8 encoded character data."
@@ -303,6 +270,10 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             }
         }
         return xmlSecEvent;
+    }
+
+    protected InputStream applyTransforms(ReferenceType referenceType, InputStream inputStream) throws XMLSecurityException {
+        return inputStream;
     }
 
     private InputStream writeWrapperStartElement(XMLSecStartElement xmlSecStartElement) throws IOException {

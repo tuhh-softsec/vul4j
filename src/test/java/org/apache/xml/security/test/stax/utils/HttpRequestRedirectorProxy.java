@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.test.stax.utils;
 
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.xml.security.stax.ext.XMLSecurityUtils;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.io.Buffer;
 import org.eclipse.jetty.server.Server;
@@ -110,7 +110,7 @@ public class HttpRequestRedirectorProxy {
                     if (mime != null) {
                         resp.setContentType(mime.toString());
                     }
-                    IOUtils.copy(inputStream, resp.getOutputStream());
+                    XMLSecurityUtils.copy(inputStream, resp.getOutputStream());
                     inputStream.close();
                     return;
                 }

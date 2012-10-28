@@ -22,7 +22,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
-import org.apache.xml.security.stax.impl.EncryptionPartDef;
 
 /**
  * An abstract OutputProcessor class for reusabilty
@@ -251,37 +249,6 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SerialNumber);
         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerSerial);
         createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data);
-    }
-
-    protected void createReferenceListStructure(OutputProcessorChain outputProcessorChain)
-            throws XMLStreamException, XMLSecurityException {
-        List<EncryptionPartDef> encryptionPartDefs =
-                outputProcessorChain.getSecurityContext().getAsList(EncryptionPartDef.class);
-        if (encryptionPartDefs == null) {
-            return;
-        }
-        List<XMLSecAttribute> attributes;
-        createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_ReferenceList, true, null);
-        //output the references to the encrypted data:
-        Iterator<EncryptionPartDef> encryptionPartDefIterator = encryptionPartDefs.iterator();
-        while (encryptionPartDefIterator.hasNext()) {
-            EncryptionPartDef encryptionPartDef = encryptionPartDefIterator.next();
-
-            attributes = new ArrayList<XMLSecAttribute>(1);
-            attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_URI, "#" + encryptionPartDef.getEncRefId()));
-            createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_DataReference, false, attributes);
-            final String compressionAlgorithm = getSecurityProperties().getEncryptionCompressionAlgorithm();
-            if (compressionAlgorithm != null) {
-                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms, true, null);
-                attributes = new ArrayList<XMLSecAttribute>(1);
-                attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Algorithm, compressionAlgorithm));
-                createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_Transform, false, attributes);
-                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_Transform);
-                createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_Transforms);
-            }
-            createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_DataReference);
-        }
-        createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_ReferenceList);
     }
 
     protected SecurePart securePartMatches(XMLSecStartElement xmlSecStartElement,

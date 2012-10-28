@@ -21,7 +21,6 @@ package org.apache.xml.security.stax.impl.processor.output;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.config.TransformerAlgorithmMapper;
 import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
@@ -40,8 +39,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -139,15 +136,7 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 base64EncoderStream.write(iv);
 
                 OutputStream outputStream = new CipherOutputStream(base64EncoderStream, symmetricCipher);
-
-                String compressionAlgorithm = getSecurityProperties().getEncryptionCompressionAlgorithm();
-                if (compressionAlgorithm != null) {
-                    @SuppressWarnings("unchecked")
-                    Class<OutputStream> transformerClass =
-                            (Class<OutputStream>) TransformerAlgorithmMapper.getTransformerClass(compressionAlgorithm, XMLSecurityConstants.DIRECTION.OUT);
-                    Constructor<OutputStream> constructor = transformerClass.getConstructor(OutputStream.class);
-                    outputStream = constructor.newInstance(outputStream);
-                }
+                outputStream = applyTransforms(outputStream);
                 //the trimmer output stream is needed to strip away the dummy wrapping element which must be added
                 cipherOutputStream = new TrimmerOutputStream(outputStream, 8192 * 10, 3, 4);
 
@@ -168,17 +157,12 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 throw new XMLSecurityException(e);
             } catch (InvalidAlgorithmParameterException e) {
                 throw new XMLSecurityException(e);
-            } catch (InvocationTargetException e) {
-                throw new XMLSecurityException(e);
-            } catch (NoSuchMethodException e) {
-                throw new XMLSecurityException(e);
-            } catch (InstantiationException e) {
-                throw new XMLSecurityException(e);
-            } catch (IllegalAccessException e) {
-                throw new XMLSecurityException(e);
             }
-
             super.init(outputProcessorChain);
+        }
+
+        protected OutputStream applyTransforms(OutputStream outputStream) throws XMLSecurityException {
+            return outputStream;
         }
 
         @Override

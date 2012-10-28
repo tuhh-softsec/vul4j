@@ -19,7 +19,6 @@
 package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
@@ -249,7 +248,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                 transformer.transform(inputStream);
                 bufferedDigestOutputStream.close();
             } else {
-                IOUtils.copy(inputStream, bufferedDigestOutputStream);
+                XMLSecurityUtils.copy(inputStream, bufferedDigestOutputStream);
                 bufferedDigestOutputStream.close();
             }
         } catch (IOException e) {

@@ -42,7 +42,6 @@ public class XMLSecurityProperties {
 
     private X509Certificate encryptionUseThisCertificate;
     private String encryptionSymAlgorithm;
-    private String encryptionCompressionAlgorithm;
     private String encryptionKeyTransportAlgorithm;
     private String encryptionKeyTransportDigestAlgorithm;
     private String encryptionKeyTransportMGFAlgorithm;
@@ -75,7 +74,6 @@ public class XMLSecurityProperties {
         this.outAction = xmlSecurityProperties.outAction;
         this.encryptionUseThisCertificate = xmlSecurityProperties.encryptionUseThisCertificate;
         this.encryptionSymAlgorithm = xmlSecurityProperties.encryptionSymAlgorithm;
-        this.encryptionCompressionAlgorithm = xmlSecurityProperties.encryptionCompressionAlgorithm;
         this.encryptionKeyTransportAlgorithm = xmlSecurityProperties.encryptionKeyTransportAlgorithm;
         this.encryptionKeyTransportDigestAlgorithm = xmlSecurityProperties.encryptionKeyTransportDigestAlgorithm;
         this.encryptionKeyTransportMGFAlgorithm = xmlSecurityProperties.encryptionKeyTransportMGFAlgorithm;
@@ -231,14 +229,6 @@ public class XMLSecurityProperties {
 
     public void setEncryptionUseThisCertificate(X509Certificate encryptionUseThisCertificate) {
         this.encryptionUseThisCertificate = encryptionUseThisCertificate;
-    }
-
-    public String getEncryptionCompressionAlgorithm() {
-        return encryptionCompressionAlgorithm;
-    }
-
-    public void setEncryptionCompressionAlgorithm(String encryptionCompressionAlgorithm) {
-        this.encryptionCompressionAlgorithm = encryptionCompressionAlgorithm;
     }
 
     public X509Certificate[] getSignatureCerts() {
