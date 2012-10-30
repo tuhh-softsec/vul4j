@@ -99,7 +99,7 @@ public abstract class AbstractArchiver
     private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
 
     /**
-     * since 2.2.0 is on by default
+     * since 2.2 is on by default
      *
      * @since 1.1
      */
