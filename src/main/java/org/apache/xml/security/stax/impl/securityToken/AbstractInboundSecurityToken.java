@@ -56,6 +56,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     private final Map<String, Key> keyTable = new Hashtable<String, Key>();
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
+    private boolean asymmetric = false;
 
     public AbstractInboundSecurityToken(SecurityContext securityContext, String id,
                                         XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
@@ -104,10 +105,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     @Override
     public boolean isAsymmetric() throws XMLSecurityException {
-        if (getSecretKey() instanceof PrivateKey || getPublicKey() != null) {
-            return true;
-        }
-        return false;
+        return asymmetric;
     }
 
     public void setSecretKey(String algorithmURI, Key key) {
@@ -116,6 +114,9 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         }
         if (key != null) {
             this.keyTable.put(algorithmURI, key);
+        }
+        if (key instanceof PrivateKey) {
+            this.asymmetric = true;
         }
     }
 
@@ -169,6 +170,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
 
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
+        this.asymmetric = true;
     }
 
     @Override
