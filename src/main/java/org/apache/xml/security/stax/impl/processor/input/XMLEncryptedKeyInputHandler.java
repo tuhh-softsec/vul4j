@@ -72,8 +72,6 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
             throw new XMLSecurityException("stax.encryption.noEncAlgo");
         }
 
-        checkBSPCompliance(inputProcessorChain, encryptedKeyType);
-
         if (encryptedKeyType.getId() == null) {
             encryptedKeyType.setId(IDGenerator.generateID(null));
         }
@@ -244,11 +242,6 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
         if (encryptedKeyType.getReferenceList() != null) {
             handleReferenceList(inputProcessorChain, encryptedKeyType, securityProperties);
         }
-    }
-
-    protected void checkBSPCompliance(InputProcessorChain inputProcessorChain, EncryptedKeyType encryptedKeyType)
-            throws XMLSecurityException {
-        // do nothing
     }
 
     protected void handleReferenceList(final InputProcessorChain inputProcessorChain,
