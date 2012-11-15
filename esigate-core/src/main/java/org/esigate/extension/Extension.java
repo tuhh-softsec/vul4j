@@ -16,8 +16,14 @@ package org.esigate.extension;
 
 import java.util.Properties;
 
+import org.esigate.Driver;
+
 /**
  * Interface for extensions.
+ * 
+ * <p>
+ * Extensions are classes which are loaded through the generic ExtensionFactory.getExtension().
+ * 
  * 
  * @author Nicolas Richeton
  * 
@@ -26,8 +32,10 @@ public interface Extension {
 
 	/**
 	 * Initialize the extension using the given properties.
+	 * <p>
+	 * Extensions may register to events during the init phase.
 	 * 
 	 * @param properties
 	 */
-	public void init(Properties properties);
+	public void init(Driver driver, Properties properties);
 }

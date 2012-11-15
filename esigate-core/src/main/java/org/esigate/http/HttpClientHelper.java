@@ -74,7 +74,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.api.HttpRequest;
 import org.esigate.cache.CacheConfigHelper;
-import org.esigate.extension.Extension;
+import org.esigate.events.EventManager;
 import org.esigate.util.FilterList;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.PropertiesUtil;
@@ -92,7 +92,7 @@ import org.slf4j.LoggerFactory;
  * @author frbon
  * 
  */
-public class HttpClientHelper implements Extension {
+public class HttpClientHelper  {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpClientHelper.class);
 	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
 	private static final Set<String> ENTITY_METHODS = Collections
@@ -105,11 +105,12 @@ public class HttpClientHelper implements Extension {
 	private HttpClient httpClient;
 	private HttpHost proxyHost;
 	private Credentials proxyCredentials;
+	
 
-	public void init(HttpClient defaultHttpClient, Properties properties) {
+	public void init(EventManager d, HttpClient defaultHttpClient, Properties properties) {
 		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
 		if (useCache) {
-			httpClient = CacheConfigHelper.addCache(properties, defaultHttpClient);
+			httpClient = CacheConfigHelper.addCache(d, properties, defaultHttpClient);
 		} else {
 			httpClient = defaultHttpClient;
 		}
@@ -124,9 +125,10 @@ public class HttpClientHelper implements Extension {
 				Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
 		PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
 				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
+		
 	}
 
-	public void init(Properties properties) {
+	public void init(EventManager d, Properties properties) {
 		// Proxy settings
 		String proxyHostParameter = Parameters.PROXY_HOST.getValueString(properties);
 		if (proxyHostParameter != null) {
@@ -171,7 +173,7 @@ public class HttpClientHelper implements Extension {
 			}
 			defaultHttpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
 		}
-		init(defaultHttpClient, properties);
+		init( d, defaultHttpClient, properties);
 	}
 
 	protected boolean isForwardedRequestHeader(String headerName) {
@@ -316,28 +318,7 @@ public class HttpClientHelper implements Extension {
 		HttpResponse result;
 		try {
 			HttpHost httpHost = UriUtils.extractHost(httpRequest.getRequestLine().getUri());
-			HttpResponse httpResponse = httpClient.execute(httpHost, httpRequest, httpContext);
-			org.apache.http.HttpRequest lastRequest = RedirectStrategy.getLastRequest(httpRequest, httpContext);
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_NOT_MODIFIED) {
-				if (LOG.isInfoEnabled()) {
-					LOG.info(lastRequest.getRequestLine() + " -> " + httpResponse.getStatusLine());
-				}
-
-			} else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_MOVED_PERMANENTLY) {
-				if (LOG.isInfoEnabled()) {
-					Header locationHeader = httpResponse.getFirstHeader(HttpHeaders.LOCATION);
-					String location = "";
-					if (locationHeader != null)
-						location = locationHeader.getValue();
-					LOG.info(lastRequest.getRequestLine() + " -> " + httpResponse.getStatusLine() + " Location: " + location);
-				}
-			} else {
-				if (LOG.isWarnEnabled()) {
-					LOG.warn(lastRequest.getRequestLine() + " -> " + httpResponse.getStatusLine());
-				}
-			}
-			result = httpResponse;
+			result = httpClient.execute(httpHost, httpRequest, httpContext);
 		} catch (HttpHostConnectException e) {
 			int statusCode = HttpStatus.SC_BAD_GATEWAY;
 			String statusText = "Connection refused";

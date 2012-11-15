@@ -60,7 +60,7 @@ public final class Parameter {
 	}
 
 	public Collection<String> getValueList(Properties properties) {
-		return PropertiesUtil.getPropertyValueAsList(properties, name);
+		return PropertiesUtil.getPropertyValueAsList(properties, name, defaultValue);
 	}
 
 }

@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -39,6 +40,7 @@ import org.apache.http.protocol.HttpContext;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.EhcacheCacheStorage;
+import org.esigate.events.EventManager;
 import org.esigate.test.MockHttpRequest;
 
 /**
@@ -58,7 +60,7 @@ public class HttpClientHelperTest extends TestCase {
 		// blacklisted
 		Properties properties = new Properties();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 
 		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length", true);
 		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toUpperCase(), true);
@@ -79,7 +81,7 @@ public class HttpClientHelperTest extends TestCase {
 		properties = new Properties();
 		properties.setProperty(Parameters.DISCARD_REQUEST_HEADERS.name, "header");
 		httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 
 		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length", true);
 		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toUpperCase(), true);
@@ -110,7 +112,7 @@ public class HttpClientHelperTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.DISCARD_REQUEST_HEADERS.name, "dummy1,dummy2");
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 		assertFalse("Header should be discarded", httpClientHelper.isForwardedRequestHeader("dummy1"));
 		assertFalse("Header should be discarded", httpClientHelper.isForwardedRequestHeader("dummy2"));
 		assertTrue("Header should be forwarded", httpClientHelper.isForwardedRequestHeader("dummy3"));
@@ -120,7 +122,7 @@ public class HttpClientHelperTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.FORWARD_REQUEST_HEADERS.name, "Authorization");
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 		assertTrue("Header should be forwarded", httpClientHelper.isForwardedRequestHeader("Authorization"));
 	}
 
@@ -128,7 +130,7 @@ public class HttpClientHelperTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.DISCARD_RESPONSE_HEADERS.name, "dummy1,dummy2");
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 		assertFalse("Header should be discarded", httpClientHelper.isForwardedResponseHeader("dummy1"));
 		assertFalse("Header should be discarded", httpClientHelper.isForwardedResponseHeader("dummy2"));
 		assertTrue("Header should be forwarded", httpClientHelper.isForwardedResponseHeader("dummy3"));
@@ -138,7 +140,7 @@ public class HttpClientHelperTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.FORWARD_RESPONSE_HEADERS.name, "WWW-Authenticate");
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(properties);
+		httpClientHelper.init(new EventManager(),properties);
 		assertTrue("Header should be forwarded", httpClientHelper.isForwardedResponseHeader("WWW-Authenticate"));
 	}
 
@@ -150,7 +152,7 @@ public class HttpClientHelperTest extends TestCase {
 
 	private void createHttpClientHelper() {
 		httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(mockHttpClient, properties);
+		httpClientHelper.init(new EventManager(),mockHttpClient, properties);
 	}
 
 	private HttpResponse createMockResponse(int statusCode, String entity) throws Exception {
@@ -420,4 +422,46 @@ public class HttpClientHelperTest extends TestCase {
 		assertEquals("Content should have been decompressed", content, entityString);
 	}
 
+	
+	/**
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=121
+	 * @throws Exception 
+	 */
+	public void testBug121() throws Exception {
+		
+		
+		mockHttpClient = new MockHttpClient() {
+
+			@Override
+			public HttpResponse execute(HttpHost target, HttpRequest request,
+					HttpContext context) throws IOException,
+					ClientProtocolException {
+
+				return super.execute(target, request, context);
+			}}
+		;
+
+		
+		properties = new Properties();
+		properties.put(Parameters.PRESERVE_HOST, "true");
+		properties.put( Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
+		
+		httpClientHelper = new HttpClientHelper();
+		httpClientHelper.init(new EventManager(), mockHttpClient, properties);
+		
+		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest();
+		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://www.google.com", true);
+	
+		HttpContext httpContext = new BasicHttpContext();
+		
+		HttpResponse response = createMockResponse("0");
+		mockHttpClient.setResponse(response);
+
+		
+		httpClientHelper.execute(apacheHttpRequest, httpContext);
+		
+		
+		
+		
+	}
 }

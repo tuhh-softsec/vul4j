@@ -31,10 +31,11 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.api.HttpRequest;
 import org.esigate.api.HttpResponse;
-import org.esigate.authentication.AuthenticationHandler;
 import org.esigate.cookie.CookieManager;
+import org.esigate.events.EventManager;
+import org.esigate.events.impl.FragmentEvent;
+import org.esigate.events.impl.ProxyEvent;
 import org.esigate.extension.ExtensionFactory;
-import org.esigate.filter.Filter;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
@@ -59,27 +60,31 @@ import org.slf4j.LoggerFactory;
 public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
-	private final AuthenticationHandler authenticationHandler;
-	private final Filter filter;
 	private final HttpClientHelper httpClientHelper;
 	private final List<String> parsableContentTypes;
 	private final CookieManager cookieManager;
+	private final EventManager eventManager = new EventManager();
+
+	public EventManager getEventManager() {
+		return eventManager;
+	}
 
 	public Driver(String name, Properties props) {
 		this(name, props, new HttpClientHelper());
-		httpClientHelper.init(props);
+		httpClientHelper.init(eventManager, props);
 	}
 
-	public Driver(String name, Properties props, HttpClientHelper httpClientHelper) {
+	public Driver(String name, Properties props,
+			HttpClientHelper httpClientHelper) {
 		config = new DriverConfiguration(name, props);
 		this.httpClientHelper = httpClientHelper;
-		// Authentication handler
-		authenticationHandler = ExtensionFactory.getExtension(props, Parameters.AUTHENTICATION_HANDLER, AuthenticationHandler.class);
-		// Filter
-		Filter f = ExtensionFactory.getExtension(props, Parameters.FILTER, Filter.class);
-		filter = (f != null) ? f : Filter.EMPTY;
+		// Load extensions.
+		ExtensionFactory.getExtensions(props, Parameters.EXTENSIONS,
+				this);
+
 		parsableContentTypes = new ArrayList<String>();
-		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(props);
+		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES
+				.getValueString(props);
 		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
 		String contentType;
 		while (tokenizer.hasMoreElements()) {
@@ -87,7 +92,8 @@ public class Driver {
 			contentType = contentType.trim();
 			parsableContentTypes.add(contentType);
 		}
-		cookieManager = ExtensionFactory.getExtension(props, Parameters.COOKIE_MANAGER, CookieManager.class);
+		cookieManager = ExtensionFactory.getExtension(props,
+				Parameters.COOKIE_MANAGER, this);
 	}
 
 	/**
@@ -107,22 +113,28 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If an Exception occurs while retrieving the template
 	 */
-	public final void render(String page, Map<String, String> parameters, Appendable writer, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException, HttpErrorPage {
+	public final void render(String page, Map<String, String> parameters,
+			Appendable writer, HttpRequest request, HttpResponse response,
+			Renderer... renderers) throws IOException, HttpErrorPage {
 		initHttpRequestParams(request, response, parameters);
 		if (LOG.isInfoEnabled()) {
 			List<String> rendererNames = new ArrayList<String>(renderers.length);
 			for (Renderer renderer : renderers) {
 				rendererNames.add(renderer.getClass().getName());
 			}
-			LOG.info("render provider={} page= {} renderers={}", new Object[] { config.getInstanceName(), page, rendererNames });
+			LOG.info("render provider={} page= {} renderers={}", new Object[] {
+					config.getInstanceName(), page, rendererNames });
 		}
-		String resultingpage = VariablesResolver.replaceAllVariables(page, request);
+		String resultingpage = VariablesResolver.replaceAllVariables(page,
+				request);
 		String currentValue = getResourceAsString(resultingpage, request);
 
 		// Fix resources
 		if (config.isFixResources()) {
 			String baseUrl = HttpRequestHelper.getBaseUrl(request).toString();
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl), page, config.getFixMode());
+			ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl,
+					config.getVisibleBaseURL(baseUrl), page,
+					config.getFixMode());
 			StringWriter stringWriter = new StringWriter();
 			fixup.render(request, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
@@ -137,14 +149,18 @@ public class Driver {
 		writer.append(currentValue);
 	}
 
-	public void initHttpRequestParams(HttpRequest request, HttpResponse response, Map<String, String> parameters) throws HttpErrorPage {
+	public void initHttpRequestParams(HttpRequest request,
+			HttpResponse response, Map<String, String> parameters)
+			throws HttpErrorPage {
 		HttpRequestHelper.setResponse(request, response);
 		HttpRequestHelper.setDriver(request, this);
 		HttpRequestHelper.setParameters(request, parameters);
-		UserContext userContext = new UserContext(request, config.getInstanceName());
+		UserContext userContext = new UserContext(request,
+				config.getInstanceName());
 		HttpRequestHelper.setUserContext(request, userContext);
 		try {
-			URL baseUrl = new URL(config.getBaseUrlRetrieveStrategy().getBaseURL(request, response));
+			URL baseUrl = new URL(config.getBaseUrlRetrieveStrategy()
+					.getBaseURL(request, response));
 			HttpRequestHelper.setBaseUrl(request, baseUrl);
 		} catch (MalformedURLException e) {
 			throw new HttpErrorPage(500, "Internal server error", e);
@@ -168,28 +184,51 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 *             If the page contains incorrect tags
 	 */
-	public void proxy(String relUrl, HttpRequest request, HttpResponse response, Renderer... renderers) throws IOException, HttpErrorPage {
+	public void proxy(String relUrl, HttpRequest request,
+			HttpResponse response, Renderer... renderers) throws IOException,
+			HttpErrorPage {
 		initHttpRequestParams(request, response, null);
-		LOG.info("proxy provider={} relUrl={}", config.getInstanceName(), relUrl);
+		
+		if (LOG.isInfoEnabled()) {
+			LOG.info("proxy provider={} relUrl={}", config.getInstanceName(),
+					relUrl);
+		}
 
 		request.setCharacterEncoding(config.getUriEncoding());
-		if (!authenticationHandler.beforeProxy(request)) {
+
+		// Create Proxy event
+		ProxyEvent e = new ProxyEvent();
+		e.originalRequest = request;
+
+		// Event pre-proxy
+		eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
+
+		// Return immediately if exit is requested by extension
+		if (e.exit) {
 			return;
 		}
-		String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, request, true);
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(request, url, true);
-		org.apache.http.HttpResponse httpResponse = execute(httpRequest, request);
+
+		String url = ResourceUtils.getHttpUrlWithQueryString(relUrl,
+				e.originalRequest, true);
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(
+				request, url, true);
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest,
+				request);
 		if (!isTextContentType(httpResponse)) {
-			LOG.debug("'" + relUrl + "' is binary on no transformation to apply: was forwarded without modification.");
+			LOG.debug("'{}' is binary on no transformation to apply: was forwarded without modification.", relUrl);
 			httpClientHelper.render(httpResponse, response);
 		} else {
-			LOG.debug("'" + relUrl + "' is text : will apply renderers.");
+			LOG.debug("'{}' is text : will apply renderers.", relUrl);
 			String currentValue = HttpResponseUtils.toString(httpResponse);
 
-			List<Renderer> listOfRenderers = new ArrayList<Renderer>(renderers.length + 1);
+			List<Renderer> listOfRenderers = new ArrayList<Renderer>(
+					renderers.length + 1);
 			if (config.isFixResources()) {
-				String baseUrl = HttpRequestHelper.getBaseUrl(request).toString();
-				ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl, config.getVisibleBaseURL(baseUrl), relUrl, config.getFixMode());
+				String baseUrl = HttpRequestHelper.getBaseUrl(request)
+						.toString();
+				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
+						baseUrl, config.getVisibleBaseURL(baseUrl), relUrl,
+						config.getFixMode());
 				listOfRenderers.add(fixup);
 			}
 			listOfRenderers.addAll(Arrays.asList(renderers));
@@ -201,12 +240,16 @@ public class Driver {
 			}
 			// Write the result to the OutpuStream using default charset
 			// ISO-8859-1 if not defined
-			String charsetName = HttpResponseUtils.getContentCharset(httpResponse);
+			String charsetName = HttpResponseUtils
+					.getContentCharset(httpResponse);
 			if (charsetName == null) {
 				charsetName = "ISO-8859-1";
 			}
 			httpClientHelper.render(currentValue, httpResponse, response);
 		}
+		
+		// Event post-proxy
+		eventManager.fire(EventManager.EVENT_PROXY_POST, e);
 	}
 
 	/**
@@ -221,19 +264,35 @@ public class Driver {
 	 * @throws HttpErrorPage
 	 * @throws IOException
 	 */
-	public String getResourceAsString(String url, HttpRequest originalRequest) throws HttpErrorPage, IOException {
+	public String getResourceAsString(String url, HttpRequest originalRequest)
+			throws HttpErrorPage, IOException {
 		String result;
 		url = VariablesResolver.replaceAllVariables(url, originalRequest);
-		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
-		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
+		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest,
+				false);
+
+		// Pre get ressource
+
+		// pre : get from cache
+		boolean cacheable = "GET".equalsIgnoreCase(originalRequest
+				.getRequestLine().getMethod());
 		if (cacheable) {
 			result = (String) originalRequest.getParams().getParameter(url);
 			if (result != null)
 				return result;
 		}
-		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, false);
-		org.apache.http.HttpResponse httpResponse = execute(httpRequest, originalRequest);
+
+		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(
+				originalRequest, url, false);
+		org.apache.http.HttpResponse httpResponse = execute(httpRequest,
+				originalRequest);
+
+		// post getResource
+
+		// post : unzip
 		result = HttpResponseUtils.toString(httpResponse);
+
+		// post : cache
 		if (cacheable) {
 			originalRequest.getParams().setParameter(url, result);
 		}
@@ -264,7 +323,8 @@ public class Driver {
 	 * @return true if this represents text or false if not
 	 */
 	private boolean isTextContentType(org.apache.http.HttpResponse httpResponse) {
-		String contentType = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_TYPE, httpResponse);
+		String contentType = HttpResponseUtils.getFirstHeader(
+				HttpHeaders.CONTENT_TYPE, httpResponse);
 		return isTextContentType(contentType);
 	}
 
@@ -280,27 +340,52 @@ public class Driver {
 		return false;
 	}
 
-	private org.apache.http.HttpResponse executeSingleRequest(GenericHttpRequest httpRequest, HttpContext httpContext, HttpRequest originalRequest) {
-		org.apache.http.HttpResponse result;
-		filter.preRequest(httpRequest, httpContext, originalRequest);
-		authenticationHandler.preRequest(httpRequest, originalRequest);
-		long start = System.currentTimeMillis();
-		result = httpClientHelper.execute(httpRequest, httpContext);
-		long end = System.currentTimeMillis();
-		filter.postRequest(httpRequest, result, httpContext, originalRequest);
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(httpRequest.getRequestLine().toString() + " -> " + result.getStatusLine().toString() + " (" + (end - start) + " ms)");
+	public org.apache.http.HttpResponse executeSingleRequest(
+			GenericHttpRequest httpRequest, HttpContext httpContext,
+			HttpRequest originalRequest) {
+
+
+		// Create request event
+		FragmentEvent event = new FragmentEvent();
+		event.httpContext = httpContext;
+		event.httpRequest = httpRequest;
+		event.originalRequest = originalRequest;
+		event.httpResponse = null;
+
+		// EVENT pret
+		eventManager.fire(EventManager.EVENT_FRAGMENT_PRE, event);
+
+		// If exit : stop immediately.
+		if (!event.exit) {
+			// Proceed to request only if extensions did not inject a response.
+			if (event.httpResponse == null) {
+				event.httpResponse = httpClientHelper.execute(
+						event.httpRequest, event.httpContext);
+			}
+
+			// EVENT post 
+			eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
 		}
-		return result;
+		
+	
+		
+		return event.httpResponse;
 	}
 
-	private org.apache.http.HttpResponse execute(GenericHttpRequest httpRequest, HttpRequest originalRequest) throws HttpErrorPage, IOException {
-		CookieStore cookieStore = new RequestCookieStore(cookieManager, originalRequest);
-		HttpContext httpContext = httpClientHelper.createHttpContext(cookieStore);
-		org.apache.http.HttpResponse httpResponse = executeSingleRequest(httpRequest, httpContext, originalRequest);
-		while (authenticationHandler.needsNewRequest(httpResponse, originalRequest)) {
-			HttpResponseUtils.release(httpResponse);
-			httpResponse = executeSingleRequest(httpRequest, httpContext, originalRequest);
+	private org.apache.http.HttpResponse execute(
+			GenericHttpRequest httpRequest, HttpRequest originalRequest)
+			throws HttpErrorPage, IOException {
+		CookieStore cookieStore = new RequestCookieStore(cookieManager,
+				originalRequest);
+
+		org.apache.http.HttpResponse httpResponse = executeSingleRequest(
+				httpRequest, httpClientHelper.createHttpContext(cookieStore),
+				originalRequest);
+
+		// Handle errors.
+		if (httpResponse == null) {
+			throw new HttpErrorPage(500, "Request was cancelled by server",
+					"Request was cancelled by server");
 		}
 		if (HttpResponseUtils.isError(httpResponse)) {
 			throw new HttpErrorPage(httpResponse, httpClientHelper);

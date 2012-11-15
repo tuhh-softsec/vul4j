@@ -18,6 +18,8 @@ package org.esigate;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
+import org.esigate.extension.FetchLogging;
+import org.esigate.extension.FragmentLogging;
 import org.esigate.util.Parameter;
 
 /**
@@ -71,7 +73,8 @@ public interface Parameters {
 	public static final String ROUNDROBIN = "roundrobin";
 
 	// Extensions
-	public static final Parameter AUTHENTICATION_HANDLER = new Parameter("authenticationHandler", RemoteUserAuthenticationHandler.class.getName());
+	public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName()+","+FetchLogging.class.getName()+","+RemoteUserAuthenticationHandler.class.getName());;
+
 	public static final Parameter FILTER = new Parameter("filter", null);
 
 	// Cache settings

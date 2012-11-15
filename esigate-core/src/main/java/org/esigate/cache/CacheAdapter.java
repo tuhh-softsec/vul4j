@@ -33,7 +33,8 @@ import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.Parameters;
-import org.esigate.extension.Extension;
+import org.esigate.events.EventManager;
+import org.esigate.events.impl.FetchEvent;
 import org.esigate.util.UriUtils;
 
 /**
@@ -42,7 +43,7 @@ import org.esigate.util.UriUtils;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class CacheAdapter implements Extension {
+public class CacheAdapter  {
 	private final static String STATUS_CODE_HEADER = "Status-code";
 	private final static String REASON_PHRASE_HEADER = "Reason-phrase";
 	private int staleIfError;
@@ -73,74 +74,126 @@ public class CacheAdapter implements Extension {
 		}
 
 		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request, context);
-			return wrapped.execute(target, request, new ResponseHandler<T>() {
-				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response, context);
-					return responseHandler.handleResponse(response);
-				}
-			}, context);
+			if (transformRequest(request, context)) {
+				T response = wrapped.execute(target, request,
+						new ResponseHandler<T>() {
+							public T handleResponse(HttpResponse response)
+									throws ClientProtocolException, IOException {
+								transformResponse(request, response, context);
+								return responseHandler.handleResponse(response);
+							}
+						}, context);
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			transformRequest(request, null);
-			return wrapped.execute(target, request, new ResponseHandler<T>() {
-				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response, null);
-					return responseHandler.handleResponse(response);
-				}
-			});
+			if (transformRequest(request, null)) {
+				T response = wrapped.execute(target, request,
+						new ResponseHandler<T>() {
+							public T handleResponse(HttpResponse response)
+									throws ClientProtocolException, IOException {
+								transformResponse(request, response, null);
+								return responseHandler.handleResponse(response);
+							}
+						});
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request, context);
-			return wrapped.execute(request, new ResponseHandler<T>() {
-				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response, context);
-					return responseHandler.handleResponse(response);
-				}
-			}, context);
+			if (transformRequest(request, context)) {
+				T response = wrapped.execute(request, new ResponseHandler<T>() {
+					public T handleResponse(HttpResponse response)
+							throws ClientProtocolException, IOException {
+						transformResponse(request, response, context);
+						return responseHandler.handleResponse(response);
+					}
+				}, context);
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request, context);
-			HttpResponse response = wrapped.execute(target, request, context);
-			transformResponse(request, response, context);
-			return response;
+			if (transformRequest(request, context)) {
+				HttpResponse response = wrapped.execute(target, request,
+						context);
+				transformResponse(request, response, context);
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			transformRequest(request, null);
-			return wrapped.execute(request, new ResponseHandler<T>() {
-				public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-					transformResponse(request, response, null);
-					return responseHandler.handleResponse(response);
-				}
-			});
+			if (transformRequest(request, null)) {
+
+				T response = wrapped.execute(request, new ResponseHandler<T>() {
+					public T handleResponse(HttpResponse response)
+							throws ClientProtocolException, IOException {
+						transformResponse(request, response, null);
+						return responseHandler.handleResponse(response);
+					}
+				});
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public HttpResponse execute(HttpHost target, HttpRequest request) throws IOException, ClientProtocolException {
-			transformRequest(request, null);
-			HttpResponse response = wrapped.execute(target, request);
-			transformResponse(request, response, null);
-			return response;
+			if (transformRequest(request, null)) {
+				HttpResponse response = wrapped.execute(target, request);
+				transformResponse(request, response, null);
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public HttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			transformRequest(request, context);
-			HttpResponse response = wrapped.execute(request, context);
-			transformResponse(request, response, context);
-			return response;
+			if (transformRequest(request, context)) {
+				HttpResponse response = wrapped.execute(request, context);
+				transformResponse(request, response, context);
+				return response;
+			}
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
 		public HttpResponse execute(HttpUriRequest request) throws IOException, ClientProtocolException {
-			transformRequest(request, null);
-			HttpResponse response = wrapped.execute(request);
-			transformResponse(request, response, null);
-			return response;
+			if (transformRequest(request, null)) {
+				HttpResponse response = wrapped.execute(request);
+				transformResponse(request, response, null);
+				return response;
+			}
+			
+			// TODO: returning null may be hard. However, this only happens if
+			// an extension cancels the request. Need to think on the usecase.
+			return null;
 		}
 
-		abstract void transformRequest(HttpRequest httpRequest, HttpContext context);
+		/**
+		 * 
+		 * @param httpRequest
+		 * @param context
+		 * 
+		 * @return true if we should process with the request.
+		 */
+		abstract boolean transformRequest(HttpRequest httpRequest, HttpContext context);
 
 		abstract void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context);
 
@@ -153,8 +206,8 @@ public class CacheAdapter implements Extension {
 			 * Removes client http cache directives like "Cache-control" and "Pragma". Users must not be able to bypass the cache just by making a refresh in the browser.
 			 */
 			@Override
-			void transformRequest(HttpRequest httpRequest, HttpContext context) {
-				// Nothing to do
+			boolean transformRequest(HttpRequest httpRequest, HttpContext context) {
+				return true;
 			}
 
 			/**
@@ -201,15 +254,25 @@ public class CacheAdapter implements Extension {
 		};
 	}
 
-	public HttpClient wrapBackendHttpClient(HttpClient wrapped) {
+	public HttpClient wrapBackendHttpClient(final EventManager eventManager, HttpClient wrapped) {
 		return new HttpClientWrapper(wrapped) {
 
 			/**
-			 * Currently does nothing
+			 * Fire pre-Fetch event
 			 */
 			@Override
-			void transformRequest(HttpRequest httpRequest, HttpContext context) {
-				// Nothing to do
+			boolean transformRequest(HttpRequest httpRequest, HttpContext context) {
+				// Create request event
+				FetchEvent e = new FetchEvent();
+				e.httpRequest = httpRequest;
+				e.httpResponse = null;
+				e.httpContext = context;
+				
+				// EVENT pre
+				eventManager.fire(EventManager.EVENT_FETCH_PRE, e);
+				
+				// Continue if exist is not requested
+				return ! e.exit;
 			}
 
 			/**
@@ -218,6 +281,17 @@ public class CacheAdapter implements Extension {
 			 */
 			@Override
 			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
+				
+				// Create request event
+				FetchEvent e = new FetchEvent();
+				e.httpRequest = httpRequest;
+				e.httpResponse = httpResponse;
+				e.httpContext = context;
+				
+				// EVENT pre
+				eventManager.fire(EventManager.EVENT_FETCH_POST, e);
+				
+			
 				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
 					int statusCode = httpResponse.getStatusLine().getStatusCode();
 					if (statusCode != 200) {
@@ -242,6 +316,7 @@ public class CacheAdapter implements Extension {
 					if (cacheControlHeader.length() > 0)
 						httpResponse.addHeader("Cache-control", cacheControlHeader);
 				}
+				
 			}
 		};
 	}

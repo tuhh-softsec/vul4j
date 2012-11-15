@@ -187,12 +187,12 @@ public class ResourceFixupRenderer implements Renderer {
 
 		if (replacementUrl != null && url.startsWith(baseUrl)) {
 			url = new StringBuffer(replacementUrl).append(url.substring(baseUrl.length())).toString();
-			LOG.debug("fix absolute url: " + urlParam + " -> " + url);
+			LOG.debug("fix absolute url: {} -> {} " , urlParam , url);
 			return url;
 		}
 		// Keep absolute and javascript urls untouched.
 		if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("#") || url.startsWith("javascript:")) {
-			LOG.debug("keeping absolute url: " + url);
+			LOG.debug("keeping absolute url: {}", url);
 			return url;
 		}
 
@@ -216,7 +216,7 @@ public class ResourceFixupRenderer implements Renderer {
 			}
 		}
 
-		LOG.debug("url fixed: " + urlParam + " -> " + url);
+		LOG.debug("url fixed: {} -> {}", urlParam ,url );
 		return url;
 	}
 
@@ -238,7 +238,7 @@ public class ResourceFixupRenderer implements Renderer {
 		StringBuffer result = new StringBuffer(input.length());
 		Matcher m = URL_PATTERN.matcher(input);
 		while (m.find()) {
-			LOG.trace("found match: " + m);
+			LOG.trace("found match: {}" , m);
 			// m.group(3) matches to the attribute value including surrounded
 			// quotes
 			// String url = m.group(3);
@@ -251,7 +251,7 @@ public class ResourceFixupRenderer implements Renderer {
 				tagReplacement.append("$4");
 			}
 			tagReplacement.append('>');
-			LOG.trace("replacement: " + tagReplacement);
+			LOG.trace("replacement: {}", tagReplacement);
 			m.appendReplacement(result, tagReplacement.toString());
 		}
 		m.appendTail(result);

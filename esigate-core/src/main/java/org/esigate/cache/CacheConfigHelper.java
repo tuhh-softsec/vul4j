@@ -22,7 +22,7 @@ import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
-import org.esigate.extension.Extension;
+import org.esigate.events.EventManager;
 
 public class CacheConfigHelper {
 	public final static CacheConfig createCacheConfig(Properties properties) {
@@ -58,7 +58,7 @@ public class CacheConfigHelper {
 		return cacheConfig;
 	}
 
-	public final static HttpClient addCache(Properties properties, HttpClient backend) {
+	public final static HttpClient addCache(EventManager d, Properties properties, HttpClient backend) {
 		String cacheStorageClass = Parameters.CACHE_STORAGE.getValueString(properties);
 		Object cacheStorage;
 		try {
@@ -66,14 +66,14 @@ public class CacheConfigHelper {
 		} catch (Exception e) {
 			throw new ConfigurationException("Could not instantiate cacheStorageClass", e);
 		}
-		if (!(cacheStorage instanceof Extension) || !(cacheStorage instanceof HttpCacheStorage))
-			throw new ConfigurationException("Cache storage class must implement Extension and HttpCacheStorage interfaces");
-		((Extension) cacheStorage).init(properties);
+		if ( !(cacheStorage instanceof CacheStorage))
+			throw new ConfigurationException("Cache storage class must extend org.esigate.cache.CacheStorage.");
+		((CacheStorage) cacheStorage).init(properties);
 		CacheConfig cacheConfig = createCacheConfig(properties);
 		cacheConfig.setSharedCache(true);
 		CacheAdapter cacheAdapter = new CacheAdapter();
-		cacheAdapter.init(properties);
-		HttpClient cachingHttpClient = cacheAdapter.wrapBackendHttpClient(backend);
+		cacheAdapter.init(properties); 
+		HttpClient cachingHttpClient = cacheAdapter.wrapBackendHttpClient(d, backend);
 		cachingHttpClient = new CachingHttpClient(cachingHttpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
 		cachingHttpClient = cacheAdapter.wrapCachingHttpClient(cachingHttpClient);
 		return cachingHttpClient;

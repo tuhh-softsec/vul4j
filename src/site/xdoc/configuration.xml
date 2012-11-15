@@ -188,14 +188,20 @@
 					<td>roundrobin</td>
 				</tr>
                <tr>
-                    <td>authenticationHandler</td>
-                    <td>The <a href="authentication.html">authenticationHandler</a> to use. Must be a class that implements org.esigate.authentication.AuthenticationHandler. Default implementation taken the user authenticated against the application server (request.getRemoteUser()) if any.</td>
+                    <td><strike>authenticationHandler</strike></td>
+                    <td>This configuration is deprecated and no longer supported. Authentication handlers must now be implemented as extensions. See the <a href="authentication.html">authentication documentation</a> to learn how to use authenticication and upgrade existing custom handlers. </td>
                     <td>No</td>
-                    <td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
+                    <td></td>
+                </tr> 
+                   <tr>
+                    <td>extensions</td>
+                    <td>A comma-separated list of extensions (class names). Extensions can register to events and customize standard behavior, for instance add logging or handle authentication. Extensions will be called in the same order as in this list.</td>
+                    <td>No</td>
+                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler</td>
                 </tr> 
 				<tr>
-                    <td>filter</td>
-                    <td>The request filter to use. Must be a class that implements org.esigate.filter.Filter</td>
+                    <td><strike>filter</strike></td>
+                    <td>Filters are now <b>deprecated</b> and no longer supported. You can get the exact same behavior by turning a filter into an extension.</td>
                     <td>No</td>
                     <td></td>
                 </tr>   

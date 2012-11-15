@@ -38,7 +38,6 @@ public class DriverConfiguration {
 	private final boolean fixResources;
 	private final String visibleBaseURL;
 	private final int fixMode;
-	private final String authenticationHandler;
 	private final Properties properties;
 	private final boolean preserveHost;
 	private final String filter;
@@ -49,7 +48,6 @@ public class DriverConfiguration {
 		this.instanceName = instanceName;
 		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
 		uriEncoding = Parameters.URI_ENCODING.getValueString(props);
-		authenticationHandler = Parameters.AUTHENTICATION_HANDLER.getValueString(props);
 		filter = Parameters.FILTER.getValueString(props);
 		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
 		fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
@@ -118,10 +116,6 @@ public class DriverConfiguration {
 
 	public String getUriEncoding() {
 		return uriEncoding;
-	}
-
-	public String getAuthenticationHandler() {
-		return authenticationHandler;
 	}
 
 	public Properties getProperties() {

@@ -33,7 +33,7 @@ public class AggregatorServlet extends HttpServlet {
 		if (request.getServletPath() != null) {
 			relUrl = relUrl.substring(request.getServletPath().length());
 		}
-		LOG.debug("Aggregating " + relUrl);
+		LOG.debug("Aggregating {}", relUrl);
 		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
 		try {
 			DriverFactory.getInstance(provider).proxy(relUrl, HttpRequestImpl.wrap(request, getServletContext()), httpResponse, new AggregateRenderer(), new EsiRenderer());

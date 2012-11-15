@@ -15,7 +15,6 @@
 
 package org.esigate.authentication;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -51,17 +50,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Nicolas Richeton
  */
-public class RequestAuthenticationHandler implements AuthenticationHandler {
+public class RequestAuthenticationHandler extends GenericAuthentificationHandler {
 	private final static Logger logger = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
 	private final List<String> sessionAttributes = new ArrayList<String>();
 	private final List<String> requestAttributes = new ArrayList<String>();
 	private String headerPrefix = "X-ATTR-";
 
-	public boolean beforeProxy(HttpRequest httpRequest) throws IOException {
+	public boolean beforeProxy(HttpRequest httpRequest)  {
 		return true;
 	}
 
-	public void init(Properties properties) {
+	public void init( Properties properties) {
 		// Attributes for session
 		String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
 		if (sessionAttributesProperty != null) {

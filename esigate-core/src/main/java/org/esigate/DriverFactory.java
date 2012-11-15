@@ -15,6 +15,9 @@
 
 package org.esigate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -23,15 +26,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
  * 
  * @author Stanislav Bernatskyi
  * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
  */
 public class DriverFactory {
 	private static final Map<String, Driver> INSTANCES = new HashMap<String, Driver>();
 	private static final String DEFAULT_INSTANCE_NAME = "default";
+	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
+
 
 	static {
 		// Load default settings
@@ -44,27 +53,57 @@ public class DriverFactory {
 
 	/** Loads all instances according to default configuration file */
 	public final static void configure() {
-		InputStream inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
-
-		// For backward compatibility
-		if (inputStream == null)
-			inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
-		if (inputStream == null)
-			inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
-
-		if (inputStream == null)
-			throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
-
-		// load driver-ext.properties if exists
-		InputStream extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
-
-		// For backward compatibility
-		if (extInputStream == null)
-			extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
-		if (extInputStream == null)
-			extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
-
+		InputStream inputStream = null;
+		InputStream extInputStream = null;
+	
 		try {
+			// Load from environment  
+			String envPath = System.getProperty("esigate.config");
+			if (envPath != null) {
+				try {
+					LOG.info( "Scanning configuration {}", envPath);
+					inputStream = new FileInputStream(new File(envPath));
+				} catch (FileNotFoundException e) {
+					LOG.error(
+							"Can't read file {} (from -Dorg.esigate.config)",
+							envPath, e);
+				}
+			}
+			
+			
+			if (inputStream == null){
+				LOG.info( "Scanning configuration {}", "/esigate.properties");
+				inputStream = DriverFactory.class.getResourceAsStream("/esigate.properties");
+			}
+	
+			// For backward compatibility
+			if (inputStream == null){
+				LOG.info( "Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver.properties");
+				inputStream = DriverFactory.class.getResourceAsStream("driver.properties");
+			}
+			if (inputStream == null){
+				LOG.info( "Scanning configuration {}", "/net/webassembletool/driver.properties");
+				inputStream = DriverFactory.class.getResourceAsStream("/net/webassembletool/driver.properties");
+			}
+	
+			if (inputStream == null)
+				throw new ConfigurationException("esigate.properties configuration file was not found in the classpath");
+	
+			// load driver-ext.properties if exists
+			LOG.info( "Scanning configuration {}", "/esigate-ext.properties");
+			extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
+	
+			// For backward compatibility
+			if (extInputStream == null) {
+				LOG.info( "Scanning configuration {}", "/driver-ext.properties");
+				extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
+			}
+			if (extInputStream == null){
+				LOG.info( "Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"), "driver-ext.properties");
+				extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
+			}
+
+		
 			Properties merged = new Properties();
 			if (inputStream != null) {
 				Properties props = new Properties();

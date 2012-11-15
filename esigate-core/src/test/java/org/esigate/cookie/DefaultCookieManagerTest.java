@@ -42,7 +42,7 @@ public class DefaultCookieManagerTest extends TestCase {
 		properties.setProperty(Parameters.FORWARD_COOKIES.name, "a, c");
 		properties.setProperty(Parameters.DISCARD_COOKIES.name, "D,e");
 		cookieManager = new DefaultCookieManager();
-		cookieManager.init(properties);
+		cookieManager.init(null, properties);
 		httpResponse = new MockHttpResponse();
 		httpRequest = new MockHttpRequest();
 		Driver driver = new MockDriver();

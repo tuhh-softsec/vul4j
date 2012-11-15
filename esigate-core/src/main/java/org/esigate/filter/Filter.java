@@ -20,16 +20,17 @@ import java.util.Properties;
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.api.HttpRequest;
-import org.esigate.extension.Extension;
 import org.esigate.http.GenericHttpRequest;
 
 /**
  * Interface for request filter.
- * 
+ * @deprecated use Extension instead and register to pre and post-fetch events notifications.
+ * .
  * @author Nicolas Richeton
  * 
  */
-public interface Filter extends Extension {
+@Deprecated
+public interface Filter  {
 
 	void preRequest(GenericHttpRequest request, HttpContext httpContext, HttpRequest originalRequest);
 

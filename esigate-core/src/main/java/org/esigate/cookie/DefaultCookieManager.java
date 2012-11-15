@@ -26,6 +26,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.esigate.ConfigurationException;
+import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
@@ -41,7 +42,7 @@ public class DefaultCookieManager implements CookieManager {
 	protected Collection<String> discardCookies;
 	protected Collection<String> forwardCookies;
 
-	public void init(Properties properties) {
+	public void init(Driver d, Properties properties) {
 		// Cookies to forward
 		forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
 		// Cookies to discard
@@ -60,13 +61,19 @@ public class DefaultCookieManager implements CookieManager {
 	public void addCookie(Cookie cookie, HttpRequest originalRequest) {
 		String name = cookie.getName();
 		if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
-			LOG.info("Cookie " + toString(cookie) + " -> discarding");
+			if( LOG.isInfoEnabled()){
+				LOG.info("Cookie " + toString(cookie) + " -> discarding");
+			}
 		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
-			LOG.info("Cookie " + toString(cookie) + " -> forwarding");
+			if( LOG.isInfoEnabled()){
+				LOG.info("Cookie " + toString(cookie) + " -> forwarding");
+			}
 			HttpResponse response = HttpRequestHelper.getResponse(originalRequest);
 			response.addCookie(rewriteForBrowser(cookie, originalRequest));
 		} else {
-			LOG.info("Cookie " + toString(cookie) + " -> storing to context");
+			if( LOG.isInfoEnabled()){
+				LOG.info("Cookie " + toString(cookie) + " -> storing to context");
+			}
 			UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 			@SuppressWarnings("unchecked")
 			List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
@@ -171,7 +178,10 @@ public class DefaultCookieManager implements CookieManager {
 		cookieToForward.setVersion(cookie.getVersion());
 		cookieToForward.setExpiryDate(cookie.getExpiryDate());
 
-		LOG.debug("Forwarding cookie {} -> {}", cookie.toString(), cookieToForward.toString());
+		if( LOG.isDebugEnabled()){
+			// Ensure .toString is only called if debug enabled.
+			LOG.debug("Forwarding cookie {} -> {}", cookie.toString(), cookieToForward.toString());
+		}
 		return cookieToForward;
 	}
 

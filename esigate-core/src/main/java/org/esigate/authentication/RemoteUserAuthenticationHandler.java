@@ -31,7 +31,8 @@ import org.esigate.util.HttpRequestHelper;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
+public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler  {
+
 
 	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
 		return false;
@@ -50,12 +51,16 @@ public class RemoteUserAuthenticationHandler implements AuthenticationHandler {
 		}
 	}
 
+	@Override
 	public void init(Properties properties) {
 		// Nothing to do
 	}
+	
 
 	public boolean beforeProxy(HttpRequest httpRequest) {
 		return true;
 	}
+
+	
 
 }

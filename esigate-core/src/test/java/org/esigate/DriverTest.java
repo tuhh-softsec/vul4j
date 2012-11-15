@@ -138,9 +138,9 @@ public class DriverTest extends TestCase {
 	public void testHeadersPreservedWhenError500() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+				
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(mockHttpClient, properties);
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Dummy", "dummy");
@@ -148,6 +148,7 @@ public class DriverTest extends TestCase {
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
+		httpClientHelper.init(driver.getEventManager(),mockHttpClient, properties);
 		MockHttpRequest mockRequest = new MockHttpRequest();
 		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
@@ -165,7 +166,6 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(mockHttpClient, properties);
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Transfer-Encoding", "dummy");
@@ -173,6 +173,7 @@ public class DriverTest extends TestCase {
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
+		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
 		MockHttpRequest mockRequest = new MockHttpRequest();
 		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
@@ -190,13 +191,13 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(mockHttpClient, properties);
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		HttpEntity httpEntity = new StringEntity("é", "UTF-8");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
+		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
 		MockHttpRequest mockRequest = new MockHttpRequest();
 		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
@@ -213,7 +214,6 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(mockHttpClient, properties);
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Content-encoding", "gzip");
@@ -227,6 +227,7 @@ public class DriverTest extends TestCase {
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
+		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
 		MockHttpRequest mockRequest = new MockHttpRequest();
 		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
