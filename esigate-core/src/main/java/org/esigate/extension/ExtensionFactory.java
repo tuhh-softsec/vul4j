@@ -82,6 +82,7 @@ public class ExtensionFactory {
 	 * @param d
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public final static <T extends Extension> List<T> getExtensions(
 			Properties properties, Parameter parameter, Driver d) {
 		Collection<String> className = parameter.getValueList(properties);
