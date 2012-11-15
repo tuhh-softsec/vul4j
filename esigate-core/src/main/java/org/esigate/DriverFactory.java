@@ -65,7 +65,7 @@ public class DriverFactory {
 					inputStream = new FileInputStream(new File(envPath));
 				} catch (FileNotFoundException e) {
 					LOG.error(
-							"Can't read file {} (from -Dorg.esigate.config)",
+							"Can't read file {} (from -Desigate.config)",
 							envPath, e);
 				}
 			}
