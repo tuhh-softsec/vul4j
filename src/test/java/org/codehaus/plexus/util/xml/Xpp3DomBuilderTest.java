@@ -35,7 +35,7 @@ public class Xpp3DomBuilderTest
     extends TestCase
 {
 
-    private static final String LS = System.getProperty("line.separator");
+    private static final String LS = System.getProperty( "line.separator" );
 
     public void testBuildFromReader()
         throws Exception
@@ -221,6 +221,7 @@ public class Xpp3DomBuilderTest
         buf.append( " </el2>\n" );
         buf.append( " <el4></el4>\n" );
         buf.append( " <el5/>\n" );
+        buf.append( " <el6 xml:space=\"preserve\">  do not trim  </el6>\n" );
         buf.append( "</root>\n" );
 
         return buf.toString();
@@ -244,6 +245,10 @@ public class Xpp3DomBuilderTest
         expectedDom.addChild( el4 );
         Xpp3Dom el5 = new Xpp3Dom( "el5" );
         expectedDom.addChild( el5 );
+        Xpp3Dom el6 = new Xpp3Dom( "el6" );
+        el6.setAttribute( "xml:space", "preserve" );
+        el6.setValue( "  do not trim  " );
+        expectedDom.addChild( el6 );
         return expectedDom;
     }
 }

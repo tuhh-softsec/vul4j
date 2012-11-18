@@ -89,16 +89,20 @@ public class Xpp3DomBuilder
     public static Xpp3Dom build( XmlPullParser parser, boolean trim )
         throws XmlPullParserException, IOException
     {
-        List elements = new ArrayList();
+        List<Xpp3Dom> elements = new ArrayList<Xpp3Dom>();
 
-        List values = new ArrayList();
+        List<StringBuffer> values = new ArrayList<StringBuffer>();
 
         int eventType = parser.getEventType();
+
+        boolean spacePreserve = false;
 
         while ( eventType != XmlPullParser.END_DOCUMENT )
         {
             if ( eventType == XmlPullParser.START_TAG )
             {
+                spacePreserve = false;
+
                 String rawName = parser.getName();
 
                 Xpp3Dom childConfiguration = new Xpp3Dom( rawName );
@@ -107,7 +111,7 @@ public class Xpp3DomBuilder
 
                 if ( depth > 0 )
                 {
-                    Xpp3Dom parent = (Xpp3Dom) elements.get( depth - 1 );
+                    Xpp3Dom parent = elements.get( depth - 1 );
 
                     parent.addChild( childConfiguration );
                 }
@@ -132,17 +136,19 @@ public class Xpp3DomBuilder
                     String value = parser.getAttributeValue( i );
 
                     childConfiguration.setAttribute( name, value );
+
+                    spacePreserve = spacePreserve || ( "xml:space".equals( name ) && "preserve".equals( value ) );
                 }
             }
             else if ( eventType == XmlPullParser.TEXT )
             {
                 int depth = values.size() - 1;
 
-                StringBuffer valueBuffer = (StringBuffer) values.get( depth );
+                StringBuffer valueBuffer = values.get( depth );
 
                 String text = parser.getText();
 
-                if ( trim )
+                if ( trim && !spacePreserve )
                 {
                     text = text.trim();
                 }
