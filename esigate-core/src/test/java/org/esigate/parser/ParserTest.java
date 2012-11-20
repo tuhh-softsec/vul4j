@@ -26,6 +26,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.test.MockHttpRequest;
 import org.esigate.test.MockHttpResponse;
+import org.esigate.util.HttpRequestHelper;
 
 public class ParserTest extends TestCase {
 	private Parser tested;
@@ -90,7 +91,7 @@ public class ParserTest extends TestCase {
 
 		@Override
 		public void onTagEnd(String tag, ParserContext ctx) throws IOException {
-			String result = buf.toString().replaceAll("\\{request\\}", ctx.getHttpRequest().getParameter("request"));
+			String result = buf.toString().replaceAll("\\{request\\}", HttpRequestHelper.getParameter(ctx.getHttpRequest(), "request"));
 			ctx.getCurrent().characters(result, 0, result.length());
 		}
 

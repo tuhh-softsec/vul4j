@@ -14,22 +14,22 @@
 
 package org.esigate.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicRequestLine;
 import org.apache.http.params.BasicHttpParams;
@@ -39,7 +39,6 @@ import org.esigate.api.HttpSession;
 import org.esigate.util.UriUtils;
 
 public class MockHttpRequest implements HttpRequest {
-	private String characterEncoding;
 	private URI uri;
 	private String method = "GET";
 	private HttpSession session;
@@ -60,46 +59,7 @@ public class MockHttpRequest implements HttpRequest {
 
 	public void setUri(String uri) {
 		this.uri = UriUtils.createUri(uri);
-		setHeader("Host", getUri().getHost());
-	}
-
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-
-	public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-		this.characterEncoding = env;
-	}
-
-	public String getContentType() {
-		return getHeader("Content-type");
-	}
-
-	public InputStream getInputStream() throws IOException {
-		if (consumed) {
-			throw new IllegalStateException("InputStream already obtained");
-		}
-		consumed = true;
-		final InputStream is = new ByteArrayInputStream(content);
-		return new InputStream() {
-			@Override
-			public int read() throws IOException {
-				return is.read();
-			}
-		};
-	}
-
-	public String getParameter(String name) {
-		String queryString = uri.getRawQuery();
-		String[] params = queryString.split("&");
-		for (String param : params) {
-			String paramName = param.split("=")[0];
-			String paramValue = param.split("=")[1];
-			if (name.equals(paramName)) {
-				return paramValue;
-			}
-		}
-		return null;
+		setHeader("Host", this.uri.getHost());
 	}
 
 	public String getRemoteAddr() {
@@ -119,16 +79,8 @@ public class MockHttpRequest implements HttpRequest {
 		cookies.add(cookie);
 	}
 
-	public String getHeader(String name) {
-		return headers.get(name.toLowerCase());
-	}
-
 	public void setHeader(String name, String value) {
 		headers.put(name.toLowerCase(), value);
-	}
-
-	public Collection<String> getHeaderNames() {
-		return headers.keySet();
 	}
 
 	public String getRemoteUser() {
@@ -144,10 +96,6 @@ public class MockHttpRequest implements HttpRequest {
 			session = new MockHttpSession();
 		}
 		return session;
-	}
-
-	public URI getUri() {
-		return uri;
 	}
 
 	@Override
@@ -168,22 +116,33 @@ public class MockHttpRequest implements HttpRequest {
 	}
 
 	public Header[] getHeaders(String name) {
-		String value =headers.get(name.toLowerCase());
-		if(value==null)
-			return new Header[]{};
-		return new Header[]{new BasicHeader(name, value)};
+		String value = headers.get(name.toLowerCase());
+		if (value == null)
+			return new Header[] {};
+		return new Header[] { new BasicHeader(name, value) };
 	}
 
 	public Header[] getAllHeaders() {
 		Header[] result = new Header[headers.size()];
 		Iterator<Entry<String, String>> iterator = headers.entrySet().iterator();
-		int i=0;
+		int i = 0;
 		while (iterator.hasNext()) {
 			Entry<String, String> entry = iterator.next();
-			result[i]= new BasicHeader(entry.getKey(), entry.getValue());
+			result[i] = new BasicHeader(entry.getKey(), entry.getValue());
 			i++;
 		}
 		return result;
+	}
+
+	public HttpEntity getEntity() {
+		if (consumed) {
+			throw new IllegalStateException("InputStream already obtained");
+		}
+		consumed = true;
+		Header[] contentTypeHeaders = getHeaders(HttpHeaders.CONTENT_TYPE);
+		if (contentTypeHeaders.length > 0)
+			return new ByteArrayEntity(content, ContentType.parse(contentTypeHeaders[0].getValue()));
+		return new ByteArrayEntity(content);
 	}
 
 }

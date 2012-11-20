@@ -156,7 +156,7 @@ public class VariablesResolver {
 			if (arg == null) {
 				res = UriUtils.createUri(request.getRequestLine().getUri()).getRawQuery();
 			} else {
-				res = request.getParameter(arg);
+				res = HttpRequestHelper.getParameter(request, arg);
 			}
 		} else if (var.indexOf("HTTP_ACCEPT_LANGUAGE") != -1) {
 			String langs = HttpRequestHelper.getFirstHeader("Accept-Language", request);

@@ -56,7 +56,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -212,22 +211,7 @@ public class HttpClientHelper  {
 			httpRequest = new GenericHttpRequest(method, uri);
 		} else if (ENTITY_METHODS.contains(method)) {
 			GenericHttpRequest result = new GenericHttpRequest(method, uri);
-			String contentLengthHeader = HttpRequestHelper.getFirstHeader(HttpHeaders.CONTENT_LENGTH, originalRequest);
-			long contentLength = (contentLengthHeader != null) ? Long.parseLong(contentLengthHeader) : -1;
-			InputStreamEntity inputStreamEntity;
-			try {
-				inputStreamEntity = new InputStreamEntity(originalRequest.getInputStream(), contentLength);
-			} catch (IOException e) {
-				throw new HttpErrorPage(HttpStatus.SC_BAD_REQUEST, "Bad request", e);
-			}
-			if (originalRequest.getContentType() != null) {
-				inputStreamEntity.setContentType(originalRequest.getContentType());
-			}
-			String contentEncodingHeader = HttpRequestHelper.getFirstHeader(HttpHeaders.CONTENT_ENCODING, originalRequest);
-			if (contentEncodingHeader != null) {
-				inputStreamEntity.setContentEncoding(contentEncodingHeader);
-			}
-			result.setEntity(inputStreamEntity);
+			result.setEntity(originalRequest.getEntity());
 			httpRequest = result;
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);

@@ -15,10 +15,15 @@
 
 package org.esigate.util;
 
+import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.Driver;
 import org.esigate.UserContext;
 import org.esigate.api.HttpRequest;
@@ -30,6 +35,7 @@ public class HttpRequestHelper {
 	private final static String BASEURLASURL = URL.class.getName();
 	private final static String DRIVER = Driver.class.getName();
 	private final static String PARAMETERS = "parameters";
+	private final static String CHARACTER_ENCODING = "character encoding";
 
 	public final static HttpResponse getResponse(HttpRequest request) {
 		return (HttpResponse) request.getParams().getParameter(HTTP_RESPONSE);
@@ -76,6 +82,29 @@ public class HttpRequestHelper {
 		Header[] values = request.getHeaders(name);
 		if (values.length > 0)
 			return values[0].getValue();
+		return null;
+	}
+
+	public final static String getCharacterEncoding(HttpRequest request) {
+		return (String) request.getParams().getParameter(CHARACTER_ENCODING);
+	}
+
+	public final static void setCharacterEncoding(HttpRequest request, String characterEncoding) {
+		request.getParams().setParameter(CHARACTER_ENCODING, characterEncoding);
+	}
+
+	public final static String getParameter(HttpRequest request, String name) {
+		String characterEncoding = getCharacterEncoding(request);
+		if (characterEncoding == null)
+			characterEncoding = "ISO-8859-1";
+		URI uri = UriUtils.createUri(request.getRequestLine().getUri());
+		List<NameValuePair> parameters = URLEncodedUtils.parse(uri, characterEncoding);
+		Iterator<NameValuePair> it = parameters.iterator();
+		while (it.hasNext()) {
+			NameValuePair nameValuePair = (NameValuePair) it.next();
+			if (nameValuePair.getName().equals(name))
+				return nameValuePair.getValue();
+		}
 		return null;
 	}
 

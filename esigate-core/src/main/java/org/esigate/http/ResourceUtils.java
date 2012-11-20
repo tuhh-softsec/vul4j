@@ -42,7 +42,7 @@ public class ResourceUtils {
 	private final static String buildQueryString(HttpRequest originalRequest, boolean proxy) {
 		try {
 			StringBuilder queryString = new StringBuilder();
-			String charset = originalRequest.getCharacterEncoding();
+			String charset = HttpRequestHelper.getCharacterEncoding(originalRequest);
 			if (charset == null) {
 				charset = "ISO-8859-1";
 			}

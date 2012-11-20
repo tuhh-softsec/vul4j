@@ -194,7 +194,7 @@ public class Driver {
 					relUrl);
 		}
 
-		request.setCharacterEncoding(config.getUriEncoding());
+		HttpRequestHelper.setCharacterEncoding(request, config.getUriEncoding());
 
 		// Create Proxy event
 		ProxyEvent e = new ProxyEvent();

@@ -26,6 +26,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
@@ -41,17 +42,19 @@ import org.esigate.util.UriUtils;
 
 public class HttpRequestImpl implements HttpRequest {
 
-	private final HttpServletRequest parent;
+	private final HttpServletRequest request;
 	private final ServletContext servletContext;
 	private final HttpParams params = new BasicHttpParams();
 	private final RequestLine requestLine;
+	private final HttpEntity entity;
 
-	private HttpRequestImpl(HttpServletRequest parent, ServletContext servletContext) {
-		this.parent = parent;
+	private HttpRequestImpl(HttpServletRequest httpServletRequest, ServletContext servletContext) {
+		this.request = httpServletRequest;
 		this.servletContext = servletContext;
-		String uri = UriUtils.createURI(parent.getScheme(), parent.getServerName(), parent.getServerPort(), parent.getRequestURI(), parent.getQueryString(), null).toString();
-		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(parent.getProtocol(), null);
-		this.requestLine = new BasicRequestLine(parent.getMethod(), uri, protocolVersion);
+		String uri = UriUtils.createURI(httpServletRequest.getScheme(), httpServletRequest.getServerName(), httpServletRequest.getServerPort(), httpServletRequest.getRequestURI(), httpServletRequest.getQueryString(), null).toString();
+		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(httpServletRequest.getProtocol(), null);
+		this.requestLine = new BasicRequestLine(httpServletRequest.getMethod(), uri, protocolVersion);
+		entity = new HttpServletRequestEntity(request);
 	}
 
 	public static HttpRequest wrap(HttpServletRequest parent, ServletContext servletContext) {
@@ -60,11 +63,11 @@ public class HttpRequestImpl implements HttpRequest {
 	}
 
 	public String getParameter(String name) {
-		return parent.getParameter(name);
+		return request.getParameter(name);
 	}
 
 	public Cookie[] getCookies() {
-		javax.servlet.http.Cookie[] src = parent.getCookies();
+		javax.servlet.http.Cookie[] src = request.getCookies();
 		Cookie result[] = null;
 		if (src != null) {
 			result = new Cookie[src.length];
@@ -76,8 +79,6 @@ public class HttpRequestImpl implements HttpRequest {
 				dest.setPath(c.getPath());
 				dest.setComment(c.getComment());
 				dest.setVersion(c.getVersion());
-				// if (cookie.getMaxAge() < 0) {
-
 				result[i] = dest;
 			}
 		}
@@ -85,39 +86,39 @@ public class HttpRequestImpl implements HttpRequest {
 	}
 
 	public String getRemoteAddr() {
-		return parent.getRemoteAddr();
+		return request.getRemoteAddr();
 	}
 
 	public InputStream getInputStream() throws IOException {
-		return parent.getInputStream();
+		return request.getInputStream();
 	}
 
 	public String getContentType() {
-		return parent.getContentType();
+		return request.getContentType();
 	}
 
 	public boolean isSecure() {
-		return parent.isSecure();
+		return request.isSecure();
 	}
 
 	public String getCharacterEncoding() {
-		return parent.getCharacterEncoding();
+		return request.getCharacterEncoding();
 	}
 
 	public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-		this.parent.setCharacterEncoding(env);
+		this.request.setCharacterEncoding(env);
 	}
 
 	public String getRemoteUser() {
-		return parent.getRemoteUser();
+		return request.getRemoteUser();
 	}
 
 	public Principal getUserPrincipal() {
-		return parent.getUserPrincipal();
+		return request.getUserPrincipal();
 	}
 
 	public HttpSession getSession(boolean create) {
-		javax.servlet.http.HttpSession session = parent.getSession(create);
+		javax.servlet.http.HttpSession session = request.getSession(create);
 		return session != null ? HttpSessionImpl.wrap(session) : null;
 	}
 
@@ -135,7 +136,7 @@ public class HttpRequestImpl implements HttpRequest {
 
 	public Header[] getHeaders(String name) {
 		@SuppressWarnings("rawtypes")
-		Enumeration values = parent.getHeaders(name);
+		Enumeration values = request.getHeaders(name);
 		ArrayList<Header> headers = new ArrayList<Header>();
 		while (values.hasMoreElements()) {
 			String value = (String) values.nextElement();
@@ -147,13 +148,13 @@ public class HttpRequestImpl implements HttpRequest {
 
 	public Header[] getAllHeaders() {
 		@SuppressWarnings("rawtypes")
-		Enumeration names = parent.getHeaderNames();
+		Enumeration names = request.getHeaderNames();
 		ArrayList<Header> headers = new ArrayList<Header>();
 		String name;
 		while (names.hasMoreElements()) {
 			name = (String) names.nextElement();
 			@SuppressWarnings("rawtypes")
-			Enumeration values = parent.getHeaders(name);
+			Enumeration values = request.getHeaders(name);
 			while (values.hasMoreElements()) {
 				String value = (String) values.nextElement();
 				headers.add(new BasicHeader(name, value));
@@ -161,6 +162,10 @@ public class HttpRequestImpl implements HttpRequest {
 		}
 		Header[] t = new Header[] {};
 		return headers.toArray(t);
+	}
+
+	public HttpEntity getEntity() {
+		return entity;
 	}
 
 }
