@@ -25,7 +25,7 @@ public class UriUtils {
 
 	public static URI createURI(final String scheme, final String host, int port, final String path, final String query, final String fragment) {
 		try {
-			return URIUtils.createURI(scheme, host, port, path, query, fragment);
+			return new URI(scheme, null, host, port, path, query, fragment);
 		} catch (URISyntaxException e) {
 			throw new InvalidUriException(e);
 		}
@@ -69,7 +69,8 @@ public class UriUtils {
 	}
 
 	/**
-	 * Translates an URL by replacing the beginning like in the example passed as parameters
+	 * Translates an URL by replacing the beginning like in the example passed
+	 * as parameters
 	 * 
 	 * @param sourceUrl
 	 * @param sourceContext
@@ -78,7 +79,8 @@ public class UriUtils {
 	 * @throws MalformedURLException
 	 */
 	public final static String translateUrl(String sourceUrl, String sourceContext, String targetContext) throws MalformedURLException {
-		// Find what has been replaced at the beginning of sourceContext to transform it to targetContext
+		// Find what has been replaced at the beginning of sourceContext to
+		// transform it to targetContext
 		String commonSuffix = StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext), StringUtils.reverse(targetContext)));
 		String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
 		String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);

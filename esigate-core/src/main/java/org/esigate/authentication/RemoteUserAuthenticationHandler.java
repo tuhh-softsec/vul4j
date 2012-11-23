@@ -34,10 +34,12 @@ import org.esigate.util.HttpRequestHelper;
 public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler  {
 
 
+	@Override
 	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
 		return false;
 	}
 
+	@Override
 	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
 		UserContext userContext = HttpRequestHelper.getUserContext(httpRequest);
 		String remoteUser = null;
@@ -57,6 +59,7 @@ public class RemoteUserAuthenticationHandler extends GenericAuthentificationHand
 	}
 	
 
+	@Override
 	public boolean beforeProxy(HttpRequest httpRequest) {
 		return true;
 	}

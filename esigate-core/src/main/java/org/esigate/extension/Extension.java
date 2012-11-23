@@ -34,6 +34,7 @@ public interface Extension {
 	 * Initialize the extension using the given properties.
 	 * <p>
 	 * Extensions may register to events during the init phase.
+	 * @param driver 
 	 * 
 	 * @param properties
 	 */

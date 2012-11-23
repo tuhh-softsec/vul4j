@@ -15,8 +15,6 @@
 
 package org.esigate.filter;
 
-import java.util.Properties;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.api.HttpRequest;
@@ -37,9 +35,6 @@ public interface Filter  {
 	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, HttpRequest originalRequest);
 
 	Filter EMPTY = new Filter() {
-		public void init(Properties properties) {
-		}
-
 		public void preRequest(GenericHttpRequest request, HttpContext httpContext, HttpRequest originalRequest) {
 		}
 

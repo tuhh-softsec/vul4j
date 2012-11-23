@@ -56,10 +56,12 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 	private final List<String> requestAttributes = new ArrayList<String>();
 	private String headerPrefix = "X-ATTR-";
 
+	@Override
 	public boolean beforeProxy(HttpRequest httpRequest)  {
 		return true;
 	}
 
+	@Override
 	public void init( Properties properties) {
 		// Attributes for session
 		String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
@@ -92,10 +94,12 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 		}
 	}
 
+	@Override
 	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
 		return false;
 	}
 
+	@Override
 	public void preRequest(GenericHttpRequest request, HttpRequest httpRequest) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("preRequest");

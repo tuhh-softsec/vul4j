@@ -43,10 +43,10 @@ public class ExtensionFactory {
 	 * 
 	 * @param properties
 	 * @param parameter
+	 * @param d 
 	 * 
 	 * @param <T>
 	 *            class which extends Extension
-	 * @param clazz
 	 *            class which extends Extension
 	 * @return instance of {@link Extension} or null.
 	 */
@@ -80,7 +80,7 @@ public class ExtensionFactory {
 	 * @param properties
 	 * @param parameter
 	 * @param d
-	 * @return
+	 * @return the extension list
 	 */
 	@SuppressWarnings("unchecked")
 	public final static <T extends Extension> List<T> getExtensions(

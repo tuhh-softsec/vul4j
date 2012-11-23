@@ -32,6 +32,7 @@ import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 
 public class MemcachedCacheStorage extends CacheStorage {
+	@Override
 	public void init(Properties properties) {
 		Collection<String> serverStringList = Parameters.MEMCACHED_SERVERS_PROPERTY.getValueList(properties);
 		if (serverStringList.isEmpty())

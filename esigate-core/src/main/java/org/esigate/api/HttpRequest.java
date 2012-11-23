@@ -15,7 +15,6 @@
 
 package org.esigate.api;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.http.Header;

@@ -26,6 +26,7 @@ import org.esigate.Parameters;
 public class EhcacheCacheStorage extends CacheStorage {
 	public final static String DEFAULT_CACHE_NAME = "EsiGate";
 
+	@Override
 	public void init(Properties properties) {
 		String cacheName = Parameters.EHCACHE_CACHE_NAME_PROPERTY.getValueString(properties);
 		String configurationFileName = Parameters.EHCACHE_CONFIGURATION_FILE_PROPERTY.getValueString(properties);

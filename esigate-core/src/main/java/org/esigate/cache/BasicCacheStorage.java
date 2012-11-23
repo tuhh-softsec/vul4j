@@ -21,6 +21,7 @@ import org.apache.http.impl.client.cache.CacheConfig;
 
 public class BasicCacheStorage extends CacheStorage {
 
+	@Override
 	public void init(Properties properties) {
 		CacheConfig cacheConfig = CacheConfigHelper.createCacheConfig(properties);
 		impl = new BasicHttpCacheStorage(cacheConfig);
