@@ -38,6 +38,8 @@ public class CommentTest extends TestCase {
 		request = new MockHttpRequest();
 		tested = new EsiRenderer();
 		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		MockDriver provider1 = new MockDriver("provider1");
+		provider1.addResource("/test", "replacement");
 	}
 
 	public void testComment() throws IOException, HttpErrorPage {
@@ -53,6 +55,17 @@ public class CommentTest extends TestCase {
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals(" <p>Hello, world!</p> ", out.toString());
+	}
+
+	/**
+	 * http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=126
+	 * @throws Exception 
+	 */
+	public void testCommentedEsiTags() throws Exception {
+		String page = "begin <!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>--> end";
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		assertEquals("begin replacement end", out.toString());
 	}
 
 }

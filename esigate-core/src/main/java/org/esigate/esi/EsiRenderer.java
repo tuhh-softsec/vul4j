@@ -37,110 +37,119 @@ import org.slf4j.LoggerFactory;
  */
 public class EsiRenderer implements Renderer, Appendable {
 
-    private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
+	private final static Logger LOG = LoggerFactory.getLogger(EsiRenderer.class);
 
-    private final static Pattern PATTERN = Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)|(<!--esi)|(-->)");
+	private final static Pattern PATTERN = Pattern.compile("(<esi:[^>]*>)|(</esi:[^>]*>)");
+	private final static Pattern PATTERN_COMMENTS = Pattern.compile("(<!--esi)|(-->)");
 
-    private final Parser parser = new Parser(PATTERN, IncludeElement.TYPE, Comment.TYPE, CommentElement.TYPE,
-        RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE,
-        OtherwiseElement.TYPE, TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE,
-        ReplaceElement.TYPE, FragmentElement.TYPE);
+	private final Parser parser = new Parser(PATTERN, IncludeElement.TYPE, CommentElement.TYPE, RemoveElement.TYPE, VarsElement.TYPE, ChooseElement.TYPE, WhenElement.TYPE, OtherwiseElement.TYPE,
+			TryElement.TYPE, AttemptElement.TYPE, ExceptElement.TYPE, InlineElement.TYPE, ReplaceElement.TYPE, FragmentElement.TYPE);
 
-    private Writer out;
+	private final Parser parserComments = new Parser(PATTERN_COMMENTS, Comment.TYPE);
 
-    private Map<String, CharSequence> fragmentsToReplace;
+	private Writer out;
 
-    private final String page;
+	private Map<String, CharSequence> fragmentsToReplace;
 
-    private final String name;
+	private final String page;
 
-    private boolean write = true;
+	private final String name;
 
-    private boolean found = false;
+	private boolean write = true;
 
-    public String getName() {
-        return name;
-    }
+	private boolean found = false;
 
-    public void setWrite(boolean write) {
-        this.write = write;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Constructor used to render a complete page
-     */
-    public EsiRenderer() {
-        page = null;
-        name = null;
-    }
+	public void setWrite(boolean write) {
+		this.write = write;
+	}
 
-    /**
-     * Constructor used to render a fragment Retrieves a fragment inside a page.<br />
-     * 
-     * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code>
-     * and <code>&lt;/esi:fragment&gt;</code>
-     * 
-     * @param page
-     * @param name
-     */
-    public EsiRenderer(String page, String name) {
-        this.page = page;
-        this.name = name;
-        write = false;
-    }
+	/**
+	 * Constructor used to render a complete page
+	 */
+	public EsiRenderer() {
+		page = null;
+		name = null;
+	}
 
-    public Map<String, CharSequence> getFragmentsToReplace() {
-        return fragmentsToReplace;
-    }
+	/**
+	 * Constructor used to render a fragment Retrieves a fragment inside a page.<br />
+	 * 
+	 * Extracts html between <code>&lt;esi:fragment name="myFragment"&gt;</code>
+	 * and <code>&lt;/esi:fragment&gt;</code>
+	 * 
+	 * @param page
+	 * @param name
+	 */
+	public EsiRenderer(String page, String name) {
+		this.page = page;
+		this.name = name;
+		write = false;
+	}
 
-    public void setFragmentsToReplace(Map<String, CharSequence> fragmentsToReplace) {
-        this.fragmentsToReplace = fragmentsToReplace;
-    }
+	public Map<String, CharSequence> getFragmentsToReplace() {
+		return fragmentsToReplace;
+	}
 
-    /** {@inheritDoc} */
-    public void render(HttpRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
-        if (name != null) {
-            LOG.debug("Rendering fragment " + name + " in page " + page);
-        }
-        this.out = out;
-        if (content == null) {
-            return;
-        }
-        parser.setHttpRequest(originalRequest);
-        parser.parse(content, this);
-        if (name != null && this.found == false) {
-            throw new HttpErrorPage(502, "Fragment " + name + " not found", "Fragment " + name + " not found");
-        }
-    }
+	public void setFragmentsToReplace(Map<String, CharSequence> fragmentsToReplace) {
+		this.fragmentsToReplace = fragmentsToReplace;
+	}
 
-    public Appendable append(CharSequence csq) throws IOException {
-        if (write) {
-            out.append(csq);
-        }
-        return this;
-    }
+	/** {@inheritDoc} */
+	public void render(HttpRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
+		if (name != null) {
+			LOG.debug("Rendering fragment " + name + " in page " + page);
+		}
+		this.out = out;
+		if (content == null) {
+			return;
+		}
 
-    public Appendable append(char c) throws IOException {
-        if (write) {
-            out.append(c);
-        }
-        return this;
-    }
+		// Pass 1. Remove esi comments
+		StringBuilder contentWithoutComments = new StringBuilder();
+		parserComments.setHttpRequest(originalRequest);
+		parserComments.parse(content, contentWithoutComments);
 
-    public Appendable append(CharSequence csq, int start, int end) throws IOException {
-        if (write) {
-            out.append(csq, start, end);
-        }
-        return this;
-    }
+		// Pass 2. Process ESI
+		parser.setHttpRequest(originalRequest);
+		parser.parse(contentWithoutComments, this);
 
-    public boolean isWrite() {
-        return this.write;
-    }
+		if (name != null && this.found == false) {
+			throw new HttpErrorPage(502, "Fragment " + name + " not found", "Fragment " + name + " not found");
+		}
+	}
 
-    public void setFound(boolean found) {
-        this.found = found;
+	public Appendable append(CharSequence csq) throws IOException {
+		if (write) {
+			out.append(csq);
+		}
+		return this;
+	}
 
-    }
+	public Appendable append(char c) throws IOException {
+		if (write) {
+			out.append(c);
+		}
+		return this;
+	}
+
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
+		if (write) {
+			out.append(csq, start, end);
+		}
+		return this;
+	}
+
+	public boolean isWrite() {
+		return this.write;
+	}
+
+	public void setFound(boolean found) {
+		this.found = found;
+
+	}
 
 }
