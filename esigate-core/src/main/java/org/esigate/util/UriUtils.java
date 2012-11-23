@@ -25,7 +25,33 @@ public class UriUtils {
 
 	public static URI createURI(final String scheme, final String host, int port, final String path, final String query, final String fragment) {
 		try {
-			return new URI(scheme, null, host, port, path, query, fragment);
+			StringBuilder buffer = new StringBuilder();
+			if (host != null) {
+				if (scheme != null) {
+					buffer.append(scheme);
+					buffer.append("://");
+				}
+				buffer.append(host);
+				if (port > 0) {
+					buffer.append(':');
+					buffer.append(port);
+				}
+			}
+			if (path == null || !path.startsWith("/")) {
+				buffer.append('/');
+			}
+			if (path != null) {
+				buffer.append(path);
+			}
+			if (query != null) {
+				buffer.append('?');
+				buffer.append(query);
+			}
+			if (fragment != null) {
+				buffer.append('#');
+				buffer.append(fragment);
+			}
+			return new URI(buffer.toString());
 		} catch (URISyntaxException e) {
 			throw new InvalidUriException(e);
 		}
