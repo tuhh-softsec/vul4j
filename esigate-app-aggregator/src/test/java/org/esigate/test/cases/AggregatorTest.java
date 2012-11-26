@@ -21,6 +21,7 @@ import com.meterware.httpunit.WebResponse;
  * Tests for aggregator webapp
  * 
  * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
  */
 public class AggregatorTest extends TestCase {
 	private final static String APPLICATION_PATH = "http://localhost:8080/esigate-app-aggregator/";
@@ -119,6 +120,16 @@ public class AggregatorTest extends TestCase {
 	public void testCookies() throws Exception {
 		doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies-firstcall.html");
 		doCookieSimpleTest("nocache/ag1/cookies.jsp", "cookies.html");
+	}
+
+	/**
+	 * Ensure esi include tag is processed correclty if enclosed by esi
+	 * comments.
+	 * 
+	 * @throws Exception
+	 */
+	public void testESIComments() throws Exception {
+		doSimpleTest("esi-comments.html");
 	}
 
 	public void testESIInclude() throws Exception {
