@@ -53,9 +53,10 @@ public abstract class AbstractUnArchiver
     private FileSelector[] fileSelectors;
 
     /**
+     * since 2.3 is on by default
      * @since 1.1
      */
-    private boolean useJvmChmod = false;
+    private boolean useJvmChmod = true;
 
     /**
      * @since 1.1

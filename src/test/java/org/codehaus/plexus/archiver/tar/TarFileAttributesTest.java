@@ -21,7 +21,7 @@ public class TarFileAttributesTest
     extends PlexusTestCase
 {
 
-    private final List toDelete = new ArrayList();
+    private final List<File> toDelete = new ArrayList<File>();
 
     public void setUp()
         throws Exception
@@ -40,9 +40,8 @@ public class TarFileAttributesTest
 
         if ( !toDelete.isEmpty() )
         {
-            for ( Iterator it = toDelete.iterator(); it.hasNext(); )
+            for ( File f : toDelete )
             {
-                File f = (File) it.next();
                 System.out.println( "Deleting: " + f );
                 if ( f.isDirectory() )
                 {
@@ -141,7 +140,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( 0660, fileAttributes.getOctalMode() );
+        assertEquals( "644", fileAttributes.getOctalModeString() );
     }
 
     public void testUseDetectedFileAttributes()
@@ -201,7 +200,7 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( 0440, fileAttributes.getOctalMode() );
+        assertEquals( "444", fileAttributes.getOctalModeString() );
     }
 
     private boolean checkForWindows()
@@ -267,7 +266,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( 0660, fileAttributes.getOctalMode() );
+        assertEquals( "644", fileAttributes.getOctalModeString() );
     }
 
     public void testOverrideDetectedFileAttributesUsingFileMode()
@@ -324,7 +323,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        assertEquals( 0660, fileAttributes.getOctalMode() );
+        assertEquals( "644", fileAttributes.getOctalModeString() );
     }
 
 }
