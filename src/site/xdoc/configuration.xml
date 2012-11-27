@@ -197,7 +197,7 @@
                     <td>extensions</td>
                     <td>A comma-separated list of extensions (class names). Extensions can register to events and customize standard behavior, for instance add logging or handle authentication. Extensions will be called in the same order as in this list.</td>
                     <td>No</td>
-                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler</td>
+                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler, org.esigate.extension.ResourceFixup</td>
                 </tr> 
 				<tr>
                     <td><strike>filter</strike></td>
