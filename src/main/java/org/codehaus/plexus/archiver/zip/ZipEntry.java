@@ -17,7 +17,6 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.zip.ZipException;
@@ -389,13 +388,6 @@ public class ZipEntry
     }
 
     /**
-     * Helper for JDK 1.1 <-> 1.2 incompatibility.
-     *
-     * @since 1.2
-     */
-    private Long compressedSize = null;
-
-    /**
      * Make this class work in JDK 1.1 like a 1.2 class.
      * <p/>
      * <p>This either stores the size for later usage or invokes
@@ -405,29 +397,7 @@ public class ZipEntry
      */
     public void setComprSize( long size )
     {
-        if ( haveSetCompressedSize() )
-        {
-            performSetCompressedSize( this, size );
-        }
-        else
-        {
-            compressedSize = new Long( size );
-        }
-    }
-
-    /**
-     * Override to make this class work in JDK 1.1 like a 1.2 class.
-     *
-     * @since 1.2
-     */
-    public long getCompressedSize()
-    {
-        if ( compressedSize != null )
-        {
-            // has been set explicitly and we are running in a 1.1 VM
-            return compressedSize.longValue();
-        }
-        return super.getCompressedSize();
+        setCompressedSize( size );
     }
 
     /**
@@ -463,13 +433,6 @@ public class ZipEntry
      *
      * @since 1.2
      */
-    private final static Object lockReflection = new Object();
-
-    /**
-     * Helper for JDK 1.1
-     *
-     * @since 1.2
-     */
     private static boolean triedToGetMethod = false;
 
     /**
@@ -479,8 +442,7 @@ public class ZipEntry
      */
     private static boolean haveSetCompressedSize()
     {
-        checkSCS();
-        return setCompressedSizeMethod != null;
+        return true;
     }
 
     /**
@@ -490,20 +452,7 @@ public class ZipEntry
      */
     private static void performSetCompressedSize( ZipEntry ze, long size )
     {
-        Long[] s = {new Long( size )};
-        try
-        {
-            setCompressedSizeMethod.invoke( ze, s );
-        }
-        catch ( InvocationTargetException ite )
-        {
-            Throwable nested = ite.getTargetException();
-            throw new RuntimeException( "Exception setting the compressed size of " + ze + ": " + nested.getMessage() );
-        }
-        catch ( Throwable other )
-        {
-            throw new RuntimeException( "Exception setting the compressed size of " + ze + ": " + other.getMessage() );
-        }
+       ze.setCompressedSize( size );
     }
 
     /**
@@ -515,19 +464,6 @@ public class ZipEntry
     {
         if ( !triedToGetMethod )
         {
-            synchronized ( lockReflection )
-            {
-                triedToGetMethod = true;
-                try
-                {
-                    setCompressedSizeMethod =
-                        java.util.zip.ZipEntry.class.getMethod( "setCompressedSize", new Class[] { Long.TYPE } );
-                }
-                catch ( NoSuchMethodException nse )
-                {
-                    // ignored
-                }
-            }
         }
     }
 
