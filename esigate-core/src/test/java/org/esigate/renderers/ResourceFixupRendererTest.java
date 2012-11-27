@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.esigate.HttpErrorPage;
-import org.esigate.renderers.ResourceFixupRenderer;
-
 import junit.framework.TestCase;
+
+import org.esigate.HttpErrorPage;
 
 /**
  * Tests on ResourceFixupRenderer
@@ -34,6 +33,32 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputRelative, out.toString());
 	}
+	
+	/**
+	 * Ensure CDATA does not match replacement rules.
+	 * 
+	 * @see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=120
+	 * @throws IOException
+	 * @throws HttpErrorPage
+	 */
+	public void testComments() throws IOException, HttpErrorPage {
+		String base = "http://myapp/context";
+		String page = "templates/template1.html";
+		final String input = "<![CDATA[   var src=\"test\" ]]>";
+		final String expectedOutputRelative = "<![CDATA[   var src=\"test\" ]]>";
+		final String expectedOutputAbsolute = "<![CDATA[   var src=\"test\" ]]>";
+
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+
+		out = new StringWriter();
+		tested = new ResourceFixupRenderer(base, base, page, ResourceFixupRenderer.RELATIVE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputRelative, out.toString());
+	}
+	
 
 	public void testUrlReplaceContext() throws IOException, HttpErrorPage {
 		String base = "http://myapp/context/";
