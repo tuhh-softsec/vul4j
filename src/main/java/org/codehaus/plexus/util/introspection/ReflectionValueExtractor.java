@@ -16,19 +16,14 @@ package org.codehaus.plexus.util.introspection;
  * limitations under the License.
  */
 
-import java.lang.ref.SoftReference;
+import org.codehaus.plexus.util.StringUtils;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.WeakHashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * <p>Using simple dotted expressions to extract the values from an Object instance,
@@ -52,7 +47,7 @@ public class ReflectionValueExtractor
      * This approach prevents permgen space overflows due to retention of discarded
      * classloaders.
      */
-    private static final Map<Class, SoftReference<ClassMap>> classMaps = new WeakHashMap<Class, SoftReference<ClassMap>>();
+    private static final Map<Class, WeakReference<ClassMap>> classMaps = new WeakHashMap<Class, WeakReference<ClassMap>>();
 
     /**
      * Indexed properties pattern, ie <code>(\\w+)\\[(\\d+)\\]</code>
@@ -237,7 +232,7 @@ public class ReflectionValueExtractor
     private static ClassMap getClassMap( Class clazz )
     {
 
-        SoftReference<ClassMap> softRef = classMaps.get( clazz);
+        WeakReference<ClassMap> softRef = classMaps.get( clazz);
 
         ClassMap classMap;
 
@@ -245,7 +240,7 @@ public class ReflectionValueExtractor
         {
             classMap = new ClassMap( clazz );
 
-            classMaps.put( clazz, new SoftReference<ClassMap>(classMap) );
+            classMaps.put( clazz, new WeakReference<ClassMap>(classMap) );
         }
 
         return classMap;
