@@ -269,4 +269,10 @@ public class Xpp3DomTest
         assertNotSame( result.getChild( "bar" ), recessiveConfig.getChild( "bar" ) );
     }
 
+    public void testDupeChildren() throws IOException, XmlPullParserException {
+        String dupes = "<configuration><foo>x</foo><foo>y</foo></configuration>";
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( dupes ) );
+        assertNotNull( dom);
+        assertEquals("y", dom.getChild("foo").getValue());
+    }
 }
