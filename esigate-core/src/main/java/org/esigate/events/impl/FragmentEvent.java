@@ -6,7 +6,9 @@ import org.esigate.events.Event;
 import org.esigate.http.GenericHttpRequest;
 
 /**
- * Fetch event : when a new HTTP call is made to get a new block/template.
+ * Fragment event : when a fragment is required for rendering. This may start a
+ * fetch event in case of a cache miss. Else the fragment is retrived from the
+ * cache.
  * 
  * @author Nicolas Richeton
  * 
@@ -30,7 +32,7 @@ public class FragmentEvent extends Event {
 	 * The new HTTP call details.
 	 */
 	public GenericHttpRequest httpRequest;
-	
+
 	/**
 	 * The request which was received by ESIgate.
 	 */

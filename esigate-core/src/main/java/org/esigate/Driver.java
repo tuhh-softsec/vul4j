@@ -35,13 +35,13 @@ import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FragmentEvent;
 import org.esigate.events.impl.ProxyEvent;
+import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.RequestCookieStore;
 import org.esigate.http.ResourceUtils;
-import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
@@ -129,23 +129,27 @@ public class Driver {
 				request);
 		String currentValue = getResourceAsString(resultingpage, request);
 
-		// Fix resources
-		if (config.isFixResources()) {
-			String baseUrl = HttpRequestHelper.getBaseUrl(request).toString();
-			ResourceFixupRenderer fixup = new ResourceFixupRenderer(baseUrl,
-					config.getVisibleBaseURL(baseUrl), page,
-					config.getFixMode());
-			StringWriter stringWriter = new StringWriter();
-			fixup.render(request, currentValue, stringWriter);
-			currentValue = stringWriter.toString();
-		}
+		// Start rendering.
+		RenderEvent renderEvent=	new RenderEvent();
+		renderEvent.originalRequest = request;
+		renderEvent.remoteUrl = page;
+		// Create renderer list from parameters. Ensure at least an additional 
+		// renderer can be added at no cost.
+		renderEvent.renderers  = new ArrayList<Renderer>(
+				renderers.length + 1);
+		renderEvent.renderers.addAll(Arrays.asList(renderers));
+
+		
+		eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
 
 		// Process all renderers
-		for (Renderer renderer : renderers) {
+		for (Renderer renderer : renderEvent.renderers) {
 			StringWriter stringWriter = new StringWriter();
 			renderer.render(request, currentValue, stringWriter);
 			currentValue = stringWriter.toString();
 		}
+		eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
+
 		writer.append(currentValue);
 	}
 
@@ -221,23 +225,26 @@ public class Driver {
 			LOG.debug("'{}' is text : will apply renderers.", relUrl);
 			String currentValue = HttpResponseUtils.toString(httpResponse);
 
-			List<Renderer> listOfRenderers = new ArrayList<Renderer>(
+			// Start rendering
+			RenderEvent renderEvent=	new RenderEvent();
+			renderEvent.originalRequest = request;
+			renderEvent.remoteUrl = relUrl;
+			// Create renderer list from parameters. Ensure at least an additional 
+			// renderer can be added at no cost.
+			renderEvent.renderers  = new ArrayList<Renderer>(
 					renderers.length + 1);
-			if (config.isFixResources()) {
-				String baseUrl = HttpRequestHelper.getBaseUrl(request)
-						.toString();
-				ResourceFixupRenderer fixup = new ResourceFixupRenderer(
-						baseUrl, config.getVisibleBaseURL(baseUrl), relUrl,
-						config.getFixMode());
-				listOfRenderers.add(fixup);
-			}
-			listOfRenderers.addAll(Arrays.asList(renderers));
-
-			for (Renderer renderer : listOfRenderers) {
+			renderEvent.renderers.addAll(Arrays.asList(renderers));
+			
+			eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
+			for (Renderer renderer : renderEvent.renderers) {
 				StringWriter stringWriter = new StringWriter();
 				renderer.render(request, currentValue, stringWriter);
 				currentValue = stringWriter.toString();
 			}
+			eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
+
+			
+			
 			// Write the result to the OutpuStream using default charset
 			// ISO-8859-1 if not defined
 			String charsetName = HttpResponseUtils

@@ -33,10 +33,18 @@ import org.slf4j.LoggerFactory;
  * <li>{@link EventManager#EVENT_FRAGMENT_PRE} : before retrieving a fragment.</li>
  * <li>{@link EventManager#EVENT_FRAGMENT_POST} : after retrieving a fragment.</li>
  * </ul>
- * <p>Fetch events : An HTTP call is made to a remote backend.
+ * <p>
+ * Fetch events : An HTTP call is made to a remote backend.
  * <ul>
  * <li>{@link EventManager#EVENT_FETCH_PRE} : before creating the HTTP call.</li>
  * <li>{@link EventManager#EVENT_FETCH_POST} : after we receive the response.</li>
+ * </ul>
+ * <p>
+ * Render events : Renderers are applied to the current page. This event can be
+ * used to inject additional renderers.
+ * <ul>
+ * <li>{@link EventManager#EVENT_RENDER_PRE} : before applying renderers</li>
+ * <li>{@link EventManager#EVENT_RENDER_POST} : after applying renderers</li>
  * </ul>
  * 
  * @author Nicolas Richeton
@@ -57,6 +65,11 @@ public class EventManager {
 			"org.esigate.proxy-pre", EventDefinition.TYPE_DEFAULT);
 	public static EventDefinition EVENT_PROXY_POST = new EventDefinition(
 			"org.esigate.proxy-post", EventDefinition.TYPE_POST);
+
+	public static EventDefinition EVENT_RENDER_PRE = new EventDefinition(
+			"org.esigate.render-pre", EventDefinition.TYPE_DEFAULT);
+	public static EventDefinition EVENT_RENDER_POST = new EventDefinition(
+			"org.esigate.render-post", EventDefinition.TYPE_POST);
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EventManager.class);
@@ -135,7 +148,7 @@ public class EventManager {
 		List<IEventListener> eventListeners = listenerMappings
 				.get(eventDefinition);
 
-		// Not listeners at all for this event
+		// No listeners at all for this event
 		if (eventListeners == null)
 			return;
 
