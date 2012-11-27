@@ -16,6 +16,8 @@ package org.codehaus.plexus.util.introspection;
  * limitations under the License.
  */
 
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -50,7 +52,7 @@ public class ReflectionValueExtractor
      * This approach prevents permgen space overflows due to retention of discarded
      * classloaders.
      */
-    private static final Map classMaps = new WeakHashMap();
+    private static final Map<Class, SoftReference<ClassMap>> classMaps = new WeakHashMap<Class, SoftReference<ClassMap>>();
 
     /**
      * Indexed properties pattern, ie <code>(\\w+)\\[(\\d+)\\]</code>
@@ -234,13 +236,16 @@ public class ReflectionValueExtractor
 
     private static ClassMap getClassMap( Class clazz )
     {
-        ClassMap classMap = (ClassMap) classMaps.get( clazz );
 
-        if ( classMap == null )
+        SoftReference<ClassMap> softRef = classMaps.get( clazz);
+
+        ClassMap classMap;
+
+        if ( softRef == null || (classMap = softRef.get() ) == null)
         {
             classMap = new ClassMap( clazz );
 
-            classMaps.put( clazz, classMap );
+            classMaps.put( clazz, new SoftReference<ClassMap>(classMap) );
         }
 
         return classMap;
