@@ -263,6 +263,7 @@ public abstract class AbstractUnArchiver
     }
 
     /**
+     * <b>jvm chmod won't set group level permissions !</b>
      * @since 1.1
      */
     public void setUseJvmChmod( final boolean useJvmChmod )
