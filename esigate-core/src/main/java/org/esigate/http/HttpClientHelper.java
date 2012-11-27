@@ -202,7 +202,7 @@ public class HttpClientHelper {
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		httpRequest.setParams(new DefaultedHttpParams(originalRequest.getParams(), null));
+		httpRequest.setParams(new DefaultedHttpParams(new BasicHttpParams(), originalRequest.getParams()));
 		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.

@@ -470,4 +470,56 @@ public class HttpClientHelperTest extends TestCase {
 		sendRequestAndCheckHostHeader("https://www.foo.com:443", "http://localhost:8080", null, "www.foo.com");
 	}
 
+	/**
+	 * 0000123: Incorrect Host header while making include where master
+	 * application has preserveHost=true and provider preserveHost=false
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=123
+	 * 
+	 * @throws Exception
+	 */
+	public void testIssue123() throws Exception {
+		mockHttpClient.setResponse(createMockResponse(""));
+
+		// Create a first HttpClientHelper with preserveHost = true
+		properties = new Properties();
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
+		properties.put(Parameters.USE_CACHE.name, "false");
+		createHttpClientHelper();
+		HttpClientHelper httpClientHelper1 = httpClientHelper;
+
+		// Create a second HttpClientHelper with preserveHost = true
+		properties = new Properties();
+		properties.put(Parameters.PRESERVE_HOST.name, "false");
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
+		properties.put(Parameters.USE_CACHE.name, "false");
+		createHttpClientHelper();
+		HttpClientHelper httpClientHelper2 = httpClientHelper;
+
+		MockHttpRequest httpRequest = new MockHttpRequest("http://www.foo.com");
+
+		// Include something with first HttpClientHelper
+		HttpContext httpContext = new BasicHttpContext();
+		HttpRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080", false);
+		// Also manually add a fake param to see if it is set in original
+		// request or copied to other requests
+		apacheHttpRequest.getParams().setParameter("test", "test");
+		httpClientHelper1.execute(apacheHttpRequest, httpContext);
+		Header[] headers = mockHttpClient.getSentRequest().getHeaders("Host");
+		assertEquals("We should have 1 Host header", 1, headers.length);
+		assertEquals("www.foo.com", headers[0].getValue());
+
+		// Include something with second HttpClientHelper
+		HttpContext httpContext2 = new BasicHttpContext();
+		HttpRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest, "http://localhost:8080", false);
+		httpClientHelper2.execute(apacheHttpRequest2, httpContext2);
+		Header[] headers2 = mockHttpClient.getSentRequest().getHeaders("Host");
+		assertEquals("We should have 1 Host header", 1, headers2.length);
+		assertEquals("localhost:8080", headers2[0].getValue());
+		
+		assertNull(httpRequest.getParams().getParameter("test"));
+		assertNull(apacheHttpRequest2.getParams().getParameter("test"));
+		assertNotNull(apacheHttpRequest.getParams().getParameter("test"));
+	}
+
 }
