@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.Driver;
@@ -106,6 +107,28 @@ public class HttpRequestHelper {
 				return nameValuePair.getValue();
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the target host as defined in the Host header or extracted from
+	 * the request URI
+	 * 
+	 * Usefull to generate Host header in a HttpRequest
+	 * 
+	 * @param request
+	 * @return the host formatted as host:port
+	 */
+	public final static String getHost(HttpRequest request) {
+		Header[] headers = request.getHeaders(HttpHeaders.HOST);
+		if (headers != null && headers.length != 0)
+			return headers[0].getValue();
+		URI uri = UriUtils.createUri(request.getRequestLine().getUri());
+		String scheme = uri.getScheme();
+		String host = uri.getHost();
+		int port = uri.getPort();
+		if (("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443))
+			return host;
+		return host + ":" + port;
 	}
 
 }

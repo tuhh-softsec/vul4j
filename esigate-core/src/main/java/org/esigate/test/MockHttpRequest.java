@@ -59,7 +59,13 @@ public class MockHttpRequest implements HttpRequest {
 
 	public void setUri(String uri) {
 		this.uri = UriUtils.createUri(uri);
-		setHeader("Host", this.uri.getHost());
+		String scheme = this.uri.getScheme();
+		String host = this.uri.getHost();
+		int port = this.uri.getPort();
+		if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme)))
+			setHeader("Host", host);
+		else
+			setHeader("Host", host + ":" + port);
 	}
 
 	public String getRemoteAddr() {

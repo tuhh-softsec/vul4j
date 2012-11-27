@@ -43,14 +43,12 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.ClientParamBean;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -67,6 +65,7 @@ import org.apache.http.params.DefaultedHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
@@ -91,20 +90,19 @@ import org.slf4j.LoggerFactory;
  * @author frbon
  * 
  */
-public class HttpClientHelper  {
+public class HttpClientHelper {
 	private final static Logger LOG = LoggerFactory.getLogger(HttpClientHelper.class);
 	private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
 	private static final Set<String> ENTITY_METHODS = Collections
 			.unmodifiableSet(new HashSet<String>(Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
 	private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
-	private static final String SENT_REQUEST_KEY = "SENT_REQUEST";
+	private static final String TARGET_HOST = "TARGET_HOST";
 	private boolean preserveHost;
 	private FilterList requestHeadersFilterList;
 	private FilterList responseHeadersFilterList;
 	private HttpClient httpClient;
 	private HttpHost proxyHost;
 	private Credentials proxyCredentials;
-	
 
 	public void init(EventManager d, HttpClient defaultHttpClient, Properties properties) {
 		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
@@ -124,7 +122,7 @@ public class HttpClientHelper  {
 				Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
 		PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
 				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
-		
+
 	}
 
 	public void init(EventManager d, Properties properties) {
@@ -172,7 +170,7 @@ public class HttpClientHelper  {
 			}
 			defaultHttpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
 		}
-		init( d, defaultHttpClient, properties);
+		init(d, defaultHttpClient, properties);
 	}
 
 	protected boolean isForwardedRequestHeader(String headerName) {
@@ -184,27 +182,15 @@ public class HttpClientHelper  {
 	}
 
 	public GenericHttpRequest createHttpRequest(HttpRequest originalRequest, String uri, boolean proxy) throws HttpErrorPage {
-		// Extract the host in the URI
-		HttpHost uriHost;
-		uriHost = UriUtils.extractHost(UriUtils.createUri(uri));
-		HttpHost targetHost = uriHost;
-		HttpHost virtualHost = null;
-		HttpRoute route = null;
-		// Preserve host if required
-		if (preserveHost) {
-			virtualHost = UriUtils.extractHost(originalRequest.getRequestLine().getUri());
-			targetHost = virtualHost;
-			// force the route to the server in case of load balancing because.
-			// The request and the host header (virtualHost) will be the same as
-			// in original request but the request will be routed to
-			// the host in the original url. We need to do this if we don't want
-			// a separate cache entry for each node.
-			if (proxyHost == null)
-				route = new HttpRoute(uriHost);
-			else
-				route = new HttpRoute(uriHost, null, proxyHost, false);
-			uri = UriUtils.rewriteURI(uri, targetHost).toString();
-		}
+		// Extract the host in the URI. This is the host we have to send the
+		// request to physically. We will use this value to force the route to
+		// the server
+		HttpHost uriHost = UriUtils.extractHost(UriUtils.createUri(uri));
+
+		// Rewrite requested URI with the original request host. This is the key
+		// for the cache
+		HttpHost targetHost = UriUtils.extractHost(originalRequest.getRequestLine().getUri());
+		uri = UriUtils.rewriteURI(uri, targetHost).toString();
 		String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
 		GenericHttpRequest httpRequest;
 		if (SIMPLE_METHODS.contains(method)) {
@@ -221,19 +207,21 @@ public class HttpClientHelper  {
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+
+		// Preserve host if required
+		if (preserveHost)
+			httpRequest.addHeader(HttpHeaders.HOST, HttpRequestHelper.getHost(originalRequest));
+
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
-
 		copyHeaders(originalRequest, httpRequest);
 
-		if (virtualHost != null) {
-			ClientParamBean clientParamBean = new ClientParamBean(httpRequest.getParams());
-			clientParamBean.setVirtualHost(virtualHost);
-			httpRequest.getParams().setParameter(ConnRoutePNames.FORCED_ROUTE, route);
-		}
+		httpRequest.getParams().setParameter(TARGET_HOST, uriHost);
 		httpRequest.getParams().setParameter(ORIGINAL_REQUEST_KEY, originalRequest);
-		httpRequest.getParams().setParameter(SENT_REQUEST_KEY, httpRequest);
+		// When the cache is used the request from ExecutionContext is not set
+		// so we set it just in case
+		httpRequest.getParams().setParameter(ExecutionContext.HTTP_REQUEST, httpRequest);
 
 		return httpRequest;
 	}
@@ -275,7 +263,7 @@ public class HttpClientHelper  {
 	 * @throws MalformedURLException
 	 */
 	private void copyHeaders(HttpResponse httpClientResponse, org.esigate.api.HttpResponse output) throws MalformedURLException {
-		org.apache.http.HttpRequest httpRequest = (org.apache.http.HttpRequest) httpClientResponse.getParams().getParameter(SENT_REQUEST_KEY);
+		org.apache.http.HttpRequest httpRequest = (org.apache.http.HttpRequest) httpClientResponse.getParams().getParameter(ExecutionContext.HTTP_REQUEST);
 		HttpRequest originalRequest = (HttpRequest) httpClientResponse.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		String originalUri = originalRequest.getRequestLine().getUri();
 		String uri = httpRequest.getRequestLine().getUri();
@@ -301,8 +289,8 @@ public class HttpClientHelper  {
 	public HttpResponse execute(org.apache.http.HttpRequest httpRequest, HttpContext httpContext) {
 		HttpResponse result;
 		try {
-			HttpHost httpHost = UriUtils.extractHost(httpRequest.getRequestLine().getUri());
-			result = httpClient.execute(httpHost, httpRequest, httpContext);
+			HttpHost host = (HttpHost) httpRequest.getParams().getParameter(TARGET_HOST);
+			result = httpClient.execute(host, httpRequest, httpContext);
 		} catch (HttpHostConnectException e) {
 			int statusCode = HttpStatus.SC_BAD_GATEWAY;
 			String statusText = "Connection refused";

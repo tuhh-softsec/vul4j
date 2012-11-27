@@ -27,15 +27,13 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.cache.CacheResponseStatus;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
-import org.esigate.util.UriUtils;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
@@ -234,10 +232,7 @@ public class CacheAdapter  {
 				if (xCacheHeader) {
 					if (context != null) {
 						CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context.getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
-						String host = UriUtils.extractHost(httpRequest.getRequestLine().getUri()).toHostString();
-						HttpRoute forcedRoute = (HttpRoute) httpRequest.getParams().getParameter(ConnRoutePNames.FORCED_ROUTE);
-						if (forcedRoute != null)
-							host = forcedRoute.getTargetHost().toHostString();
+						HttpHost host = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 						String xCacheString;
 						if (cacheResponseStatus.equals(CacheResponseStatus.CACHE_HIT))
 							xCacheString = "HIT";
@@ -245,7 +240,7 @@ public class CacheAdapter  {
 							xCacheString = "VALIDATED";
 						else
 							xCacheString = "MISS";
-						xCacheString += " from " + host;
+						xCacheString += " from " + host.toHostString();
 						xCacheString += " (" + httpRequest.getRequestLine().getMethod() + " " + httpRequest.getRequestLine().getUri() + ")";
 						httpResponse.addHeader("X-Cache", xCacheString);
 					}
