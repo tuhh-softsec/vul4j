@@ -502,20 +502,4 @@ public abstract class CommandLineUtils
         return result.toString();
     }
 
-    private static Method getEnvMethod()
-    {
-        try
-        {
-            return System.class.getMethod( "getenv");
-        }
-        catch ( NoSuchMethodException e )
-        {
-            return null;
-        }
-        catch ( SecurityException e )
-        {
-            return null;
-        }
-    }
-
 }
