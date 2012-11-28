@@ -57,6 +57,7 @@
 		<menu name="Documentation">
 			<item href="quickstart.html" name="Quick start" />
 			<item href="configuration.html" name="Configuration" />
+			<item href="extensions.html" name="Extensions" />
 			<item href="taglib.html" name="Using the taglib" />
 			<item href="api.html" name="Using the API" />
 			<item href="proxy.html" name="Using the proxy" />
