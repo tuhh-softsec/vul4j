@@ -15,7 +15,7 @@
 
 package org.esigate.events.impl;
 
-import org.apache.http.HttpRequest;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.events.Event;
@@ -52,5 +52,5 @@ public class FragmentEvent extends Event {
 	/**
 	 * The request which was received by ESIgate.
 	 */
-	public HttpRequest originalRequest;
+	public HttpEntityEnclosingRequest originalRequest;
 }

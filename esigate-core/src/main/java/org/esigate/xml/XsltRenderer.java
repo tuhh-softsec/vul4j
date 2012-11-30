@@ -72,7 +72,9 @@ public class XsltRenderer implements Renderer {
 				throw new ProcessingFailedException("Template " + template + " not found");
 			transformer = createTransformer(templateStream);
 		} catch (Exception e) {
-			transformer = createTransformer(IOUtils.toInputStream(driver.getResourceAsString(template, originalRequest)));
+			StringBuilder templateStringBuilder = new StringBuilder();
+			driver.render(template, null, templateStringBuilder, originalRequest);
+			transformer = createTransformer(IOUtils.toInputStream(templateStringBuilder));
 		}
 	}
 

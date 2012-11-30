@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -35,8 +34,6 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.EhcacheCacheStorage;
@@ -55,104 +52,14 @@ public class HttpClientHelperTest extends TestCase {
 	private MockHttpClient mockHttpClient;
 	private Properties properties;
 
-	public void testIsBlackListed() {
-		// by default only DriverConfiguration#DEFAULT_BLACK_LISTED_HEADERS are
-		// blacklisted
-		Properties properties = new Properties();
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toUpperCase(), true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toLowerCase(), true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Transfer-Encoding", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Set-Cookie", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Cookie", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Connection", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Keep-Alive", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Proxy-Authenticate", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Proxy-Authorization", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "TE", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Trailer", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Upgrade", true);
-
-		// blacklisted headers are specified via 'blackListedHeaders' property
-		// -> they are merged with default
-		properties = new Properties();
-		properties.setProperty(Parameters.DISCARD_REQUEST_HEADERS.name, "header");
-		httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toUpperCase(), true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Content-Length".toLowerCase(), true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Transfer-Encoding", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Set-Cookie", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Cookie", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Connection", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Keep-Alive", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Proxy-Authenticate", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Proxy-Authorization", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "TE", true);
-		assertResponseHeaderIsBlacklisted(httpClientHelper, "Trailer", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "Upgrade", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "header", true);
-		assertRequestHeaderIsBlacklisted(httpClientHelper, "header".toUpperCase(), true);
-	}
-
-	private void assertRequestHeaderIsBlacklisted(HttpClientHelper httpClientHelper, String header, boolean blacklisted) {
-		assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted", !httpClientHelper.isForwardedRequestHeader(header), blacklisted);
-	}
-
-	private void assertResponseHeaderIsBlacklisted(HttpClientHelper httpClientHelper, String header, boolean blacklisted) {
-		assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted", !httpClientHelper.isForwardedResponseHeader(header), blacklisted);
-	}
-
-	public void testDiscardRequestHeader() {
-		Properties properties = new Properties();
-		properties.put(Parameters.DISCARD_REQUEST_HEADERS.name, "dummy1,dummy2");
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-		assertFalse("Header should be discarded", httpClientHelper.isForwardedRequestHeader("dummy1"));
-		assertFalse("Header should be discarded", httpClientHelper.isForwardedRequestHeader("dummy2"));
-		assertTrue("Header should be forwarded", httpClientHelper.isForwardedRequestHeader("dummy3"));
-	}
-
-	public void testForwardRequestHeader() {
-		Properties properties = new Properties();
-		properties.put(Parameters.FORWARD_REQUEST_HEADERS.name, "Authorization");
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-		assertTrue("Header should be forwarded", httpClientHelper.isForwardedRequestHeader("Authorization"));
-	}
-
-	public void testDiscardResponseHeader() {
-		Properties properties = new Properties();
-		properties.put(Parameters.DISCARD_RESPONSE_HEADERS.name, "dummy1,dummy2");
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-		assertFalse("Header should be discarded", httpClientHelper.isForwardedResponseHeader("dummy1"));
-		assertFalse("Header should be discarded", httpClientHelper.isForwardedResponseHeader("dummy2"));
-		assertTrue("Header should be forwarded", httpClientHelper.isForwardedResponseHeader("dummy3"));
-	}
-
-	public void testForwardResponseHeader() {
-		Properties properties = new Properties();
-		properties.put(Parameters.FORWARD_RESPONSE_HEADERS.name, "WWW-Authenticate");
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), properties);
-		assertTrue("Header should be forwarded", httpClientHelper.isForwardedResponseHeader("WWW-Authenticate"));
+	private void createHttpClientHelper() {
+		httpClientHelper = new HttpClientHelper(new EventManager(), null, mockHttpClient, properties);
 	}
 
 	private boolean compare(HttpResponse response1, HttpResponse response2) throws Exception, IOException {
 		String entity1 = HttpResponseUtils.toString(response1);
 		String entity2 = HttpResponseUtils.toString(response2);
 		return entity1.equals(entity2);
-	}
-
-	private void createHttpClientHelper() {
-		httpClientHelper = new HttpClientHelper();
-		httpClientHelper.init(new EventManager(), mockHttpClient, properties);
 	}
 
 	private HttpResponse createMockResponse(int statusCode, String entity) throws Exception {
@@ -189,9 +96,8 @@ public class HttpClientHelperTest extends TestCase {
 
 	private HttpResponse executeRequest() throws HttpErrorPage {
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest();
-		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
-		HttpContext httpContext = new BasicHttpContext();
-		return httpClientHelper.execute(apacheHttpRequest, httpContext);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		return httpClientHelper.execute(apacheHttpRequest);
 	}
 
 	@Override
@@ -361,10 +267,9 @@ public class HttpClientHelperTest extends TestCase {
 		HttpResponse response = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
-		HttpContext httpContext = new BasicHttpContext();
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
-		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
-		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpResponse result = httpClientHelper.execute(apacheHttpRequest);
 		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
@@ -372,7 +277,7 @@ public class HttpClientHelperTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
-		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		result = httpClientHelper.execute(apacheHttpRequest);
 		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader2);
 		assertTrue("X-Cache header should indicate the first backend used", xCacheHeader1.getValue().startsWith("MISS from localhost"));
@@ -392,10 +297,9 @@ public class HttpClientHelperTest extends TestCase {
 		HttpResponse response = createMockResponse("1");
 		response.setHeader("Cache-control", "max-age=60");
 		mockHttpClient.setResponse(response);
-		HttpContext httpContext = new BasicHttpContext();
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
-		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
-		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpResponse result = httpClientHelper.execute(apacheHttpRequest);
 		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
@@ -403,7 +307,7 @@ public class HttpClientHelperTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
-		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
+		result = httpClientHelper.execute(apacheHttpRequest);
 		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader2);
 		assertTrue("X-Cache header should indicate the first backend used", xCacheHeader1.getValue().startsWith("MISS from localhost"));
@@ -430,21 +334,17 @@ public class HttpClientHelperTest extends TestCase {
 		createHttpClientHelper();
 
 		mockHttpClient.setResponse(createMockResponse(""));
-
-		HttpContext httpContext = new BasicHttpContext();
-
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(uri);
 		if (virtualHost != null)
 			httpRequest.setHeader("Host", virtualHost);
 		// I dn't think it is possible to have a virtualHost that is different
 		// from the host in request uri but let's check that Host header is
 		// taken into account
-		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, targetHost, true);
-		httpClientHelper.execute(apacheHttpRequest, httpContext);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, targetHost, true);
+		httpClientHelper.execute(apacheHttpRequest);
 		Header[] headers = mockHttpClient.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers.length);
 		assertEquals("Wrong Host header", ExpectedHostHeader, headers[0].getValue());
-
 	}
 
 	public void testPreserveHost() throws Exception {
@@ -500,20 +400,17 @@ public class HttpClientHelperTest extends TestCase {
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://www.foo.com");
 
 		// Include something with first HttpClientHelper
-		HttpContext httpContext = new BasicHttpContext();
-		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080", false);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080", false);
 		// Also manually add a fake param to see if it is set in original
 		// request or copied to other requests
 		apacheHttpRequest.getParams().setParameter("test", "test");
-		httpClientHelper1.execute(apacheHttpRequest, httpContext);
+		httpClientHelper1.execute(apacheHttpRequest);
 		Header[] headers = mockHttpClient.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers.length);
 		assertEquals("www.foo.com", headers[0].getValue());
 
-		// Include something with second HttpClientHelper
-		HttpContext httpContext2 = new BasicHttpContext();
-		HttpRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest, "http://localhost:8080", false);
-		httpClientHelper2.execute(apacheHttpRequest2, httpContext2);
+		GenericHttpRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest, "http://localhost:8080", false);
+		httpClientHelper2.execute(apacheHttpRequest2);
 		Header[] headers2 = mockHttpClient.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers2.length);
 		assertEquals("localhost:8080", headers2[0].getValue());

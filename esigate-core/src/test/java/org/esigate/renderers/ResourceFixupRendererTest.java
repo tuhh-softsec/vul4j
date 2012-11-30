@@ -52,7 +52,7 @@ public class ResourceFixupRendererTest extends TestCase {
 	/**
 	 * Ensure CDATA does not match replacement rules.
 	 * 
-	 * @see https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=120
+	 * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=120"
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */

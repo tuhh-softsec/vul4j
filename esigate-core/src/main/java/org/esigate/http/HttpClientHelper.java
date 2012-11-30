@@ -16,7 +16,6 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -28,11 +27,9 @@ import java.util.Set;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -57,7 +54,6 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.DefaultedHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -68,10 +64,10 @@ import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.CacheConfigHelper;
+import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
-import org.esigate.util.FilterList;
+import org.esigate.events.impl.FragmentEvent;
 import org.esigate.util.HttpRequestHelper;
-import org.esigate.util.PropertiesUtil;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,35 +89,15 @@ public class HttpClientHelper {
 			.unmodifiableSet(new HashSet<String>(Arrays.asList("POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
 	private static final String ORIGINAL_REQUEST_KEY = "ORIGINAL_REQUEST";
 	private static final String TARGET_HOST = "TARGET_HOST";
-	private boolean preserveHost;
-	private FilterList requestHeadersFilterList;
-	private FilterList responseHeadersFilterList;
+	private final boolean preserveHost;
+	private CookieManager cookieManager;
 	private HttpClient httpClient;
-	private HttpHost proxyHost;
-	private Credentials proxyCredentials;
+	private EventManager eventManager;
+	private HeaderManager headerManager;
 
-	public void init(EventManager d, HttpClient defaultHttpClient, Properties properties) {
-		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
-		if (useCache) {
-			httpClient = CacheConfigHelper.addCache(d, properties, defaultHttpClient);
-		} else {
-			httpClient = defaultHttpClient;
-		}
-		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(properties);
-		// Populate headers filter lists
-		requestHeadersFilterList = new FilterList();
-		responseHeadersFilterList = new FilterList();
-		// By default all headers are forwarded
-		requestHeadersFilterList.add(Collections.singletonList("*"));
-		responseHeadersFilterList.add(Collections.singletonList("*"));
-		PropertiesUtil.populate(requestHeadersFilterList, properties, Parameters.FORWARD_REQUEST_HEADERS.name, Parameters.DISCARD_REQUEST_HEADERS.name, "",
-				Parameters.DISCARD_REQUEST_HEADERS.defaultValue);
-		PropertiesUtil.populate(responseHeadersFilterList, properties, Parameters.FORWARD_RESPONSE_HEADERS.name, Parameters.DISCARD_RESPONSE_HEADERS.name, "",
-				Parameters.DISCARD_RESPONSE_HEADERS.defaultValue);
-
-	}
-
-	public void init(EventManager d, Properties properties) {
+	private final static HttpClient buildDefaultHttpClient(Properties properties) {
+		HttpHost proxyHost = null;
+		Credentials proxyCredentials = null;
 		// Proxy settings
 		String proxyHostParameter = Parameters.PROXY_HOST.getValueString(properties);
 		if (proxyHostParameter != null) {
@@ -166,15 +142,34 @@ public class HttpClientHelper {
 			}
 			defaultHttpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
 		}
-		init(d, defaultHttpClient, properties);
+		return defaultHttpClient;
 	}
 
-	protected boolean isForwardedRequestHeader(String headerName) {
-		return requestHeadersFilterList.contains(headerName);
+	private final static HttpClient decorateWithCache(EventManager d, HttpClient HttpClient, Properties properties) {
+		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
+		if (useCache) {
+			return CacheConfigHelper.addCache(d, properties, HttpClient);
+		} else {
+			return HttpClient;
+		}
 	}
 
-	protected boolean isForwardedResponseHeader(String headerName) {
-		return responseHeadersFilterList.contains(headerName);
+	private HttpClientHelper(Properties properties, CookieManager cookieManager) {
+		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(properties);
+		headerManager = new HeaderManager(properties);
+		this.cookieManager = cookieManager;
+	}
+
+	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, HttpClient defaultHttpClient, Properties properties) {
+		this(properties, cookieManager);
+		this.eventManager = eventManager;
+		httpClient = decorateWithCache(eventManager, defaultHttpClient, properties);
+	}
+
+	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, Properties properties) {
+		this(properties, cookieManager);
+		this.eventManager = eventManager;
+		httpClient = decorateWithCache(eventManager, buildDefaultHttpClient(properties), properties);
 	}
 
 	public GenericHttpRequest createHttpRequest(HttpEntityEnclosingRequest originalRequest, String uri, boolean proxy) throws HttpErrorPage {
@@ -211,7 +206,7 @@ public class HttpClientHelper {
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
-		copyHeaders(originalRequest, httpRequest);
+		headerManager.copyHeaders(originalRequest, httpRequest);
 
 		httpRequest.getParams().setParameter(TARGET_HOST, uriHost);
 		httpRequest.getParams().setParameter(ORIGINAL_REQUEST_KEY, originalRequest);
@@ -222,112 +217,68 @@ public class HttpClientHelper {
 		return httpRequest;
 	}
 
-	private void copyHeaders(HttpRequest originalRequest, HttpRequest httpRequest) throws HttpErrorPage {
-		String originalUri = originalRequest.getRequestLine().getUri();
-		String uri = httpRequest.getRequestLine().getUri();
-		for (Header header : originalRequest.getAllHeaders()) {
-			// Special headers
-			// User-agent must be set in a specific way
-			if (HttpHeaders.USER_AGENT.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.USER_AGENT))
-				httpRequest.getParams().setParameter(CoreProtocolPNames.USER_AGENT, header.getValue());
-			// Referer must be rewritten
-			else if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
-				String value = header.getValue();
-				try {
-					value = UriUtils.translateUrl(value, originalUri, uri);
-				} catch (MalformedURLException e) {
-					throw new HttpErrorPage(HttpStatus.SC_BAD_REQUEST, "Bad request", e);
-				}
-				httpRequest.addHeader(header.getName(), value);
-				// All other headers are copied if allowed
-			} else if (isForwardedRequestHeader(header.getName())) {
-				httpRequest.addHeader(header);
-			}
-		}
-		// process X-Forwarded-For header (is missing in request and not
-		// blacklisted) -> use remote address instead
-		String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
-		if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null && isForwardedRequestHeader("X-Forwarded-For") && remoteAddr != null) {
-			httpRequest.addHeader("X-Forwarded-For", remoteAddr);
-		}
-	}
-
-	/**
-	 * Copies end-to-end headers from a resource to an output.
-	 * 
-	 * @param httpClientResponse
-	 * @param output
-	 * @throws MalformedURLException
-	 */
-	private void copyHeaders(HttpRequest httpRequest, HttpResponse httpClientResponse, HttpResponse output) throws MalformedURLException {
-		HttpRequest originalRequest = (HttpRequest) httpRequest.getParams().getParameter(ORIGINAL_REQUEST_KEY);
-		String originalUri = originalRequest.getRequestLine().getUri();
-		String uri = httpRequest.getRequestLine().getUri();
-		for (Header header : httpClientResponse.getAllHeaders()) {
-			String name = header.getName();
-			String value = header.getValue();
-			// Ignore Content-Encoding and Content-Type as these headers are set
-			// in HttpEntity
-			if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
-				if (isForwardedResponseHeader(name)) {
-					// Some headers containing an URI have to be rewritten
-					if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
-						value = UriUtils.translateUrl(value, uri, originalUri);
-						value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
-						output.addHeader(name, value);
-					} else {
-						output.addHeader(header.getName(), header.getValue());
-					}
-				}
-			}
-		}
-	}
-
-	public HttpResponse execute(HttpRequest httpRequest, HttpContext httpContext) {
-		HttpResponse result;
-		try {
-			HttpHost host = (HttpHost) httpRequest.getParams().getParameter(TARGET_HOST);
-			HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
-			result = new BasicHttpResponse(response.getStatusLine());
-			copyHeaders(httpRequest, response, result);
-			result.setEntity(response.getEntity());
-		} catch (HttpHostConnectException e) {
-			int statusCode = HttpStatus.SC_BAD_GATEWAY;
-			String statusText = "Connection refused";
-			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} catch (ConnectionPoolTimeoutException e) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Connection pool timeout";
-			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} catch (ConnectTimeoutException e) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Connect timeout";
-			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} catch (SocketTimeoutException e) {
-			int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-			String statusText = "Socket timeout";
-			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		} catch (IOException e) {
-			int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-			String statusText = "Error retrieving URL";
-			LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
-			result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-		}
-		// FIXME workaround for a bug in http client cache that does not keep
-		// params in response
-		result.setParams(httpRequest.getParams());
-		return result;
-
-	}
-
-	public HttpContext createHttpContext(CookieStore cookieStore) {
+	public HttpResponse execute(GenericHttpRequest httpRequest) {
+		HttpEntityEnclosingRequest originalRequest = (HttpEntityEnclosingRequest) httpRequest.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		HttpContext httpContext = new BasicHttpContext();
-		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-		return httpContext;
+		if (cookieManager != null) {
+			CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest);
+			httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+		}
+		HttpResponse result;
+		// Create request event
+		FragmentEvent event = new FragmentEvent();
+		event.httpRequest = httpRequest;
+		event.originalRequest = originalRequest;
+		event.httpResponse = null;
+		event.httpContext = httpContext;
+		// EVENT pre
+		eventManager.fire(EventManager.EVENT_FRAGMENT_PRE, event);
+		// If exit : stop immediately.
+		if (!event.exit) {
+			// Proceed to request only if extensions did not inject a response.
+			if (event.httpResponse == null) {
+				try {
+					HttpHost host = (HttpHost) httpRequest.getParams().getParameter(TARGET_HOST);
+					HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
+					result = new BasicHttpResponse(response.getStatusLine());
+					headerManager.copyHeaders(httpRequest, originalRequest, response, result);
+					result.setEntity(response.getEntity());
+				} catch (HttpHostConnectException e) {
+					int statusCode = HttpStatus.SC_BAD_GATEWAY;
+					String statusText = "Connection refused";
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
+					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+				} catch (ConnectionPoolTimeoutException e) {
+					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+					String statusText = "Connection pool timeout";
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
+					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+				} catch (ConnectTimeoutException e) {
+					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+					String statusText = "Connect timeout";
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
+					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+				} catch (SocketTimeoutException e) {
+					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
+					String statusText = "Socket timeout";
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
+					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+				} catch (IOException e) {
+					int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
+					String statusText = "Error retrieving URL";
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
+					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+				}
+				// FIXME workaround for a bug in http client cache that does not
+				// keep
+				// params in response
+				result.setParams(httpRequest.getParams());
+				event.httpResponse = result;
+			}
+			// EVENT post
+			eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
+		}
+		return event.httpResponse;
 	}
 
 }

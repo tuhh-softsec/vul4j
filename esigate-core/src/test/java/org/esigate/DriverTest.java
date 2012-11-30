@@ -28,9 +28,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.esigate.events.EventManager;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockHttpClient;
 import org.esigate.tags.BlockRenderer;
@@ -136,17 +138,14 @@ public class DriverTest extends TestCase {
 	public void testHeadersPreservedWhenError500() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Dummy", "dummy");
 		HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
-		Driver driver = new Driver("tested", properties, httpClientHelper);
-		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
+		Driver driver = createMockDriver(properties, mockHttpClient);
 		try {
 			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
@@ -161,15 +160,13 @@ public class DriverTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Transfer-Encoding", "dummy");
 		HttpEntity httpEntity = new StringEntity("Error", "UTF-8");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
-		Driver driver = new Driver("tested", properties, httpClientHelper);
-		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
+		Driver driver = createMockDriver(properties, mockHttpClient);
 		try {
 			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
@@ -184,14 +181,12 @@ public class DriverTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		HttpEntity httpEntity = new StringEntity("é", "UTF-8");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
-		Driver driver = new Driver("tested", properties, httpClientHelper);
-		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
+		Driver driver = createMockDriver(properties, mockHttpClient);
 		try {
 			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
@@ -205,7 +200,6 @@ public class DriverTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
 		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
 		response.addHeader("Content-encoding", "gzip");
@@ -220,8 +214,7 @@ public class DriverTest extends TestCase {
 		httpEntity.setContentEncoding("gzip");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
-		Driver driver = new Driver("tested", properties, httpClientHelper);
-		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
+		Driver driver = createMockDriver(properties, mockHttpClient);
 		try {
 			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
@@ -229,6 +222,11 @@ public class DriverTest extends TestCase {
 			TestUtils.sendHttpErrorPage(e, request);
 		}
 		assertEquals("é", TestUtils.getResponseBodyAsString(request));
+	}
+
+	private Driver createMockDriver(Properties properties, HttpClient httpClient) {
+		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), null, httpClient, properties);
+		return new Driver("tested", properties, httpClientHelper);
 	}
 
 }
