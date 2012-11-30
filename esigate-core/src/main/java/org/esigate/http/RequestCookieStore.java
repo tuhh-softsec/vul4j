@@ -18,9 +18,9 @@ package org.esigate.http;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
-import org.esigate.api.HttpRequest;
 import org.esigate.cookie.CookieManager;
 
 /**

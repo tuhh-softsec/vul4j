@@ -15,7 +15,6 @@
 
 package org.esigate.wicket.container;
 
-
 import org.apache.wicket.Response;
 import org.esigate.wicket.utils.WATNullResponse;
 
@@ -68,6 +67,7 @@ public class WATError extends AbstractWatBufferedContainer {
 	 * 
 	 * @param id
 	 *            - Must be unique in the page
+	 * @param errorCode
 	 */
 	public WATError(String id, Integer errorCode) {
 		super(id);
@@ -91,8 +91,7 @@ public class WATError extends AbstractWatBufferedContainer {
 			// Add param content to parent template.
 			watResponse.getBlocks().put(getBlockName(), content);
 		} else {
-			throw new RuntimeException(
-					"WATError can only be used within a AbstractWatDriverContainer.");
+			throw new RuntimeException("WATError can only be used within a AbstractWatDriverContainer.");
 		}
 
 	}

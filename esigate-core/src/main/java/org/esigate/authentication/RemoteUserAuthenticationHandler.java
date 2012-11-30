@@ -17,9 +17,9 @@ package org.esigate.authentication;
 
 import java.util.Properties;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.UserContext;
-import org.esigate.api.HttpRequest;
 import org.esigate.http.GenericHttpRequest;
 import org.esigate.util.HttpRequestHelper;
 
@@ -31,8 +31,7 @@ import org.esigate.util.HttpRequestHelper;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler  {
-
+public class RemoteUserAuthenticationHandler extends GenericAuthentificationHandler {
 
 	@Override
 	public boolean needsNewRequest(HttpResponse response, HttpRequest httpRequest) {
@@ -45,8 +44,8 @@ public class RemoteUserAuthenticationHandler extends GenericAuthentificationHand
 		String remoteUser = null;
 		if (userContext != null && userContext.getUser() != null) {
 			remoteUser = userContext.getUser();
-		} else if (httpRequest.getRemoteUser() != null) {
-			remoteUser = httpRequest.getRemoteUser();
+		} else {
+			remoteUser = HttpRequestHelper.getMediator(httpRequest).getRemoteUser();
 		}
 		if (remoteUser != null) {
 			request.addHeader("X_REMOTE_USER", remoteUser);
@@ -57,13 +56,10 @@ public class RemoteUserAuthenticationHandler extends GenericAuthentificationHand
 	public void init(Properties properties) {
 		// Nothing to do
 	}
-	
 
 	@Override
 	public boolean beforeProxy(HttpRequest httpRequest) {
 		return true;
 	}
-
-	
 
 }

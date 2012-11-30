@@ -23,9 +23,8 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.esigate.api.HttpRequest;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.apache.http.HttpRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.util.HttpRequestHelper;
 
 public class DriverFactoryTest extends TestCase {
@@ -50,8 +49,8 @@ public class DriverFactoryTest extends TestCase {
 		Driver instance = DriverFactory.getInstance(id);
 		assertNotNull(instance);
 
-		HttpRequest request = new MockHttpRequest();
-		instance.initHttpRequestParams(request, new MockHttpResponse(), null);
+		HttpRequest request = TestUtils.createRequest();
+		instance.initHttpRequestParams(request, null);
 		assertEquals("http://base.url", HttpRequestHelper.getBaseUrl(request).toString());
 	}
 

@@ -10,9 +10,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
+import org.esigate.util.HttpRequestHelper;
 
 /**
  * Retrieves an HTML fragment from the provider application and inserts it into
@@ -36,10 +37,14 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
 
 	@Override
 	public int doEndTag() throws JspException {
-
+		HttpEntityEnclosingRequest httpRequest;
+		try {
+			httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), pageContext.getServletContext()).getHttpRequest();
+		} catch (IOException e1) {
+			throw new JspException(e1);
+		}
 		if (parseAbsoluteUrl) {
-			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
+			String baseUrl = DriverUtils.getBaseUrl(provider, httpRequest);
 			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
 			}
@@ -56,13 +61,13 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
 		} catch (HttpErrorPage re) {
 			if (displayErrorPage) {
 				try {
-					re.render(pageContext.getOut());
+					HttpRequestHelper.getMediator(httpRequest).sendResponse(re.getHttpResponse());
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
-			} else if (errorMap.containsKey(re.getStatusCode())) {
+			} else if (errorMap.containsKey(re.getHttpResponse().getStatusLine().getStatusCode())) {
 				try {
-					pageContext.getOut().append(errorMap.get(re.getStatusCode()));
+					pageContext.getOut().append(errorMap.get(re.getHttpResponse().getStatusLine().getStatusCode()));
 				} catch (IOException e) {
 					throw new JspException(e);
 				}
@@ -74,7 +79,7 @@ public class IncludeBlockTag extends BodyTagSupport implements ReplaceableTag, P
 				}
 			} else {
 				try {
-					pageContext.getOut().write(re.getStatusCode() + " " + re.getStatusMessage());
+					pageContext.getOut().write(re.getHttpResponse().getStatusLine().getStatusCode() + " " + re.getHttpResponse().getStatusLine().getReasonPhrase());
 				} catch (IOException e) {
 					throw new JspException(e);
 				}

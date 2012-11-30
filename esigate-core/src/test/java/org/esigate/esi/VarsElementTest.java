@@ -20,15 +20,15 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class VarsElementTest extends TestCase {
 
-	private MockHttpRequest request;
+	private HttpEntityEnclosingRequest request;
 	private EsiRenderer tested;
 
 	@Override
@@ -37,14 +37,14 @@ public class VarsElementTest extends TestCase {
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
 
-		request = new MockHttpRequest();
-		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		request = TestUtils.createRequest();
+		provider.initHttpRequestParams(request, null);
 		tested = new EsiRenderer();
 	}
 
 	public void testHttpHost() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>$(HTTP_HOST)</esi:vars> end";
-		request.setUri("http://www.foo.com");
+		request = TestUtils.createRequest("http://www.foo.com");
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("begin www.foo.com end", out.toString());
@@ -52,7 +52,7 @@ public class VarsElementTest extends TestCase {
 
 	public void testCookie() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(HTTP_COOKIE{cookieName})/hello.gif\"/ >" + "</esi:vars> end";
-		request.addCookie(new BasicClientCookie("cookieName", "value"));
+		TestUtils.addCookie(new BasicClientCookie("cookieName", "value"), request);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("begin <img src=\"http://www.example.com/value/hello.gif\"/ > end", out.toString());
@@ -60,7 +60,7 @@ public class VarsElementTest extends TestCase {
 
 	public void testQueryString() throws IOException, HttpErrorPage {
 		String page = "begin <esi:vars>" + "<img src=\"http://www.example.com/$(QUERY_STRING{param1})/hello.gif\"/ >" + "</esi:vars> end";
-		request.setUri("http://localhost/?param1=param1value");
+		request = TestUtils.createRequest("http://localhost/?param1=param1value");
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("begin <img src=\"http://www.example.com/param1value/hello.gif\"/ > end", out.toString());

@@ -23,18 +23,17 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.Parameters;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class DefaultCookieManagerTest extends TestCase {
 	private DefaultCookieManager cookieManager;
-	private MockHttpRequest httpRequest;
-	private MockHttpResponse httpResponse;
+	private HttpEntityEnclosingRequest request;
 
 	@Override
 	protected void setUp() throws HttpErrorPage {
@@ -43,10 +42,9 @@ public class DefaultCookieManagerTest extends TestCase {
 		properties.setProperty(Parameters.DISCARD_COOKIES.name, "D,e");
 		cookieManager = new DefaultCookieManager();
 		cookieManager.init(null, properties);
-		httpResponse = new MockHttpResponse();
-		httpRequest = new MockHttpRequest();
+		request = TestUtils.createRequest();
 		Driver driver = new MockDriver();
-		driver.initHttpRequestParams(httpRequest, httpResponse, null);
+		driver.initHttpRequestParams(request, null);
 	}
 
 	@Override
@@ -55,12 +53,12 @@ public class DefaultCookieManagerTest extends TestCase {
 	}
 
 	public void testAddCookie() {
-		assertNotNull(cookieManager.getCookies(httpRequest));
-		assertEquals(0, cookieManager.getCookies(httpRequest).size());
-		cookieManager.addCookie(new org.apache.http.impl.cookie.BasicClientCookie("b", "value"), httpRequest);
-		assertNotNull(cookieManager.getCookies(httpRequest));
-		assertEquals(1, cookieManager.getCookies(httpRequest).size());
-		org.apache.http.cookie.Cookie cookie = cookieManager.getCookies(httpRequest).get(0);
+		assertNotNull(cookieManager.getCookies(request));
+		assertEquals(0, cookieManager.getCookies(request).size());
+		cookieManager.addCookie(new org.apache.http.impl.cookie.BasicClientCookie("b", "value"), request);
+		assertNotNull(cookieManager.getCookies(request));
+		assertEquals(1, cookieManager.getCookies(request).size());
+		org.apache.http.cookie.Cookie cookie = cookieManager.getCookies(request).get(0);
 		assertNotNull(cookie);
 		assertEquals("b", cookie.getName());
 		assertEquals("value", cookie.getValue());
@@ -77,10 +75,10 @@ public class DefaultCookieManagerTest extends TestCase {
 	}
 
 	public void testFilter() throws IOException, HttpErrorPage, NoSuchFieldException, IllegalAccessException {
-		httpRequest.addCookie(new BasicClientCookie("a", "value a"));
-		httpRequest.addCookie(new BasicClientCookie("b", "value b"));
-		httpRequest.addCookie(new BasicClientCookie("c", "value c"));
-		List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(httpRequest);
+		TestUtils.addCookie(new BasicClientCookie("a", "value a"), request);
+		TestUtils.addCookie(new BasicClientCookie("b", "value b"), request);
+		TestUtils.addCookie(new BasicClientCookie("c", "value c"), request);
+		List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(request);
 		assertNotNull(cookies);
 		assertFalse(cookies.isEmpty());
 		assertTrue(cookies.size() == 2);

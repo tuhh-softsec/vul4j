@@ -21,18 +21,17 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
 import org.esigate.Parameters;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class IncludeElementTest extends TestCase {
 
 	private MockDriver provider;
-	private MockHttpRequest request;
-	private MockHttpResponse response;
+	private HttpEntityEnclosingRequest request;
 	private EsiRenderer tested;
 
 	@Override
@@ -40,9 +39,8 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-		request = new MockHttpRequest();
-		response = new MockHttpResponse();
-		provider.initHttpRequestParams(request, response, null);
+		request = TestUtils.createRequest();
+		provider.initHttpRequestParams(request, null);
 		tested = new EsiRenderer();
 	}
 
@@ -78,7 +76,7 @@ public class IncludeElementTest extends TestCase {
 	public void testIncludeQueryString() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/test?$(QUERY_STRING)\" /> after";
 		provider.addResource("/test?queryparameter1=test&queryparameter2=test2", "query OK");
-		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("before query OK after", out.toString());
@@ -87,7 +85,7 @@ public class IncludeElementTest extends TestCase {
 	public void testIncludeQueryStringParameter() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src=\"$(PROVIDER{mock})/$(QUERY_STRING{queryparameter2})\" /> after";
 		provider.addResource("/test2", "queryparameter2 OK");
-		request.setUri("http://localhost/test?queryparameter1=test&queryparameter2=test2");
+		request = TestUtils.createRequest("http://localhost/test?queryparameter1=test&queryparameter2=test2");
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("before queryparameter2 OK after", out.toString());
@@ -125,7 +123,7 @@ public class IncludeElementTest extends TestCase {
 		String page = "before <esi:include src='$(PROVIDER{mock})/include-replace' >" + "<esi:replace fragment='replaceable-fragment'>$(HTTP_COOKIE{cookieName})</esi:replace>"
 				+ "</esi:include> after";
 		String includedPage = "-incl-page-start" + " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>" + " <esi:fragment name='untouched-fragment' />" + " incl-page-end-";
-		request.addCookie(new BasicClientCookie("cookieName", "fragment replaced"));
+		TestUtils.addCookie(new BasicClientCookie("cookieName", "fragment replaced"), request);
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
@@ -135,7 +133,7 @@ public class IncludeElementTest extends TestCase {
 	public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
 		String page = "before <esi:include src='$(PROVIDER{mock})/include-replace' >" + "<esi:replace regexp='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>" + "</esi:include> after";
 		String includedPage = "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>" + " replaceable-regexp" + " incl-page-end-";
-		request.addCookie(new BasicClientCookie("cookieName", "regexp replaced"));
+		TestUtils.addCookie(new BasicClientCookie("cookieName", "regexp replaced"), request);
 		provider.addResource("/include-replace", includedPage);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
@@ -184,7 +182,7 @@ public class IncludeElementTest extends TestCase {
 			tested.render(request, page, out);
 			fail("should throw HttpErrorPage");
 		} catch (HttpErrorPage e) {
-			assertEquals(404, e.getStatusCode());
+			assertEquals(404, e.getHttpResponse().getStatusLine().getStatusCode());
 		}
 	}
 
@@ -208,8 +206,8 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
-		request = new MockHttpRequest();
-		provider.initHttpRequestParams(request, response, null);
+		request = TestUtils.createRequest();
+		provider.initHttpRequestParams(request, null);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", out.toString());
@@ -225,8 +223,8 @@ public class IncludeElementTest extends TestCase {
 		provider = new MockDriver("mock", defaultProps);
 		provider.addResource("http://www.foo.com/test-rewriteUrl", "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\">"
 				+ "<a href=\"http://www.foo.com/context/test\">");
-		request = new MockHttpRequest();
-		provider.initHttpRequestParams(request, response, null);
+		request = TestUtils.createRequest();
+		provider.initHttpRequestParams(request, null);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">" + "<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", out.toString());

@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.api.HttpRequest;
 import org.esigate.parser.Parser;
 
 
@@ -59,7 +59,7 @@ public class AggregateRenderer implements Renderer, Appendable {
 
 
 	/** {@inheritDoc} */
-	public void render(HttpRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
+	public void render(HttpEntityEnclosingRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
 		this.out = out;
 		if (content == null) {
 			return;

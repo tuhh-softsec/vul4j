@@ -17,7 +17,6 @@ package org.esigate.wicket.container;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.apache.wicket.Response;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;

@@ -17,8 +17,8 @@ package org.esigate.esi;
 
 import junit.framework.TestCase;
 
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpResponse;
 import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
@@ -78,7 +78,7 @@ public class BaseElementTest extends TestCase {
 	}
 
 	private static class MockParserContext implements ParserContext {
-		public HttpRequest getHttpRequest() {
+		public HttpEntityEnclosingRequest getHttpRequest() {
 			return null;
 		}
 

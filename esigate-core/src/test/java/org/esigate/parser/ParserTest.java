@@ -21,11 +21,11 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 import org.esigate.util.HttpRequestHelper;
 
 public class ParserTest extends TestCase {
@@ -35,8 +35,8 @@ public class ParserTest extends TestCase {
 	protected void setUp() throws HttpErrorPage {
 		Driver provider = new MockDriver();
 		tested = new Parser(Pattern.compile("(<test:[^>]*>)|(</test:[^>]*>)"), SIMPLE, BODY);
-		MockHttpRequest request = new MockHttpRequest("http://a.b?request=updated");
-		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		HttpEntityEnclosingRequest request = TestUtils.createRequest("http://a.b?request=updated");
+		provider.initHttpRequestParams(request, null);
 		tested.setHttpRequest(request);
 	}
 

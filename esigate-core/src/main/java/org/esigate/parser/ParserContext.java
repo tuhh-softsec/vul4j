@@ -15,13 +15,14 @@
 
 package org.esigate.parser;
 
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 
 public interface ParserContext {
 
 	/** @return {@linkplain HttpRequest} associated with current processing. */
-	HttpRequest getHttpRequest();
+	HttpEntityEnclosingRequest getHttpRequest();
 
 	/** @return {@linkplain HttpResponse} associated with current processing. */
 	HttpResponse getHttpResponse();

@@ -12,13 +12,17 @@
  * limitations under the License.
  *
  */
+
 package org.esigate;
 
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpSession;
+import java.io.Serializable;
+
+import org.apache.http.HttpRequest;
+import org.esigate.util.HttpRequestHelper;
 
 /**
- * User context that can be used in the master application to define the user id. This context will be transmitted to the provider applications.<br />
+ * User context that can be used in the master application to define the user
+ * id. This context will be transmitted to the provider applications.<br />
  * There is one instance of user context associated with each session.
  * 
  * @author Francois-Xavier Bonnet
@@ -40,15 +44,11 @@ public class UserContext {
 	}
 
 	public Object getAttribute(String name) {
-		HttpSession httpSession = httpRequest.getSession(false);
-		if (httpSession != null)
-			return httpSession.getAttribute(prefixAttributeName(name));
-		return null;
+		return HttpRequestHelper.getMediator(httpRequest).getSessionAttribute(prefixAttributeName(name));
 	}
 
-	public void setAttribute(String name, Object value) {
-		HttpSession httpSession = httpRequest.getSession(true);
-		httpSession.setAttribute(prefixAttributeName(name), value);
+	public void setAttribute(String name, Serializable value) {
+		HttpRequestHelper.getMediator(httpRequest).setSessionAttribute(prefixAttributeName(name), value);
 	}
 
 	public String getUser() {

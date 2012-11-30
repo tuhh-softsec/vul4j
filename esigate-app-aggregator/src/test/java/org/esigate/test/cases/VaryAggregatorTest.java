@@ -5,13 +5,13 @@ import java.net.MalformedURLException;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.esigate.http.HttpResponseUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -34,15 +34,12 @@ public class VaryAggregatorTest extends TestCase {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private String doRequestWithHeader(String headerValue, boolean forceRefresh)
-			throws Exception {
+	private String doRequestWithHeader(String headerValue, boolean forceRefresh) throws Exception {
 		DefaultHttpClient client = new DefaultHttpClient();
-		client.getParams().setParameter(ClientPNames.COOKIE_POLICY,
-				CookiePolicy.BROWSER_COMPATIBILITY);
+		client.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 		HttpGet request = new HttpGet(APPLICATION_PATH + "vary.jsp");
 		if (headerValue != null) {
-			BasicClientCookie cookie = new BasicClientCookie("test-cookie",
-					headerValue);
+			BasicClientCookie cookie = new BasicClientCookie("test-cookie", headerValue);
 			cookie.setDomain("localhost");
 			cookie.setPath("/");
 			client.getCookieStore().addCookie(cookie);
@@ -53,19 +50,17 @@ public class VaryAggregatorTest extends TestCase {
 		}
 		HttpResponse response = client.execute(request);
 		// Ensure content is valid.
-		String text = IOUtils.toString(response.getEntity().getContent());
+		String text = HttpResponseUtils.toString(response);
 		assertNotNull(text);
 		if (headerValue != null) {
-			assertTrue("no value '" + headerValue + "' found",
-					text.contains(headerValue));
+			assertTrue("no value '" + headerValue + "' found", text.contains(headerValue));
 		} else {
 			assertTrue("no cookie found", text.contains("no cookie"));
 		}
 
 		// Ensure vary and Cache-Control header were forwarded
 		assertEquals("foo", response.getFirstHeader("Vary").getValue());
-		assertEquals("public, max-age=3600",
-				response.getFirstHeader("Cache-Control").getValue());
+		assertEquals("public, max-age=3600", response.getFirstHeader("Cache-Control").getValue());
 
 		client.getConnectionManager().shutdown();
 

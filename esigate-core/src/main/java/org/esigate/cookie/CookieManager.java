@@ -18,8 +18,8 @@ package org.esigate.cookie;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
-import org.esigate.api.HttpRequest;
 import org.esigate.extension.Extension;
 
 public interface CookieManager extends Extension {

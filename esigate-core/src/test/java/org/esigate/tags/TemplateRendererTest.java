@@ -12,16 +12,16 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.tags;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-import org.esigate.HttpErrorPage;
-import org.esigate.tags.TemplateRenderer;
-
 import junit.framework.TestCase;
+
+import org.esigate.HttpErrorPage;
 
 public class TemplateRendererTest extends TestCase {
 

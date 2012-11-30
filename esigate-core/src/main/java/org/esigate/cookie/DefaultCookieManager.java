@@ -15,6 +15,7 @@
 
 package org.esigate.cookie;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BasicClientCookie2;
@@ -29,8 +31,6 @@ import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.UserContext;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -61,17 +61,16 @@ public class DefaultCookieManager implements CookieManager {
 	public void addCookie(Cookie cookie, HttpRequest originalRequest) {
 		String name = cookie.getName();
 		if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
-			if( LOG.isInfoEnabled()){
+			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> discarding");
 			}
 		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
-			if( LOG.isInfoEnabled()){
+			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> forwarding");
 			}
-			HttpResponse response = HttpRequestHelper.getResponse(originalRequest);
-			response.addCookie(rewriteForBrowser(cookie, originalRequest));
+			HttpRequestHelper.getMediator(originalRequest).addCookie(rewriteForBrowser(cookie, originalRequest));
 		} else {
-			if( LOG.isInfoEnabled()){
+			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> storing to context");
 			}
 			UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
@@ -80,7 +79,7 @@ public class DefaultCookieManager implements CookieManager {
 			if (cookies == null)
 				cookies = new ArrayList<Cookie>();
 			cookies.add(cookie);
-			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, cookies);
+			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, (Serializable) cookies);
 		}
 	}
 
@@ -91,7 +90,7 @@ public class DefaultCookieManager implements CookieManager {
 		List<Cookie> sessionCookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (sessionCookies != null)
 			cookies.addAll(sessionCookies);
-		Cookie[] requestCookies = originalRequest.getCookies();
+		Cookie[] requestCookies = HttpRequestHelper.getMediator(originalRequest).getCookies();
 		if (requestCookies != null) {
 			for (Cookie cookie : requestCookies) {
 				String name = cookie.getName();
@@ -155,7 +154,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),  UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
@@ -166,7 +165,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite secure
-		boolean secure = (cookie.isSecure() && originalRequest.isSecure());
+		boolean secure = (cookie.isSecure() && originalRequest.getRequestLine().getUri().startsWith("https"));
 
 		BasicClientCookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
 		if (domain != null) {
@@ -178,7 +177,7 @@ public class DefaultCookieManager implements CookieManager {
 		cookieToForward.setVersion(cookie.getVersion());
 		cookieToForward.setExpiryDate(cookie.getExpiryDate());
 
-		if( LOG.isDebugEnabled()){
+		if (LOG.isDebugEnabled()) {
 			// Ensure .toString is only called if debug enabled.
 			LOG.debug("Forwarding cookie {} -> {}", cookie.toString(), cookieToForward.toString());
 		}
@@ -238,7 +237,7 @@ public class DefaultCookieManager implements CookieManager {
 		List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (cookies != null) {
 			cookies.clear();
-			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, cookies);
+			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, (Serializable) cookies);
 		}
 	}
 

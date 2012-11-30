@@ -63,7 +63,7 @@ class IncludeTemplateElement implements Element {
 	}
 
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-		driver.render(page, null, out, ctx.getHttpRequest(), ctx.getHttpResponse(), new TemplateRenderer(name, params, page), new AggregateRenderer());
+		driver.render(page, null, out, ctx.getHttpRequest(), new TemplateRenderer(name, params, page), new AggregateRenderer());
 	}
 
 	public void addParam(String name, String value) {

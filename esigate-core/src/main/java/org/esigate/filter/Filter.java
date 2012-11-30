@@ -15,9 +15,9 @@
 
 package org.esigate.filter;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HttpContext;
-import org.esigate.api.HttpRequest;
 import org.esigate.http.GenericHttpRequest;
 
 /**

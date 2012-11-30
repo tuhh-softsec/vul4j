@@ -8,8 +8,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.vars.VariablesResolver;
 
 /**
@@ -29,10 +29,9 @@ public class IncludeBaseTag extends TagSupport {
 	public int doStartTag() throws JspException {
 		JspWriter out = pageContext.getOut();
 		try {
-
-			String baseURL = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) this.pageContext.getRequest(), pageContext.getServletContext()),
-					HttpResponseImpl.wrap((HttpServletResponse) this.pageContext.getResponse()));
-
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+					pageContext.getServletContext()).getHttpRequest();
+			String baseURL = DriverUtils.getBaseUrl(provider, httpRequest);
 			String strpage = VariablesResolver.replaceAllVariables(page);
 			out.write("<base href=\"" + baseURL + strpage + "\" />");
 		} catch (IOException e) {

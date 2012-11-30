@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.servlet;
 
 import java.io.IOException;
@@ -19,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.api.HttpResponse;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -378,16 +392,16 @@ public class RewriteProxyServlet extends HttpServlet {
 
 					if (conf.getProvider() != null) {
 						// Proxy request and return.
-						HttpResponse httpResponse = HttpResponseImpl.wrap(response);
+						HttpServletMediator mediator = new HttpServletMediator(new ReverseHttpRequest(request, targetQueryString), response, getServletContext());
 						try {
 							// Nice log
 							if (LOG.isDebugEnabled()) {
 								LOG.debug("Proxying " + relUrl + " to " + newUrl + " w/ query " + targetQueryString);
 							}
-							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, HttpRequestImpl.wrap(new ReverseHttpRequest(request, targetQueryString), getServletContext()), httpResponse);
+							DriverFactory.getInstance(conf.getProvider()).proxy(newUrl, mediator.getHttpRequest());
 							return;
 						} catch (HttpErrorPage e) {
-							e.render(httpResponse);
+							mediator.sendResponse(e.getHttpResponse());
 						}
 					} else {
 						// Create target

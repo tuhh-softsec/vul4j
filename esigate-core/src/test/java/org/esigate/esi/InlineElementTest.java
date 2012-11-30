@@ -20,22 +20,22 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class InlineElementTest extends TestCase {
 	private MockDriver provider;
-	private MockHttpRequest request;
+	private HttpEntityEnclosingRequest request;
 
 	@Override
 	protected void setUp() throws Exception {
 		provider = new MockDriver("mock");
 		provider.addResource("/test", "test");
 		provider.addResource("http://www.foo.com/test", "test");
-		request = new MockHttpRequest();
-		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		request = TestUtils.createRequest();
+		provider.initHttpRequestParams(request, null);
 	}
 
 	public void testInlineElement() throws IOException, HttpErrorPage {

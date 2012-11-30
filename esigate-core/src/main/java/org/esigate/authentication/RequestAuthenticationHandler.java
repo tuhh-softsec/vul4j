@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpSession;
+import org.esigate.api.ContainerRequestMediator;
 import org.esigate.http.GenericHttpRequest;
+import org.esigate.util.HttpRequestHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +58,12 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 	private String headerPrefix = "X-ATTR-";
 
 	@Override
-	public boolean beforeProxy(HttpRequest httpRequest)  {
+	public boolean beforeProxy(HttpRequest httpRequest) {
 		return true;
 	}
 
 	@Override
-	public void init( Properties properties) {
+	public void init(Properties properties) {
 		// Attributes for session
 		String sessionAttributesProperty = properties.getProperty("forwardSessionAttributes");
 		if (sessionAttributesProperty != null) {
@@ -105,17 +106,14 @@ public class RequestAuthenticationHandler extends GenericAuthentificationHandler
 			logger.debug("preRequest");
 		}
 		// Process session
-		HttpSession session = httpRequest.getSession(false);
-
-		if (session != null) {
-			for (String attribute : sessionAttributes) {
-				String value = (String) session.getAttribute(attribute);
-				if (value != null) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Adding session attribute " + attribute + " (" + value + ") as header (" + headerPrefix + attribute + ")");
-					}
-					request.addHeader(headerPrefix + attribute, value);
+		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(httpRequest);
+		for (String attribute : sessionAttributes) {
+			String value = (String) mediator.getSessionAttribute(attribute);
+			if (value != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Adding session attribute " + attribute + " (" + value + ") as header (" + headerPrefix + attribute + ")");
 				}
+				request.addHeader(headerPrefix + attribute, value);
 			}
 		}
 

@@ -20,24 +20,24 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class CommentTest extends TestCase {
 
-	private MockHttpRequest request;
+	private HttpEntityEnclosingRequest request;
 	private EsiRenderer tested;
 
 	@Override
 	protected void setUp() throws Exception {
 		Driver provider = new MockDriver();
-		request = new MockHttpRequest();
+		request = TestUtils.createRequest();
 		tested = new EsiRenderer();
-		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		provider.initHttpRequestParams(request, null);
 		MockDriver provider1 = new MockDriver("provider1");
 		provider1.addResource("/test", "replacement");
 	}
@@ -51,7 +51,7 @@ public class CommentTest extends TestCase {
 
 	public void testCommentVars() throws IOException, HttpErrorPage {
 		String page = "<!--esi <p><esi:vars>Hello, $(HTTP_COOKIE{name})!</esi:vars></p> -->";
-		request.addCookie(new BasicClientCookie("name", "world"));
+		TestUtils.addCookie(new BasicClientCookie("name", "world"), request);
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
 		assertEquals(" <p>Hello, world!</p> ", out.toString());
@@ -59,7 +59,8 @@ public class CommentTest extends TestCase {
 
 	/**
 	 * http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=126
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public void testCommentedEsiTags() throws Exception {
 		String page = "begin <!--esi<esi:include src=\"$(PROVIDER{provider1})/test\">--> content <!--esi</esi:include>--> end";

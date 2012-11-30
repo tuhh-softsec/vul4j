@@ -28,11 +28,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.taglib.ReplaceableTag;
 import org.esigate.tags.TemplateRenderer;
 
@@ -69,9 +69,9 @@ public class IncludeTemplateComponent extends UIComponentBase implements Replace
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 		ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+		HttpEntityEnclosingRequest httpRequest = new HttpServletMediator(request, response, servletContext).getHttpRequest();
 		try {
-			DriverFactory.getInstance(getProvider()).render(getPage(), null, writer, HttpRequestImpl.wrap(request, servletContext), HttpResponseImpl.wrap(response),
-					new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
+			DriverFactory.getInstance(getProvider()).render(getPage(), null, writer, httpRequest, new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());

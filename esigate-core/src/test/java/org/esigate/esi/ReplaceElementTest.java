@@ -20,24 +20,24 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.MockDriver;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 import org.esigate.util.HttpRequestHelper;
 
 public class ReplaceElementTest extends TestCase {
 
 	private EsiRenderer tested;
-	private MockHttpRequest request;
+	private HttpEntityEnclosingRequest request;
 
 	@Override
 	protected void setUp() throws IOException, HttpErrorPage {
 		MockDriver provider = new MockDriver("mock");
-		request = new MockHttpRequest();
+		request = TestUtils.createRequest();
 		HttpRequestHelper.setDriver(request, provider);
 		tested = new EsiRenderer();
-		provider.initHttpRequestParams(request, new MockHttpResponse(), null);
+		provider.initHttpRequestParams(request, null);
 	}
 
 	public void testErrorIfNotInsideIncludeTag() throws IOException, HttpErrorPage {

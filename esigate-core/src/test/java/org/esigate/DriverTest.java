@@ -25,22 +25,20 @@ import java.util.zip.GZIPOutputStream;
 import junit.framework.TestCase;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
-import org.esigate.api.HttpRequest;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockHttpClient;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
-import org.esigate.test.MockHttpRequest;
-import org.esigate.test.MockHttpResponse;
+import org.esigate.test.TestUtils;
 
 public class DriverTest extends TestCase {
-	
-	HttpRequest httpRequest;
+	private HttpEntityEnclosingRequest request;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -48,21 +46,21 @@ public class DriverTest extends TestCase {
 		provider.addResource("/testBlock", "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
 		provider.addResource("/testTemplateFullPage", "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
 		provider.addResource("/testTemplate", "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
-		httpRequest = new MockHttpRequest();
+		request = TestUtils.createRequest();
 	}
 
 	public void testRenderBlock() throws IOException, HttpErrorPage {
 		Writer out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/testBlock", null, out, httpRequest, null, new BlockRenderer("A", "/testBlock"));
+		DriverFactory.getInstance("mock").render("/testBlock", null, out, request, new BlockRenderer("A", "/testBlock"));
 
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, httpRequest, null, new BlockRenderer("A", "$(vartestBlock)"));
+		DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, request, new BlockRenderer("A", "$(vartestBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, httpRequest, null, new BlockRenderer("A", "/$(vartest)$(varBlock)"));
+		DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, request, new BlockRenderer("A", "/$(vartest)$(varBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -72,7 +70,7 @@ public class DriverTest extends TestCase {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("key", "'value'");
 		params.put("some other key", "'another value'");
-		DriverFactory.getInstance("mock").render("/testTemplateFullPage", null, out, httpRequest, null, new TemplateRenderer(null, params, "/testTemplateFullPage"));
+		DriverFactory.getInstance("mock").render("/testTemplateFullPage", null, out, request, new TemplateRenderer(null, params, "/testTemplateFullPage"));
 		assertFalse(out.toString().contains("key"));
 		assertTrue(out.toString().contains("'value'"));
 		assertFalse(out.toString().contains("some other key"));
@@ -81,11 +79,11 @@ public class DriverTest extends TestCase {
 
 	public void testRenderTemplate() throws IOException, HttpErrorPage {
 		StringWriter out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/testTemplate", null, out, httpRequest, null, new TemplateRenderer("A", null, "/testTemplate"));
+		DriverFactory.getInstance("mock").render("/testTemplate", null, out, request, new TemplateRenderer("A", null, "/testTemplate"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, httpRequest, null, new TemplateRenderer("A", null, "/test$(varTemplate)"));
+		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, request, new TemplateRenderer("A", null, "/test$(varTemplate)"));
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -138,7 +136,7 @@ public class DriverTest extends TestCase {
 	public void testHeadersPreservedWhenError500() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
-				
+
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpClientHelper httpClientHelper = new HttpClientHelper();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, "Internal Server Error");
@@ -148,17 +146,15 @@ public class DriverTest extends TestCase {
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
-		httpClientHelper.init(driver.getEventManager(),mockHttpClient, properties);
-		MockHttpRequest mockRequest = new MockHttpRequest();
-		MockHttpResponse mockResponse = new MockHttpResponse();
+		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
 		try {
-			driver.proxy("/", mockRequest, mockResponse);
+			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
 		} catch (HttpErrorPage e) {
-			e.render(mockResponse);
+			TestUtils.sendHttpErrorPage(e, request);
 		}
-		assertEquals("Status code", 500, mockResponse.getStatusCode());
-		assertTrue("Header 'Dummy'", mockResponse.containsHeader("Dummy"));
+		assertEquals("Status code", 500, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertTrue("Header 'Dummy'", TestUtils.getResponse(request).containsHeader("Dummy"));
 	}
 
 	public void testHeadersFilteredWhenError500() throws Exception {
@@ -174,16 +170,14 @@ public class DriverTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
 		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
-		MockHttpRequest mockRequest = new MockHttpRequest();
-		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
-			driver.proxy("/", mockRequest, mockResponse);
+			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
 		} catch (HttpErrorPage e) {
-			e.render(mockResponse);
+			TestUtils.sendHttpErrorPage(e, request);
 		}
-		assertEquals("Status code", 500, mockResponse.getStatusCode());
-		assertFalse("Header 'Transfer-Encoding'", mockResponse.containsHeader("Transfer-Encoding"));
+		assertEquals("Status code", 500, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertFalse("Header 'Transfer-Encoding'", TestUtils.getResponse(request).containsHeader("Transfer-Encoding"));
 	}
 
 	public void testSpecialCharacterInErrorPage() throws Exception {
@@ -198,15 +192,13 @@ public class DriverTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
 		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
-		MockHttpRequest mockRequest = new MockHttpRequest();
-		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
-			driver.proxy("/", mockRequest, mockResponse);
+			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
 		} catch (HttpErrorPage e) {
-			e.render(mockResponse);
+			TestUtils.sendHttpErrorPage(e, request);
 		}
-		assertEquals("é", mockResponse.getBodyAsString());
+		assertEquals("é", TestUtils.getResponseBodyAsString(request));
 	}
 
 	public void testGzipErrorPage() throws Exception {
@@ -224,19 +216,19 @@ public class DriverTest extends TestCase {
 		gzos.close();
 		byte[] compressedBytes = baos.toByteArray();
 		ByteArrayEntity httpEntity = new ByteArrayEntity(compressedBytes);
+		httpEntity.setContentType("Text/html;Charset=UTF-8");
+		httpEntity.setContentEncoding("gzip");
 		response.setEntity(httpEntity);
 		mockHttpClient.setResponse(response);
 		Driver driver = new Driver("tested", properties, httpClientHelper);
 		httpClientHelper.init(driver.getEventManager(), mockHttpClient, properties);
-		MockHttpRequest mockRequest = new MockHttpRequest();
-		MockHttpResponse mockResponse = new MockHttpResponse();
 		try {
-			driver.proxy("/", mockRequest, mockResponse);
+			driver.proxy("/", request);
 			fail("We should get an HttpErrorPage");
 		} catch (HttpErrorPage e) {
-			e.render(mockResponse);
+			TestUtils.sendHttpErrorPage(e, request);
 		}
-		assertEquals("é", mockResponse.getBodyAsString());
+		assertEquals("é", TestUtils.getResponseBodyAsString(request));
 	}
 
 }

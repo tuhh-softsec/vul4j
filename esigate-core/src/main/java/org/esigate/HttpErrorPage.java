@@ -16,13 +16,10 @@
 package org.esigate;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,8 +30,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.util.EntityUtils;
-import org.esigate.http.HttpClientHelper;
-import org.esigate.http.HttpResponseUtils;
 
 /**
  * Exception thrown when an error occurred retrieving a resource
@@ -43,35 +38,36 @@ import org.esigate.http.HttpResponseUtils;
  */
 public class HttpErrorPage extends Exception {
 	private static final long serialVersionUID = 1L;
-	private final HttpResponse errorResponse;
-	private final HttpClientHelper httpClientHelper;
+	private final HttpResponse httpResponse;
 
-	public HttpErrorPage(HttpResponse httpResponse, HttpClientHelper httpClientHelper) {
+	public HttpErrorPage(HttpResponse httpResponse) {
 		super(httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
-		this.httpClientHelper = httpClientHelper;
-		this.errorResponse = httpResponse;
+		this.httpResponse = httpResponse;
 		// Consume the entity and replace it with an in memory Entity
 		HttpEntity httpEntity = httpResponse.getEntity();
 		HttpEntity memoryEntity;
 		if (httpEntity != null) {
 			try {
 				byte[] content = EntityUtils.toByteArray(httpEntity);
-				memoryEntity = new ByteArrayEntity(content, ContentType.getOrDefault(httpEntity));
+				ByteArrayEntity byteArrayEntity = new ByteArrayEntity(content, ContentType.get(httpEntity));
+				Header contentEncoding = httpEntity.getContentEncoding();
+				if (contentEncoding != null)
+					byteArrayEntity.setContentEncoding(contentEncoding);
+				memoryEntity = byteArrayEntity;
 			} catch (IOException e) {
 				StringWriter out = new StringWriter();
 				e.printStackTrace(new PrintWriter(out));
 				memoryEntity = new StringEntity(out.toString(), ContentType.getOrDefault(httpEntity));
 			}
-			this.errorResponse.setEntity(memoryEntity);
+			this.httpResponse.setEntity(memoryEntity);
 		}
 	}
 
 	public HttpErrorPage(int statusCode, String statusMessage, String content) {
 		super(statusCode + " " + statusMessage);
-		this.httpClientHelper = null;
-		this.errorResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
+		this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
 		try {
-			this.errorResponse.setEntity(new StringEntity(content, "UTF-8"));
+			this.httpResponse.setEntity(new StringEntity(content, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// This should not happen as UTF-8 is always supported
 			throw new RuntimeException(e);
@@ -80,50 +76,20 @@ public class HttpErrorPage extends Exception {
 
 	public HttpErrorPage(int statusCode, String statusMessage, Exception exception) {
 		super(statusCode + " " + statusMessage, exception);
-		this.httpClientHelper = null;
-		this.errorResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
+		this.httpResponse = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusMessage));
 		StringWriter out = new StringWriter();
 		exception.printStackTrace(new PrintWriter(out));
 		String content = out.toString();
 		try {
-			this.errorResponse.setEntity(new StringEntity(content, "UTF-8"));
+			this.httpResponse.setEntity(new StringEntity(content, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// This should not happen as UTF-8 is always supported
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void render(Writer writer) throws IOException {
-		writer.write(HttpResponseUtils.toString(errorResponse));
+	public HttpResponse getHttpResponse() {
+		return httpResponse;
 	}
 
-	public void render(org.esigate.api.HttpResponse httpResponse) throws IOException {
-		if (httpClientHelper != null)
-			httpClientHelper.render(errorResponse, httpResponse);
-		else {
-			httpResponse.setStatus(errorResponse.getStatusLine().getStatusCode());
-			for (Header header : errorResponse.getAllHeaders()) {
-				String name = header.getName();
-				String value = header.getValue();
-				httpResponse.addHeader(name, value);
-			}
-			HttpEntity httpEntity = errorResponse.getEntity();
-			if (httpEntity != null) {
-				InputStream content = httpEntity.getContent();
-				try {
-					IOUtils.copy(content, httpResponse.getOutputStream());
-				} finally {
-					content.close();
-				}
-			}
-		}
-	}
-
-	public int getStatusCode() {
-		return errorResponse.getStatusLine().getStatusCode();
-	}
-
-	public String getStatusMessage() {
-		return errorResponse.getStatusLine().getReasonPhrase();
-	}
 }

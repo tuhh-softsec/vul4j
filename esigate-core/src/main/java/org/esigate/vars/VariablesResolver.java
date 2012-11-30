@@ -21,10 +21,10 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
-import org.esigate.api.HttpRequest;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -175,7 +175,7 @@ public class VariablesResolver {
 			if (arg == null) {
 				res = HttpRequestHelper.getFirstHeader("Cookies", request);
 			} else {
-				Cookie[] cookies = request.getCookies();
+				Cookie[] cookies = HttpRequestHelper.getMediator(request).getCookies();
 				for (Cookie c : cookies) {
 					if (c.getName().equals(arg)) {
 						res = c.getValue();

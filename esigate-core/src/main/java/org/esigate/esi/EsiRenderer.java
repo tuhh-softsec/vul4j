@@ -19,9 +19,9 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.api.HttpRequest;
 import org.esigate.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,8 +98,7 @@ public class EsiRenderer implements Renderer, Appendable {
         this.fragmentsToReplace = fragmentsToReplace;
     }
 
-    /** {@inheritDoc} */
-    public void render(HttpRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
         if (name != null) {
             LOG.debug("Rendering fragment {} in page {}", name, page);
         }

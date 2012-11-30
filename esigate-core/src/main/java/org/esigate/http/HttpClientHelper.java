@@ -16,7 +16,6 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
@@ -29,11 +28,11 @@ import java.util.Set;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -53,8 +52,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
@@ -70,7 +67,6 @@ import org.apache.http.protocol.HttpContext;
 import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.api.HttpRequest;
 import org.esigate.cache.CacheConfigHelper;
 import org.esigate.events.EventManager;
 import org.esigate.util.FilterList;
@@ -84,10 +80,10 @@ import org.slf4j.LoggerFactory;
  * HttpClientHelper is responsible for creating Apache HttpClient requests from
  * incoming requests. It can copy a request with its method and entity or simply
  * create a new GET request to the same URI. Some parameters enable to control
- * which http headers have to be copied and wether or not to preserve the
+ * which http headers have to be copied and whether or not to preserve the
  * original host header.
  * 
- * @author frbon
+ * @author Francois-Xavier Bonnet
  * 
  */
 public class HttpClientHelper {
@@ -181,7 +177,7 @@ public class HttpClientHelper {
 		return responseHeadersFilterList.contains(headerName);
 	}
 
-	public GenericHttpRequest createHttpRequest(HttpRequest originalRequest, String uri, boolean proxy) throws HttpErrorPage {
+	public GenericHttpRequest createHttpRequest(HttpEntityEnclosingRequest originalRequest, String uri, boolean proxy) throws HttpErrorPage {
 		// Extract the host in the URI. This is the host we have to send the
 		// request to physically. We will use this value to force the route to
 		// the server
@@ -226,7 +222,7 @@ public class HttpClientHelper {
 		return httpRequest;
 	}
 
-	private void copyHeaders(HttpRequest originalRequest, org.apache.http.HttpRequest httpRequest) throws HttpErrorPage {
+	private void copyHeaders(HttpRequest originalRequest, HttpRequest httpRequest) throws HttpErrorPage {
 		String originalUri = originalRequest.getRequestLine().getUri();
 		String uri = httpRequest.getRequestLine().getUri();
 		for (Header header : originalRequest.getAllHeaders()) {
@@ -250,8 +246,9 @@ public class HttpClientHelper {
 		}
 		// process X-Forwarded-For header (is missing in request and not
 		// blacklisted) -> use remote address instead
-		if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null && isForwardedRequestHeader("X-Forwarded-For") && originalRequest.getRemoteAddr() != null) {
-			httpRequest.addHeader("X-Forwarded-For", originalRequest.getRemoteAddr());
+		String remoteAddr = HttpRequestHelper.getMediator(originalRequest).getRemoteAddr();
+		if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null && isForwardedRequestHeader("X-Forwarded-For") && remoteAddr != null) {
+			httpRequest.addHeader("X-Forwarded-For", remoteAddr);
 		}
 	}
 
@@ -262,35 +259,38 @@ public class HttpClientHelper {
 	 * @param output
 	 * @throws MalformedURLException
 	 */
-	private void copyHeaders(HttpResponse httpClientResponse, org.esigate.api.HttpResponse output) throws MalformedURLException {
-		org.apache.http.HttpRequest httpRequest = (org.apache.http.HttpRequest) httpClientResponse.getParams().getParameter(ExecutionContext.HTTP_REQUEST);
-		HttpRequest originalRequest = (HttpRequest) httpClientResponse.getParams().getParameter(ORIGINAL_REQUEST_KEY);
+	private void copyHeaders(HttpRequest httpRequest, HttpResponse httpClientResponse, HttpResponse output) throws MalformedURLException {
+		HttpRequest originalRequest = (HttpRequest) httpRequest.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		String originalUri = originalRequest.getRequestLine().getUri();
 		String uri = httpRequest.getRequestLine().getUri();
 		for (Header header : httpClientResponse.getAllHeaders()) {
 			String name = header.getName();
 			String value = header.getValue();
-			if (isForwardedResponseHeader(name)) {
-				// Some headers containing an URI have to be rewritten
-				if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
-					value = UriUtils.translateUrl(value, uri, originalUri);
-					value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
-					output.addHeader(name, value);
-				} else if (HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
-					// Ignore it, it will be copied only when the entity is
-					// unchanged
-				} else {
-					output.addHeader(header.getName(), header.getValue());
+			// Ignore Content-Encoding and Content-Type as these headers are set
+			// in HttpEntity
+			if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
+				if (isForwardedResponseHeader(name)) {
+					// Some headers containing an URI have to be rewritten
+					if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
+						value = UriUtils.translateUrl(value, uri, originalUri);
+						value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
+						output.addHeader(name, value);
+					} else {
+						output.addHeader(header.getName(), header.getValue());
+					}
 				}
 			}
 		}
 	}
 
-	public HttpResponse execute(org.apache.http.HttpRequest httpRequest, HttpContext httpContext) {
+	public HttpResponse execute(HttpRequest httpRequest, HttpContext httpContext) {
 		HttpResponse result;
 		try {
 			HttpHost host = (HttpHost) httpRequest.getParams().getParameter(TARGET_HOST);
-			result = httpClient.execute(host, httpRequest, httpContext);
+			HttpResponse response = httpClient.execute(host, httpRequest, httpContext);
+			result = new BasicHttpResponse(response.getStatusLine());
+			copyHeaders(httpRequest, response, result);
+			result.setEntity(response.getEntity());
 		} catch (HttpHostConnectException e) {
 			int statusCode = HttpStatus.SC_BAD_GATEWAY;
 			String statusText = "Connection refused";
@@ -330,30 +330,4 @@ public class HttpClientHelper {
 		return httpContext;
 	}
 
-	public void render(HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
-		// As the entity is sent unchanged it has not been decompressed so we
-		// can copy Accept-encoding header
-		String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
-		if (contentEncoding != null)
-			output.addHeader(HttpHeaders.CONTENT_ENCODING, contentEncoding);
-		render(httpResponse.getEntity(), httpResponse, output);
-	}
-
-	public void render(String transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
-		HttpEntity httpEntity = new StringEntity(transformedEntity, ContentType.get(httpResponse.getEntity()));
-		render(httpEntity, httpResponse, output);
-	}
-
-	private void render(HttpEntity transformedEntity, HttpResponse httpResponse, org.esigate.api.HttpResponse output) throws IOException {
-		output.setStatus(httpResponse.getStatusLine().getStatusCode());
-		copyHeaders(httpResponse, output);
-		if (transformedEntity == null)
-			return;
-		InputStream content = transformedEntity.getContent();
-		try {
-			IOUtils.copy(content, output.getOutputStream());
-		} finally {
-			content.close();
-		}
-	}
 }

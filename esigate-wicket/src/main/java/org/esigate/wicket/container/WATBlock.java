@@ -21,15 +21,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.wicket.utils.ResponseWriter;
@@ -127,12 +125,10 @@ public class WATBlock extends AbstractWatDriverContainer {
 		// Create driver
 		Driver driver = getDriver();
 
-		HttpRequest httpRequest = HttpRequestImpl.wrap(request, null);
-		HttpResponse httpResponse = HttpResponseImpl.wrap(response);
-
 		// Render Block
 		try {
-			driver.render(page, null, new ResponseWriter(webResponse), httpRequest, httpResponse, new BlockRenderer(blockName, page), new ReplaceRenderer(replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator(request, response, null).getHttpRequest();
+			driver.render(page, null, new ResponseWriter(webResponse), httpRequest, new BlockRenderer(blockName, page), new ReplaceRenderer(replaceRules));
 			if (parseAbsoluteUrl) {
 
 				String baseUrl = HttpRequestHelper.getBaseUrl(httpRequest).toString();
@@ -148,7 +144,7 @@ public class WATBlock extends AbstractWatDriverContainer {
 			LOG.error(e.getMessage(), e);
 		} catch (HttpErrorPage e) {
 			// Insert default content
-			this.sendErrorContent(blocks, webResponse, e.getStatusCode());
+			this.sendErrorContent(blocks, webResponse, e.getHttpResponse().getStatusLine().getStatusCode());
 			LOG.warn(e.getMessage() + ": " + page);
 		}
 

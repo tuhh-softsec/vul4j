@@ -55,7 +55,7 @@ class IncludeBlockElement implements Element {
 		String page = tagAttributes.getPage();
 		String name = tagAttributes.getName();
 
-		driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest(), ctx.getHttpResponse(), new BlockRenderer(name, page), new AggregateRenderer());
+		driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest(), new BlockRenderer(name, page), new AggregateRenderer());
 	}
 
 	public boolean isClosed() {

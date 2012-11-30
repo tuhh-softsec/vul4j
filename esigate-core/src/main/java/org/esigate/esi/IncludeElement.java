@@ -23,11 +23,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.api.HttpRequest;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
 import org.esigate.regexp.ReplaceRenderer;
@@ -128,7 +128,7 @@ class IncludeElement extends BaseElement {
 		String xslt = tag.getAttribute("stylesheet");
 		boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
-		HttpRequest httpRequest = ctx.getHttpRequest();
+		HttpEntityEnclosingRequest httpRequest = ctx.getHttpRequest();
 		List<Renderer> rendererList = new ArrayList<Renderer>();
 		Driver driver;
 		String page;
@@ -194,7 +194,7 @@ class IncludeElement extends BaseElement {
 			} else if (xslt != null) {
 				rendererList.add(new XsltRenderer(xslt, driver, httpRequest));
 			}
-			driver.render(page, null, outAdapter, httpRequest, ctx.getHttpResponse(), rendererList.toArray(new Renderer[rendererList.size()]));
+			driver.render(page, null, outAdapter, httpRequest, rendererList.toArray(new Renderer[rendererList.size()]));
 		}
 	}
 

@@ -21,8 +21,8 @@ import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Renderer;
-import org.esigate.api.HttpRequest;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,7 +187,7 @@ public class ResourceFixupRenderer implements Renderer {
 
 		if (replacementUrl != null && url.startsWith(baseUrl)) {
 			url = new StringBuffer(replacementUrl).append(url.substring(baseUrl.length())).toString();
-			LOG.debug("fix absolute url: {} -> {} " , urlParam , url);
+			LOG.debug("fix absolute url: {} -> {} ", urlParam, url);
 			return url;
 		}
 		// Keep absolute and javascript urls untouched.
@@ -216,12 +216,11 @@ public class ResourceFixupRenderer implements Renderer {
 			}
 		}
 
-		LOG.debug("url fixed: {} -> {}", urlParam ,url );
+		LOG.debug("url fixed: {} -> {}", urlParam, url);
 		return url;
 	}
 
-	/** {@inheritDoc} */
-	public void render(HttpRequest httpRequest, String src, Writer out) throws IOException {
+	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
 		out.write(replace(src).toString());
 	}
 
@@ -238,7 +237,7 @@ public class ResourceFixupRenderer implements Renderer {
 		StringBuffer result = new StringBuffer(input.length());
 		Matcher m = URL_PATTERN.matcher(input);
 		while (m.find()) {
-			LOG.trace("found match: {}" , m);
+			LOG.trace("found match: {}", m);
 			// m.group(3) matches to the attribute value including surrounded
 			// quotes
 			// String url = m.group(3);

@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.entity.DeflateDecompressingEntity;
@@ -108,11 +107,12 @@ public class HttpResponseUtils {
 			result = httpResponse.getStatusLine().getReasonPhrase();
 		} else {
 			// Unzip the stream if necessary
-			String contentEncoding = HttpResponseUtils.getFirstHeader(HttpHeaders.CONTENT_ENCODING, httpResponse);
+			Header contentEncoding = httpEntity.getContentEncoding();
 			if (contentEncoding != null) {
-				if ("gzip".equalsIgnoreCase(contentEncoding) || "x-gzip".equalsIgnoreCase(contentEncoding)) {
+				String contentEncodingValue = contentEncoding.getValue();
+				if ("gzip".equalsIgnoreCase(contentEncodingValue) || "x-gzip".equalsIgnoreCase(contentEncodingValue)) {
 					httpEntity = new GzipDecompressingEntity(httpEntity);
-				} else if ("deflate".equalsIgnoreCase(contentEncoding)) {
+				} else if ("deflate".equalsIgnoreCase(contentEncodingValue)) {
 					httpEntity = new DeflateDecompressingEntity(httpEntity);
 				} else {
 					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");

@@ -19,10 +19,9 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpResponse;
 import org.esigate.HttpErrorPage;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
-import org.esigate.util.HttpRequestHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class Parser {
 	private final static Logger LOG = LoggerFactory.getLogger(Parser.class);
 	private final Pattern pattern;
 	private final ElementType[] elementTypes;
-	private HttpRequest httpRequest;
+	private HttpEntityEnclosingRequest httpRequest;
 	private HttpResponse httpResponse;
 
 	/**
@@ -96,11 +95,8 @@ public class Parser {
 		ctx.characters(in, currentPosition, in.length());
 	}
 
-	public void setHttpRequest(HttpRequest httpRequest) {
+	public void setHttpRequest(HttpEntityEnclosingRequest httpRequest) {
 		this.httpRequest = httpRequest;
-		httpResponse = HttpRequestHelper.getResponse(httpRequest);
-		if(httpResponse==null)
-			throw new IllegalStateException("HttpRequest has not been initialized properly. HttpResponse is null.");
 	}
 
 }

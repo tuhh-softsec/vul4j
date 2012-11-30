@@ -6,12 +6,12 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
-import org.esigate.api.HttpRequest;
 import org.esigate.tags.BlockRenderer;
-import org.esigate.test.MockHttpRequest;
+import org.esigate.test.TestUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +21,11 @@ public class Bug101ConnectionReleaseTest {
 
 	private void render(Driver driver, String page) throws IOException {
 		StringWriter writer = new StringWriter();
-		HttpRequest httpRequest = new MockHttpRequest();
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest();
 		try {
-			driver.render("/esigate-app-aggregated1/" + page, null, writer, httpRequest, null, new BlockRenderer(null, "/esigate-app-aggregated1/" + page));
+			driver.render("/esigate-app-aggregated1/" + page, null, writer, httpRequest, new BlockRenderer(null, "/esigate-app-aggregated1/" + page));
 		} catch (HttpErrorPage e) {
-			LOG.info(page + " -> " + e.getStatusCode());
+			LOG.info(page + " -> " + e.getHttpResponse().getStatusLine().getStatusCode());
 		}
 	}
 

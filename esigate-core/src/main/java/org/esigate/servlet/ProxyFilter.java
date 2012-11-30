@@ -35,8 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
 import org.esigate.esi.EsiRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,14 +74,14 @@ public class ProxyFilter implements Filter {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		String relUrl = httpServletRequest.getRequestURI();
+		HttpServletMediator mediator = new HttpServletMediator(httpServletRequest, httpServletResponse, config.getServletContext());
 		for (int i = 0; i < mappings.length; i++) {
 			if (mappings[i].matcher(relUrl).matches()) {
 				LOG.debug("Proxying " + relUrl);
-				HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
 				try {
-					providers[i].proxy(relUrl, HttpRequestImpl.wrap(httpServletRequest, config.getServletContext()), httpResponse, new EsiRenderer());
+					providers[i].proxy(relUrl, mediator.getHttpRequest(), new EsiRenderer());
 				} catch (HttpErrorPage e) {
-					e.render(httpResponse);
+					mediator.sendResponse(e.getHttpResponse());
 				}
 				return;
 			}
@@ -93,12 +91,10 @@ public class ProxyFilter implements Filter {
 		chain.doFilter(httpServletRequest, wrappedResponse);
 		String result = wrappedResponse.getResult();
 		if (result != null) {
-			HttpResponse httpResponse = HttpResponseImpl.wrap(httpServletResponse);
-			HttpRequest httpRequest = HttpRequestImpl.wrap(httpServletRequest, config.getServletContext());
 			try {
-				new EsiRenderer().render(httpRequest, result, response.getWriter());
+				new EsiRenderer().render(mediator.getHttpRequest(), result, response.getWriter());
 			} catch (HttpErrorPage e) {
-				e.render(httpResponse);
+				mediator.sendResponse(e.getHttpResponse());
 			}
 		}
 	}

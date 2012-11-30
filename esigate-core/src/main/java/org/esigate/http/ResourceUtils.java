@@ -20,8 +20,8 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpSession;
+import org.apache.http.HttpRequest;
+import org.esigate.api.ContainerRequestMediator;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 
@@ -53,10 +53,8 @@ public class ResourceUtils {
 				// jsessionid to the querystring. We must not forward it to
 				// included applications.
 				String jsessionid = null;
-				HttpSession session = originalRequest.getSession(false);
-				if (session != null) {
-					jsessionid = session.getId();
-				}
+				ContainerRequestMediator mediator = HttpRequestHelper.getMediator(originalRequest);
+				jsessionid = mediator.getSessionId();
 				if (jsessionid != null) {
 					originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);
 				}

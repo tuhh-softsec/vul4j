@@ -23,28 +23,20 @@ import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.esigate.Driver;
 import org.esigate.UserContext;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
+import org.esigate.api.ContainerRequestMediator;
 
 public class HttpRequestHelper {
-	private final static String HTTP_RESPONSE = HttpResponse.class.getName();
 	private final static String USER_CONTEXT = UserContext.class.getName();
 	private final static String BASEURLASURL = URL.class.getName();
 	private final static String DRIVER = Driver.class.getName();
 	private final static String PARAMETERS = "parameters";
 	private final static String CHARACTER_ENCODING = "character encoding";
-
-	public final static HttpResponse getResponse(HttpRequest request) {
-		return (HttpResponse) request.getParams().getParameter(HTTP_RESPONSE);
-	}
-
-	public final static void setResponse(HttpRequest request, HttpResponse response) {
-		request.getParams().setParameter(HTTP_RESPONSE, response);
-	}
+	private final static String MEDIATOR = ContainerRequestMediator.class.getName();
 
 	public final static UserContext getUserContext(HttpRequest request) {
 		return (UserContext) request.getParams().getParameter(USER_CONTEXT);
@@ -129,6 +121,21 @@ public class HttpRequestHelper {
 		if (("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443))
 			return host;
 		return host + ":" + port;
+	}
+
+	/**
+	 * Returns the <code>IncomingRequestMediator</code> object used to interact
+	 * with the original container-specific request.
+	 * 
+	 * @param request
+	 * @return the <code>IncomingRequestMediator</code>
+	 */
+	public final static ContainerRequestMediator getMediator(HttpRequest request) {
+		return (ContainerRequestMediator) request.getParams().getParameter(MEDIATOR);
+	}
+
+	public final static void setMediator(HttpRequest request, ContainerRequestMediator mediator) {
+		request.getParams().setParameter(MEDIATOR, mediator);
 	}
 
 }

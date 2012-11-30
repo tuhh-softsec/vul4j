@@ -23,15 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.api.BaseUrlRetrieveStrategy;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.xml.XpathRenderer;
@@ -45,18 +44,18 @@ import org.esigate.xml.XsltRenderer;
  */
 public class DriverUtils {
 
-	public final static String getBaseUrl(String provider, HttpRequest request, HttpResponse responce) {
+	public final static String getBaseUrl(String provider, HttpRequest request) {
 		BaseUrlRetrieveStrategy baseUrlRetrieveStrategy = DriverFactory.getInstance(provider).getConfiguration().getBaseUrlRetrieveStrategy();
-		return baseUrlRetrieveStrategy.getBaseURL(request, responce);
+		return baseUrlRetrieveStrategy.getBaseURL(request);
 	}
 
 	public final static void renderBlock(String provider, String page, String name, PageContext pageContext, Map<String, String> replaceRules, Map<String, String> parameters,
 			boolean copyOriginalRequestParameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			HttpRequest httpRequest = HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext());
-			driver.render(page, parameters, pageContext.getOut(), httpRequest, HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), new BlockRenderer(name, page),
-					new ReplaceRenderer(replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+					pageContext.getServletContext()).getHttpRequest();
+			driver.render(page, parameters, pageContext.getOut(), httpRequest, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
@@ -66,8 +65,9 @@ public class DriverUtils {
 			Map<String, String> parameters) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			driver.render(page, parameters, pageContext.getOut(), HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+					pageContext.getServletContext()).getHttpRequest();
+			driver.render(page, parameters, pageContext.getOut(), httpRequest, new TemplateRenderer(name, params, page), new ReplaceRenderer(replaceRules));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
@@ -76,9 +76,9 @@ public class DriverUtils {
 	public final static void renderXml(String provider, String source, String template, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			HttpRequest httpRequest = HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext());
-			driver.render(source, null, pageContext.getOut(), httpRequest, HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), new XsltRenderer(template, httpRequest),
-					new ReplaceRenderer(replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+					pageContext.getServletContext()).getHttpRequest();
+			driver.render(source, null, pageContext.getOut(), httpRequest, new XsltRenderer(template, httpRequest), new ReplaceRenderer(replaceRules));
 
 		} catch (IOException e) {
 			throw new JspException(e);
@@ -88,9 +88,9 @@ public class DriverUtils {
 	public final static void renderXpath(String provider, String source, String xpath, PageContext pageContext, Map<String, String> replaceRules) throws JspException, HttpErrorPage {
 		try {
 			Driver driver = DriverFactory.getInstance(provider);
-			HttpRequest httpRequest = HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext());
-			driver.render(source, null, pageContext.getOut(), httpRequest, HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()), new XpathRenderer(xpath), new ReplaceRenderer(
-					replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(),
+					pageContext.getServletContext()).getHttpRequest();
+			driver.render(source, null, pageContext.getOut(), httpRequest, new XpathRenderer(xpath), new ReplaceRenderer(replaceRules));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}

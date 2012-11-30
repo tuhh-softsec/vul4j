@@ -28,13 +28,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.api.HttpRequest;
-import org.esigate.api.HttpResponse;
 import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.taglib.ReplaceableTag;
 import org.esigate.tags.BlockRenderer;
 
@@ -68,9 +66,8 @@ public class IncludeBlockComponent extends UIComponentBase implements Replaceabl
 		try {
 			String page = getPage();
 			String name = getName();
-			HttpRequest httpRequest = HttpRequestImpl.wrap(request, servletContext);
-			HttpResponse httpResponse = HttpResponseImpl.wrap(response);
-			DriverFactory.getInstance(getProvider()).render(page, null, writer, httpRequest, httpResponse, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
+			HttpEntityEnclosingRequest httpRequest = new HttpServletMediator(request, response, servletContext).getHttpRequest();
+			DriverFactory.getInstance(getProvider()).render(page, null, writer, httpRequest, new BlockRenderer(name, page), new ReplaceRenderer(replaceRules));
 		} catch (HttpErrorPage re) {
 			if (isDisplayErrorPage()) {
 				writer.write(re.getMessage());

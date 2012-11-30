@@ -34,10 +34,12 @@ import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.sax.HtmlParser;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
-import org.esigate.api.HttpRequest;
+import org.esigate.util.HttpRequestHelper;
 import org.xml.sax.InputSource;
 
 /**
@@ -63,9 +65,9 @@ public class XsltRenderer implements Renderer {
 	 *             If an error occurs while writing to the output
 	 * @throws HttpErrorPage
 	 */
-	public XsltRenderer(String template, Driver driver, HttpRequest originalRequest) throws IOException, HttpErrorPage {
+	public XsltRenderer(String template, Driver driver, HttpEntityEnclosingRequest originalRequest) throws IOException, HttpErrorPage {
 		try {
-			InputStream templateStream = originalRequest.getResourceAsStream(template);
+			InputStream templateStream = HttpRequestHelper.getMediator(originalRequest).getResourceAsStream(template);
 			if (templateStream == null)
 				throw new ProcessingFailedException("Template " + template + " not found");
 			transformer = createTransformer(templateStream);
@@ -83,7 +85,7 @@ public class XsltRenderer implements Renderer {
 	 *             If an error occurs while writing to the output
 	 */
 	public XsltRenderer(String template, HttpRequest request) throws IOException {
-		InputStream templateStream = request.getResourceAsStream(template);
+		InputStream templateStream = HttpRequestHelper.getMediator(request).getResourceAsStream(template);
 		if (templateStream == null)
 			throw new ProcessingFailedException("Template " + template + " not found");
 		transformer = createTransformer(templateStream);
@@ -111,7 +113,7 @@ public class XsltRenderer implements Renderer {
 	}
 
 	/** {@inheritDoc} */
-	public void render(HttpRequest httpRequest, String src, Writer out) throws IOException {
+	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
 		try {
 			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
 			htmlParser.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);

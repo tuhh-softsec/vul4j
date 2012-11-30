@@ -1,5 +1,6 @@
 package org.esigate.taglib;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.HttpErrorPage;
-import org.esigate.servlet.HttpRequestImpl;
-import org.esigate.servlet.HttpResponseImpl;
+import org.esigate.servlet.HttpServletMediator;
 
 /**
  * Retrieves an XML fragment from the provider application and inserts it into
@@ -33,8 +34,13 @@ public class IncludeXmlTag extends BodyTagSupport implements ReplaceableTag {
 	@Override
 	public int doEndTag() throws JspException {
 		if (parseAbsoluteUrl) {
-			String baseUrl = DriverUtils.getBaseUrl(provider, HttpRequestImpl.wrap((HttpServletRequest) pageContext.getRequest(), pageContext.getServletContext()),
-					HttpResponseImpl.wrap((HttpServletResponse) pageContext.getResponse()));
+			HttpEntityEnclosingRequest httpRequest;
+			try {
+				httpRequest = new HttpServletMediator((HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), pageContext.getServletContext()).getHttpRequest();
+			} catch (IOException e) {
+				throw new JspException(e);
+			}
+			String baseUrl = DriverUtils.getBaseUrl(provider, httpRequest);
 			if (replaceRules == null) {
 				replaceRules = new HashMap<String, String>();
 			}

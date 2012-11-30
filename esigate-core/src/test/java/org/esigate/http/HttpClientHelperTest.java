@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -40,7 +41,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.EhcacheCacheStorage;
 import org.esigate.events.EventManager;
-import org.esigate.test.MockHttpRequest;
+import org.esigate.test.TestUtils;
 
 /**
  * DriverConfiguration test case.
@@ -187,8 +188,8 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	private HttpResponse executeRequest() throws HttpErrorPage {
-		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest();
-		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest();
+		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		HttpContext httpContext = new BasicHttpContext();
 		return httpClientHelper.execute(apacheHttpRequest, httpContext);
 	}
@@ -361,15 +362,15 @@ public class HttpClientHelperTest extends TestCase {
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
 		HttpContext httpContext = new BasicHttpContext();
-		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest("http://localhost:8080");
-		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
+		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
-		httpRequest = new MockHttpRequest("http://localhost:8080");
+		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
 		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
@@ -392,15 +393,15 @@ public class HttpClientHelperTest extends TestCase {
 		response.setHeader("Cache-control", "max-age=60");
 		mockHttpClient.setResponse(response);
 		HttpContext httpContext = new BasicHttpContext();
-		org.esigate.api.HttpRequest httpRequest = new MockHttpRequest("http://localhost:8080");
-		HttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
+		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		HttpResponse result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader1 = result.getFirstHeader("X-Cache");
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
 		response.setHeader("Cache-control", "max-age=60");
 		mockHttpClient.setResponse(response);
-		httpRequest = new MockHttpRequest("http://localhost:8080");
+		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
 		result = httpClientHelper.execute(apacheHttpRequest, httpContext);
 		Header xCacheHeader2 = result.getFirstHeader("X-Cache");
@@ -432,7 +433,7 @@ public class HttpClientHelperTest extends TestCase {
 
 		HttpContext httpContext = new BasicHttpContext();
 
-		MockHttpRequest httpRequest = new MockHttpRequest(uri);
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(uri);
 		if (virtualHost != null)
 			httpRequest.setHeader("Host", virtualHost);
 		// I dn't think it is possible to have a virtualHost that is different
@@ -496,11 +497,11 @@ public class HttpClientHelperTest extends TestCase {
 		createHttpClientHelper();
 		HttpClientHelper httpClientHelper2 = httpClientHelper;
 
-		MockHttpRequest httpRequest = new MockHttpRequest("http://www.foo.com");
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://www.foo.com");
 
 		// Include something with first HttpClientHelper
 		HttpContext httpContext = new BasicHttpContext();
-		HttpRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080", false);
+		HttpEntityEnclosingRequest apacheHttpRequest = httpClientHelper1.createHttpRequest(httpRequest, "http://localhost:8080", false);
 		// Also manually add a fake param to see if it is set in original
 		// request or copied to other requests
 		apacheHttpRequest.getParams().setParameter("test", "test");
@@ -516,7 +517,7 @@ public class HttpClientHelperTest extends TestCase {
 		Header[] headers2 = mockHttpClient.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers2.length);
 		assertEquals("localhost:8080", headers2[0].getValue());
-		
+
 		assertNull(httpRequest.getParams().getParameter("test"));
 		assertNull(apacheHttpRequest2.getParams().getParameter("test"));
 		assertNotNull(apacheHttpRequest.getParams().getParameter("test"));
