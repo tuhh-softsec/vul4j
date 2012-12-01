@@ -17,10 +17,8 @@ package org.codehaus.plexus.archiver.zip;
  *
  */
 
-import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.zip.ZipException;
-
 import org.codehaus.plexus.archiver.ArchiveFile;
 
 /**
@@ -45,7 +43,7 @@ public class ZipEntry
 
     private long externalAttributes = 0;
 
-    private Vector extraFields = new Vector();
+    private Vector<ZipExtraField> extraFields = new Vector<ZipExtraField>();
 
     private String name = null;
 
@@ -158,7 +156,8 @@ public class ZipEntry
                 e.setCrc( crc );
             }
 
-            e.extraFields = (Vector) extraFields.clone();
+            //noinspection unchecked
+            e.extraFields = (Vector<ZipExtraField>) extraFields.clone();
             e.setInternalAttributes( getInternalAttributes() );
             e.setExternalAttributes( getExternalAttributes() );
             e.setExtraFields( getExtraFields() );
@@ -219,6 +218,7 @@ public class ZipEntry
      *
      * @since Ant 1.5.2
      */
+    @SuppressWarnings( "OctalInteger" )
     public void setUnixMode( int mode )
     {
         setExternalAttributes( ( mode << 16 )
@@ -268,9 +268,9 @@ public class ZipEntry
     public void setExtraFields( ZipExtraField[] fields )
     {
         extraFields.removeAllElements();
-        for ( int i = 0; i < fields.length; i++ )
+        for ( ZipExtraField field : fields )
         {
-            extraFields.addElement( fields[ i ] );
+            extraFields.addElement( field );
         }
         setExtra();
     }
@@ -299,7 +299,7 @@ public class ZipEntry
         boolean done = false;
         for ( int i = 0; !done && i < extraFields.size(); i++ )
         {
-            if ( ( (ZipExtraField) extraFields.elementAt( i ) ).getHeaderId().equals( type ) )
+            if ( extraFields.elementAt( i ).getHeaderId().equals( type ) )
             {
                 extraFields.setElementAt( ze, i );
                 done = true;
@@ -322,7 +322,7 @@ public class ZipEntry
         boolean done = false;
         for ( int i = 0; !done && i < extraFields.size(); i++ )
         {
-            if ( ( (ZipExtraField) extraFields.elementAt( i ) ).getHeaderId().equals( type ) )
+            if ( extraFields.elementAt( i ).getHeaderId().equals( type ) )
             {
                 extraFields.removeElementAt( i );
                 done = true;
@@ -419,52 +419,6 @@ public class ZipEntry
     protected void setName( String name )
     {
         this.name = name;
-    }
-
-    /**
-     * Helper for JDK 1.1
-     *
-     * @since 1.2
-     */
-    private static Method setCompressedSizeMethod = null;
-
-    /**
-     * Helper for JDK 1.1
-     *
-     * @since 1.2
-     */
-    private static boolean triedToGetMethod = false;
-
-    /**
-     * Are we running JDK 1.2 or higher?
-     *
-     * @since 1.2
-     */
-    private static boolean haveSetCompressedSize()
-    {
-        return true;
-    }
-
-    /**
-     * Invoke setCompressedSize via reflection.
-     *
-     * @since 1.2
-     */
-    private static void performSetCompressedSize( ZipEntry ze, long size )
-    {
-       ze.setCompressedSize( size );
-    }
-
-    /**
-     * Try to get a handle to the setCompressedSize method.
-     *
-     * @since 1.2
-     */
-    private static void checkSCS()
-    {
-        if ( !triedToGetMethod )
-        {
-        }
     }
 
     public long getLastModificationTime()
