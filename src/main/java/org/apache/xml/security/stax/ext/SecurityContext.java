@@ -62,6 +62,12 @@ public interface SecurityContext extends SecurityEventListener {
      * @return The SecurityTokenProvider
      */
     SecurityTokenProvider getSecurityTokenProvider(String id);
+
+    /**
+     * Returns all currently registered SecurityTokenProvider's
+     * @return All registered SecurityTokenProvider's
+     */
+    List<SecurityTokenProvider> getRegisteredSecurityTokenProviders();
     
     /**
      * Registers a SecurityEventListener to receive Security-Events

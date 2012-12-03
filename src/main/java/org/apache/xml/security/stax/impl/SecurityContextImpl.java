@@ -148,4 +148,9 @@ public class SecurityContextImpl implements SecurityContext {
     public SecurityTokenProvider getSecurityTokenProvider(String id) {
         return securityTokenProviders.get(id);
     }
+
+    @Override
+    public List<SecurityTokenProvider> getRegisteredSecurityTokenProviders() {
+        return new ArrayList<SecurityTokenProvider>(securityTokenProviders.values());
+    }
 }
