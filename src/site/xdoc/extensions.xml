@@ -194,6 +194,11 @@
 						sends original request url as recieved by esigate as http
 						request header (X-Esigate-Request).
 					</li>
+					<li>
+
+						org.esigate.extension.XPoweredBy :
+						adds X-Powered-By: ESIGate in response. 
+					</li>
 				</ul>
 			</p>
 			<p>ESIGate users can add custom extensions packaged in a jar or simply compiled classes depending on the way ESIGate is used (standalone server or library).</p>
