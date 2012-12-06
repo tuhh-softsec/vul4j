@@ -56,8 +56,21 @@ public class ResponseHeadersTest extends TestCase {
 	private void assertHeaderForwarded(String name, String value)
 			throws Exception {
 		String resp = sendRequestAndExpectResponseHeader(name, value);
-		assertEquals("HTTP header " + name + " should be forwarded", value,
-				resp);
+		if (resp.contains("\n")) {
+			// In case of multiple headers
+			String[] responses = StringUtils.split(resp, "\n");
+			boolean found = false;
+			for (String r : responses) {
+				if (value.equals(r)) {
+					found = true;
+				}
+			}
+			assertTrue("HTTP header " + name
+					+ " should be forwarded (multiple values)", found);
+		} else {
+			assertEquals("HTTP header " + name + " should be forwarded", value,
+					resp);
+		}
 	}
 
 	/**
