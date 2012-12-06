@@ -32,6 +32,8 @@ import org.esigate.util.FilterList;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.PropertiesUtil;
 import org.esigate.util.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -42,6 +44,8 @@ import org.esigate.util.UriUtils;
  * 
  */
 public class HeaderManager {
+	private final static Logger LOG = LoggerFactory.getLogger(HeaderManager.class);
+
 	private final FilterList requestHeadersFilterList;
 	private final FilterList responseHeadersFilterList;
 
@@ -111,19 +115,59 @@ public class HeaderManager {
 		for (Header header : httpClientResponse.getAllHeaders()) {
 			String name = header.getName();
 			String value = header.getValue();
+			try {
 			// Ignore Content-Encoding and Content-Type as these headers are set
 			// in HttpEntity
 			if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
 				if (isForwardedResponseHeader(name)) {
 					// Some headers containing an URI have to be rewritten
-					if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) || "Link".equalsIgnoreCase(name) || "P3p".equalsIgnoreCase(name)) {
+					if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) ) {
+						// Header contains only an url
 						value = UriUtils.translateUrl(value, uri, originalUri);
 						value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
+						output.addHeader(name, value);
+					} else if(  "Link".equalsIgnoreCase(name)) {
+						// Header has the following format
+						// Link: </feed>; rel="alternate"
+						
+						if (value.startsWith("<") && value.contains(">")) {
+							String urlValue = value.substring(1, value.indexOf(">"));
+
+							String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+							targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
+
+							value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
+						}
+
+						output.addHeader(name, value);
+
+					} else if ("Refresh".equalsIgnoreCase(name)) {
+						// Header has the following format
+						// Refresh: 5; url=http://www.w3.org/pub/WWW/People.html
+						int urlPosition = value.indexOf("url=");
+						if (urlPosition >= 0) {
+							String urlValue = value.substring(urlPosition + 4);
+
+							String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+							targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
+
+							value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
+						}
+						output.addHeader(name, value);
+					} else if ("P3p".equalsIgnoreCase(name)) {
+						// Do not translate url yet.
+						// P3P is used with a default fixed url most of the time.
 						output.addHeader(name, value);
 					} else {
 						output.addHeader(header.getName(), header.getValue());
 					}
 				}
+			}
+			}catch( Exception e1 ){
+				// It's important not to fail here.
+				// An application can always send corrupted headers, and we should not crash
+				LOG.error("Error while copying headers", e1 );
+				output.addHeader("X-Esigate-Error", "Error processing header "+name+": "+value);
 			}
 		}
 	}

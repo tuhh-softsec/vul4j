@@ -216,12 +216,36 @@ public class ResponseHeadersTest extends TestCase {
 	}
 
 	/**
-	 * Link header should be rewritten
+	 * Link header should be rewritten.
+	 * <p>
+	 * 
+	 * Link headers have the following syntax
+	 * <p>
+	 * <code>Link: &lt;/feed&gt;; rel="alternate"</code>
+	 * 
+	 * <p>
+	 * See
+	 * <ul>
+	 * <li>
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=129</li>
+	 * <li>http://en.wikipedia.org/wiki/List_of_HTTP_header_fields</li>
+	 * </ul>
 	 * 
 	 * @throws Exception
 	 */
 	public void testLink() throws Exception {
-		assertUriInHeaderIsRewritten("Link");
+
+		String resp = sendRequestAndExpectResponseHeader("Link", "<"
+				+ APPLICATION_PATH.replaceFirst("aggregator", "aggregated1")
+				+ "dummy" + ">; rel=\"shortlink\"");
+
+		// Assert link is rewritten correctly.
+		assertEquals(
+				"Link"
+						+ " header should be rewritten ('aggregator' replaced with 'aggregated1')",
+				"<" + APPLICATION_PATH + "nocache/ag1/dummy"
+						+ ">; rel=\"shortlink\"", resp);
+
 	}
 
 	/**
@@ -234,12 +258,13 @@ public class ResponseHeadersTest extends TestCase {
 	}
 
 	/**
-	 * P3p header should be rewritten
+	 * P3p header should be forwarded. (Rewritting not implemented yet)
 	 * 
 	 * @throws Exception
 	 */
 	public void testP3p() throws Exception {
-		assertUriInHeaderIsRewritten("P3p");
+
+		assertHeaderForwarded("P3P");
 	}
 
 	/**
@@ -252,7 +277,15 @@ public class ResponseHeadersTest extends TestCase {
 	}
 
 	public void testRefresh() throws Exception {
-		assertHeaderForwarded("Refresh");
+		String resp = sendRequestAndExpectResponseHeader("Refresh", "5; url="
+				+ APPLICATION_PATH.replaceFirst("aggregator", "aggregated1")
+				+ "dummy");
+
+		// Assert link is rewritten correctly.
+		assertEquals(
+				"Refresh"
+						+ " header should be rewritten ('aggregator' replaced with 'aggregated1')",
+				"5; url=" + APPLICATION_PATH + "nocache/ag1/dummy", resp);
 	}
 
 	public void testRetryAfter() throws Exception {
