@@ -49,6 +49,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.cookie.CookieSpecRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
@@ -94,6 +95,11 @@ public class HttpClientHelper {
 	private HttpClient httpClient;
 	private EventManager eventManager;
 	private HeaderManager headerManager;
+	private static final CookieSpecRegistry cookieSpecRegistry;
+	static {
+		cookieSpecRegistry = new CookieSpecRegistry();
+		cookieSpecRegistry.register(CookiePolicy.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory());
+	}
 
 	private final static HttpClient buildDefaultHttpClient(Properties properties) {
 		HttpHost proxyHost = null;
@@ -164,6 +170,7 @@ public class HttpClientHelper {
 		this(properties, cookieManager);
 		this.eventManager = eventManager;
 		httpClient = decorateWithCache(eventManager, defaultHttpClient, properties);
+		getClass();
 	}
 
 	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, Properties properties) {
@@ -220,6 +227,9 @@ public class HttpClientHelper {
 	public HttpResponse execute(GenericHttpRequest httpRequest) {
 		HttpEntityEnclosingRequest originalRequest = (HttpEntityEnclosingRequest) httpRequest.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		HttpContext httpContext = new BasicHttpContext();
+		// FIXME This can be removed when switching to HttpClient 4.3
+		httpContext.setAttribute(ClientContext.COOKIESPEC_REGISTRY, cookieSpecRegistry);
+
 		if (cookieManager != null) {
 			CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest);
 			httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);

@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -418,6 +419,31 @@ public class HttpClientHelperTest extends TestCase {
 		assertNull(httpRequest.getParams().getParameter("test"));
 		assertNull(apacheHttpRequest2.getParams().getParameter("test"));
 		assertNotNull(apacheHttpRequest.getParams().getParameter("test"));
+	}
+
+	/**
+	 * Executes 2 requests, there is a cookie sent in the response that contains
+	 * spaces in the value.
+	 * 
+	 * @throws Exception
+	 */
+	public void testCookieWithSpaces() throws Exception {
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
+		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+		createHttpClientHelper();
+		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
+		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		HttpResponse response = createMockResponse("");
+		response.addHeader("Set-Cookie", "test=\"a b\"; Version=1");
+		mockHttpClient.setResponse(response);
+		httpClientHelper.execute(request);
+		request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		httpClientHelper.execute(request);
+		HttpRequest sentRequest = mockHttpClient.getSentRequest();
+		assertNotNull(sentRequest.getHeaders("Cookie"));
+		assertEquals(1, sentRequest.getHeaders("Cookie").length);
+		assertEquals("test=\"a b\"", sentRequest.getHeaders("Cookie")[0].getValue());
 	}
 
 }
