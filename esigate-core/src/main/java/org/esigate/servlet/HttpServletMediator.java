@@ -108,6 +108,10 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	}
 
 	public void addCookie(Cookie src) {
+		response.addCookie(rewriteCookie(src));
+	}
+	
+	static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
 		javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
 
 		if (src.getDomain() != null)
@@ -117,7 +121,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		servletCookie.setComment(src.getComment());
 		servletCookie.setVersion(src.getVersion());
 		if (src.getExpiryDate() != null) {
-			int maxAge = (int) (src.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000;
+			int maxAge = (int) ((src.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000);
 			// According to Cookie class specification, a negative value
 			// would be considered as no value. That is not what we want!
 			if (maxAge < 0) {
@@ -125,8 +129,9 @@ public class HttpServletMediator implements ContainerRequestMediator {
 			}
 			servletCookie.setMaxAge(maxAge);
 		}
-		response.addCookie(servletCookie);
+		return servletCookie;
 	}
+	
 
 	public String getRemoteAddr() {
 		return request.getRemoteAddr();
