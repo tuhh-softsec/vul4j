@@ -269,7 +269,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
 
 /*        Set nodeSet = new HashSet();
         XMLUtils.getSet
-	    (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
+            (doc.getDocumentElement().getFirstChild(), nodeSet, null, false);
         XMLSignatureInput input = new XMLSignatureInput(nodeSet);
         byte[] bytes = c14n.engineCanonicalize(input, "env ns0 xsi wsu");
 

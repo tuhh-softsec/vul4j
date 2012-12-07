@@ -34,7 +34,7 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 public class ResolverAnonymous extends ResourceResolverSpi {
 
     private InputStream inStream = null;
-    
+
     @Override
     public boolean engineIsThreadSafe() {
         return true;
@@ -59,7 +59,7 @@ public class ResolverAnonymous extends ResourceResolverSpi {
     /** @inheritDoc */
     @Override
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context) {
-	    return new XMLSignatureInput(inStream);
+        return new XMLSignatureInput(inStream);
     }
 
     /**    

@@ -39,24 +39,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class DEREncodedKeyValueTest extends Assert {
-	
+
     private static final String BASEDIR = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
-    
+
     private DocumentBuilder documentBuilder;
-	
-	private PublicKey rsaKeyControl;
-	private PublicKey dsaKeyControl;
-	private PublicKey ecKeyControl;
-	
-	private final String idControl = "abc123";
-	
-	public DEREncodedKeyValueTest() throws Exception {
-	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+    private PublicKey rsaKeyControl;
+    private PublicKey dsaKeyControl;
+    private PublicKey ecKeyControl;
+
+    private final String idControl = "abc123";
+
+    public DEREncodedKeyValueTest() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         documentBuilder = dbf.newDocumentBuilder();
-        
-	    //
+
+        //
         // If the BouncyCastle provider is not installed, then try to load it 
         // via reflection. 
         //
@@ -74,42 +74,42 @@ public class DEREncodedKeyValueTest extends Assert {
                 ecKeyControl = loadPublicKey("ec.key", "EC");
             }
         }
-        
-		rsaKeyControl = loadPublicKey("rsa.key", "RSA");
-		dsaKeyControl = loadPublicKey("dsa.key", "DSA");
-	}
-	
-    @org.junit.Test
-    public void testSchema() throws Exception {
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
-    	Element element = derEncodedKeyValue.getElement();
-    	
-    	assertEquals("http://www.w3.org/2009/xmldsig11#", element.getNamespaceURI());
-    	assertEquals("DEREncodedKeyValue", element.getLocalName());
-    }
-    
-    @org.junit.Test
-    public void testRSAPublicKeyFromElement() throws Exception {
-    	Document doc = loadXML("DEREncodedKeyValue-RSA.xml");
-    	NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
-    	Element element = (Element) nl.item(0);
-    	
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
-    	assertEquals(rsaKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(rsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
-    	assertEquals(idControl, derEncodedKeyValue.getId());
+
+        rsaKeyControl = loadPublicKey("rsa.key", "RSA");
+        dsaKeyControl = loadPublicKey("dsa.key", "DSA");
     }
 
-	@org.junit.Test
+    @org.junit.Test
+    public void testSchema() throws Exception {
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
+        Element element = derEncodedKeyValue.getElement();
+
+        assertEquals("http://www.w3.org/2009/xmldsig11#", element.getNamespaceURI());
+        assertEquals("DEREncodedKeyValue", element.getLocalName());
+    }
+
+    @org.junit.Test
+    public void testRSAPublicKeyFromElement() throws Exception {
+        Document doc = loadXML("DEREncodedKeyValue-RSA.xml");
+        NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
+        Element element = (Element) nl.item(0);
+
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
+        assertEquals(rsaKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(rsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+        assertEquals(idControl, derEncodedKeyValue.getId());
+    }
+
+    @org.junit.Test
     public void testDSAPublicKeyFromElement() throws Exception {
-    	Document doc = loadXML("DEREncodedKeyValue-DSA.xml");
-    	NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
-    	Element element = (Element) nl.item(0);
-    	
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
-    	assertEquals(dsaKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(dsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
-    	assertEquals(idControl, derEncodedKeyValue.getId());
+        Document doc = loadXML("DEREncodedKeyValue-DSA.xml");
+        NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
+        Element element = (Element) nl.item(0);
+
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
+        assertEquals(dsaKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(dsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+        assertEquals(idControl, derEncodedKeyValue.getId());
     }
 
     @org.junit.Test
@@ -117,29 +117,29 @@ public class DEREncodedKeyValueTest extends Assert {
         if (ecKeyControl == null) {
             return;
         }
-        
-    	Document doc = loadXML("DEREncodedKeyValue-EC.xml");
-    	NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
-    	Element element = (Element) nl.item(0);
-    	
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
-    	assertEquals(ecKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(ecKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
-    	assertEquals(idControl, derEncodedKeyValue.getId());
+
+        Document doc = loadXML("DEREncodedKeyValue-EC.xml");
+        NodeList nl = doc.getElementsByTagNameNS(Constants.SignatureSpec11NS, Constants._TAG_DERENCODEDKEYVALUE);
+        Element element = (Element) nl.item(0);
+
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(element, "");
+        assertEquals(ecKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(ecKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+        assertEquals(idControl, derEncodedKeyValue.getId());
     }
 
     @org.junit.Test
     public void testRSAPublicKeyFromKey() throws Exception {
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
-    	assertEquals(rsaKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(rsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
+        assertEquals(rsaKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(rsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
     }
 
     @org.junit.Test
     public void testDSAPublicKeyFromKey() throws Exception {
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), dsaKeyControl);
-    	assertEquals(dsaKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(dsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), dsaKeyControl);
+        assertEquals(dsaKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(dsaKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
     }
 
     @org.junit.Test
@@ -147,46 +147,46 @@ public class DEREncodedKeyValueTest extends Assert {
         if (ecKeyControl == null) {
             return;
         }
-        
-    	DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), ecKeyControl);
-    	assertEquals(ecKeyControl, derEncodedKeyValue.getPublicKey());
-    	assertArrayEquals(ecKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
+
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), ecKeyControl);
+        assertEquals(ecKeyControl, derEncodedKeyValue.getPublicKey());
+        assertArrayEquals(ecKeyControl.getEncoded(), derEncodedKeyValue.getBytesFromTextChild());
     }
-    
-	@org.junit.Test
+
+    @org.junit.Test
     public void testId() throws Exception {
-		DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
-		assertEquals("", derEncodedKeyValue.getId());
-		assertNull(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID));
-		
-		derEncodedKeyValue.setId(idControl);
-		assertEquals(idControl, derEncodedKeyValue.getId());
-		assertTrue(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID).isId());
-		
-		derEncodedKeyValue.setId(null);
-		assertEquals("", derEncodedKeyValue.getId());
-		assertNull(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID));
+        DEREncodedKeyValue derEncodedKeyValue = new DEREncodedKeyValue(documentBuilder.newDocument(), rsaKeyControl);
+        assertEquals("", derEncodedKeyValue.getId());
+        assertNull(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID));
+
+        derEncodedKeyValue.setId(idControl);
+        assertEquals(idControl, derEncodedKeyValue.getId());
+        assertTrue(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID).isId());
+
+        derEncodedKeyValue.setId(null);
+        assertEquals("", derEncodedKeyValue.getId());
+        assertNull(derEncodedKeyValue.getElement().getAttributeNodeNS(null, Constants._ATT_ID));
     }
-    
+
     // Utility methods
-    
+
     private String getControlFilePath(String fileName) {
         return BASEDIR + SEP + "src" + SEP + "test" + SEP + "resources" + 
-        		SEP + "org" + SEP + "apache" + SEP + "xml" + SEP + "security" + 
-        		SEP + "keys" + SEP + "content" +
-                SEP + fileName;
-	}
-    
+            SEP + "org" + SEP + "apache" + SEP + "xml" + SEP + "security" + 
+            SEP + "keys" + SEP + "content" +
+            SEP + fileName;
+    }
+
     private Document loadXML(String fileName) throws Exception {
-    	return documentBuilder.parse(new FileInputStream(getControlFilePath(fileName)));
+        return documentBuilder.parse(new FileInputStream(getControlFilePath(fileName)));
     }
 
     private PublicKey loadPublicKey(String filePath, String algorithm) throws Exception {
-    	String fileData = new String(JavaUtils.getBytesFromFile(getControlFilePath(filePath)));
-    	byte[] keyBytes = Base64.decode(fileData);
-    	KeyFactory kf = KeyFactory.getInstance(algorithm);
-    	X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-    	return kf.generatePublic(keySpec);
+        String fileData = new String(JavaUtils.getBytesFromFile(getControlFilePath(filePath)));
+        byte[] keyBytes = Base64.decode(fileData);
+        KeyFactory kf = KeyFactory.getInstance(algorithm);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        return kf.generatePublic(keySpec);
     }
 
 }

@@ -633,9 +633,9 @@ public class XMLCipher {
      * @param keyResolver
      */
     public void registerInternalKeyResolver(KeyResolverSpi keyResolver) {
-    	if (internalKeyResolvers == null) {
-    	    internalKeyResolvers = new ArrayList<KeyResolverSpi>();
-    	}
+        if (internalKeyResolvers == null) {
+            internalKeyResolvers = new ArrayList<KeyResolverSpi>();
+        }
         internalKeyResolvers.add(keyResolver);
     }
 
@@ -1680,10 +1680,10 @@ public class XMLCipher {
                     String encMethodAlgorithm = encryptedData.getEncryptionMethod().getAlgorithm();
                     EncryptedKeyResolver resolver = new EncryptedKeyResolver(encMethodAlgorithm, kek);
                     if (internalKeyResolvers != null) {
-	                int size = internalKeyResolvers.size();
-	                for (int i = 0; i < size; i++) {
-	                    resolver.registerInternalKeyResolver(internalKeyResolvers.get(i));
-	                }
+                        int size = internalKeyResolvers.size();
+                        for (int i = 0; i < size; i++) {
+                            resolver.registerInternalKeyResolver(internalKeyResolvers.get(i));
+                        }
                     }
                     ki.registerInternalKeyResolver(resolver);
                     ki.setSecureValidation(secureValidation);

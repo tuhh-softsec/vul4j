@@ -49,7 +49,7 @@ import org.xml.sax.SAXException;
  * as the original XML content that was encrypted.
  */
 public class CanonicalizerPhysical extends CanonicalizerBase {
-    
+
     private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
 
     /**
@@ -58,7 +58,7 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
     public CanonicalizerPhysical() {
         super(true);
     }
-    
+
     /**
      * Always throws a CanonicalizationException.
      *
@@ -109,7 +109,7 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
         if (!element.hasAttributes()) {
             return null; 
         }
-        
+
         // result will contain all the attrs declared directly on that element
         final SortedSet<Attr> result = this.result;       
         result.clear();
@@ -117,7 +117,7 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
         if (element.hasAttributes()) {
             NamedNodeMap attrs = element.getAttributes();
             int attrsLength = attrs.getLength();      
-    
+
             for (int i = 0; i < attrsLength; i++) {
                 Attr attribute = (Attr) attrs.item(i);
                 result.add(attribute);
@@ -142,15 +142,15 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
         /** $todo$ well, should we throw UnsupportedOperationException ? */
         throw new CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation");
     }
-    
+
     protected void circumventBugIfNeeded(XMLSignatureInput input) 
         throws CanonicalizationException, ParserConfigurationException, IOException, SAXException {
-    	// nothing to do
+        // nothing to do
     }
 
     @Override
     protected void handleParent(Element e, NameSpaceSymbTable ns) {
-    	// nothing to do
+        // nothing to do
     }
 
     /** @inheritDoc */
@@ -163,18 +163,18 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
         return true;
     }
 
-	@Override
-	protected void outputPItoWriter(ProcessingInstruction currentPI,
-			OutputStream writer, int position) throws IOException {
-		// Processing Instructions before or after the document element are not treated specially
-		super.outputPItoWriter(currentPI, writer, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
-	}
+    @Override
+    protected void outputPItoWriter(ProcessingInstruction currentPI,
+                                    OutputStream writer, int position) throws IOException {
+        // Processing Instructions before or after the document element are not treated specially
+        super.outputPItoWriter(currentPI, writer, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
+    }
 
-	@Override
-	protected void outputCommentToWriter(Comment currentComment,
-			OutputStream writer, int position) throws IOException {
-		// Comments before or after the document element are not treated specially
-		super.outputCommentToWriter(currentComment, writer, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
-	}
-    
+    @Override
+    protected void outputCommentToWriter(Comment currentComment,
+                                         OutputStream writer, int position) throws IOException {
+        // Comments before or after the document element are not treated specially
+        super.outputCommentToWriter(currentComment, writer, NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT);
+    }
+
 }

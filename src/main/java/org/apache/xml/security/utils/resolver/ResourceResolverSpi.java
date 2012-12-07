@@ -37,7 +37,7 @@ public abstract class ResourceResolverSpi {
 
     /** Field properties */
     protected java.util.Map<String, String> properties = null;
-    
+
     /**
      * Deprecated - used to carry state about whether resolution was being done in a secure fashion,
      * but was not thread safe, so the resolution information is now passed as parameters to methods.
@@ -58,8 +58,8 @@ public abstract class ResourceResolverSpi {
      * @deprecated New clients should override {@link #engineResolveURI(ResourceResolverContext)}
      */
     public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-       throws ResourceResolverException {
-	   throw new UnsupportedOperationException();
+        throws ResourceResolverException {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -71,10 +71,10 @@ public abstract class ResourceResolverSpi {
      * @throws ResourceResolverException
      */
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
-   		throws ResourceResolverException {
-	    // The default implementation, to preserve backwards compatibility in the
-	    // test cases, calls the old resolver API.
-	    return engineResolve(context.attr, context.baseUri);
+        throws ResourceResolverException {
+        // The default implementation, to preserve backwards compatibility in the
+        // test cases, calls the old resolver API.
+        return engineResolve(context.attr, context.baseUri);
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class ResourceResolverSpi {
             properties.putAll(newProperties);
         }
     }
-    
+
     /**
      * Tells if the implementation does can be reused by several threads safely.
      * It normally means that the implementation does not have any member, or there is
@@ -125,7 +125,7 @@ public abstract class ResourceResolverSpi {
     public boolean engineIsThreadSafe() {
         return false;
     }
-    
+
     /**
      * This method helps the {@link ResourceResolver} to decide whether a
      * {@link ResourceResolverSpi} is able to perform the requested action.
@@ -153,7 +153,7 @@ public abstract class ResourceResolverSpi {
     public boolean engineCanResolveURI(ResourceResolverContext context) {
         // To preserve backward compatibility with existing resolvers that might override the old method,
         // call the old deprecated API.
-   	    return engineCanResolve( (Attr) context.attr, context.baseUri );
+        return engineCanResolve( (Attr) context.attr, context.baseUri );
     }
 
     /**

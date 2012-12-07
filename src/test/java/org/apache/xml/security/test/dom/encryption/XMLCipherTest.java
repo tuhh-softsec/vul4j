@@ -621,7 +621,7 @@ public class XMLCipherTest extends org.junit.Assert {
             byte[] decryptBytes = cipherDecrypt.decryptToByteArray(ee);
 
             assertEquals("A test encrypted secret",
-            		new String(decryptBytes, "ASCII")); 
+                        new String(decryptBytes, "ASCII")); 
         } else {
             log.warn(
                 "Test testSameDocumentCipherReference skipped as "

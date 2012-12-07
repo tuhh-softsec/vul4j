@@ -38,22 +38,22 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class DEREncodedKeyValueResolverTest extends Assert {
-	
+
     private static final String BASEDIR = System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
-    
+
     private DocumentBuilder documentBuilder;
-	
-	private PublicKey rsaKeyControl;
-	private PublicKey dsaKeyControl;
-	private PublicKey ecKeyControl;
-	
-	public DEREncodedKeyValueResolverTest() throws Exception {
-	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    	dbf.setNamespaceAware(true);
-    	documentBuilder = dbf.newDocumentBuilder();
-    	
-    	//
+
+    private PublicKey rsaKeyControl;
+    private PublicKey dsaKeyControl;
+    private PublicKey ecKeyControl;
+
+    public DEREncodedKeyValueResolverTest() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        documentBuilder = dbf.newDocumentBuilder();
+
+        //
         // If the BouncyCastle provider is not installed, then try to load it 
         // via reflection. 
         //
@@ -71,31 +71,31 @@ public class DEREncodedKeyValueResolverTest extends Assert {
                 ecKeyControl = loadPublicKey("ec.key", "EC");
             }
         }
-    	
-		rsaKeyControl = loadPublicKey("rsa.key", "RSA");
-		dsaKeyControl = loadPublicKey("dsa.key", "DSA");
-		
-	   	if (!Init.isInitialized()) {
-    		Init.init();
-    	}
-	}
-    
-    @org.junit.Test
-    public void testRSAPublicKey() throws Exception {
-    	Document doc = loadXML("DEREncodedKeyValue-RSA.xml");
-    	Element element = doc.getDocumentElement();
-    	
-    	KeyInfo keyInfo = new KeyInfo(element, "");
-    	assertEquals(rsaKeyControl, keyInfo.getPublicKey());
+
+        rsaKeyControl = loadPublicKey("rsa.key", "RSA");
+        dsaKeyControl = loadPublicKey("dsa.key", "DSA");
+
+        if (!Init.isInitialized()) {
+            Init.init();
+        }
     }
 
-	@org.junit.Test
+    @org.junit.Test
+    public void testRSAPublicKey() throws Exception {
+        Document doc = loadXML("DEREncodedKeyValue-RSA.xml");
+        Element element = doc.getDocumentElement();
+
+        KeyInfo keyInfo = new KeyInfo(element, "");
+        assertEquals(rsaKeyControl, keyInfo.getPublicKey());
+    }
+
+    @org.junit.Test
     public void testDSAPublicKey() throws Exception {
-    	Document doc = loadXML("DEREncodedKeyValue-DSA.xml");
-    	Element element = doc.getDocumentElement();
-    	
-    	KeyInfo keyInfo = new KeyInfo(element, "");
-    	assertEquals(dsaKeyControl, keyInfo.getPublicKey());
+        Document doc = loadXML("DEREncodedKeyValue-DSA.xml");
+        Element element = doc.getDocumentElement();
+
+        KeyInfo keyInfo = new KeyInfo(element, "");
+        assertEquals(dsaKeyControl, keyInfo.getPublicKey());
     }
 
     @org.junit.Test
@@ -103,33 +103,33 @@ public class DEREncodedKeyValueResolverTest extends Assert {
         if (ecKeyControl == null) {
             return;
         }
-        
-    	Document doc = loadXML("DEREncodedKeyValue-EC.xml");
-    	Element element = doc.getDocumentElement();
-    	
-    	KeyInfo keyInfo = new KeyInfo(element, "");
-    	assertEquals(ecKeyControl, keyInfo.getPublicKey());
+
+        Document doc = loadXML("DEREncodedKeyValue-EC.xml");
+        Element element = doc.getDocumentElement();
+
+        KeyInfo keyInfo = new KeyInfo(element, "");
+        assertEquals(ecKeyControl, keyInfo.getPublicKey());
     }
-    
+
     // Utility methods
-    
+
     private String getControlFilePath(String fileName) {
         return BASEDIR + SEP + "src" + SEP + "test" + SEP + "resources" + 
-        		SEP + "org" + SEP + "apache" + SEP + "xml" + SEP + "security" + 
-        		SEP + "keys" + SEP + "content" +
-                SEP + fileName;
-	}
-    
+            SEP + "org" + SEP + "apache" + SEP + "xml" + SEP + "security" + 
+            SEP + "keys" + SEP + "content" +
+            SEP + fileName;
+    }
+
     private Document loadXML(String fileName) throws Exception {
-    	return documentBuilder.parse(new FileInputStream(getControlFilePath(fileName)));
+        return documentBuilder.parse(new FileInputStream(getControlFilePath(fileName)));
     }
 
     private PublicKey loadPublicKey(String filePath, String algorithm) throws Exception {
-    	String fileData = new String(JavaUtils.getBytesFromFile(getControlFilePath(filePath)));
-    	byte[] keyBytes = Base64.decode(fileData);
-    	KeyFactory kf = KeyFactory.getInstance(algorithm);
-    	X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-    	return kf.generatePublic(keySpec);
+        String fileData = new String(JavaUtils.getBytesFromFile(getControlFilePath(filePath)));
+        byte[] keyBytes = Base64.decode(fileData);
+        KeyFactory kf = KeyFactory.getInstance(algorithm);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        return kf.generatePublic(keySpec);
     }
 
 }

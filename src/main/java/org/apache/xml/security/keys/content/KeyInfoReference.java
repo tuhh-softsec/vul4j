@@ -72,8 +72,8 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
     public String getURI() {
         return this.getURIAttr().getNodeValue();
     }
-    
-	/**
+
+    /**
      * Sets the <code>Id</code> attribute
      *
      * @param Id ID
@@ -83,10 +83,10 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
             this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
             this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
         } else {
-        	 this.constructionElement.removeAttributeNS(null, Constants._ATT_ID);
+            this.constructionElement.removeAttributeNS(null, Constants._ATT_ID);
         }
     }
-    
+
     /**
      * Returns the <code>Id</code> attribute
      *
