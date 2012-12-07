@@ -189,7 +189,7 @@
 				</tr>
                <tr>
                     <td><strike>authenticationHandler</strike></td>
-                    <td>This configuration is deprecated and no longer supported. Authentication handlers must now be implemented as extensions. See the <a href="authentication.html">authentication documentation</a> to learn how to use authenticication and upgrade existing custom handlers. </td>
+                    <td>This configuration is deprecated and no longer supported. Authentication handlers must now be implemented as extensions. See the <a href="authentication.html">authentication documentation</a> to learn how to use authentication and upgrade existing custom handlers. </td>
                     <td>No</td>
                     <td></td>
                 </tr> 
