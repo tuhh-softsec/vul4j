@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.Header;
+import org.apache.http.cookie.ClientCookie;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.SM;
 import org.apache.http.message.BasicHeaderElement;
@@ -37,6 +38,10 @@ import org.apache.http.util.CharArrayBuffer;
  *
  */
 public class BrowserCompatSpec extends org.apache.http.impl.cookie.BrowserCompatSpec {
+	
+	public BrowserCompatSpec(){
+		registerAttribHandler(ClientCookie.VERSION_ATTR, new BrowserCompatVersionAttributeHandler());
+	}
 	
 	@Override
 	public List<Header> formatCookies(List<Cookie> cookies) {
