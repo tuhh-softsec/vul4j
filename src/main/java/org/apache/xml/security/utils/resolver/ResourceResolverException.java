@@ -31,7 +31,7 @@ public class ResourceResolverException extends XMLSecurityException {
 
     private static final long serialVersionUID = 1L;
     
-    private Attr uri = null;
+    private String uri = null;
     
     private String baseURI = null;
     
@@ -42,7 +42,7 @@ public class ResourceResolverException extends XMLSecurityException {
      * @param uri
      * @param baseURI
      */
-    public ResourceResolverException(String msgID, Attr uri, String baseURI) {
+    public ResourceResolverException(String msgID, String uri, String baseURI) {
         super(msgID);
 
         this.uri = uri;
@@ -57,7 +57,7 @@ public class ResourceResolverException extends XMLSecurityException {
      * @param uri
      * @param baseURI
      */
-    public ResourceResolverException(String msgID, Object exArgs[], Attr uri,
+    public ResourceResolverException(String msgID, Object exArgs[], String uri,
                                      String baseURI) {
         super(msgID, exArgs);
 
@@ -74,7 +74,7 @@ public class ResourceResolverException extends XMLSecurityException {
      * @param baseURI
      */
     public ResourceResolverException(String msgID, Exception originalException,
-                                     Attr uri, String baseURI) {
+                                     String uri, String baseURI) {
         super(msgID, originalException);
 
         this.uri = uri;
@@ -91,7 +91,7 @@ public class ResourceResolverException extends XMLSecurityException {
      * @param baseURI
      */
     public ResourceResolverException(String msgID, Object exArgs[],
-                                     Exception originalException, Attr uri,
+                                     Exception originalException, String uri,
                                      String baseURI) {
         super(msgID, exArgs, originalException);
 
@@ -100,10 +100,38 @@ public class ResourceResolverException extends XMLSecurityException {
     }
 
     /**
+     * @deprecated New clients should use {@link #ResourceResolverException(String, Object[], Exception, String, String)}
+     */
+    public ResourceResolverException(String msgID, Exception originalException,
+                                     Attr uri, String baseURI) {
+
+        this(msgID, originalException, getNodeValue(uri), baseURI);
+    }
+
+    /**
+     * @deprecated New clients should use {@link #ResourceResolverException(String, String, String)}
+     */
+    public ResourceResolverException(String msgID, Attr uri, String baseURI) {
+        this(msgID, getNodeValue(uri), baseURI);
+    }
+
+    /**
+     * @deprecated New clients should use {@link #ResourceResolverException(String, Object[], String, String)}
+     */
+    public ResourceResolverException(String _msgID, Object exArgs[], Attr uri,
+                                    String BaseURI) {
+        this(_msgID, exArgs, getNodeValue(uri), BaseURI);
+    }
+
+    private static String getNodeValue(Attr uri) {
+        return (uri != null) ? uri.getNodeValue() : null;
+    }
+
+    /**
      * 
      * @param uri
      */
-    public void setURI(Attr uri) {
+    public void setURI(String uri) {
         this.uri = uri;
     }
 
@@ -111,7 +139,7 @@ public class ResourceResolverException extends XMLSecurityException {
      * 
      * @return the uri
      */
-    public Attr getURI() {
+    public String getURI() {
         return this.uri;
     }
 

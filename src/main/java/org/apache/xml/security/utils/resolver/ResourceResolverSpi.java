@@ -38,7 +38,13 @@ public abstract class ResourceResolverSpi {
     /** Field properties */
     protected java.util.Map<String, String> properties = null;
     
-    protected boolean secureValidation;
+    /**
+     * Deprecated - used to carry state about whether resolution was being done in a secure fashion,
+     * but was not thread safe, so the resolution information is now passed as parameters to methods.
+     * 
+     * @deprecated Secure validation flag is now passed to methods.
+     */
+    protected final boolean secureValidation = true;
 
     /**
      * This is the workhorse method used to resolve resources.
@@ -48,9 +54,28 @@ public abstract class ResourceResolverSpi {
      * @return the resource wrapped around a XMLSignatureInput
      *
      * @throws ResourceResolverException
+     * 
+     * @deprecated New clients should override {@link #engineResolveURI(ResourceResolverContext)}
      */
-    public abstract XMLSignatureInput engineResolve(Attr uri, String BaseURI)
-        throws ResourceResolverException;
+    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+       throws ResourceResolverException {
+	   throw new UnsupportedOperationException();
+    }
+
+    /**
+     * This is the workhorse method used to resolve resources.
+     * @param context Context to use to resolve resources.
+     * 
+     * @return the resource wrapped around a XMLSignatureInput
+     * 
+     * @throws ResourceResolverException
+     */
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
+   		throws ResourceResolverException {
+	    // The default implementation, to preserve backwards compatibility in the
+	    // test cases, calls the old resolver API.
+	    return engineResolve(context.attr, context.baseUri);
+    }
 
     /**
      * Method engineSetProperty
@@ -108,8 +133,28 @@ public abstract class ResourceResolverSpi {
      * @param uri
      * @param BaseURI
      * @return true if the engine can resolve the uri
+     * 
+     * @deprecated See {@link #engineCanResolveURI(ResourceResolverContext)}
      */
-    public abstract boolean engineCanResolve(Attr uri, String BaseURI);
+    public boolean engineCanResolve(Attr uri, String BaseURI) {
+        // This method used to be abstract, so any calls to "super" are bogus.
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * This method helps the {@link ResourceResolver} to decide whether a
+     * {@link ResourceResolverSpi} is able to perform the requested action.
+     *
+     * <p>New clients should override this method, and not override {@link #engineCanResolve(Attr, String)}
+     * </p>
+     * @param context Context in which to do resolution.
+     * @return true if the engine can resolve the uri
+     */
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        // To preserve backward compatibility with existing resolvers that might override the old method,
+        // call the old deprecated API.
+   	    return engineCanResolve( (Attr) context.attr, context.baseUri );
+    }
 
     /**
      * Method engineGetPropertyKeys

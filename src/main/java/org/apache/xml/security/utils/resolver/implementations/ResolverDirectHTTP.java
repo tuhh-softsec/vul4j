@@ -31,9 +31,9 @@ import java.net.URLConnection;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.Base64;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 
 /**
  * A simple ResourceResolver for HTTP requests. This class handles only 'pure'
@@ -51,7 +51,6 @@ import org.w3c.dom.Attr;
  * resourceResolver.setProperty("http.proxy.password", "secretca");
  * </PRE>
  *
- * @author $Author$
  * @see <A HREF="http://www.javaworld.com/javaworld/javatips/jw-javatip42_p.html">Java Tip 42: Write Java apps that work with proxy-based firewalls</A>
  * @see <A HREF="http://java.sun.com/j2se/1.4/docs/guide/net/properties.html">SUN J2SE docs for network properties</A>
  * @see <A HREF="http://metalab.unc.edu/javafaq/javafaq.html#proxy">The JAVA FAQ Question 9.5: How do I make Java work with a proxy server?</A>
@@ -102,12 +101,13 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
      * @return 
      * $todo$ calculate the correct URI from the attribute and the baseURI
      */
-    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
         throws ResourceResolverException {
         try {
 
             // calculate new URI
-            URI uriNew = getNewURI(uri.getNodeValue(), baseURI);
+            URI uriNew = getNewURI(context.uriToResolve, context.baseUri);
             URL url = uriNew.toURL();
             URLConnection urlConnection;
             urlConnection = openConnection(url);
@@ -157,13 +157,13 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
             return result;
         } catch (URISyntaxException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", ex, context.uriToResolve, context.baseUri);
         } catch (MalformedURLException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", ex, context.uriToResolve, context.baseUri);
         } catch (IOException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, baseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", ex, context.uriToResolve, context.baseUri);
         } catch (IllegalArgumentException e) {
-            throw new ResourceResolverException("generic.EmptyMessage", e, uri, baseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", e, context.uriToResolve, context.baseUri);
         }
     }
 
@@ -206,19 +206,17 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
      *
      * @param uri
      * @param baseURI
-     *  @return true if can be resolved
+     * @return true if can be resolved
      */
-    public boolean engineCanResolve(Attr uri, String baseURI) {
-        if (uri == null) {
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        if (context.uriToResolve == null) {
             if (log.isDebugEnabled()) {
                 log.debug("quick fail, uri == null");
             }
             return false;
         }
 
-        String uriNodeValue = uri.getNodeValue();
-
-        if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#')) {
+        if (context.uriToResolve.equals("") || (context.uriToResolve.charAt(0)=='#')) {
             if (log.isDebugEnabled()) {
                 log.debug("quick fail for empty URIs and local ones");
             }
@@ -226,19 +224,19 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("I was asked whether I can resolve " + uriNodeValue);
+            log.debug("I was asked whether I can resolve " + context.uriToResolve);
         }
 
-        if (uriNodeValue.startsWith("http:") ||
-            (baseURI != null && baseURI.startsWith("http:") )) {
+        if (context.uriToResolve.startsWith("http:") ||
+            (context.baseUri != null && context.baseUri.startsWith("http:") )) {
             if (log.isDebugEnabled()) {
-                log.debug("I state that I can resolve " + uriNodeValue);
+                log.debug("I state that I can resolve " + context.uriToResolve);
             }
             return true;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("I state that I can't resolve " + uriNodeValue);
+            log.debug("I state that I can't resolve " + context.uriToResolve);
         }
 
         return false;

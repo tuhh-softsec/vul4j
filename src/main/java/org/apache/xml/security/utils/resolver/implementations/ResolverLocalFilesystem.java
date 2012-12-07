@@ -23,14 +23,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 
 /**
  * A simple ResourceResolver for requests into the local filesystem.
- *
- * @author $Author$
  */
 public class ResolverLocalFilesystem extends ResourceResolverSpi {
     
@@ -48,11 +46,12 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
         throws ResourceResolverException {
         try {
             // calculate new URI
-            URI uriNew = getNewURI(uri.getNodeValue(), baseURI);
+            URI uriNew = getNewURI(context.uriToResolve, context.baseUri);
 
             String fileName =
                 ResolverLocalFilesystem.translateUriToFilename(uriNew.toString());
@@ -63,7 +62,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
 
             return result;
         } catch (Exception e) {
-            throw new ResourceResolverException("generic.EmptyMessage", e, uri, baseURI);
+            throw new ResourceResolverException("generic.EmptyMessage", e, context.uriToResolve, context.baseUri);
         }
     }
 
@@ -105,26 +104,24 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String baseURI) {
-        if (uri == null) {
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        if (context.uriToResolve == null) {
             return false;
         }
 
-        String uriNodeValue = uri.getNodeValue();
-
-        if (uriNodeValue.equals("") || (uriNodeValue.charAt(0)=='#') ||
-            uriNodeValue.startsWith("http:")) {
+        if (context.uriToResolve.equals("") || (context.uriToResolve.charAt(0)=='#') ||
+            context.uriToResolve.startsWith("http:")) {
             return false;
         }
 
         try {
             if (log.isDebugEnabled()) {
-                log.debug("I was asked whether I can resolve " + uriNodeValue);
+                log.debug("I was asked whether I can resolve " + context.uriToResolve);
             }
 
-            if (uriNodeValue.startsWith("file:") || baseURI.startsWith("file:")) {
+            if (context.uriToResolve.startsWith("file:") || context.baseUri.startsWith("file:")) {
                 if (log.isDebugEnabled()) {
-                    log.debug("I state that I can resolve " + uriNodeValue);
+                    log.debug("I state that I can resolve " + context.uriToResolve);
                 }
                 return true;
             }

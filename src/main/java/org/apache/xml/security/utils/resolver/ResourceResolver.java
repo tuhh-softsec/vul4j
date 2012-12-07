@@ -81,8 +81,14 @@ public class ResourceResolver {
      * @throws ResourceResolverException
      */
     public static final ResourceResolver getInstance(
-        Attr uri, String baseURI, boolean secureValidation
+        Attr uriAttr, String baseURI, boolean secureValidation
     ) throws ResourceResolverException {
+        ResourceResolverContext context = new ResourceResolverContext(uriAttr, baseURI, secureValidation);
+        return internalGetInstance(context);
+    }
+
+    private static <N> ResourceResolver internalGetInstance(ResourceResolverContext context)
+            throws ResourceResolverException {
         synchronized (resolverList) {
             for (ResourceResolver resolver : resolverList) {
                 ResourceResolver resolverTmp = resolver;
@@ -91,9 +97,9 @@ public class ResourceResolver {
                         resolverTmp = 
                             new ResourceResolver(resolver.resolverSpi.getClass().newInstance());
                     } catch (InstantiationException e) {
-                        throw new ResourceResolverException("", e, uri, baseURI);
+                        throw new ResourceResolverException("", e, context.uriToResolve, context.baseUri);
                     } catch (IllegalAccessException e) {
-                        throw new ResourceResolverException("", e, uri, baseURI);			
+                        throw new ResourceResolverException("", e, context.uriToResolve, context.baseUri);			
                     }
                 }
     
@@ -103,15 +109,14 @@ public class ResourceResolver {
                     );
                 }
     
-                resolverTmp.resolverSpi.secureValidation = secureValidation;
-                if ((resolverTmp != null) && resolverTmp.canResolve(uri, baseURI)) {
+                if ((resolverTmp != null) && resolverTmp.canResolve(context)) {
                     // Check to see whether the Resolver is allowed
-                    if (secureValidation 
+                    if (context.secureValidation 
                         && (resolverTmp.resolverSpi instanceof ResolverLocalFilesystem
                             || resolverTmp.resolverSpi instanceof ResolverDirectHTTP)) {
                         Object exArgs[] = { resolverTmp.resolverSpi.getClass().getName() };
                         throw new ResourceResolverException(
-                            "signature.Reference.ForbiddenResolver", exArgs, uri, baseURI
+                            "signature.Reference.ForbiddenResolver", exArgs, context.uriToResolve, context.baseUri
                         );
                     }
                     return resolverTmp;
@@ -119,9 +124,10 @@ public class ResourceResolver {
             }
         }
         
-        Object exArgs[] = { ((uri != null) ? uri.getNodeValue() : "null"), baseURI };
+        Object exArgs[] = { ((context.uriToResolve != null)
+                ? context.uriToResolve : "null"), context.baseUri };
 
-        throw new ResourceResolverException("utils.resolver.noClass", exArgs, uri, baseURI);
+        throw new ResourceResolverException("utils.resolver.noClass", exArgs, context.uriToResolve, context.baseUri);
     }
     
     /**
@@ -161,6 +167,8 @@ public class ResourceResolver {
             );
         }
 
+        ResourceResolverContext context = new ResourceResolverContext(uri, baseURI, secureValidation);
+        
         // first check the individual Resolvers
         if (individualResolvers != null) {
             for (int i = 0; i < individualResolvers.size(); i++) {
@@ -172,15 +180,14 @@ public class ResourceResolver {
                         log.debug("check resolvability by class " + currentClass);
                     }
 
-                    resolver.resolverSpi.secureValidation = secureValidation;
-                    if (resolver.canResolve(uri, baseURI)) {
+                    if (resolver.canResolve(context)) {
                         return resolver;
                     }
                 }
             }
         }
 
-        return getInstance(uri, baseURI, secureValidation);
+        return internalGetInstance(context);
     }
 
     /**
@@ -266,6 +273,14 @@ public class ResourceResolver {
     }
     
     /**
+     * @deprecated New clients should use {@link #resolve(Attr, String, boolean)}
+     */
+    public XMLSignatureInput resolve(Attr uri, String baseURI)
+        throws ResourceResolverException {
+        return resolve(uri, baseURI, true);
+    }
+
+    /**
      * Method resolve
      *
      * @param uri
@@ -274,9 +289,10 @@ public class ResourceResolver {
      *
      * @throws ResourceResolverException
      */
-    public XMLSignatureInput resolve(Attr uri, String baseURI)
+    public XMLSignatureInput resolve(Attr uri, String baseURI, boolean secureValidation)
         throws ResourceResolverException {
-        return resolverSpi.engineResolve(uri, baseURI);
+        ResourceResolverContext context = new ResourceResolverContext(uri, baseURI, secureValidation);
+        return resolverSpi.engineResolveURI(context);
     }
 
     /**
@@ -334,7 +350,7 @@ public class ResourceResolver {
      * @param baseURI
      * @return true if it can resolve the uri
      */
-    private boolean canResolve(Attr uri, String baseURI) {
-        return resolverSpi.engineCanResolve(uri, baseURI);
+    private boolean canResolve(ResourceResolverContext context) {
+        return this.resolverSpi.engineCanResolveURI(context);
     }
 }

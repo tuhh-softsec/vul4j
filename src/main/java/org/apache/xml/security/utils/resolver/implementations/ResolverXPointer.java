@@ -20,9 +20,9 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,25 +59,25 @@ public class ResolverXPointer extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public XMLSignatureInput engineResolve(Attr uri, String baseURI)
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
         throws ResourceResolverException {
 
         Node resultNode = null;
-        Document doc = uri.getOwnerElement().getOwnerDocument();
+        Document doc = context.attr.getOwnerElement().getOwnerDocument();
 
-        String uriStr = uri.getNodeValue();
-        if (isXPointerSlash(uriStr)) {
+        if (isXPointerSlash(context.uriToResolve)) {
             resultNode = doc;
-        } else if (isXPointerId(uriStr)) {
-            String id = getXPointerId(uriStr);
+        } else if (isXPointerId(context.uriToResolve)) {
+            String id = getXPointerId(context.uriToResolve);
             resultNode = doc.getElementById(id);
             
-            if (secureValidation) {
-                Element start = uri.getOwnerDocument().getDocumentElement();
+            if (context.secureValidation) {
+                Element start = context.attr.getOwnerDocument().getDocumentElement();
                 if (!XMLUtils.protectAgainstWrappingAttack(start, id)) {
                     Object exArgs[] = { id };
                     throw new ResourceResolverException(
-                        "signature.Verification.MultipleIDs", exArgs, uri, baseURI
+                        "signature.Verification.MultipleIDs", exArgs, context.uriToResolve, context.baseUri
                     );
                 }
             }
@@ -86,7 +86,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
                 Object exArgs[] = { id };
 
                 throw new ResourceResolverException(
-                    "signature.Verification.MissingID", exArgs, uri, baseURI
+                    "signature.Verification.MissingID", exArgs, context.uriToResolve, context.baseUri
                 );
             }
         }
@@ -94,10 +94,10 @@ public class ResolverXPointer extends ResourceResolverSpi {
         XMLSignatureInput result = new XMLSignatureInput(resultNode);
 
         result.setMIMEType("text/xml");
-        if (baseURI != null && baseURI.length() > 0) {
-            result.setSourceURI(baseURI.concat(uri.getNodeValue()));      
+        if (context.baseUri != null && context.baseUri.length() > 0) {
+            result.setSourceURI(context.baseUri.concat(context.uriToResolve));      
         } else {
-            result.setSourceURI(uri.getNodeValue());      
+            result.setSourceURI(context.uriToResolve);      
         }
 
         return result;
@@ -106,12 +106,11 @@ public class ResolverXPointer extends ResourceResolverSpi {
     /**
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String baseURI) {
-        if (uri == null) {
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        if (context.uriToResolve == null) {
             return false;
         }
-        String uriStr = uri.getNodeValue();
-        if (isXPointerSlash(uriStr) || isXPointerId(uriStr)) {
+        if (isXPointerSlash(context.uriToResolve) || isXPointerId(context.uriToResolve)) {
             return true;
         }
 

@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 
 /**
  * This class helps us home users to resolve http URIs without a network
@@ -93,15 +93,15 @@ public class OfflineResolver extends ResourceResolverSpi {
     /**
      * Method engineResolve
      *
-     * @param uri
-     * @param BaseURI
+     * @param context
      *
      * @throws ResourceResolverException
      */
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI)
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
         throws ResourceResolverException {
         try {
-            String URI = uri.getNodeValue();
+            String URI = context.uriToResolve;
 
             if (OfflineResolver._uriMap.containsKey(URI)) {
                 String newURI = (String) OfflineResolver._uriMap.get(URI);
@@ -123,29 +123,31 @@ public class OfflineResolver extends ResourceResolverSpi {
                 Object exArgs[] = {"The URI " + URI + " is not configured for offline work" };
 
                 throw new ResourceResolverException(
-                    "generic.EmptyMessage", exArgs, uri, BaseURI
+                    "generic.EmptyMessage", exArgs, context.uriToResolve, context.baseUri
                 );
             }
         } catch (IOException ex) {
-            throw new ResourceResolverException("generic.EmptyMessage", ex, uri, BaseURI);
+            throw new ResourceResolverException(
+                "generic.EmptyMessage", ex, context.uriToResolve, context.baseUri
+            );
         }
     }
 
     /**
      * We resolve http URIs <I>without</I> fragment...
      *
-     * @param uri
-     * @param BaseURI
+     * @param context
      */
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
-        String uriNodeValue = uri.getNodeValue();
+    @Override
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        String uriNodeValue = context.uriToResolve;
         if (uriNodeValue.equals("") || uriNodeValue.startsWith("#")) {
             return false;
         }
 
         URI uriNew = null;
         try {
-            uriNew = getNewURI(uri.getNodeValue(), BaseURI);
+            uriNew = getNewURI(context.uriToResolve, context.baseUri);
             if (uriNew.getScheme().equals("http")) {
                 log.debug("I state that I can resolve " + uriNew.toString());
                 return true;

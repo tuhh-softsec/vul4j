@@ -25,15 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 
 /**
  * @author $Author$
  */
 public class ResolverAnonymous extends ResourceResolverSpi {
 
-    private XMLSignatureInput input = null;
+    private InputStream inStream = null;
     
     @Override
     public boolean engineIsThreadSafe() {
@@ -46,26 +46,28 @@ public class ResolverAnonymous extends ResourceResolverSpi {
      * @throws IOException
      */
     public ResolverAnonymous(String filename) throws FileNotFoundException, IOException {
-        this.input = new XMLSignatureInput(new FileInputStream(filename));
+        inStream = new FileInputStream(filename);
     }
 
     /**
      * @param is
      */
     public ResolverAnonymous(InputStream is) {
-        this.input = new XMLSignatureInput(is);
+        inStream = is;
     }
 
     /** @inheritDoc */
-    public XMLSignatureInput engineResolve(Attr uri, String baseURI) {
-        return this.input;
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context) {
+	    return new XMLSignatureInput(inStream);
     }
 
     /**    
      * @inheritDoc
      */
-    public boolean engineCanResolve(Attr uri, String baseURI) {
-        if (uri == null) {
+    @Override
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        if (context.uriToResolve == null) {
             return true;
         }
         return false;

@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.implementations.ResolverDirectHTTP;
 import org.junit.Assert;
@@ -75,7 +76,9 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         resolverDirectHTTP.engineSetProperty("http.proxy.port", proxyPort);
         resolverDirectHTTP.engineSetProperty("http.proxy.username", proxyUsername);
         resolverDirectHTTP.engineSetProperty("http.proxy.password", proxyPassword);
-        resolverDirectHTTP.engineResolve(uri, url);
+        ResourceResolverContext context = 
+            new ResourceResolverContext(uri, url, true);
+        resolverDirectHTTP.engineResolveURI(context);
     }
 
     @Test
@@ -90,8 +93,10 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         resolverDirectHTTP.engineSetProperty("http.proxy.port", proxyPort);
         resolverDirectHTTP.engineSetProperty("http.proxy.username", proxyUsername);
         resolverDirectHTTP.engineSetProperty("http.proxy.password", "wrongPassword");
+        ResourceResolverContext context = 
+            new ResourceResolverContext(uri, url, true);
         try {
-            resolverDirectHTTP.engineResolve(uri, url);
+            resolverDirectHTTP.engineResolveURI(context);
             Assert.fail("Expected ResourceResolverException");
         } catch (ResourceResolverException e) {
             Assert.assertEquals("Server returned HTTP response code: 407 for URL: " + url, e.getMessage());
@@ -108,7 +113,9 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
         resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
         resolverDirectHTTP.engineSetProperty("http.basic.password", serverPassword);
-        resolverDirectHTTP.engineResolve(uri, url);
+        ResourceResolverContext context = 
+            new ResourceResolverContext(uri, url, true);
+        resolverDirectHTTP.engineResolveURI(context);
     }
 
     @Test
@@ -121,8 +128,10 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         ResolverDirectHTTP resolverDirectHTTP = new ResolverDirectHTTP();
         resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
         resolverDirectHTTP.engineSetProperty("http.basic.password", "wrongPassword");
+        ResourceResolverContext context = 
+            new ResourceResolverContext(uri, url, true);
         try {
-            resolverDirectHTTP.engineResolve(uri, url);
+            resolverDirectHTTP.engineResolveURI(context);
             Assert.fail("Expected ResourceResolverException");
         } catch (ResourceResolverException e) {
             Assert.assertEquals("Server returned HTTP response code: 401 for URL: " + url, e.getMessage());
@@ -143,6 +152,8 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         resolverDirectHTTP.engineSetProperty("http.proxy.password", proxyPassword);
         resolverDirectHTTP.engineSetProperty("http.basic.username", serverUsername);
         resolverDirectHTTP.engineSetProperty("http.basic.password", serverPassword);
-        resolverDirectHTTP.engineResolve(uri, url);
+        ResourceResolverContext context = 
+            new ResourceResolverContext(uri, url, true);
+        resolverDirectHTTP.engineResolveURI(context);
     }
 }

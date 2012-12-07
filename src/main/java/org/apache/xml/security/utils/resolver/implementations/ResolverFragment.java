@@ -20,9 +20,9 @@ package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,14 +53,13 @@ public class ResolverFragment extends ResourceResolverSpi {
      * @param uri
      * @param baseURI
      */
-    public XMLSignatureInput engineResolve(Attr uri, String baseURI) 
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context) 
         throws ResourceResolverException {
 
-        String uriNodeValue = uri.getNodeValue();
-        Document doc = uri.getOwnerElement().getOwnerDocument();
+        Document doc = context.attr.getOwnerElement().getOwnerDocument();
 
         Node selectedElem = null;
-        if (uriNodeValue.equals("")) {
+        if (context.uriToResolve.equals("")) {
             /*
              * Identifies the node-set (minus any comment nodes) of the XML
              * resource containing the signature
@@ -78,21 +77,21 @@ public class ResolverFragment extends ResourceResolverSpi {
              * include the element plus all descendants including namespaces and
              * attributes -- but not comments.
              */
-            String id = uriNodeValue.substring(1);
+            String id = context.uriToResolve.substring(1);
 
             selectedElem = doc.getElementById(id);
             if (selectedElem == null) {
                 Object exArgs[] = { id };
                 throw new ResourceResolverException(
-                    "signature.Verification.MissingID", exArgs, uri, baseURI
+                    "signature.Verification.MissingID", exArgs, context.uriToResolve, context.baseUri
                 );
             }
-            if (secureValidation) {
-                Element start = uri.getOwnerDocument().getDocumentElement();
+            if (context.secureValidation) {
+                Element start = context.attr.getOwnerDocument().getDocumentElement();
                 if (!XMLUtils.protectAgainstWrappingAttack(start, id)) {
                     Object exArgs[] = { id };
                     throw new ResourceResolverException(
-                        "signature.Verification.MultipleIDs", exArgs, uri, baseURI
+                        "signature.Verification.MultipleIDs", exArgs, context.uriToResolve, context.baseUri
                     );
                 }
             }
@@ -107,10 +106,10 @@ public class ResolverFragment extends ResourceResolverSpi {
         result.setExcludeComments(true);
 
         result.setMIMEType("text/xml");
-        if (baseURI != null && baseURI.length() > 0) {
-            result.setSourceURI(baseURI.concat(uri.getNodeValue()));      
+        if (context.baseUri != null && context.baseUri.length() > 0) {
+            result.setSourceURI(context.baseUri.concat(context.uriToResolve));      
         } else {
-            result.setSourceURI(uri.getNodeValue());      
+            result.setSourceURI(context.uriToResolve);      
         }
         return result;
     }
@@ -121,25 +120,24 @@ public class ResolverFragment extends ResourceResolverSpi {
      * @param uri
      * @param baseURI
      */
-    public boolean engineCanResolve(Attr uri, String baseURI) {
-        if (uri == null) {
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        if (context.uriToResolve == null) {
             if (log.isDebugEnabled()) {
                 log.debug("Quick fail for null uri");
             }
             return false;
         }
-
-        String uriNodeValue = uri.getNodeValue();
-        if (uriNodeValue.equals("") || 
-            ((uriNodeValue.charAt(0) == '#') && !uriNodeValue.startsWith("#xpointer("))
+        
+        if (context.uriToResolve.equals("") || 
+            ((context.uriToResolve.charAt(0) == '#') && !context.uriToResolve.startsWith("#xpointer("))
         ) {
             if (log.isDebugEnabled()) {
-                log.debug("State I can resolve reference: \"" + uriNodeValue + "\"");
+                log.debug("State I can resolve reference: \"" + context.uriToResolve + "\"");
             }
             return true;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Do not seem to be able to resolve reference: \"" + uriNodeValue + "\"");
+            log.debug("Do not seem to be able to resolve reference: \"" + context.uriToResolve + "\"");
         }
         return false;
     }

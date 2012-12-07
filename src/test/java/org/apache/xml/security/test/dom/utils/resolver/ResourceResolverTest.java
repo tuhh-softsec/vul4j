@@ -57,7 +57,7 @@ public class ResourceResolverTest extends org.junit.Assert {
             ResourceResolver.getInstance(uriAttr, "http://www.apache.org");
         try {
             uriAttr.setValue("http://xmldsig.pothole.com/xml-stylesheet.txt");
-            res.resolve(uriAttr, null);
+            res.resolve(uriAttr, null, true);
         } catch (Exception e) {
             e.printStackTrace();
             fail(uriAttr.getValue() 
@@ -65,7 +65,7 @@ public class ResourceResolverTest extends org.junit.Assert {
         }
         try {
             uriAttr.setValue("http://www.apache.org");
-            res.resolve(uriAttr, null);
+            res.resolve(uriAttr, null, true);
             fail(uriAttr.getValue() + " should not be resolvable by the OfflineResolver");
         } catch (Exception e) {
             //
@@ -82,7 +82,7 @@ public class ResourceResolverTest extends org.junit.Assert {
         uriAttr.setValue(file);
         ResourceResolver res = ResourceResolver.getInstance(uriAttr, file);
         try {
-            res.resolve(uriAttr, "");
+            res.resolve(uriAttr, "", true);
         } catch (Exception e) {
             fail(e.getMessage());
         }

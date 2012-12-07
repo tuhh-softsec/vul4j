@@ -31,6 +31,7 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
@@ -40,23 +41,25 @@ import org.w3c.dom.Element;
 public class OldApiTest extends org.junit.Assert {
 
     public static class OldResourceResolverSpi extends ResourceResolverSpi {
-        Attr uriCompare;
+        String uriCompare;
         String baseCompare;
         
-        public boolean engineCanResolve(Attr uri, String BaseURI) {
-            if (uri.getValue().indexOf("!!!test=") != 0) {
+        @Override
+        public boolean engineCanResolveURI(ResourceResolverContext context) {
+            if (context.uriToResolve.indexOf("!!!test=") != 0) {
                 return false;
             }
-            uriCompare = uri;
-            baseCompare = BaseURI;
+            uriCompare = context.uriToResolve;
+            baseCompare = context.baseUri;
             return true;
         }
 
-        public XMLSignatureInput engineResolve(
-            Attr uri, String BaseURI
+        @Override
+        public XMLSignatureInput engineResolveURI(
+            ResourceResolverContext context
         ) throws ResourceResolverException {
-            assertEquals(uriCompare, uri);
-            assertEquals(baseCompare,BaseURI);
+            assertEquals(uriCompare, context.uriToResolve);
+            assertEquals(baseCompare, context.baseUri);
             return null;
         }
     }
@@ -144,9 +147,9 @@ public class OldApiTest extends org.junit.Assert {
         ResourceResolver resolver1 = ResourceResolver.getInstance(uri1, "test1");
         ResourceResolver resolver2 = ResourceResolver.getInstance(uri1, "test2");
 
-        resolver2.resolve(uri1, "test2");		
-        resolver.resolve(uri, "test");
-        resolver1.resolve(uri1, "test1");
+        resolver2.resolve(uri1, "test2", true);		
+        resolver.resolve(uri, "test", true);
+        resolver1.resolve(uri1, "test1", true);
     }
     
     @org.junit.Test

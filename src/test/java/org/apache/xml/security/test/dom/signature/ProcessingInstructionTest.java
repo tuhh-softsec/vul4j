@@ -37,6 +37,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 
@@ -115,10 +116,11 @@ public class ProcessingInstructionTest extends org.junit.Assert {
         private FileResolver() {
         }
     
-        public XMLSignatureInput engineResolve(Attr uri, String baseURI)
+        @Override
+        public XMLSignatureInput engineResolveURI(ResourceResolverContext context)
             throws ResourceResolverException {
             try {
-                URI uriNew = getNewURI(uri.getNodeValue(), baseURI);
+                URI uriNew = getNewURI(context.uriToResolve, context.baseUri);
                 
                 FileInputStream inputStream = 
                     new FileInputStream(dir + "out.xml");
@@ -129,13 +131,14 @@ public class ProcessingInstructionTest extends org.junit.Assert {
                 return result;
             } catch (Exception ex) {
                 throw new ResourceResolverException(
-                    "generic.EmptyMessage", ex, uri, baseURI
+                    "generic.EmptyMessage", ex, context.uriToResolve, context.baseUri
                 );
             }
         }
         
-        public boolean engineCanResolve(Attr uri, String BaseURI) {
-            if (uri == null || !"out.xml".equals(uri.getNodeValue())) {
+        @Override
+        public boolean engineCanResolveURI(ResourceResolverContext context) {
+            if (context.uriToResolve == null || !"out.xml".equals(context.uriToResolve)) {
                 return false;
             }
             return true;

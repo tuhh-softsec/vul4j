@@ -32,9 +32,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
+import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -56,8 +56,9 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
         this.baseNode = baseNode;
     }
 
-    public boolean engineCanResolve(Attr uri, String BaseURI) {
-        String v = uri.getNodeValue();
+    @Override
+    public boolean engineCanResolveURI(ResourceResolverContext context) {
+        String v = context.uriToResolve;
 
         if (v == null || v.length() <= 0) {
             return false;
@@ -94,14 +95,15 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
         }
 
         log.debug("xpURI = " + xpURI);
-        log.debug("BaseURI = " + BaseURI);
+        log.debug("BaseURI = " + context.baseUri);
 
         return true;
     }
 
-    public XMLSignatureInput engineResolve(Attr uri, String BaseURI) 
+    @Override
+    public XMLSignatureInput engineResolveURI(ResourceResolverContext context) 
         throws ResourceResolverException {
-        String v = uri.getNodeValue();
+        String v = context.uriToResolve;
 
         if (v.charAt(0) != '#') {
             return null;
@@ -133,7 +135,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
                 if (pos <= 0 || pos >= mapping.length() - 1) {
                     throw new ResourceResolverException(
-                        "malformed namespace part of XPointer expression", uri, BaseURI
+                        "malformed namespace part of XPointer expression", context.uriToResolve, context.baseUri
                     );
                 }
 
@@ -160,9 +162,9 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
                 XPathFactory xpf = XPathFactory.newInstance();
                 XPath xpath = xpf.newXPath();
-                DSNamespaceContext context = 
+                DSNamespaceContext namespaceContext = 
                     new DSNamespaceContext(namespaces);
-                xpath.setNamespaceContext(context);
+                xpath.setNamespaceContext(namespaceContext);
 
                 nodes = 
                     (NodeList) xpath.evaluate(
@@ -195,12 +197,12 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 
             result.setMIMEType("text/xml");
             result.setExcludeComments(true);
-            result.setSourceURI((BaseURI != null) ? BaseURI.concat(v) : v);      
+            result.setSourceURI((context.baseUri != null) ? context.baseUri.concat(v) : v);      
 
             return result;
         } catch (XPathExpressionException e) {
             throw new ResourceResolverException(
-                 "Problem evaluating XPath expression", e, uri, BaseURI
+                 "Problem evaluating XPath expression", e, context.uriToResolve, context.baseUri
             );
         }
     }
