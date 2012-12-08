@@ -159,7 +159,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                         }
                         InternalSignatureReferenceVerifier internalSignatureReferenceVerifier =
                                 getSignatureReferenceVerifier(getSecurityProperties(), inputProcessorChain,
-                                        referenceType, xmlSecStartElement.getName());
+                                        referenceType, xmlSecStartElement);
                         if (!internalSignatureReferenceVerifier.isFinished()) {
                             internalSignatureReferenceVerifier.processEvent(xmlSecEvent, inputProcessorChain);
                             inputProcessorChain.addProcessor(internalSignatureReferenceVerifier);
@@ -169,9 +169,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                                 inputProcessorChain.getProcessors().indexOf(internalSignatureReferenceVerifier),
                                 internalSignatureReferenceVerifier);
 
-                        // Fire a SecurityEvent
-                        List<QName> elementPath = xmlSecStartElement.getElementPath();
-                        processElementPath(elementPath, inputProcessorChain, xmlSecEvent, referenceType);
+                        processElementPath(internalSignatureReferenceVerifier.getStartElementPath(), inputProcessorChain,
+                                internalSignatureReferenceVerifier.getStartElement(), referenceType);
                     }
                 }
                 break;
@@ -227,7 +226,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
     protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
             XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
-            ReferenceType referenceType, QName startElement) throws XMLSecurityException {
+            ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
         return new InternalSignatureReferenceVerifier(securityProperties, inputProcessorChain, referenceType, startElement);
     }
 
@@ -377,13 +376,14 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         private Transformer transformer;
         private DigestOutputStream digestOutputStream;
         private OutputStream bufferedDigestOutputStream;
-        private QName startElement;
+        private List<QName> startElementPath;
+        private XMLSecStartElement startElement;
         private int elementCounter = 0;
         private boolean finished = false;
 
         public InternalSignatureReferenceVerifier(
                 XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
-                ReferenceType referenceType, QName startElement) throws XMLSecurityException {
+                ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
 
             super(securityProperties);
             this.setStartElement(startElement);
@@ -425,7 +425,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
                     XMLSecEndElement xmlSecEndElement = xmlSecEvent.asEndElement();
                     this.elementCounter--;
 
-                    if (this.elementCounter == 0 && xmlSecEndElement.getName().equals(getStartElement())) {
+                    if (this.elementCounter == 0 && xmlSecEndElement.getName().equals(startElement.getName())) {
                         getTransformer().doFinal();
                         try {
                             getBufferedDigestOutputStream().close();
@@ -483,12 +483,17 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             this.bufferedDigestOutputStream = bufferedDigestOutputStream;
         }
 
-        public QName getStartElement() {
+        public XMLSecStartElement getStartElement() {
             return startElement;
         }
 
-        public void setStartElement(QName startElement) {
+        public void setStartElement(XMLSecStartElement startElement) {
+            this.startElementPath = startElement.getElementPath();
             this.startElement = startElement;
+        }
+
+        public List<QName> getStartElementPath() {
+            return startElementPath;
         }
     }
 }
