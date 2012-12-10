@@ -2,6 +2,8 @@ package org.esigate.servlet;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
@@ -14,7 +16,14 @@ import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.message.BasicHeader;
 
 public class HttpServletMediatorTest extends TestCase {
-	private SimpleDateFormat format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123);
+	private SimpleDateFormat format;
+	
+	@Override
+	protected void setUp() throws Exception {
+	    format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
+	    format.setTimeZone(TimeZone.getTimeZone("GMT"));
+		super.setUp();
+	}
 
 	public void testRewriteCookieExpires() throws Exception {
 		CookieSpec cookieSpec = new BrowserCompatSpec();
