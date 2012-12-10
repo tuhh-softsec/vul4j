@@ -178,14 +178,14 @@ public class MockHttpClient extends DefaultHttpClient {
 							}
 
 							public void setIdleDuration(long duration, TimeUnit unit) {
-								throw new RuntimeException("Method not implemented");
+								// Nothing to do
 							}
 
 							public void open(HttpRoute route, HttpContext context, HttpParams params) throws IOException {
 							}
 
 							public void markReusable() {
-								throw new RuntimeException("Method not implemented");
+								// Nothing to do
 							}
 
 							public void layerProtocol(HttpContext context, HttpParams params) throws IOException {

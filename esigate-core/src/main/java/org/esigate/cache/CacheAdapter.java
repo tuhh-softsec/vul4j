@@ -36,12 +36,13 @@ import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
 
 /**
- * This class is changes the behavior of the HttpCache by transforming the headers in the requests or response.
+ * This class is changes the behavior of the HttpCache by transforming the
+ * headers in the requests or response.
  * 
  * @author Francois-Xavier Bonnet
  * 
  */
-public class CacheAdapter  {
+public class CacheAdapter {
 	private final static String STATUS_CODE_HEADER = "Status-code";
 	private final static String REASON_PHRASE_HEADER = "Reason-phrase";
 	private int staleIfError;
@@ -73,14 +74,12 @@ public class CacheAdapter  {
 
 		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
 			if (transformRequest(request, context)) {
-				T response = wrapped.execute(target, request,
-						new ResponseHandler<T>() {
-							public T handleResponse(HttpResponse response)
-									throws ClientProtocolException, IOException {
-								transformResponse(request, response, context);
-								return responseHandler.handleResponse(response);
-							}
-						}, context);
+				T response = wrapped.execute(target, request, new ResponseHandler<T>() {
+					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+						transformResponse(request, response, context);
+						return responseHandler.handleResponse(response);
+					}
+				}, context);
 				return response;
 			}
 			// TODO: returning null may be hard. However, this only happens if
@@ -90,14 +89,12 @@ public class CacheAdapter  {
 
 		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
 			if (transformRequest(request, null)) {
-				T response = wrapped.execute(target, request,
-						new ResponseHandler<T>() {
-							public T handleResponse(HttpResponse response)
-									throws ClientProtocolException, IOException {
-								transformResponse(request, response, null);
-								return responseHandler.handleResponse(response);
-							}
-						});
+				T response = wrapped.execute(target, request, new ResponseHandler<T>() {
+					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+						transformResponse(request, response, null);
+						return responseHandler.handleResponse(response);
+					}
+				});
 				return response;
 			}
 			// TODO: returning null may be hard. However, this only happens if
@@ -108,8 +105,7 @@ public class CacheAdapter  {
 		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
 			if (transformRequest(request, context)) {
 				T response = wrapped.execute(request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response)
-							throws ClientProtocolException, IOException {
+					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 						transformResponse(request, response, context);
 						return responseHandler.handleResponse(response);
 					}
@@ -123,8 +119,7 @@ public class CacheAdapter  {
 
 		public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
 			if (transformRequest(request, context)) {
-				HttpResponse response = wrapped.execute(target, request,
-						context);
+				HttpResponse response = wrapped.execute(target, request, context);
 				transformResponse(request, response, context);
 				return response;
 			}
@@ -137,8 +132,7 @@ public class CacheAdapter  {
 			if (transformRequest(request, null)) {
 
 				T response = wrapped.execute(request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response)
-							throws ClientProtocolException, IOException {
+					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 						transformResponse(request, response, null);
 						return responseHandler.handleResponse(response);
 					}
@@ -178,7 +172,7 @@ public class CacheAdapter  {
 				transformResponse(request, response, null);
 				return response;
 			}
-			
+
 			// TODO: returning null may be hard. However, this only happens if
 			// an extension cancels the request. Need to think on the usecase.
 			return null;
@@ -201,7 +195,9 @@ public class CacheAdapter  {
 		return new HttpClientWrapper(wrapped) {
 
 			/**
-			 * Removes client http cache directives like "Cache-control" and "Pragma". Users must not be able to bypass the cache just by making a refresh in the browser.
+			 * Removes client http cache directives like "Cache-control" and
+			 * "Pragma". Users must not be able to bypass the cache just by
+			 * making a refresh in the browser.
 			 */
 			@Override
 			boolean transformRequest(HttpRequest httpRequest, HttpContext context) {
@@ -209,7 +205,8 @@ public class CacheAdapter  {
 			}
 
 			/**
-			 * Restores the real http status code if it has been hidden to HttpCache
+			 * Restores the real http status code if it has been hidden to
+			 * HttpCache
 			 */
 			@Override
 			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
@@ -262,34 +259,37 @@ public class CacheAdapter  {
 				e.httpRequest = httpRequest;
 				e.httpResponse = null;
 				e.httpContext = context;
-				
+
 				// EVENT pre
 				eventManager.fire(EventManager.EVENT_FETCH_PRE, e);
-				
+
 				// Continue if exist is not requested
-				return ! e.exit;
+				return !e.exit;
 			}
 
 			/**
-			 * Enables cache for all GET requests if cache ttl was forced to a certain duration in the configuration. This is done even for non 200 return codes! This is a very aggressive but
-			 * efficient caching policy. Adds "stale-while-revalidate" and "stale-if-error" cache-control directives depending on the configuration.
+			 * Enables cache for all GET requests if cache ttl was forced to a
+			 * certain duration in the configuration. This is done even for non
+			 * 200 return codes! This is a very aggressive but efficient caching
+			 * policy. Adds "stale-while-revalidate" and "stale-if-error"
+			 * cache-control directives depending on the configuration.
 			 */
 			@Override
 			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
-				
+
 				// Create request event
 				FetchEvent e = new FetchEvent();
 				e.httpRequest = httpRequest;
 				e.httpResponse = httpResponse;
 				e.httpContext = context;
-				
+
 				// EVENT pre
 				eventManager.fire(EventManager.EVENT_FETCH_POST, e);
-				
-			
-				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
-					int statusCode = httpResponse.getStatusLine().getStatusCode();
-					if (statusCode != 200) {
+
+				int statusCode = httpResponse.getStatusLine().getStatusCode();
+				// If ttl is set, force caching even for error pages
+				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && (statusCode == 200 || statusCode >= 400)) {
+					if (statusCode >= 400) {
 						httpResponse.setHeader(STATUS_CODE_HEADER, Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 						httpResponse.setHeader(REASON_PHRASE_HEADER, httpResponse.getStatusLine().getReasonPhrase());
 						httpResponse.setStatusCode(200);
@@ -311,7 +311,7 @@ public class CacheAdapter  {
 					if (cacheControlHeader.length() > 0)
 						httpResponse.addHeader("Cache-control", cacheControlHeader);
 				}
-				
+
 			}
 		};
 	}

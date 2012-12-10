@@ -23,11 +23,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -444,6 +446,26 @@ public class HttpClientHelperTest extends TestCase {
 		assertNotNull(sentRequest.getHeaders("Cookie"));
 		assertEquals(1, sentRequest.getHeaders("Cookie").length);
 		assertEquals("test=\"a b\"", sentRequest.getHeaders("Cookie")[0].getValue());
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	public void testForcedTtlWith302ResponseCode () throws Exception {
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
+		properties.put(Parameters.TTL.name, "1000");
+		createHttpClientHelper();
+		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
+		originalRequest.addHeader("If-Modified-Since","Fri, 15 Jun 2012 21:06:25 GMT");
+		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified"));
+		mockHttpClient.setResponse(response);
+		HttpResponse result = httpClientHelper.execute(request);
+		if(result.getEntity()!=null)
+			result.getEntity().writeTo(new NullOutputStream());
+		// We should have had a NullpointerException
 	}
 
 }
