@@ -21,6 +21,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -288,11 +289,11 @@ public class CacheAdapter {
 
 				int statusCode = httpResponse.getStatusLine().getStatusCode();
 				// If ttl is set, force caching even for error pages
-				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && (statusCode == 200 || statusCode >= 400)) {
-					if (statusCode >= 400) {
+				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && isCacheableStatus(statusCode)) {
+					if (statusCode != 200) {
 						httpResponse.setHeader(STATUS_CODE_HEADER, Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 						httpResponse.setHeader(REASON_PHRASE_HEADER, httpResponse.getStatusLine().getReasonPhrase());
-						httpResponse.setStatusCode(200);
+						httpResponse.setStatusCode(HttpStatus.SC_OK);
 						httpResponse.setReasonPhrase("OK");
 					}
 					httpResponse.removeHeaders("Cache-control");
@@ -312,6 +313,10 @@ public class CacheAdapter {
 						httpResponse.addHeader("Cache-control", cacheControlHeader);
 				}
 
+			}
+
+			private boolean isCacheableStatus(int statusCode) {
+				return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode >= 400);
 			}
 		};
 	}
