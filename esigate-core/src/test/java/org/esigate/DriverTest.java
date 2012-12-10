@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ByteArrayEntity;
@@ -227,6 +228,19 @@ public class DriverTest extends TestCase {
 	private Driver createMockDriver(Properties properties, HttpClient httpClient) {
 		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), null, httpClient, properties);
 		return new Driver("tested", properties, httpClientHelper);
+	}
+	
+	public void testRewriteRedirectResponse() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com:8080/");
+		request = TestUtils.createRequest("http://www.bar.com/foo/");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Found");
+		response.addHeader("Location", "http://www.foo.com:8080/somewhere/");
+		mockHttpClient.setResponse(response);
+		Driver driver = createMockDriver(properties, mockHttpClient);
+		driver.proxy("/foo/", request);
+		assertEquals("http://www.bar.com/somewhere/",  TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
 
 }

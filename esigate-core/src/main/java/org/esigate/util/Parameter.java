@@ -22,6 +22,21 @@ public final class Parameter {
 	public final String name;
 	public final String defaultValue;
 
+	@Override
+	public boolean equals(Object obj) {
+		return this.name.equals(obj);
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
+
 	public Parameter(String name, String defaultValue) {
 		this.name = name;
 		this.defaultValue = defaultValue;

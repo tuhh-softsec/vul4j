@@ -90,10 +90,12 @@ public class MockMediator implements ContainerRequestMediator {
 		httpResponse = new BasicHttpResponse(response.getStatusLine());
 		httpResponse.setHeaders(response.getAllHeaders());
 		HttpEntity entity = response.getEntity();
-		ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
-		if (entity.getContentEncoding() != null)
-			copiedEntity.setContentEncoding(entity.getContentEncoding());
-		httpResponse.setEntity(copiedEntity);
+		if (entity != null) {
+			ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
+			if (entity.getContentEncoding() != null)
+				copiedEntity.setContentEncoding(entity.getContentEncoding());
+			httpResponse.setEntity(copiedEntity);
+		}
 	}
 
 	public void setSessionAttribute(String key, Serializable value) {

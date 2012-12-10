@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -110,17 +111,22 @@ public class HttpRequestHelper {
 	 * @param request
 	 * @return the host formatted as host:port
 	 */
-	public final static String getHost(HttpRequest request) {
-		Header[] headers = request.getHeaders(HttpHeaders.HOST);
-		if (headers != null && headers.length != 0)
-			return headers[0].getValue();
+	public final static HttpHost getHost(HttpRequest request) {
 		URI uri = UriUtils.createUri(request.getRequestLine().getUri());
 		String scheme = uri.getScheme();
 		String host = uri.getHost();
 		int port = uri.getPort();
-		if (("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443))
-			return host;
-		return host + ":" + port;
+		Header[] headers = request.getHeaders(HttpHeaders.HOST);
+		if (headers != null && headers.length != 0) {
+			String headerValue = headers[0].getValue();
+			String[] splitted = headerValue.split(":");
+			host = splitted[0];
+			if (splitted.length > 1)
+				port = Integer.parseInt(splitted[1]);
+			else
+				port = -1;
+		}
+		return new HttpHost(host, port, scheme);
 	}
 
 	/**

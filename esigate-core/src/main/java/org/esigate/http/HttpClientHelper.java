@@ -183,12 +183,22 @@ public class HttpClientHelper {
 		// Extract the host in the URI. This is the host we have to send the
 		// request to physically. We will use this value to force the route to
 		// the server
-		HttpHost uriHost = UriUtils.extractHost(UriUtils.createUri(uri));
+		HttpHost targetHost = UriUtils.extractHost(UriUtils.createUri(uri));
 
-		// Rewrite requested URI with the original request host. This is the key
-		// for the cache
-		HttpHost targetHost = UriUtils.extractHost(originalRequest.getRequestLine().getUri());
-		uri = UriUtils.rewriteURI(uri, targetHost).toString();
+		// Preserve host if required
+		HttpHost virtualHost;
+		if (preserveHost)
+			virtualHost = HttpRequestHelper.getHost(originalRequest);
+		else
+			virtualHost = targetHost;
+
+		// FIXME if we don't preserveHost and we are clustering, we will have
+		// one different cache entry for each node. The unit test for that is
+		// commented out
+		// Rewrite the uri with the virtualHost, this is the key used by the
+		// cache
+		uri = UriUtils.rewriteURI(uri, virtualHost).toString();
+
 		String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
 		GenericHttpRequest httpRequest;
 		if (SIMPLE_METHODS.contains(method)) {
@@ -206,16 +216,14 @@ public class HttpClientHelper {
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 
-		// Preserve host if required
-		if (preserveHost)
-			httpRequest.addHeader(HttpHeaders.HOST, HttpRequestHelper.getHost(originalRequest));
+		httpRequest.addHeader(HttpHeaders.HOST, virtualHost.toHostString());
 
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
 		// depending on the browser
 		headerManager.copyHeaders(originalRequest, httpRequest);
 
-		httpRequest.getParams().setParameter(TARGET_HOST, uriHost);
+		httpRequest.getParams().setParameter(TARGET_HOST, targetHost);
 		httpRequest.getParams().setParameter(ORIGINAL_REQUEST_KEY, originalRequest);
 		// When the cache is used the request from ExecutionContext is not set
 		// so we set it just in case
