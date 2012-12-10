@@ -255,7 +255,7 @@ public class ResponseHeadersTest extends TestCase {
 		// Assert link is rewritten correctly.
 		assertEquals(
 				"Link"
-						+ " header should be rewritten ('aggregator' replaced with 'aggregated1')",
+						+ " header should be rewritten ('aggregated1' replaced with 'aggregator')",
 				"<" + APPLICATION_PATH + "nocache/ag1/dummy"
 						+ ">; rel=\"shortlink\"", resp);
 
@@ -297,7 +297,7 @@ public class ResponseHeadersTest extends TestCase {
 		// Assert link is rewritten correctly.
 		assertEquals(
 				"Refresh"
-						+ " header should be rewritten ('aggregator' replaced with 'aggregated1')",
+						+ " header should be rewritten ('aggregated1' replaced with 'aggregator')",
 				"5; url=" + APPLICATION_PATH + "nocache/ag1/dummy", resp);
 	}
 
