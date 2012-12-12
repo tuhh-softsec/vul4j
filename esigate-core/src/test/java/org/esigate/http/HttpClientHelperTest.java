@@ -538,4 +538,65 @@ public class HttpClientHelperTest extends TestCase {
 		// We should have had a NullpointerException
 	}
 
+	/**
+	 * Test Expires response header with ttl forced
+	 * 
+	 * @throws Exception
+	 */
+	public void testExpiresResponseHeaderWithForcedTtl() throws Exception {
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080");
+		properties.put(Parameters.TTL, "1");
+		properties.put(Parameters.X_CACHE_HEADER, "true");
+		properties.put(Parameters.HEURISTIC_CACHING_ENABLED, "false");
+		createHttpClientHelper();
+		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
+		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK"));
+		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
+		response.addHeader("Last-Modified", "Mon, 10 Dec 2012 19:35:27 GMT");
+		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
+		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
+		long currentTime = System.currentTimeMillis();
+		// First call to load the cache
+		HttpResponse result = httpClientHelper.execute(request);
+		assertNotNull(result.getFirstHeader("Expires"));
+		String firstExpires = result.getFirstHeader("Expires").getValue();
+		long firstExpiresTime = DateUtils.parseDate(firstExpires).getTime();
+		if (firstExpiresTime > currentTime + 2000 || firstExpiresTime < currentTime)
+			fail("firstExpiresTime-currentTime=" + (firstExpiresTime - currentTime) + " should be almost equal to ttl");
+		assertNotNull(result.getFirstHeader("Cache-control"));
+		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+		// Same test with the cache entry
+		// Change the response to check that the cache is used
+		response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not modified"));
+		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
+		response.addHeader("Last-Modified", "Mon, 10 Dec 2012 19:35:27 GMT");
+		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
+		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
+		response.addHeader("test", "test");
+		mockHttpClient.setResponse(response);
+		result = httpClientHelper.execute(request);
+		// Check that the cache has been used
+		assertNull(result.getFirstHeader("test"));
+		assertNotNull(result.getFirstHeader("Expires"));
+		assertEquals(firstExpires, result.getFirstHeader("Expires").getValue());
+		assertNotNull(result.getFirstHeader("Cache-control"));
+		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+		// Wait for a revalidation to occur
+		Thread.sleep(1000);
+		result = httpClientHelper.execute(request);
+		// Check that the revalidation occurred
+		assertNotNull(result.getFirstHeader("test"));
+		assertNotNull(result.getFirstHeader("Expires"));
+		assertNotSame(firstExpires, result.getFirstHeader("Expires").getValue());
+		long lastExpiresTime = DateUtils.parseDate(result.getFirstHeader("Expires").getValue()).getTime();
+		if (lastExpiresTime > firstExpiresTime + 2000 || lastExpiresTime < firstExpiresTime + 1000)
+			fail("lastExpiresTime-firstExpiresTime=" + (lastExpiresTime - firstExpiresTime) + " should be almost equal to ttl");
+		assertNotNull(result.getFirstHeader("Cache-control"));
+		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+	}
+
 }

@@ -15,9 +15,11 @@
 package org.esigate.cache;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Properties;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -32,9 +34,11 @@ import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
+import org.esigate.http.DateUtils;
 
 /**
  * This class is changes the behavior of the HttpCache by transforming the
@@ -243,6 +247,17 @@ public class CacheAdapter {
 						httpResponse.addHeader("X-Cache", xCacheString);
 					}
 				}
+				// FIXME remove empty entity to avoid NullPointerException in
+				// org.apache.http.impl.client.cache.CacheEntity.writeTo(CacheEntity.java:82)
+				HttpEntity entity = httpResponse.getEntity();
+				if (entity != null && entity.getContentLength() == 0) {
+					try {
+						EntityUtils.consume(entity);
+					} catch (IOException e) {
+						// Just do our best to release
+					}
+					httpResponse.setEntity(null);
+				}
 			}
 		};
 	}
@@ -289,16 +304,19 @@ public class CacheAdapter {
 
 				int statusCode = httpResponse.getStatusLine().getStatusCode();
 				// If ttl is set, force caching even for error pages
-				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && isCacheableStatus(statusCode)) {
-					if (statusCode != 200) {
+				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
+					if (statusCode != 200 && isCacheableStatus(statusCode)) {
 						httpResponse.setHeader(STATUS_CODE_HEADER, Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 						httpResponse.setHeader(REASON_PHRASE_HEADER, httpResponse.getStatusLine().getReasonPhrase());
 						httpResponse.setStatusCode(HttpStatus.SC_OK);
 						httpResponse.setReasonPhrase("OK");
 					}
+					httpResponse.removeHeaders("Date");
 					httpResponse.removeHeaders("Cache-control");
 					httpResponse.removeHeaders("Expires");
-					httpResponse.setHeader("Cache-control", "public,max-age=" + ttl);
+					httpResponse.setHeader("Date", DateUtils.formatDate(new Date(System.currentTimeMillis())));
+					httpResponse.setHeader("Cache-control", "public, max-age=" + ttl);
+					httpResponse.setHeader("Expires", DateUtils.formatDate(new Date(System.currentTimeMillis() + ((long) ttl) * 1000)));
 				}
 				if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
 					String cacheControlHeader = "";
