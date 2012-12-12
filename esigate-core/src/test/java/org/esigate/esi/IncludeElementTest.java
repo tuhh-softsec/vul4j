@@ -140,6 +140,16 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before -incl-page-start zzz regexp replaced incl-page-end- after", out.toString());
 	}
 
+	public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src='$(PROVIDER{mock})/include-replace' >" + "<esi:replace expression='replaceable-regexp'>$(HTTP_COOKIE{cookieName})</esi:replace>" + "</esi:include> after";
+		String includedPage = "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>" + " replaceable-regexp" + " incl-page-end-";
+		TestUtils.addCookie(new BasicClientCookie("cookieName", "regexp replaced"), request);
+		provider.addResource("/include-replace", includedPage);
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		assertEquals("before -incl-page-start zzz regexp replaced incl-page-end- after", out.toString());
+	}
+
 	public void testIncludeXpath() throws IOException, HttpErrorPage {
 		String page = "before " + "<esi:include src='$(PROVIDER{mock})/inline-xpath' xpath='//html:body/text()' />" + " after";
 		provider.addResource("/inline-xpath", "<html><title>The header</title><body>-the body-<br><ul><li>list item</li></ul></body></html>");

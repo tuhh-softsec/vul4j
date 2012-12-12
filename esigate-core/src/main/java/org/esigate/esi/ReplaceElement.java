@@ -67,8 +67,10 @@ class ReplaceElement extends BaseElement {
 		buf = new StringBuilder();
 		fragment = tag.getAttribute("fragment");
 		regexp = tag.getAttribute("regexp");
+		if (regexp == null)
+			regexp = tag.getAttribute("expression");
 		if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
-			throw new EsiSyntaxError("only one of 'fragment' and 'regexp' attributes is allowed");
+			throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
 		}
 	}
 
