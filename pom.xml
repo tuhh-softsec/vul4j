@@ -269,7 +269,6 @@
 							<version>2.8</version>
 							<configuration>
 								<encoding>UTF-8</encoding>
-								<aggregate>true</aggregate>
 							</configuration>
 						</plugin>
 						<plugin>
