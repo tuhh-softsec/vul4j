@@ -243,6 +243,12 @@ public class DriverTest extends TestCase {
 		assertEquals("http://www.bar.com/somewhere/",  TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
 	
+	/**
+ 	 * <p>Test bug Bug 142 (1st case)
+	 * <p>0000142: Error with 304 backend responses
+	 * <p>See :https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * @throws Exception
+	 */
 	public void testBug142() throws Exception {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/"); 
@@ -279,11 +285,14 @@ public class DriverTest extends TestCase {
         driver.proxy("/foo/", request);	
         assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
     }
-
-
 	
-	
-	
+	/**
+	 * <p>Test bug Bug 142 (2nd case)
+	 * <p>0000142: Error with 304 backend responses
+	 * 
+	 * <p>See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * @throws Exception
+	 */
 	public void testBug142_2() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
