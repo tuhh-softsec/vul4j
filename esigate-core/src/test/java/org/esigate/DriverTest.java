@@ -242,5 +242,43 @@ public class DriverTest extends TestCase {
 		driver.proxy("/foo/", request);
 		assertEquals("http://www.bar.com/somewhere/",  TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
+	
+	public void testBug142() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/"); 
+        properties.put(Parameters.TTL.name, "43200");
+        properties.put(Parameters.PRESERVE_HOST.name, "true");
+        properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
+        properties.put(Parameters.STALE_IF_ERROR.name, "20000");
+        properties.put(Parameters.USE_CACHE.name, true);
+        
+        
+        MockHttpClient mockHttpClient = new MockHttpClient();
+        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
+        response.addHeader("Etag", "b5e3f57c0e84fc7a197b849fdfd3d407");
+        response.addHeader("Date", "Thu, 13 Dec 2012 07:28:01 GMT");
+        mockHttpClient.setResponse(response);
+        Driver driver = createMockDriver(properties, mockHttpClient);
+        
+        // First request
+        request = TestUtils.createRequest("http://www.bar.com/foo/"); 
+        request.addHeader("If-None-Match","b5e3f57c0e84fc7a197b849fdfd3d407");
+        request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
+        request.addHeader("If-Modified-Since","Fri, 15 Jun 2012 21:06:25 GMT");
+        request.addHeader("Cache-Control","max-age=0");
+        driver.proxy("/foo/", request);
+        assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+        
+        // Second request
+        request = TestUtils.createRequest("http://www.bar.com/foo/");
+        request.addHeader("If-None-Match","b5e3f57c0e84fc7a197b849fdfd3d407");
+        request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
+        request.addHeader("If-Modified-Since","Fri, 15 Jun 2012 21:06:25 GMT");
+        request.addHeader("Cache-Control","max-age=0");
+        
+        driver.proxy("/foo/", request);	
+        assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+    }
+
 
 }
