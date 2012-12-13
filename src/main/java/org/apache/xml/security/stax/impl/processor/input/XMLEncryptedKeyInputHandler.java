@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.binding.xmldsig.DigestMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
@@ -50,6 +52,8 @@ import java.util.Deque;
  * @version $Revision: 1360243 $ $Date: 2012-07-11 16:53:55 +0100 (Wed, 11 Jul 2012) $
  */
 public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHandler {
+
+    private static final transient Log logger = LogFactory.getLog(XMLEncryptedKeyInputHandler.class);
 
     @Override
     public void handle(final InputProcessorChain inputProcessorChain, final XMLSecurityProperties securityProperties,
@@ -104,7 +108,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         }
 
                         String algoFamily = JCEAlgorithmMapper.getJCERequiredKeyFromURI(algorithmURI);
-                        key = new SecretKeySpec(getSecret(this, correlationID), algoFamily);
+                        key = new SecretKeySpec(getSecret(this, correlationID, algorithmURI), algoFamily);
                         setSecretKey(algorithmURI, key);
                         return key;
                     }
@@ -137,7 +141,8 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         return this.wrappingSecurityToken;
                     }
 
-                    private byte[] getSecret(SecurityToken wrappedSecurityToken, String correlationID) throws XMLSecurityException {
+                    private byte[] getSecret(SecurityToken wrappedSecurityToken, String correlationID,
+                                             String symmetricAlgorithmURI) throws XMLSecurityException {
 
                         if (this.decryptedKey != null) {
                             return this.decryptedKey;
@@ -153,6 +158,8 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         }
 
                         final SecurityToken wrappingSecurityToken = getWrappingSecurityToken(wrappedSecurityToken);
+
+                        Cipher cipher;
                         try {
                             XMLSecurityConstants.KeyUsage keyUsage;
                             if (wrappingSecurityToken.isAsymmetric()) {
@@ -161,7 +168,6 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                 keyUsage = XMLSecurityConstants.Sym_Key_Wrap;
                             }
 
-                            Cipher cipher;
                             if (encAlgo.getJCEProvider() == null) {
                                 cipher = Cipher.getInstance(encAlgo.getJCEName());
                             } else {
@@ -200,11 +206,6 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                     || encryptedKeyType.getCipherData().getCipherValue() == null) {
                                 throw new XMLSecurityException("stax.encryption.noCipherValue");
                             }
-                            Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
-                                    encAlgo.getJCEName(),
-                                    Cipher.SECRET_KEY);
-                            return this.decryptedKey = key.getEncoded();
-
                         } catch (NoSuchPaddingException e) {
                             throw new XMLSecurityException(e);
                         } catch (NoSuchAlgorithmException e) {
@@ -215,6 +216,23 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             throw new XMLSecurityException(e);
                         } catch (NoSuchProviderException e) {
                             throw new XMLSecurityException(e);
+                        }
+
+                        try {
+                            Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
+                                    encAlgo.getJCEName(),
+                                    Cipher.SECRET_KEY);
+                            return this.decryptedKey = key.getEncoded();
+                        } catch (IllegalStateException e) {
+                            throw new XMLSecurityException(e);
+                        } catch (Exception e) {
+                            logger.warn("Unwrapping of the encrypted key failed with error: " + e.getMessage() + ". " +
+                                    "Generating a faked one to mitigate timing attacks.");
+
+                            int keyLength = JCEAlgorithmMapper.getKeyLengthFromURI(symmetricAlgorithmURI);
+                            this.decryptedKey = new byte[keyLength / 8];
+                            XMLSecurityConstants.secureRandom.nextBytes(this.decryptedKey);
+                            return this.decryptedKey;
                         }
                     }
                 };

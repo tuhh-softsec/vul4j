@@ -1170,4 +1170,81 @@ public class DecryptionTest extends org.junit.Assert {
                     "\"MaximumAllowedXMLStructureDepth\" property in the configuration.", e.getCause().getMessage());
         }
     }
+
+    @Test
+    public void testModifiedEncryptedKeyCipherValue() throws Exception {
+        // Read in plaintext document
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        Document document = builder.parse(sourceDocument);
+
+        // Set up the Key
+        KeyPairGenerator rsaKeygen = KeyPairGenerator.getInstance("RSA");
+        KeyPair kp = rsaKeygen.generateKeyPair();
+        PrivateKey priv = kp.getPrivate();
+        PublicKey pub = kp.getPublic();
+
+        // Generate a traffic key
+        KeyGenerator keygen = KeyGenerator.getInstance("AES");
+        keygen.init(256);
+        SecretKey secretKey = keygen.generateKey();
+
+        // Encrypt using DOM
+        List<String> localNames = new ArrayList<String>();
+        localNames.add("PaymentInfo");
+        encryptUsingDOM(
+                "http://www.w3.org/2001/04/xmlenc#aes256-cbc", secretKey,
+                "http://www.w3.org/2001/04/xmlenc#rsa-1_5", pub, document, localNames, true
+        );
+
+        // Check the CreditCard encrypted ok
+        NodeList nodeList = document.getElementsByTagNameNS("urn:example:po", "CreditCard");
+        Assert.assertEquals(nodeList.getLength(), 0);
+
+        NodeList cipherValues = document.getElementsByTagNameNS(
+                XMLSecurityConstants.TAG_xenc_CipherValue.getNamespaceURI(),
+                XMLSecurityConstants.TAG_xenc_CipherValue.getLocalPart());
+        Element cipherValueElement = (Element)cipherValues.item(0);
+        Assert.assertEquals(
+                cipherValueElement.getParentNode().getParentNode().getLocalName(),
+                XMLSecurityConstants.TAG_xenc_EncryptedKey.getLocalPart());
+
+        String cipherValue = cipherValueElement.getTextContent();
+        StringBuilder stringBuilder = new StringBuilder(cipherValue);
+        int index = stringBuilder.length() / 2;
+        char ch = stringBuilder.charAt(index);
+        if (ch != 'A') {
+            ch = 'A';
+        } else {
+            ch = 'B';
+        }
+        stringBuilder.setCharAt(index, ch);
+        cipherValueElement.setTextContent(stringBuilder.toString());
+
+        //XMLUtils.outputDOM(document, System.out);
+
+        // Convert Document to a Stream Reader
+        javax.xml.transform.Transformer transformer = transformerFactory.newTransformer();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(document), new StreamResult(baos));
+
+        final XMLStreamReader xmlStreamReader =
+                xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(baos.toByteArray()));
+
+        // Decrypt
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        properties.setDecryptionKey(priv);
+        InboundXMLSec inboundXMLSec = XMLSec.getInboundWSSec(properties);
+        TestSecurityEventListener securityEventListener = new TestSecurityEventListener();
+        XMLStreamReader securityStreamReader =
+                inboundXMLSec.processInMessage(xmlStreamReader, null, securityEventListener);
+
+        try {
+            document = StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
+        } catch (XMLStreamException e) {
+            Assert.assertFalse(e.getMessage().contains("Unwrapping failed"));
+        }
+    }
 }
