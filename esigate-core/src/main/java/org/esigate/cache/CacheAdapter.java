@@ -54,12 +54,14 @@ public class CacheAdapter {
 	private int staleWhileRevalidate;
 	private int ttl;
 	private boolean xCacheHeader;
+	private boolean viaHeader;
 
 	public void init(Properties properties) {
 		staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
 		staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
 		ttl = Parameters.TTL.getValueInt(properties);
 		xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
+		viaHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
 	}
 
 	private abstract class HttpClientWrapper implements HttpClient {
@@ -247,7 +249,8 @@ public class CacheAdapter {
 						httpResponse.addHeader("X-Cache", xCacheString);
 					}
 				}
-				// FIXME remove empty entity to avoid NullPointerException in
+
+                // FIXME remove empty entity to avoid NullPointerException in
 				// org.apache.http.impl.client.cache.CacheEntity.writeTo(CacheEntity.java:82)
 				HttpEntity entity = httpResponse.getEntity();
 				if (entity != null && entity.getContentLength() == 0) {
@@ -257,6 +260,11 @@ public class CacheAdapter {
 						// Just do our best to release
 					}
 					httpResponse.setEntity(null);
+				}
+								
+				// Remove Via header
+				if( !viaHeader && httpResponse.containsHeader("Via")){
+					httpResponse.removeHeaders("Via");
 				}
 			}
 		};

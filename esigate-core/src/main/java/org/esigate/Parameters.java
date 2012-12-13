@@ -20,8 +20,8 @@ import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
 import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
-import org.esigate.extension.XPoweredBy;
 import org.esigate.extension.ResourceFixup;
+import org.esigate.extension.XPoweredBy;
 import org.esigate.util.Parameter;
 
 /**
@@ -85,6 +85,7 @@ public interface Parameters {
 	public final static Parameter MAX_OBJECT_SIZE = new Parameter("maxObjectSize", "1000000");
 	public final static Parameter CACHE_STORAGE = new Parameter("cacheStorage", BasicCacheStorage.class.getName());
 	public final static Parameter X_CACHE_HEADER = new Parameter("xCacheHeader", "false");
+	public final static Parameter VIA_HEADER = new Parameter("viaHeader", "true");
 
 	// Forced caching
 	public final static Parameter TTL = new Parameter("ttl", "0");
