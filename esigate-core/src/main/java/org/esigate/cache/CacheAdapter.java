@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.Properties;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -48,8 +47,6 @@ import org.esigate.http.DateUtils;
  * 
  */
 public class CacheAdapter {
-	private final static String STATUS_CODE_HEADER = "Status-code";
-	private final static String REASON_PHRASE_HEADER = "Reason-phrase";
 	private int staleIfError;
 	private int staleWhileRevalidate;
 	private int ttl;
@@ -61,7 +58,7 @@ public class CacheAdapter {
 		staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
 		ttl = Parameters.TTL.getValueInt(properties);
 		xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
-		viaHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
+		viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
 	}
 
 	private abstract class HttpClientWrapper implements HttpClient {
@@ -217,17 +214,6 @@ public class CacheAdapter {
 			 */
 			@Override
 			void transformResponse(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext context) {
-				// Transform status code
-				Header realStatusCode = httpResponse.getFirstHeader(STATUS_CODE_HEADER);
-				Header realStatusText = httpResponse.getFirstHeader(REASON_PHRASE_HEADER);
-				if (realStatusCode != null) {
-					int realStatusCodeInt = Integer.parseInt(realStatusCode.getValue());
-					String realReasonPhraseString = realStatusText.getValue();
-					httpResponse.setStatusCode(realStatusCodeInt);
-					httpResponse.setReasonPhrase(realReasonPhraseString);
-					httpResponse.removeHeaders(STATUS_CODE_HEADER);
-					httpResponse.removeHeaders(REASON_PHRASE_HEADER);
-				}
 				// Remove previously added Cache-control header
 				if (httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET") && (staleWhileRevalidate > 0 || staleIfError > 0)) {
 					httpResponse.removeHeader(httpResponse.getLastHeader("Cache-control"));
@@ -250,7 +236,7 @@ public class CacheAdapter {
 					}
 				}
 
-                // FIXME remove empty entity to avoid NullPointerException in
+				// FIXME remove empty entity to avoid NullPointerException in
 				// org.apache.http.impl.client.cache.CacheEntity.writeTo(CacheEntity.java:82)
 				HttpEntity entity = httpResponse.getEntity();
 				if (entity != null && entity.getContentLength() == 0) {
@@ -261,9 +247,9 @@ public class CacheAdapter {
 					}
 					httpResponse.setEntity(null);
 				}
-								
+
 				// Remove Via header
-				if( !viaHeader && httpResponse.containsHeader("Via")){
+				if (!viaHeader && httpResponse.containsHeader("Via")) {
 					httpResponse.removeHeaders("Via");
 				}
 			}
@@ -310,15 +296,11 @@ public class CacheAdapter {
 				// EVENT pre
 				eventManager.fire(EventManager.EVENT_FETCH_POST, e);
 
+				String method = httpRequest.getRequestLine().getMethod();
 				int statusCode = httpResponse.getStatusLine().getStatusCode();
+
 				// If ttl is set, force caching even for error pages
-				if (ttl > 0 && httpRequest.getRequestLine().getMethod().equalsIgnoreCase("GET")) {
-					if (statusCode != 200 && isCacheableStatus(statusCode)) {
-						httpResponse.setHeader(STATUS_CODE_HEADER, Integer.toString(httpResponse.getStatusLine().getStatusCode()));
-						httpResponse.setHeader(REASON_PHRASE_HEADER, httpResponse.getStatusLine().getReasonPhrase());
-						httpResponse.setStatusCode(HttpStatus.SC_OK);
-						httpResponse.setReasonPhrase("OK");
-					}
+				if (ttl > 0 && method.equalsIgnoreCase("GET") && isCacheableStatus(statusCode)) {
 					httpResponse.removeHeaders("Date");
 					httpResponse.removeHeaders("Cache-control");
 					httpResponse.removeHeaders("Expires");
@@ -342,8 +324,10 @@ public class CacheAdapter {
 			}
 
 			private boolean isCacheableStatus(int statusCode) {
-				return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode >= 400);
+				return (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_NOT_FOUND
+						|| statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR || statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE);
 			}
+
 		};
 	}
 }

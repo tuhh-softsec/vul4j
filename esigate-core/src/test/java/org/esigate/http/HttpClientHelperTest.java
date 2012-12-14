@@ -67,8 +67,10 @@ public class HttpClientHelperTest extends TestCase {
 
 	private HttpResponse createMockResponse(int statusCode, String entity) throws Exception {
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), statusCode, "OK");
-		HttpEntity httpEntity = new StringEntity(entity);
-		response.setEntity(httpEntity);
+		if (entity != null) {
+			HttpEntity httpEntity = new StringEntity(entity);
+			response.setEntity(httpEntity);
+		}
 		return response;
 	}
 
@@ -222,26 +224,55 @@ public class HttpClientHelperTest extends TestCase {
 		assertTrue("Response should have been refreshed.", compare(response1, result));
 	}
 
-	public void testCacheTtlErrorPage() throws Exception {
+	public void assertStatusCodeIsCachedWithTtl(int statusCode, boolean responseHasBody) throws Exception {
 		properties.put(Parameters.USE_CACHE.name, "true"); // Default value
 		properties.put(Parameters.TTL.name, "1");
+		properties.put(Parameters.X_CACHE_HEADER, "true");
 		createHttpClientHelper();
 		// First request
-		HttpResponse response = createMockResponse(404, "0");
+		HttpResponse response;
+		if (responseHasBody)
+			response = createMockResponse(statusCode, "0");
+		else
+			response = createMockResponse(statusCode, null);
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response);
 		HttpResponse result = executeRequest();
-		assertTrue("Response content should be '0'", compare(response, result));
+		assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
 		// Second request should use cache even if first response was a 404
 		HttpResponse response1 = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
 		mockHttpClient.setResponse(response1);
 		result = executeRequest();
-		assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
+		assertTrue("Response content should be unchanged as cache should be used.", result.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		// Third request after cache has expired
 		Thread.sleep(1000);
 		result = executeRequest();
-		assertTrue("Response should have been refreshed.", compare(response1, result));
+		assertTrue("Response should have been refreshed.", result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
+	}
+
+	public void test200OkPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(200, true);
+	}
+
+	public void test301RedirectPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(301, false);
+	}
+
+	public void test302RedirectPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(301, false);
+	}
+
+	public void test404ErrorPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(404, true);
+	}
+
+	public void test500ErrorPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(500, true);
+	}
+
+	public void test503ErrorPageIsCachedWithTTL() throws Exception {
+		assertStatusCodeIsCachedWithTtl(503, true);
 	}
 
 	public void testEhCache() throws Exception {
@@ -551,7 +582,9 @@ public class HttpClientHelperTest extends TestCase {
 		properties.put(Parameters.HEURISTIC_CACHING_ENABLED, "false");
 		createHttpClientHelper();
 		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
+
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+
 		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK"));
 		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
 		response.addHeader("Last-Modified", "Mon, 10 Dec 2012 19:35:27 GMT");
@@ -559,44 +592,89 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
 		response.setEntity(new StringEntity("test"));
 		mockHttpClient.setResponse(response);
-		long currentTime = System.currentTimeMillis();
+		
 		// First call to load the cache
 		HttpResponse result = httpClientHelper.execute(request);
 		assertNotNull(result.getFirstHeader("Expires"));
-		String firstExpires = result.getFirstHeader("Expires").getValue();
-		long firstExpiresTime = DateUtils.parseDate(firstExpires).getTime();
-		if (firstExpiresTime > currentTime + 2000 || firstExpiresTime < currentTime)
-			fail("firstExpiresTime-currentTime=" + (firstExpiresTime - currentTime) + " should be almost equal to ttl");
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+		
 		// Same test with the cache entry
 		// Change the response to check that the cache is used
 		response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not modified"));
 		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
-		response.addHeader("Last-Modified", "Mon, 10 Dec 2012 19:35:27 GMT");
 		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
-		response.addHeader("test", "test");
 		mockHttpClient.setResponse(response);
+		
 		result = httpClientHelper.execute(request);
 		// Check that the cache has been used
-		assertNull(result.getFirstHeader("test"));
+		assertTrue(result.getFirstHeader("X-cache").getValue(),result.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		assertNotNull(result.getFirstHeader("Expires"));
-		assertEquals(firstExpires, result.getFirstHeader("Expires").getValue());
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+		
 		// Wait for a revalidation to occur
 		Thread.sleep(1000);
+		
 		result = httpClientHelper.execute(request);
 		// Check that the revalidation occurred
-		assertNotNull(result.getFirstHeader("test"));
 		assertNotNull(result.getFirstHeader("Expires"));
-		assertNotSame(firstExpires, result.getFirstHeader("Expires").getValue());
-		long lastExpiresTime = DateUtils.parseDate(result.getFirstHeader("Expires").getValue()).getTime();
-		if (lastExpiresTime > firstExpiresTime + 2000 || lastExpiresTime < firstExpiresTime + 1000)
-			fail("lastExpiresTime-firstExpiresTime=" + (lastExpiresTime - firstExpiresTime) + " should be almost equal to ttl");
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
+		assertTrue(result.getFirstHeader("X-cache").getValue(),result.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+	}
+
+	/**
+	 * Test that we do not return a 304 to a non-conditional request when ttl
+	 * forced
+	 * 
+	 * @throws Exception
+	 */
+	public void testDoNotReturn304ForNonConditionalRequestWhenTtlSet() throws Exception {
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080");
+		properties.put(Parameters.TTL, "1");
+		properties.put(Parameters.X_CACHE_HEADER, "true");
+		createHttpClientHelper();
+
+		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
+		GenericHttpRequest request1 = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		request1.addHeader("If-None-Match", "etag");
+
+		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not modified"));
+		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
+		response.addHeader("Etag", "etag");
+		response.addHeader("Cache-Control", "max-age=0");
+		mockHttpClient.setResponse(response);
+
+		// First request returns a 304
+		HttpResponse result1 = httpClientHelper.execute(request1);
+		assertEquals(304, result1.getStatusLine().getStatusCode());
+		assertTrue(result1.getFirstHeader("X-cache").getValue(), result1.getFirstHeader("X-cache").getValue().startsWith("MISS"));
+		assertNull(result1.getEntity());
+
+		// Second request should use the cache with revalidation and return a
+		// 304 again
+		HttpResponse result2 = httpClientHelper.execute(request1);
+		assertEquals(304, result1.getStatusLine().getStatusCode());
+		assertTrue(result2.getFirstHeader("X-cache").getValue(), result2.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+		assertNull(result2.getEntity());
+
+		HttpResponse response2 = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok"));
+		response2.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
+		response2.addHeader("Etag", "etag");
+		response2.addHeader("Cache-Control", "max-age=0");
+		response2.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response2);
+
+		// Third request not conditional ! Should call backend server as we
+		// don't have the entity in the cache.
+		GenericHttpRequest request2 = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
+		HttpResponse result3 = httpClientHelper.execute(request2);
+		assertEquals(200, result3.getStatusLine().getStatusCode());
+		assertTrue(result3.getFirstHeader("X-cache").getValue(), result3.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+		assertNotNull(result3.getEntity());
 	}
 
 }

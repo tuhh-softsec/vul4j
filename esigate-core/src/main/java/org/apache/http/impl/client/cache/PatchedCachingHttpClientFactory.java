@@ -17,6 +17,8 @@ package org.apache.http.impl.client.cache;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -78,6 +80,24 @@ public class PatchedCachingHttpClientFactory {
 				cacheStorage.putEntry(cacheKey, updatedEntry);
 				return updatedEntry;
 			}
+
+			@Override
+			HttpCacheEntry doGetUpdatedParentEntry(final String requestId, final HttpCacheEntry existing, final HttpCacheEntry entry, final String variantKey, final String variantCacheKey)
+					throws IOException {
+				HttpCacheEntry src = existing;
+				if (src == null) {
+					src = entry;
+				}
+
+				Resource oldResource = entry.getResource();
+				Resource resource = null;
+				if (oldResource != null)
+					resource = resourceFactory.copy(requestId, oldResource);
+				Map<String, String> variantMap = new HashMap<String, String>(src.getVariantMap());
+				variantMap.put(variantKey, variantCacheKey);
+				return new HttpCacheEntry(src.getRequestDate(), src.getResponseDate(), src.getStatusLine(), src.getAllHeaders(), resource, variantMap);
+			}
+
 		}, cacheConfig);
 	}
 }

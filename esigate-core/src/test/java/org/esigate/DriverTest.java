@@ -297,24 +297,14 @@ public class DriverTest extends TestCase {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		properties.put(Parameters.TTL.name, "43200");
-		properties.put(Parameters.PRESERVE_HOST.name, "true");
-		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
-		properties.put(Parameters.STALE_IF_ERROR.name, "20000");
-		properties.put(Parameters.USE_CACHE.name, true);
-		
 		
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
 		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
 		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
-		response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
+		response.addHeader("Cache-Control", "max-age=2051, public");
 		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
-		response.addHeader("Set-Cookie", "w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
-		response.addHeader("Server", "Apache");
-		response.addHeader("Connection", "Keep-Alive");
-		response.addHeader("Keep-Alive", "timeout=15, max=100");
 		response.addHeader("Vary", "Accept-Encoding");
-			
 		
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
@@ -322,13 +312,8 @@ public class DriverTest extends TestCase {
 		// First request
 		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
 		request.addHeader("If-None-Match","a86ecd6cc6d361776ed05f063921aa34");
-		request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
-		request.addHeader("Cache-Control","max-age=0");
-		request.addHeader("Accept-Encoding" , "gzip, deflate");
 		driver.proxy("/foobar142-2/", request);
 		assertEquals(304,  TestUtils.getResponse(request).getStatusLine().getStatusCode());
-		
-		
 	}
 	
 }
