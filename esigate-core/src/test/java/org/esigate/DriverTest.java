@@ -229,7 +229,7 @@ public class DriverTest extends TestCase {
 		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), null, httpClient, properties);
 		return new Driver("tested", properties, httpClientHelper);
 	}
-	
+
 	public void testRewriteRedirectResponse() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com:8080/");
@@ -240,65 +240,75 @@ public class DriverTest extends TestCase {
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
 		driver.proxy("/foo/", request);
-		assertEquals("http://www.bar.com/somewhere/",  TestUtils.getResponse(request).getFirstHeader("Location").getValue());
+		assertEquals("http://www.bar.com/somewhere/", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
-	
+
 	/**
- 	 * <p>Test bug Bug 142 (1st case)
-	 * <p>0000142: Error with 304 backend responses
-	 * <p>NPE in Apache HTTP CLient cache
-	 * <p>See :https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * <p>
+	 * Test bug Bug 142 (1st case)
+	 * <p>
+	 * 0000142: Error with 304 backend responses
+	 * <p>
+	 * NPE in Apache HTTP CLient cache
+	 * <p>
+	 * See
+	 * :https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * 
 	 * @throws Exception
 	 */
 	public void testBug142() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/"); 
-        properties.put(Parameters.TTL.name, "43200");
-        properties.put(Parameters.PRESERVE_HOST.name, "true");
-        properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
-        properties.put(Parameters.STALE_IF_ERROR.name, "20000");
-        properties.put(Parameters.USE_CACHE.name, true);
-        
-        
-        MockHttpClient mockHttpClient = new MockHttpClient();
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
-        response.addHeader("Etag", "b5e3f57c0e84fc7a197b849fdfd3d407");
-        response.addHeader("Date", "Thu, 13 Dec 2012 07:28:01 GMT");
-        mockHttpClient.setResponse(response);
-        Driver driver = createMockDriver(properties, mockHttpClient);
-        
-        // First request
-        request = TestUtils.createRequest("http://www.bar.com/foo/"); 
-        request.addHeader("If-None-Match","b5e3f57c0e84fc7a197b849fdfd3d407");
-        request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
-        request.addHeader("If-Modified-Since","Fri, 15 Jun 2012 21:06:25 GMT");
-        request.addHeader("Cache-Control","max-age=0");
-        driver.proxy("/foo/", request);
-        assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
-        
-        // Second request
-        request = TestUtils.createRequest("http://www.bar.com/foo/");
-        request.addHeader("If-None-Match","b5e3f57c0e84fc7a197b849fdfd3d407");
-        request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
-        request.addHeader("If-Modified-Since","Fri, 15 Jun 2012 21:06:25 GMT");
-        request.addHeader("Cache-Control","max-age=0");
-        
-        driver.proxy("/foo/", request);	
-        assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
-    }
-	
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
+		properties.put(Parameters.TTL.name, "43200");
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
+		properties.put(Parameters.STALE_IF_ERROR.name, "20000");
+		properties.put(Parameters.USE_CACHE.name, true);
+
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
+		response.addHeader("Etag", "b5e3f57c0e84fc7a197b849fdfd3d407");
+		response.addHeader("Date", "Thu, 13 Dec 2012 07:28:01 GMT");
+		mockHttpClient.setResponse(response);
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		// First request
+		request = TestUtils.createRequest("http://www.bar.com/foo/");
+		request.addHeader("If-None-Match", "b5e3f57c0e84fc7a197b849fdfd3d407");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		request.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
+		request.addHeader("Cache-Control", "max-age=0");
+		driver.proxy("/foo/", request);
+		assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+
+		// Second request
+		request = TestUtils.createRequest("http://www.bar.com/foo/");
+		request.addHeader("If-None-Match", "b5e3f57c0e84fc7a197b849fdfd3d407");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		request.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
+		request.addHeader("Cache-Control", "max-age=0");
+
+		driver.proxy("/foo/", request);
+		assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+	}
+
 	/**
-	 * <p>Test bug Bug 142 (2nd case)
-	 * <p>0000142: Error with 304 backend responses
-	 * <p>NPE in Apache HTTP CLient cache
-	 * <p>See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * <p>
+	 * Test bug Bug 142 (2nd case)
+	 * <p>
+	 * 0000142: Error with 304 backend responses
+	 * <p>
+	 * NPE in Apache HTTP CLient cache
+	 * <p>
+	 * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+	 * 
 	 * @throws Exception
 	 */
 	public void testBug142_2() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		properties.put(Parameters.TTL.name, "43200");
-		
+
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
 		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
@@ -306,22 +316,28 @@ public class DriverTest extends TestCase {
 		response.addHeader("Cache-Control", "max-age=2051, public");
 		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
 		response.addHeader("Vary", "Accept-Encoding");
-		
+
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
-		
+
 		// First request
 		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
-		request.addHeader("If-None-Match","a86ecd6cc6d361776ed05f063921aa34");
+		request.addHeader("If-None-Match", "a86ecd6cc6d361776ed05f063921aa34");
 		driver.proxy("/foobar142-2/", request);
-		assertEquals(304,  TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
 	}
-	
+
 	/**
-	 * <p>Test bug Bug 155 
-	 * <p>0000155: 304 returned when not using If-XXX headers
-	 * <p>When requesting a full response, a full response must be sent even if the cache has cached a 304 response.
-	 * <p>See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=155
+	 * <p>
+	 * Test bug Bug 155
+	 * <p>
+	 * 0000155: 304 returned when not using If-XXX headers
+	 * <p>
+	 * When requesting a full response, a full response must be sent even if the
+	 * cache has cached a 304 response.
+	 * <p>
+	 * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=155
+	 * 
 	 * @throws Exception
 	 */
 	public void testBug155() throws Exception {
@@ -332,8 +348,7 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
 		properties.put(Parameters.STALE_IF_ERROR.name, "20000");
 		properties.put(Parameters.USE_CACHE.name, true);
-		
-		
+
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
 		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
@@ -341,33 +356,34 @@ public class DriverTest extends TestCase {
 		response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
 		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
 		response.addHeader("Set-Cookie", "w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
-		response.addHeader("Server", "Apache");
-		response.addHeader("Connection", "Keep-Alive");
-		response.addHeader("Keep-Alive", "timeout=15, max=100");
-			
-		
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
-		
+
 		// First request
 		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
-		request.addHeader("If-None-Match","a86ecd6cc6d361776ed05f063921aa34");
-		request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
-		request.addHeader("Cache-Control","max-age=0");
-		request.addHeader("Accept-Encoding" , "gzip, deflate");
+		request.addHeader("If-None-Match", "a86ecd6cc6d361776ed05f063921aa34");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		request.addHeader("Cache-Control", "max-age=0");
+		request.addHeader("Accept-Encoding", "gzip, deflate");
 		driver.proxy("/foobar142-2/", request);
-		assertEquals(304,  TestUtils.getResponse(request).getStatusLine().getStatusCode());
-	
+		assertEquals(304, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+
+		response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
+		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
+		response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
+		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
+		response.addHeader("Set-Cookie", "w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
+
 		// First request
 		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
-		request.addHeader("Accept","text/html,application/xhtml+xml,application/xml");
-		request.addHeader("Cache-Control","max-age=0");
-		request.addHeader("Accept-Encoding" , "gzip, deflate");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		request.addHeader("Cache-Control", "max-age=0");
+		request.addHeader("Accept-Encoding", "gzip, deflate");
 		driver.proxy("/foobar142-2/", request);
-		assertEquals(200,  TestUtils.getResponse(request).getStatusLine().getStatusCode());
-			
-		
-		
-		
+		assertEquals(200, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertNotNull(TestUtils.getResponse(request).getEntity());
 	}
 }
