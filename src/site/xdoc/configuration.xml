@@ -246,6 +246,12 @@
 					<td>false</td>
 				</tr>
 				<tr>
+					<td>viaHeader</td>
+					<td>Activates Viz header in HTTP responses.</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
 					<td>ttl</td>
 					<td>Time to live (seconds) of any cached page. If 0, cache expiration
 						will be calculated automatically depending on http response headers.
