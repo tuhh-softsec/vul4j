@@ -84,4 +84,8 @@
             </plugin>
       </plugins></build>
   
+	<name>ESIGate server</name>
+	<description>Standalone server for development.
+
+Can be run using java -jar esigate-server-&lt;version&gt;.jar -Desigate.config=&lt;config file&gt;</description>
 </project>
