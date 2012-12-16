@@ -38,4 +38,6 @@
 		</plugins>
 	</build>
 
+	<name>ESIGate web application</name>
+	<description>ESIGate war application which can be deployed &quot;as-is&quot; or customized for your needs.</description>
 </project>
