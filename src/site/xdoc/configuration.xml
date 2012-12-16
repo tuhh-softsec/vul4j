@@ -34,7 +34,7 @@
 						</code>
 						When <a href="clustering.html">clustering</a> (remote application runs on several servers), use a coma-separated list.
 					</td>
-					<td>No</td>
+					<td>Yes</td>
 					<td>-</td>
 				</tr>
 				<tr>
