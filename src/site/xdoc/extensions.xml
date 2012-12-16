@@ -195,7 +195,7 @@
 						request header (X-Esigate-Request).
 					</li>
 					<li>
-
+						<b>Default</b>
 						org.esigate.extension.XPoweredBy :
 						adds X-Powered-By: ESIGate in response. 
 					</li>
