@@ -13,9 +13,10 @@ import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 /**
  * This is just for convenience. It's not safe.
- * 
+ * <p>
+ * From : http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
  * @author  Ole Christian Rynning 
- * @see http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
+ * 
  */
 public class H {
 

@@ -16,9 +16,9 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 /**
  * Inspiration from blogpost by Johannes Brodwall.
- * 
+ * <p>
+ * From : http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
  * @author Ole Christian Rynning
- * @see http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
  */
 public class ShutdownHandler extends AbstractHandler {
 

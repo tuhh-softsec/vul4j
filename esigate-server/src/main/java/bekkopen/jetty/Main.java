@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.security.ProtectionDomain;
 
 /**
+ * From : http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
  * @author  Ole Christian Rynning 
- * @see http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/
  */
 public class Main {
 
