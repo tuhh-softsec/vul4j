@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
@@ -31,9 +32,12 @@ import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.esigate.esi.EsiRenderer;
 import org.esigate.events.EventManager;
+import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockHttpClient;
 import org.esigate.tags.BlockRenderer;
@@ -226,8 +230,14 @@ public class DriverTest extends TestCase {
 	}
 
 	private Driver createMockDriver(Properties properties, HttpClient httpClient) {
+		return createMockDriver(properties, httpClient, "tested");
+	}
+
+	private Driver createMockDriver(Properties properties, HttpClient httpClient, String name) {
 		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), null, httpClient, properties);
-		return new Driver("tested", properties, httpClientHelper);
+		Driver driver = new Driver(name, properties, httpClientHelper);
+		DriverFactory.put(name, driver);
+		return driver;
 	}
 
 	public void testRewriteRedirectResponse() throws Exception {
@@ -386,4 +396,45 @@ public class DriverTest extends TestCase {
 		assertEquals(200, TestUtils.getResponse(request).getStatusLine().getStatusCode());
 		assertNotNull(TestUtils.getResponse(request).getEntity());
 	}
+
+	/**
+	 * 0000135: Special characters are lost when including a fragment with no
+	 * charset specified into UTF-8 page
+	 * 
+	 * @throws Exception
+	 * @see <a
+	 *      href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=135">0000135</a>
+	 */
+	public void testSpecialCharacterInIncludeNoCharset() throws Exception {
+		String now = DateUtils.formatDate(new Date());
+		
+		// Create master application
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 200, "Ok");
+		response.addHeader("Date", now);
+		response.addHeader("Content-type", "Text/html;Charset=UTF-8");
+		HttpEntity httpEntity = new StringEntity("à<esi:include src=\"$(PROVIDER{provider})/\"/>à", "UTF-8");
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		// Create provider application
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");
+		mockHttpClient = new MockHttpClient();
+		response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 200, "Ok");
+		response.addHeader("Date", now);
+		response.addHeader("Content-type", "text/html");
+		httpEntity = new ByteArrayEntity("é".getBytes("ISO-8859-1"), ContentType.create("text/html", (String) null));
+		response.setEntity(httpEntity);
+		mockHttpClient.setResponse(response);
+		createMockDriver(properties, mockHttpClient, "provider");
+
+		// Do the include and check the result
+		driver.proxy("/", request, new EsiRenderer());
+		assertEquals("àéà", TestUtils.getResponseBodyAsString(request));
+	}
+
 }

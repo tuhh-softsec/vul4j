@@ -1,0 +1,1 @@
+<%@ page contentType="text/html; charset=UTF-8" %>à<esi:include src="$(PROVIDER{aggregated2})/esi-include-no-charset.jsp"/>à
