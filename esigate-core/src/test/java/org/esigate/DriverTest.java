@@ -434,7 +434,7 @@ public class DriverTest extends TestCase {
 	 * @see <a
 	 *      href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162">0000162</a>
 	 */
-	public void testBugXXX_PreserveHostOff() throws Exception {
+	public void testBug162_PreserveHostOff() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost.mydomain.fr/");
 		properties.put(Parameters.PRESERVE_HOST.name, "false");
@@ -492,6 +492,7 @@ public class DriverTest extends TestCase {
 		Driver driver = createMockDriver(properties, mockHttpClient);
 
 		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+		request.addHeader("Host", "test.mydomain.fr");
 		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
 		TestUtils.addCookie(new BasicClientCookie("TEST_cookie", "233445436436346"), request);
 		request.addHeader("Accept-Encoding", "gzip, deflate");
@@ -541,4 +542,29 @@ public class DriverTest extends TestCase {
 		assertEquals("àéà", TestUtils.getResponseBodyAsString(request));
 	}
 
+	
+	public void testBug161_SetCookie() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost/");
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		BasicHttpResponse	response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
+		response.addHeader("Set-Cookie", "mycookie=123456; domain=mydomain.fr; path=/");
+		response.setEntity(new StringEntity("test"));
+		mockHttpClient.setResponse(response);
+		
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		request.addHeader("Accept-Encoding", "gzip, deflate");
+
+		driver.proxy("/foobar/", request);
+		
+		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
+		// assertTrue("Set-Cookie must be forwarded.", HttpRequestHelper.getMediator(request).getCookies().length > 0);
+	}
 }

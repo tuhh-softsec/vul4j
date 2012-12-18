@@ -113,12 +113,10 @@ public class DefaultCookieManager implements CookieManager {
 
 		
 		if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
-			// See Bug 0000162 : Cookie forwarding (Browser->Server) does not work with preserveHost
-			// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162
-			// HttpClient does not use Host header to validate cookies.
-			// Until this is fixed, no need to use the original request domain.
-			//
-			//domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString();
+			domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toHostString();
+			
+			// When issue HTTPCLIENT-1282 is fixed, remove the following line.
+			// https://issues.apache.org/jira/browse/HTTPCLIENT-1282
 			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		} else {
 			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();

@@ -216,6 +216,10 @@ public class HttpClientHelper {
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
 
+		// When issue HTTPCLIENT-1282 is fixed, swap the following 2 lines.
+		// https://issues.apache.org/jira/browse/HTTPCLIENT-1282
+		// httpRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
+		// virtualHost);
 		httpRequest.addHeader(HttpHeaders.HOST, virtualHost.toHostString());
 
 		// We use the same user-agent and accept headers that the one sent by
