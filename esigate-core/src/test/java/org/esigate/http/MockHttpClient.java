@@ -47,12 +47,13 @@ import org.apache.http.protocol.HttpRequestExecutor;
  * with method getSentRequest().
  * 
  * @author Francois-Xavier Bonnet
- * 
+ * @author Nicolas Richeton
  */
 public class MockHttpClient extends DefaultHttpClient {
 	private HttpResponse response;
 	private HttpRequest sentRequest;
 	private long sleep = 0l;
+	private HttpRequestExecutor httpResponseExecutor;
 
 	private void sleep() {
 		if (sleep > 0)
@@ -65,10 +66,17 @@ public class MockHttpClient extends DefaultHttpClient {
 
 	@Override
 	protected HttpRequestExecutor createRequestExecutor() {
+
+		// Let httpResponseExecutor handle the response.
+		if (httpResponseExecutor != null)
+			return httpResponseExecutor;
+
+		// If no executor, respond with request.
 		return new HttpRequestExecutor() {
 
 			@Override
-			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws IOException, HttpException {
+			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+					throws IOException, HttpException {
 				if (response == null)
 					throw new RuntimeException("Mock response was not set");
 				sleep();
@@ -77,7 +85,6 @@ public class MockHttpClient extends DefaultHttpClient {
 				sentRequest = request;
 				return response;
 			}
-
 		};
 	}
 
@@ -91,7 +98,8 @@ public class MockHttpClient extends DefaultHttpClient {
 			public ClientConnectionRequest requestConnection(final HttpRoute route, Object state) {
 				return new ClientConnectionRequest() {
 
-					public ManagedClientConnection getConnection(long timeout, TimeUnit tunit) throws InterruptedException, ConnectionPoolTimeoutException {
+					public ManagedClientConnection getConnection(long timeout, TimeUnit tunit)
+							throws InterruptedException, ConnectionPoolTimeoutException {
 						return new ManagedClientConnection() {
 
 							public void releaseConnection() throws IOException {
@@ -144,7 +152,8 @@ public class MockHttpClient extends DefaultHttpClient {
 							public void sendRequestHeader(HttpRequest request) throws HttpException, IOException {
 							}
 
-							public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException, IOException {
+							public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException,
+									IOException {
 							}
 
 							public HttpResponse receiveResponseHeader() throws HttpException, IOException {
@@ -169,7 +178,8 @@ public class MockHttpClient extends DefaultHttpClient {
 								throw new RuntimeException("Method not implemented");
 							}
 
-							public void tunnelProxy(HttpHost next, boolean secure, HttpParams params) throws IOException {
+							public void tunnelProxy(HttpHost next, boolean secure, HttpParams params)
+									throws IOException {
 								throw new RuntimeException("Method not implemented");
 							}
 
@@ -181,7 +191,8 @@ public class MockHttpClient extends DefaultHttpClient {
 								// Nothing to do
 							}
 
-							public void open(HttpRoute route, HttpContext context, HttpParams params) throws IOException {
+							public void open(HttpRoute route, HttpContext context, HttpParams params)
+									throws IOException {
 							}
 
 							public void markReusable() {
@@ -234,6 +245,21 @@ public class MockHttpClient extends DefaultHttpClient {
 		};
 	}
 
+	/**
+	 * Set handler for requests. This allows to have custom behavior depending
+	 * of requests, or even use assertions.
+	 * 
+	 * @param httpResponseExecutor
+	 */
+	public void setHttpResponseExecutor(HttpRequestExecutor httpResponseExecutor) {
+		this.httpResponseExecutor = httpResponseExecutor;
+	}
+	
+	/**
+	 * Set next response. Will only work if no
+	 * 
+	 * @param response
+	 */
 	public void setResponse(HttpResponse response) {
 		this.response = response;
 	}

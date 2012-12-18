@@ -23,10 +23,14 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
@@ -34,9 +38,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpRequestExecutor;
+import org.esigate.cookie.CookieManager;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.events.EventManager;
+import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockHttpClient;
@@ -50,24 +59,30 @@ public class DriverTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		MockDriver provider = new MockDriver("mock");
-		provider.addResource("/testBlock", "abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
-		provider.addResource("/testTemplateFullPage", "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
-		provider.addResource("/testTemplate", "abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
+		provider.addResource("/testBlock",
+				"abc some<!--$beginblock$A$-->some text goes here<!--$endblock$A$--> cdf hello");
+		provider.addResource("/testTemplateFullPage",
+				"some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed");
+		provider.addResource("/testTemplate",
+				"abc some<!--$begintemplate$A$-->some text goes here<!--$endtemplate$A$--> cdf hello");
 		request = TestUtils.createRequest();
 	}
 
 	public void testRenderBlock() throws IOException, HttpErrorPage {
 		Writer out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/testBlock", null, out, request, new BlockRenderer("A", "/testBlock"));
+		DriverFactory.getInstance("mock")
+				.render("/testBlock", null, out, request, new BlockRenderer("A", "/testBlock"));
 
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, request, new BlockRenderer("A", "$(vartestBlock)"));
+		DriverFactory.getInstance("mock").render("$(vartestBlock)", null, out, request,
+				new BlockRenderer("A", "$(vartestBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, request, new BlockRenderer("A", "/$(vartest)$(varBlock)"));
+		DriverFactory.getInstance("mock").render("/$(vartest)$(varBlock)", null, out, request,
+				new BlockRenderer("A", "/$(vartest)$(varBlock)"));
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -77,7 +92,8 @@ public class DriverTest extends TestCase {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("key", "'value'");
 		params.put("some other key", "'another value'");
-		DriverFactory.getInstance("mock").render("/testTemplateFullPage", null, out, request, new TemplateRenderer(null, params, "/testTemplateFullPage"));
+		DriverFactory.getInstance("mock").render("/testTemplateFullPage", null, out, request,
+				new TemplateRenderer(null, params, "/testTemplateFullPage"));
 		assertFalse(out.toString().contains("key"));
 		assertTrue(out.toString().contains("'value'"));
 		assertFalse(out.toString().contains("some other key"));
@@ -86,11 +102,13 @@ public class DriverTest extends TestCase {
 
 	public void testRenderTemplate() throws IOException, HttpErrorPage {
 		StringWriter out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/testTemplate", null, out, request, new TemplateRenderer("A", null, "/testTemplate"));
+		DriverFactory.getInstance("mock").render("/testTemplate", null, out, request,
+				new TemplateRenderer("A", null, "/testTemplate"));
 		assertEquals("some text goes here", out.toString());
 
 		out = new StringWriter();
-		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, request, new TemplateRenderer("A", null, "/test$(varTemplate)"));
+		DriverFactory.getInstance("mock").render("/test$(varTemplate)", null, out, request,
+				new TemplateRenderer("A", null, "/test$(varTemplate)"));
 		assertEquals("some text goes here", out.toString());
 
 	}
@@ -234,7 +252,10 @@ public class DriverTest extends TestCase {
 	}
 
 	private Driver createMockDriver(Properties properties, HttpClient httpClient, String name) {
-		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), null, httpClient, properties);
+		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
+
+		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), cookieManager, httpClient,
+				properties);
 		Driver driver = new Driver(name, properties, httpClientHelper);
 		DriverFactory.put(name, driver);
 		return driver;
@@ -245,12 +266,14 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com:8080/");
 		request = TestUtils.createRequest("http://www.bar.com/foo/");
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Found");
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1),
+				HttpStatus.SC_MOVED_TEMPORARILY, "Found");
 		response.addHeader("Location", "http://www.foo.com:8080/somewhere/");
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
 		driver.proxy("/foo/", request);
-		assertEquals("http://www.bar.com/somewhere/", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
+		assertEquals("http://www.bar.com/somewhere/", TestUtils.getResponse(request).getFirstHeader("Location")
+				.getValue());
 	}
 
 	/**
@@ -276,7 +299,8 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.USE_CACHE.name, true);
 
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
+				"Not Modified");
 		response.addHeader("Etag", "b5e3f57c0e84fc7a197b849fdfd3d407");
 		response.addHeader("Date", "Thu, 13 Dec 2012 07:28:01 GMT");
 		mockHttpClient.setResponse(response);
@@ -320,7 +344,8 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.TTL.name, "43200");
 
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
+				"Not Modified");
 		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
 		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
 		response.addHeader("Cache-Control", "max-age=2051, public");
@@ -360,12 +385,14 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.USE_CACHE.name, true);
 
 		MockHttpClient mockHttpClient = new MockHttpClient();
-		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified");
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED,
+				"Not Modified");
 		response.addHeader("Etag", "a86ecd6cc6d361776ed05f063921aa34");
 		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
 		response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
 		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
-		response.addHeader("Set-Cookie", "w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
+		response.addHeader("Set-Cookie",
+				"w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
 		mockHttpClient.setResponse(response);
 		Driver driver = createMockDriver(properties, mockHttpClient);
 
@@ -383,7 +410,8 @@ public class DriverTest extends TestCase {
 		response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
 		response.addHeader("Cache-Control", "max-age=2051, public, must-revalidate, proxy-revalidate");
 		response.addHeader("Expires", "Thu, 13 Dec 2012 09:29:48 GMT");
-		response.addHeader("Set-Cookie", "w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
+		response.addHeader("Set-Cookie",
+				"w3tc_referrer=http%3A%2F%2Fblog.richeton.com%2Fcategory%2Fcomputer%2Fwat%2F; path=/");
 		response.setEntity(new StringEntity("test"));
 		mockHttpClient.setResponse(response);
 
@@ -398,6 +426,82 @@ public class DriverTest extends TestCase {
 	}
 
 	/**
+	 * 0000162: Cookie forwarding (Browser->Server) does not work with preserveHost
+	 * <p>
+	 * This test is to ensure behavior with preserve host off (already working as of bug 162).
+	 * 
+	 * @throws Exception
+	 * @see <a
+	 *      href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162">0000162</a>
+	 */
+	public void testBugXXX_PreserveHostOff() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost.mydomain.fr/");
+		properties.put(Parameters.PRESERVE_HOST.name, "false");
+		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+		MockHttpClient mockHttpClient = new MockHttpClient();
+
+		mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+			@Override
+			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+					throws IOException, HttpException {
+				Assert.assertTrue("Cookie must be forwarded", request.containsHeader("Cookie"));
+				return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+			}
+		});
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		TestUtils.addCookie(new BasicClientCookie("TEST_cookie", "233445436436346"), request);
+		request.addHeader("Accept-Encoding", "gzip, deflate");
+
+		driver.proxy("/foobar/", request);
+
+	}
+
+	/**
+	 * 0000162: Cookie forwarding (Browser->Server) does not work with
+	 * preserveHost
+	 * <p>
+	 * This test ensure cookies are forwarded with preserveHost. Specific code
+	 * is Cookie preparation in DefaultCookieManager#rewriteForServer().
+	 * <p>
+	 * Warning: HttpClient is not using Host header to validate cookies.
+	 * 
+	 * @throws Exception
+	 * @see <a
+	 *      href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162">0000162</a>
+	 */
+	public void testBug162_PreserveHostOn() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost.mydomain.fr/");
+		properties.put(Parameters.PRESERVE_HOST.name, "true");
+		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+			@Override
+			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+					throws IOException, HttpException {
+				Assert.assertTrue("Cookie must be forwarded",request.containsHeader("Cookie"));
+				return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+			}
+		});
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
+		TestUtils.addCookie(new BasicClientCookie("TEST_cookie", "233445436436346"), request);
+		request.addHeader("Accept-Encoding", "gzip, deflate");
+
+		driver.proxy("/foobar/", request);
+
+	}
+	
+
+	/**
 	 * 0000135: Special characters are lost when including a fragment with no
 	 * charset specified into UTF-8 page
 	 * 
@@ -407,7 +511,7 @@ public class DriverTest extends TestCase {
 	 */
 	public void testSpecialCharacterInIncludeNoCharset() throws Exception {
 		String now = DateUtils.formatDate(new Date());
-		
+
 		// Create master application
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost");

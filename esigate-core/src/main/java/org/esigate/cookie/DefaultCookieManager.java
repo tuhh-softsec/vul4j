@@ -110,11 +110,20 @@ public class DefaultCookieManager implements CookieManager {
 		BasicClientCookie2 httpClientCookie = new BasicClientCookie2(name, cookie.getValue());
 		httpClientCookie.setSecure(false);
 		String domain;
+
+		
 		if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
-			domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString();
+			// See Bug 0000162 : Cookie forwarding (Browser->Server) does not work with preserveHost
+			// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162
+			// HttpClient does not use Host header to validate cookies.
+			// Until this is fixed, no need to use the original request domain.
+			//
+			//domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString();
+			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		} else {
 			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		}
+
 		httpClientCookie.setDomain(domain);
 		httpClientCookie.setPath("/");
 		httpClientCookie.setComment(cookie.getComment());
@@ -154,7 +163,8 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),
+				UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
