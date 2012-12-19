@@ -654,11 +654,11 @@ public class HttpClientHelperTest extends TestCase {
 		assertTrue(result1.getFirstHeader("X-cache").getValue(), result1.getFirstHeader("X-cache").getValue().startsWith("MISS"));
 		assertNull(result1.getEntity());
 
-		// Second request should use the cache with revalidation and return a
+		// Second request should use the cache and return a
 		// 304 again
 		HttpResponse result2 = httpClientHelper.execute(request1);
 		assertEquals(304, result1.getStatusLine().getStatusCode());
-		assertTrue(result2.getFirstHeader("X-cache").getValue(), result2.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+		assertTrue(result2.getFirstHeader("X-cache").getValue(), result2.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		assertNull(result2.getEntity());
 
 		HttpResponse response2 = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok"));
