@@ -207,15 +207,14 @@ public class Base64 {
     }
 
     /**
-     * Method decodeBigIntegerFromText
-     *
-     * @param text
-     * @return the biginter obtained from the text node
+     * Decode a base 64 string into a {@link BigInteger}
+     * @param base64str Base 64 encoded string.
+     * @return
      * @throws Base64DecodingException
      */
-    public static final BigInteger decodeBigIntegerFromText(Text text) 
-        throws Base64DecodingException {
-        return new BigInteger(1, Base64.decode(text.getData()));
+    public static BigInteger decodeBigIntegerFromString(String base64str)
+            throws Base64DecodingException {
+        return new BigInteger(1, Base64.decode(base64str));
     }
 
     /**

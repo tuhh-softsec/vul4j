@@ -25,13 +25,10 @@
 package org.apache.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
 import java.util.*;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -41,7 +38,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Sean Mullan
  */
-public final class DOMSignatureProperty extends DOMStructure 
+public final class DOMSignatureProperty extends BaseStructure
     implements SignatureProperty {
  
     private final String id;
@@ -98,13 +95,7 @@ public final class DOMSignatureProperty extends DOMStructure
         if (target == null) {
             throw new MarshalException("target cannot be null");
         }
-        Attr attr = propElem.getAttributeNodeNS(null, "Id");
-        if (attr != null) {
-            id = attr.getValue();
-            propElem.setIdAttributeNode(attr, true);
-        } else {
-            id = null;
-        }
+        id = DOMUtils.getIdAttributeValue(propElem, "Id");
 
         NodeList nodes = propElem.getChildNodes();
         int length = nodes.getLength();
@@ -119,36 +110,37 @@ public final class DOMSignatureProperty extends DOMStructure
         }
     }
 
-    public List getContent() {
+    @Override
+    public List<XMLStructure> getContent() {
         return content;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getTarget() {
         return target;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    public static void marshal(XmlWriter xwriter, SignatureProperty sigProp, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
     {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        Element propElem = DOMUtils.createElement(ownerDoc, "SignatureProperty",
-                                                  XMLSignature.XMLNS, dsPrefix);
+        xwriter.writeStartElement(dsPrefix, "SignatureProperty", XMLSignature.XMLNS);
 
         // set attributes
-        DOMUtils.setAttributeID(propElem, "Id", id);
-        DOMUtils.setAttribute(propElem, "Target", target);
+        xwriter.writeIdAttribute("", "", "Id", sigProp.getId());
+        xwriter.writeAttribute("", "", "Target", sigProp.getTarget());
 
         // create and append any elements and mixed content
+        List<XMLStructure> content = getContent(sigProp);
         for (XMLStructure property : content) {
-            DOMUtils.appendChild(propElem,
-                ((javax.xml.crypto.dom.DOMStructure)property).getNode());
+            xwriter.marshalStructure(property, dsPrefix, context);
         }
-            
-        parent.appendChild(propElem);
+        
+        xwriter.writeEndElement(); // "SignatureProperty"
     }
 
     @Override
@@ -177,6 +169,10 @@ public final class DOMSignatureProperty extends DOMStructure
         return 42; // any arbitrary constant will do 
     }
 
+    @SuppressWarnings("unchecked")
+    private static List<XMLStructure> getContent(SignatureProperty prop) {
+        return prop.getContent();
+    }
     private boolean equalsContent(List<XMLStructure> otherContent) {
         int osize = otherContent.size();
         if (content.size() != osize) {

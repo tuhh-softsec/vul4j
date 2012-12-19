@@ -137,11 +137,13 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         }
     }
 
+    @Override
     public final AlgorithmParameterSpec getParameterSpec() {
         return params;
     }
 
-    boolean verify(Key key, SignedInfo si, byte[] sig,
+    @Override
+    boolean verify(Key key, DOMSignedInfo si, byte[] sig,
                    XMLValidateContext context)
         throws InvalidKeyException, SignatureException, XMLSignatureException
     {
@@ -168,8 +170,7 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             log.debug("Signature provider:" + signature.getProvider());
             log.debug("verifying with key: " + key);
         }
-        ((DOMSignedInfo)si).canonicalize(context,
-                                         new SignerOutputStream(signature));
+        si.canonicalize(context, new SignerOutputStream(signature));
 
         try {
             Type type = getAlgorithmType();
@@ -185,7 +186,8 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         }
     }
 
-    byte[] sign(Key key, SignedInfo si, XMLSignContext context)
+    @Override
+    byte[] sign(Key key, DOMSignedInfo si, XMLSignContext context)
         throws InvalidKeyException, XMLSignatureException
     {
         if (key == null || si == null) {
@@ -212,8 +214,7 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
             log.debug("Signing with key: " + key);
         }
 
-        ((DOMSignedInfo)si).canonicalize(context,
-                                         new SignerOutputStream(signature));
+        si.canonicalize(context, new SignerOutputStream(signature));
 
         try {
             Type type = getAlgorithmType();
@@ -334,12 +335,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA1withRSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return SignatureMethod.RSA_SHA1;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA1withRSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.RSA;
         }
@@ -353,12 +357,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA256withRSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return RSA_SHA256;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA256withRSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.RSA;
         }
@@ -372,12 +379,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA384withRSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return RSA_SHA384;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA384withRSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.RSA;
         }
@@ -391,12 +401,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA512withRSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return RSA_SHA512;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA512withRSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.RSA;
         }
@@ -410,12 +423,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA1withDSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return SignatureMethod.DSA_SHA1;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA1withDSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.DSA;
         }
@@ -429,12 +445,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA1withECDSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return ECDSA_SHA1;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA1withECDSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.ECDSA;
         }
@@ -448,12 +467,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA256withECDSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return ECDSA_SHA256;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA256withECDSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.ECDSA;
         }
@@ -467,12 +489,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA384withECDSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return ECDSA_SHA384;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA384withECDSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.ECDSA;
         }
@@ -486,12 +511,15 @@ public abstract class DOMSignatureMethod extends AbstractDOMSignatureMethod {
         SHA512withECDSA(Element dmElem) throws MarshalException {
             super(dmElem);
         }
+        @Override
         public String getAlgorithm() {
             return ECDSA_SHA512;
         }
+        @Override
         String getJCAAlgorithm() {
             return "SHA512withECDSA";
         }
+        @Override
         Type getAlgorithmType() {
             return Type.ECDSA;
         }

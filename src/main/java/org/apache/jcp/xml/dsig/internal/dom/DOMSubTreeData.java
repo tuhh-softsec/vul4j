@@ -50,7 +50,8 @@ public class DOMSubTreeData implements NodeSetData {
         this.excludeComments = excludeComments;
     }
 
-    public Iterator iterator() {
+    @Override
+    public Iterator<Node> iterator() {
         return new DelayedNodeIterator(root, excludeComments);
     }
 
@@ -77,6 +78,7 @@ public class DOMSubTreeData implements NodeSetData {
             this.withComments = !excludeComments;
         }
 
+        @Override
         public boolean hasNext() {
             if (nodeSet == null) {
                 nodeSet = dereferenceSameDocumentURI(root);
@@ -85,6 +87,7 @@ public class DOMSubTreeData implements NodeSetData {
             return li.hasNext();
         }
 
+        @Override
         public Node next() {
             if (nodeSet == null) {
                 nodeSet = dereferenceSameDocumentURI(root);
@@ -97,6 +100,7 @@ public class DOMSubTreeData implements NodeSetData {
             }
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }

@@ -149,6 +149,7 @@ public final class XMLDSigRI extends Provider {
         map.put("TransformService." + Transform.XSLT + " MechanismType", "DOM");
 
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
             public Void run() {
                 putAll(map);
                 return null;

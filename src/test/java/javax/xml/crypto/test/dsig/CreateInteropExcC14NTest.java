@@ -157,7 +157,8 @@ public class CreateInteropExcC14NTest extends org.junit.Assert {
         dsc.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
 
         sig.sign(dsc);
-
+        TestUtils.validateSecurityOrEncryptionElement(foo.getLastChild());
+        
         DOMValidateContext dvc = new DOMValidateContext
             (new KeySelectors.KeyValueKeySelector(), foo.getLastChild());
         XMLSignature sig2 = fac.unmarshalXMLSignature(dvc);

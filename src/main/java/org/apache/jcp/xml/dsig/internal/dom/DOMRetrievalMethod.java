@@ -40,7 +40,6 @@ import java.util.*;
 import javax.xml.XMLConstants;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dom.DOMURIReference;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import javax.xml.parsers.*;
@@ -161,52 +160,50 @@ public final class DOMRetrievalMethod extends DOMStructure
         }
     }
 
+    @Override
     public String getURI() {
         return uri;
     }
 
+    @Override
     public String getType() {
         return type;
     }
 
-    public List getTransforms() {
+    @Override
+    public List<Transform> getTransforms() {
         return transforms;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    @Override
+    public void marshal(XmlWriter xwriter, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
     {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        Element rmElem = DOMUtils.createElement(ownerDoc, "RetrievalMethod",
-                                                XMLSignature.XMLNS, dsPrefix);
+        xwriter.writeStartElement(dsPrefix, "RetrievalMethod", XMLSignature.XMLNS);
 
+        // TODO - see whether it is important to capture the "here" attribute as part of the
+        // marshalling - do any of the tests fail?
         // add URI and Type attributes
-        DOMUtils.setAttribute(rmElem, "URI", uri);
-        DOMUtils.setAttribute(rmElem, "Type", type);
+        here = xwriter.writeAttribute("", "", "URI", uri);
+        xwriter.writeAttribute("", "", "Type", type);
 
         // add Transforms elements
         if (!transforms.isEmpty()) {
-            Element transformsElem = DOMUtils.createElement(ownerDoc,
-                                                            "Transforms",
-                                                            XMLSignature.XMLNS,
-                                                            dsPrefix);
-            rmElem.appendChild(transformsElem);
+            xwriter.writeStartElement(dsPrefix, "Transforms", XMLSignature.XMLNS);
             for (Transform transform : transforms) {
-                ((DOMTransform)transform).marshal(transformsElem,
-                                                   dsPrefix, context);
+                ((DOMTransform)transform).marshal(xwriter, dsPrefix, context);
             }
+            xwriter.writeEndElement(); // "Transforms"
         }
-
-        parent.appendChild(rmElem);
-
-        // save here node
-        here = rmElem.getAttributeNodeNS(null, "URI");
+        xwriter.writeEndElement(); // "RetrievalMethod"
     }
 
+    @Override
     public Node getHere() {
         return here;
     }
 
+    @Override
     public Data dereference(XMLCryptoContext context)
         throws URIReferenceException
     {
@@ -228,7 +225,7 @@ public final class DOMRetrievalMethod extends DOMStructure
         // pass dereferenced data through Transforms
         try {
             for (Transform transform : transforms) {
-                data = ((DOMTransform)transform).transform(data, context);
+                data = transform.transform(data, context);
             }
         } catch (Exception e) {
             throw new URIReferenceException(e);

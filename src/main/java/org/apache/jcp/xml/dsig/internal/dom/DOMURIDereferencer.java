@@ -51,6 +51,7 @@ public class DOMURIDereferencer implements URIDereferencer {
         Init.init();
     }
 
+    @Override
     public Data dereference(URIReference uriRef, XMLCryptoContext context)
         throws URIReferenceException {
 

@@ -306,6 +306,7 @@ public class CreateInteropXMLDSig11Test extends org.junit.Assert {
         dsc.setDefaultNamespacePrefix("dsig");
 
         sig.sign(dsc);
+        TestUtils.validateSecurityOrEncryptionElement(doc.getDocumentElement());
 
         DOMValidateContext dvc = new DOMValidateContext
         (ks, doc.getDocumentElement());

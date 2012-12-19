@@ -227,6 +227,7 @@ public class ReferenceTest extends org.junit.Assert {
                 (kifac.newKeyValue(TestUtils.getPublicKey(CRYPTO_ALGS[i])))));
             try {
                 sig.sign(signContext);
+                TestUtils.validateSecurityOrEncryptionElement(doc.getDocumentElement());
                 if (!cache) {
                     assertNull(ref.getDereferencedData());
                     assertNull(ref.getDigestInputStream());

@@ -43,7 +43,7 @@ public class ApacheNodeSetData implements ApacheData, NodeSetData {
         this.xi = xi;
     }
 
-    public Iterator iterator() {
+    public Iterator<Node> iterator() {
         // If nodefilters are set, must execute them first to create node-set
         if (xi.getNodeFilters() != null) {
             return Collections.unmodifiableSet

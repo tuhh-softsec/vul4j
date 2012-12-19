@@ -31,6 +31,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.XMLConstants;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.spec.*;
@@ -60,6 +62,21 @@ public class DOMUtils {
     }
 
     /**
+     * Create a QName string from a prefix and local name.
+     * 
+     * @param prefix    The prefix, if any. Can be either null or empty.
+     * @param localName The local name.
+     * 
+     * @return The string for the qName, for example, "xsd:element".
+     */
+    public static String getQNameString(String prefix, String localName) {
+        String qName = (prefix == null || prefix.length() == 0)
+                ? localName : prefix + ":" + localName;
+
+        return qName;
+    }
+    
+    /**
      * Creates an element in the specified namespace, with the specified tag
      * and namespace prefix.
      *
@@ -72,9 +89,7 @@ public class DOMUtils {
     public static Element createElement(Document doc, String tag,
                                         String nsURI, String prefix)
     {
-        String qName = (prefix == null || prefix.length() == 0)
-                       ? tag : prefix + ":" + tag;
-        return doc.createElementNS(nsURI, qName);
+        return doc.createElementNS(nsURI, getQNameString(prefix, tag));
     }
 
     /**
@@ -181,6 +196,28 @@ public class DOMUtils {
     }
 
     /**
+     * Returns the attribute value for the attribute with the specified name.
+     * Returns null if there is no such attribute, or 
+     * the empty string if the attribute value is empty.
+     *
+     * <p>This works around a limitation of the DOM
+     * <code>Element.getAttributeNode</code> method, which does not distinguish
+     * between an unspecified attribute and an attribute with a value of
+     * "" (it returns "" for both cases).
+     *
+     * @param elem the element containing the attribute
+     * @param name the name of the attribute
+     * @return the attribute value (may be null if unspecified)
+     */
+    public static <N> String getIdAttributeValue(Element elem, String name) {
+        Attr attr = elem.getAttributeNodeNS(null, name);
+        if (attr != null && !attr.isId()) {
+            elem.setIdAttributeNode(attr, true);
+        }
+        return (attr == null) ? null : attr.getValue();
+    }
+
+    /**
      * Returns a Set of <code>Node</code>s, backed by the specified 
      * <code>NodeList</code>.
      *
@@ -197,20 +234,25 @@ public class DOMUtils {
             this.nl = nl;
         }
 
+        @Override
         public int size() { return nl.getLength(); }
+        @Override
         public Iterator<Node> iterator() {
             return new Iterator<Node>() {
                 int index = 0;
 
+                @Override
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
+                @Override
                 public Node next() {
                     if (!hasNext()) {
                         throw new NoSuchElementException();
                     }
                     return nl.item(index++);
                 }
+                @Override
                 public boolean hasNext() {
                     return index < nl.getLength() ? true : false;
                 }
@@ -364,5 +406,15 @@ public class DOMUtils {
         Node stylesheetElem =
             ((javax.xml.crypto.dom.DOMStructure) stylesheet).getNode();
         return nodesEqual(stylesheetElem, ostylesheetElem);
+    }
+
+    public static boolean isNamespace(Node node)
+    {
+        final short nodeType = node.getNodeType();
+        if (nodeType == Node.ATTRIBUTE_NODE) {
+            final String namespaceURI = node.getNamespaceURI();
+            return XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespaceURI);
+        }
+        return false;
     }
 }

@@ -24,21 +24,16 @@
  */
 package org.apache.jcp.xml.dsig.internal.dom;
 
-import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
-import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.KeyName;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * DOM-based implementation of KeyName.
  *
  * @author Sean Mullan
  */
-public final class DOMKeyName extends DOMStructure implements KeyName {
+public final class DOMKeyName extends BaseStructure implements KeyName {
 
     private final String name;
 
@@ -61,22 +56,12 @@ public final class DOMKeyName extends DOMStructure implements KeyName {
      * @param knElem a KeyName element
      */
     public DOMKeyName(Element knElem) {
-        name = knElem.getFirstChild().getNodeValue();
+        name = textOfNode(knElem);
     }
 
+    @Override
     public String getName() {
         return name;
-    }
-
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-        throws MarshalException
-    {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        // prepend namespace prefix, if necessary
-        Element knElem = DOMUtils.createElement(ownerDoc, "KeyName",
-                                                XMLSignature.XMLNS, dsPrefix);
-        knElem.appendChild(ownerDoc.createTextNode(name));
-        parent.appendChild(knElem);
     }
 
     @Override

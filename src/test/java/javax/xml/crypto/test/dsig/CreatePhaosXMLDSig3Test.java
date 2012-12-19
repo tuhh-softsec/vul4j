@@ -107,6 +107,7 @@ public class CreatePhaosXMLDSig3Test extends org.junit.Assert {
         dsc.setURIDereferencer(ud);
 
         sig.sign(dsc);
+        TestUtils.validateSecurityOrEncryptionElement(doc.getDocumentElement());
 
         DOMValidateContext dvc = new DOMValidateContext
             (new KeySelectors.SecretKeySelector
@@ -163,6 +164,7 @@ public class CreatePhaosXMLDSig3Test extends org.junit.Assert {
         dsc.putNamespacePrefix(XMLSignature.XMLNS, "dsig");
 
         sig.sign(dsc);
+        TestUtils.validateSecurityOrEncryptionElement(player.getLastChild());
 
         DOMValidateContext dvc = new DOMValidateContext
             (new KeySelectors.SecretKeySelector

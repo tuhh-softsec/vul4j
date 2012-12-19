@@ -64,6 +64,7 @@ public abstract class ApacheCanonicalizer extends TransformService {
         return params;
     }
 
+    @Override
     public void init(XMLStructure parent, XMLCryptoContext context)
         throws InvalidAlgorithmParameterException
     {
@@ -79,6 +80,7 @@ public abstract class ApacheCanonicalizer extends TransformService {
         ownerDoc = DOMUtils.getOwnerDocument(transformElem);
     }
 
+    @Override
     public void marshalParams(XMLStructure parent, XMLCryptoContext context)
         throws MarshalException
     {

@@ -27,6 +27,9 @@ package org.apache.jcp.xml.dsig.internal.dom;
 import java.math.BigInteger;
 import java.security.KeyException;
 import java.security.PublicKey;
+import java.security.interfaces.DSAPublicKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 import javax.xml.crypto.*;
 import javax.xml.crypto.dom.DOMCryptoContext;
@@ -44,51 +47,61 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
 
     public DOMKeyInfoFactory() { }
 
+    @Override
+    @SuppressWarnings("rawtypes")
     public KeyInfo newKeyInfo(List content) {
         return newKeyInfo(content, null);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public KeyInfo newKeyInfo(List content, String id) {
         return new DOMKeyInfo(content, id);
     }
 
+    @Override
     public KeyName newKeyName(String name) {
         return new DOMKeyName(name);
     }
 
+    @Override
     public KeyValue newKeyValue(PublicKey key)  throws KeyException {
         String algorithm = key.getAlgorithm();
         if (algorithm.equals("DSA")) {
-            return new DOMKeyValue.DSA(key);
+            return new DOMKeyValue.DSA((DSAPublicKey) key);
         } else if (algorithm.equals("RSA")) {
-            return new DOMKeyValue.RSA(key);
+            return new DOMKeyValue.RSA((RSAPublicKey) key);
         } else if (algorithm.equals("EC")) {
-            return new DOMKeyValue.EC(key);
+            return new DOMKeyValue.EC((ECPublicKey) key);
         } else {
             throw new KeyException("unsupported key algorithm: " + algorithm);
         }
     }
 
+    @Override
     public PGPData newPGPData(byte[] keyId) {
         return newPGPData(keyId, null, null);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public PGPData newPGPData(byte[] keyId, byte[] keyPacket, List other) {
         return new DOMPGPData(keyId, keyPacket, other);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public PGPData newPGPData(byte[] keyPacket, List other) {
         return new DOMPGPData(keyPacket, other);
     }
 
+    @Override
     public RetrievalMethod newRetrievalMethod(String uri) {
         return newRetrievalMethod(uri, null, null);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public RetrievalMethod newRetrievalMethod(String uri, String type,
         List transforms) {
         if (uri == null) {
@@ -97,16 +110,19 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         return new DOMRetrievalMethod(uri, type, transforms);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("rawtypes")
     public X509Data newX509Data(List content) {
         return new DOMX509Data(content);
     }
 
+    @Override
     public X509IssuerSerial newX509IssuerSerial(String issuerName, 
         BigInteger serialNumber) {
         return new DOMX509IssuerSerial(issuerName, serialNumber);
     }
 
+    @Override
     public boolean isFeatureSupported(String feature) {
         if (feature == null) {
             throw new NullPointerException();
@@ -115,10 +131,12 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         }
     }
 
+    @Override
     public URIDereferencer getURIDereferencer() {
         return DOMURIDereferencer.INSTANCE;
     }
 
+    @Override
     public KeyInfo unmarshalKeyInfo(XMLStructure xmlStructure) 
         throws MarshalException {
         if (xmlStructure == null || !(xmlStructure instanceof javax.xml.crypto.dom.DOMStructure)) {

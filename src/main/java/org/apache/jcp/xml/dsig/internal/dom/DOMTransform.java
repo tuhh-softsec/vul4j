@@ -30,13 +30,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.spec.AlgorithmParameterSpec;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import javax.xml.crypto.*;
 import javax.xml.crypto.dsig.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 
 /**
@@ -44,7 +42,7 @@ import javax.xml.crypto.dsig.dom.DOMSignContext;
  *
  * @author Sean Mullan
  */
-public class DOMTransform extends DOMStructure implements Transform {
+public class DOMTransform extends BaseStructure implements Transform {
 
     protected TransformService spi;
 
@@ -69,7 +67,6 @@ public class DOMTransform extends DOMStructure implements Transform {
         throws MarshalException
     {
         String algorithm = DOMUtils.getAttributeValue(transElem, "Algorithm");
-        
         if (provider == null) {
             try {
                 spi = TransformService.getInstance(algorithm, "DOM");
@@ -94,10 +91,12 @@ public class DOMTransform extends DOMStructure implements Transform {
         }
     }
 
+    @Override
     public final AlgorithmParameterSpec getParameterSpec() {
         return spi.getParameterSpec();
     }
 
+    @Override
     public final String getAlgorithm() {
         return spi.getAlgorithm();
     }
@@ -106,28 +105,18 @@ public class DOMTransform extends DOMStructure implements Transform {
      * This method invokes the abstract {@link #marshalParams marshalParams} 
      * method to marshal any algorithm-specific parameters.
      */
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    public void marshal(XmlWriter xwriter, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
     {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
+        String parentLocalName = xwriter.getCurrentLocalName();
+        String localName = parentLocalName.equals("Transforms") ? "Transform" : "CanonicalizationMethod";
+        xwriter.writeStartElement(dsPrefix, localName, XMLSignature.XMLNS);
+        xwriter.writeAttribute("", "", "Algorithm", getAlgorithm());
 
-        Element transformElem = null;
-        if (parent.getLocalName().equals("Transforms")) {
-            transformElem = DOMUtils.createElement(ownerDoc, "Transform",
-                                                   XMLSignature.XMLNS,
-                                                   dsPrefix);
-        } else {
-            transformElem = DOMUtils.createElement(ownerDoc,
-                                                   "CanonicalizationMethod",
-                                                   XMLSignature.XMLNS,
-                                                   dsPrefix);
-        }
-        DOMUtils.setAttribute(transformElem, "Algorithm", getAlgorithm());
+        javax.xml.crypto.XMLStructure xmlStruct = xwriter.getCurrentNodeAsStructure();
+        spi.marshalParams(xmlStruct, context);
 
-        spi.marshalParams(new javax.xml.crypto.dom.DOMStructure(transformElem),
-                          context);
-
-        parent.appendChild(transformElem);
+        xwriter.writeEndElement(); // "Transforms" or "CanonicalizationMethod"
     }
 
     /**
@@ -141,6 +130,7 @@ public class DOMTransform extends DOMStructure implements Transform {
      * @throws XMLSignatureException if an unexpected error occurs while
      *    executing the transform
      */
+    @Override
     public Data transform(Data data, XMLCryptoContext xc)
         throws TransformException
     {
@@ -160,6 +150,7 @@ public class DOMTransform extends DOMStructure implements Transform {
      * @throws XMLSignatureException if an unexpected error occurs while
      *    executing the transform
      */
+    @Override
     public Data transform(Data data, XMLCryptoContext xc, OutputStream os)
         throws TransformException
     {
@@ -207,8 +198,9 @@ public class DOMTransform extends DOMStructure implements Transform {
     Data transform(Data data, XMLCryptoContext xc, DOMSignContext context)
         throws MarshalException, TransformException
     {
-        marshal(context.getParent(),
-                DOMUtils.getSignaturePrefix(context), context);
+        Node parent = context.getParent();
+        XmlWriter xwriter = new XmlWriterToTree(Marshaller.getMarshallers(), parent);
+        marshal(xwriter, DOMUtils.getSignaturePrefix(context), context);
         return transform(data, xc);
     }
 }

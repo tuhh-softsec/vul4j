@@ -28,12 +28,10 @@ import java.io.ByteArrayInputStream;
 import java.security.cert.*;
 import java.util.*;
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.X509IssuerSerial;
 import javax.xml.crypto.dsig.keyinfo.X509Data;
 import javax.security.auth.x500.X500Principal;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -47,7 +45,7 @@ import org.apache.xml.security.utils.Base64;
  * @author Sean Mullan
  */
 //@@@ check for illegal combinations of data violating MUSTs in W3c spec
-public final class DOMX509Data extends DOMStructure implements X509Data {
+public final class DOMX509Data extends BaseStructure implements X509Data {
 
     private final List<Object> content;
     private CertificateFactory cf;
@@ -131,89 +129,66 @@ public final class DOMX509Data extends DOMStructure implements X509Data {
         this.content = Collections.unmodifiableList(content);
     }
 
-    public List getContent() {
+    @Override
+    public List<Object> getContent() {
         return content;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    public static void marshal(XmlWriter xwriter, X509Data x509Data, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
     {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        Element xdElem = DOMUtils.createElement(ownerDoc, "X509Data",
-                                                XMLSignature.XMLNS, dsPrefix);
+        xwriter.writeStartElement(dsPrefix, "X509Data", XMLSignature.XMLNS);
 
+        @SuppressWarnings("unchecked")
+        List<Object> content = x509Data.getContent();
         // append children and preserve order
         for (int i = 0, size = content.size(); i < size; i++) {
             Object object = content.get(i);
             if (object instanceof X509Certificate) {
-                marshalCert((X509Certificate)object,xdElem,ownerDoc,dsPrefix);
+                marshalCert(xwriter, (X509Certificate) object,dsPrefix);
             } else if (object instanceof XMLStructure) {
-                if (object instanceof X509IssuerSerial) {
-                    ((DOMX509IssuerSerial)object).marshal
-                        (xdElem, dsPrefix, context);
-                } else {
-                    javax.xml.crypto.dom.DOMStructure domContent =
-                        (javax.xml.crypto.dom.DOMStructure)object;
-                    DOMUtils.appendChild(xdElem, domContent.getNode());
-                }
+                xwriter.marshalStructure((XMLStructure) object, dsPrefix, context);
             } else if (object instanceof byte[]) {
-                marshalSKI((byte[])object, xdElem, ownerDoc, dsPrefix);
+                marshalSKI(xwriter, (byte[]) object, dsPrefix);
             } else if (object instanceof String) {
-                marshalSubjectName((String)object, xdElem, ownerDoc,dsPrefix);
+                marshalSubjectName(xwriter, (String) object, dsPrefix);
             } else if (object instanceof X509CRL) {
-                marshalCRL((X509CRL)object, xdElem, ownerDoc, dsPrefix);
+                marshalCRL(xwriter, (X509CRL) object, dsPrefix);
             }
         }
-
-        parent.appendChild(xdElem);
+        xwriter.writeEndElement(); // "X509Data"
     }
 
-    private void marshalSKI(byte[] skid, Node parent, Document doc, 
-                            String dsPrefix)
+    private static void marshalSKI(XmlWriter xwriter, byte[] skid, String dsPrefix)
     {
-        Element skidElem = DOMUtils.createElement(doc, "X509SKI",
-                                                  XMLSignature.XMLNS, dsPrefix);
-        skidElem.appendChild(doc.createTextNode(Base64.encode(skid)));
-        parent.appendChild(skidElem);
+        xwriter.writeTextElement(dsPrefix, "X509SKI", XMLSignature.XMLNS, Base64.encode(skid));
     }
 
-    private void marshalSubjectName(String name, Node parent, Document doc,
-                                    String dsPrefix)
+    private static void marshalSubjectName(XmlWriter xwriter, String name, String dsPrefix)
     {
-        Element snElem = DOMUtils.createElement(doc, "X509SubjectName",
-                                                XMLSignature.XMLNS, dsPrefix);
-        snElem.appendChild(doc.createTextNode(name));
-        parent.appendChild(snElem);
+        xwriter.writeTextElement(dsPrefix, "X509SubjectName", XMLSignature.XMLNS, name);
     }
 
-    private void marshalCert(X509Certificate cert, Node parent, Document doc,
-                             String dsPrefix)
+    private static void marshalCert(XmlWriter xwriter, X509Certificate cert, String dsPrefix)
         throws MarshalException
     {
-        Element certElem = DOMUtils.createElement(doc, "X509Certificate",
-                                                  XMLSignature.XMLNS, dsPrefix);
         try {
-            certElem.appendChild(doc.createTextNode
-                                 (Base64.encode(cert.getEncoded())));
+            byte[] encoded = cert.getEncoded();
+            xwriter.writeTextElement(dsPrefix, "X509Certificate", XMLSignature.XMLNS, Base64.encode(encoded));
         } catch (CertificateEncodingException e) {
             throw new MarshalException("Error encoding X509Certificate", e);
         }
-        parent.appendChild(certElem);
     }
 
-    private void marshalCRL(X509CRL crl, Node parent, Document doc, 
-                            String dsPrefix)
+    private static void marshalCRL(XmlWriter xwriter, X509CRL crl, String dsPrefix)
         throws MarshalException
     {
-        Element crlElem = DOMUtils.createElement(doc, "X509CRL",
-                                                 XMLSignature.XMLNS, dsPrefix);
         try {
-            crlElem.appendChild(doc.createTextNode
-                                (Base64.encode(crl.getEncoded())));
+            byte[] encoded = crl.getEncoded();
+            xwriter.writeTextElement(dsPrefix, "X509CRL", XMLSignature.XMLNS, Base64.encode(encoded));
         } catch (CRLException e) {
             throw new MarshalException("Error encoding X509CRL", e);
         }
-        parent.appendChild(crlElem);
     }
 
     private X509Certificate unmarshalX509Certificate(Element elem) 

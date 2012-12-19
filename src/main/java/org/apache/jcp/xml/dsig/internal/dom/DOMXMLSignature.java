@@ -32,7 +32,6 @@
 package org.apache.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.*;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
@@ -46,8 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -60,7 +57,7 @@ import org.apache.xml.security.utils.Base64;
  * @author Sean Mullan
  * @author Joyce Leung
  */
-public final class DOMXMLSignature extends DOMStructure 
+public final class DOMXMLSignature extends DOMStructure
     implements XMLSignature {
 
     private static org.apache.commons.logging.Log log =
@@ -70,9 +67,6 @@ public final class DOMXMLSignature extends DOMStructure
     private KeyInfo ki;
     private List<XMLObject> objects;
     private SignedInfo si;
-    private Document ownerDoc = null;
-    private Element localSigElem = null;
-    private Element sigElem = null;
     private boolean validationStatus;
     private boolean validated = false;
     private KeySelectorResult ksr;
@@ -130,8 +124,7 @@ public final class DOMXMLSignature extends DOMStructure
                            Provider provider)
         throws MarshalException
     {
-        localSigElem = sigElem;
-        ownerDoc = localSigElem.getOwnerDocument();
+        Element localSigElem = sigElem;
 
         // get Id attribute, if specified
         id = DOMUtils.getAttributeValue(localSigElem, "Id");
@@ -161,79 +154,75 @@ public final class DOMXMLSignature extends DOMStructure
                                                  context, provider));
                 nextSibling = DOMUtils.getNextSiblingElement(nextSibling);
             }
-            objects = Collections.unmodifiableList(tempObjects);	
+            objects = Collections.unmodifiableList(tempObjects);    
         }
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public KeyInfo getKeyInfo() {
         return ki;
     }
 
+    @Override
     public SignedInfo getSignedInfo() {
         return si;
     }
 
-    public List getObjects() {
+    @Override
+    public List<XMLObject> getObjects() {
         return objects;
     }
 
+    @Override
     public SignatureValue getSignatureValue() {
         return sv;
     }
 
+    @Override
     public KeySelectorResult getKeySelectorResult() {
         return ksr;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    @Override
+    public void marshal(XmlWriter xwriter, String dsPrefix, XMLCryptoContext context)
         throws MarshalException
     {
-        marshal(parent, null, dsPrefix, context);
-    }
-
-    public void marshal(Node parent, Node nextSibling, String dsPrefix,
-                        DOMCryptoContext context)
-        throws MarshalException
-    {
-        ownerDoc = DOMUtils.getOwnerDocument(parent);
-        sigElem = DOMUtils.createElement(ownerDoc, "Signature",
-                                         XMLSignature.XMLNS, dsPrefix);
-
-        // append xmlns attribute
-        if (dsPrefix == null || dsPrefix.length() == 0) {
-            sigElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns",
-                                   XMLSignature.XMLNS);
-        } else {
-            sigElem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" +
-                                   dsPrefix, XMLSignature.XMLNS);
+        // rationalize the prefix.
+        if (dsPrefix == null) {
+            dsPrefix = "";
         }
-
+        xwriter.writeStartElement(dsPrefix, "Signature", XMLSignature.XMLNS);
+        
+        xwriter.writeNamespace(dsPrefix, XMLSignature.XMLNS);
+ 
+        // append Id attribute
+        xwriter.writeIdAttribute("", "", "Id", id);
+        
         // create and append SignedInfo element
-        ((DOMSignedInfo)si).marshal(sigElem, dsPrefix, context);
+        ((DOMSignedInfo) si).marshal(xwriter, dsPrefix, context);
 
         // create and append SignatureValue element
-        ((DOMSignatureValue)sv).marshal(sigElem, dsPrefix, context);
+        ((DOMSignatureValue) sv).marshal(xwriter, dsPrefix, context);
 
         // create and append KeyInfo element if necessary
         if (ki != null) {
-            ((DOMKeyInfo)ki).marshal(sigElem, null, dsPrefix, context);
+            DOMKeyInfo.marshal(xwriter, ki, dsPrefix, context);
         }
 
         // create and append Object elements if necessary
-        for (int i = 0, size = objects.size(); i < size; i++) {
-            ((DOMXMLObject)objects.get(i)).marshal(sigElem, dsPrefix, context);
+        for (XMLObject xmlObj : objects) {
+            DOMXMLObject.marshal(xwriter, xmlObj, dsPrefix, context);
         }
 
-        // append Id attribute
-        DOMUtils.setAttributeID(sigElem, "Id", id);
-            
-        parent.insertBefore(sigElem, nextSibling);
+        xwriter.writeEndElement(); // "Signature"
     }
 
+    @Override
     public boolean validate(XMLValidateContext vc) 
         throws XMLSignatureException
     {
@@ -259,8 +248,7 @@ public final class DOMXMLSignature extends DOMStructure
         }
 
         // validate all References
-        @SuppressWarnings("unchecked")
-        List<Reference> refs = this.si.getReferences();
+        List<Reference> refs = DOMSignedInfo.getSignedInfoReferences(this.si);
         boolean validateRefs = true;
         for (int i = 0, size = refs.size(); validateRefs && i < size; i++) {
             Reference ref = refs.get(i);
@@ -286,8 +274,7 @@ public final class DOMXMLSignature extends DOMStructure
         {
             for (int i=0, size=objects.size(); validateMans && i < size; i++) {
                 XMLObject xo = objects.get(i);
-                @SuppressWarnings("unchecked")
-                List<XMLStructure> content = xo.getContent();
+                List<XMLStructure> content = DOMXMLObject.getXmlObjectContent(xo);
                 int csize = content.size();
                 for (int j = 0; validateMans && j < csize; j++) {
                     XMLStructure xs = content.get(j);
@@ -296,8 +283,7 @@ public final class DOMXMLSignature extends DOMStructure
                             log.debug("validating manifest");
                         }
                         Manifest man = (Manifest)xs;
-                        @SuppressWarnings("unchecked")
-                        List<Reference> manRefs = man.getReferences();
+                        List<Reference> manRefs = DOMManifest.getManifestReferences(man);
                         int rsize = manRefs.size();
                         for (int k = 0; validateMans && k < rsize; k++) {
                             Reference ref = manRefs.get(k);
@@ -319,6 +305,7 @@ public final class DOMXMLSignature extends DOMStructure
         return validationStatus;
     }
 
+    @Override
     public void sign(XMLSignContext signContext) 
         throws MarshalException, XMLSignatureException
     {
@@ -326,9 +313,14 @@ public final class DOMXMLSignature extends DOMStructure
             throw new NullPointerException("signContext cannot be null");
         }
         DOMSignContext context = (DOMSignContext)signContext;
-        marshal(context.getParent(), context.getNextSibling(),
-                DOMUtils.getSignaturePrefix(context), context);
+        Node nextSibling = context.getNextSibling();
 
+        XmlWriterToTree xwriter = new XmlWriterToTree(Marshaller.getMarshallers(), context.getParent(), nextSibling);
+        marshal(xwriter,
+            DOMUtils.getSignaturePrefix(signContext), signContext);
+
+        Element sigElem = xwriter.getCreatedElement();
+        
         // generate references and signature value
         List<Reference> allReferences = new ArrayList<Reference>();
 
@@ -337,21 +329,18 @@ public final class DOMXMLSignature extends DOMStructure
         signatureIdMap = new HashMap<String, XMLStructure>();
         signatureIdMap.put(id, this);
         signatureIdMap.put(si.getId(), si);
-        @SuppressWarnings("unchecked")
-        List<Reference> refs = si.getReferences();
+        List<Reference> refs = DOMSignedInfo.getSignedInfoReferences(si);
         for (Reference ref : refs) {
             signatureIdMap.put(ref.getId(), ref);
         }
         for (XMLObject obj : objects) {
             signatureIdMap.put(obj.getId(), obj);
-            @SuppressWarnings("unchecked")
-            List<XMLStructure> content = obj.getContent();
+            List<XMLStructure> content = DOMXMLObject.getXmlObjectContent(obj);
             for (XMLStructure xs : content) {
                 if (xs instanceof Manifest) {
                     Manifest man = (Manifest)xs;
                     signatureIdMap.put(man.getId(), man);
-                    @SuppressWarnings("unchecked")
-                    List<Reference> manRefs = man.getReferences();
+                    List<Reference> manRefs = DOMManifest.getManifestReferences(man);
                     for (Reference ref : manRefs) {
                         allReferences.add(ref);
                         signatureIdMap.put(ref.getId(), ref);
@@ -394,14 +383,15 @@ public final class DOMXMLSignature extends DOMStructure
 
         // calculate signature value
         try {
+            Element sigValue = (Element) sigElem.getElementsByTagNameNS(XMLSignature.XMLNS, "SignatureValue").item(0);
+            xwriter.resetToNewParent(sigValue);
             byte[] val = ((AbstractDOMSignatureMethod)
-                si.getSignatureMethod()).sign(signingKey, si, signContext);
-            ((DOMSignatureValue)sv).setValue(val);
+                si.getSignatureMethod()).sign(signingKey, (DOMSignedInfo) si, signContext);
+            ((DOMSignatureValue)sv).setValue(xwriter, val);
         } catch (InvalidKeyException ike) {
             throw new XMLSignatureException(ike);
         }
 
-        this.localSigElem = sigElem;   
         this.ksr = ksr;
     }
 
@@ -450,7 +440,7 @@ public final class DOMXMLSignature extends DOMStructure
                     digestReference((DOMReference)xs, signContext);
                 } else if (xs instanceof Manifest) {
                     Manifest man = (Manifest)xs;
-                    List manRefs = man.getReferences();
+                    List<Reference> manRefs = DOMManifest.getManifestReferences(man);
                     for (int i = 0, size = manRefs.size(); i < size; i++) {
                         digestReference((DOMReference)manRefs.get(i),
                                         signContext);
@@ -461,7 +451,6 @@ public final class DOMXMLSignature extends DOMStructure
             // reference dependencies in the XPath Transform - so be on
             // the safe side, and skip and do at end in the final sweep
             if (uri.length() == 0) {
-                @SuppressWarnings("unchecked")
                 List<Transform> transforms = ref.getTransforms();
                 for (Transform transform : transforms) {
                     String transformAlg = transform.getAlgorithm();
@@ -481,7 +470,6 @@ public final class DOMXMLSignature extends DOMStructure
         private String id;
         private byte[] value;
         private String valueBase64;
-        private Element sigValueElem;
         private boolean validated = false;
         private boolean validationStatus;
 
@@ -499,24 +487,24 @@ public final class DOMXMLSignature extends DOMStructure
                 throw new MarshalException(bde);
             }
 
-            Attr attr = sigValueElem.getAttributeNodeNS(null, "Id");
-            if (attr != null) {
-                id = attr.getValue();
-                sigValueElem.setIdAttributeNode(attr, true);
-            } else {
-                id = null;
-            }
-            this.sigValueElem = sigValueElem;
+            id = DOMUtils.getIdAttributeValue(sigValueElem, "Id");
         }
 
+        @Override
         public String getId() {
             return id;
         }
 
+        @Override
         public byte[] getValue() {
             return (value == null) ? null : (byte[])value.clone();
         }
 
+        public String getEncodedValue() {
+            return valueBase64;
+        }
+
+        @Override
         public boolean validate(XMLValidateContext validateContext) 
             throws XMLSignatureException
         {
@@ -548,7 +536,7 @@ public final class DOMXMLSignature extends DOMStructure
             // canonicalize SignedInfo and verify signature
             try {
                 validationStatus = ((AbstractDOMSignatureMethod)sm).verify
-                    (validationKey, si, value, validateContext);
+                    (validationKey, (DOMSignedInfo) si, value, validateContext);
             } catch (Exception e) {
                 throw new XMLSignatureException(e);
             }
@@ -582,26 +570,29 @@ public final class DOMXMLSignature extends DOMStructure
             return 42; // any arbitrary constant will do 
         }
 
-        public void marshal(Node parent, String dsPrefix,
-                            DOMCryptoContext context)
+        @Override
+        public void marshal(XmlWriter xwriter, String dsPrefix,
+                XMLCryptoContext context)
             throws MarshalException
         {
             // create SignatureValue element
-            sigValueElem = DOMUtils.createElement(ownerDoc, "SignatureValue",
-                                                  XMLSignature.XMLNS, dsPrefix);
-            if (valueBase64 != null) {
-                sigValueElem.appendChild(ownerDoc.createTextNode(valueBase64));
-            }
+            xwriter.writeStartElement(dsPrefix, "SignatureValue", XMLSignature.XMLNS);
 
             // append Id attribute, if specified
-            DOMUtils.setAttributeID(sigValueElem, "Id", id);
-            parent.appendChild(sigValueElem);
+            xwriter.writeIdAttribute("", "", "Id", id);
+            if (valueBase64 != null) {
+                xwriter.writeCharacters(valueBase64);
+            }
+
+            xwriter.writeEndElement(); // "SignatureValue"
         }
 
-        void setValue(byte[] value) {
+        void setValue(XmlWriter xwriter, byte[] value) {
             this.value = value;
             valueBase64 = Base64.encode(value);
-            sigValueElem.appendChild(ownerDoc.createTextNode(valueBase64));
+            if (xwriter != null) {
+                xwriter.writeCharacters(valueBase64);
+            }
         }
     }
 }

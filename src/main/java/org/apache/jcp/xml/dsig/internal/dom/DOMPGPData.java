@@ -26,10 +26,7 @@ package org.apache.jcp.xml.dsig.internal.dom;
 
 import java.util.*;
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
-import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.PGPData;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,7 +39,7 @@ import org.apache.xml.security.utils.Base64;
  *
  * @author Sean Mullan
  */
-public final class DOMPGPData extends DOMStructure implements PGPData {
+public final class DOMPGPData extends BaseStructure implements PGPData {
 
     private final byte[] keyId;
     private final byte[] keyPacket;
@@ -81,7 +78,7 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
                 }
             }
         }
-        this.keyPacket = (byte[])keyPacket.clone();
+        this.keyPacket = keyPacket.clone();
         checkKeyPacket(keyPacket);
         this.keyId = null;
     }
@@ -128,7 +125,7 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
                 }
             }
         }
-        this.keyId = (byte[])keyId.clone();
+        this.keyId = keyId.clone();
         this.keyPacket = keyPacket == null ? null
                                            : (byte[])keyPacket.clone();
         if (keyPacket != null) {
@@ -172,53 +169,19 @@ public final class DOMPGPData extends DOMStructure implements PGPData {
         this.externalElements = Collections.unmodifiableList(other);
     }
 
+    @Override
     public byte[] getKeyId() {
         return (keyId == null ? null : (byte[])keyId.clone());
     }
 
+    @Override
     public byte[] getKeyPacket() {
         return (keyPacket == null ? null : (byte[])keyPacket.clone());
     }
 
-    public List getExternalElements() {
+    @Override
+    public List<XMLStructure> getExternalElements() {
         return externalElements;
-    }
-
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-        throws MarshalException
-    {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        Element pdElem = DOMUtils.createElement(ownerDoc, "PGPData",
-                                                XMLSignature.XMLNS, dsPrefix);
-
-        // create and append PGPKeyID element
-        if (keyId != null) {
-            Element keyIdElem = DOMUtils.createElement(ownerDoc, "PGPKeyID",
-                                                       XMLSignature.XMLNS,
-                                                       dsPrefix);
-            keyIdElem.appendChild
-                (ownerDoc.createTextNode(Base64.encode(keyId)));
-            pdElem.appendChild(keyIdElem);
-        }
-
-        // create and append PGPKeyPacket element
-        if (keyPacket != null) {
-            Element keyPktElem = DOMUtils.createElement(ownerDoc,
-                                                        "PGPKeyPacket",
-                                                        XMLSignature.XMLNS,
-                                                        dsPrefix);
-            keyPktElem.appendChild
-                (ownerDoc.createTextNode(Base64.encode(keyPacket)));
-            pdElem.appendChild(keyPktElem);
-        }
-
-        // create and append any elements
-        for (XMLStructure extElem : externalElements) {
-            DOMUtils.appendChild(pdElem, ((javax.xml.crypto.dom.DOMStructure) 
-                extElem).getNode());
-        }
-
-        parent.appendChild(pdElem);
     }
 
     /**

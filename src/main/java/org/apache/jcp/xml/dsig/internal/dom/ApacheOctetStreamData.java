@@ -41,6 +41,7 @@ public class ApacheOctetStreamData extends OctetStreamData
         this.xi = xi;
     }
 
+    @Override
     public XMLSignatureInput getXMLSignatureInput() {
         return xi;
     }

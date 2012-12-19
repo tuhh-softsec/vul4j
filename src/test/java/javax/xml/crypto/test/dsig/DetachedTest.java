@@ -143,6 +143,7 @@ public class DetachedTest extends org.junit.Assert {
 
             // Generate (and sign) the XMLSignature
             signature.sign(signContext);
+            TestUtils.validateSecurityOrEncryptionElement(doc.getDocumentElement());
     
             //
             // PART 2 : Validating the detached signature

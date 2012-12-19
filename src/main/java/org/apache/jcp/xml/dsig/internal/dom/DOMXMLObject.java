@@ -25,15 +25,14 @@
 package org.apache.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
 import java.security.Provider;
 import java.util.*;
 
 import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -42,13 +41,12 @@ import org.w3c.dom.NodeList;
  *
  * @author Sean Mullan
  */
-public final class DOMXMLObject extends DOMStructure implements XMLObject {
+public final class DOMXMLObject extends BaseStructure implements XMLObject {
  
     private final String id;
     private final String mimeType;
     private final String encoding;
     private final List<XMLStructure> content;
-    private Element objectElem;
 
     /**
      * Creates an <code>XMLObject</code> from the specified parameters.
@@ -127,57 +125,65 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
             }
             content.add(new javax.xml.crypto.dom.DOMStructure(child));
         }
+                
+        // Here we capture namespace declarations, so that when they're marshalled back
+        // out, we can make copies of them. Note that attributes are NOT captured.
+        NamedNodeMap nnm = objElem.getAttributes();
+        for (int idx = 0 ; idx < nnm.getLength() ; idx++) {
+            Node nsDecl = nnm.item(idx);
+            if (DOMUtils.isNamespace(nsDecl)) {
+                content.add(new javax.xml.crypto.dom.DOMStructure(nsDecl));
+            }
+        }
+        
         if (content.isEmpty()) {
             this.content = Collections.emptyList();
         } else {
             this.content = Collections.unmodifiableList(content);
         }
-        this.objectElem = objElem;
     }
 
-    public List getContent() {
+    @Override
+    public List<XMLStructure> getContent() {
         return content;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getMimeType() {
         return mimeType;
     }
 
+    @Override
     public String getEncoding() {
         return encoding;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
+    public static void marshal(XmlWriter xwriter, XMLObject xmlObj, String dsPrefix, XMLCryptoContext context)
         throws MarshalException {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
+        xwriter.writeStartElement(dsPrefix, "Object", XMLSignature.XMLNS);
 
-        Element objElem = objectElem != null ? objectElem : null;
-        if (objElem == null) {
-            objElem = DOMUtils.createElement(ownerDoc, "Object",
-                                             XMLSignature.XMLNS, dsPrefix);
+        // set attributes
+        xwriter.writeIdAttribute("", "", "Id", xmlObj.getId());
+        xwriter.writeAttribute("", "", "MimeType", xmlObj.getMimeType());
+        xwriter.writeAttribute("", "", "Encoding", xmlObj.getEncoding());
 
-            // set attributes
-            DOMUtils.setAttributeID(objElem, "Id", id);
-            DOMUtils.setAttribute(objElem, "MimeType", mimeType);
-            DOMUtils.setAttribute(objElem, "Encoding", encoding);
-
-            // create and append any elements and mixed content, if necessary
-            for (XMLStructure object : content) {
-                if (object instanceof DOMStructure) {
-                    ((DOMStructure)object).marshal(objElem, dsPrefix, context);
-                } else {
-                    javax.xml.crypto.dom.DOMStructure domObject = 
-                        (javax.xml.crypto.dom.DOMStructure)object;
-                    DOMUtils.appendChild(objElem, domObject.getNode());
-                }
-            }
+        // create and append any elements and mixed content, if necessary
+        @SuppressWarnings("unchecked")
+        List<XMLStructure> content = xmlObj.getContent();
+        for (XMLStructure object : content) {
+            xwriter.marshalStructure(object, dsPrefix, context);
         }
+        xwriter.writeEndElement(); // "Object"
+    }
             
-        parent.appendChild(objElem);
+    @SuppressWarnings("unchecked")
+    public static List<XMLStructure> getXmlObjectContent(XMLObject xo) {
+        return xo.getContent();
     }
 
     @Override
@@ -200,10 +206,8 @@ public final class DOMXMLObject extends DOMStructure implements XMLObject {
             (mimeType == null ? oxo.getMimeType() == null
                               : mimeType.equals(oxo.getMimeType()));
 
-        @SuppressWarnings("unchecked")
-        List<XMLStructure> oxoContent = oxo.getContent();
         return (idsEqual && encodingsEqual && mimeTypesEqual && 
-                equalsContent(oxoContent));
+                equalsContent(getXmlObjectContent(oxo)));
     }
     
     @Override

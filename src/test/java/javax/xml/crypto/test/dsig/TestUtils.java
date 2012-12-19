@@ -35,9 +35,14 @@ import java.math.BigInteger;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /*
  * @author Sean Mullan
@@ -79,6 +84,14 @@ public class TestUtils {
         return kf.generatePublic(kspec);
     }
 
+    public static void validateSecurityOrEncryptionElement(Node toValidate) throws SAXException, IOException {
+        
+        Schema schema = XMLSecurityConstants.getJaxbSchemas();
+        Validator validator = schema.newValidator();
+        DOMSource source = new DOMSource(toValidate);
+        validator.validate(source);
+    }
+    
     public static PrivateKey getPrivateKey(String algo) 
         throws InvalidKeySpecException, NoSuchAlgorithmException {
         KeyFactory kf = KeyFactory.getInstance(algo);

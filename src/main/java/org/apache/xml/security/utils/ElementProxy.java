@@ -336,10 +336,10 @@ public abstract class ElementProxy {
     public BigInteger getBigIntegerFromChildElement(
         String localname, String namespace
     ) throws Base64DecodingException {
-        return Base64.decodeBigIntegerFromText(
+        return Base64.decodeBigIntegerFromString(
             XMLUtils.selectNodeText(
                 this.constructionElement.getFirstChild(), namespace, localname, 0
-            )
+            ).getNodeValue()
         );
     }
 

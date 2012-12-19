@@ -24,23 +24,18 @@
  */
 package org.apache.jcp.xml.dsig.internal.dom;
 
-import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
-import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.keyinfo.X509IssuerSerial;
 
 import java.math.BigInteger;
 import javax.security.auth.x500.X500Principal;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * DOM-based implementation of X509IssuerSerial.
  *
  * @author Sean Mullan
  */
-public final class DOMX509IssuerSerial extends DOMStructure 
+public final class DOMX509IssuerSerial extends BaseStructure
     implements X509IssuerSerial {
 
     private final String issuerName;
@@ -83,30 +78,14 @@ public final class DOMX509IssuerSerial extends DOMStructure
         serialNumber = new BigInteger(sNElem.getFirstChild().getNodeValue());
     }
 
+    @Override
     public String getIssuerName() {
         return issuerName;
     }
 
+    @Override
     public BigInteger getSerialNumber() {
         return serialNumber;
-    }
-
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-        throws MarshalException
-    {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-
-        Element isElem = DOMUtils.createElement(ownerDoc, "X509IssuerSerial",
-                                                XMLSignature.XMLNS, dsPrefix);
-        Element inElem = DOMUtils.createElement(ownerDoc, "X509IssuerName",
-                                                XMLSignature.XMLNS, dsPrefix);
-        Element snElem = DOMUtils.createElement(ownerDoc, "X509SerialNumber",
-                                                XMLSignature.XMLNS, dsPrefix);
-        inElem.appendChild(ownerDoc.createTextNode(issuerName));
-        snElem.appendChild(ownerDoc.createTextNode(serialNumber.toString()));
-        isElem.appendChild(inElem);
-        isElem.appendChild(snElem);
-        parent.appendChild(isElem);
     }
 
     @Override

@@ -25,25 +25,21 @@
 package org.apache.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.*;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.*;
 
 import java.security.Provider;
 import java.util.*;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * DOM-based implementation of Manifest.
  *
  * @author Sean Mullan
  */
-public final class DOMManifest extends DOMStructure implements Manifest {
+public final class DOMManifest extends BaseStructure implements Manifest {
 
-    private final List<Reference> references;
+    private final List<DOMReference> references;
     private final String id;
 
     /**
@@ -59,12 +55,12 @@ public final class DOMManifest extends DOMStructure implements Manifest {
      * @throws ClassCastException if <code>references</code> contains any
      *    entries that are not of type {@link Reference}
      */
-    public DOMManifest(List<? extends Reference> references, String id) {
+    public DOMManifest(List<DOMReference> references, String id) {
         if (references == null) {
             throw new NullPointerException("references cannot be null");
         }
         this.references =
-            Collections.unmodifiableList(new ArrayList<Reference>(references));
+            Collections.unmodifiableList(new ArrayList<DOMReference>(references));
         if (this.references.isEmpty()) {
             throw new IllegalArgumentException("list of references must " +
                 "contain at least one entry");
@@ -87,13 +83,7 @@ public final class DOMManifest extends DOMStructure implements Manifest {
                        Provider provider)
         throws MarshalException
     {
-        Attr attr = manElem.getAttributeNodeNS(null, "Id");
-        if (attr != null) {
-            this.id = attr.getValue();
-            manElem.setIdAttributeNode(attr, true);
-        } else {
-            this.id = null;
-        }
+        this.id = DOMUtils.getIdAttributeValue(manElem, "Id");
         
         Boolean secureValidation = (Boolean)
             context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
@@ -103,7 +93,7 @@ public final class DOMManifest extends DOMStructure implements Manifest {
         }
         
         Element refElem = DOMUtils.getFirstChildElement(manElem);
-        List<Reference> refs = new ArrayList<Reference>();
+        List<DOMReference> refs = new ArrayList<DOMReference>();
         
         int refCount = 0;
         while (refElem != null) {
@@ -120,28 +110,33 @@ public final class DOMManifest extends DOMStructure implements Manifest {
         this.references = Collections.unmodifiableList(refs);
     }
 
+    @Override
     public String getId() {
         return id;
     }
     
-    public List getReferences() {
+    @SuppressWarnings("unchecked")
+    public static List<Reference> getManifestReferences(Manifest mf) {
+        return mf.getReferences();
+    }
+    
+    @Override
+    public List<DOMReference> getReferences() {
         return references;
     }
 
-    public void marshal(Node parent, String dsPrefix, DOMCryptoContext context)
-        throws MarshalException
-    {
-        Document ownerDoc = DOMUtils.getOwnerDocument(parent);
-        Element manElem = DOMUtils.createElement(ownerDoc, "Manifest",
-                                                 XMLSignature.XMLNS, dsPrefix);
-
-        DOMUtils.setAttributeID(manElem, "Id", id);
+    public static void marshal(XmlWriter xwriter, Manifest manif, String dsPrefix, XMLCryptoContext context)
+    throws MarshalException {
+        xwriter.writeStartElement(dsPrefix, "Manifest", XMLSignature.XMLNS);
+        xwriter.writeIdAttribute("", "", "Id", manif.getId());
 
         // add references
+        @SuppressWarnings("unchecked")
+        List<Reference> references = manif.getReferences();
         for (Reference ref : references) {
-            ((DOMReference)ref).marshal(manElem, dsPrefix, context);
+            ((DOMReference)ref).marshal(xwriter, dsPrefix, context);
         }
-        parent.appendChild(manElem);
+        xwriter.writeEndElement(); // "Manifest"
     }
 
     @Override

@@ -16,31 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/*
- * Copyright 2005 Sun Microsystems, Inc. All rights reserved.
- */
-/*
- * $Id$
- */
 package org.apache.jcp.xml.dsig.internal.dom;
 
-import java.security.InvalidAlgorithmParameterException;
+import javax.xml.crypto.XMLStructure;
 
-import javax.xml.crypto.dsig.spec.TransformParameterSpec;
+import org.w3c.dom.Node;
 
-/**
- * DOM-based implementation of Base64 Encoding Transform.
- * (Uses Apache XML-Sec Transform implementation)
- *
- * @author Sean Mullan
- */
-public final class DOMBase64Transform extends ApacheTransform {
- 
-    @Override
-    public void init(TransformParameterSpec params)
-        throws InvalidAlgorithmParameterException {
-        if (params != null) {
-            throw new InvalidAlgorithmParameterException("params must be null");
+public abstract class BaseStructure implements XMLStructure {
+
+    /**
+     * Since the behavior of {@link Model#getStringValue(Object)} returns the value
+     * of all descendant text nodes of an element, whereas we just want the immediate children.
+     * 
+     * @param <N>
+     * @param model
+     * @param node
+     * @return
+     */
+    public static String textOfNode(Node node) {
+        return node.getFirstChild().getNodeValue();
+    }
+
+    public final boolean isFeatureSupported(String feature) {
+        if (feature == null) {
+            throw new NullPointerException();
+        } else {
+            return false;
         }
     }
+
 }

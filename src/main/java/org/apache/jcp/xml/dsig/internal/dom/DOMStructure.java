@@ -25,25 +25,14 @@
 package org.apache.jcp.xml.dsig.internal.dom;
 
 import javax.xml.crypto.MarshalException;
-import javax.xml.crypto.XMLStructure;
-import javax.xml.crypto.dom.DOMCryptoContext;
-import org.w3c.dom.Node;
+import javax.xml.crypto.XMLCryptoContext;
 
 /**
  * DOM-based abstract implementation of XMLStructure.
  *
  * @author Sean Mullan
  */
-public abstract class DOMStructure implements XMLStructure {
+public abstract class DOMStructure extends BaseStructure {
 
-    public final boolean isFeatureSupported(String feature) {
-        if (feature == null) {
-            throw new NullPointerException();
-        } else {
-            return false;
-        }
-    }
-
-    public abstract void marshal(Node parent, String dsPrefix, 
-        DOMCryptoContext context) throws MarshalException;
+    public abstract void marshal(XmlWriter xwriter, String dsPrefix, XMLCryptoContext context) throws MarshalException;
 }

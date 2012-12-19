@@ -136,6 +136,10 @@ public class XMLSecurityConstants {
         XMLSecurityConstants.schema = schema;
     }
 
+    public static Schema getJaxbSchemas() {
+        return XMLSecurityConstants.schema;
+    }
+    
     public static Unmarshaller getJaxbUnmarshaller(boolean disableSchemaValidation) throws JAXBException {
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         if (!disableSchemaValidation) {
