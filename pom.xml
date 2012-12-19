@@ -442,7 +442,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -668,7 +667,7 @@
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dependency.httpclient.version>4.2.2</dependency.httpclient.version>
+		<dependency.httpclient.version>4.2.3-SNAPSHOT</dependency.httpclient.version>
 		<currentVersion>${project.version}</currentVersion>
 	</properties>
 </project>

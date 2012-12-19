@@ -673,7 +673,7 @@ public class HttpClientHelperTest extends TestCase {
 		GenericHttpRequest request2 = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse result3 = httpClientHelper.execute(request2);
 		assertEquals(200, result3.getStatusLine().getStatusCode());
-		assertTrue(result3.getFirstHeader("X-cache").getValue(), result3.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+		assertTrue(result3.getFirstHeader("X-cache").getValue(), result3.getFirstHeader("X-cache").getValue().startsWith("MISS"));
 		assertNotNull(result3.getEntity());
 	}
 
