@@ -49,7 +49,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.cookie.CookieSpecRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
@@ -95,11 +94,6 @@ public class HttpClientHelper {
 	private HttpClient httpClient;
 	private EventManager eventManager;
 	private HeaderManager headerManager;
-	private static final CookieSpecRegistry cookieSpecRegistry;
-	static {
-		cookieSpecRegistry = new CookieSpecRegistry();
-		cookieSpecRegistry.register(CookiePolicy.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory());
-	}
 
 	private final static HttpClient buildDefaultHttpClient(Properties properties) {
 		HttpHost proxyHost = null;
@@ -239,8 +233,6 @@ public class HttpClientHelper {
 	public HttpResponse execute(GenericHttpRequest httpRequest) {
 		HttpEntityEnclosingRequest originalRequest = (HttpEntityEnclosingRequest) httpRequest.getParams().getParameter(ORIGINAL_REQUEST_KEY);
 		HttpContext httpContext = new BasicHttpContext();
-		// FIXME This can be removed when switching to HttpClient 4.3
-		httpContext.setAttribute(ClientContext.COOKIESPEC_REGISTRY, cookieSpecRegistry);
 
 		if (cookieManager != null) {
 			CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest);
@@ -292,8 +284,7 @@ public class HttpClientHelper {
 					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 				}
 				// FIXME workaround for a bug in http client cache that does not
-				// keep
-				// params in response
+				// keep params in response
 				result.setParams(httpRequest.getParams());
 				event.httpResponse = result;
 			}

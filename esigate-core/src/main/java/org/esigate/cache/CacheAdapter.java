@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.Properties;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -33,7 +32,6 @@ import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
@@ -234,18 +232,6 @@ public class CacheAdapter {
 						xCacheString += " (" + httpRequest.getRequestLine().getMethod() + " " + httpRequest.getRequestLine().getUri() + ")";
 						httpResponse.addHeader("X-Cache", xCacheString);
 					}
-				}
-
-				// FIXME remove empty entity to avoid NullPointerException in
-				// org.apache.http.impl.client.cache.CacheEntity.writeTo(CacheEntity.java:82)
-				HttpEntity entity = httpResponse.getEntity();
-				if (entity != null && entity.getContentLength() == 0) {
-					try {
-						EntityUtils.consume(entity);
-					} catch (IOException e) {
-						// Just do our best to release
-					}
-					httpResponse.setEntity(null);
 				}
 
 				// Remove Via header

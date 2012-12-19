@@ -19,7 +19,7 @@ import java.util.Properties;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.cache.HttpCacheStorage;
 import org.apache.http.impl.client.cache.CacheConfig;
-import org.apache.http.impl.client.cache.PatchedCachingHttpClientFactory;
+import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
@@ -74,12 +74,7 @@ public class CacheConfigHelper {
 		CacheAdapter cacheAdapter = new CacheAdapter();
 		cacheAdapter.init(properties);
 		HttpClient cachingHttpClient = cacheAdapter.wrapBackendHttpClient(d, backend);
-		// FIXME remove this when tickets
-		// https://issues.apache.org/jira/browse/HTTPCLIENT-1274 and
-		// https://issues.apache.org/jira/browse/HTTPCLIENT-1276 will be closed
-		// cachingHttpClient = new CachingHttpClient(cachingHttpClient,
-		// (HttpCacheStorage) cacheStorage, cacheConfig);
-		cachingHttpClient = PatchedCachingHttpClientFactory.buildCachingHttpClient(cachingHttpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
+		cachingHttpClient = new CachingHttpClient(cachingHttpClient, (HttpCacheStorage) cacheStorage, cacheConfig);
 		cachingHttpClient = cacheAdapter.wrapCachingHttpClient(cachingHttpClient);
 		return cachingHttpClient;
 	}
