@@ -272,6 +272,12 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             throw new XMLSecurityException("algorithms.NoSuchMap", digestMethodAlgorithm);
         }
 
+        AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
+        algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
+        algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
+        algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
+        securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+
         MessageDigest messageDigest;
         try {
             if (digestAlgorithm.getJCEProvider() != null) {
@@ -284,12 +290,6 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         } catch (NoSuchProviderException e) {
             throw new XMLSecurityException(e);
         }
-
-        AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
-        algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
-        algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
-        algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
-        securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
         return new DigestOutputStream(messageDigest);
     }
