@@ -52,6 +52,7 @@ import org.esigate.http.MockHttpClient;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.TestUtils;
+import org.esigate.util.HttpRequestHelper;
 
 public class DriverTest extends TestCase {
 	private HttpEntityEnclosingRequest request;
@@ -282,8 +283,6 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		properties.put(Parameters.TTL.name, "43200");
 		properties.put(Parameters.PRESERVE_HOST.name, "true");
-		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
-		properties.put(Parameters.STALE_IF_ERROR.name, "20000");
 		properties.put(Parameters.USE_CACHE.name, true);
 
 		MockHttpClient mockHttpClient = new MockHttpClient();
@@ -366,8 +365,6 @@ public class DriverTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
 		properties.put(Parameters.TTL.name, "43200");
 		properties.put(Parameters.PRESERVE_HOST.name, "true");
-		properties.put(Parameters.STALE_WHILE_REVALIDATE.name, "20000");
-		properties.put(Parameters.STALE_IF_ERROR.name, "20000");
 		properties.put(Parameters.USE_CACHE.name, true);
 
 		MockHttpClient mockHttpClient = new MockHttpClient();
@@ -550,6 +547,12 @@ public class DriverTest extends TestCase {
 		// HttpRequestHelper.getMediator(request).getCookies().length > 0);
 	}
 
+	/**
+	 * 0000154: Warn on staleWhileRevalidate configuration issue
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=154
+	 * 
+	 * @throws Exception
+	 */
 	public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
