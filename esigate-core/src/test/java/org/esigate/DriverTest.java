@@ -434,9 +434,7 @@ public class DriverTest extends TestCase {
 		Driver driver = createMockDriver(properties, mockHttpClient);
 
 		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
-		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
 		TestUtils.addCookie(new BasicClientCookie("TEST_cookie", "233445436436346"), request);
-		request.addHeader("Accept-Encoding", "gzip, deflate");
 
 		driver.proxy("/foobar/", request);
 
@@ -473,11 +471,14 @@ public class DriverTest extends TestCase {
 
 		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
 		request.addHeader("Host", "test.mydomain.fr");
-		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
-		TestUtils.addCookie(new BasicClientCookie("TEST_cookie", "233445436436346"), request);
-		request.addHeader("Accept-Encoding", "gzip, deflate");
+		BasicClientCookie cookie = new BasicClientCookie("TEST_cookie", "233445436436346");
+		TestUtils.addCookie(cookie, request);
 
 		driver.proxy("/foobar/", request);
+
+		// same test without forcing the host header
+		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
+		TestUtils.addCookie(cookie, request);
 
 	}
 
@@ -537,14 +538,12 @@ public class DriverTest extends TestCase {
 		Driver driver = createMockDriver(properties, mockHttpClient);
 
 		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
-		request.addHeader("Accept", "text/html,application/xhtml+xml,application/xml");
-		request.addHeader("Accept-Encoding", "gzip, deflate");
 
 		driver.proxy("/foobar/", request);
 
 		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
-		// assertTrue("Set-Cookie must be forwarded.",
-		// HttpRequestHelper.getMediator(request).getCookies().length > 0);
+		assertTrue("Set-Cookie must be forwarded.",
+		HttpRequestHelper.getMediator(request).getCookies().length > 0);
 	}
 
 	/**

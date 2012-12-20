@@ -114,10 +114,6 @@ public class DefaultCookieManager implements CookieManager {
 		
 		if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
 			domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toHostString();
-			
-			// When issue HTTPCLIENT-1282 is fixed, remove the following line.
-			// https://issues.apache.org/jira/browse/HTTPCLIENT-1282
-			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		} else {
 			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		}
