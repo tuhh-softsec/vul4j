@@ -32,6 +32,7 @@ import org.apache.http.impl.client.cache.CachingHttpClient;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
+import org.esigate.ConfigurationException;
 import org.esigate.Parameters;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FetchEvent;
@@ -54,6 +55,9 @@ public class CacheAdapter {
 	public void init(Properties properties) {
 		staleIfError = Parameters.STALE_IF_ERROR.getValueInt(properties);
 		staleWhileRevalidate = Parameters.STALE_WHILE_REVALIDATE.getValueInt(properties);
+		int maxAsynchronousWorkers = Parameters.MAX_ASYNCHRONOUS_WORKERS.getValueInt(properties);
+		if (staleWhileRevalidate > 0 && maxAsynchronousWorkers == 0)
+			throw new ConfigurationException("You must set a positive value for maxAsynchronousWorkers in order to enable background revalidation (staleWhileRevalidate)");
 		ttl = Parameters.TTL.getValueInt(properties);
 		xCacheHeader = Parameters.X_CACHE_HEADER.getValueBoolean(properties);
 		viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
