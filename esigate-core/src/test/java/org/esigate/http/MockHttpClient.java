@@ -17,6 +17,7 @@ package org.esigate.http;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLSession;
 
@@ -54,6 +55,7 @@ public class MockHttpClient extends DefaultHttpClient {
 	private HttpRequest sentRequest;
 	private long sleep = 0l;
 	private HttpRequestExecutor httpResponseExecutor;
+	private final AtomicInteger openConnections = new AtomicInteger(0);
 
 	private void sleep() {
 		if (sleep > 0)
@@ -75,8 +77,7 @@ public class MockHttpClient extends DefaultHttpClient {
 		return new HttpRequestExecutor() {
 
 			@Override
-			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
-					throws IOException, HttpException {
+			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws IOException, HttpException {
 				if (response == null)
 					throw new RuntimeException("Mock response was not set");
 				sleep();
@@ -98,14 +99,19 @@ public class MockHttpClient extends DefaultHttpClient {
 			public ClientConnectionRequest requestConnection(final HttpRoute route, Object state) {
 				return new ClientConnectionRequest() {
 
-					public ManagedClientConnection getConnection(long timeout, TimeUnit tunit)
-							throws InterruptedException, ConnectionPoolTimeoutException {
+					public ManagedClientConnection getConnection(long timeout, TimeUnit tunit) throws InterruptedException, ConnectionPoolTimeoutException {
 						return new ManagedClientConnection() {
+							private boolean open = false;
 
 							public void releaseConnection() throws IOException {
+								if (open) {
+									openConnections.decrementAndGet();
+									open = false;
+								}
 							}
 
 							public void abortConnection() throws IOException {
+								releaseConnection();
 							}
 
 							public int getRemotePort() {
@@ -125,6 +131,7 @@ public class MockHttpClient extends DefaultHttpClient {
 							}
 
 							public void shutdown() throws IOException {
+								releaseConnection();
 							}
 
 							public void setSocketTimeout(int timeout) {
@@ -135,7 +142,7 @@ public class MockHttpClient extends DefaultHttpClient {
 							}
 
 							public boolean isOpen() {
-								return true;
+								return open;
 							}
 
 							public int getSocketTimeout() {
@@ -147,13 +154,13 @@ public class MockHttpClient extends DefaultHttpClient {
 							}
 
 							public void close() throws IOException {
+								releaseConnection();
 							}
 
 							public void sendRequestHeader(HttpRequest request) throws HttpException, IOException {
 							}
 
-							public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException,
-									IOException {
+							public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException, IOException {
 							}
 
 							public HttpResponse receiveResponseHeader() throws HttpException, IOException {
@@ -178,8 +185,7 @@ public class MockHttpClient extends DefaultHttpClient {
 								throw new RuntimeException("Method not implemented");
 							}
 
-							public void tunnelProxy(HttpHost next, boolean secure, HttpParams params)
-									throws IOException {
+							public void tunnelProxy(HttpHost next, boolean secure, HttpParams params) throws IOException {
 								throw new RuntimeException("Method not implemented");
 							}
 
@@ -191,8 +197,13 @@ public class MockHttpClient extends DefaultHttpClient {
 								// Nothing to do
 							}
 
-							public void open(HttpRoute route, HttpContext context, HttpParams params)
-									throws IOException {
+							public void open(HttpRoute route, HttpContext context, HttpParams params) throws IOException {
+								if (!open) {
+									openConnections.incrementAndGet();
+									open = true;
+								} else {
+									throw new IllegalStateException("Connection is already open");
+								}
 							}
 
 							public void markReusable() {
@@ -231,6 +242,11 @@ public class MockHttpClient extends DefaultHttpClient {
 			}
 
 			public void releaseConnection(ManagedClientConnection conn, long validDuration, TimeUnit timeUnit) {
+				try {
+					conn.releaseConnection();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 			public SchemeRegistry getSchemeRegistry() {
@@ -254,7 +270,7 @@ public class MockHttpClient extends DefaultHttpClient {
 	public void setHttpResponseExecutor(HttpRequestExecutor httpResponseExecutor) {
 		this.httpResponseExecutor = httpResponseExecutor;
 	}
-	
+
 	/**
 	 * Set next response. Will only work if no
 	 * 
@@ -270,6 +286,10 @@ public class MockHttpClient extends DefaultHttpClient {
 
 	public HttpRequest getSentRequest() {
 		return sentRequest;
+	}
+
+	public int getOpenConnections() {
+		return openConnections.get();
 	}
 
 }

@@ -16,8 +16,10 @@ package org.esigate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -37,6 +39,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHttpResponse;
@@ -542,8 +545,7 @@ public class DriverTest extends TestCase {
 		driver.proxy("/foobar/", request);
 
 		// https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161
-		assertTrue("Set-Cookie must be forwarded.",
-		HttpRequestHelper.getMediator(request).getCookies().length > 0);
+		assertTrue("Set-Cookie must be forwarded.", HttpRequestHelper.getMediator(request).getCookies().length > 0);
 	}
 
 	/**
@@ -565,4 +567,45 @@ public class DriverTest extends TestCase {
 			// This is exactly what we want
 		}
 	}
+
+	/**
+	 * 0000141: Socket read timeout causes a stacktrace and may leak connection
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=141
+	 * 
+	 * The warning will not be fixed in HttpClient but the leak is fixed.
+	 * 
+	 * @throws Exception
+	 */
+	public void testSocketReadTimeoutWithCacheAndGzipDoesNotLeak() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
+		properties.put(Parameters.USE_CACHE, "true");
+
+		MockHttpClient mockHttpClient = new MockHttpClient();
+		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
+		response.addHeader("Date", DateUtils.formatDate(new Date()));
+		response.addHeader("Cache-control", "public, max-age=1000");
+		response.addHeader("Content-Encoding", "gzip");
+		response.setEntity(new InputStreamEntity(new InputStream() {
+			@Override
+			public int read() throws IOException {
+				throw new SocketTimeoutException("Read timed out");
+			}
+		}, 1000));
+		mockHttpClient.setResponse(response);
+
+		Driver driver = createMockDriver(properties, mockHttpClient);
+
+		request = TestUtils.createRequest("http://test.mydomain.fr/");
+		request.addHeader("Accept-Encoding", "gzip, deflate");
+
+		try {
+			driver.proxy("/", request);
+			fail("We should have had a SocketTimeoutException");
+		} catch (SocketTimeoutException e) {
+			// That is what we expect
+		}
+		assertEquals("All the connections should have been closed", 0, mockHttpClient.getOpenConnections());
+	}
+
 }
