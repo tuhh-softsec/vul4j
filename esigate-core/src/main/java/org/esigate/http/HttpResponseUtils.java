@@ -32,6 +32,7 @@ import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.util.EntityUtils;
+import org.esigate.HttpErrorPage;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,7 @@ public class HttpResponseUtils {
 		}
 	}
 
-	public static String toString(HttpResponse httpResponse) throws IOException {
+	public static String toString(HttpResponse httpResponse) throws HttpErrorPage {
 		HttpEntity httpEntity = httpResponse.getEntity();
 		String result;
 		if (httpEntity == null) {
@@ -118,7 +119,11 @@ public class HttpResponseUtils {
 					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");
 				}
 			}
-			result = EntityUtils.toString(httpEntity);
+			try {
+				result = EntityUtils.toString(httpEntity);
+			} catch (IOException e) {
+				throw new HttpErrorPage(IOExceptionHandler.toHttpResponse(e));
+			}
 		}
 		return removeSessionId(result, httpResponse);
 	}

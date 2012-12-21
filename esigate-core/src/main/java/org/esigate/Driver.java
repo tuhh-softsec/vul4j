@@ -250,9 +250,8 @@ public class Driver {
 	 *            the target resource
 	 * @return the content of the url
 	 * @throws HttpErrorPage
-	 * @throws IOException
 	 */
-	protected String getResourceAsString(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage, IOException {
+	protected String getResourceAsString(String url, HttpEntityEnclosingRequest originalRequest) throws HttpErrorPage {
 		String result;
 		url = VariablesResolver.replaceAllVariables(url, originalRequest);
 		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
@@ -326,7 +325,7 @@ public class Driver {
 		return httpClientHelper.execute(httpRequest);
 	}
 
-	private HttpResponse execute(GenericHttpRequest httpRequest) throws HttpErrorPage, IOException {
+	private HttpResponse execute(GenericHttpRequest httpRequest) throws HttpErrorPage {
 		HttpResponse httpResponse = executeSingleRequest(httpRequest);
 		// Handle errors.
 		if (httpResponse == null) {

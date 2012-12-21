@@ -16,7 +16,6 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -32,7 +31,6 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -41,9 +39,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.conn.ConnectionPoolTimeoutException;
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -52,7 +47,6 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.DefaultedHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -257,31 +251,11 @@ public class HttpClientHelper {
 					result = new BasicHttpResponse(response.getStatusLine());
 					headerManager.copyHeaders(httpRequest, originalRequest, response, result);
 					result.setEntity(response.getEntity());
-				} catch (HttpHostConnectException e) {
-					int statusCode = HttpStatus.SC_BAD_GATEWAY;
-					String statusText = "Connection refused";
-					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-				} catch (ConnectionPoolTimeoutException e) {
-					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-					String statusText = "Connection pool timeout";
-					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-				} catch (ConnectTimeoutException e) {
-					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-					String statusText = "Connect timeout";
-					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
-				} catch (SocketTimeoutException e) {
-					int statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
-					String statusText = "Socket timeout";
-					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
-					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
 				} catch (IOException e) {
 					int statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
 					String statusText = "Error retrieving URL";
-					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText, e);
-					result = new BasicHttpResponse(new BasicStatusLine(HttpVersion.HTTP_1_1, statusCode, statusText));
+					LOG.warn(httpRequest.getRequestLine() + " -> " + statusCode + " " + statusText);
+					result = IOExceptionHandler.toHttpResponse(e);
 				}
 				// FIXME workaround for a bug in http client cache that does not
 				// keep params in response

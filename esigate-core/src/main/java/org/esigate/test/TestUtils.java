@@ -19,7 +19,6 @@ import java.io.IOException;
 
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.cookie.Cookie;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.HttpResponseUtils;
@@ -44,7 +43,7 @@ public class TestUtils {
 		return mediator.getHttpResponse();
 	}
 
-	public final static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws ParseException, IOException {
+	public final static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws HttpErrorPage {
 		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
 		HttpResponse response = mediator.getHttpResponse();
 		return HttpResponseUtils.toString(response);
