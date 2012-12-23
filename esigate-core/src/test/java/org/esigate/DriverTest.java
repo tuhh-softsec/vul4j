@@ -430,6 +430,7 @@ public class DriverTest extends TestCase {
 		mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
 			@Override
 			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws IOException, HttpException {
+				Assert.assertEquals("localhost.mydomain.fr", request.getFirstHeader("Host").getValue());
 				Assert.assertTrue("Cookie must be forwarded", request.containsHeader("Cookie"));
 				return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
 			}
@@ -465,7 +466,9 @@ public class DriverTest extends TestCase {
 		MockHttpClient mockHttpClient = new MockHttpClient();
 		mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
 			@Override
-			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context) throws IOException, HttpException {
+			public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+					throws IOException, HttpException {
+				Assert.assertEquals("test.mydomain.fr", request.getFirstHeader("Host").getValue());
 				Assert.assertTrue("Cookie must be forwarded", request.containsHeader("Cookie"));
 				return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
 			}
@@ -473,7 +476,6 @@ public class DriverTest extends TestCase {
 		Driver driver = createMockDriver(properties, mockHttpClient);
 
 		request = TestUtils.createRequest("http://test.mydomain.fr/foobar/");
-		request.addHeader("Host", "test.mydomain.fr");
 		BasicClientCookie cookie = new BasicClientCookie("TEST_cookie", "233445436436346");
 		TestUtils.addCookie(cookie, request);
 
