@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -192,9 +191,8 @@ public class HttpClientHelper {
 		if (SIMPLE_METHODS.contains(method)) {
 			httpRequest = new GenericHttpRequest(method, uri);
 		} else if (ENTITY_METHODS.contains(method)) {
-			GenericHttpRequest result = new GenericHttpRequest(method, uri);
-			result.setEntity(originalRequest.getEntity());
-			httpRequest = result;
+			httpRequest = new GenericHttpRequest(method, uri);
+			httpRequest.setEntity(originalRequest.getEntity());
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
@@ -203,12 +201,6 @@ public class HttpClientHelper {
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
 		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
-
-		// When issue HTTPCLIENT-1282 is fixed, swap the following 2 lines.
-		// https://issues.apache.org/jira/browse/HTTPCLIENT-1282
-		// httpRequest.getParams().setParameter(ClientPNames.VIRTUAL_HOST,
-		// virtualHost);
-		httpRequest.addHeader(HttpHeaders.HOST, virtualHost.toHostString());
 
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
