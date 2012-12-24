@@ -32,6 +32,7 @@
 		<dependency>
 			<groupId>javax.el</groupId>
 			<artifactId>el-api</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>
