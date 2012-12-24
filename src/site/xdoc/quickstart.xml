@@ -93,8 +93,23 @@ Some other HTML
 				possibilities :
 	</p>
 			<ul>
-				<li>addind a HTML &lt;base&gt; tag in the page : you can use the tage&lt;assemble:includeBase&gt;</li>
+				<li>adding a HTML &lt;base&gt; tag in the page : you can use the tag &lt;assemble:includeBase&gt;</li>
 		<li>have the resources proxied by the reverse proxy servlet</li>
+	</ul>
+	</section>
+	<section name="Template ESIGate application">
+	<p>esigate-war is a template war. It has no configuration and a single default provider named 'esigate', mapped on webapp root.</p>
+	<ul><li>You must add a configuration file (see <a href="configuration.html">Configuration</a>)</li>
+	<li>and update web.xml if necessary.</li></ul> <p>  Then it can be installed on any Java application server. </p>
+	
+	</section>
+	<section name="Development server">
+	<p>We provide a stand-alone server for testing and development purposes. It uses esigate-war as-is and takes a configuration file path as parameter :</p>
+	<ul>
+	<li>Get the jar from the maven repository : <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22esigate-server%22">esigate-server on central repository</a></li>
+	<li>Create a configuration file (see <a href="configuration.html">Configuration</a>)</li>
+	<li>Start the server using <b>java -Djetty.port=8080 -Desigate.conf=&lt;your-conf-file&gt; esigate-server-&lt;version&gt;.jar</b></li>
+	<li>Stop the server using <b>Control-C</b></li>
 	</ul>
 	</section>
 	</body>
