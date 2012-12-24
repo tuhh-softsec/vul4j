@@ -8,6 +8,9 @@
 			<includes>
 				<include>*:jar</include>
 			</includes>			
+			<excludes>
+			<exclude>org.esigate:esigate-server</exclude>
+			</excludes>
 			<unpack>false</unpack>
 			<useTransitiveDependencies>true</useTransitiveDependencies>
 			<outputDirectory>lib</outputDirectory>
@@ -15,6 +18,7 @@
 		<dependencySet>
 			<includes>
 				<include>*:war</include>
+				<include>org.esigate:esigate-server</include>
 			</includes>
 			<unpack>false</unpack>
 			<outputFileNameMapping>${artifact.artifactId}.${artifact.extension}
