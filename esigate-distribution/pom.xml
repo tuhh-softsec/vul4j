@@ -35,56 +35,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-provider</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-master</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-aggregated1</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-aggregated2</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-aggregator</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-cas</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-casified-aggregated1</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-casified-aggregated2</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-casified-aggregator</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
-			<artifactId>esigate-app-facelet</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>org.esigate</groupId>
 			<artifactId>esigate-server</artifactId>
 		</dependency>
 		<dependency>
