@@ -23,6 +23,7 @@
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-client-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
