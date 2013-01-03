@@ -39,7 +39,7 @@ import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.esigate.Renderer;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -79,12 +79,14 @@ public class XpathRenderer implements Renderer {
 			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder(XmlViolationPolicy.ALLOW);
 			htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
 			Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
-			Node xpathed = (Node) expr.evaluate(document, XPathConstants.NODE);
+			NodeList matchingNodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 			Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			transformer.setOutputProperty(OutputKeys.METHOD, outputMethod);
-			Source source = new DOMSource(xpathed);
-			transformer.transform(source, new StreamResult(out));
+			for(int i =0; i < matchingNodes.getLength(); i++) {
+				Source source = new DOMSource(matchingNodes.item(i));
+				transformer.transform(source, new StreamResult(out));
+			}
 		} catch (XPathExpressionException e) {
 			throw new ProcessingFailedException("Failed to evaluate XPath expression", e);
 		} catch (TransformerException e) {

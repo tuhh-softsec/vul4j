@@ -158,6 +158,14 @@ public class IncludeElementTest extends TestCase {
 		assertEquals("before -the body- after", out.toString());
 	}
 
+	public void testIncludeXpathSeveralMatchingNodes() throws IOException, HttpErrorPage {
+		String page = "before " + "<esi:include src='$(PROVIDER{mock})/inline-xpath' xpath='//html:body/html:ul/html:li/text()' />" + " after";
+		provider.addResource("/inline-xpath", "<html><title>The header</title><body>-the body-<br><ul><li>list item 1</li><li>list item 2</li></ul></body></html>");
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		assertEquals("before list item 1list item 2 after", out.toString());
+	}
+
 	public void testIncludeXSLT() throws IOException, HttpErrorPage {
 		String page = "before " + "<esi:include src='$(PROVIDER{mock})/inline-xslt' stylesheet=\"http://www.foo.com/test.xsl\" />" + " after";
 		provider.addResource("/inline-xslt", "<html><body>The body<br></body></html>");
