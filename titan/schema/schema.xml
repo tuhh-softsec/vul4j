@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <key id="name" for="node" attr.name="name" attr.type="string"></key>
+    <key id="type" for="node" attr.name="type" attr.type="string"></key>
+    <key id="id" for="node" attr.name="id" attr.type="string"></key>
+    <key id="time" for="edge" attr.name="time" attr.type="int"></key>
+    <graph id="G" edgedefault="directed">
+        <node id="13">
+            <data key="name">dpid1-port3</data>
+            <data key="number">3</data>
+            <data key="type">port</data>
+        </node>
+        <node id="2">
+            <data key="name">dpid2</data>
+            <data key="dpid">2</data>
+            <data key="type">switch</data>
+        </node>
+        <node id="110">
+            <data key="name">dpid1-port10</data>
+            <data key="number">10</data>
+            <data key="type">port</data>
+        </node>
+        <node id="1">
+            <data key="name">dpid1</data>
+            <data key="dpid">1</data>
+            <data key="type">switch</data>
+        </node>
+        <node id="210">
+            <data key="name">dpid2-port10</data>
+            <data key="number">10</data>
+            <data key="type">port</data>
+        </node>
+        <node id="3">
+            <data key="name">dpid3</data>
+            <data key="dpid">3</data>
+            <data key="type">switch</data>
+        </node>
+        <node id="6">
+            <data key="name">stanford</data>
+            <data key="type">location</data>
+        </node>
+        <node id="5">
+            <data key="name">berkeley</data>
+            <data key="type">location</data>
+        </node>
+        <node id="4">
+            <data key="name">onlab</data>
+            <data key="type">location</data>
+        </node>
+        <node id="39">
+            <data key="name">dpid3-port9</data>
+            <data key="number">10</data>
+            <data key="type">port</data>
+        </node>
+        <node id="8">
+            <data key="name">MAC:1234</data>
+            <data key="type">device</data>
+        </node>
+        <node id="11">
+            <data key="name">dpid1-port1</data>
+            <data key="number">1</data>
+            <data key="type">port</data>
+        </node>
+        <edge id="523" source="1" target="13" label="on"></edge>
+        <edge id="521" source="1" target="110" label="on"></edge>
+        <edge id="517" source="2" target="210" label="on"></edge>
+        <edge id="518" source="3" target="39" label="on"></edge>
+        <edge id="520" source="13" target="8" label="host"></edge>
+        <edge id="519" source="110" target="210" label="link"></edge>
+        <edge id="515" source="2" target="6" label="at"></edge>
+        <edge id="513" source="1" target="4" label="at"></edge>
+        <edge id="516" source="3" target="5" label="at"></edge>
+        <edge id="776" source="1" target="13" label="time_checked">
+            <data key="time">1</data>
+        </edge>
+        <edge id="27" source="110" target="210" label="expired">
+            <data key="time">2</data>
+        </edge>
+    </graph>
+</graphml>
