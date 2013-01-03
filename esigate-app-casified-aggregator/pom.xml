@@ -62,6 +62,11 @@
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>esigate-app-casified-aggregator</finalName>
