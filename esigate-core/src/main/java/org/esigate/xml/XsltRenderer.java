@@ -25,12 +25,13 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
+import nu.validator.htmlparser.dom.Dom2Sax;
 import nu.validator.htmlparser.sax.HtmlParser;
 
 import org.apache.commons.io.IOUtils;
@@ -41,6 +42,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.util.HttpRequestHelper;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Applies an XSLT transformation to the retrieved data.
@@ -120,9 +122,15 @@ public class XsltRenderer implements Renderer {
 			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
 			htmlParser.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
 			Source source = new SAXSource(htmlParser, new InputSource(new StringReader(src)));
-			transformer.transform(source, new StreamResult(out));
+			DOMResult result = new DOMResult();
+			transformer.transform(source, result);
+			XhtmlSerializer serializer = new XhtmlSerializer(out);
+			Dom2Sax dom2Sax = new Dom2Sax(serializer, serializer);
+			dom2Sax.parse(result.getNode());
 		} catch (TransformerException e) {
 			throw new ProcessingFailedException("Failed to transform source", e);
+		} catch (SAXException e) {
+			throw new ProcessingFailedException("Failed serialize transformation result", e);
 		}
 	}
 }

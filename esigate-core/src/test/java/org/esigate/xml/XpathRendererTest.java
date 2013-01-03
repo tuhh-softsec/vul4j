@@ -1,3 +1,18 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.esigate.xml;
 
 import java.io.IOException;
@@ -15,14 +30,12 @@ public class XpathRendererTest extends TestCase {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void testXpath() throws IOException, HttpErrorPage {
+	public void testXpathHtml() throws IOException, HttpErrorPage {
 		String src = "<html><title>The header</title><body>The body<br></body></html>";
 		StringWriter out = new StringWriter();
 		XpathRenderer tested = new XpathRenderer("/html:html/html:body");
 		tested.render(null, src, out);
-		assertEquals(
-				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body>",
-				out.toString());
+		assertEquals("<body>The body<br /></body>", out.toString());
 	}
 
 	/**
@@ -31,13 +44,12 @@ public class XpathRendererTest extends TestCase {
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 */
-	public void testXpathOutputHtml() throws IOException, HttpErrorPage {
-		String src = "<html><head><title>The header</title></head><body>The body<br></body></html>";
+	public void testXpathXhtml() throws IOException, HttpErrorPage {
+		String src = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
+				+ "<head><title>The header</title></head><body>The body<br/><b></b></body></html>";
 		StringWriter out = new StringWriter();
-		XpathRenderer tested = new XpathRenderer("//html:body", "html");
+		XpathRenderer tested = new XpathRenderer("//html:body");
 		tested.render(null, src, out);
-		assertEquals(
-				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br></body>",
-				out.toString());
+		assertEquals("<body>The body<br /><b></b></body>", out.toString());
 	}
 }

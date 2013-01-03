@@ -175,7 +175,7 @@ public class IncludeElementTest extends TestCase {
 				+ "</xsl:stylesheet>");
 		StringWriter out = new StringWriter();
 		tested.render(request, page, out);
-		assertEquals("before <body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body> after", out.toString());
+		assertEquals("before <body>The body<br /></body> after", out.toString());
 	}
 
 	public void testIncludeAlt1() throws IOException, HttpErrorPage {

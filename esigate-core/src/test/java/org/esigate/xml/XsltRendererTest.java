@@ -43,7 +43,7 @@ public class XsltRendererTest extends TestCase {
 		XsltRenderer tested = new XsltRenderer(template);
 		tested.render(null, src, out);
 		assertEquals(
-				"<body xmlns=\"http://www.w3.org/1999/xhtml\">The body<br/></body>",
+				"<body>The body<br /></body>",
 				out.toString());
 	}
 }
