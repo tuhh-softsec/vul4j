@@ -42,6 +42,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
@@ -189,6 +190,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected ReentrantReadWriteLock lock;
     int lldpTimeCount = 0;
 
+    // Storage
+    protected LinkStorageImplStubs linkStore;
+    
     /**
      * Flag to indicate if automatic port fast is enabled or not.
      * Default is set to false -- Initialized in the init method as well.
@@ -1007,6 +1011,10 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     addLinkToBroadcastDomain(lt);
 
                 writeLinkToStorage(lt, newInfo);
+                
+                // Write link to network map
+                linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
+                
                 updateOperation = UpdateOperation.LINK_UPDATED;
                 linkChanged = true;
 
@@ -1063,6 +1071,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // they weren't set to null in the previous block of code.
                 writeLinkToStorage(lt, newInfo);
 
+                // Write link to network map
+                linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
+                
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
                                                          newInfo.getDstPortState());
@@ -1150,6 +1161,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // remove link from storage.
                 removeLinkFromStorage(lt);
 
+                // Write link to network map
+                linkStore.update(lt, DM_OPERATION.DELETE);
+                
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
 
@@ -1239,6 +1253,10 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                                      getLinkType(lt, linkInfo),
                                                      operation));
                             writeLinkToStorage(lt, linkInfo);
+                            
+                            // Write the changed link to the network map
+                            linkStore.update(lt,  linkInfo, DM_OPERATION.UPDATE);
+                            
                             linkInfoChanged = true;
                         }
                     }
@@ -1849,6 +1867,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
             		  "switch table {}", SWITCH_CONFIG_TABLE_NAME);
         }
 
+        // Initialize the link storage connector to the network map
+        this.linkStore.init("");
+        
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 
         // To be started by the first switch connection
