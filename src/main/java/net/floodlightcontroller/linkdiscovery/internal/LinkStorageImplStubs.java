@@ -5,6 +5,9 @@ package net.floodlightcontroller.linkdiscovery.internal;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
@@ -15,22 +18,24 @@ import net.floodlightcontroller.routing.Link;
  */
 public class LinkStorageImplStubs implements ILinkStorage {
 
+	protected static Logger log = LoggerFactory.getLogger(LinkStorageImplStubs.class);
+
 	/* (non-Javadoc)
 	 * @see net.floodlightcontroller.linkdiscovery.ILinkStorage#update(net.floodlightcontroller.routing.Link, net.floodlightcontroller.core.INetMapStorage.DM_OPERATION)
 	 */
 	@Override
 	public void update(Link link, DM_OPERATION op) {
 		// TODO Auto-generated method stub
-
+		log.trace("LinkStorage:update(): op {} link {}", op, link);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.floodlightcontroller.linkdiscovery.ILinkStorage#update(java.util.List, net.floodlightcontroller.core.INetMapStorage.DM_OPERATION)
 	 */
 	@Override
-	public void update(List<Link> List, DM_OPERATION op) {
+	public void update(List<Link> list, DM_OPERATION op) {
 		// TODO Auto-generated method stub
-
+		log.trace("LinkStorage:update(): op {} link {}", op, list);
 	}
 
 	/* (non-Javadoc)
@@ -39,7 +44,7 @@ public class LinkStorageImplStubs implements ILinkStorage {
 	@Override
 	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
 		// TODO Auto-generated method stub
-
+		log.trace("LinkStorage:update(): op {} link {}", op, link);
 	}
 
 	/* (non-Javadoc)
@@ -48,6 +53,8 @@ public class LinkStorageImplStubs implements ILinkStorage {
 	@Override
 	public List<Link> getLinks(Long dpid, int port) {
 		// TODO Auto-generated method stub
+		log.trace("LinkStorage:getLinks(): dpid {} port {}", dpid, port);
+
 		return null;
 	}
 
@@ -57,7 +64,7 @@ public class LinkStorageImplStubs implements ILinkStorage {
 	@Override
 	public void deleteLinks(Long dpid, int port) {
 		// TODO Auto-generated method stub
-
+		log.trace("LinkStorage:deleteLinks(): dpid {} port {}", dpid, port);
 	}
 
 	/* (non-Javadoc)
