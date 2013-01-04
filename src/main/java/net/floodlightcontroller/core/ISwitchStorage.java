@@ -9,11 +9,11 @@ public interface ISwitchStorage extends INetMapStorage {
 	/*
 	 * Update the switch details
 	 */
-	public void update(long dpid,DM_OPERATION op);
+	public void update(String dpid,DM_OPERATION op);
 	/*
 	 * Associate a port on switch
 	 */
-	public void addPort(long dpid, OFPhysicalPort port);
+	public void addPort(String dpid, OFPhysicalPort port);
 	/*
 	 * Get all ports associated on a switch
 	 */
@@ -21,21 +21,30 @@ public interface ISwitchStorage extends INetMapStorage {
 	/*
 	 * Get Port by Number
 	 */
-	public OFPhysicalPort getPort(long dpid, short portnum);
+	public OFPhysicalPort getPort(String dpid, short portnum);
 	/*
 	 * Get port by name
 	 */
-	public OFPhysicalPort getPort(long dpid, String portName);
+	public OFPhysicalPort getPort(String dpid, String portName);
+	/*
+	 * Add a switch
+	 */
+	public void addSwitch(String dpid);
 	/*
 	 * Delete switch and associated ports
 	 */
-	public void deleteSwitch(long dpid);
+	public void deleteSwitch(String dpid);
 	/*
 	 * Delete a port on a switch by num
 	 */
-	public void deletePort(long dpid, short port);
+	public void deletePort(String dpid, short port);
 	/*
 	 * Delete port on a switch by name
 	 */
-	public void deletePort(long dpid, String portName);
+	public void deletePort(String dpid, String portName);
+	
+	/*
+	 * Initialize
+	 */
+	public void init(String conf);
 }

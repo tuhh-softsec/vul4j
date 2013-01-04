@@ -19,7 +19,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#update(long, net.floodlightcontroller.core.INetMapStorage.DM_OPERATION)
 	 */
 	@Override
-	public void update(long dpid, DM_OPERATION op) {
+	public void update(String dpid, DM_OPERATION op) {
 		// TODO Auto-generated method stub
 
 	}
@@ -28,7 +28,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#addPort(long, org.openflow.protocol.OFPhysicalPort)
 	 */
 	@Override
-	public void addPort(long dpid, OFPhysicalPort port) {
+	public void addPort(String dpid, OFPhysicalPort port) {
 		// TODO Auto-generated method stub
 
 	}
@@ -46,7 +46,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#getPort(long, short)
 	 */
 	@Override
-	public OFPhysicalPort getPort(long dpid, short portnum) {
+	public OFPhysicalPort getPort(String dpid, short portnum) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -55,7 +55,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#getPort(long, java.lang.String)
 	 */
 	@Override
-	public OFPhysicalPort getPort(long dpid, String portName) {
+	public OFPhysicalPort getPort(String dpid, String portName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -64,7 +64,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#addSwitch(long)
 	 */
 	@Override
-	public void addSwitch(long dpid) {
+	public void addSwitch(String dpid) {
 		// TODO Auto-generated method stub
 
 	}
@@ -73,7 +73,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#deleteSwitch(long)
 	 */
 	@Override
-	public void deleteSwitch(long dpid) {
+	public void deleteSwitch(String dpid) {
 		// TODO Auto-generated method stub
 
 	}
@@ -82,7 +82,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#deletePort(long, short)
 	 */
 	@Override
-	public void deletePort(long dpid, short port) {
+	public void deletePort(String dpid, short port) {
 		// TODO Auto-generated method stub
 
 	}
@@ -91,7 +91,7 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	 * @see net.floodlightcontroller.core.ISwitchStorage#deletePort(long, java.lang.String)
 	 */
 	@Override
-	public void deletePort(long dpid, String portName) {
+	public void deletePort(String dpid, String portName) {
 		// TODO Auto-generated method stub
 
 	}
