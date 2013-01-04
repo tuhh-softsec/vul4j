@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<body>
+		<section name="About">
+			<p>
+				Standalone server for development. Can be run using java -jar
+				esigate-server-&lt;version&gt;.jar -Desigate.config=&lt;config
+				file&gt; </p>
+		</section>
+	</body>
+</document>
