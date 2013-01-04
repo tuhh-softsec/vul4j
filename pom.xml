@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -15,47 +14,6 @@
 	<packaging>pom</packaging>
 	<name>esigate</name>
 	<version>4.0-SNAPSHOT</version>
-	<ciManagement>
-		<system>continuum</system>
-		<!-- There's no public access to the CI platform -->
-		<!-- <url>http://java.nantes.intranet:8082/continuum/projectGroupSummary.action?projectGroupId=36</url> -->
-		<notifiers>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>alexis.thaveau@gmail.com</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<configuration>
-					<address>francois-xavier.bonnet@centraliens.net</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>nicolas.richeton@gmail.com</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>stanislav.bernatskyi@smile-ukraine.com</address>
-				</configuration>
-			</notifier>
-			<notifier>
-				<sendOnSuccess>false</sendOnSuccess>
-				<sendOnWarning>false</sendOnWarning>
-				<configuration>
-					<address>andreii.lebedinskiy@smile-ukraine.com</address>
-				</configuration>
-			</notifier>
-		</notifiers>
-	</ciManagement>
 	<inceptionYear>2008</inceptionYear>
 	<mailingLists>
 		<mailingList>
@@ -139,7 +97,7 @@
 	<scm>
 		<connection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</connection>
 		<developerConnection>scm:svn:https://webassembletool.svn.sourceforge.net/svnroot/webassembletool/trunk</developerConnection>
-		<url>scm:svn:http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk</url>
+		<url>http://webassembletool.svn.sourceforge.net/viewvc/webassembletool/trunk</url>
 	</scm>
 	<build>
 		<pluginManagement>
@@ -287,13 +245,6 @@
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<configuration>
-								<encoding>UTF-8</encoding>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-changelog-plugin</artifactId>
 						</plugin>
 					</reportPlugins>
@@ -406,7 +357,7 @@
 				<version>${project.version}</version>
 				<type>war</type>
 			</dependency>
-				<dependency>
+			<dependency>
 				<groupId>org.esigate</groupId>
 				<artifactId>esigate-server</artifactId>
 				<version>${project.version}</version>

@@ -89,9 +89,9 @@ public class VariablesResolver {
 	 * 
 	 * @param strVars
 	 *            a String that may contain variables.
-	 * @return
+	 * @return true if contains variables
 	 */
-	/* package */static boolean containsVariable(String strVars) {
+	static boolean containsVariable(String strVars) {
 		return strVars.contains("$(") && strVars.contains(")");
 	}
 
