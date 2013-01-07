@@ -229,6 +229,34 @@ Some text from aggregated1
 </source>
 
             </subsection>
+            </section>
+              <section name="Using different providers for Virtual hosts">
+	<p>The aggregator servlet can select providers according to the "Host"
+		of each request. Both parameters "provider" and "providers" can be
+		used at the sametime: in this case, "provider" will be used if no
+		match is found using "providers".</p>
+              <source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+&lt;web-app&gt;
+	&lt;servlet&gt;
+		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
+		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;providers&lt;/param-name&gt;
+			&lt;param-value&gt;sub1.domain.com=aggregated1,sub2.domain.com=aggregated2&lt;/param-value&gt;
+		&lt;/init-param&gt;
+	&lt;/servlet&gt;
+	
+	&lt;servlet-mapping&gt;
+		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/servlet-mapping&gt;
+	
+&lt;/web-app&gt;
+</source>
+              
+        
         </section>
     </body>
 </document>
