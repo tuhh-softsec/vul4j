@@ -60,6 +60,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	// TODO: Check if port exists
             	Vertex p = graph.addVertex(null);
+            	p.setProperty("type","port");
             	p.setProperty("number",port.getPortNumber());
             	p.setProperty("state",port.getState());
             	p.setProperty("desc",port.getName());
@@ -133,14 +134,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	// TODO: Check if port exists
             	Vertex p = sw.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
-            	graph.removeVertex(p);
-            	graph.stopTransaction(Conclusion.SUCCESS);
+            	if (p != null) {
+            		graph.removeVertex(p);
+            		graph.stopTransaction(Conclusion.SUCCESS);
+            	}
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
 		}	
-
-
 	}
 
 	@Override
@@ -157,9 +158,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public void init(String conf) {
-        graph = TitanFactory.open(conf);
+		//TODO extract the DB location from conf
+		String db = "/tmp/netmap";
+        graph = TitanFactory.open(db);
         graph.createKeyIndex("dpid", Vertex.class);
-
+        graph.createKeyIndex("type", Vertex.class);
 	}
 
 }

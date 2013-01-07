@@ -52,11 +52,13 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
+import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
@@ -136,6 +138,8 @@ import org.slf4j.LoggerFactory;
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
     
+	protected SwitchStorageImpl swStore;
+	
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static final String ERROR_DATABASE = 
@@ -1141,17 +1145,20 @@ public class Controller implements IFloodlightProviderService,
         OFPhysicalPort port = m.getDesc();
         if (m.getReason() == (byte)OFPortReason.OFPPR_MODIFY.ordinal()) {
             sw.setPort(port);
+            swStore.addPort(sw.getStringId(), port);
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} modified for {}", portNumber, sw);
         } else if (m.getReason() == (byte)OFPortReason.OFPPR_ADD.ordinal()) {
             sw.setPort(port);
+            swStore.addPort(sw.getStringId(), port);
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} added for {}", portNumber, sw);
         } else if (m.getReason() == 
                    (byte)OFPortReason.OFPPR_DELETE.ordinal()) {
             sw.deletePort(portNumber);
+            swStore.deletePort(sw.getStringId(), portNumber);
             if (updateStorage)
                 removePortInfo(sw, portNumber);
             log.debug("Port #{} deleted for {}", portNumber, sw);
@@ -1423,6 +1430,7 @@ public class Controller implements IFloodlightProviderService,
         }
         
         updateActiveSwitchInfo(sw);
+        swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
             this.updates.put(update);
@@ -1462,6 +1470,7 @@ public class Controller implements IFloodlightProviderService,
         // of the switch state that's written to storage.
         
         updateInactiveSwitchInfo(sw);
+        swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -2050,6 +2059,7 @@ public class Controller implements IFloodlightProviderService,
         this.roleChanger = new RoleChanger();
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
+        this.swStore.init("");
     }
     
     /**

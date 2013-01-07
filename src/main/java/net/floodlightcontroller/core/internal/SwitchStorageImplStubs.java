@@ -4,6 +4,7 @@
 package net.floodlightcontroller.core.internal;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openflow.protocol.OFPhysicalPort;
 
@@ -15,14 +16,6 @@ import net.floodlightcontroller.core.ISwitchStorage;
  */
 public class SwitchStorageImplStubs implements ISwitchStorage {
 
-	/* (non-Javadoc)
-	 * @see net.floodlightcontroller.core.ISwitchStorage#update(long, net.floodlightcontroller.core.INetMapStorage.DM_OPERATION)
-	 */
-	@Override
-	public void update(String dpid, DM_OPERATION op) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/* (non-Javadoc)
 	 * @see net.floodlightcontroller.core.ISwitchStorage#addPort(long, org.openflow.protocol.OFPhysicalPort)
@@ -103,6 +96,19 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 	public void init(String conf) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void update(String dpid, SwitchState state, DM_OPERATION op) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<String> getActiveSwitches() {
+		return null;
+		// TODO Auto-generated method stub
+		
 	}
 
 }

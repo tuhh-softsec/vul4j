@@ -47,6 +47,7 @@
     <property name="ant.build.javac.source" value="1.6"/>
     <property name="ant.build.javac.target" value="1.6"/>
     <property name="lib" location="lib"/>
+    <property name="titanlib" location="lib/titan/"/>
 
     <patternset id="lib">
         <include name="logback-classic-1.0.0.jar"/>
@@ -66,9 +67,18 @@
         <include name="libthrift-0.7.0.jar"/>
     </patternset>
 
+    <patternset id="titanlib">
+	<include name="titan-0.1.0.jar"/>
+	<include name="blueprints-core-2.1.0.jar"/>
+	<include name="commons-configuration-1.6.jar"/>
+    </patternset>
+
     <path id="classpath">
         <fileset dir="${lib}">
             <patternset refid="lib"/>
+        </fileset>
+        <fileset dir="${titanlib}">
+            <patternset refid="titanlib"/>
         </fileset>
     </path>
 
@@ -267,6 +277,9 @@
             <fileset dir="${lib}">
                 <patternset refid="lib"/>
                 <patternset refid="lib-test"/>
+            </fileset>
+            <fileset dir="${titanlib}">
+                <patternset refid="titanlib"/>
             </fileset>
         </pathconvert>
         <exec executable="${basedir}/setup-eclipse.sh">

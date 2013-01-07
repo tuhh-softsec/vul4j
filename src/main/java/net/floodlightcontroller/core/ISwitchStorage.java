@@ -1,15 +1,21 @@
 package net.floodlightcontroller.core;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openflow.protocol.OFPhysicalPort;
 
 public interface ISwitchStorage extends INetMapStorage {
 	
+	enum SwitchState {
+		INACTIVE,
+		ACTIVE
+	}
+	
 	/*
 	 * Update the switch details
 	 */
-	public void update(String dpid,DM_OPERATION op);
+	public void update(String dpid,SwitchState state, DM_OPERATION op);
 	/*
 	 * Associate a port on switch
 	 */
@@ -42,6 +48,8 @@ public interface ISwitchStorage extends INetMapStorage {
 	 * Delete port on a switch by name
 	 */
 	public void deletePort(String dpid, String portName);
+	
+	public List<String> getActiveSwitches();
 	
 	/*
 	 * Initialize
