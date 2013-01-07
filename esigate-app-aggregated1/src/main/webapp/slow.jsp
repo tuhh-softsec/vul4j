@@ -1,4 +1,4 @@
 <%
-Thread.sleep(2000);
+Thread.sleep(8000);
 %>
-Sleeped 2000 ms.
+Sleeped 8000 ms.
