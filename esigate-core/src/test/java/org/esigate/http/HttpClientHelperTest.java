@@ -592,13 +592,13 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
 		response.setEntity(new StringEntity("test"));
 		mockHttpClient.setResponse(response);
-		
+
 		// First call to load the cache
 		HttpResponse result = httpClientHelper.execute(request);
 		assertNotNull(result.getFirstHeader("Expires"));
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
-		
+
 		// Same test with the cache entry
 		// Change the response to check that the cache is used
 		response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not modified"));
@@ -606,23 +606,23 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
 		mockHttpClient.setResponse(response);
-		
+
 		result = httpClientHelper.execute(request);
 		// Check that the cache has been used
-		assertTrue(result.getFirstHeader("X-cache").getValue(),result.getFirstHeader("X-cache").getValue().startsWith("HIT"));
+		assertTrue(result.getFirstHeader("X-cache").getValue(), result.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		assertNotNull(result.getFirstHeader("Expires"));
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
-		
+
 		// Wait for a revalidation to occur
 		Thread.sleep(1000);
-		
+
 		result = httpClientHelper.execute(request);
 		// Check that the revalidation occurred
 		assertNotNull(result.getFirstHeader("Expires"));
 		assertNotNull(result.getFirstHeader("Cache-control"));
 		assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
-		assertTrue(result.getFirstHeader("X-cache").getValue(),result.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
+		assertTrue(result.getFirstHeader("X-cache").getValue(), result.getFirstHeader("X-cache").getValue().startsWith("VALIDATED"));
 	}
 
 	/**
@@ -675,6 +675,25 @@ public class HttpClientHelperTest extends TestCase {
 		assertEquals(200, result3.getStatusLine().getStatusCode());
 		assertTrue(result3.getFirstHeader("X-cache").getValue(), result3.getFirstHeader("X-cache").getValue().startsWith("MISS"));
 		assertNotNull(result3.getEntity());
+	}
+
+	/**
+	 * Test that we set a X-Forwarded-Proto header in backend requests
+	 * 
+	 * @throws Exception
+	 */
+	public void testXForwardedProtoHeader() throws Exception {
+		properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
+		createHttpClientHelper();
+
+		mockHttpClient.setResponse(createMockResponse(""));
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com");
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		httpClientHelper.execute(apacheHttpRequest);
+		Header[] headers = mockHttpClient.getSentRequest().getHeaders("X-Forwarded-Proto");
+		assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);
+		assertEquals("Wrong X-Forwarded-Proto header", "https", headers[0].getValue());
 	}
 
 }

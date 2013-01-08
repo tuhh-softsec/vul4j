@@ -98,6 +98,8 @@ public class HeaderManager {
 		if (HttpRequestHelper.getFirstHeader("X-Forwarded-For", originalRequest) == null && isForwardedRequestHeader("X-Forwarded-For") && remoteAddr != null) {
 			httpRequest.addHeader("X-Forwarded-For", remoteAddr);
 		}
+		// add X-Forwarded-Proto header
+		httpRequest.addHeader("X-Forwarded-Proto", UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
 	}
 
 	/**
@@ -116,58 +118,62 @@ public class HeaderManager {
 			String name = header.getName();
 			String value = header.getValue();
 			try {
-			// Ignore Content-Encoding and Content-Type as these headers are set
-			// in HttpEntity
-			if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
-				if (isForwardedResponseHeader(name)) {
-					// Some headers containing an URI have to be rewritten
-					if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name) ) {
-						// Header contains only an url
-						value = UriUtils.translateUrl(value, uri, originalUri);
-						value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
-						output.addHeader(name, value);
-					} else if(  "Link".equalsIgnoreCase(name)) {
-						// Header has the following format
-						// Link: </feed>; rel="alternate"
-						
-						if (value.startsWith("<") && value.contains(">")) {
-							String urlValue = value.substring(1, value.indexOf(">"));
+				// Ignore Content-Encoding and Content-Type as these headers are
+				// set
+				// in HttpEntity
+				if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
+					if (isForwardedResponseHeader(name)) {
+						// Some headers containing an URI have to be rewritten
+						if (HttpHeaders.LOCATION.equalsIgnoreCase(name) || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name)) {
+							// Header contains only an url
+							value = UriUtils.translateUrl(value, uri, originalUri);
+							value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
+							output.addHeader(name, value);
+						} else if ("Link".equalsIgnoreCase(name)) {
+							// Header has the following format
+							// Link: </feed>; rel="alternate"
 
-							String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
-							targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
+							if (value.startsWith("<") && value.contains(">")) {
+								String urlValue = value.substring(1, value.indexOf(">"));
 
-							value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
+								String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+								targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
+
+								value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
+							}
+
+							output.addHeader(name, value);
+
+						} else if ("Refresh".equalsIgnoreCase(name)) {
+							// Header has the following format
+							// Refresh: 5;
+							// url=http://www.w3.org/pub/WWW/People.html
+							int urlPosition = value.indexOf("url=");
+							if (urlPosition >= 0) {
+								String urlValue = value.substring(urlPosition + 4);
+
+								String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+								targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
+
+								value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
+							}
+							output.addHeader(name, value);
+						} else if ("P3p".equalsIgnoreCase(name)) {
+							// Do not translate url yet.
+							// P3P is used with a default fixed url most of the
+							// time.
+							output.addHeader(name, value);
+						} else {
+							output.addHeader(header.getName(), header.getValue());
 						}
-
-						output.addHeader(name, value);
-
-					} else if ("Refresh".equalsIgnoreCase(name)) {
-						// Header has the following format
-						// Refresh: 5; url=http://www.w3.org/pub/WWW/People.html
-						int urlPosition = value.indexOf("url=");
-						if (urlPosition >= 0) {
-							String urlValue = value.substring(urlPosition + 4);
-
-							String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
-							targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
-
-							value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
-						}
-						output.addHeader(name, value);
-					} else if ("P3p".equalsIgnoreCase(name)) {
-						// Do not translate url yet.
-						// P3P is used with a default fixed url most of the time.
-						output.addHeader(name, value);
-					} else {
-						output.addHeader(header.getName(), header.getValue());
 					}
 				}
-			}
-			}catch( Exception e1 ){
+			} catch (Exception e1) {
 				// It's important not to fail here.
-				// An application can always send corrupted headers, and we should not crash
-				LOG.error("Error while copying headers", e1 );
-				output.addHeader("X-Esigate-Error", "Error processing header "+name+": "+value);
+				// An application can always send corrupted headers, and we
+				// should not crash
+				LOG.error("Error while copying headers", e1);
+				output.addHeader("X-Esigate-Error", "Error processing header " + name + ": " + value);
 			}
 		}
 	}

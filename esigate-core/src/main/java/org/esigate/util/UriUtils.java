@@ -94,6 +94,10 @@ public class UriUtils {
 		return page.replaceAll(regexp, "");
 	}
 
+	public final static String extractScheme(String uri) {
+		return URI.create(uri).getScheme();
+	}
+
 	/**
 	 * Translates an URL by replacing the beginning like in the example passed
 	 * as parameters

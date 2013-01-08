@@ -177,6 +177,10 @@
 						<td>X-Forwarded-For</td>
 						<td>Forwarded or created if not present.</td>
 					</tr>
+					<tr>
+						<td>X-Forwarded-Proto</td>
+						<td>Can be "http" or "https", set to the scheme in the original request uri</td>
+					</tr>
 				</table>
 			</p>
 		</section>
