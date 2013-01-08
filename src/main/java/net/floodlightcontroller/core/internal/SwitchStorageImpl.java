@@ -3,6 +3,11 @@ package net.floodlightcontroller.core.internal;
 import java.util.Collection;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.openflow.protocol.OFPhysicalPort;
 
 import com.thinkaurelius.titan.core.TitanException;
@@ -16,6 +21,7 @@ import net.floodlightcontroller.core.ISwitchStorage;
 
 public class SwitchStorageImpl implements ISwitchStorage {
 	public TitanGraph graph;
+	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	@Override
 	public void update(String dpid, SwitchState state, DM_OPERATION op) {
@@ -44,9 +50,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	sw.setProperty("state",state);
             	graph.stopTransaction(Conclusion.SUCCESS);
+            	log.trace("SwitchStorage:setSTatus dpid:{} state: {} done", dpid, state);
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			log.trace("SwitchStorage:setSTatus dpid:{} state: {} failed", dpid, state);
 		}
             	
 		
@@ -58,6 +66,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		Vertex sw;
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
+            	log.trace("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
             	// TODO: Check if port exists
             	Vertex p = graph.addVertex(null);
             	p.setProperty("type","port");
@@ -72,6 +81,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			log.trace("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
 		}	
 
 	}
@@ -97,11 +107,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public void addSwitch(String dpid) {
 		
+		log.trace("SwitchStorage:addSwitch(): dpid {} ", dpid);
+		
         try {
             if (graph.getVertices("dpid",dpid).iterator().hasNext()) {
                     /*
                      *  Do nothing or throw exception?
                      */
+            	log.trace("SwitchStorage:addSwitch dpid:{} already exists", dpid);
             } else {
                     Vertex sw = graph.addVertex(null);
 
@@ -109,11 +122,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
                     sw.setProperty("dpid", dpid);
                     sw.setProperty("state",SwitchState.ACTIVE);
                     graph.stopTransaction(Conclusion.SUCCESS);
+                    log.trace("SwitchStorage:addSwitch dpid:{} added", dpid);
             }
     } catch (TitanException e) {
             /*
              * retry till we succeed?
              */
+    	log.trace("SwitchStorage:addSwitch dpid:{} failed", dpid);
     }
 
 
@@ -133,14 +148,17 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	// TODO: Check if port exists
+            	log.trace("SwitchStorage:deletePort dpid:{} port:{}", dpid, port);
             	Vertex p = sw.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
             	if (p != null) {
+            		log.trace("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
             		graph.removeVertex(p);
             		graph.stopTransaction(Conclusion.SUCCESS);
             	}
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			log.trace("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
 	}
 
@@ -159,7 +177,9 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from conf
-		String db = "/tmp/netmap";
+		Configuration db = new BaseConfiguration();
+		db.setProperty("storage,backend","local");
+		db.setProperty("storage.directory","/tmp/netmap");
         graph = TitanFactory.open(db);
         graph.createKeyIndex("dpid", Vertex.class);
         graph.createKeyIndex("type", Vertex.class);

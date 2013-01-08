@@ -1868,6 +1868,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         }
 
         // Initialize the link storage connector to the network map
+        this.linkStore = new LinkStorageImplStubs();
         this.linkStore.init("");
         
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();

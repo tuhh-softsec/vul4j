@@ -1450,6 +1450,7 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
+        swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
@@ -1459,6 +1460,7 @@ public class Controller implements IFloodlightProviderService,
         // from slave controllers. Then we need to move this cancelation
         // to switch disconnect
         sw.cancelAllStatisticsReplies();
+        
             
         // FIXME: I think there's a race condition if we call updateInactiveSwitchInfo
         // here if role support is enabled. In that case if the switch is being
@@ -1470,7 +1472,7 @@ public class Controller implements IFloodlightProviderService,
         // of the switch state that's written to storage.
         
         updateInactiveSwitchInfo(sw);
-        swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
+        
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -2059,6 +2061,7 @@ public class Controller implements IFloodlightProviderService,
         this.roleChanger = new RoleChanger();
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
+        this.swStore = new SwitchStorageImpl();
         this.swStore.init("");
     }
     
