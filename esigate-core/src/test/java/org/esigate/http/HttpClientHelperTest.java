@@ -16,6 +16,7 @@ package org.esigate.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
@@ -694,6 +695,37 @@ public class HttpClientHelperTest extends TestCase {
 		Header[] headers = mockHttpClient.getSentRequest().getHeaders("X-Forwarded-Proto");
 		assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);
 		assertEquals("Wrong X-Forwarded-Proto header", "https", headers[0].getValue());
+	}
+
+	public void test304CachedResponseIsReusedWithIfModifiedSinceRequest() throws Exception {
+		properties.put(Parameters.USE_CACHE, "true"); // Default value
+		properties.put(Parameters.X_CACHE_HEADER, "true");
+		createHttpClientHelper();
+		// First request
+		String now = DateUtils.formatDate(new Date());
+		String yesterday = DateUtils.formatDate(new Date(System.currentTimeMillis() - 86400 * 1000));
+		String inOneHour = DateUtils.formatDate(new Date(System.currentTimeMillis() + 3600 * 1000));
+		HttpResponse response = createMockResponse(HttpStatus.SC_NOT_MODIFIED, null);
+		response.setHeader("Date", now);
+		response.setHeader("Expires", inOneHour);
+		response.setHeader("Cache-Control", "max-age=3600");
+		mockHttpClient.setResponse(response);
+
+		// First request to load the cache
+		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest();
+		httpRequest.addHeader("If-Modified-Since", yesterday);
+		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
+		HttpResponse result = httpClientHelper.execute(apacheHttpRequest);
+		assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
+		assertEquals(HttpStatus.SC_NOT_MODIFIED, result.getStatusLine().getStatusCode());
+
+		// Second request should use cache
+		HttpEntityEnclosingRequest httpRequest2 = TestUtils.createRequest();
+		httpRequest2.addHeader("If-Modified-Since", yesterday);
+		GenericHttpRequest apacheHttpRequest2 = httpClientHelper.createHttpRequest(httpRequest2, "http://localhost:8080", true);
+		HttpResponse result2 = httpClientHelper.execute(apacheHttpRequest2);
+		assertTrue(result2.getFirstHeader("X-cache").getValue().startsWith("HIT"));
+		assertEquals(HttpStatus.SC_NOT_MODIFIED, result2.getStatusLine().getStatusCode());
 	}
 
 }
