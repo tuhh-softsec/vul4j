@@ -24,6 +24,7 @@ public class AggregatorServletTest {
 			return null;
 		}
 
+		@SuppressWarnings("rawtypes")
 		public Enumeration getInitParameterNames() {
 			return null;
 		}

@@ -11,13 +11,8 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.util.HttpRequestHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ResourceFixup implements Extension, IEventListener {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(ResourceFixup.class);
-	private Driver driver;
 	private DriverConfiguration config;
 
 	public boolean event(EventDefinition id, Event event) {
@@ -40,7 +35,6 @@ public class ResourceFixup implements Extension, IEventListener {
 	}
 
 	public void init(Driver driver, Properties properties) {
-		this.driver = driver;
 		this.config = driver.getConfiguration();
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);
 	}
