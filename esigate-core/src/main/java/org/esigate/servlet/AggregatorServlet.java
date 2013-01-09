@@ -70,7 +70,7 @@ public class AggregatorServlet extends HttpServlet {
 	 * This methods allows overriding in unit test
 	 * 
 	 * @param name
-	 * @return
+	 * @return the Driver instance associated with this servlet
 	 */
 	public Driver getDriver(String name) {
 		return DriverFactory.getInstance(name);
