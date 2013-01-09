@@ -7,7 +7,7 @@ import org.openflow.protocol.OFPhysicalPort;
 
 public interface ISwitchStorage extends INetMapStorage {
 	
-	enum SwitchState {
+	public enum SwitchState {
 		INACTIVE,
 		ACTIVE
 	}

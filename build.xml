@@ -68,7 +68,7 @@
     </patternset>
 
     <patternset id="titanlib">
-	<include name="**/titan/*.jar"/>
+	<include name="**/*.jar"/>
     </patternset>
 
     <path id="classpath">

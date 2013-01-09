@@ -2,6 +2,7 @@ package net.floodlightcontroller.core.internal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public void update(String dpid, SwitchState state, DM_OPERATION op) {
 		// TODO Auto-generated method stub
+		log.info("SwitchStorage:update dpid:{} state: {} ", dpid, state);
         switch(op) {
 
         	case UPDATE:
@@ -48,13 +50,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		Vertex sw;
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
-            	sw.setProperty("state",state);
+            	sw.setProperty("state",state.toString());
             	graph.stopTransaction(Conclusion.SUCCESS);
-            	log.trace("SwitchStorage:setSTatus dpid:{} state: {} done", dpid, state);
+            	log.info("SwitchStorage:setSTatus dpid:{} state: {} done", dpid, state);
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.trace("SwitchStorage:setSTatus dpid:{} state: {} failed", dpid, state);
+			log.info("SwitchStorage:setSTatus dpid:{} state: {} failed", dpid, state);
 		}
             	
 		
@@ -66,7 +68,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		Vertex sw;
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
-            	log.trace("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
+            	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
             	// TODO: Check if port exists
             	Vertex p = graph.addVertex(null);
             	p.setProperty("type","port");
@@ -81,7 +83,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.trace("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
+			log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
 		}	
 
 	}
@@ -107,28 +109,28 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public void addSwitch(String dpid) {
 		
-		log.trace("SwitchStorage:addSwitch(): dpid {} ", dpid);
+		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		
         try {
             if (graph.getVertices("dpid",dpid).iterator().hasNext()) {
                     /*
                      *  Do nothing or throw exception?
                      */
-            	log.trace("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+            	log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
             } else {
                     Vertex sw = graph.addVertex(null);
 
                     sw.setProperty("type","switch");
                     sw.setProperty("dpid", dpid);
-                    sw.setProperty("state",SwitchState.ACTIVE);
+                    sw.setProperty("state",SwitchState.ACTIVE.toString());
                     graph.stopTransaction(Conclusion.SUCCESS);
-                    log.trace("SwitchStorage:addSwitch dpid:{} added", dpid);
+                    log.info("SwitchStorage:addSwitch dpid:{} added", dpid);
             }
     } catch (TitanException e) {
             /*
              * retry till we succeed?
              */
-    	log.trace("SwitchStorage:addSwitch dpid:{} failed", dpid);
+    	log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
     }
 
 
@@ -148,17 +150,17 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	// TODO: Check if port exists
-            	log.trace("SwitchStorage:deletePort dpid:{} port:{}", dpid, port);
-            	Vertex p = sw.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
-            	if (p != null) {
-            		log.trace("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
+            	log.info("SwitchStorage:deletePort dpid:{} port:{}", dpid, port);
+            	if (sw.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
+            		Vertex p = sw.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
+            		log.info("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
             		graph.removeVertex(p);
             		graph.stopTransaction(Conclusion.SUCCESS);
             	}
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.trace("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
+			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
 	}
 
@@ -178,11 +180,20 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public void init(String conf) {
 		//TODO extract the DB location from conf
 		Configuration db = new BaseConfiguration();
+		
+		// Local storage gets locked for single process
 		db.setProperty("storage,backend","local");
 		db.setProperty("storage.directory","/tmp/netmap");
         graph = TitanFactory.open(db);
-        graph.createKeyIndex("dpid", Vertex.class);
-        graph.createKeyIndex("type", Vertex.class);
+        
+        // FIXME: 
+        Set<String> s = graph.getIndexedKeys(Vertex.class);
+        if (!s.contains("dpid")) {
+           graph.createKeyIndex("dpid", Vertex.class);
+        }
+        if (!s.contains("type")) {
+        	graph.createKeyIndex("type", Vertex.class);
+        }
 	}
 
 }
