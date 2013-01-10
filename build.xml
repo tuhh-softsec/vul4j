@@ -237,6 +237,9 @@
             <zipgroupfileset dir="${lib}">
                 <patternset refid="lib"/>
             </zipgroupfileset>
+            <zipgroupfileset dir="${titanlib}">
+                <patternset refid="titanlib"/>
+            </zipgroupfileset>
         </jar>
         <jar destfile="${floodlight-test-jar}" filesetmanifest="mergewithoutmain">
             <manifest>
@@ -247,6 +250,9 @@
             <zipgroupfileset dir="${lib}">
                 <patternset refid="lib-test"/>
                 <patternset refid="lib-cobertura"/>
+            </zipgroupfileset>
+            <zipgroupfileset dir="${titanlib}">
+                <patternset refid="titanlib"/>
             </zipgroupfileset>
         </jar>
     </target>
