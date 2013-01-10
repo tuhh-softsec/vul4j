@@ -182,17 +182,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		Configuration db = new BaseConfiguration();
 		
 		// Local storage gets locked for single process
-		db.setProperty("storage,backend","local");
-		db.setProperty("storage.directory","/tmp/netmap");
+		db.setProperty("storage.backend","cassandra");
+		db.setProperty("storage.hostname","127.0.0.1");
         graph = TitanFactory.open(db);
         
         // FIXME: 
         Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
            graph.createKeyIndex("dpid", Vertex.class);
+           graph.stopTransaction(Conclusion.SUCCESS);
         }
         if (!s.contains("type")) {
         	graph.createKeyIndex("type", Vertex.class);
+        	graph.stopTransaction(Conclusion.SUCCESS);
         }
 	}
 
