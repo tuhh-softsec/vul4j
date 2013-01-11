@@ -1491,9 +1491,9 @@ public class FileUtils
         {
             return;
         }
+        directory.deleteOnExit();  // The hook reverses the list
 
         cleanDirectoryOnExit( directory );
-        directory.deleteOnExit();
     }
 
     /**
