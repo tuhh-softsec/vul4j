@@ -1,0 +1,19 @@
+
+This is a python script to forward some floodlight web services to Rexster based implementation.
+
+To start the  forwarder do the following
+
+1> You need to change the following line in restapi2.py to pointing to your Rexstar REST API:
+
+RestIP="127.0.0.1"
+RestPort=8182
+DBName="titanexample"
+
+2> install Flask python library (apt-get install python-flask)
+
+3> Run from commandline
+
+$ ./restapi2.py
+
+4> Access the UI using http://<ip>:9000
+
