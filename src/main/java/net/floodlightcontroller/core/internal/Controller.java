@@ -1431,6 +1431,9 @@ public class Controller implements IFloodlightProviderService,
         
         updateActiveSwitchInfo(sw);
         swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
+        for (OFPhysicalPort port: sw.getPorts()) {
+            swStore.addPort(sw.getStringId(), port);
+        }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
             this.updates.put(update);

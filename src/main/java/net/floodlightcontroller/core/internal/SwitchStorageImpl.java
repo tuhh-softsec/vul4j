@@ -68,22 +68,26 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		Vertex sw;
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
-            	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
+            	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
             	// TODO: Check if port exists
-            	Vertex p = graph.addVertex(null);
-            	p.setProperty("type","port");
-            	p.setProperty("number",port.getPortNumber());
-            	p.setProperty("state",port.getState());
-            	p.setProperty("desc",port.getName());
-            	Edge e = graph.addEdge(null, sw, p, "on");
-            	e.setProperty("state","ACTIVE");
-            	e.setProperty("number", port.getPortNumber());
-            	
-            	graph.stopTransaction(Conclusion.SUCCESS);
+            	if (sw.query().direction(Direction.OUT).labels("on").has("number",port.getPortNumber()).vertices().iterator().hasNext()) {
+            		//TODO: Do nothing for now 
+            	} else {
+            		Vertex p = graph.addVertex(null);
+            		p.setProperty("type","port");
+            		p.setProperty("number",port.getPortNumber());
+            		p.setProperty("state",port.getState());
+            		p.setProperty("desc",port.getName());
+            		Edge e = graph.addEdge(null, sw, p, "on");
+            		e.setProperty("state","ACTIVE");
+            		e.setProperty("number", port.getPortNumber());
+                     	
+            		graph.stopTransaction(Conclusion.SUCCESS);
+            	}
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port);
+			log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
 		}	
 
 	}
@@ -186,7 +190,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		db.setProperty("storage.hostname","127.0.0.1");
         graph = TitanFactory.open(db);
         
-        // FIXME: 
+        // FIXME: Creation on Indexes should be done only once
         Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
            graph.createKeyIndex("dpid", Vertex.class);

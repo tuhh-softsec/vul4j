@@ -86,8 +86,13 @@ public class LinkStorageImpl implements ILinkStorage {
             }
             
             if (vportSrc != null && vportDst != null) {
-        		graph.addEdge(null, vportSrc, vportDst, "link");
-        		graph.stopTransaction(Conclusion.SUCCESS);
+            	//TODO: If Edge already exists should we remove and add again?
+            	if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().equals(vportDst)) {
+            		//FIXME: Succeed silently for now
+            	} else {
+            		graph.addEdge(null, vportSrc, vportDst, "link");
+            		graph.stopTransaction(Conclusion.SUCCESS);
+            	}
         		log.debug("addLink(): link added {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
             } else {
             	log.error("addLink(): failed {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});

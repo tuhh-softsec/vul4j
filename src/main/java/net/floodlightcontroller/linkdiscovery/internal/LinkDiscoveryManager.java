@@ -191,7 +191,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     int lldpTimeCount = 0;
 
     // Storage
-    protected LinkStorageImplStubs linkStore;
+    protected LinkStorageImpl linkStore;
     
     /**
      * Flag to indicate if automatic port fast is enabled or not.
@@ -1868,7 +1868,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         }
 
         // Initialize the link storage connector to the network map
-        this.linkStore = new LinkStorageImplStubs();
+        this.linkStore = new LinkStorageImpl();
         this.linkStore.init("");
         
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();

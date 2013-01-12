@@ -234,11 +234,11 @@
             <fileset dir="${python-src}">
                 <include name="**/*.py"/>
             </fileset>
-            <zipgroupfileset dir="${lib}">
-                <patternset refid="lib"/>
-            </zipgroupfileset>
             <zipgroupfileset dir="${titanlib}">
                 <patternset refid="titanlib"/>
+            </zipgroupfileset>
+            <zipgroupfileset dir="${lib}">
+                <patternset refid="lib"/>
             </zipgroupfileset>
         </jar>
         <jar destfile="${floodlight-test-jar}" filesetmanifest="mergewithoutmain">
