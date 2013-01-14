@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.utils;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -84,10 +83,6 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
         buf = new byte[INITIAL_SIZE];
     }
     
-    public void close() throws IOException {
-        buf = null;
-    }
-
     private void expandSize(int newPos) {
         int newSize = size;
         while (newPos > newSize) {
