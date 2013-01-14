@@ -27,24 +27,18 @@ import java.io.OutputStream;
  */
 public class UnsyncBufferedOutputStream extends OutputStream {
     static final int size = 8*1024;
-    private static ThreadLocal<byte[]> bufCache = new ThreadLocal<byte[]>() {
-        @Override
-        protected synchronized byte[] initialValue() {
-            return new byte[size];
-        }
-    };
     
-    int pointer = 0;
-    final OutputStream out;
+    private int pointer = 0;
+    private final OutputStream out;
 
-    final byte[] buf;
+    private final byte[] buf;
     
     /**
      * Creates a buffered output stream without synchronization
      * @param out the outputstream to buffer
      */
     public UnsyncBufferedOutputStream(OutputStream out) {
-        buf = (byte[])bufCache.get();
+        buf = new byte[size];
         this.out = out;
     }
 
@@ -95,7 +89,6 @@ public class UnsyncBufferedOutputStream extends OutputStream {
     public void close() throws IOException {
         flush();
         out.close();
-        bufCache.remove();
     }
 
 }

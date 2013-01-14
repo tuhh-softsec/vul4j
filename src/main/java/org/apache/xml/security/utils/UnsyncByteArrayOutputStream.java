@@ -29,19 +29,13 @@ import java.io.OutputStream;
 public class UnsyncByteArrayOutputStream extends OutputStream  {	
 
     private static final int INITIAL_SIZE = 8192;
-    private static ThreadLocal<byte[]> bufCache = new ThreadLocal<byte[]>() {
-        @Override
-        protected synchronized byte[] initialValue() {
-            return new byte[INITIAL_SIZE];
-        }
-    };
 
     private byte[] buf;
     private int size = INITIAL_SIZE;
     private int pos = 0;
 
     public UnsyncByteArrayOutputStream() {
-        buf = (byte[])bufCache.get();
+        buf = new byte[INITIAL_SIZE];
     }
 
     public void write(byte[] arg0) {
@@ -87,12 +81,11 @@ public class UnsyncByteArrayOutputStream extends OutputStream  {
 
     public void reset() {
         pos = 0;
-        bufCache.remove();
+        buf = new byte[INITIAL_SIZE];
     }
     
-    @Override
     public void close() throws IOException {
-        bufCache.remove();
+        buf = null;
     }
 
     private void expandSize(int newPos) {
