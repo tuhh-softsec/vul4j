@@ -26,13 +26,12 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import nu.validator.htmlparser.common.DoctypeExpectation;
-import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.dom.Dom2Sax;
-import nu.validator.htmlparser.sax.HtmlParser;
+import nu.validator.htmlparser.dom.HtmlDocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -41,6 +40,7 @@ import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.util.HttpRequestHelper;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -119,9 +119,10 @@ public class XsltRenderer implements Renderer {
 	/** {@inheritDoc} */
 	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
 		try {
-			HtmlParser htmlParser = new HtmlParser(XmlViolationPolicy.ALLOW);
-			htmlParser.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
-			Source source = new SAXSource(htmlParser, new InputSource(new StringReader(src)));
+			HtmlDocumentBuilder htmlDocumentBuilder = new HtmlDocumentBuilder();
+			htmlDocumentBuilder.setDoctypeExpectation(DoctypeExpectation.NO_DOCTYPE_ERRORS);
+			Document document = htmlDocumentBuilder.parse(new InputSource(new StringReader(src)));
+			Source source = new DOMSource(document);
 			DOMResult result = new DOMResult();
 			transformer.transform(source, result);
 			XhtmlSerializer serializer = new XhtmlSerializer(out);
