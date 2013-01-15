@@ -1,116 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Quickstart</title>
+		<title>Quick start</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-	<h1>Quickstart</h1>
-		Imagine you have to write a java application (master) that must
-		include
-		a block coming from
-		an existing application (provider).
-		<section name="Download ESIGate">
+	<h1>Quick start</h1>
+		<p>
+			Imagine you have to create a specific module that has to integrate inside an existing
+			web site.
+			This web site was built with some Content Management System.
+			It would be easier and much faster for you to develop it as an independent standalone
+			application than working with the CMS and all the constraints it may bring to you.
+		</p>
+		<p>
+			For this tutorial we will use a very simple Hello World application. If you want to test,
+			make your own application (it could be written in any language). Let's assume the application
+			is running on <a href="http://localhost:8080/hello/">http://localhost:8080/hello/</a>
+		</p>
+		<p>
+			<img src="hello1.png" alt="Hello World application screenshot 1" />
+			<img src="hello2.png" alt="Hello World application screenshot 2" />
+		</p>
+		<p>
+			For the CMS we will use existing pages from EsiGate web site:
+			<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
+		</p>
+		<p>
+			<img src="template.png" alt="Template application screenshot" />
+		</p>
+		<section name="Download EsiGate">
 			<p>
-				Download the last version from SourceForge site. Any library
-				needed
-				in included inside
-				the distribution.
-				Copy esigate.jar
-				and the
-				other libraries inside the WEB-INF/lib folder of
-				your web
-				application.
-	</p>
+				To be quick here we will use the esigate-server package included in the distribution.
+				esigate-server is a pre-packaged esigate web application and jetty server for testing and development purposes. Note that EsiGate
+				runs as a servlet so later you will be able to run it in production on any servlet container
+				like Tomcat for example.
+			</p>
 		</section>
-		<section name="Configure it">
+		<section name="Configure EsiGate">
 			<p>
-				The tool try to load its configuration file from the classpath.
-				Copy the exemple file from folder
-				test/master/WEB-INF/classes/esigate.properties
-				into your source folder	in esigate.properties.
-				Change the
-				"remoteUrlBase" parameter to the base address of your
-				provider
-				application.
-	</p>
+				EsiGate needs a configuration file "esigate.properties" where you define the base Urls
+				of your applications:
+			</p>
 <source>
-default.remoteUrlBase=http://localhost:8080/provider/
+esigate.remoteUrlBase=http://localhost:8080/
 </source>
 		</section>
-		<section name="Tag the block on the provider application">
+		<section name="Run EsiGate">
 			<p>
-				The block has to be tagged using special HTML comments.
-	</p>
+				Now we put EsiGate server and esigate.properties in the same folder, open a console on this folder and launch the following command:
+			</p>
 <source>
-Some HTML
-<strong>&lt;!--$beginblock$myblock$--&gt;</strong>
-	My block HTML content
-<strong>&lt;!--$endblock$myblock$--&gt;</strong>
-Some other HTML
+java -Desigate.config=esigate.properties -Djetty.port=8081 -jar esigate-server-4.0.jar start
 </source>
+			<p>
+				You should now have EsiGate running on port 8081. Let's check by calling in a browser <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>.
+				You should see exactly your application except that we are one port 8081 (your application is on port 8080) (Ok for now, nothing spectacular ;-)
+			</p>
 		</section>
-		<section
-			name="Retrieve the block inside a page of the master application
-		">
+		<section name="Use an ESI template">
 			<p>
-				If using JSP, you can use the tag library. If not, the tool can be
-				used as well directly using java code.
-	</p>
+				We are going to use <a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
+				page as a template for the pages of our hello application.
+			</p>
 			<p>
-				Suppose the block you want to include is inside a page
-				http://localhost:8080/provider/mypage.php
-	</p>
-<source>
-&lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
-&lt;%@page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%&gt;
-<strong>&lt;%@taglib uri="http://www.esigate.org" prefix="w"%&gt;</strong>
-&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /&gt;
-&lt;title&gt;Include block exemple&lt;/title&gt;
-&lt;/head&gt;
-&lt;body style="background-color: yellow"&gt;
+				To do this, we will have to add some few ESI tags in our code:
+			</p>
+<source><![CDATA[
+]]><strong><![CDATA[<esi:include src="http://www.esigate.org/examples/templates/sparkle/template.html">]]></strong><![CDATA[
+<html>
+<head>
+]]><strong><![CDATA[<esi:replace fragment="head">]]></strong><![CDATA[
+<title>What is your name?</title>
+]]><strong><![CDATA[</esi:replace>]]></strong><![CDATA[
+</head>
+<body>
+]]><strong><![CDATA[<esi:replace fragment="body">]]></strong><![CDATA[
+Hello <%=request.getParameter("name")%>!
+]]><strong><![CDATA[</esi:replace>]]></strong><![CDATA[
+</body>
+</html>
+]]><strong><![CDATA[</esi:include>]]></strong><![CDATA[
+]]></source>
+			<p>
+				And for the second page:
+			</p>
+<source><![CDATA[
+]]><strong><![CDATA[<esi:include src="http://www.esigate.org/examples/templates/sparkle/template.html">]]></strong><![CDATA[
+<html>
+<head>
+]]><strong><![CDATA[<esi:replace fragment="head">]]></strong><![CDATA[
+<title>Hello!</title>
+]]><strong><![CDATA[</esi:replace>]]></strong><![CDATA[
+</head>
+<body>
+]]><strong><![CDATA[<esi:replace fragment="body">]]></strong><![CDATA[
+<form action="hello.jsp" method="GET">
+What is your name?
+<input type="text" name="name" />
+<input type="submit" value="ok" />
+</form>
+]]><strong><![CDATA[</esi:replace>]]></strong><![CDATA[
+</body>
+</html>
+]]><strong><![CDATA[</esi:include>]]></strong><![CDATA[
+]]></source>
+			<p>
+				This tells EsiGate to include our template page and to replace some placeholders with our code. If you look at the source code of page
+				<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
+				you will notice that the placeholders are already there, for exemple for the "head" section: 
+			</p>
+<source><![CDATA[
 ...
-<strong>&lt;w:includeblock page="mypage.php" name="myblock" /&gt;</strong>
+]]><strong><![CDATA[<esi:fragment name="head">]]></strong><![CDATA[
+<title>Sparkle by Free Css Templates</title>
+]]><strong><![CDATA[<esi:fragment>]]></strong><![CDATA[
 ...
-&lt;/body&gt;
-&lt;/html&gt;
-</source>
-			<p>
-				NOTE: do not forget to add the taglib declaration at the beging of
-				the page.
-	</p>
+]]></source>
 		</section>
-		<section name="Handling resources">
+		<section name ="Test">
 			<p>
-				The HTML code included may contain links to resources (images,
-				css,
-				scripts, links). In order to have this links
-				work, there are two
-				possibilities :
-	</p>
-			<ul>
-				<li>adding a HTML &lt;base&gt; tag in the page : you can use the tag &lt;assemble:includeBase&gt;</li>
-		<li>have the resources proxied by the reverse proxy servlet</li>
-	</ul>
-	</section>
-	<section name="Template ESIGate application">
-	<p>esigate-war is a template war. It has no configuration and a single default provider named 'esigate', mapped on webapp root.</p>
-	<ul><li>You must add a configuration file (see <a href="configuration.html">Configuration</a>)</li>
-	<li>and update web.xml if necessary.</li></ul> <p>  Then it can be installed on any Java application server. </p>
-	
-	</section>
-	<section name="Development server">
-	<p>We provide a stand-alone server for testing and development purposes. It uses esigate-war as-is and takes a configuration file path as parameter :</p>
-	<ul>
-	<li>Get the jar from the maven repository : <a href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22esigate-server%22">esigate-server on central repository</a></li>
-	<li>Create a configuration file (see <a href="configuration.html">Configuration</a>)</li>
-	<li>Start the server using <b>java -Djetty.port=8080 -Desigate.conf=&lt;your-conf-file&gt; esigate-server-&lt;version&gt;.jar</b></li>
-	<li>Stop the server using <b>Control-C</b></li>
-	</ul>
-	</section>
+				Now we can test again on <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>
+			</p>
+			<p>
+				<img src="hello1_integrated.png" alt="Hello World application screenshot 1 integrated with template" />
+				<img src="hello2_integrated.png" alt="Hello World application screenshot 2 integrated with template" />
+			</p>
+			<p>
+				The 2 applications are now integrated but remain separate applications that can be developed, tested and deployed separately. In addition EsiGate includes a cache that
+				will make the integrated application very fast.
+			</p>
+			<p>
+				EsiGate can be used for much more complex cases with several applications that have to be seen as a single one by users.
+				Have a look at the <a href="reference.html">reference documentation</a> for more information.
+			</p>
+		</section>
 	</body>
 </document>
