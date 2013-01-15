@@ -246,6 +246,15 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<reports>
+								<report>summary</report>
+								<report>license</report>
+								<report>scm</report>
+								<report>distribution-management</report>
+								<report>issue-tracking</report>
+								<report>project-team</report>
+								<report>mailing-list</report>
+							</reports>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>

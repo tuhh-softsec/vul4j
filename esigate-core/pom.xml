@@ -96,6 +96,9 @@
 							<configuration>
 								<encoding>UTF-8</encoding>
 							</configuration>
+							<reports>
+								<report>javadoc</report>
+							</reports>
 						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
