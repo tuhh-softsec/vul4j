@@ -239,7 +239,7 @@ def query_links():
   return resp
 
 if __name__ == "__main__":
-  if sys.argv[1] == "-d":
+  if len(sys.argv) > 1 and sys.argv[1] == "-d":
     print "-- query all switches --"
     query_switch()
     print "-- query all links --"
