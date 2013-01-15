@@ -2,6 +2,9 @@ Changelog for "Apache xml-security" <http://santuario.apache.org/>
 
 New in v2.0.0-SNAPSHOT:
 
+New in v1.5.4:
+    Fixed SANTUARIO-351 - Avoid possible NPE in Unsync OutputStreams.
+
 New in v1.5.3:
     Fixed SANTUARIO-344 - XMLSignature keeps file-handle on xml-file.
     Fixed SANTUARIO-345 - Support Signature 1.1 KeyInfo Extensions: DEREncodedKeyValue, KeyInfoReference, X509Digest.
