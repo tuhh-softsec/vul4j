@@ -45,46 +45,24 @@
 			<item name="Stats (ohloh)" href="http://www.ohloh.net/p/webassembletool" />
 		</links>
 
-		<menu name="About">
-			<item href="index.html" name="Overview" />
-			<item href="features.html" name="Features" />
-		</menu>
 		<menu name="Download">
 			<item href="http://sourceforge.net/project/showfiles.php?group_id=209844"
 				name="Download" />
-			<item href="maven.html" name="Maven repositories" />
 		</menu>
 		<menu name="Documentation">
 			<item href="quickstart.html" name="Quick start" />
-			<item href="configuration.html" name="Configuration" />
-			<item href="extensions.html" name="Extensions" />
-			<item href="taglib.html" name="Using the taglib" />
-			<item href="api.html" name="Using the API" />
-			<item href="proxy.html" name="Using the proxy" />
-			<item href="aggregator.html" name="Using the aggregator" />
-			<item href="esi.html" name="Edge Side Include" />
-			<item href="xpathxslt.html" name="Xpath and XSLT" />
-			<item href="authentication.html" name="Authentication" />
-			<item href="cookies.html" name="Cookies" />
-			<item href="cache.html" name="Cache" />
-			<item href="httpheaders.html" name="HTTP headers support" />
-			<item href="errors.html" name="Errors management" />
-			<item href="load-balancing.html" name="Load balancing" />
-			<item href="sample.html" name="Sample applications" />
-			<item href="maven.html" name="Maven" />
+			<item href="reference.html" name="Reference documentation" />
 			<item href="external-resources.html" name="External resources" />
-		</menu>
-
-		<menu name="Community">
-			<item href="http://sourceforge.net/apps/mediawiki/webassembletool/"
-				name="FAQ (Wiki)" />
-			<item href="http://sourceforge.net/projects/webassembletool/"
-				name="SourceForge" />
 		</menu>
 
 		<menu ref="reports" />
 
-		<menu ref="modules" />
+		<menu name="Modules">
+			<item href="esigate-core/index.html" name="esigate-core" />
+			<item href="esigate-cas/index.html" name="esigate-cas" />
+			<item href="esigate-war/index.html" name="esigate-war" />
+			<item href="esigate-server/index.html" name="esigate-server" />
+		</menu>
 
 	</body>
 </project>

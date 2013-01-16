@@ -42,9 +42,11 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestExecutor;
+import org.esigate.api.ContainerRequestMediator;
 import org.esigate.cookie.CookieManager;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.events.EventManager;
@@ -658,5 +660,65 @@ public class DriverTest extends TestCase {
         TestUtils.addCookie(cookie, request);
 
         driver.proxy("/foobar.jsp", request);
+    }
+	
+	public void testRewriteCookiePath() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080/"); 
+        properties.put(Parameters.PRESERVE_HOST.name, "true");
+        properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+        MockHttpClient mockHttpClient = new MockHttpClient();
+        mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+            @Override
+            public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+                    throws IOException, HttpException {
+                
+                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+                        
+                          response.addHeader(new BasicHeader("Set-Cookie",
+                                    "name1=value1;Path=/foo"));
+                return response;
+            }
+        });
+        Driver driver = createMockDriver(properties, mockHttpClient);
+
+        request = TestUtils.createRequest("http://localhost:8081/foo/foobar.jsp");
+
+        driver.proxy("/foo/foobar.jsp", request);
+        
+        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        Assert.assertEquals(1, mediator.getCookies().length );
+        Assert.assertEquals( "/foo", mediator.getCookies()[0].getPath() );
+    }
+	
+	public void testRewriteCookiePathNotMatching() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080/"); 
+        properties.put(Parameters.PRESERVE_HOST.name, "true");
+        properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+        MockHttpClient mockHttpClient = new MockHttpClient();
+        mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+            @Override
+            public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+                    throws IOException, HttpException {
+                
+                BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+                        
+                          response.addHeader(new BasicHeader("Set-Cookie",
+                                    "name1=value1;Path=/bar"));
+                return response;
+            }
+        });
+        Driver driver = createMockDriver(properties, mockHttpClient);
+
+        request = TestUtils.createRequest("http://localhost:8081/foo/foobar.jsp");
+
+        driver.proxy("/bar/foobar.jsp", request);
+        
+        ContainerRequestMediator mediator = HttpRequestHelper.getMediator(request);
+        Assert.assertEquals(1, mediator.getCookies().length );
+        Assert.assertEquals( "/", mediator.getCookies()[0].getPath() );
     }
 }

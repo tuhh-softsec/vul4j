@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>API</title>
+		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
+	</properties>
+	<body>
+		<h1>Features</h1>
+		<h1>Installation</h1>
+			Download
+			Webapp
+			Standalone
+			Maven
+		<h1>Configuration</h1>
+			Basic configuration
+			All parameters
+		<h1>Cache</h1>
+		<h1>Http headers</h1>
+		<h1>Cookies</h1>
+		<h1>Errors management</h1>
+		<h1>Load balancing</h1>
+		<h1>Extending and customizing</h1>
+		<h1>API documentation</h1>
+		<h1>Deprecated features</h1>
+	</body>
+</document>

@@ -221,7 +221,7 @@ public class HttpClientHelper {
 		HttpContext httpContext = new BasicHttpContext();
 
 		if (cookieManager != null) {
-			CookieStore cookieStore = new RequestCookieStore(cookieManager, httpRequest);
+			CookieStore cookieStore = new RequestCookieStore(cookieManager, originalRequest);
 			httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 		}
 		HttpResponse result;

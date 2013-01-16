@@ -160,7 +160,7 @@ public class DefaultCookieManager implements CookieManager {
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
-		String requestPath = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getRawQuery();
+		String requestPath = UriUtils.createUri(originalRequest.getRequestLine().getUri()).getPath();
 		String path = originalPath;
 		if (requestPath == null || !requestPath.startsWith(originalPath)) {
 			path = "/";
