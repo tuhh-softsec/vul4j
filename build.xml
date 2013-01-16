@@ -104,6 +104,7 @@
             <patternset refid="lib-test"/>
             <patternset refid="lib-cobertura"/>
             <patternset refid="lib"/>
+            <patternset refid="titanlib"/>
         </fileset>
     </path>
 
