@@ -25,6 +25,7 @@ import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -64,5 +65,21 @@ public abstract class AbstractInputSecurityHeaderHandler implements XMLSecurityH
             xmlSecEventIterator.next();
         }
         return xmlSecEventIterator.next();
+    }
+
+    protected List<XMLSecEvent> getResponsibleXMLSecEvents(Deque<XMLSecEvent> xmlSecEvents, int index) {
+        List<XMLSecEvent> xmlSecEventList = new ArrayList<XMLSecEvent>();
+
+        Iterator<XMLSecEvent> xmlSecEventIterator = xmlSecEvents.descendingIterator();
+        int curIdx = 0;
+        while (curIdx++ < index && xmlSecEventIterator.hasNext()) {
+            xmlSecEventIterator.next();
+        }
+
+        while (xmlSecEventIterator.hasNext()) {
+            xmlSecEventList.add(xmlSecEventIterator.next());
+        }
+
+        return xmlSecEventList;
     }
 }

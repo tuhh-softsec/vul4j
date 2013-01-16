@@ -20,7 +20,6 @@ package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
 import org.apache.xml.security.binding.xmldsig.CanonicalizationMethodType;
-import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.SignedInfoType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -266,25 +265,19 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
                                  XMLSecurityProperties securityProperties) throws XMLSecurityException {
             this.signatureType = signatureType;
 
-            KeyInfoType keyInfoType = signatureType.getKeyInfo();
-            SecurityToken securityToken = 
-                retrieveSecurityToken(keyInfoType, securityProperties, securityContext);
-            securityToken.verify();
-
-            handleSecurityToken(securityToken);
-            createSignatureAlgorithm(securityToken, signatureType);
+            SecurityToken securityToken =
+                retrieveSecurityToken(signatureType, securityProperties, securityContext);
             this.securityToken = securityToken;
+
+            createSignatureAlgorithm(securityToken, signatureType);
         }
         
-        protected abstract SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
+        protected abstract SecurityToken retrieveSecurityToken(SignatureType signatureType,
                                                  XMLSecurityProperties securityProperties,
                                                  SecurityContext securityContext) throws XMLSecurityException;
 
         public SecurityToken getSecurityToken() {
             return securityToken;
-        }
-
-        protected void handleSecurityToken(SecurityToken securityToken) throws XMLSecurityException {
         }
 
         protected void createSignatureAlgorithm(SecurityToken securityToken, SignatureType signatureType)

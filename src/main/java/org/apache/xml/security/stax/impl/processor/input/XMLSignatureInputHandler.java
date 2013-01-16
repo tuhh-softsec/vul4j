@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
-import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
@@ -58,37 +57,7 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         signatureValueSecurityEvent.setCorrelationID(signatureType.getId());
         securityContext.registerSecurityEvent(signatureValueSecurityEvent);
 
-        final SignatureVerifier signatureVerifier = 
-                new XMLSignatureVerifier(signatureType, securityContext, securityProperties) {
-            @Override
-            protected void handleSecurityToken(SecurityToken securityToken) throws XMLSecurityException {
-                //we have to emit a TokenSecurityEvent here too since it could be an embedded token
-                securityToken.addTokenUsage(SecurityToken.TokenUsage.Signature);
-                XMLSecurityConstants.TokenType tokenType = securityToken.getTokenType();
-                TokenSecurityEvent tokenSecurityEvent = null;
-                if (tokenType == XMLSecurityConstants.X509V1Token
-                        || tokenType == XMLSecurityConstants.X509V3Token
-                        || tokenType == XMLSecurityConstants.X509Pkcs7Token
-                        || tokenType == XMLSecurityConstants.X509PkiPathV1Token) {
-                    tokenSecurityEvent = new X509TokenSecurityEvent();
-                } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
-                    tokenSecurityEvent = new KeyValueTokenSecurityEvent();
-                } else if (tokenType == XMLSecurityConstants.KeyNameToken) {
-                    tokenSecurityEvent = new KeyNameTokenSecurityEvent();
-                } else if (tokenType == XMLSecurityConstants.DefaultToken) {
-                    tokenSecurityEvent = new DefaultTokenSecurityEvent();
-                } else {
-                    throw new XMLSecurityException("stax.unsupportedToken", tokenType);
-                }
-                tokenSecurityEvent.setSecurityToken(securityToken);
-                tokenSecurityEvent.setCorrelationID(signatureType.getId());
-                securityContext.registerSecurityEvent(tokenSecurityEvent);
-                
-                super.handleSecurityToken(securityToken);
-            }
-        };
-        
-        return signatureVerifier;
+        return new XMLSignatureVerifier(signatureType, securityContext, securityProperties);
     }
 
     @Override
@@ -107,14 +76,38 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
         }
 
         @Override
-        protected SecurityToken retrieveSecurityToken(KeyInfoType keyInfoType,
+        protected SecurityToken retrieveSecurityToken(SignatureType signatureType,
                                                       XMLSecurityProperties securityProperties,
                                                       SecurityContext securityContext) throws XMLSecurityException {
-            return SecurityTokenFactory.getInstance().getSecurityToken(keyInfoType,
-                    SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION,
-                    securityProperties,
-                    securityContext);
+
+            SecurityToken securityToken = SecurityTokenFactory.getInstance().getSecurityToken(signatureType.getKeyInfo(),
+                    SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION, securityProperties, securityContext);
+
+            securityToken.verify();
+
+            //we have to emit a TokenSecurityEvent here too since it could be an embedded token
+            securityToken.addTokenUsage(SecurityToken.TokenUsage.Signature);
+            XMLSecurityConstants.TokenType tokenType = securityToken.getTokenType();
+            TokenSecurityEvent tokenSecurityEvent = null;
+            if (tokenType == XMLSecurityConstants.X509V1Token
+                    || tokenType == XMLSecurityConstants.X509V3Token
+                    || tokenType == XMLSecurityConstants.X509Pkcs7Token
+                    || tokenType == XMLSecurityConstants.X509PkiPathV1Token) {
+                tokenSecurityEvent = new X509TokenSecurityEvent();
+            } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
+                tokenSecurityEvent = new KeyValueTokenSecurityEvent();
+            } else if (tokenType == XMLSecurityConstants.KeyNameToken) {
+                tokenSecurityEvent = new KeyNameTokenSecurityEvent();
+            } else if (tokenType == XMLSecurityConstants.DefaultToken) {
+                tokenSecurityEvent = new DefaultTokenSecurityEvent();
+            } else {
+                throw new XMLSecurityException("stax.unsupportedToken", tokenType);
+            }
+            tokenSecurityEvent.setSecurityToken(securityToken);
+            tokenSecurityEvent.setCorrelationID(signatureType.getId());
+            securityContext.registerSecurityEvent(tokenSecurityEvent);
+
+            return securityToken;
         }
     }
-
 }
