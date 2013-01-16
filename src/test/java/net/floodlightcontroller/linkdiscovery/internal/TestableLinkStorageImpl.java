@@ -7,17 +7,18 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 
 /**
- * Seam that allows me to set up a mock of LinkStorageImpl that writes to a
- * file database rather than a Cassandra cluster. Currently LinkStorageImpl
- * is hardcoded to connect to a Cassandra cluster in its init method.
+ * Seam that allows me to set up a testable instance of LinkStorageImpl that 
+ * writes to a file database rather than a Cassandra cluster. Currently 
+ * LinkStorageImpl is hardcoded to connect to a Cassandra cluster in its init 
+ * method.
  * 
  * @author jono
  *
  */
 
-public class MockLinkStorageImpl extends LinkStorageImpl {
+public class TestableLinkStorageImpl extends LinkStorageImpl {
 
-	public MockLinkStorageImpl(TitanGraph graph){
+	public TestableLinkStorageImpl(TitanGraph graph){
 		this.graph = graph;
 	}
 	
