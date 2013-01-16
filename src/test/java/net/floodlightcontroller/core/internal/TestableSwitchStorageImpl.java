@@ -1,24 +1,24 @@
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.floodlightcontroller.core.internal;
 
 import java.util.Set;
 
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 
 /**
- * Seam that allows me to set up a testable instance of LinkStorageImpl that 
+ * Seam that allows me to set up a testable instance of SwitchStorageImpl that 
  * writes to a file database rather than a Cassandra cluster. 
- * It seems the init() API on LinkStorageImpl might change so I won't rely
+ * It seems the init() API on SwitchStorageImpl might change so I won't rely
  * on it yet.
  * 
  * @author jono
  *
  */
 
-public class TestableLinkStorageImpl extends LinkStorageImpl {
-
-	public TestableLinkStorageImpl(TitanGraph graph){
+public class TestableSwitchStorageImpl extends SwitchStorageImpl {
+	
+	public TestableSwitchStorageImpl(TitanGraph graph){
 		this.graph = graph;
 	}
 	
