@@ -69,12 +69,16 @@ public class UriUtils {
 		return URIUtils.resolve(baseURI, reference);
 	}
 
-	public static HttpHost extractHost(final URI uri) {
-		return URIUtils.extractHost(uri);
+	public static String extractHostName(final URI uri) {
+		return uri.getHost();
+	}
+
+	public static String extractHostName(final String uri) {
+		return extractHostName(createUri(uri));
 	}
 
 	public static HttpHost extractHost(final String uri) {
-		return URIUtils.extractHost(URI.create(uri));
+		return URIUtils.extractHost(createUri(uri));
 	}
 
 	public static URI createUri(String uri) {
@@ -82,11 +86,11 @@ public class UriUtils {
 	}
 
 	public static URI resolve(String baseURI, String reference) {
-		return resolve(URI.create(baseURI), reference);
+		return resolve(createUri(baseURI), reference);
 	}
 
 	public static Object rewriteURI(String uri, HttpHost targetHost) {
-		return rewriteURI(URI.create(uri), targetHost);
+		return rewriteURI(createUri(uri), targetHost);
 	}
 
 	public final static String removeSessionId(String sessionId, String page) {
@@ -95,7 +99,7 @@ public class UriUtils {
 	}
 
 	public final static String extractScheme(String uri) {
-		return URI.create(uri).getScheme();
+		return createUri(uri).getScheme();
 	}
 
 	/**

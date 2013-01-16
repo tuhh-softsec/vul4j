@@ -170,7 +170,7 @@ public class HttpClientHelper {
 		// Extract the host in the URI. This is the host we have to send the
 		// request to physically. We will use this value to force the route to
 		// the server
-		HttpHost targetHost = UriUtils.extractHost(UriUtils.createUri(uri));
+		HttpHost targetHost = UriUtils.extractHost(uri);
 
 		// Preserve host if required
 		HttpHost virtualHost;

@@ -111,9 +111,8 @@ public class DefaultCookieManager implements CookieManager {
 		httpClientCookie.setSecure(false);
 		String domain;
 
-		
 		if (HttpRequestHelper.getDriver(originalRequest).getConfiguration().isPreserveHost()) {
-			domain = UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toHostString();
+			domain = UriUtils.extractHostName(originalRequest.getRequestLine().getUri());
 		} else {
 			domain = HttpRequestHelper.getBaseUrl(originalRequest).getHost();
 		}
@@ -157,8 +156,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),
-				UriUtils.extractHost(originalRequest.getRequestLine().getUri()).toString());
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHostName(originalRequest.getRequestLine().getUri()).toString());
 
 		// Rewrite path
 		String originalPath = cookie.getPath();

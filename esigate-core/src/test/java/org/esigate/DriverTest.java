@@ -609,5 +609,54 @@ public class DriverTest extends TestCase {
 		}
 		assertEquals("All the connections should have been closed", 0, mockHttpClient.getOpenConnections());
 	}
+	
+	public void testForwardCookiesWithPortsAndPreserveHost() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080/"); 
+        properties.put(Parameters.PRESERVE_HOST.name, "true");
+        properties.put(Parameters.FORWARD_COOKIES.name, "*");
 
+        MockHttpClient mockHttpClient = new MockHttpClient();
+        mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+            @Override
+            public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+                    throws IOException, HttpException {
+                Assert.assertNotNull(request.getFirstHeader("Cookie"));
+                Assert.assertEquals("JSESSIONID=926E1C6A52804A625DFB0139962D4E13", request.getFirstHeader("Cookie").getValue());
+                return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+            }
+        });
+        Driver driver = createMockDriver(properties, mockHttpClient);
+
+        request = TestUtils.createRequest("http://127.0.0.1:8081/foobar.jsp");
+        BasicClientCookie cookie = new BasicClientCookie("_JSESSIONID", "926E1C6A52804A625DFB0139962D4E13");
+        TestUtils.addCookie(cookie, request);
+
+        driver.proxy("/foobar.jsp", request);
+    }
+	
+	public void testForwardCookiesWithPorts() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080/"); 
+        properties.put(Parameters.PRESERVE_HOST.name, "false");
+        properties.put(Parameters.FORWARD_COOKIES.name, "*");
+
+        MockHttpClient mockHttpClient = new MockHttpClient();
+        mockHttpClient.setHttpResponseExecutor(new HttpRequestExecutor() {
+            @Override
+            public HttpResponse execute(HttpRequest request, HttpClientConnection conn, HttpContext context)
+                    throws IOException, HttpException {
+                Assert.assertNotNull(request.getFirstHeader("Cookie"));
+                Assert.assertEquals("JSESSIONID=926E1C6A52804A625DFB0139962D4E13", request.getFirstHeader("Cookie").getValue());
+                return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+            }
+        });
+        Driver driver = createMockDriver(properties, mockHttpClient);
+
+        request = TestUtils.createRequest("http://127.0.0.1:8081/foobar.jsp");
+        BasicClientCookie cookie = new BasicClientCookie("_JSESSIONID", "926E1C6A52804A625DFB0139962D4E13");
+        TestUtils.addCookie(cookie, request);
+
+        driver.proxy("/foobar.jsp", request);
+    }
 }
