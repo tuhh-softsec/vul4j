@@ -56,7 +56,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		Vertex vswSrc, vswDst;
 		Vertex vportSrc = null, vportDst = null;
 	
-		log.debug("addLink(): {} {} getSrc {}", new Object[]{lt, linkinfo, lt.getSrc()});
+		log.info("addLink(): {} {} getSrc {}", new Object[]{lt, linkinfo, lt.getSrc()});
 		
         try {
             // get source port vertex
@@ -87,7 +87,8 @@ public class LinkStorageImpl implements ILinkStorage {
             
             if (vportSrc != null && vportDst != null) {
             	//TODO: If Edge already exists should we remove and add again?
-            	if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().equals(vportDst)) {
+            	if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().hasNext() &&
+            		vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().next().equals(vportDst)) {
             		//FIXME: Succeed silently for now
             	} else {
             		graph.addEdge(null, vportSrc, vportDst, "link");

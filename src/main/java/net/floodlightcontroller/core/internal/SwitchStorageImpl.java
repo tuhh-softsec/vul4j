@@ -46,7 +46,6 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	}
 
 	private void setStatus(String dpid, SwitchState state) {
-		// TODO Auto-generated method stub
 		Vertex sw;
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
@@ -71,7 +70,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
             	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
             	// TODO: Check if port exists
             	if (sw.query().direction(Direction.OUT).labels("on").has("number",port.getPortNumber()).vertices().iterator().hasNext()) {
-            		//TODO: Do nothing for now 
+            		//TODO: Do nothing for now
+            		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
             	} else {
             		Vertex p = graph.addVertex(null);
             		p.setProperty("type","port");
@@ -87,7 +87,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
+			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, port.getPortNumber());
 		}	
 
 	}
@@ -143,7 +143,18 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	@Override
 	public void deleteSwitch(String dpid) {
 		// TODO Setting inactive but we need to eventually remove data
-		setStatus(dpid, SwitchState.INACTIVE);
+		Vertex sw;
+		try {
+			
+            if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
+            	graph.removeVertex(sw);
+            	graph.stopTransaction(Conclusion.SUCCESS);
+            	log.info("SwitchStorage:DeleteSwitch dpid:{} done", dpid);
+            }
+		} catch (TitanException e) {
+             // TODO: handle exceptions
+			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
+		}
 
 	}
 
