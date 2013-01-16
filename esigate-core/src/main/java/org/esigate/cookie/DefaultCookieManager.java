@@ -156,7 +156,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHostName(originalRequest.getRequestLine().getUri()).toString());
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHostName(originalRequest.getRequestLine().getUri()));
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
