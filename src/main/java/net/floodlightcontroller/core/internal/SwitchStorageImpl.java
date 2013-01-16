@@ -7,8 +7,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.commons.configuration.BaseConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.openflow.protocol.OFPhysicalPort;
 
 import com.thinkaurelius.titan.core.TitanException;
@@ -193,13 +191,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public void init(String conf) {
-		//TODO extract the DB location from conf
-		Configuration db = new BaseConfiguration();
-		
-		// Local storage gets locked for single process
-		db.setProperty("storage.backend","cassandra");
-		db.setProperty("storage.hostname","127.0.0.1");
-        graph = TitanFactory.open(db);
+
+        graph = TitanFactory.open(conf);
         
         // FIXME: Creation on Indexes should be done only once
         Set<String> s = graph.getIndexedKeys(Vertex.class);
