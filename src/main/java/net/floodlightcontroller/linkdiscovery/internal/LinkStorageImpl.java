@@ -1,6 +1,5 @@
 package net.floodlightcontroller.linkdiscovery.internal;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -8,8 +7,6 @@ import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
 
-import org.apache.commons.configuration.BaseConfiguration;
-import org.apache.commons.configuration.Configuration;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,14 +133,10 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from conf
-		Configuration db = new BaseConfiguration();
-		
-		// Local storage gets locked for single process
-		db.setProperty("storage.backend","cassandra");
-		db.setProperty("storage.hostname","127.0.0.1");
-        graph = TitanFactory.open(db);
+	
+        graph = TitanFactory.open(conf);
         
-        // FIXME: 
+        // FIXME: These keys are not needed for Links but we better create it before using it as per titan
         Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
            graph.createKeyIndex("dpid", Vertex.class);

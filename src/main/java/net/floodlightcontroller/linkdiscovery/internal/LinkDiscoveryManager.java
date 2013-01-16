@@ -1869,7 +1869,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
         // Initialize the link storage connector to the network map
         this.linkStore = new LinkStorageImpl();
-        this.linkStore.init("");
+        this.linkStore.init("/tmp/cassandra.titan");
         
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 

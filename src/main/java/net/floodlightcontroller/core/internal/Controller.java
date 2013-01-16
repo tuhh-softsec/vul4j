@@ -2065,7 +2065,7 @@ public class Controller implements IFloodlightProviderService,
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
         this.swStore = new SwitchStorageImpl();
-        this.swStore.init("");
+        this.swStore.init("/tmp/cassandra.titan");
     }
     
     /**
