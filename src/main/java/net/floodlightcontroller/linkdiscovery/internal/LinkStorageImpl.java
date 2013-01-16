@@ -1,23 +1,26 @@
 package net.floodlightcontroller.linkdiscovery.internal;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import net.floodlightcontroller.linkdiscovery.ILinkStorage;
+import net.floodlightcontroller.linkdiscovery.LinkInfo;
+import net.floodlightcontroller.routing.Link;
+
+import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.floodlightcontroller.linkdiscovery.LinkInfo;
-import net.floodlightcontroller.routing.Link;
-import net.floodlightcontroller.linkdiscovery.ILinkStorage;
-
-import org.apache.commons.configuration.BaseConfiguration;
-import org.apache.commons.configuration.Configuration;
 import com.thinkaurelius.titan.core.TitanException;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class LinkStorageImpl implements ILinkStorage {
 	public TitanGraph graph;
@@ -63,9 +66,16 @@ public class LinkStorageImpl implements ILinkStorage {
         	String dpid = HexString.toHexString(lt.getSrc());
         	short port = lt.getSrcPort();
             if ((vswSrc = graph.getVertices("dpid", dpid).iterator().next()) != null) {
-            	log.debug("addLink(): sw exits {} {}", dpid, vswSrc);
-            	if (vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
-            		vportSrc = vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
+            	log.debug("addLink(): sw exists {} {}", dpid, vswSrc);
+            	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+            	
+            	//if (vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
+            	pipe.start(vswSrc).out("on").has("number", (int)port);
+            	//pipe.start(vswSrc).out("on");
+            	//log.debug("pipe count {}", pipe.count());
+            	if (pipe.hasNext()) {
+            		//vportSrc = vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
+            		vportSrc = pipe.next();
             		log.debug("addLink(): port found {} {}", port, vportSrc);
             	} else {
             		log.error("addLink(): sw {} port {} not found", dpid, port);
@@ -76,9 +86,13 @@ public class LinkStorageImpl implements ILinkStorage {
             dpid = HexString.toHexString(lt.getDst());
             port = lt.getDstPort();
             if ((vswDst = graph.getVertices("dpid",dpid).iterator().next()) != null) {
-            	log.debug("addLink(): sw exits {} {}", dpid, vswDst);
-            	if (vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
-            		vportDst = vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
+            	log.debug("addLink(): sw exists {} {}", dpid, vswDst);
+            	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+            	pipe.start(vswDst).out("on").has("number", (int)port);
+            	//if (vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
+            	if (pipe.hasNext()){
+            		//vportDst = vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
+            		vportDst = pipe.next();
             		log.debug("addLink(): port found {} {}", port, vportDst);
             	} else {
             		log.error ("addLink(): sw {} port {} not found", dpid, port);
