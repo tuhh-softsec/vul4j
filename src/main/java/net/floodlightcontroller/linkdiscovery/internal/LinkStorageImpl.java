@@ -68,7 +68,7 @@ public class LinkStorageImpl implements ILinkStorage {
             	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
             	
             	//if (vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
-            	pipe.start(vswSrc).out("on").has("number", (int)port);
+            	pipe.start(vswSrc).out("on").has("number", port);
             	//pipe.start(vswSrc).out("on");
             	//log.debug("pipe count {}", pipe.count());
             	if (pipe.hasNext()) {
@@ -86,7 +86,7 @@ public class LinkStorageImpl implements ILinkStorage {
             if ((vswDst = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	log.debug("addLink(): sw exists {} {}", dpid, vswDst);
             	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-            	pipe.start(vswDst).out("on").has("number", (int)port);
+            	pipe.start(vswDst).out("on").has("number", port);
             	//if (vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
             	if (pipe.hasNext()){
             		//vportDst = vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
