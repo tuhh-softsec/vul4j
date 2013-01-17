@@ -1,5 +1,6 @@
 package net.floodlightcontroller.linkdiscovery.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -98,9 +99,16 @@ public class LinkStorageImpl implements ILinkStorage {
             
             if (vportSrc != null && vportDst != null) {
             	//TODO: If Edge already exists should we remove and add again?
-            	if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().hasNext() &&
-            		vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().next().equals(vportDst)) {
+            	List<Vertex> currLinks = new ArrayList<Vertex>();
+            	for (Vertex V : vportSrc.query().direction(Direction.OUT).labels("link").vertices()) {
+            		currLinks.add(V);
+            	}
+            	
+            	if (currLinks.contains(vportDst)) {
+            	// if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().hasNext() &&
+            	//	vportSrc.query().direction(Direction.OUT).labels("link").) {
             		//FIXME: Succeed silently for now
+            		log.debug("addLink(): Failure: link exists {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
             	} else {
             		graph.addEdge(null, vportSrc, vportDst, "link");
             		graph.stopTransaction(Conclusion.SUCCESS);
