@@ -1,33 +1,32 @@
 package net.floodlightcontroller.core.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-import junit.framework.TestCase;
 import net.floodlightcontroller.core.ISwitchStorage;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openflow.protocol.OFPhysicalPort;
 
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
-public class SwitchStorageImplTest extends TestCase {
+public class SwitchStorageImplTest {
 
-	private static ISwitchStorage switchStorage;
-	private static TitanGraph titanGraph;
+	private ISwitchStorage switchStorage;
+	private TitanGraph titanGraph;
 	
 	@Before
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		TestDatabaseManager.deleteTestDatabase();
-		
+	public void setUp() throws Exception {
 		titanGraph = TestDatabaseManager.getTestDatabase();
 		TestDatabaseManager.populateTestData(titanGraph);
 		
@@ -35,13 +34,11 @@ public class SwitchStorageImplTest extends TestCase {
 	}
 
 	@After
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		//TODO reenable once test debugging is finished
-		TestDatabaseManager.deleteTestDatabase();
+	public void tearDown() throws Exception {
+		titanGraph.shutdown();
 	}
 
-	@Test
+	@Ignore @Test
 	public void testUpdate() {
 		fail("Not yet implemented");
 	}
@@ -71,17 +68,17 @@ public class SwitchStorageImplTest extends TestCase {
 		assertEquals(addedPort.getProperty("number"), portNumber);
 	}
 
-	@Test
+	@Ignore @Test
 	public void testGetPorts() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Ignore @Test
 	public void testGetPortStringShort() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Ignore @Test
 	public void testGetPortStringString() {
 		fail("Not yet implemented");
 	}
@@ -103,8 +100,6 @@ public class SwitchStorageImplTest extends TestCase {
 	}
 
 	
-	//FIXME something causes this test to fail when run in the suite. Probably something
-	//to do with not properly refreshing our DB connection for each test
 	@Test
 	public void testDeleteSwitch() {
 		String dpid = "00:00:00:00:00:00:0a:01";
@@ -115,11 +110,6 @@ public class SwitchStorageImplTest extends TestCase {
 		assertFalse(it.hasNext());
 	}
 
-	//TODO there's an issue with the datatypes for things link port numbers.
-	//There should be a standard type in the DB for everything, however there
-	//are discrepancies for example when I read data in from a file port numbers
-	//are ints but if they're put in by the API they're shorts.
-	
 	@Test
 	public void testDeletePortByPortNum() {
 		//FIXME fails because query for the port is wrong in SwitchStorageImpl
@@ -131,25 +121,26 @@ public class SwitchStorageImplTest extends TestCase {
 		
 		Vertex sw = titanGraph.getVertices("dpid", dpid).iterator().next();
 		
+		/*
 		Iterator<Vertex> it = sw.getVertices(Direction.OUT, "on").iterator();
 		
 		while (it.hasNext()){
 			System.out.println(it.next());
 		}
+		*/
 		
 		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-		pipe.start(sw).out("on").has("number", (int)portNum);
+		pipe.start(sw).out("on").has("number", portNum);
 		assertFalse(pipe.hasNext());
 	}
 
-	@Test
+	@Ignore @Test
 	public void testDeletePortStringString() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Ignore @Test
 	public void testGetActiveSwitches() {
 		fail("Not yet implemented");
 	}
-
 }
