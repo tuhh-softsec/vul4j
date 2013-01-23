@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.openflow.protocol.OFPhysicalPort;
+import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
+import org.openflow.protocol.OFPhysicalPort.OFPortState;
 
 import com.thinkaurelius.titan.core.TitanException;
 import com.thinkaurelius.titan.core.TitanFactory;
@@ -63,6 +65,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public void addPort(String dpid, OFPhysicalPort port) {
 		// TODO Auto-generated method stub
 		Vertex sw;
+		
+        boolean portDown = ((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0) ||
+        		((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0);
+       if (portDown) {
+             deletePort(dpid, port.getPortNumber());
+             return;
+       }
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());

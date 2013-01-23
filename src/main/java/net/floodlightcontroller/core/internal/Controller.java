@@ -107,6 +107,7 @@ import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFPortStatus;
+import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
 import org.openflow.protocol.OFPhysicalPort.OFPortState;
 import org.openflow.protocol.OFPortStatus.OFPortReason;
 import org.openflow.protocol.OFSetConfig;
@@ -1145,12 +1146,10 @@ public class Controller implements IFloodlightProviderService,
         short portNumber = m.getDesc().getPortNumber();
         OFPhysicalPort port = m.getDesc();
         if (m.getReason() == (byte)OFPortReason.OFPPR_MODIFY.ordinal()) {
-        	int srcPortState = port.getState();
-            boolean portUp = ((srcPortState &
-                    OFPortState.OFPPS_STP_MASK.getValue()) !=
-                    OFPortState.OFPPS_STP_BLOCK.getValue());
+        	boolean portDown = ((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0) ||
+            		((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0);
             sw.setPort(port);
-           if (portUp) {
+           if (!portDown) {
                swStore.addPort(sw.getStringId(), port);
            } else {
         	   swStore.deletePort(sw.getStringId(), port.getPortNumber());
