@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+import pprint
 import os
 import sys
 import subprocess
@@ -13,13 +13,20 @@ from flask import Flask, json, Response, render_template, make_response, request
 ## Global Var ##
 RestIP="127.0.0.1"
 RestPort=8182
-DBName="network-map"
+DBName="onos-network-map"
+
+DEBUG=1
+pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
 
 ## Worker Functions ##
 def log_error(txt):
   print '%s' % (txt)
+
+def debug(txt):
+  if DEBUG:
+    print '%s' % (txt)
 
 def portV_to_dpid(vertex):
   try:
@@ -30,8 +37,10 @@ def portV_to_dpid(vertex):
     log_error("REST IF has issue")
     exit
 
+  debug("portV_to_dpid %s" % command)
+  debug("parsed %s" % parsedResult)
   for v in parsedResult:
-    if v['type'] == "switch":
+    if v.has_key('type') and v['type'] == "switch":
       sw_dpid = v['dpid']
       break
 
@@ -46,7 +55,8 @@ def switchV_to_dpid(vertex):
     log_error("REST IF has issue")
     exit
 
-  if parsedResult['type'] != "switch":
+  debug("switchV_to_dpid %s" % command)
+  if not parsedResult.has_key("type") or parsedResult['type'] != "switch":
     print "not a switch vertex"
     exit
   else:
@@ -63,6 +73,7 @@ def portV_to_port_dpid(vertex):
     log_error("REST IF has issue")
     exit
 
+  debug("portV_to_port_dpid %s" % command)
   port_number = parsedResult['number']
   switch_dpid = portV_to_dpid(vertex)
 
@@ -178,7 +189,7 @@ def switch_stat(switchId, statType):
 @app.route("/wm/core/controller/switches/json")
 def query_switch():
   try:
-    command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=switch" % (RestIP, RestPort, DBName)
+    command = "curl -s \'http://%s:%s/graphs/%s/vertices?key=type&value=switch\'" % (RestIP, RestPort, DBName)
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
@@ -187,12 +198,16 @@ def query_switch():
 
   switches_ = []
   for v in parsedResult:
-    dpid = str(v['dpid']) ;# removing quotation
-    sw = {}
-    sw['dpid']=dpid
-    switches_.append(sw)
+    if v.has_key('dpid'):
+#    if v.has_key('dpid') and str(v['state']) == "ACTIVE":#;if you want only ACTIVE nodes
+      dpid = str(v['dpid'])
+      state = str(v['state'])
+      sw = {}
+      sw['dpid']=dpid
+      sw['active']=state
+      switches_.append(sw)
 
-  print switches_
+  pp.pprint(switches_)
   js = json.dumps(switches_)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
@@ -200,41 +215,46 @@ def query_switch():
 @app.route("/wm/topology/links/json")
 def query_links():
   try:
-    command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port" % (RestIP, RestPort, DBName)
+    command = 'curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port' % (RestIP, RestPort, DBName)
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
     log_error("REST IF has issue")
     exit
 
+  debug("query_links %s" % command)
+  pp.pprint(parsedResult)
   sport = []
-  switches_ = []
+  links = []
   for v in parsedResult:
     srcport = v['_id']
     try:
       command = "curl -s http://%s:%s/graphs/%s/vertices/%d/out?_label=link" % (RestIP, RestPort, DBName, srcport)
+      print command
       result = os.popen(command).read()
       linkResults = json.loads(result)['results']
     except:
       log_error("REST IF has issue")
       exit
 
+ #   print linkResults
     for p in linkResults:
-      dstport = p['_id']
-      (sport, sdpid) = portV_to_port_dpid(srcport)
-      (dport, ddpid) = portV_to_port_dpid(dstport)
-      link = {}
-      link["src-switch"]=sdpid
-      link["src-port"]=sport
-      link["src-port-state"]=0
-      link["dst-switch"]=ddpid
-      link["dst-port"]=dport
-      link["dst-port-state"]=0
-      link["type"]="internal"
-      switches_.append(link)
+      if p.has_key('type') and p['type'] == "port":
+        dstport = p['_id']
+        (sport, sdpid) = portV_to_port_dpid(srcport)
+        (dport, ddpid) = portV_to_port_dpid(dstport)
+        link = {}
+        link["src-switch"]=sdpid
+        link["src-port"]=sport
+        link["src-port-state"]=0
+        link["dst-switch"]=ddpid
+        link["dst-port"]=dport
+        link["dst-port-state"]=0
+        link["type"]="internal"
+        links.append(link)
 
-  print switches_
-  js = json.dumps(switches_)
+  pp.pprint(links)
+  js = json.dumps(links)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
