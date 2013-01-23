@@ -127,7 +127,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
                     /*
                      *  Do nothing or throw exception?
                      */
-            	log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+            		Vertex sw = graph.getVertices("dpid",dpid).iterator().next();
+            	
+            		log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+            		sw.setProperty("state",SwitchState.ACTIVE.toString());
+            		graph.stopTransaction(Conclusion.SUCCESS);
             } else {
                     Vertex sw = graph.addVertex(null);
 
