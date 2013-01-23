@@ -13,7 +13,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ## Global Var ##
 RestIP="127.0.0.1"
 RestPort=8182
-DBName="network-map"
+DBName="Cassandra-Netmap"
 
 app = Flask(__name__)
 
@@ -117,7 +117,7 @@ def return_file(filename="index.html"):
 @app.route("/wm/device/")
 def devices():
   try:
-    command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=device" % (RestIP, RestPort, DBName)
+    command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=device" % (RestIP, RestPort, DBName)
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
@@ -178,7 +178,7 @@ def switch_stat(switchId, statType):
 @app.route("/wm/core/controller/switches/json")
 def query_switch():
   try:
-    command = "curl -s http://%s:%s/graphs/%s/vertices\?key=type\&value=switch" % (RestIP, RestPort, DBName)
+    command = "curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=switch" % (RestIP, RestPort, DBName)
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:

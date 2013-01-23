@@ -1,5 +1,6 @@
 package net.floodlightcontroller.core.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -198,8 +199,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public List<String> getActiveSwitches() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Add unit test
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		if (V.getProperty("state").equals(SwitchState.ACTIVE.toString())) {
+    		     switches.add((String) V.getProperty("dpid"));
+    		}
+    	}
+		return switches;
 	}
 
 	@Override
@@ -219,4 +226,27 @@ public class SwitchStorageImpl implements ISwitchStorage {
         }
 	}
 
+	@Override
+	public List<String> getAllSwitches() {
+		// TODO Auto-generated method stub
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		switches.add((String) V.getProperty("dpid"));
+    	}
+		return switches;
+	}
+
+	@Override
+	public List<String> getInactiveSwitches() {
+		// TODO Auto-generated method stub
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		if (V.getProperty("state").equals(SwitchState.INACTIVE.toString())) {
+    		     switches.add((String) V.getProperty("dpid"));
+    		}
+    	}
+		return switches;
+	}
+
+	
 }
