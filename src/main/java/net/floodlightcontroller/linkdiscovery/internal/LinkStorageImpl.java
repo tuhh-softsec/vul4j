@@ -139,16 +139,16 @@ public class LinkStorageImpl implements ILinkStorage {
          	
          	if (vportSrc != null && vportDst != null) {
          		for (Edge e : vportSrc.getEdges(Direction.OUT)) {
-         			log.debug("deleteLink(): {} {}", e.getLabel(), e.getVertex(Direction.IN));
-         			// if (e.getLabel().equals("link") && e.getVertex(Direction.OUT).equals(vportDst)) {
-             		if (e.getLabel().equals("link")) {
+         			log.debug("deleteLink(): {} in {} out {}", 
+         					new Object[]{e.getLabel(), e.getVertex(Direction.IN), e.getVertex(Direction.OUT)});
+         			if (e.getLabel().equals("link") && e.getVertex(Direction.IN).equals(vportDst)) {
          				graph.removeEdge(e);
          				count++;
          			}
          		}
         		graph.stopTransaction(Conclusion.SUCCESS);
-            	log.debug("deleteLink(): {} {} src {} dst {}", new Object[]{
-            			(count > 0) ? "deleted " + count : "failure", lt, vportSrc, vportDst});
+            	log.debug("deleteLink(): deleted {} edges {} src {} dst {}", new Object[]{
+            			count, lt, vportSrc, vportDst});
             	
             } else {
             	log.error("deleteLink(): failed src port vertex not found {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});

@@ -50,9 +50,13 @@ public interface ISwitchStorage extends INetMapStorage {
 	public void deletePort(String dpid, String portName);
 	
 	public List<String> getActiveSwitches();
+	public List<String> getAllSwitches();
+	public List<String> getInactiveSwitches();
 	
 	/*
 	 * Initialize
 	 */
 	public void init(String conf);
+	
+
 }

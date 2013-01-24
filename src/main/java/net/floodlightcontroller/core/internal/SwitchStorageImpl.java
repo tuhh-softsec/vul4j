@@ -1,5 +1,6 @@
 package net.floodlightcontroller.core.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.openflow.protocol.OFPhysicalPort;
+import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
+import org.openflow.protocol.OFPhysicalPort.OFPortState;
 
 import com.thinkaurelius.titan.core.TitanException;
 import com.thinkaurelius.titan.core.TitanFactory;
@@ -63,6 +66,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public void addPort(String dpid, OFPhysicalPort port) {
 		// TODO Auto-generated method stub
 		Vertex sw;
+		
+        boolean portDown = ((OFPortConfig.OFPPC_PORT_DOWN.getValue() & port.getConfig()) > 0) ||
+        		((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0);
+       if (portDown) {
+             deletePort(dpid, port.getPortNumber());
+             return;
+       }
 		try {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
@@ -118,7 +128,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
                     /*
                      *  Do nothing or throw exception?
                      */
-            	log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+            		Vertex sw = graph.getVertices("dpid",dpid).iterator().next();
+            	
+            		log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+            		sw.setProperty("state",SwitchState.ACTIVE.toString());
+            		graph.stopTransaction(Conclusion.SUCCESS);
             } else {
                     Vertex sw = graph.addVertex(null);
 
@@ -185,8 +199,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public List<String> getActiveSwitches() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Add unit test
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		if (V.getProperty("state").equals(SwitchState.ACTIVE.toString())) {
+    		     switches.add((String) V.getProperty("dpid"));
+    		}
+    	}
+		return switches;
 	}
 
 	@Override
@@ -206,4 +226,27 @@ public class SwitchStorageImpl implements ISwitchStorage {
         }
 	}
 
+	@Override
+	public List<String> getAllSwitches() {
+		// TODO Auto-generated method stub
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		switches.add((String) V.getProperty("dpid"));
+    	}
+		return switches;
+	}
+
+	@Override
+	public List<String> getInactiveSwitches() {
+		// TODO Auto-generated method stub
+		List<String> switches = new ArrayList<String>();
+    	for (Vertex V : graph.getVertices("type","switch")) {
+    		if (V.getProperty("state").equals(SwitchState.INACTIVE.toString())) {
+    		     switches.add((String) V.getProperty("dpid"));
+    		}
+    	}
+		return switches;
+	}
+
+	
 }

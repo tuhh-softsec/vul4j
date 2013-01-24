@@ -111,4 +111,16 @@ public class SwitchStorageImplStubs implements ISwitchStorage {
 		
 	}
 
+	@Override
+	public List<String> getAllSwitches() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> getInactiveSwitches() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
