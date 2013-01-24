@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>esigate-server</artifactId>
 	<parent>
 		<artifactId>esigate</artifactId>
 		<groupId>org.esigate</groupId>
-		<version>4.0-SNAPSHOT</version>
+		<version>4.0</version>
 	</parent>
 	<name>ESIGate server</name>
 	<description>Standalone server for development. Can be run using java -jar esigate-server-&lt;version&gt;.jar -Desigate.config=&lt;config file&gt;</description>
@@ -63,8 +62,7 @@
 						<configuration>
 							<createDependencyReducedPom>true</createDependencyReducedPom>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>bekkopen.jetty.Main</mainClass>
 								</transformer>
 							</transformers>
