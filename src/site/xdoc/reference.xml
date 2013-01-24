@@ -309,13 +309,13 @@ aggregated2.remoteUrlBase=http://application2/
                 </tr>
                  <tr>
                     <td>discardCookies</td>
-                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on EsiGate side. You can use the value * to discard all cookies.</td>
+                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on ESIGate side. You can use the value * to discard all cookies.</td>
                     <td>No</td>
                     <td></td>
                 </tr>
                  <tr>
                     <td>forwardCookies</td>
-                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on EsiGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
+                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on ESIGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
                     <td>No</td>
                     <td></td>
                 </tr>
@@ -545,7 +545,7 @@ someUrl=/cms/article123
 	<section name="ESI syntax">
 		<subsection name="Edge Side Include">
 			<p>
-				EsiGate fully implements
+				ESIGate fully implements
 				<a href="http://www.w3.org/TR/esi-lang">ESI 1.0 Language Specification 1.0</a>
 				and adds also a few extra (but useful) features. Here is the reference list of all supported tags,
 				attributes and variable expressions.
@@ -679,7 +679,7 @@ someUrl=/cms/article123
 			<th>Usage</th>
 			<th>Examples</th>
 			<th>ESI 1.0</th>
-			<th>EsiGate</th>
+			<th>ESIGate</th>
 			</tr>
 			<tr>
 			<td>&lt;esi:include&gt;</td>
@@ -988,10 +988,10 @@ someUrl=/cms/article123
 				<a href="http://www.w3.org/TR/esi-lang">ESI 1.0 Language
 					Specification 1.0
 				</a>
-				Note: the expression "PROVIDER" is a specific EsiGate
+				Note: the expression "PROVIDER" is a specific ESIGate
 				expression useful to externalize the base Url of provider applications
 				inside the configuration file. All the other expressions supported by
-				EsiGate are the ones defined inside the specification.
+				ESIGate are the ones defined inside the specification.
 			</p>
 		</subsection>	
 	</section>
@@ -1072,7 +1072,7 @@ someUrl=/cms/article123
 			</p>
 			<p>According to the specification, this behavior depends only on the
 				headers Stale-while-revalidate and Stale-if-error defined by the
-				target server, but in EsiGate you can also set these parameters by
+				target server, but in ESIGate you can also set these parameters by
 				default for all cacheable responses.</p>
 		</subsection>
 	</section>
@@ -1695,7 +1695,7 @@ discardCookies=*
 		<section name="Load balancing">
 			<p>
 				For better performance and availability, it is possible to work
-				with several servers for each provider application. As EsiGate can
+				with several servers for each provider application. As ESIGate can
 				handle the load-balancing, you will not need any extra software nor
 				hardware. Basically, load-balancing is simple, you just have to define in property 'remoteUrlBase' a
 				comma-separated list of backend servers. E.g.:

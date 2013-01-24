@@ -50,18 +50,12 @@
 				that the applications insert.
 			</p>
 			<p>
-				Two different syntax are supported:
+				ESIGate fully support <a href="http://www.w3.org/TR/esi-lang">Edge Side Include specification 1.0</a>
 			</p>
-			<ul>
-				<li>a custom syntax using HTML comments</li>
-				<li>ESI syntax (partial support)</li>
-			</ul>
 			<p>
-				Both syntax enable to retrieve blocks of contents but custom
-				syntax is
-				much more powerfull as you can retrieve pages and use them
-				as a template
-				retrieve blocks from xpath expressions and apply xslt
+				ESI enables to retrieve fragments of contents and use pages
+				as templates from an application to another. You can also
+				retrieve fragments from xpath expressions and apply xslt
 				transformations.
 			</p>
 		</section>

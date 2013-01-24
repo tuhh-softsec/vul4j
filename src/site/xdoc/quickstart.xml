@@ -24,39 +24,39 @@
 				<img src="hello2.png" alt="Hello World application screenshot 2" />
 			</p>
 			<p>
-				For the CMS we will use existing pages from EsiGate web site:
+				For the CMS we will use existing pages from ESIGate web site:
 				<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
 			</p>
 			<p>
 				<img src="template.png" alt="Template application screenshot" />
 			</p>
 		</section>
-		<section name="Download EsiGate">
+		<section name="Download ESIGate">
 			<p>
 				To be quick here we will use the esigate-server package included in the distribution.
-				esigate-server is a pre-packaged esigate web application and jetty server for testing and development purposes. Note that EsiGate
+				esigate-server is a pre-packaged esigate web application and jetty server for testing and development purposes. Note that ESIGate
 				runs as a servlet so later you will be able to run it in production on any servlet container
 				like Tomcat for example.
 			</p>
 		</section>
-		<section name="Configure EsiGate">
+		<section name="Configure ESIGate">
 			<p>
-				EsiGate needs a configuration file "esigate.properties" where you define the base Urls
+				ESIGate needs a configuration file "esigate.properties" where you define the base Urls
 				of your applications:
 			</p>
 <source>
 esigate.remoteUrlBase=http://localhost:8080/
 </source>
 		</section>
-		<section name="Run EsiGate">
+		<section name="Run ESIGate">
 			<p>
-				Now we put EsiGate server and esigate.properties in the same folder, open a console on this folder and launch the following command:
+				Now we put ESIGate server and esigate.properties in the same folder, open a console on this folder and launch the following command:
 			</p>
 <source>
 java -Desigate.config=esigate.properties -Djetty.port=8081 -jar esigate-server-4.0.jar start
 </source>
 			<p>
-				You should now have EsiGate running on port 8081. Let's check by calling in a browser <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>.
+				You should now have ESIGate running on port 8081. Let's check by calling in a browser <a href="http://localhost:8081/hello/">http://localhost:8081/hello/</a>.
 				You should see exactly your application except that we are one port 8081 (your application is on port 8080) (Ok for now, nothing spectacular ;-)
 			</p>
 		</section>
@@ -108,7 +108,7 @@ What is your name?
 ]]><strong><![CDATA[</esi:include>]]></strong><![CDATA[
 ]]></source>
 			<p>
-				This tells EsiGate to include our template page and to replace some placeholders with our code. If you look at the source code of page
+				This tells ESIGate to include our template page and to replace some placeholders with our code. If you look at the source code of page
 				<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
 				you will notice that the placeholders are already there, for exemple for the "head" section: 
 			</p>
@@ -129,11 +129,11 @@ What is your name?
 				<img src="hello2_integrated.png" alt="Hello World application screenshot 2 integrated with template" />
 			</p>
 			<p>
-				The 2 applications are now integrated but remain separate applications that can be developed, tested and deployed separately. In addition EsiGate includes a cache that
+				The 2 applications are now integrated but remain separate applications that can be developed, tested and deployed separately. In addition ESIGate includes a cache that
 				will make the integrated application very fast.
 			</p>
 			<p>
-				EsiGate can be used for much more complex cases with several applications that have to be seen as a single one by users.
+				ESIGate can be used for much more complex cases with several applications that have to be seen as a single one by users.
 				Have a look at the <a href="reference.html">reference documentation</a> for more information.
 			</p>
 		</section>
