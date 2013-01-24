@@ -47,10 +47,12 @@ import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
+import net.floodlightcontroller.core.internal.OFSwitchImpl;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.annotations.LogMessageCategory;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
+//import net.floodlightcontroller.core.internal.SwitchStorageImpl;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -192,6 +194,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
     // Storage
     protected LinkStorageImpl linkStore;
+   // protected SwitchStorageImpl swStore;
     
     /**
      * Flag to indicate if automatic port fast is enabled or not.
@@ -199,6 +202,12 @@ IFloodlightModule, IInfoProvider, IHAListener {
      */
     boolean autoPortFastFeature = false;
 
+    /**
+     * Map of remote switches that are not connected to this controller. This
+     * is used to learn remote switches in a distributed controller.
+     */
+    protected Map<Long, IOFSwitch> remoteSwitches;
+    
     /**
      * Map from link to the most recent time it was verified functioning
      */
@@ -509,6 +518,34 @@ IFloodlightModule, IInfoProvider, IHAListener {
     }
 
     /**
+     * Learn remote switches when running as a distributed controller
+     */
+    protected IOFSwitch addRemoteSwitch(long sw, short port) {
+    	IOFSwitch remotesw = null;
+    	
+    	// add a switch if we have not seen it before
+        if (!remoteSwitches.containsKey(sw)) {
+        	remotesw = new OFSwitchImpl();
+        	remotesw.setupRemoteSwitch(sw);
+        	remoteSwitches.put(remotesw.getId(), remotesw);
+        	log.debug("addRemoteSwitch(): added fake remote sw {}", remotesw);
+        }
+        
+        // add the port if we have not seen it before
+        if (remotesw.getPort(port) != null) {
+        	OFPhysicalPort remoteport = new OFPhysicalPort();
+        	remoteport.setPortNumber(port);
+        	remoteport.setName("fake_" + port);
+        	remoteport.setConfig(0); 
+        	remoteport.setState(0);
+        	remotesw.setPort(remoteport);
+        	log.debug("addRemoteSwitch(): added fake remote port {} to sw {}", remoteport, remotesw);
+        }
+        
+        return remotesw;
+    }
+    
+    /**
      * Send link discovery message out of a given switch port.
      * The discovery message may be a standard LLDP or a modified
      * LLDP, where the dst mac address is set to :ff.  
@@ -769,6 +806,11 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     lldptlv.getValue()[2] == (byte)0xe1 && lldptlv.getValue()[3] == 0x0) {
                 ByteBuffer dpidBB = ByteBuffer.wrap(lldptlv.getValue());
                 remoteSwitch = floodlightProvider.getSwitches().get(dpidBB.getLong(4));
+                if (remoteSwitch == null) {
+                	// floodlight LLDP coming from a remote switch connected to a different controller
+                	// add it to our cache of unconnected remote switches
+                	remoteSwitch = addRemoteSwitch(dpidBB.getLong(4), remotePort);
+                }
             } else if (lldptlv.getType() == 12 && lldptlv.getLength() == 8){
                 otherId = ByteBuffer.wrap(lldptlv.getValue()).getLong();
                 if (myId == otherId)
@@ -1161,7 +1203,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // remove link from storage.
                 removeLinkFromStorage(lt);
 
-                // Write link to network map
+                // remote link from network map
                 linkStore.update(lt, DM_OPERATION.DELETE);
                 
                 // TODO  Whenever link is removed, it has to checked if
@@ -1211,6 +1253,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     ((byte)OFPortReason.OFPPR_MODIFY.ordinal() ==
                     ps.getReason() && !portEnabled(ps.getDesc()))) {
                 deleteLinksOnPort(npt, "Port Status Changed");
+                //swStore.deletePort(HexString.toHexString(npt.getNodeId()), npt.getPortId());
                 LDUpdate update = new LDUpdate(sw, port, UpdateOperation.PORT_DOWN);
                 updates.add(update);
                 linkDeleted = true;
@@ -1870,6 +1913,11 @@ IFloodlightModule, IInfoProvider, IHAListener {
         // Initialize the link storage connector to the network map
         this.linkStore = new LinkStorageImpl();
         this.linkStore.init("/tmp/cassandra.titan");
+        
+        // Initialieze the switch storage connector to the network map. We may need to delete switches.
+        // TODO find a better place to delete switches and ports from network map
+        // this.swStore = new SwitchStorageImpl();
+        // this.swStore.init("/tmp/cassandra.titan");
         
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 

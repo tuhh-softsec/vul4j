@@ -18,126 +18,169 @@ import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class LinkStorageImpl implements ILinkStorage {
 	public TitanGraph graph;
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
-	
+
 	@Override
 	public void update(Link link, DM_OPERATION op) {
-		update (link, (LinkInfo)null, op);
+		update(link, (LinkInfo)null, op);
 	}
 
 	@Override
 	public void update(List<Link> links, DM_OPERATION op) {
-		log.debug("LinkStorage:update(): {} {}", op, links);
-
 		for (Link lt: links) {
-			update(lt, op);
+			update(lt, (LinkInfo)null, op);
 		}
 	}
 
 	@Override
 	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
-		log.debug("LinkStorage:update(): {} {}", op, link);
-		
 		switch (op) {
 		case UPDATE:
 		case CREATE:
 		case INSERT:
-			addLink(link, linkinfo);
+			addOrUpdateLink(link, linkinfo, op);
 			break;
 		case DELETE:
+			deleteLink(link);
 			break;
 		}
 	}
 
-	protected void addLink(Link lt, LinkInfo linkinfo) {
-		Vertex vswSrc, vswDst;
+	private Vertex getPortVertex(String dpid, short port) {
+		Vertex vsw, vport = null;
+        if ((vsw = graph.getVertices("dpid", dpid).iterator().next()) != null) {
+        	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();        	
+        	pipe.start(vsw).out("on").has("number", port);
+        	if (pipe.hasNext()) {
+        		vport = pipe.next();
+        	}
+        }
+        return vport;
+	}
+	
+	public void addOrUpdateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
 		Vertex vportSrc = null, vportDst = null;
 	
-		log.info("addLink(): {} {} getSrc {}", new Object[]{lt, linkinfo, lt.getSrc()});
+		log.debug("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
 		
         try {
             // get source port vertex
         	String dpid = HexString.toHexString(lt.getSrc());
         	short port = lt.getSrcPort();
-            if ((vswSrc = graph.getVertices("dpid", dpid).iterator().next()) != null) {
-            	log.debug("addLink(): sw exists {} {}", dpid, vswSrc);
-            	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-            	
-            	//if (vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
-            	pipe.start(vswSrc).out("on").has("number", port);
-            	//pipe.start(vswSrc).out("on");
-            	//log.debug("pipe count {}", pipe.count());
-            	if (pipe.hasNext()) {
-            		//vportSrc = vswSrc.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
-            		vportSrc = pipe.next();
-            		log.debug("addLink(): port found {} {}", port, vportSrc);
-            	} else {
-            		log.error("addLink(): sw {} port {} not found", dpid, port);
-            	}
-            }
+        	vportSrc = getPortVertex(dpid, port);
             
             // get dest port vertex
             dpid = HexString.toHexString(lt.getDst());
             port = lt.getDstPort();
-            if ((vswDst = graph.getVertices("dpid",dpid).iterator().next()) != null) {
-            	log.debug("addLink(): sw exists {} {}", dpid, vswDst);
-            	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-            	pipe.start(vswDst).out("on").has("number", port);
-            	//if (vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().hasNext()) {
-            	if (pipe.hasNext()){
-            		//vportDst = vswDst.query().direction(Direction.OUT).labels("on").has("number",port).vertices().iterator().next();
-            		vportDst = pipe.next();
-            		log.debug("addLink(): port found {} {}", port, vportDst);
-            	} else {
-            		log.error ("addLink(): sw {} port {} not found", dpid, port);
-            	}
-            }
-            
+            vportDst = getPortVertex(dpid, port);
+                        
             if (vportSrc != null && vportDst != null) {
-            	//TODO: If Edge already exists should we remove and add again?
+            	
+            	// check if the link exists
             	List<Vertex> currLinks = new ArrayList<Vertex>();
             	for (Vertex V : vportSrc.query().direction(Direction.OUT).labels("link").vertices()) {
             		currLinks.add(V);
             	}
             	
             	if (currLinks.contains(vportDst)) {
-            	// if (vportSrc.query().direction(Direction.OUT).labels("link").vertices().iterator().hasNext() &&
-            	//	vportSrc.query().direction(Direction.OUT).labels("link").) {
-            		//FIXME: Succeed silently for now
-            		log.debug("addLink(): Failure: link exists {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
+            		// TODO: update linkinfo
+            		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
+            			log.debug("addOrUpdateLink(): Failure: link exists {} {} src {} dst {}", 
+            					new Object[]{op, lt, vportSrc, vportDst});
+            		}
             	} else {
             		graph.addEdge(null, vportSrc, vportDst, "link");
             		graph.stopTransaction(Conclusion.SUCCESS);
+            		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
-        		log.debug("addLink(): link added {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
             } else {
-            	log.error("addLink(): failed {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
+            	log.error("addOrUpdateLink(): failed {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	graph.stopTransaction(Conclusion.FAILURE);
             }
         } catch (TitanException e) {
             /*
              * retry till we succeed?
              */
-        	log.error("addLink(): {} failed", lt);
+        	log.error("addOrUpdateLink(): failed {} {}", new Object[]{op, lt});
         }
 	}
 	
 	@Override
-	public List<Link> getLinks(Long dpid, int port) {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteLinks(List<Link> links) {
+
+		for (Link lt : links) {
+			deleteLink(lt);
+		}
 	}
+	
 
 	@Override
-	public void deleteLinks(Long dpid, int port) {
-		// TODO Auto-generated method stub
-
+	public void deleteLink(Link lt) {
+		Vertex vportSrc = null, vportDst = null;
+		int count = 0;
+		
+		log.debug("deleteLink(): {}", lt);
+		
+        try {
+            // get source port vertex
+         	String dpid = HexString.toHexString(lt.getSrc());
+         	short port = lt.getSrcPort();
+         	vportSrc = getPortVertex(dpid, port);
+            
+            // get dst port vertex
+         	dpid = HexString.toHexString(lt.getDst());
+         	port = lt.getDstPort();
+         	vportDst = getPortVertex(dpid, port);
+         	
+         	if (vportSrc != null && vportDst != null) {
+         		for (Edge e : vportSrc.getEdges(Direction.OUT)) {
+         			log.debug("deleteLink(): {} {}", e.getLabel(), e.getVertex(Direction.IN));
+         			// if (e.getLabel().equals("link") && e.getVertex(Direction.OUT).equals(vportDst)) {
+             		if (e.getLabel().equals("link")) {
+         				graph.removeEdge(e);
+         				count++;
+         			}
+         		}
+        		graph.stopTransaction(Conclusion.SUCCESS);
+            	log.debug("deleteLink(): {} {} src {} dst {}", new Object[]{
+            			(count > 0) ? "deleted " + count : "failure", lt, vportSrc, vportDst});
+            	
+            } else {
+            	log.error("deleteLink(): failed src port vertex not found {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
+            	graph.stopTransaction(Conclusion.FAILURE);
+            }
+         	
+        } catch (TitanException e) {
+            /*
+             * retry till we succeed?
+             */
+        	log.error("deleteLink(): {} failed", lt);
+        }
 	}
 
+	// TODO: Fix me
+	@Override
+	public List<Link> getLinks(Long dpid, short port) {
+		Vertex vportSrc, vportDst;
+    	List<Link> links = null;
+    	Link lt;
+    	
+		vportSrc = getPortVertex(HexString.toHexString(dpid), port);
+		if (vportSrc != null) {
+     		for (Edge e : vportSrc.getEdges(Direction.OUT)) {
+     			if (e.getLabel().equals("link")) {
+     				break;
+     			}
+     		}
+		}
+     	return null;
+	}
+	
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from conf
@@ -155,4 +198,11 @@ public class LinkStorageImpl implements ILinkStorage {
         	graph.stopTransaction(Conclusion.SUCCESS);
         }
 	}
+
+	@Override
+	public void deleteLinksOnPort(Long dpid, short port) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

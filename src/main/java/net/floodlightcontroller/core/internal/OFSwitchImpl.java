@@ -268,7 +268,7 @@ public class OFSwitchImpl implements IOFSwitch {
     public void disconnectOutputStream() {
         channel.close();
     }
-
+    
     @Override
     @JsonIgnore
     public void setFeaturesReply(OFFeaturesReply featuresReply) {
@@ -854,4 +854,11 @@ public class OFSwitchImpl implements IOFSwitch {
     public byte getTables() {
         return tables;
     }
+
+
+	@Override
+	public void setupRemoteSwitch(Long dpid) {
+	    this.datapathId = dpid;
+	    this.stringId = HexString.toHexString(this.datapathId);
+	}
 }

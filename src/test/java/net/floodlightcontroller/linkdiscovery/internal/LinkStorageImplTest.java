@@ -96,7 +96,7 @@ public class LinkStorageImplTest extends TestCase {
 	@Test
 	public void testGetLinks(){
 		//TODO Make sure this works when the implementation is written
-		List<Link> list = linkStorage.getLinks(Long.decode("0x0000000000000a01"), 2);
+		List<Link> list = linkStorage.getLinks(Long.decode("0x0000000000000a01"), (short)2);
 		
 		assertEquals(list.size(), 1);
 		
@@ -131,7 +131,7 @@ public class LinkStorageImplTest extends TestCase {
 	public void testDeleteLinks(){
 		//TODO Make sure this works when the implementation is written
 		
-		linkStorage.deleteLinks(Long.decode("0x0000000000000a01"), 2);
+		linkStorage.deleteLinksOnPort(Long.decode("0x0000000000000a01"), (short)2);
 		
 		//Test if it was deleted correctly with the Gremlin API
 		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();

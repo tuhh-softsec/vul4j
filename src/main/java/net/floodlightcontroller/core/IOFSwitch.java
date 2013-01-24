@@ -338,6 +338,12 @@ public interface IOFSwitch {
     Object removeAttribute(String name);
 
     /**
+     * Setup an unconnected switch with the info required.
+     * @param dpid of the switch
+     */
+    public void setupRemoteSwitch(Long dpid);
+    
+    /**
      * Clear all flowmods on this switch
      */
     public void clearAllFlowMods();
