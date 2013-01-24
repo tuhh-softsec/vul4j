@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>esigate</artifactId>
 		<groupId>org.esigate</groupId>
-		<version>4.0</version>
+		<version>5.0-SNAPSHOT</version>
 	</parent>
 	<name>ESIGate server</name>
 	<description>Standalone server for development. Can be run using java -jar esigate-server-&lt;version&gt;.jar -Desigate.config=&lt;config file&gt;</description>
