@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<body>
 		<section name="About">
 			<p>
-				Standalone server for development. Can be run using java -jar
-				esigate-server-&lt;version&gt;.jar -Desigate.config=&lt;config
-				file&gt; </p>
+				Standalone server for development. Can be run using this command
+				line:
+			</p>
+			<source><![CDATA[
+java -jar esigate-server-<version>.jar -Desigate.config=<config file>
+			]]></source>
+			<p>The configuration file must define the base url of the application
+				you want to
+				do ESI transformation. For example:
+			</p>
+			<source><![CDATA[
+esigate.remoteUrlBase=http://localhost:8080/
+			]]></source>
 		</section>
 	</body>
 </document>

@@ -1,84 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
-		<title>Aggregator</title>
+		<title>Html comments-based syntax</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-	<h1>Aggregator</h1>
-		<section name="Goals">
-			<p>
-				Like the reverse proxy servlet, the aggregator is implemented as a
-				servlet.
-				In addition to reverse proxying the pages, it parses the
-				HTML
-				code to
-				find include directives to process.
-		</p>
-		</section>
-		<section name="Other advantages">
-			<ul>
-				<li>The toolkit is deployed on a separate web application</li>
-				<li>Aggregated applications do not have any dependency on
-					the toolkit, they just have to insert include directives in the
-					pages</li>
-				<li>Include directives are not intrusive, they are html
-					comments and do not have any impact on pages</li>
-				<li>Aggregated applications are not necessarily written
-					in
-					Java</li>
-			</ul>
-		</section>
-		<section name="Configuration">
-			<p>
-				Target applications configuration is achieved through the usual
-				esigate.properties file. See configuration chapter for more details.
-				Eg for 2 applications:
-		</p>
-<source>
-# Common settings
-uriEncoding=UTF-8
-
-# Settings for default application
-default.remoteUrlBase=http://localhost:8080/esigate-app-aggregated1/
-
-# Settings for aggregated2 application
-aggregated2.remoteUrlBase=http://localhost:8080/esigate-app-aggregated2/
-</source>
-			<p>
-				The aggregator is a servlet that has to be configured in the
-				web.xml
-				file.
-		</p>
-<source>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
-&lt;web-app&gt;
-	&lt;servlet&gt;
-		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
-	&lt;/servlet&gt;
-	&lt;servlet&gt;
-		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
-		&lt;init-param&gt;
-			&lt;param-name&gt;provider&lt;/param-name&gt;
-			&lt;param-value&gt;aggregated2&lt;/param-value&gt;
-		&lt;/init-param&gt;
-	&lt;/servlet&gt;
-	&lt;servlet-mapping&gt;
-		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-	&lt;/servlet-mapping&gt;
-	&lt;servlet-mapping&gt;
-		&lt;servlet-name&gt;aggregator2&lt;/servlet-name&gt;
-		&lt;url-pattern&gt;/ag2/*&lt;/url-pattern&gt;
-	&lt;/servlet-mapping&gt;
-&lt;/web-app&gt;
-</source>
-		</section>
-		<section name="Syntax">
-			<subsection name="Defining a block">
+			<section name="Defining a block">
 				<p>Use the "beginblock" and "endblock" directives with the name
 					of
 					the block.</p>
@@ -102,8 +30,8 @@ aggregated2.remoteUrlBase=http://localhost:8080/esigate-app-aggregated2/
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-			</subsection>
-			<subsection name="Including a block">
+			</section>
+			<section name="Including a block">
 				<p>Use the "includeblock" directives with the name of the
 					provider,
 					the page and the name of the block to retrieve. If no
@@ -127,13 +55,15 @@ This content will be replaced by the block "myblock"
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-            </subsection>
+            </section>
 
-            <subsection name="Including a block with variables">
+            <section name="Including a block with variables">
                 <p>
                     Page accept variables $(variable_name) that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
                 </p>
+                <p>
                 in esigate-vars.properties :
+                </p>
 <source>
 myblock=block.html
 myattributid=789
@@ -146,8 +76,9 @@ This content will be replaced by the block "myblock" from block.html
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-
+				<p>
                 or
+                </p>
 
 <source>
 <strong>&lt;!--$includeblock$aggregated2$block.html?id=$(myattributid)$myblock$--&gt;</strong>
@@ -161,22 +92,22 @@ This content will be replaced by the block "myblock" from block.html?id=789
 
 
 
-		</subsection>
-		<subsection name="Including page via &lt;esi:include&gt; directive">
+		</section>
+		<section name="Including page via &lt;esi:include&gt; directive">
 				<p>Use
 					the "&lt;esi:include&gt;" directive to include complete page into aggregated output. Directive supports following attributes:
 			</p>
 				<ul>
 					<li>src - specifies page and provider which should be used for retrieving (in a " $(PROVIDER{'provider-id'})/)/page" format)</li>
 				</ul>
-		</subsection>
-		<subsection name="Processing &lt;!--esi --&gt; comments">
+		</section>
+		<section name="Processing &lt;!--esi --&gt; comments">
 			<p>
 				Aggregator supports processing of esi-style comments (normal comments with 'esi' added: '&lt;!--esi').
 				If esi-style comment is encountered in aggregtion page then comment definition is stripped and data inside comment is processed as usual data.
 			</p>
-		</subsection>
-		<subsection name="Defining a template">
+		</section>
+		<section name="Defining a template">
 			<p>
 				Use the "begintemplate" and "endtemplate" directives with the name of the template. Use the "beginparam" and "endparam" directives to delimit params (variable parts that can be replaced inside the template)
 			</p>
@@ -193,8 +124,8 @@ Template from aggregated2
 &lt;/body&gt;
 &lt;/html&gt;
 </source>
-		</subsection>
-		<subsection name="Including a template">
+		</section>
+		<section name="Including a template">
 			<p>
 				Use the "includetemplate" directives with the name of the provider, the page and the name of the template to retrieve. If no template name, the complete page is retrieved.
 				Use directives "beginput" and "endput" to replace params inside the template.
@@ -209,13 +140,15 @@ Some text from aggregated1
 <strong>&lt;!--$endput$--&gt;</strong>&#160;
 <strong>&lt;!--$endincludetemplate$--&gt;</strong>
 </source>
-		</subsection>
+		</section>
 
-            <subsection name="Including a template with variables">
+            <section name="Including a template with variables">
                 <p>
                     Page accept variables $(variable_name) that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
                 </p>
+                <p>
                 in esigate-vars.properties :
+                </p>
 <source>mytemplate=template.html</source>
 <source>
 <strong>&lt;!--$includetemplate$aggregated2$$(mytemplate)$--&gt;</strong>&#160;
@@ -227,36 +160,6 @@ Some text from aggregated1
 <strong>&lt;!--$endput$--&gt;</strong>&#160;
 <strong>&lt;!--$endincludetemplate$--&gt;</strong>
 </source>
-
-            </subsection>
-            </section>
-              <section name="Using different providers for Virtual hosts">
-	<p>The aggregator servlet can select providers according to the "Host"
-		of each request. Both parameters "provider" and "providers" can be
-		used at the sametime: in this case, "provider" will be used if no
-		match is found using "providers".</p>
-              <source>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
-&lt;web-app&gt;
-	&lt;servlet&gt;
-		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;servlet-class&gt;org.esigate.servlet.AggregatorServlet&lt;/servlet-class&gt;
-		&lt;init-param&gt;
-			&lt;param-name&gt;providers&lt;/param-name&gt;
-			&lt;param-value&gt;sub1.domain.com=aggregated1,sub2.domain.com=aggregated2&lt;/param-value&gt;
-		&lt;/init-param&gt;
-	&lt;/servlet&gt;
-	
-	&lt;servlet-mapping&gt;
-		&lt;servlet-name&gt;aggregator1&lt;/servlet-name&gt;
-		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
-	&lt;/servlet-mapping&gt;
-	
-&lt;/web-app&gt;
-</source>
-              
-        
-        </section>
-    </body>
+ 		</section>
+     </body>
 </document>

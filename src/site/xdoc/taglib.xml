@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
 		<title>Taglib</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<h1>Taglib</h1>
 		<section name="Tag the block on the provider application">
 			<p>The block has to be tagged using special HTML comments.</p>
 <source>
@@ -46,17 +46,22 @@ Some other HTML
 <p>
     In page attribute, you can put variables that will be resolved from esigate-vars.properties. This file is descripted in <a href="configuration.html#Variables_resolver">Configuration</a> page.
 </p>
-in esigate-vars.properties :
+<p>
+	in esigate-vars.properties :
+</p>
 <source>
 myvar=mypage.php
 myattributid=789
 </source>
-
+<p>
 Variables $(myvar) and $(myattributid) can be used in page attribute :
+</p>
 <source>
     <strong>&lt;w:includeblock page="$(myvar)" name="myblock" /&gt;</strong>
 </source>
+<p>
 or
+</p>
 <source>    
 <strong>&lt;w:includeblock page="mypage.php?id=$(myattributid)" name="myblock" /&gt;</strong>
 </source>
@@ -69,89 +74,87 @@ or
             <p>If using JSP, you can use library's '<code>include-xml</code>' tag.</p>
             <p>Tag should be used when some XML content from master site needs to be included in page.
                 Tag allows further modification of retrived data by XPath evaluation and applying XSLT template.</p>
-            <p>Following attributes are supported:
+            <p>Following attributes are supported:</p>
             <ul>
                 <li><b>source</b> external page used for inclusion</li>
                 <li><b>xpath</b> XPath expression (optional)</li>
                 <li><b>template</b> path to the XSLT template (optional) will be evaluated against current
                     web application context</li>
-            </ul></p>
+            </ul>
             <p><i><b>NOTE</b>: do not forget to add the taglib declaration at the beging of the page.</i></p>
         </section>
 		<section name="Complete tag list">
-			<p>
-				<table>
-					<tr>
-						<th>Tag</th>
-						<th>Usage</th>
-					</tr>
-					<tr>
-						<td>includeblock</td>
-						<td>Include a block from another application</td>
-					</tr>
-					<tr>
-						<td>includeBase</td>
-						<td>Generates a html "base" tag with the URL of the remote
-							page in order for links and resources in the HTML code to work</td>
-					</tr>
-					<tr>
-						<td>includeTemplate</td>
-						<td>Retrieves a block or a complete page from another
-							application and use it as a template. Use enclosed includeparam
-							tags to define parts to replace in the template</td>
-					</tr>
-					<tr>
-						<td>includeParam</td>
-						<td>Defines a part to be replaced in the template by the
-							value of its own body. This tag can only be used inside a
-							includeTemplate tag</td>
-					</tr>
-                    <tr>
-                        <td>include-xml</td>
-                        <td>Include some XML fragment/page from another application</td>
-                    </tr>
-					<tr>
-						<td>block</td>
-						<td>Generates a tag in the page to delimit a block</td>
-					</tr>
-					<tr>
-						<td>replace</td>
-						<td>Replace a regular expression by its own content. This
-							tag
-							can only be used inside includeBlock, includeTemplate and include-xml tags</td>
-					</tr>
-					<tr>
-						<td>parameter</td>
-						<td>Defines a parameter to be added to the request. This
-							tag
-							can only be used inside a includeBlock or includeTemplate tag</td>
-					</tr>
-					<tr>
-						<td>template</td>
-						<td>Generates a tag in the page to delimit a template
-						</td>
-					</tr>
-					<tr>
-						<td>param</td>
-						<td>Generates a tag in the page to delimit a sub part of
-							a
-							template</td>
-					</tr>
-					<tr>
-						<td>errorDefinition</td>
-						<td>In the case of an error matching its error code while
-							retrieving the resource, display the content of its body instead
-							of
-							the error message. This tag can only be used inside a includeBlock
-							or includeTemplate tag</td>
-					</tr>
-					<tr>
-						<td>defaultError</td>
-						<td>In the case of an error while retrieving the resource, display
-							the content of its body instead of the error message</td>
-					</tr>
-				</table>
-			</p>
+			<table>
+				<tr>
+					<th>Tag</th>
+					<th>Usage</th>
+				</tr>
+				<tr>
+					<td>includeblock</td>
+					<td>Include a block from another application</td>
+				</tr>
+				<tr>
+					<td>includeBase</td>
+					<td>Generates a html "base" tag with the URL of the remote
+						page in order for links and resources in the HTML code to work</td>
+				</tr>
+				<tr>
+					<td>includeTemplate</td>
+					<td>Retrieves a block or a complete page from another
+						application and use it as a template. Use enclosed includeparam
+						tags to define parts to replace in the template</td>
+				</tr>
+				<tr>
+					<td>includeParam</td>
+					<td>Defines a part to be replaced in the template by the
+						value of its own body. This tag can only be used inside a
+						includeTemplate tag</td>
+				</tr>
+                   <tr>
+                       <td>include-xml</td>
+                       <td>Include some XML fragment/page from another application</td>
+                   </tr>
+				<tr>
+					<td>block</td>
+					<td>Generates a tag in the page to delimit a block</td>
+				</tr>
+				<tr>
+					<td>replace</td>
+					<td>Replace a regular expression by its own content. This
+						tag
+						can only be used inside includeBlock, includeTemplate and include-xml tags</td>
+				</tr>
+				<tr>
+					<td>parameter</td>
+					<td>Defines a parameter to be added to the request. This
+						tag
+						can only be used inside a includeBlock or includeTemplate tag</td>
+				</tr>
+				<tr>
+					<td>template</td>
+					<td>Generates a tag in the page to delimit a template
+					</td>
+				</tr>
+				<tr>
+					<td>param</td>
+					<td>Generates a tag in the page to delimit a sub part of
+						a
+						template</td>
+				</tr>
+				<tr>
+					<td>errorDefinition</td>
+					<td>In the case of an error matching its error code while
+						retrieving the resource, display the content of its body instead
+						of
+						the error message. This tag can only be used inside a includeBlock
+						or includeTemplate tag</td>
+				</tr>
+				<tr>
+					<td>defaultError</td>
+					<td>In the case of an error while retrieving the resource, display
+						the content of its body instead of the error message</td>
+				</tr>
+			</table>
 		</section>
 	</body>
 </document>

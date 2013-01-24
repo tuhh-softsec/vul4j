@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<body>
 		<section name="About">
 			<p>
@@ -57,7 +58,8 @@
 					<td>WATError</td>
 					<td>Partial</td>
 					<td>
-						<strong>errorCode</strong>. Can be used w/ WATTemplate and WATBlock	
+						<strong>errorCode</strong>
+						. Can be used w/ WATTemplate and WATBlock
 					</td>
 				</tr>
 			</table>
@@ -68,51 +70,43 @@
 				Template and parameters are defined in the Page object, using
 				containers :
 			</p>
-			<pre>
+			<source><![CDATA[
+public ExamplePage(final PageParameters parameters) {
+	// Define template
+	WATTemplate template = new WATTemplate("watTemplate", "/template.html");
+	add(template);
 
-				public ExamplePage(final PageParameters parameters) {
-				// Define
-				template
-				WATTemplate template = new WATTemplate("watTemplate",
-				"/template.html");
-				add(template);
+	// Define Parameter 'main'
+	WATParam mainBlock = new WATParam("wat-main", "main");
+	template.add(mainBlock);
 
-				// Define Parameter 'main'
-				WATParam
-				mainBlock = new WATParam("wat-main", "main");
-				template.add(mainBlock);
+	// All content must be added in the 'mainBlock' container.
 
-				// All content must be added in the
-				'mainBlock' container.
-
-				// Add a label
-				mainBlock.add(new
-				Label("message", "If you see this message wicket and WAT are
-				properly configured and running"));
-				}
-</pre>
+	// Add a label
+	mainBlock.add(new Label("message", "If you see this message wicket and WAT are properly configured and running"));
+}
+			]]></source>
 
 			<p>HTML code only uses divs :</p>
-			<pre>
-<![CDATA[
+			<source><![CDATA[
 <div wicket:id="watTemplate"  xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
 	<div wicket:id="wat-main" >
 		<h1>WAT / Wicket Demo</h1>
-
 		<span wicket:id="message">message will be here</span>
 	</div>
 </div> 
-]]>
-			</pre>
+			]]></source>
 		</section>
 		<section name="Feedback">
-			All feedback is welcome, please use the
-			<a
-				href="https://sourceforge.net/tracker/?group_id=209844&amp;atid=1011350">tracker</a>
-			or the
-			<a
-				href="https://lists.sourceforge.net/lists/listinfo/webassembletool-users">mailing list</a>
-			on sourceforge.
+			<p>
+				All feedback is welcome, please use the
+				<a
+					href="https://sourceforge.net/tracker/?group_id=209844&amp;atid=1011350">tracker</a>
+				or the
+				<a
+					href="https://lists.sourceforge.net/lists/listinfo/webassembletool-users">mailing list</a>
+				on sourceforge.
+			</p>
 		</section>
 	</body>
 </document>

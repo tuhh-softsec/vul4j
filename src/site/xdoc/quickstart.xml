@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
 		<title>Quick start</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-	<h1>Quick start</h1>
-		<p>
-			Imagine you have to create a specific module that has to integrate inside an existing
-			web site.
-			This web site was built with some Content Management System.
-			It would be easier and much faster for you to develop it as an independent standalone
-			application than working with the CMS and all the constraints it may bring to you.
-		</p>
-		<p>
-			For this tutorial we will use a very simple Hello World application. If you want to test,
-			make your own application (it could be written in any language). Let's assume the application
-			is running on <a href="http://localhost:8080/hello/">http://localhost:8080/hello/</a>
-		</p>
-		<p>
-			<img src="hello1.png" alt="Hello World application screenshot 1" />
-			<img src="hello2.png" alt="Hello World application screenshot 2" />
-		</p>
-		<p>
-			For the CMS we will use existing pages from EsiGate web site:
-			<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
-		</p>
-		<p>
-			<img src="template.png" alt="Template application screenshot" />
-		</p>
+		<section name="Goals">
+			<p>
+				Imagine you have to create a specific module that has to integrate inside an existing
+				web site.
+				This web site was built with some Content Management System.
+				It would be easier and much faster for you to develop it as an independent standalone
+				application than working with the CMS and all the constraints it may bring to you.
+			</p>
+			<p>
+				For this tutorial we will use a very simple Hello World application. If you want to test,
+				make your own application (it could be written in any language). Let's assume the application
+				is running on <a href="http://localhost:8080/hello/">http://localhost:8080/hello/</a>
+			</p>
+			<p>
+				<img src="hello1.png" alt="Hello World application screenshot 1" />
+				<img src="hello2.png" alt="Hello World application screenshot 2" />
+			</p>
+			<p>
+				For the CMS we will use existing pages from EsiGate web site:
+				<a href="http://www.esigate.org/examples/templates/sparkle/template.html">http://www.esigate.org/examples/templates/sparkle/template.html</a>
+			</p>
+			<p>
+				<img src="template.png" alt="Template application screenshot" />
+			</p>
+		</section>
 		<section name="Download EsiGate">
 			<p>
 				To be quick here we will use the esigate-server package included in the distribution.

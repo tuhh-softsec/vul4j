@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
 		<title>Overview</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 		<author email="nicolas.richeton@gmail.com">Nicolas Richeton</author>
 	</properties>
 	<body>
-	<h1>Overview</h1>
 		<section name="ESIGate (Website Assembling Toolkit)">
 			<p>
-				ESIGate (formerly known as "Website Assembling Toolkit") is a toolkit developed to help developers to integrate
-				existing web applications and aggregate them as
+				ESIGate (formerly known as "Website Assembling Toolkit") is a
+				toolkit developed to help developers to integrate
+				existing web
+				applications and aggregate them as
 				a single website.
 			</p>
 			<ul>
-			<li><b>ESI reverse proxy</b> : speed up your website using standard or custom (enhanced) ESI syntax.</li>
-			<li><b>CMS integration</b> : include dynamic content from any CMS or website in your application easily.</li>
-			<li><b>Remote templating</b> : use a remote template instead of embedded files and be able to completely change design (not only CSS) on the fly.</li>
-			<li><b>All together</b> : combine and assemble multiple applications into a single, fast, modular and standard-compliant one.</li>
-			<li>Can be used stand-alone with any application or embedded in Java applications (JSP, JSF, Wicket and API support))</li>
+				<li>
+					<b>ESI reverse proxy</b>
+					: speed up your website using standard or custom (enhanced) ESI
+					syntax.
+				</li>
+				<li>
+					<b>CMS integration</b>
+					: include dynamic content from any CMS or website in your
+					application easily.
+				</li>
+				<li>
+					<b>Remote templating</b>
+					: use a remote template instead of embedded files and be able to
+					completely change design (not only CSS) on the fly.
+				</li>
+				<li>
+					<b>All together</b>
+					: combine and assemble multiple applications into a single, fast,
+					modular and standard-compliant one.
+				</li>
+				<li>Can be used stand-alone with any application or embedded in Java
+					applications (JSP, JSF, Wicket and API support))
+				</li>
 			</ul>
 		</section>
 		<section name="Reverse proxy and ESI processor">
 			<p>
 				ESIGate can be used as a reverse proxy.
-				Proxied pages can parsed in order
+				Proxied pages can parsed in
+				order
 				to process inclusion instructions
 				that the applications insert.
 			</p>
@@ -36,22 +57,29 @@
 				<li>ESI syntax (partial support)</li>
 			</ul>
 			<p>
-				Both syntax enable to retrieve blocks of contents but custom syntax is
-				much more powerfull as you can retrieve pages and use them as a template
-				retrieve blocks from xpath expressions and apply xslt transformations.
+				Both syntax enable to retrieve blocks of contents but custom
+				syntax is
+				much more powerfull as you can retrieve pages and use them
+				as a template
+				retrieve blocks from xpath expressions and apply xslt
+				transformations.
 			</p>
 		</section>
 		<section name="Taglib">
 			<p>
 				ESIGate offers a taglib that can be used in
-				any JSP-based java web application.
+				any JSP-based java web
+				application.
 			</p>
 			<p>
 				Basically, the taglib looks like Tiles
-				tag library except that it enables you to include contents and use
+				tag library except that it
+				enables you to include contents and use
 				templates coming from
-				other applications that may have been written
-				using any technology and deployed on other
+				other
+				applications that may have been written
+				using any technology and
+				deployed on other
 				servers.
 			</p>
 		</section>
@@ -62,8 +90,8 @@
 			</p>
 		</section>
 		<section name="How it works">
-			<img src="overview.jpg" />
 			<p>
+				<img src="overview.jpg" alt="Overview" />
 				HTML pages are fetched from the provider server using regular HTTP
 				requests.
 				Pages are then parsed to find specific delimiters used to
@@ -77,13 +105,18 @@
 			<ul>
 				<li>Portlets (JSR 168)</li>
 				<li>Server Side Include</li>
-				<li><a href="http://en.wikipedia.org/wiki/Edge_Side_Includes">Edge Side Include</a></li>
+				<li>
+					<a href="http://en.wikipedia.org/wiki/Edge_Side_Includes">Edge Side Include</a>
+				</li>
 				<li>Mashup</li>
-				<li><a href="http://en.wikipedia.org/wiki/Web_scraping">Web scraping</a></li>
+				<li>
+					<a href="http://en.wikipedia.org/wiki/Web_scraping">Web scraping</a>
+				</li>
 				<li>Web clipping</li>
 				<li>Reverse proxy</li>
 			</ul>
+			<script type="text/javascript"
+				src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
 		</section>
-		<script type="text/javascript" src="http://www.ohloh.net/p/9896/widgets/project_partner_badge.js"></script>
 	</body>
 </document>

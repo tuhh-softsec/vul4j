@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
 		<title>Reverse proxy servlets</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 		<author email="nricheton@users.sourceforge.net">Nicolas Richeton</author>
 	</properties>
 	<body>
-		<h1>Reverse proxy servlets</h1>
 		<section name="Reverse proxy servlets">
 			<p>
 				The toolkit includes two reverse proxy servlets which can be used
@@ -16,9 +16,10 @@
 				from a distant application and can use the
 				cache
 				to improve performance.
-		</p>
+			</p>
 			<p>These servlet can also be used to start a Web Assemble Tool-based
-				application without installing a separate Apache http server.</p>
+				application without installing a separate Apache http server.
+			</p>
 
 			<subsection name="Basic reverse proxy">
 
@@ -27,29 +28,33 @@
 					The reverse proxy is a servlet that has to be configured in the
 					web.xml
 					file.
-</p>
-				<source>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE
+				</p>
+				<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE
 web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
-2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
-&lt;web-app&gt;
-&lt;servlet&gt;
-&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;servlet-class&gt;org.esigate.servlet.ProxyServlet&lt;/servlet-class&gt;
-&lt;/servlet&gt;
-&lt;servlet-mapping&gt;
-&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
-&lt;/servlet-mapping&gt;
-&lt;/web-app&gt; </source>
+2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>proxy</servlet-name>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>proxy</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
+</web-app> 
+				]]></source>
 			</subsection>
 			<subsection name="Rewrite reverse proxy">
 
 				<h4>Description</h4>
-				<p>This servlet has the ability to rewrite scheme, port, url and query
-					string before processing the request (proxy or redirect). This is a simple alternative
-					to Apache + mod_rewrite + mod_proxy.</p>
+				<p>This servlet has the ability to rewrite scheme, port, url and
+					query
+					string before processing the request (proxy or redirect). This
+					is a simple alternative
+					to Apache + mod_rewrite + mod_proxy.
+				</p>
 				<p>
 					Once configured, this servlet is
 					<b>equivalent</b>
@@ -57,13 +62,13 @@ web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
 					<b>Apache configuration</b>
 					:
 				</p>
-				<source>
+				<source><![CDATA[
 RewriteEngine On
 ProxyRequests Off
-&lt;Proxy *&gt;
+<Proxy *>
 Order deny,allow
 Allow from all
-&lt;/Proxy&gt;
+</Proxy>
 
 # URL rewriting
 RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [P,L]
@@ -71,12 +76,12 @@ RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [P,L]
 # URL + query rewriting
 RewriteCond %{QUERY_STRING} ^(.+)$
 RewriteRule ^/myurl(/?.*)$
-http://localhost:8080/webappcontext$1?%1&amp;additionnalparam=value   [P,L]
+http://localhost:8080/webappcontext$1?%1&additionnalparam=value   [P,L]
 
-&lt;Location /myurl&gt;
+<Location /myurl>
 ProxyPassReverse http://localhost:8080/webappcontext
 ProxyPassReverseCookiePath /webappcontext /
-&lt;/Location&gt;
+</Location>
 
 # URL + redirect
 RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [R=301,L]
@@ -88,80 +93,83 @@ RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [R=301,L]
 # URL + port
 RewriteCond  %{SERVER_PORT}  8181
 RewriteRule ^/myurl(/?.*)$ http://localhost:8080/webappcontext$1 [R=301,L]
-
- </source>
+ 				]]></source>
 
 				<h4>Configuration</h4>
 				<p>Add this servlet to your web application. You can also create a
-					dedicated application deployed on the ROOT context. This way you have full control on the url.</p>
-				<source>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE
+					dedicated application deployed on the ROOT context. This way you
+					have full control on the url.
+				</p>
+				<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE
 web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application
-2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
-&lt;web-app&gt;
-&lt;servlet&gt;
-&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;servlet-class&gt;org.esigate.RewriteProxyServlet&lt;/servlet-class&gt;
-&lt;/servlet&gt;
-&lt;servlet-mapping&gt;
-&lt;servlet-name&gt;proxy&lt;/servlet-name&gt;
-&lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;
-&lt;/servlet-mapping&gt;
-&lt;/web-app&gt; </source>
-					
-					
-					<p>Then the proxy has to be configured in both /esigate.properties and org/esigate/rewrite-proxy.properties :</p>
-					<p>esigate.properties</p>
-						<source>
+2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>proxy</servlet-name>
+		<servlet-class>org.esigate.RewriteProxyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>proxy</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
+</web-app> 
+				]]></source>
+
+
+				<p>Then the proxy has to be configured in both /esigate.properties
+					and org/esigate/rewrite-proxy.properties :
+				</p>
+				<p>esigate.properties</p>
+				<source><![CDATA[
 #esigate.properties
 
-
 webapp.remoteUrlBase=http://localhost:8080/webappcontext/
-					</source>
-					<p>rewrite-proxy.properties</p>
-					<source>
+				]]></source>
+				<p>rewrite-proxy.properties</p>
+				<source><![CDATA[
 #org/esigate/rewrite-proxy.properties
 
-# Rule 1. (replace &lt;rulename1&gt; by the real rule name)
-&lt;rulename1&gt;.pattern=^/myurl(/?.*)$
-&lt;rulename1&gt;.rewrite=$1
-&lt;rulename1&gt;.provider=webapp
+# Rule 1. (replace <rulename1> by the real rule name)
+<rulename1>.pattern=^/myurl(/?.*)$
+<rulename1>.rewrite=$1
+<rulename1>.provider=webapp
 
 
-# Rule 2 (replace &lt;rulename2&gt; by the real rule name)
-&lt;rulename2&gt;.pattern=^/myurl(/?.*)$
-&lt;rulename2&gt;.queryPattern=^(.+)$
-&lt;rulename2&gt;.rewrite=$1
-&lt;rulename2&gt;.queryRewrite=$1&amp;additionnalparam=value
-&lt;rulename2&gt;.provider=webapp
+# Rule 2 (replace <rulename2> by the real rule name)
+<rulename2>.pattern=^/myurl(/?.*)$
+<rulename2>.queryPattern=^(.+)$
+<rulename2>.rewrite=$1
+<rulename2>.queryRewrite=$1&additionnalparam=value
+<rulename2>.provider=webapp
 
-# Rule 3 (replace &lt;rulename3&gt; by the real rule name)
-&lt;rulename3&gt;.pattern=^/myurl(/?.*)$
-&lt;rulename3&gt;.rewrite=/webappcontext$1
-&lt;rulename3&gt;.redirect=301
+# Rule 3 (replace <rulename3> by the real rule name)
+<rulename3>.pattern=^/myurl(/?.*)$
+<rulename3>.rewrite=/webappcontext$1
+<rulename3>.redirect=301
 
-# Rule 4 (replace &lt;rulename4&gt; by the real rule name)
-&lt;rulename4&gt;.pattern=^/myurl(/?.*)$
-&lt;rulename4&gt;.rewrite=/webappcontext$1
-&lt;rulename4&gt;.schemePattern=https
-&lt;rulename4&gt;.schemeRewrite=http
-&lt;rulename4&gt;.redirect=301
+# Rule 4 (replace <rulename4> by the real rule name)
+<rulename4>.pattern=^/myurl(/?.*)$
+<rulename4>.rewrite=/webappcontext$1
+<rulename4>.schemePattern=https
+<rulename4>.schemeRewrite=http
+<rulename4>.redirect=301
 
-# Rule 5 (replace &lt;rulename5&gt; by the real rule name)
-&lt;rulename5&gt;.pattern=^/myurl(/?.*)$
-&lt;rulename5&gt;.rewrite=/webappcontext$1
-&lt;rulename5&gt;.portPattern=8181
-&lt;rulename5&gt;.portRewrite=8080
-&lt;rulename5&gt;.redirect=301
-					</source>
+# Rule 5 (replace <rulename5> by the real rule name)
+<rulename5>.pattern=^/myurl(/?.*)$
+<rulename5>.rewrite=/webappcontext$1
+<rulename5>.portPattern=8181
+<rulename5>.portRewrite=8080
+<rulename5>.redirect=301
+					]]></source>
 			</subsection>
 
 			<subsection name="Other reverse proxy solutions">
 				<p>
 					In a production environment under very heavy load it may be more
 					efficient to use instead other tools such as Apache mod_proxy
-</p>
+				</p>
 			</subsection>
 		</section>
 	</body>

@@ -1,26 +1,1946 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 	<properties>
-		<title>API</title>
+		<title>Reference documentation</title>
 		<author email="francois-xavier.bonnet@centraliens.net">Francois-Xavier Bonnet</author>
 	</properties>
 	<body>
-		<h1>Features</h1>
-		<h1>Installation</h1>
-			Download
-			Webapp
-			Standalone
-			Maven
-		<h1>Configuration</h1>
-			Basic configuration
-			All parameters
-		<h1>Cache</h1>
-		<h1>Http headers</h1>
-		<h1>Cookies</h1>
-		<h1>Errors management</h1>
-		<h1>Load balancing</h1>
-		<h1>Extending and customizing</h1>
-		<h1>API documentation</h1>
-		<h1>Deprecated features</h1>
+		<section name="Table of contents">
+			<macro name="toc" />
+		</section>
+		<section name="Features">
+			<subsection name="Fragments and templates">
+				<p>
+					Any web application can be used to provide html fragments or page templates 
+					for other applications. Fragements are defined using ESI tags.
+				</p>
+			</subsection>
+			<subsection name="Cross technologies">
+				<p>
+					As we only use ESI tags inside application pages, an application
+					may have been developed with any technology,
+					including Java, PHP or .NET and work with ESIGate.
+				</p>
+			</subsection>
+			<subsection name="Reverse proxy">
+				<p>
+					ESIGate works as a reverse-proxy and can be used to
+					retrieve and cache static contents (images, css,
+					js...) as well a dynamic contents.
+				</p>
+			</subsection>
+			<subsection name="Pages aggregator">
+				<p>
+					ESIGate parses html pages and processes ESI instructions in order to merge
+					pages, fragments from several applications.
+				</p>
+			</subsection>
+			<subsection name="ESI 1.0 specification support">
+				<p>
+					ESIGate fully implements <a href="#ESI_syntax">ESI</a>	specification and adds some 
+					useful custom extensions.
+				</p>
+			</subsection>
+			<subsection name="Xpath expressions and XSLT">
+				<p>
+					Tools are also provided to transform to retrieve and transform pages using regular 
+					expressions, xpath
+					expressions and to apply on-the-fly XSLT transformations. Xpath and XSLT can be used
+					even with malformed html documents.
+				</p>
+			</subsection>
+			<subsection name="HTTP 1.1 Cache">
+				<p>
+					In order to improve performance, the tool uses a cache that fully implements HTTP 1.1
+					specification. In addition the cache is highly configurable to help you improve
+					cache efficiency and overall performance of your web site.
+				</p>
+			</subsection>
+			<subsection name="User context and Single Sign On">
+				<p>
+					Applications may have to share informations about connected users. ESIGate provided a CAS module supporting the
+					<a href="http://www.jasig.org/cas/proxy-authentication">proxy authentication mode</a>
+					and the JASIG CAS client. The extension mechanism lets you integrate other Single Sign On systems if needed.
+				</p>
+			</subsection>
+		</section>
+		<section name="Installation">
+			<p>
+				ESIGate runs as a standard Java servlet and can be run in any Java servlet container like Tomcat, Jetty, WebSphere JBoss...
+				If you are not familiar with Java servlet containers, you can use esigate-server that includes a pre-configured web application
+				with an embedded Jetty server.
+			</p>
+			<p>
+				If you are familiar with Java servlets, you may want to build your own web application using esigate-core as a dependency. With Maven:
+			</p>
+			<source><![CDATA[
+<dependency>
+	<groupId>org.esigate</groupId>
+	<artifactId>esigate-core</artifactId>
+	<version>RELEASE</version>
+</dependency>
+			]]></source>
+			<p>
+				You can use esigate-war web application as an example.
+			</p>
+			<subsection name="esigate.properties and web.xml">
+				<p>Then you have to configure:</p>
+				<ul>
+					<li>esigate.properties: defines provider applications, network and caching parameters... All details in chapter <a href="#Configuration">Configuration</a></li>
+					<li>web.xml: defines the URL mappings for the different provider applications</li>
+				</ul>
+				<p>Example for 2 provider applications, first esigate.properties:</p>
+				<source><![CDATA[
+# Common settings
+uriEncoding=UTF-8
+
+# Settings for default application
+default.remoteUrlBase=http://application1/
+
+# Settings for aggregated2 application
+aggregated2.remoteUrlBase=http://application2/
+				]]></source>
+				<p>Then the web.xml file:</p>
+				<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>aggregator1</servlet-name>
+		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>aggregator2</servlet-name>
+		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<init-param>
+			<param-name>provider</param-name>
+			<param-value>aggregated2</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>aggregator1</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>aggregator2</servlet-name>
+		<url-pattern>/ag2/*</url-pattern>
+	</servlet-mapping>
+</web-app>
+				]]></source>
+				<p>
+					Note: here, all requests will be forwarded to "default" application that is http://application1/
+					except request starting with "/ag2/" that will be forwarded to "aggregated2" application which is
+					http://application2/
+				</p>
+				<p>
+					Each of the applications can use ESI tags in its html pages to include some fragments coming
+					from the other.
+				</p>
+			</subsection>			
+			<subsection name="Using different providers for Virtual hosts">
+				<p>
+					The aggregator servlet can select providers according to the "Host"
+					of each request. Both parameters "provider" and "providers" can be
+					used at the sametime: in this case, "provider" will be used if no
+					match is found using "providers".
+				</p>
+              	<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>aggregator1</servlet-name>
+		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<init-param>
+			<param-name>providers</param-name>
+			<param-value>sub1.domain.com=aggregated1,sub2.domain.com=aggregated2</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>aggregator1</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+</web-app>
+				]]></source> 
+	        </subsection>
+		</section>
+		<section name="Configuration">
+		<subsection name="Configuration file">
+			<p>
+				ESIGate default behavior is to load a configuration file from
+				the	classpath /esigate.properties
+			</p>
+			<p>
+				Alternatively you can use method
+				<code>org.esigate.DriverFactory.configure(Properties)
+				</code>
+				.
+			</p>
+		</subsection>
+		<subsection name="Configuration directives">
+			<table>
+				<tr>
+					<th>Directive</th>
+					<th>Usage</th>
+					<th>Mandatory</th>
+					<th>Default value</th>
+				</tr>
+				<tr>
+					<td>remoteUrlBase</td>
+					<td>
+						Base URL of the remote application. Eg:
+						<code>remoteUrlBase=http://localhost:8080/
+						</code>
+						When <a href="#Load_balancing">load-balancing</a> (remote application runs on several servers), use a comma-separated list.
+					</td>
+					<td>Yes</td>
+					<td>-</td>
+				</tr>
+				<tr>
+					<td>uriEncoding</td>
+					<td>Charset used for encoding parameters in URI</td>
+					<td>No</td>
+					<td>ISO-8859-1</td>
+				</tr>
+                <tr>
+                    <td>parsableContentTypes</td>
+                    <td>List of parsable content types..  
+                    Use this syntax to set content types :                   
+                    <code>parsableContentTypes=text/html,application/xhtml+xml,text/plain</code>                    
+                    </td>
+                    <td>No</td>
+                    <td>text/html,application/xhtml+xml</td>
+                </tr>
+				<tr>
+					<td>maxConnectionsPerHost</td>
+					<td>Maximum number of HTTP connections simultaneously
+						opened with 1 server.</td>
+					<td>No</td>
+					<td>20</td>
+				</tr>
+                 <tr>
+                    <td>connectTimeout</td>
+                    <td>Defines the timeout while trying to establish a connection with the server.</td>
+                    <td>No</td>
+                    <td>1000</td>
+                </tr>
+                <tr>
+                    <td>socketTimeout</td>
+                    <td>Defines the timeout waiting for data once the connection to the server has been opened.</td>
+                    <td>No</td>
+                    <td>10000</td>
+                </tr>
+				<tr>
+					<td>proxyHost</td>
+					<td>Proxy host name or IP. The tool can work through an HTTP
+						proxy server.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyPort</td>
+					<td>Proxy port</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyUser</td>
+					<td>Username used by the driver for proxy authentication. Leave blank if no authentication is required by the proxy.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>proxyPassword</td>
+					<td>Proxy password</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+                <tr>
+                    <td>preserveHost</td>
+                    <td>Instructs send the request to the target server with the same Host header value as in the incoming request.
+                    This feature is very usefull when the target server uses virtual hosts.</td>
+                    <td>No</td>
+                    <td>false</td>
+                </tr>
+                <tr>
+                    <td>discardRequestHeaders</td>
+                    <td>Comma separated list of HTTP request headers which will not be forwarded from client
+                    to server. By default, any other request header will be forwarded.
+                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td>Authorization,Connection,Content-Length,Cache-control,Cookie,Expect,Host,Max-Forwards,Pragma,Proxy-Authorization,TE,Trailer,Transfer-Encoding,Upgrade</td>
+                </tr>
+                <tr>
+                    <td>forwardRequestHeaders</td>
+                    <td>Comma separated list of HTTP request headers which are discarded by default but have to be forwarded from client
+                    to server.
+                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>discardResponseHeaders</td>
+                    <td>Comma separated list of HTTP request headers which will not be forwarded from server
+                    to client . By default, any other response header will be forwarded.
+                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td>Connection,Content-Length,Content-MD5,Date,Keep-Alive,Proxy-Authenticate,Set-Cookie,Trailer,Transfer-Encoding,WWW-Authenticate</td>
+                </tr>
+                <tr>
+                    <td>forwardResponseHeaders</td>
+                    <td>Comma separated list of HTTP response headers which are discarded by default but have to be forwarded from server
+                    to client.
+                    See <a href="#Http_headers_support">HTTP headers support</a> for more details.
+                    </td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>cookieManager</td>
+                    <td>The cookieManager to use. Must be a class that implements org.esigate.cookie.CookieManager</td>
+                    <td>No</td>
+                    <td>org.esigate.cookie.DefaultCookieManager</td>
+                </tr>
+                 <tr>
+                    <td>discardCookies</td>
+                    <td>Comma separated list of the names of the cookies to ignore. By default, cookies are stored in the session on EsiGate side. You can use the value * to discard all cookies.</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
+                 <tr>
+                    <td>forwardCookies</td>
+                    <td>Comma separated list of the names of the cookies to forward to the client. By default, cookies are stored in the session on EsiGate side. You can use the value * to forward all cookies. Domain and path are rewritten in order to match the domain and path that are visible from the client.</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>
+				<tr>
+                    <td>fixResources</td>
+                    <td>Fix links to resources, images and pages in the pages retrieved (parse the pages to find &lt;a href=...&gt; or &lt;img src=...&gt; ...)</td>
+                    <td>No</td>
+                    <td>false</td>
+                </tr>   
+				<tr>
+                    <td>fixMode</td>
+                    <td>If "relative" the generated URLs will be relative to the root of the server (ie starting with "/"). If "absolute" generated URLs will be absolute (ie starting with "http://")</td>
+                    <td>No</td>
+                    <td>relative</td>
+                </tr>   
+				<tr>
+                    <td>visibleUrlBase</td>
+                    <td>The base URL to use while rewriting URLs for links or resources if different from remoteUrlBase</td>
+                    <td>No</td>
+                    <td>same value as remoteUrlBase</td>
+                </tr>
+				<tr>
+					<td>remoteUrlBaseStrategy</td>
+					<td>
+						The strategy to use if load balancing (ie remoteUrlBase has been
+						defined as a comma-separated list). Value can be "roundrobin",
+						"iphash" or "stickysession". See
+						<a href="#Load_balancing">clustering</a>
+						for details
+					</td>
+					<td>No</td>
+					<td>roundrobin</td>
+				</tr>
+               <tr>
+                    <td><strike>authenticationHandler</strike></td>
+                    <td>This configuration is deprecated and no longer supported. Authentication handlers must now be implemented as extensions. See the <a href="#Authentication_and_SSO">authentication documentation</a> to learn how to use authentication and upgrade existing custom handlers. </td>
+                    <td>No</td>
+                    <td></td>
+                </tr> 
+                   <tr>
+                    <td>extensions</td>
+                    <td>A comma-separated list of extensions (class names). Extensions can register to events and customize standard behavior, for instance add logging or handle authentication. Extensions will be called in the same order as in this list.</td>
+                    <td>No</td>
+                    <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler, org.esigate.extension.ResourceFixup, org.esigate.extension.XPoweredBy</td>
+                </tr> 
+				<tr>
+                    <td><strike>filter</strike></td>
+                    <td>Filters are now <b>deprecated</b> and no longer supported. You can get the exact same behavior by turning a filter into an extension.</td>
+                    <td>No</td>
+                    <td></td>
+                </tr>   
+ 				<tr>
+					<td>useCache</td>
+					<td>Use the cache</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
+					<td>maxCacheEntries</td>
+					<td>Maximum number of entries in the cache (this parameter is only taken into account by the default implementation)</td>
+					<td>No</td>
+					<td>1000</td>
+				</tr>
+				<tr>
+					<td>maxObjectSize</td>
+					<td>Maximum size of a cache entry (bytes). If 0, no size limit.
+						This
+						directive can be used to avoid excessive memory usage</td>
+					<td>No</td>
+					<td>1000000</td>
+				</tr>
+				<tr>
+					<td>cacheStorage</td>
+					<td>
+						Implementation of org.esigate.cache.CacheStorage to use. It can be one
+						of these values:
+						<ul>
+							<li>org.esigate.cache.BasicCacheStorage</li>
+							<li>org.esigate.cache.EhcacheCacheStorage</li>
+							<li>org.esigate.cache.MemcachedCacheStorage</li>
+						</ul>
+					</td>
+					<td>No</td>
+					<td>org.esigate.cache.BasicCacheStorage</td>
+				</tr>
+				<tr>
+					<td>xCacheHeader</td>
+					<td>Activates X-Cache header in HTTP responses (usefull to debug cache)</td>
+					<td>No</td>
+					<td>false</td>
+				</tr>
+				<tr>
+					<td>viaHeader</td>
+					<td>Activates Viz header in HTTP responses.</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
+					<td>ttl</td>
+					<td>Time to live (seconds) of any cached page. If 0, cache expiration
+						will be calculated automatically depending on http response headers.
+						If set to a non-zero value, the value will apply for all GET requests ignoring any Cache-control header!</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>heuristicCachingEnabled</td>
+					<td>Heuristic caching enabled (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Caching in HTTP</a>)</td>
+					<td>No</td>
+					<td>true</td>
+				</tr>
+				<tr>
+					<td>heuristicCoefficient</td>
+					<td>Heuristic coefficient.</td>
+					<td>No</td>
+					<td>0.1</td>
+				</tr>
+				<tr>
+					<td>heuristicDefaultLifetimeSecs</td>
+					<td>Default lifetime of a cache entry if there is absolutely no information about it the http headers.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>staleWhileRevalidate</td>
+					<td>If non 0, when we receive a request for which an entry is in the cache but this entry is stale, we will send immediately the stale cache entry and try to update it from the server for next time. The value indicates the maximum staleness of the cache entry. This strategy can reduce a lot the load on the target server as there is only 1 refresh request for a cache entry at the same time.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>staleIfError</td>
+					<td>If non 0, when we receive an error from the target server, we will try to use the corresponding cache entry even if it is stale. The value indicates the maximum staleness of the cache entry.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>minAsynchronousWorkers</td>
+					<td>Minimum number of threads processing background revalidations.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>maxAsynchronousWorkers</td>
+					<td>Maximum number of threads processing background revalidations. Set this parameter to 0 in order to deactivate background revalidation.</td>
+					<td>No</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>asynchronousWorkerIdleLifetimeSecs</td>
+					<td>Maximum idle lifetime for a background revalidation thread before it gets reclaimed.</td>
+					<td>No</td>
+					<td>60</td>
+				</tr>
+				<tr>
+					<td>maxUpdateRetries</td>
+					<td>number of retries on a failed cache update.</td>
+					<td>No</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>revalidationQueueSize</td>
+					<td>Maximum number of requests in the revalidation queue.</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>ehcache.cacheName</td>
+					<td>Name of the EhCache</td>
+					<td>No</td>
+					<td>esigate</td>
+				</tr>
+				<tr>
+					<td>ehcache.configurationFile</td>
+					<td>Xml configuration file for EhCache (loaded via the classloader of the application).</td>
+					<td>No</td>
+					<td>/ehcache.xml</td>
+				</tr>
+				<tr>
+					<td>memcached.servers</td>
+					<td>Comma separated list of MemCached servers and ports. Syntax: server1:port1,server2:port2</td>
+					<td>No</td>
+					<td></td>
+				</tr>
+			</table>
+
+		</subsection>
+		<subsection name="Specifying several provider applications">
+			<p>
+				You can specify several provider applications prefixing directives
+				with the provider name.
+				Note: "default" application is the application used when later you use
+				tags without specifying the application, the other ones are called "appli1"
+				and "appli2":
+			</p>
+<source>
+# Common settings
+uriEncoding=UTF-8
+
+# Default application
+default.remoteUrlBase=http://localhost:8080/appli0/
+
+# appli1 application
+appli1.remoteUrlBase=http://localhost:8080/appli1/
+appli1.uriEncoding=ISO-8859-1
+
+# appli2 application
+appli2.remoteUrlBase=http://localhost:8080/appli2/
+</source>
+		</subsection>
+
+                <subsection name="Variables resolver">
+			<p>
+				You can define variables in
+				classpath esigate-vars.properties
+                                </p>
+<source>
+variable_name=variable_value
+someUrl=/cms/article123
+</source>
+                                <p>
+                                The syntax for using a variable is $(variable_name) and is fixed by the standard <a href="http://www.w3.org/TR/esi-lang">ESI</a>.
+                                </p>
+                                                       
+
+		</subsection>
+	</section>
+	<section name="ESI syntax">
+		<subsection name="Edge Side Include">
+			<p>
+				EsiGate fully implements
+				<a href="http://www.w3.org/TR/esi-lang">ESI 1.0 Language Specification 1.0</a>
+				and adds also a few extra (but useful) features. Here is the reference list of all supported tags,
+				attributes and variable expressions.
+			</p>
+		</subsection>
+		<subsection name="&lt;esi:include&gt;">
+			<p>
+				This tag specifies to include some part of another
+				web page. Here is basic example:
+			</p>
+			<source>&lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/&gt;</source>
+			<p>
+				This tag has several other attributes that enable to have
+				a precise control on what you want to retrieve from the page,
+				transform, cache, handle errors... See the reference table bellow for
+				details.
+			</p>
+		</subsection>
+		<subsection name="&lt;esi:replace&gt;">
+			<p>
+				This tag can be used only nested inside an include tag
+				and is used to specifies things to replace inside the included
+				fragment.
+			</p>
+			<source>
+&lt;esi:include src="..."&gt;
+    &lt;esi:replace fragment="my_fragment"&gt; Replacement text&lt;/esi:replace&gt;
+&lt;/esi:include&gt;</source>
+			<p>
+				This tag has several other attributes that enable to have
+				a precise control on what you want to retrieve from the page,
+				transform, cache, handle errors... See the reference table
+				bellow for details.
+			</p>
+		</subsection>
+		<subsection name="&lt;esi:fragment&gt;">
+			<p>
+				Delimits a fragment inside a page. This fragment could be
+				fetched or retrieved by another page.
+			</p>
+			<source>
+&lt;esi:fragment name="my_fragment"&gt;
+   Content of the fragment
+&lt;/esi:fragment&gt;</source>
+		</subsection>
+		<subsection name="&lt;esi:try&gt; &lt;esi:attempt&gt; &lt;esi:except&gt;">
+			<p>
+				Enables to handle http errors like 404 or 500.
+			</p>
+			<source>
+&lt;esi:try&gt;
+   &lt;esi:attempt&gt; ... &lt;/esi:attempt&gt;
+   &lt;esi:except code="500"&gt; ... &lt;/esi:except&gt;
+&lt;/esi:try&gt;</source>
+		</subsection>
+		<subsection name="&lt;esi:choose&gt; &lt;esi:when&gt; &lt;esi:otherwise&gt;">
+			<p>
+				Defines conditional structures.
+			</p>
+			<source>
+&lt;esi:choose&gt;
+   &lt;esi:when test="..."&gt; ... &lt;/esi:when&gt;
+   &lt;esi:when test="..."&gt; ... &lt;/esi:when&gt;
+   &lt;esi:otherwise&gt; ... &lt;/esi:otherwise&gt;
+&lt;/esi:choose&gt;
+			</source>
+		</subsection>
+		<subsection name="&lt;esi:inline&gt;">
+			<p>
+				Defines fragments that will be stored separately in the
+				cache in order to be reused later.
+				See
+				<a href="http://www.w3.org/TR/esi-lang">ESI 1.0
+					Language Specification 1.0
+				</a>
+				for details.
+			</p>
+		</subsection>
+		<subsection name="&lt;esi:comment&gt;">
+			<p>
+				A comment that appears in the source code of the page but
+				will be removed after ESI processing.
+			</p>
+			<source>&lt;esi:comment text="This comment will not be sent to the client" /&gt;</source>
+		</subsection>
+		<subsection name="&lt;esi:remove&gt;">
+			<p>
+				Almost like comment tag. The html nested inside remove
+				tag will be visible inside the page before processing but will be
+				removed by the processing. This tag is very useful for example when you
+				are using a page as a template and you want to see it with sample
+				contents when it has not been ESI-processed.
+			</p>
+			<source>
+&lt;esi:remove&gt;
+   &lt;strong&gt;This is a sample text that will be removed&lt;/strong&gt;
+&lt;/esi:remove&gt;
+			</source>
+		</subsection>
+		<subsection name="&lt;!--esi --&gt;">
+			<p>
+				Exactly the opposite of remove tag. Before ESI processing
+				the content of the tag will be seen by the browser as an html comment
+				but after inclusion the tag itself will be removed and the content will
+				become visible.
+			</p>
+			<source>
+&lt;!--esi
+   &lt;strong&gt;This page has been processed by an ESI processor!&lt;/strong&gt;
+--&gt;
+			</source>
+		</subsection>
+		<subsection name="&lt;esi:vars&gt;">
+			<p>
+				Some variable expressions can be used inside esi tag
+				attribute values. With this tag you can use expressions anywhere in
+				your page, you just have to put a vars tag around the part of the page
+				that may contain expressions.
+			</p>
+			<source>
+&lt;esi:vars&gt;
+   The user-agent of your browser is: $(HTTP_USER_AGENT)
+&lt;/esi:vars&gt;
+			</source>
+		</subsection>
+		<subsection name="Tag reference">
+			<table>
+			<tr>
+			<th>Tag</th>
+			<th>Attribute</th>
+			<th>Usage</th>
+			<th>Examples</th>
+			<th>ESI 1.0</th>
+			<th>EsiGate</th>
+			</tr>
+			<tr>
+			<td>&lt;esi:include&gt;</td>
+			<td></td>
+			<td>Include a part of another page or the complete page</td>
+			<td>&lt;esi:include src="URI" /&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>src</td>
+			<td>Url of the page to include</td>
+			<td>&lt;esi:include src=" $(PROVIDER...)URI" /&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>fragment</td>
+			<td>Name of the fragment to retrieve</td>
+			<td>&lt;esi:include src="URI" fragment="NAME" /&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>alt</td>
+			<td>Alternative if src cannot be fetched</td>
+			<td>&lt;esi:include src="URI" alt="URI" /&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>onerror</td>
+			<td>If "continue" the processor will ignore if an error
+			occurs (http code &gt; 400). If "display" will display the error page
+			retrieved.</td>
+			<td>&lt;esi:include src="URI" onerror="display" /&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>rewriteabsoluteurl</td>
+			<td>Parle the included ressource for URLs and rewrite
+			them with the current URL of the page</td>
+			<td>&lt;esi:include src="URI" rewriteabsoluteurl="true"
+			/&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>stylesheet</td>
+			<td>xsl stylesheet to apply to the ressource (works
+			with xml and html, stylesheet should be searched first as a local
+			resource and only if not found, on the remote server)</td>
+			<td>&lt;esi:include src="a.html"
+			stylesheet="s.xsl"&gt;...&lt;/esi:include&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>xpath</td>
+			<td>xpath expression to retrieve</td>
+			<td>&lt;esi:include src="..." xpath="..." /&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:replace&gt;</td>
+			<td></td>
+			<td>Replace some part of the included ressource</td>
+			<td></td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>fragment</td>
+			<td>Name of the fragment to replace</td>
+			<td>&lt;esi:replace
+			fragment="NAME"&gt;...&lt;/esi:replace&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>expression</td>
+			<td>Regular expression to replace. For details about
+			regular expression syntax see
+			http://docs.oracle.com/javase/6/docs/api/java/util/regex/Pattern.html</td>
+			<td>&lt;esi:replace
+			expression="$(HTTP_HOST)"&gt;www.my_host.com&lt;/esi:replace&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:fragment&gt;</td>
+			<td></td>
+			<td>Delimits a fragment</td>
+			<td>&lt;esi:fragment name="my_fragment"/&gt;</td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>name</td>
+			<td>name of the fragment</td>
+			<td></td>
+			<td>No</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:try&gt;</td>
+			<td></td>
+			<td>Try block</td>
+			<td>&lt;esi:try&gt;&lt;esi:attempt&gt;...&lt;/esi:attempt&gt;&lt;esi:except
+			code="404"&gt;...&lt;/esi:except&gt;&lt;esi:except
+			code="500"&gt;...&lt;/esi:except&gt;&lt;esi:except&gt;...&lt;/esi:except&gt;&lt;:esi:try&gt;
+			</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:attempt&gt;</td>
+			<td></td>
+			<td>The part to try to execute</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:except&gt;</td>
+			<td></td>
+			<td>A block that will replace the attempt block in case
+			an exception occurs</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>code</td>
+			<td>Http return code that trigger this except block</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:choose&gt;</td>
+			<td></td>
+			<td>Conditional block</td>
+			<td>&lt;esi:choose&gt; &lt;esi:when test="..."&gt; ...
+			&lt;/esi:when&gt; &lt;esi:when test="..."&gt; ... &lt;/esi:when&gt;
+			&lt;esi:otherwise&gt; ... &lt;/esi:otherwise&gt; &lt;/esi:choose&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:when&gt;</td>
+			<td></td>
+			<td>Condition</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>test</td>
+			<td>Expression to evaluate</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:otherwise&gt;</td>
+			<td></td>
+			<td>Fallback if none of the previous conditions has
+			been fullfilled</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:inline&gt;</td>
+			<td></td>
+			<td>An fragment that will be stored independently in
+			the cache and fetched</td>
+			<td>&lt;esi:inline name="URI" fetchable="{yes
+			no}"&gt;...&lt;/esi:inline&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>name</td>
+			<td>name of the fragment</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td></td>
+			<td>fetchable</td>
+			<td>Whether the fragment is independantly fetchable by
+			name or not.</td>
+			<td></td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:comment&gt;</td>
+			<td></td>
+			<td>A comment that will be removed by the processor</td>
+			<td>&lt;esi:comment text="..." /&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:remove&gt;</td>
+			<td></td>
+			<td>A page fragment that will be removed by the
+			processor</td>
+			<td>&lt;esi:remove&gt; ... &lt;/esi:remove&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;!--esi--&gt;</td>
+			<td></td>
+			<td>A html-commented fragment that will be uncommented
+			by the processor</td>
+			<td>&lt;!--esi ...--&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>&lt;esi:vars&gt;</td>
+			<td></td>
+			<td>Delimits a fragment that may contain expressions to
+			evaluate</td>
+			<td>&lt;esi:vars&gt; ... &lt;/esi:vars&gt;</td>
+			<td>yes</td>
+			<td>yes</td>
+			</tr>
+			</table>
+			
+			<h1>Variable reference</h1>
+			<table>
+			<tr>
+			<th>Variable Name</th>
+			<th>Type</th>
+			<th>Example</th>
+			<th>ESI 1.0</th>
+			</tr>
+			<tr>
+			<td>HTTP_ACCEPT_LANGUAGE</td>
+			<td>list</td>
+			<td>da, en-gb, en</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>HTTP_COOKIE</td>
+			<td>dictionary</td>
+			<td>id=571; visits=42</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>HTTP_HOST</td>
+			<td>String</td>
+			<td>esi.xyz.com</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>HTTP_REFERER</td>
+			<td>String</td>
+			<td>http://roberts.xyz.com/</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>HTTP_USER_AGENT</td>
+			<td>dictionary</td>
+			<td>Mozilla; MSIE 5.5</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>QUERY_STRING</td>
+			<td>dictionary</td>
+			<td>first=Robin&amp;last=Roberts</td>
+			<td>yes</td>
+			</tr>
+			<tr>
+			<td>PROVIDER</td>
+			<td>dictionary</td>
+			<td>http://provider.com</td>
+			<td>No</td>
+			</tr>
+			</table>
+			<p>
+				For the complete list of
+				variable and expressions that can be used, see §4 in the
+				<a href="http://www.w3.org/TR/esi-lang">ESI 1.0 Language
+					Specification 1.0
+				</a>
+				Note: the expression "PROVIDER" is a specific EsiGate
+				expression useful to externalize the base Url of provider applications
+				inside the configuration file. All the other expressions supported by
+				EsiGate are the ones defined inside the specification.
+			</p>
+		</subsection>	
+	</section>
+	<section name="Cache">
+		<subsection name="Cache configuration">
+			<p>
+				ESIGate uses the
+				<a
+					href="http://hc.apache.org/httpcomponents-client-ga/httpclient-cache/index.html">HttpClient Cache</a>
+				Apache HttpClient since version 4.1. This cache is compliant with
+				<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">HTTP/1.1 specification</a>
+				The cache can use several alternatives as
+				storage, in addition to its
+				native backend where cache entries are
+				kept in memory there are 2
+				other implementations with
+				<a href="http://ehcache.org/">EhCache</a>
+				and
+				<a href="http://memcached.org/">MemCached</a>
+				All the parameters for the cache including the choice of the backend
+				are set in the main configuration file described in the
+				<a href="#Configuration">configuration</a>
+				section.
+			</p>
+		</subsection>
+		<subsection name="Content expiration, heuristic expiration, forced expiration">
+			<p>By default the cache uses Cache-control and
+				Expires headers to
+				check if a response is cacheable and how long.
+			</p>
+			<p>If
+				the headers contains only a Last-modified header with no other
+				header
+				to define when the response expires, the cache will keep the
+				response
+				a for a duration that will be a fraction of its age, by
+				default 10%.
+				This mechanism is known as "Heuristic expiration" and is
+				well
+				described in HTTP 1.1 specification.
+			</p>
+			<p>In certain cases you may want to force the time-to-live of all the
+				responses coming from a server regardless of the http headers
+				presents in the responses. This can be done using the parameter
+				"ttl" in the configuration.
+			</p>
+		</subsection>
+		<subsection name="Variants, E-tag and Vary headers">
+			<p>The cache will store several response variants
+				depending on
+				E-tag
+				and Vary headers. This strategy can be very
+				effective when some
+				contents depend on the user profile or language.
+			</p>
+		</subsection>
+		<subsection name="Cache revalidation">
+			<p>When a server response contains E-tag and/or
+				Last-modified header, the
+				cache will use conditional requests using
+				If-none-match and/or
+				If-modified-since request headers
+				for subsequent
+				request to revalidate
+				the cache entries without having
+				to reload them
+				each time.
+			</p>
+		</subsection>
+		<subsection name="Background revalidation">
+			<p>
+				The cache also implements the
+				<a href="http://tools.ietf.org/html/rfc5861">HTTP Cache-Control Extensions for Stale Content</a>
+				specification. This means that the cache receives a request and
+				already has a response to be faster and then revalidate it in order
+				to have an up-to-date response next time. It can also use the stale
+				cache entry when the target server is not responding.
+			</p>
+			<p>According to the specification, this behavior depends only on the
+				headers Stale-while-revalidate and Stale-if-error defined by the
+				target server, but in EsiGate you can also set these parameters by
+				default for all cacheable responses.</p>
+		</subsection>
+	</section>
+		<section name="Http headers support">
+			<subsection name="Request headers">
+				<p>
+					Some request headers are forwarded to the target server, some are
+					ignored and some are transformed. Here is the list of supported
+					Request HTTP headers. Any other header would be ignored.
+				</p>
+				<table>
+					<tr>
+						<th>Request header</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Accept</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Charset</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Encoding</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Accept-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Authorization</td>
+						<td>
+							Not forwarded. See 
+							<a href="#Authentication_and_SSO">authentication</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Connection</td>
+						<td>Not forwarded. The value will always be "keep-alive" as managed by the HTTP client</td>
+					</tr>
+					<tr>
+						<td>Content-Encoding</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Length</td>
+						<td>Not forwarded. Managed automatically by the HTTP client. Usually chunked content encoding will be used (see <a href="http://hc.apache.org/httpcomponents-core-ga/httpcore/apidocs/org/apache/http/entity/AbstractHttpEntity.html#setChunked%28boolean%29">HttpEntity.setChunked</a></td>
+					</tr>
+					<tr>
+						<td>Content-MD5</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Range</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Type</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Cookie</td>
+						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="#Cookies">Cookies</a>)</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Expect</td>
+						<td>Not supported: replies with a 417 (Expectation Failed) as required by HTTP specification</td>
+					</tr>
+					<tr>
+						<td>From</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Host</td>
+						<td>Default ignored, depends on preserveHost parameter</td>
+					</tr>
+					<tr>
+						<td>If-Match</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>If-Modified-Since</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>If-None-Match</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>If-Range</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>If-Unmodified-Since</td>
+						<td>
+							All cache validator are recalculated by the cache (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>Max-Forwards</td>
+						<td>Not forwarded</td>
+					</tr>
+					<tr>
+						<td>Pragma</td>
+						<td>
+							Ignored (see
+							<a href="#Cache">Cache</a>)
+						</td>
+					</tr>
+					<tr>
+						<td>Proxy-Authorization</td>
+						<td>Not forwarded</td>
+					</tr>
+					<tr>
+						<td>Range</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Referer</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>TE</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Trailer</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Transfer-Encoding</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Upgrade</td>
+						<td>Not forwarded</td>
+					</tr>
+					<tr>
+						<td>User-Agent</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Warning</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>X-Forwarded-For</td>
+						<td>Forwarded or created if not present.</td>
+					</tr>
+					<tr>
+						<td>X-Forwarded-Proto</td>
+						<td>Can be "http" or "https", set to the scheme in the original request uri</td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="Response headers">
+				<p>
+					Some of the response headers sent by the target servers are
+					forwarded to the browser, some are ignored, some are transformed and
+					some are used for
+					<a href="#Cache">Cache</a>
+					management. Any header not in the following
+					list would be ignored.
+				</p>
+				<table>
+					<tr>
+						<th>Response header</th>
+						<th>Action</th>
+					</tr>
+					<tr>
+						<td>Age</td>
+						<td>Recalculated by the cache</td>
+					</tr>
+					<tr>
+						<td>Allow</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Cache-control</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Connection</td>
+						<td>Not forwarded (keep-alive managed by the servlet container)</td>
+					</tr>
+					<tr>
+						<td>Content-Disposition</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Encoding</td>
+						<td>Forwarded only if the entity has not been decompressed (if we have to transform it, we have to decompress it)</td>
+					</tr>
+					<tr>
+						<td>Content-Language</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Length</td>
+						<td>Recalculated by the servlet container (usually set if content length is less than the buffer size)</td>
+					</tr>
+					<tr>
+						<td>Content-Location</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>Content-MD5</td>
+						<td>Not forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Range</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Content-Type</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Date</td>
+						<td>Set automatically by the servlet container</td>
+					</tr>
+					<tr>
+						<td>Expires</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>E-tag</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Keep-Alive</td>
+						<td>Not forwarded (managed by the servlet container)</td>
+					</tr>
+					<tr>
+						<td>Last-modified</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Location</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>Link</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>P3p</td>
+						<td>Rewritten</td>
+					</tr>
+					<tr>
+						<td>Proxy-Authenticate</td>
+						<td>
+							Not forwarded, see
+							<a href="#Authentication_and_SSO">authentication</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Refresh</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Retry-After</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Server</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Set-Cookie</td>
+						<td>Depends on cookie configuration. By default not forwarded because cookies are kept into session (see <a href="#Cookies">Cookies</a>)</td>
+					</tr>
+					<tr>
+						<td>Trailer</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Transfer-Encoding</td>
+						<td>Not forwarded (chunked encoding managed by the container)</td>
+					</tr>
+					<tr>
+						<td>Vary</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>Via</td>
+						<td>Set by Http caching client.</td>
+					</tr>
+					<tr>
+						<td>Warning</td>
+						<td>Forwarded</td>
+					</tr>
+					<tr>
+						<td>WWW-Authenticate</td>
+						<td>
+							Not forwarded, see
+							<a href="#Authentication_and_SSO">authentication</a>
+						</td>
+					</tr>
+				</table>
+			</subsection>
+		</section>
+		<section name="Cookies">
+			<subsection name="Cookie policy and cookie specifications">
+				<p>
+					ESIGate is designed to behave exactly like any web browser. It
+					should accept any cookie coming from provider applications if a
+					standard browser accepts them.
+				</p>
+				<p>
+					Cookies are checked against cookie specifications. Note that
+					"path" and "domain" attributes are checked against the target server
+					name and path. Target Host name means the name specified in the
+					"host" header of the request sent to the server. In other words,
+					when preserveHost option is set to true, domain must match the
+					original server name used by the browser ; when preserveHost is set
+					to false, cookie domain must match the server name defined in the
+					baseURL parameter in the configuration.
+				</p>
+			</subsection>
+			<subsection name="Cookie storing">
+				<p>
+					By default, cookies sent by the browser are NOT forwarded to
+					target applications and cookies sent back by the server are not
+					forwarded to the browser : they are kept server side into a the user
+					context. Of course, every user has a separate user context.
+				</p>
+				<p>
+					Every driver instance has its own UserContext. Contexts are
+					insulated. This means that cookies sent to one provider are not
+					shared with other sites, even domain cookie. Just like if we were
+					using separate browsers for each provider.
+				</p>
+				<p>
+					As a result, the only cookie viewed from the browser in the
+					"jsessionid" corresponding to the user session used by ESIGate to
+					store the user context
+				</p>
+			</subsection>
+			<subsection name="Cookie forwarding, cookie discarding">
+				<p>
+					It is possible to configure ESIGate to forward all cookies or
+					specific cookies to the browser and also discard all or specific
+					cookies. This is done by using the properties
+	                "forwardCookies" and "discardCookies" in the configuration file.
+	                Values for these properties should be a comma separated list of cookie
+	                names or the single value "*".
+				</p>
+				<p>
+					Example 1: forward cookies named "cookie1" and "cookie2", discard
+					cookie name "cookie3", all other cookies will be stored server side
+					(default behavior).
+					<source>
+forwardCookies=cookie1,cookie2
+discardCookies=cookie3
+					</source>
+				</p>
+				<p>
+					Example 2: forward cookies named "cookie1" and "cookie2", discard
+					all other cookies.
+					<source>
+forwardCookies=cookie1,cookie2
+discardCookies=*
+					</source>
+				</p>
+				<p>Note: if the name of a cookie is present in forwardCookies, it
+					takes priority over "*" in discardCookies</p>
+				<p>Note: if the name of a cookie is present in discardCookies, it
+					takes priority over "*" in forwardCookies</p>
+				<p>Note: using value "*" for both forwardCookies and discardCookies
+					is not allowed.</p>
+				<p>Note: forwarded cookies are not kept server side, they are
+					forwarded both ways, server to browser when the header "set-cookie"
+					is received, browser to server on every request.</p>
+			</subsection>
+			<subsection name="Cookie rewriting">
+				<p>For forwarded cookie, the
+					domain and path of the cookie and secure
+					or
+					not cannot be kept as-is
+					because a cookie that would not match its
+					originating domain should be
+					rejected by the browser.
+				</p>
+				<p>
+					Domain:
+				</p>
+				<ul>
+					<li>if domain is the server name, it is
+						converted to esigate server
+						name
+						used in the request</li>
+					<li>if domain is
+						more general domain, esigate tries to convert it
+						to a
+						domain matching
+						the request domain</li>
+				</ul>
+				<p>
+					Path:
+				</p>
+				<ul>
+					<li>the path is rewritten to the biggest matching
+						path in the url
+					</li>
+				</ul>
+				<p>
+					Secure:
+				</p>
+				<ul>
+					<li>cookie is set secure only if server sent it as
+						secure and
+						scheme
+						is
+						https, in all other cases, cookie est set not
+						secure when
+						sent to
+						browser</li>
+				</ul>
+			</subsection>
+		</section>
+		<section name="Authentication and SSO">
+			<subsection name="Authentication">
+				<p>
+					User authentication consists in two different things :
+				</p>
+				<ol>
+					<li>authenticating user requests</li>
+					<li>forwarding user information to the providers</li>
+				</ol>
+				<p>
+					Authentication is managed by extensions in ESIGate 4.x. In older
+					versions, authentication was handled by implementations of the
+					AuthenticationHandler interface.
+	
+				</p>
+				<p>
+					To ease update from a previous ESIGate version or simply for inspiration, an adapter between
+					AuthenticationHandler and Extension is provided :
+					<a
+						href="esigate-core/apidocs/org/esigate/authentication/GenericAuthenticationHandler.html">GenericAuthenticationHandler</a>
+	
+				</p>
+	
+				<p>Extensions are declared for each provider. This means that ESIGate
+					can get content from applications using different authentication
+					systems.
+				</p>
+			</subsection>
+			<subsection name="Default authentication handler">
+				<p>
+					The default AuthenticationHandler is
+					<a
+						href="esigate-core/apidocs/org/esigate/authentication/RemoteUserAuthenticationHandler.html">RemoteUserAuthenticationHandler</a>
+					implementation. This implementation tries to retrieve the user by
+					calling the
+					method request.getRemoteUser() from the container. If
+					this method
+					returns a user name, the name is forwarded to the
+					provider in the
+					"X_REMOTE_USER" HTTP header.
+				</p>
+			</subsection>
+			<subsection name="CAS authentication">
+				<p>
+					There is also an AuthenticationHandler for CAS Single Sign On. See
+					<a href="esigate-cas/index.html">CAS</a>
+					for more information.
+				</p>
+			</subsection>
+			<subsection name="Custom authentication">
+				<p>
+					Any other authentication method can be implementing by writing a
+					class that implements Extension or extends
+					GenericAuthenticationHandler.
+				</p>
+			</subsection>
+		</section>
+		<section name="Errors management">
+			<p>
+				While retrieving a page or resource from a distant server, a lot of
+				things can occur. ESIGate provides solutions to handle properly this
+				kind of problems.
+			</p>
+			<subsection name="Http errors">
+				<p>
+					Any HTTP status code different from the following codes is considered
+					as an error :
+				</p>
+				<ul>
+					<li>200 OK</li>
+					<li>301 Moved permanently</li>
+					<li>302 Moved temporarily</li>
+					<li>304 Not modified</li>
+				</ul>
+			</subsection>
+			<subsection name="Network errors and timeout">
+				<p>
+					There are several kind of network problems for example :
+				</p>
+				<ul>
+					<li>DNS errors (host name cannot be resolved)</li>
+					<li>Connection refused (can be a wrong port number or a firewall
+						problem)</li>
+					<li>Broken pipe (host closed connection unexpectedly)</li>
+					<li>...</li>
+				</ul>
+				<p>
+					In addition, for performance issues, ESIGate cannot wait indefinitely
+					for the target server to answer. That is the reason for the "timeout"
+					configuration parameter. This parameter is used in 2 cases :
+				</p>
+				<ul>
+					<li>Connection timeout (trying to connect to the server but the
+						server does not answer)</li>
+					<li>Socket timeout (the connection has been established, the server
+						may have started sending the response but no packet has been
+						received for too much time)</li>
+				</ul>
+				<p>
+					All these problems are handled like Http errors with the following
+					codes :
+				</p>
+				<table>
+					<tr>
+						<th>Problem type</th>
+						<th>Http status</th>
+						<th>Http message</th>
+					</tr>
+					<tr>
+						<td>Connection refused</td>
+						<td>502</td>
+						<td>Bad Gateway</td>
+					</tr>
+					<tr>
+						<td>Connection pool timeout (all the http connections to current
+							host are busy)</td>
+						<td>504</td>
+						<td>Gateway timeout</td>
+					</tr>
+					<tr>
+						<td>Connect timeout</td>
+						<td>504</td>
+						<td>Gateway timeout</td>
+					</tr>
+					<tr>
+						<td>Socket timeout</td>
+						<td>504</td>
+						<td>Gateway timeout</td>
+					</tr>
+					<tr>
+						<td>Error retrieving URL (any other error)</td>
+						<td>500</td>
+						<td>Internal server error</td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="Handling errors with ESIGate">
+				<p>
+					In case of an error, there are several possible ways to handle the
+					problem :
+				</p>
+				<ul>
+					<li>Display the error page from the target server in case of an HTTP error</li>
+					<li>Display an error page in case of other errors (application server default error page with stacktrace or custom error page)</li>
+					<li>Display a simple error message (status code + status text)</li>
+					<li>Display a generic error message or just nothing</li>
+				</ul>
+				<p>
+					Depending on where we are, we cannot do anything : for example, while
+					rendering a block inside a page, if a problem occurs but the response
+					is already commited, we can only display a simplified message or
+					generic message because rendering the complete error page may result
+					in a page totally broken.
+				</p>
+			</subsection>
+			<subsection name="Cache and errors">
+				<p>
+					According to HTTP specifications, a HTTP compliant cache system
+					should never cache pages with status code other than 200 OK. In
+					ESIGate, it was decided to do exactly the contrary :
+				</p>
+				<strong>error pages are always cached.</strong>
+				<p>
+					This behaviour is designed to avoid performance issues, when there is
+					an
+					error on a resource, there is no reason to continue asking for the
+					same resource again and again. ESIGate will keep the response in
+					cache and try a new request only when the cache entry has expired.
+				</p>
+			</subsection>
+		</section>
+		<section name="Load balancing">
+			<p>
+				For better performance and availability, it is possible to work
+				with several servers for each provider application. As EsiGate can
+				handle the load-balancing, you will not need any extra software nor
+				hardware. Basically, load-balancing is simple, you just have to define in property 'remoteUrlBase' a
+				comma-separated list of backend servers. E.g.:
+			</p>
+			<source>default.remoteUrlBase=http://example.com:8080/,http://example2.com:8080/</source>
+			<p>
+				There are 3 strategies to retrieve backed server url for current
+				request:
+			</p>
+			<ul>
+				<li>roundrobin - rotate backend urls for every request (this is the default value)</li>
+				<li>iphash - for the same remote client ip always will return the
+					same backend url
+				</li>
+				<li>stickysession - add to client browser cookie with id of backend
+					server url, so for all requests from this browser esigate will use
+					the same backend url
+				</li>
+			</ul>
+			<p>
+				Strategy can be defined in property 'remoteUrlBaseStrategy', if
+				this property is not defined, by default is used 'roundrobin'
+				strategy.
+			</p>
+		</section>
+		<section name="Extending and customizing">
+			<p>
+				ESIGate 4.0 introduces
+				<b>Extensions</b>
+				and
+				<b>Events</b>
+				. These are an easy way to
+				customize ESIGate behavior : remove unused
+				features and add user-defined functions.
+			</p>
+			<subsection name="Extensions">
+				<p>
+					Extensions are simply classes which implement the
+					<a href="/esigate-core/apidocs/org/esigate/extension/Extension.html">Extension interface</a>
+					.
+				</p>
+				<p>
+					They are loaded at startup by ESIGate according to the "
+					<b>extensions</b>
+					"
+					<a href="#Configuration">configuration directive</a>
+					. Each provider can use a different set of extensions.
+				</p>
+				<p>
+					In the init() method, an extension will usually read configuration
+					and
+					register to events.
+				</p>
+			</subsection>
+			<subsection name="Events">
+				<p>Events are hooks on ESIGate's request processing, allowing to
+					safely insert custom code at every step.
+				</p>
+				<p>
+					Using this extensions can :
+				</p>
+				<ul>
+					<li>handle security or login in remote applications by doing more
+						http calls to correctly provide credentials when access is
+						refused.
+					</li>
+					<li>alter html content or headers
+						before a request result is used or
+						even put
+						into the cache.
+					</li>
+					<li>change cache ttl based on urls .</li>
+					<li>rewrite links in headers or in the html body.</li>
+					<li>update or remove cookies.</li>
+					<li>send additional headers to client or to backends.</li>
+					<li>cancel requests.</li>
+					<li>do custom logging.</li>
+					<li>...and much more</li>
+				</ul>
+				<p>
+					Extensions can register an
+					<a href="/esigate-core/apidocs/org/esigate/events/IEventListener.html">event listener</a>
+					to events using the
+					<a href="/esigate-core/apidocs/org/esigate/events/EventManager.html">Event Manager</a>
+					:
+					<code>Driver#getEventManager().register()</code>
+				</p>
+				<p>
+					The following events are supported :
+				</p>
+				<ul>
+					<li>
+						Proxy events : ESIGate process an incoming request (ESIGate
+						configured as a
+						proxy).
+						<ul>
+							<li> EVENT_PROXY_PRE : before processing an
+								incoming
+								request.
+							</li>
+							<li>EVENT_PROXY_POST : after processing an
+								incoming
+								request.
+							</li>
+						</ul>
+					</li>
+					<li>
+						Fragment events : A fragment is required for inclusion
+						(esi:include). ESIGate
+						will try to use its cache or fallback to
+						an
+						http call to the
+						remote backend.
+						<ul>
+							<li>EVENT_FRAGMENT_PRE : before retrieving
+								a fragment.
+							</li>
+							<li>EVENT_FRAGMENT_POST : after retrieving
+								a fragment.
+							</li>
+						</ul>
+					</li>
+					<li>
+						Fetch events : An HTTP call is made to a remote backend.
+						<ul>
+							<li>EVENT_FETCH_PRE : before creating the
+								HTTP call.
+							</li>
+							<li>EVENT_FETCH_POST : after we receive
+								the response.
+							</li>
+						</ul>
+					</li>
+					<li>
+						Render events : Renderers are applied to the current page.
+						This
+						event can be
+						used to inject additional renderers.
+						<ul>
+							<li>EVENT_RENDER_PRE : before applying
+								renderers
+							</li>
+							<li>EVENT_RENDER_POST : after applying
+								renderers
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</subsection>
+			<subsection name="Available extensions">
+				<p>ESIGate comes with several existing extensions :</p>
+				<ul>
+					<li>
+						<b>Default</b>
+						org.esigate.extension.FetchLogging : log http calls to remote
+						backends, including request and response headers
+					</li>
+					<li>
+						<b>Default</b>
+						org.esigate.extension.FragmentLogging : log the use of http
+						fragments including request and response headers and cache use
+						(hit/miss/validated)
+					</li>
+					<li>
+						<b>Default</b>
+						org.esigate.extension.ResourceFixup : if enabled by configuration
+						directive, rewrites html content to ensure links points directly
+						to the remote backend. This should be used when Esigate is
+						embedded in an application.
+					</li>
+					<li>
+						<b>Default</b>
+						org.esigate.authentication.RemoteUserAuthentificationHandler :
+						sends current user id as an http request header (X_REMOTE_USER).
+					</li>
+					<li>
+						org.esigate.authentication.CasAuthentificationHandler :
+						handles authentication on CAS SSO.
+					</li>
+					<li>
+						org.esigate.authentication.RequestAuthentificationHandler :
+						sends selected session attributes and request attributes as http
+						request headers.
+					</li>
+					<li>
+						org.esigate.extension.ForwardOriginalUrl :
+						sends original request url as recieved by esigate as http
+						request header (X-Esigate-Request).
+					</li>
+					<li>
+						<b>Default</b>
+						org.esigate.extension.XPoweredBy :
+						adds X-Powered-By: ESIGate in response.
+					</li>
+				</ul>
+				<p>ESIGate users can add custom extensions packaged in a jar or
+					simply compiled classes depending on the way ESIGate is used
+					(standalone server or library).</p>
+			</subsection>
+		</section>
+		<section name="API documentation">
+			<p>
+				Any functionality used in the taglib, reverse proxy or aggregator can
+				be used through	the API for more specific purpose. All functionalities
+				are implemented in class
+				<a href="esigate-core/apidocs/org/esigate/Driver.html">org.esigate.Driver</a>
+			</p>
+			<p>
+				See the
+				<a href="esigate-core/apidocs/index.html">Javadoc</a>
+				for more information
+			</p>
+		</section>
+		<section name="Other features: Taglib, JSF, Wicket, html comments-based syntax">
+			<subsection name="Taglib">
+				<p>There is a JSP taglib that can be used in JSP pages and that implement
+				most of the functionnalities you can find in the ESI syntax</p>
+				<p>See the <a href="taglib.html">documentation of the taglib</a></p>
+				<p>Note: in a future version, this library will be removed and replaced by 
+				a servlet filter that will benefit of the full ESI syntax and will be 
+				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
+			</subsection>
+			<subsection name="Reverse proxy Servlet">
+				<p>We provide also a reverse proxy servlet that can be used when using complex
+				url mappings a little bit like Apache mod_proxy.</p>
+				<p>See the <a href="proxy.html">documentation of the reverse proxy</a></p>
+			</subsection>
+			<subsection name="JSF">
+				<p>There is a JSF components library for ESIGate. Functionalities are limited (mostly include)</p>
+				<p>Note: in a future version, this library will be removed and replaced by 
+				a servlet filter that will benefit of the full ESI syntax and will be 
+				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
+			</subsection>
+			<subsection name="Wicket">
+				<p>There is a Wicket components library for ESIGate. Functionalities are limited (mostly include)</p>
+				<p>See the <a href="esigate-wicket/index.html">documentation of the Wicket components</a></p>
+				<p>Note: in a future version, this library will be removed and replaced by 
+				a servlet filter that will benefit of the full ESI syntax and will be 
+				compatible with all presentation frameworks (JSP, JSF, Wicket...)</p>
+			</subsection>
+			<subsection name="Html comments-based syntax">
+				<p>In addition to ESI language, ESIGate also supports a syntax based on html
+				comments though the functionalities are more limited</p>
+				<p>See the <a href="html-comments.html">html comments-based syntax</a></p>
+			</subsection>
+		</section>
 	</body>
 </document>
