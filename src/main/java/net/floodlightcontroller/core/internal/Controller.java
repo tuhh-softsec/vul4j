@@ -139,8 +139,18 @@ import org.slf4j.LoggerFactory;
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
-    
-	protected SwitchStorageImpl swStore;
+   
+	ThreadLocal<SwitchStorageImpl> store = new ThreadLocal<SwitchStorageImpl>() {
+		@Override
+		protected SwitchStorageImpl initialValue() {
+			SwitchStorageImpl swStore = new SwitchStorageImpl();
+			//TODO: Get the file path from global properties
+			swStore.init("/tmp/cassandra.titan");
+			return swStore;
+		}
+	};
+	
+	protected SwitchStorageImpl swStore = store.get();
 	
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
@@ -2072,8 +2082,6 @@ public class Controller implements IFloodlightProviderService,
         this.roleChanger = new RoleChanger();
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
-        this.swStore = new SwitchStorageImpl();
-        this.swStore.init("/tmp/cassandra.titan");
     }
     
     /**
