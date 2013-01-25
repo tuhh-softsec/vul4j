@@ -524,7 +524,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
     	IOFSwitch remotesw = null;
     	
     	// add a switch if we have not seen it before
-        if (!remoteSwitches.containsKey(sw)) {
+    	remotesw = remoteSwitches.get(sw);
+        if (remotesw == null) {
         	remotesw = new OFSwitchImpl();
         	remotesw.setupRemoteSwitch(sw);
         	remoteSwitches.put(remotesw.getId(), remotesw);
