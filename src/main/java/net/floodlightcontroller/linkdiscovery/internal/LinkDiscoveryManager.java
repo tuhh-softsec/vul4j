@@ -193,7 +193,17 @@ IFloodlightModule, IInfoProvider, IHAListener {
     int lldpTimeCount = 0;
 
     // Storage
-    protected LinkStorageImpl linkStore;
+
+    ThreadLocal<LinkStorageImpl> store = new ThreadLocal<LinkStorageImpl>() {
+		@Override
+		protected LinkStorageImpl initialValue() {
+			LinkStorageImpl swStore = new LinkStorageImpl();
+			//TODO: Get the file path from global properties
+			swStore.init("/tmp/cassandra.titan");
+			return swStore;
+		}
+	};
+    protected LinkStorageImpl linkStore = store.get();
    // protected SwitchStorageImpl swStore;
     
     /**
@@ -524,7 +534,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
     	IOFSwitch remotesw = null;
     	
     	// add a switch if we have not seen it before
-        if (!remoteSwitches.containsKey(sw)) {
+    	remotesw = remoteSwitches.get(sw);
+    	if (remotesw == null) {
         	remotesw = new OFSwitchImpl();
         	remotesw.setupRemoteSwitch(sw);
         	remoteSwitches.put(remotesw.getId(), remotesw);
@@ -1859,6 +1870,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.switchLinks = new HashMap<Long, Set<Link>>();
         this.quarantineQueue = new LinkedBlockingQueue<NodePortTuple>();
         this.maintenanceQueue = new LinkedBlockingQueue<NodePortTuple>();
+        this.remoteSwitches = new HashMap<Long, IOFSwitch>();
 
         this.evHistTopologySwitch =
                 new EventHistory<EventHistoryTopologySwitch>("Topology: Switch");
@@ -1909,16 +1921,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
             log.error("Error in installing listener for " +
             		  "switch table {}", SWITCH_CONFIG_TABLE_NAME);
         }
-
-        // Initialize the link storage connector to the network map
-        this.linkStore = new LinkStorageImpl();
-        this.linkStore.init("/tmp/cassandra.titan");
-        
-        // Initialieze the switch storage connector to the network map. We may need to delete switches.
-        // TODO find a better place to delete switches and ports from network map
-        // this.swStore = new SwitchStorageImpl();
-        // this.swStore.init("/tmp/cassandra.titan");
-        
+                
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 
         // To be started by the first switch connection
