@@ -90,7 +90,7 @@ public class LinkStorageImpl implements ILinkStorage {
             	if (currLinks.contains(vportDst)) {
             		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
-            			log.debug("addOrUpdateLink(): Failure: link exists {} {} src {} dst {}", 
+            			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
             		}
             	} else {
@@ -99,14 +99,14 @@ public class LinkStorageImpl implements ILinkStorage {
             		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
             } else {
-            	log.error("addOrUpdateLink(): failed {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            	log.error("addOrUpdateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	graph.stopTransaction(Conclusion.FAILURE);
             }
         } catch (TitanException e) {
             /*
              * retry till we succeed?
              */
-        	log.error("addOrUpdateLink(): failed {} {}", new Object[]{op, lt});
+        	log.error("addOrUpdateLink(): titan exception {} {}", new Object[]{op, lt});
         }
 	}
 	
@@ -151,7 +151,7 @@ public class LinkStorageImpl implements ILinkStorage {
             			count, lt, vportSrc, vportDst});
             	
             } else {
-            	log.error("deleteLink(): failed src port vertex not found {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
+            	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
             	graph.stopTransaction(Conclusion.FAILURE);
             }
          	
@@ -159,7 +159,7 @@ public class LinkStorageImpl implements ILinkStorage {
             /*
              * retry till we succeed?
              */
-        	log.error("deleteLink(): {} failed", lt);
+        	log.error("deleteLink(): titan exception {}", lt);
         }
 	}
 
