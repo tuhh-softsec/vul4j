@@ -1859,7 +1859,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.switchLinks = new HashMap<Long, Set<Link>>();
         this.quarantineQueue = new LinkedBlockingQueue<NodePortTuple>();
         this.maintenanceQueue = new LinkedBlockingQueue<NodePortTuple>();
-
+        this.remoteSwitches = new HashMap<Long, IOFSwitch>();
+        
         this.evHistTopologySwitch =
                 new EventHistory<EventHistoryTopologySwitch>("Topology: Switch");
         this.evHistTopologyLink =

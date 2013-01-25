@@ -106,7 +106,8 @@ public class LinkStorageImpl implements ILinkStorage {
             /*
              * retry till we succeed?
              */
-        	log.error("addOrUpdateLink(): titan exception {} {}", new Object[]{op, lt});
+        	log.error("addOrUpdateLink(): titan exception {} {} {}", new Object[]{op, lt, e.toString()});
+        	e.printStackTrace();
         }
 	}
 	
@@ -159,7 +160,8 @@ public class LinkStorageImpl implements ILinkStorage {
             /*
              * retry till we succeed?
              */
-        	log.error("deleteLink(): titan exception {}", lt);
+        	log.error("deleteLink(): titan exception {} {}", new Object[]{lt, e.toString()});
+        	e.printStackTrace();
         }
 	}
 
