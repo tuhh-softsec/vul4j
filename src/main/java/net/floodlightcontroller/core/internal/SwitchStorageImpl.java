@@ -19,6 +19,7 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.frames.FramedGraph;
 import net.floodlightcontroller.core.ISwitchStorage;
 
 public class SwitchStorageImpl implements ISwitchStorage {
@@ -198,15 +199,19 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	}
 
 	@Override
-	public List<String> getActiveSwitches() {
+	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Add unit test
-		List<String> switches = new ArrayList<String>();
-    	for (Vertex V : graph.getVertices("type","switch")) {
-    		if (V.getProperty("state").equals(SwitchState.ACTIVE.toString())) {
-    		     switches.add((String) V.getProperty("dpid"));
-    		}
-    	}
-		return switches;
+		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+		List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
+		
+		for (ISwitchObject sw: switches) {
+			if(sw.getState().equals(SwitchState.ACTIVE.toString())) {
+				activeSwitches.add(sw);
+			}
+		}
+  
+		return activeSwitches;
 	}
 
 	@Override
@@ -227,25 +232,32 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	}
 
 	@Override
-	public List<String> getAllSwitches() {
+	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
-		List<String> switches = new ArrayList<String>();
-    	for (Vertex V : graph.getVertices("type","switch")) {
-    		switches.add((String) V.getProperty("dpid"));
-    	}
+		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+
+		for (ISwitchObject sw: switches) {
+			log.debug("switch: {}", sw.getDPID());
+		}
+
 		return switches;
 	}
 
 	@Override
-	public List<String> getInactiveSwitches() {
+	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
-		List<String> switches = new ArrayList<String>();
-    	for (Vertex V : graph.getVertices("type","switch")) {
-    		if (V.getProperty("state").equals(SwitchState.INACTIVE.toString())) {
-    		     switches.add((String) V.getProperty("dpid"));
-    		}
-    	}
-		return switches;
+		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+
+		List<ISwitchObject> inActiveSwitches = new ArrayList<ISwitchObject>();
+		
+		for (ISwitchObject sw: switches) {
+			if(sw.getState().equals(SwitchState.INACTIVE.toString())) {
+				inActiveSwitches.add(sw);
+			}
+		}
+		return inActiveSwitches;
 	}
 
 	

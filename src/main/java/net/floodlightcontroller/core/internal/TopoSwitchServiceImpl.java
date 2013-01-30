@@ -3,6 +3,7 @@ package net.floodlightcontroller.core.internal;
 import java.util.List;
 
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
+import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
 
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
@@ -19,19 +20,19 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	SwitchStorageImpl swStore = store.get();
 	
 	@Override
-	public List<String> GetActiveSwitches() {
+	public Iterable<ISwitchObject> GetActiveSwitches() {
 		// TODO Auto-generated method stub
 		return swStore.getActiveSwitches();
 	}
 
 	@Override
-	public List<String> GetAllSwitches() {
+	public Iterable<ISwitchObject> GetAllSwitches() {
 		// TODO Auto-generated method stub
 		return swStore.getAllSwitches();
 	}
 
 	@Override
-	public List<String> GetInactiveSwitches() {
+	public Iterable<ISwitchObject> GetInactiveSwitches() {
 		// TODO Auto-generated method stub
 		return swStore.getInactiveSwitches();
 	}

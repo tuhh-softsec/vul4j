@@ -2,15 +2,16 @@ package net.floodlightcontroller.core;
 
 import java.util.List;
 
+import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.NodePortTuple;
 
 public interface INetMapTopologyService extends INetMapService {
 
 	public interface ITopoSwitchService {
-		List<String> GetActiveSwitches();
-		List<String> GetAllSwitches();
-		List<String> GetInactiveSwitches();
+		Iterable<ISwitchObject> GetActiveSwitches();
+		Iterable<ISwitchObject> GetAllSwitches();
+		Iterable<ISwitchObject> GetInactiveSwitches();
 		List<String> GetPortsOnSwitch(String dpid);
 	}
 	
@@ -24,7 +25,7 @@ public interface INetMapTopologyService extends INetMapService {
 	}
 	
 	public interface ITopoRouteService {
-		List<NodePortTuple> GetShortestpath(NodePortTuple src, NodePortTuple dest);
+		List<NodePortTuple> GetShortestPath(NodePortTuple src, NodePortTuple dest);
 		Boolean RouteExists(NodePortTuple src, NodePortTuple dest);
 	}
 	

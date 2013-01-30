@@ -13,7 +13,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ## Global Var ##
 RestIP="127.0.0.1"
 RestPort=8182
-DBName="onos-network-map"
+DBName="Cassandra-Netmap"
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -198,8 +198,8 @@ def query_switch():
 
   switches_ = []
   for v in parsedResult:
-    if v.has_key('dpid'):
-#    if v.has_key('dpid') and str(v['state']) == "ACTIVE":#;if you want only ACTIVE nodes
+#    if v.has_key('dpid'):
+    if v.has_key('dpid') and str(v['state']) == "ACTIVE":#;if you want only ACTIVE nodes
       dpid = str(v['dpid'])
       state = str(v['state'])
       sw = {}

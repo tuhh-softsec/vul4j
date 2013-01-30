@@ -42,9 +42,12 @@ public interface ILinkStorage extends INetMapStorage {
 	 *  If only dpid is set all links associated with Switch are retrieved
 	 */
 	public List<Link> getLinks(Long dpid, short port);
+	public List<Link> getLinks(String dpid);
+	public List<Link> getActiveLinks();
 	
 	/*
 	 * Init with Storage conf
 	 */
 	public void init(String conf);
+
 }

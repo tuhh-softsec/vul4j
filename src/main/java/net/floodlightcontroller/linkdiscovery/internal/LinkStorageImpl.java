@@ -207,4 +207,16 @@ public class LinkStorageImpl implements ILinkStorage {
 		
 	}
 
+	@Override
+	public List<Link> getLinks(String dpid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Link> getActiveLinks() {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+
 }
