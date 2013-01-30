@@ -24,7 +24,7 @@ public interface INetMapTopologyService extends INetMapService {
 	}
 	
 	public interface ITopoRouteService {
-		List<NodePortTuple> GetShortestpath(NodePortTuple src, NodePortTuple dest);
+		List<NodePortTuple> GetShortestPath(NodePortTuple src, NodePortTuple dest);
 		Boolean RouteExists(NodePortTuple src, NodePortTuple dest);
 	}
 	
