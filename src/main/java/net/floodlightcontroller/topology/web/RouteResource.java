@@ -4,7 +4,9 @@ import java.util.List;
 
 import net.floodlightcontroller.routing.IRoutingService;
 import net.floodlightcontroller.routing.Route;
+import net.floodlightcontroller.routing.TopoRouteService;
 import net.floodlightcontroller.topology.NodePortTuple;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 
 import org.openflow.util.HexString;
 import org.restlet.resource.Get;
@@ -18,9 +20,16 @@ public class RouteResource extends ServerResource {
 
     @Get("json")
     public List<NodePortTuple> retrieve() {
+	/*
         IRoutingService routing = 
                 (IRoutingService)getContext().getAttributes().
                     get(IRoutingService.class.getCanonicalName());
+	*/
+	ITopoRouteService onos_routing = new TopoRouteService();
+	if (onos_routing == null) {
+	    log.debug("ONOS Route Service not found");
+	    return null;
+	}
         
         String srcDpid = (String) getRequestAttributes().get("src-dpid");
         String srcPort = (String) getRequestAttributes().get("src-port");
@@ -34,12 +43,19 @@ public class RouteResource extends ServerResource {
         long longDstDpid = HexString.toLong(dstDpid);
         short shortDstPort = Short.parseShort(dstPort);
         
+	/*
         Route result = routing.getRoute(longSrcDpid, shortSrcPort, longDstDpid, shortDstPort);
         
         if (result!=null) {
             return routing.getRoute(longSrcDpid, shortSrcPort, longDstDpid, shortDstPort).getPath();
         }
-        else {
+	*/
+	List<NodePortTuple> result =
+	    onos_routing.GetShortestPath(new NodePortTuple(longSrcDpid, shortSrcPort),
+					 new NodePortTuple(longDstDpid, shortDstPort));
+	if ((result != null) && (result.size() > 0)) {
+	    return result;
+	} else {
             log.debug("ERROR! no route found");
             return null;
         }
