@@ -13,7 +13,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ## Global Var ##
 RestIP="127.0.0.1"
 RestPort=8182
-DBName="Cassandra-Netmap"
+DBName="onos-network-map"
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -34,17 +34,26 @@ def portV_to_dpid(vertex):
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   debug("portV_to_dpid %s" % command)
   debug("parsed %s" % parsedResult)
+
+  found = 0
   for v in parsedResult:
     if v.has_key('type') and v['type'] == "switch":
+      found = 1
       sw_dpid = v['dpid']
       break
 
-  return sw_dpid
+  if not found:
+    log_error("No switch attached to port vertex %d" % vertex)
+    sys.exit(0)
+  else:
+    return sw_dpid
+
 
 def switchV_to_dpid(vertex):
   try:
@@ -52,13 +61,14 @@ def switchV_to_dpid(vertex):
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   debug("switchV_to_dpid %s" % command)
   if not parsedResult.has_key("type") or parsedResult['type'] != "switch":
     print "not a switch vertex"
-    exit
+    sys.exit(0)
   else:
     sw_dpid = parsedResult['dpid']
 
@@ -70,8 +80,9 @@ def portV_to_port_dpid(vertex):
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   debug("portV_to_port_dpid %s" % command)
   port_number = parsedResult['number']
@@ -85,8 +96,9 @@ def deviceV_to_attachpoint(vertex):
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
     
   port = parsedResult[0]['number']
   vertex = parsedResult[0]['_id']
@@ -132,8 +144,9 @@ def devices():
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   devices = []
   for v in parsedResult:
@@ -193,8 +206,9 @@ def query_switch():
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   switches_ = []
   for v in parsedResult:
@@ -219,8 +233,9 @@ def query_links():
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
-    log_error("REST IF has issue")
-    exit
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
 
   debug("query_links %s" % command)
   pp.pprint(parsedResult)
@@ -234,10 +249,10 @@ def query_links():
       result = os.popen(command).read()
       linkResults = json.loads(result)['results']
     except:
-      log_error("REST IF has issue")
-      exit
+      log_error("REST IF has issue: %s" % command)
+      log_error("%s" % result)
+      sys.exit(0)
 
- #   print linkResults
     for p in linkResults:
       if p.has_key('type') and p['type'] == "port":
         dstport = p['_id']
