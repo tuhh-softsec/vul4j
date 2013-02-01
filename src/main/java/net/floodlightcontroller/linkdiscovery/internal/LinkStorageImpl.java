@@ -47,6 +47,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
 		switch (op) {
 		case UPDATE:
+			break;
 		case CREATE:
 		case INSERT:
 			addOrUpdateLink(link, linkinfo, op);
@@ -191,7 +192,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	@Override
 	public void init(String conf) {
-		//TODO extract the DB location from conf
+		//TODO extract the DB location from properties
 	
         graph = TitanFactory.open(conf);
         
@@ -232,10 +233,9 @@ public class LinkStorageImpl implements ILinkStorage {
 
 			pipe.start(sw.asVertex());
 			pipe.enablePath(true);
-			pipe.out("on").out("link").in("on").path().getCurrentPath();
-			pipe.step(extractor);
+			pipe.out("on").out("link").in("on").path().step(extractor);
 					
-			if (pipe.hasNext() ) {
+			while (pipe.hasNext() ) {
 				Link l = pipe.next();
 				links.add(l);
 			}
@@ -246,10 +246,9 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
-
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
-			// TODO Auto-generated method stub
+
 			long s_dpid = 0;
 			long d_dpid = 0;
 			short s_port = 0;
