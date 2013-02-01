@@ -1,9 +1,13 @@
 package net.floodlightcontroller.linkdiscovery.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
+import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
+import net.floodlightcontroller.core.internal.TopoSwitchServiceImpl;
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
@@ -20,6 +24,8 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
+import com.tinkerpop.pipes.PipeFunction;
+import com.tinkerpop.pipes.transform.PathPipe;
 
 public class LinkStorageImpl implements ILinkStorage {
 	public TitanGraph graph;
@@ -214,9 +220,56 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 
 	public List<Link> getActiveLinks() {
-		// TODO Auto-generated method stub
+
+		ITopoSwitchService swService = new TopoSwitchServiceImpl();
 		
-		return null;
+		Iterable<ISwitchObject> switches = swService.GetActiveSwitches();
+
+		List<Link> links = new ArrayList<Link>(); 
+		for (ISwitchObject sw : switches) {
+			GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
+			ExtractLink extractor = new ExtractLink();
+
+			pipe.start(sw.asVertex());
+			pipe.enablePath(true);
+			pipe.out("on").out("link").in("on").path().getCurrentPath();
+			pipe.step(extractor);
+					
+			if (pipe.hasNext() ) {
+				Link l = pipe.next();
+				links.add(l);
+			}
+						
+		}
+		return links;
 	}
+	
+	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
+	
+
+		@Override
+		public Link compute(PathPipe<Vertex> pipe ) {
+			// TODO Auto-generated method stub
+			long s_dpid = 0;
+			long d_dpid = 0;
+			short s_port = 0;
+			short d_port = 0;
+			List<Vertex> V = new ArrayList<Vertex>();
+			V = pipe.next();
+			Vertex src_sw = V.get(0);
+			Vertex dest_sw = V.get(3);
+			Vertex src_port = V.get(1);
+			Vertex dest_port = V.get(2);
+			s_dpid = HexString.toLong((String) src_sw.getProperty("dpid"));
+			d_dpid = HexString.toLong((String) dest_sw.getProperty("dpid"));
+			s_port = (Short) src_port.getProperty("number");
+			d_port = (Short) dest_port.getProperty("number");
+			
+			Link l = new Link(s_dpid,s_port,d_dpid,d_port);
+			
+			return l;
+		}
+	}
+
 
 }

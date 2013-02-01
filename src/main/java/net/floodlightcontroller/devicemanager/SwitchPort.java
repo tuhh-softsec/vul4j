@@ -20,7 +20,7 @@ package net.floodlightcontroller.devicemanager;
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.ToStringSerializer;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 
 /**
  * A simple switch DPID/port pair

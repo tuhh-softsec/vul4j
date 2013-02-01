@@ -1,20 +1,15 @@
 package net.floodlightcontroller.core;
 
 import java.util.Collection;
-import java.util.List;
-
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.StdSerializers;
 import org.openflow.protocol.OFPhysicalPort;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Incidence;
 import com.tinkerpop.frames.Property;
+import com.tinkerpop.frames.VertexFrame;
 
 public interface ISwitchStorage extends INetMapStorage {
 	
@@ -23,7 +18,7 @@ public interface ISwitchStorage extends INetMapStorage {
 		ACTIVE
 	}
 
-	public interface ISwitchObject {
+	public interface ISwitchObject extends VertexFrame{
 		
 		@JsonProperty("dpid")
 		@Property("dpid")
@@ -42,7 +37,7 @@ public interface ISwitchStorage extends INetMapStorage {
 		public Iterable<IPortObject> getPorts();
 	}
 	
-	public interface IPortObject {
+	public interface IPortObject extends VertexFrame{
 		
 		@JsonProperty("state")
 		@Property("state")
@@ -63,6 +58,10 @@ public interface ISwitchStorage extends INetMapStorage {
 		@JsonIgnore
 		@Incidence(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
+		
+//		@JsonIgnore
+//		@Adjacency(label="link")
+//		public Iterable<ILinkObject> getLinks();
 	}
 	/*
 	 * Update the switch details

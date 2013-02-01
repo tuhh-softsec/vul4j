@@ -20,6 +20,8 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
+
 import net.floodlightcontroller.core.ISwitchStorage;
 
 public class SwitchStorageImpl implements ISwitchStorage {
@@ -53,11 +55,11 @@ public class SwitchStorageImpl implements ISwitchStorage {
             if ((sw = graph.getVertices("dpid",dpid).iterator().next()) != null) {
             	sw.setProperty("state",state.toString());
             	graph.stopTransaction(Conclusion.SUCCESS);
-            	log.info("SwitchStorage:setSTatus dpid:{} state: {} done", dpid, state);
+            	log.info("SwitchStorage:setStatus dpid:{} state: {} done", dpid, state);
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
-			log.info("SwitchStorage:setSTatus dpid:{} state: {} failed", dpid, state);
+			log.info("SwitchStorage:setStatus dpid:{} state: {} failed", dpid, state);
 		}
             	
 		
@@ -204,14 +206,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
 		List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
-		
+
 		for (ISwitchObject sw: switches) {
 			if(sw.getState().equals(SwitchState.ACTIVE.toString())) {
 				activeSwitches.add(sw);
 			}
 		}
-  
-		return activeSwitches;
+
+		return activeSwitches;		
 	}
 
 	@Override
@@ -250,14 +252,14 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
 
-		List<ISwitchObject> inActiveSwitches = new ArrayList<ISwitchObject>();
+		List<ISwitchObject> inactiveSwitches = new ArrayList<ISwitchObject>();
 		
 		for (ISwitchObject sw: switches) {
 			if(sw.getState().equals(SwitchState.INACTIVE.toString())) {
-				inActiveSwitches.add(sw);
+				inactiveSwitches.add(sw);
 			}
 		}
-		return inActiveSwitches;
+		return inactiveSwitches;
 	}
 
 	
