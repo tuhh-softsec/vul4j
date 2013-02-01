@@ -551,7 +551,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         	remoteport.setConfig(0); 
         	remoteport.setState(0);
         	remotesw.setPort(remoteport);
-        	log.debug("addRemoteSwitch(): added fake remote port {} to sw {}", remoteport, remotesw);
+        	log.debug("addRemoteSwitch(): added fake remote port {} to sw {}", remoteport, remotesw.getId());
         }
         
         return remotesw;
