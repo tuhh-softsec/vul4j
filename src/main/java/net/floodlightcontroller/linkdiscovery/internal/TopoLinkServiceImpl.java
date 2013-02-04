@@ -21,7 +21,8 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	@Override
 	public List<Link> GetActiveLinks() {
 		// TODO Auto-generated method stub
-		return linkStore.getActiveLinks();
+		List<Link> retval = linkStore.getActiveLinks();
+		return retval;
 	}
 
 	@Override
@@ -29,5 +30,4 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 		// TODO Auto-generated method stub
 		return linkStore.getLinks(dpid);
 	}
-
 }

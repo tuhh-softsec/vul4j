@@ -13,8 +13,8 @@ public class TopoLinksResource extends ServerResource {
     public List<Link> retrieve() {
 		TopoLinkServiceImpl impl = new TopoLinkServiceImpl();
 		
-		return impl.GetActiveLinks();
-		
+		List<Link> retval = impl.GetActiveLinks();
+		return retval;
 	}
 
 }

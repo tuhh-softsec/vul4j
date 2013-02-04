@@ -27,7 +27,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 
 	@Override
 	public Iterable<ISwitchObject> GetAllSwitches() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		return swStore.getAllSwitches();
 	}
 
@@ -41,6 +41,5 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	public List<String> GetPortsOnSwitch(String dpid) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-    
+	}	
 }

@@ -248,7 +248,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
-
+			// TODO Auto-generated method stub
 			long s_dpid = 0;
 			long d_dpid = 0;
 			short s_port = 0;
@@ -268,6 +268,16 @@ public class LinkStorageImpl implements ILinkStorage {
 			
 			return l;
 		}
+	}
+	
+	public void finalize() {
+		close();
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		graph.shutdown();		
 	}
 
 
