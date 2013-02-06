@@ -509,6 +509,7 @@ public class ControllerTest extends FloodlightTestCase {
         expect(newsw.getBuffers()).andReturn(0).anyTimes();
         expect(newsw.getTables()).andReturn((byte)0).anyTimes();
         expect(newsw.getActions()).andReturn(0).anyTimes();
+        expect(newsw.getPorts()).andReturn(new ArrayList<OFPhysicalPort>());
         controller.activeSwitches.put(0L, oldsw);
         replay(newsw, channel, channel2);
 
