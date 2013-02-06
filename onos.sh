@@ -46,8 +46,8 @@ cat <<EOF_LOGBACK >${FL_LOGBACK}
 EOF_LOGBACK
 
 # Delete and recreate /tmp/netmap
-rm -rf /tmp/cassandra.titan
-mkdir /tmp/cassandra.titan
+#rm -rf /tmp/cassandra.titan
+#mkdir /tmp/cassandra.titan
 
 # Clear logs
 rm onos.log
