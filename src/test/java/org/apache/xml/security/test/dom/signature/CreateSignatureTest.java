@@ -38,6 +38,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.ObjectContainer;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.transforms.params.XPath2FilterContainer;
 import org.apache.xml.security.transforms.params.XPathContainer;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
@@ -149,6 +150,64 @@ public class CreateSignatureTest extends org.junit.Assert {
             ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, prefix);
             throw e;
         }
+    }
+    
+    @org.junit.Test
+    public void testXFilter2Signature() throws Exception {
+        Document doc = db.newDocument();
+        doc.appendChild(doc.createComment(" Comment before "));
+        Element root = doc.createElementNS("", "RootElement");
+
+        doc.appendChild(root);
+        root.appendChild(doc.createTextNode("Some simple text\n"));
+
+        // Sign
+        XMLSignature sig = 
+            new XMLSignature(doc, null, XMLSignature.ALGO_ID_SIGNATURE_DSA);
+        root.appendChild(sig.getElement());
+
+        Transforms transforms = new Transforms(doc);
+        String filter = "here()/ancestor::ds.Signature/parent::node()/descendant-or-self::*";
+        XPath2FilterContainer xpathC = XPath2FilterContainer.newInstanceIntersect(doc, filter);
+        xpathC.setXPathNamespaceContext("dsig-xpath", Transforms.TRANSFORM_XPATH2FILTER);
+        
+        Element node = xpathC.getElement();
+        transforms.addTransform(Transforms.TRANSFORM_XPATH2FILTER, node);
+        sig.addDocument("", transforms, Constants.ALGO_ID_DIGEST_SHA1);
+
+        KeyStore ks = KeyStore.getInstance("JKS");
+        FileInputStream fis = null;
+        if (BASEDIR != null && !"".equals(BASEDIR)) {
+            fis = 
+                new FileInputStream(BASEDIR + SEP 
+                    + "src/test/resources/org/apache/xml/security/samples/input/keystore.jks"
+                );
+        } else {
+            fis = 
+                new FileInputStream("src/test/resources/org/apache/xml/security/samples/input/keystore.jks");
+        }
+        ks.load(fis, "xmlsecurity".toCharArray());
+        PrivateKey privateKey = (PrivateKey) ks.getKey("test", "xmlsecurity".toCharArray());
+
+        sig.sign(privateKey);
+        
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        XMLUtils.outputDOMc14nWithComments(doc, bos);
+        String signedDoc = new String(bos.toByteArray());
+        
+        // Now Verify
+        doc = db.parse(new ByteArrayInputStream(signedDoc.getBytes()));
+
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        xpath.setNamespaceContext(new DSNamespaceContext());
+
+        String expression = "//ds:Signature[1]";
+        Element sigElement = 
+            (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
+        
+        XMLSignature signature = new XMLSignature(sigElement, "");
+        assertTrue(signature.checkSignatureValue(ks.getCertificate("test").getPublicKey()));
     }
 
     private String doSign() throws Exception {
