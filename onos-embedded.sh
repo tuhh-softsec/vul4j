@@ -4,6 +4,8 @@
 FL_HOME=`dirname $0`
 FL_JAR="${FL_HOME}/target/floodlight.jar"
 FL_LOGBACK="${FL_HOME}/logback.xml"
+TITAN_CONFIG="/tmp/cassandra.titan"
+CASSANDRA_CONFIG="/home/`whoami`/apache-cassandra-1.1.4/conf/cassandra.yaml"
 
 # Set JVM options
 JVM_OPTS=""
@@ -15,8 +17,12 @@ JVM_OPTS=""
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
 # Set classpath to include titan libs
-CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+#CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+CLASSPATH="${FL_HOME}/lib/*.jar:${FL_HOME}/lib/titan/*.jar"
 
+CASSANDRA_OPTS="-Dcom.sun.management.jmxremote.port=7199"
+CASSANDRA_OPTS="$CASSANDRA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+CASSANDRA_OPTS="$CASSANDRA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 
 # Create a logback file if required
 cat <<EOF_LOGBACK >${FL_LOGBACK}
@@ -45,9 +51,12 @@ cat <<EOF_LOGBACK >${FL_LOGBACK}
 </configuration>
 EOF_LOGBACK
 
-# Delete and recreate /tmp/netmap
-#rm -rf /tmp/cassandra.titan
-#mkdir /tmp/cassandra.titan
+cat <<EOF_TITAN >${TITAN_CONFIG}
+storage.backend=embeddedcassandra
+storage.hostname=127.0.0.1
+storage.keyspace=onos
+storage.cassandra-config-dir=file://${CASSANDRA_CONFIG}
+EOF_TITAN
 
 # Clear logs
 rm onos.log
@@ -56,4 +65,4 @@ rm onos.log
 echo "Starting ONOS controller ..."
 echo 
 #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties
-java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties
+java ${JVM_OPTS} ${CASSANDRA_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR}

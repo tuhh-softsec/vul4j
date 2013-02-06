@@ -21,8 +21,9 @@ public class TopoSwitchesResource extends ServerResource {
 		}
 		if (filter.equals("inactive")) {
 			return (Iterator<ISwitchObject>) impl.GetInactiveSwitches().iterator();
+		} else {
+		    return (Iterator<ISwitchObject>) impl.GetAllSwitches().iterator();
 		}
-		return (Iterator<ISwitchObject>) impl.GetAllSwitches().iterator();				
 	}
 
 }

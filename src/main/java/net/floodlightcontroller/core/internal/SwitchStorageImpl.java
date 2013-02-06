@@ -262,5 +262,16 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		return inactiveSwitches;
 	}
 
+	public void finalize() {
+		close();
+	}
+	
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		graph.shutdown();
+		
+	}
+
 	
 }

@@ -40,7 +40,6 @@ cat <<EOF_LOGBACK >${FL_LOGBACK}
 <logger name="org" level="WARN"/>
 <logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
 <logger name="net.floodlightcontroller.logging" level="WARN"/>
-<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 
 <root level="DEBUG">
 <appender-ref ref="FILE" />
@@ -48,6 +47,7 @@ cat <<EOF_LOGBACK >${FL_LOGBACK}
 </configuration>
 EOF_LOGBACK
 
+#<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
 function lotate {
@@ -78,7 +78,7 @@ function start {
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
-  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &
+  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &
   sudo tcpdump -n -i eth0 'tcp port 6633' -s0 -w ${PCAP_LOG} &
 }
 
@@ -95,6 +95,14 @@ function stop {
   done
 }
 
+function deldb {
+   # Delete the berkeley db database
+   if [ -d "/tmp/cassandra.titan" ]; then
+      rm -rf /tmp/cassandra.titan
+      mkdir /tmp/cassandra.titan
+   fi
+}
+
 case "$1" in
   start)
     stop
@@ -102,6 +110,9 @@ case "$1" in
     ;;
   stop)
     stop
+    ;;
+  deldb)
+    deldb
     ;;
   status)
     n=`ps -edalf |grep java |grep logback.xml | wc -l`
