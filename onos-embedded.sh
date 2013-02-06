@@ -65,4 +65,4 @@ rm onos.log
 echo "Starting ONOS controller ..."
 echo 
 #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties
-java ${JVM_OPTS} ${CASSANDRA_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} -jar ${FL_JAR}
+java ${JVM_OPTS} ${CASSANDRA_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR}
