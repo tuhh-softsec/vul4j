@@ -11,7 +11,7 @@ import time
 from flask import Flask, json, Response, render_template, make_response, request
 
 ## Global Var ##
-RestIP="onos1vpc"
+RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
 
@@ -310,4 +310,5 @@ if __name__ == "__main__":
 #    devices()
   else:
     app.debug = True
+#    app.run(host="10.0.1.29", port=9000)
     app.run(host="0.0.0.0", port=9000)

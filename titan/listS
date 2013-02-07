@@ -1,0 +1,2 @@
+g.stopTransaction(SUCCESS);
+g.V('type', 'switch').map;
