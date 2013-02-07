@@ -79,7 +79,7 @@ function start {
   echo "Starting ONOS controller ..."
   echo 
   java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &
-  sudo tcpdump -n -i eth0 'tcp port 6633' -s0 -w ${PCAP_LOG} &
+  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }
 
 function stop {

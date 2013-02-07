@@ -969,7 +969,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
             // continue with the regular processing.
             if (bsn.getPayload() instanceof LLDP == false)
                 return Command.CONTINUE;
-            return handleLldp((LLDP) bsn.getPayload(), sw, pi, false, cntx);
+            //return handleLldp((LLDP) bsn.getPayload(), sw, pi, false, cntx);
+            return Command.STOP;
         } else if (eth.getEtherType() == Ethernet.TYPE_LLDP)  {
             return handleLldp((LLDP) eth.getPayload(), sw, pi, true, cntx);
         } else if (eth.getEtherType() < 1500) {
