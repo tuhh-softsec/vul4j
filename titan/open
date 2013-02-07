@@ -1,0 +1,1 @@
+g = TitanFactory.open('cassandra.local')

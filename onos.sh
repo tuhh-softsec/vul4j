@@ -46,8 +46,8 @@ cat <<EOF_LOGBACK >${FL_LOGBACK}
 EOF_LOGBACK
 
 # Delete and recreate /tmp/netmap
-rm -rf /tmp/cassandra.titan
-mkdir /tmp/cassandra.titan
+#rm -rf /tmp/cassandra.titan
+#mkdir /tmp/cassandra.titan
 
 # Clear logs
 rm onos.log
@@ -55,4 +55,5 @@ rm onos.log
 # Run floodlight
 echo "Starting ONOS controller ..."
 echo 
-java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties
+#java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -Xbootclasspath/a:$CLASSPATH -jar ${FL_JAR} -cf ./onos.properties
+java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties
