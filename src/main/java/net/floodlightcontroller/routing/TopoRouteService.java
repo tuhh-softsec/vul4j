@@ -60,7 +60,8 @@ public class TopoRouteService implements ITopoRouteService {
 	    //   results = []; v_src.as('x').out.out.in.has("type", "switch").dedup().loop('x'){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)
 	    //
 
-	    String gremlin = "v_src.as(\"x\").out.out.in.has(\"type\", \"switch\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)";
+//	    String gremlin = "v_src.as(\"x\").out.out.in.has(\"type\", \"switch\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)";
+	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
 
 	    // Get the source vertex
 	    Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
