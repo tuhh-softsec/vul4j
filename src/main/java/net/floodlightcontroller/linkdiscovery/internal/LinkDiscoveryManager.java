@@ -155,8 +155,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
     private static final long LINK_LOCAL_VALUE = 0x0180c2000000L;
 
     // BigSwitch OUI is 5C:16:C7, so 5D:16:C7 is the multicast version
-    // private static final String LLDP_BSN_DST_MAC_STRING = "5d:16:c7:00:00:01";
-    private static final String LLDP_BSN_DST_MAC_STRING = "ff:ff:ff:ff:ff:ff";
+    private static final String LLDP_BSN_DST_MAC_STRING = "5d:16:c7:00:00:01";
+    //private static final String LLDP_BSN_DST_MAC_STRING = "ff:ff:ff:ff:ff:ff";
 
 
     // Direction TLVs are used to indicate if the LLDPs were sent 

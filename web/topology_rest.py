@@ -158,6 +158,97 @@ def topology_for_gui():
   return resp
 
 
+#@app.route("/wm/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
+#@app.route("/wm/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+@app.route("/wm/topology/toporoute/<v1>/<p1>/<v2>/<p2>/json")
+def shortest_path(v1, p1, v2, p2):
+  try:
+    command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
+    result = os.popen(command).read()
+    parsedResult = json.loads(result)
+  except:
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
+
+  topo = {}
+  switches = []
+  links = []
+
+  for v in parsedResult:
+    if v.has_key('dpid'):
+      dpid = str(v['dpid'])
+      state = str(v['state'])
+      sw = {}
+      sw['name']=dpid
+      if str(v['state']) == "ACTIVE":
+        if dpid[-2:-1] == "a":
+         sw['group']=1
+        if dpid[-2:-1] == "b":
+         sw['group']=2
+        if dpid[-2:-1] == "c":
+         sw['group']=3
+      if str(v['state']) == "INACTIVE":
+         sw['group']=0
+
+      switches.append(sw)
+
+  try:
+    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
+    result = os.popen(command).read()
+    parsedResult = json.loads(result)
+  except:
+    log_error("No route")
+    parsedResult = []
+#    exit(1)
+
+  path = [];    
+  for i, v in enumerate(parsedResult):
+    if i < len(parsedResult) - 1:
+      sdpid= parsedResult[i]['switch']
+      ddpid = parsedResult[i+1]['switch']
+      path.append( (sdpid, ddpid))  
+
+  try:
+    command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
+    result = os.popen(command).read()
+    parsedResult = json.loads(result)
+  except:
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+    sys.exit(0)
+
+  for v in parsedResult:
+    link = {}
+    if v.has_key('dst-switch'):
+      dst_dpid = str(v['dst-switch'])
+      dst_id = node_id(switches, dst_dpid)
+    if v.has_key('src-switch'):
+      src_dpid = str(v['src-switch'])
+      src_id = node_id(switches, src_dpid)
+    link['source'] = src_id
+    link['target'] = dst_id
+    onpath = 0
+    for (s,d) in path:
+      if s == v['src-switch'] and d == v['dst-switch']:
+        onpath = 1
+        break
+
+    link['type'] = onpath
+    links.append(link)
+
+  topo['nodes'] = switches
+  topo['links'] = links
+
+  pp.pprint(topo)
+  js = json.dumps(topo)
+  resp = Response(js, status=200, mimetype='application/json')
+  return resp
+
+
+
+
+
 @app.route("/wm/core/controller/switches/json")
 def query_switch():
   try:

@@ -201,7 +201,12 @@ function gui(data_source){
 	circle.append("title")
 	    .text(function(d) { return d.name; });
 
-	circle.attr("fill", function(d) { if (d.group == 0){return "blue";}else{ return "gray"; }})
+	circle.attr("fill", function(d) {
+	    if (d.group == 1){return "red";}
+	    else if (d.group == 2){return "blue";}
+	    else if (d.group == 3){return "green";}
+	    else{ return "gray"; }
+	});
 
 	force.on("tick", tick);
 	path.exit().remove();
@@ -233,7 +238,12 @@ function gui(data_source){
 	circle.attr("transform", function(d) {
 	    return "translate(" + d.x + "," + d.y + ")";
 	})
-	circle.attr("fill", function(d) { if (d.group == 0){return "blue";}else{ return "gray"; }});
+	circle.attr("fill", function(d) {
+	    if (d.group == 1){return "red";}
+	    else if (d.group == 2){return "blue";}
+	    else if (d.group == 3){return "green";}
+	    else{ return "gray"; }
+	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });
 	text.attr("transform", function(d) {
