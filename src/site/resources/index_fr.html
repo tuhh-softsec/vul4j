@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="
+fr
+">
+<head>
+<meta charset="utf-8">
+<title>
+	
+Esigate - Intégration d'applications Web, Templates distantes,
+Accelerateur Web
+
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="
+Esigate est un proxy http, avec un support complet de la spécification ESI et des fonctions complémentaires rendant l'intégration d'applications web simple et rapide.
+"/>
+<meta name="author" content="Nicolas Richeton"/>
+
+<link href="website/css/bootstrap.min.css" rel="stylesheet">
+<link href="website/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link rel="stylesheet/less" type="text/css" href="website/css/esigate.less" />
+<script src="website/js/less-1.3.1.min.js"></script>
+
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-27343319-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body data-spy="scroll" data-target=".navbar">
+
+	
+    <div class="navbar  navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">esigate</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#home">
+Accueil
+</a></li>
+              <li><a href="#features">
+Fonctionnalités
+</a></li>
+              <li><a href="#project">
+Projet
+</a></li>
+<!--               <li><a href="#changelog">$beginparam$i18n.changelog$Changelog$endparam$i18n.changelog$</a></li> -->
+<!--               <li><a href="#roadmap">$beginparam$i18n.roadmap$Roadmap$endparam$i18n.roadmap$</a></li> -->
+              <li><a href="#support">Support</a></li>
+              <li class=""><a href="
+http://www.esigate.org/reference.html
+">Documentation <i class="icon-share icon-white"></i></a></li>
+              </ul>
+              <ul class="nav pull-right">
+              
+              <li class="dropdown ">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+Langue
+ <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="index.html">
+Anglais
+</a></li>
+                  <li><a href="index_fr.html">
+Français
+</a></li>
+                </ul>
+              </li>
+            </ul>
+           
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<div class="container">
+
+
+	<section id="home">
+
+		<div class="row ">
+			<div class="span2 offset1">
+				<h1><a href="http://www.esigate.org"><img src="website/img/logo.png" alt="esigate logo"  title="esigate"/></a></h1>
+			</div>
+			<div class="span9">
+				<div class="pull-right"><p>Version 4.0</p>
+<!-- 				<p><a href="https://twitter.com/share" class="twitter-share-button" -->
+<!-- 							data-url="http://www.esigate.org" data-lang="en">Tweet</a> -->
+<!-- 						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
+			
+<!-- 			</p> -->
+<!-- 				<p> -->
+<!-- 				<a -->
+<!-- 							href="https://twitter.com/intent/tweet?button_hashtag=esigate&text=" -->
+<!-- 							class="twitter-hashtag-button" data-lang="en">Tweet #esigate</a> -->
+<!-- 						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
+				
+<!-- 				</p> -->
+				</div>
+
+<!-- 				<h1>esigate</h1> -->
+				<div class="esi-title top-space1">
+		Intégration d'applications Web
+		,</div>
+				<div class="esi-title space1">
+		Templates distantes
+		,</div>
+				<div class="esi-title space2">
+		Accelerateur Web
+		</div>
+
+				<div class="row logo-btn-row">
+					<div class="span2  logo-btn-small ">
+						<a href="https://twitter.com/share" class="twitter-share-button"
+							data-url="http://www.esigate.org" data-lang="en">Tweet</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+					</div>
+					<div class="span2 logo-btn-small">
+						<a
+							href="https://twitter.com/intent/tweet?button_hashtag=esigate&text="
+							class="twitter-hashtag-button" data-lang="en">Tweet #esigate</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+					</div>
+					<div class="span2  logo-btn">
+						<a href="
+		http://www.esigate.org/quickstart.html
+		" class="btn">
+		Tutorial
+		</a>
+					</div>
+					<div class="span3">
+						<a class="btn btn-primary btn-large" href="http://sourceforge.net/projects/webassembletool/files/latest/download?source=files"><i
+							class="icon-download-alt icon-white"></i> 
+		Téléchargement
+		</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!-- Example row of columns -->
+<div class="row row-gradient used-by">
+	<div class="span12">
+		<div class="row row-gradient-bottom">
+					
+		
+			<div class="span10 offset1 ">
+				<span class="esi-users-label" >
+				<span class="badge">
+				 <i class="  icon-heart icon-white"></i>	
+		esigate est utilisé par
+		 
+					</span>
+				</span>
+
+				<div id="usersCarousel" class="carousel slide ">
+					<div class="carousel-inner"></div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+			<div class="row top-space2 bottom-space2">
+			<div class="span4">
+				<h2>Intégration coté serveur</h2>
+				<p>Esigate permet une intégration (<a href="http://fr.wikipedia.org/wiki/Application_composite">Mashup</a>) transparente et performante entre n'importe quelles applications Web.</p>
+				<p>Par exemple, intégrez dans un <a href="http://fr.wikipedia.org/wiki/Système_de_gestion_de_contenu">CMS</a> (Système de gestion de contenus) des modules applicatifs développés avec n'importe quel language (PHP, Java, .Net, ...), sans problèmes de cache ou d'accessibilité.</p>
+				<p>
+					<a class="btn" href="#features-integration">Voir les détails &raquo;</a>
+				</p>
+			</div>
+			<div class="span4">
+				<h2>Gabarits distants partagés</h2>
+				<p>Utilisez un même <a href="http://fr.wikipedia.org/wiki/Gabarit_(mise_en_page)">gabarit</a> (modèle de page) dans plusieurs applications afin de garantir un design identique, synchronisé en permanence.</p>
+				<p>Utilisez un <a href="http://fr.wikipedia.org/wiki/Système_de_gestion_de_contenu">CMS</a> ou un portail en tant que template pour bénéficier de fonctions d'administration graphique du design de l'ensemble de vos applications.</p>
+				<p>
+					<a class="btn" href="#features-remote">Voir les détails &raquo;</a>
+				</p>
+			</div>
+			<div class="span4">
+				<h2>Accélération Web</h2>
+				<p>Directives <a href="http://fr.wikipedia.org/wiki/Edge_Side_Includes">ESI</a> améliorées pour permettre la mise en cache par blocs du contenu des pages dynamiques.</p>
+				<p>Délivrez du contenu connecté et dynamique en quelques milli-secondes. Délivre également du contenu statique entièrement mis en cache.</p>
+				<p>
+					<a class="btn" href="#features-accelerator">Voir les détails &raquo;</a>
+				</p>
+			</div>
+		</div>
+
+
+	</section>
+
+	<section id="features">
+		<div class="row row-gradient top-space5">
+			<div class="span12">
+
+				<h2>Fonctionnalités</h2>
+
+				<div class="row" id="features-integration">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Intégration coté serveur
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>esigate permet de combiner des pages ou fragments de pages
+							web provenant de différentes applications, coté serveur,
+							directement au niveau HTML . Cet assemblage est totalement
+							transparent pour un utilisateur qui recevra directement la page
+							assemblée comme s'il s'agissait d'une unique application.</p>
+							<div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>+</span>
+							<img src="website/img/assemble2.png"/><span>+</span>
+							<img src="website/img/logo.png" width="50"/>
+							<span>=</span><img src="website/img/assemble3.png"/></div>
+						
+
+						<p>Au lieu de réaliser une seule application, utilisez chaque
+							application indépendament, tout en unifiant l'aspect graphique et
+							en intégrant des données provenant des autres applications :</p>
+
+						<p>Par exemple, vous pouvez utiliser :</p>
+						<ul>
+							<li>Drupal (CMS PHP) pour gérer votre charte graphique et
+								votre contenu éditorial</li>
+							<li>Struts2 (Java) pour vos interfaces dynamiques</li>
+						</ul>
+						
+						<p>L'intégration coté serveur permet également de ne faire
+							aucun compromis pour l'accessibilité ou le référencement de vos
+							sites et applications.</p>
+							
+							
+					</div>
+				</div>
+
+				<div class="row feature-row" id="features-remote">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Gabarits distants partagés
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>esigate permet d'utiliser des gabarits (modèles de
+							présentation) distants, c'est-à-dire de ne pas inclure le thème
+							graphique principal (Structure et contenu HTML de base, contenu
+							editorial commun, css, images,...) directement dans vos
+							applications, et de réaliser l'assemblage lors de chaque requête
+							utilisateur :</p>
+<div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>&#8658;</span>
+							<img src="website/img/assemble4.png"/>
+</div>
+						<p>Ce mode de fonctionnement a de nombreux avantages:</p>
+						<ul>
+							<li>Un même visuel graphique peut être partagé par plusieurs
+								applications : les changements de charte graphique, de texte, et
+								d'organisation des éléments visuels sont instannément pris en
+								compte par l'ensemble de vos applications, sans redéploiement ou
+								redémarrage.</li>
+							<li>La template est hébergée sur un serveur HTTP et il est
+								possible d'utiliser des templates dynamiques en remplaçant les
+								fichiers statiques par un système de gestion de contenus (CMS)
+								ou un portail. Vous bénéficierez alors directement des fonctions
+								d'administration fournies par ces outils.</li>
+							<li>Des performances améliorées car vos applications n'ont
+								plus à générer le code HTML et les contenus de base : elles se
+								bornent à générer les données à valeur ajoutée. Les données
+								communes et données externes sont mises en cache par esigate et
+								sont fusionnées instantanément à chaque requête.</li>
+
+						</ul>
+
+					</div>
+				</div>
+
+				<div class="row feature-row" id="features-accelerator">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Accélération Web
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>esigate agit en tant que proxy et cache:</p>
+
+						<p>Il met en cache les contenus en fonction des directives
+							http retournées par chaque URL et réalise leur assemblage. Il est
+							également possible de forcer la mise en cache, de façon globale
+							ou au cas par cas en utilisant des extensions.</p>
+
+						<p>Cache simple ou distribué : chaque instance d'esigate peut
+							utiliser son propre cache, ou partager un cache en utilisant
+							ehcache ou memcached.</p>
+
+						<p>La revalidation du cache en tache de fond et la
+							réutilisation des contenus expirés en cas d'erreur permettent une
+							meilleur régularité et resistance aux pannes.</p>
+
+
+						<p>Les pages habituellement non cacheables sont des
+							assemblages de contenus cacheables et de quelques contenus
+							dynamiques. esigate permet de ne générer que la partie dynamique
+							(donc très rapidement) et de réutiliser toutes les parties
+							cachables directement (cache par bloc).</p>
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-compatibility">
+					<div class="span3 offset1">
+						<h3>
+							<i class="icon-star"></i> Compatibilité
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>esigate travaille de façon transparente sur le flux HTML.
+							De cette façon, il est compatible avec la plupart des frameworks
+							et outils web ainsi qu'avec la plupart des applications à partir
+							du moment où elles exposent des interfaces web (HTML ou XML sur
+							HTTP).</p>
+
+						<p>Il a été notament mis en oeuvre avec :</p>
+						<ul>
+							<li>Langages : PHP, Java, ...</li>
+							<li>Frameworks : <a href="http://struts.apache.org/2.x/index.html">Struts2</a>, <a href="http://wicket.apache.org">Wicket</a>, <a href="http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html">JSF</a>, <a href="http://jquery.com">JQuery</a>, ...</li>
+							<li>Outils : <a href="http://drupal.org">Drupal</a>, <a
+								href="http://ez.no">eZ publish</a>, <a href="http://www.jahia.com/cms/fr/home.html">Jahia</a>, <a href="https://www.varnish-cache.org">Varnish</a>, ...
+							</li>
+						</ul>
+
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-esi">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> ESI 1.0 et additions
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>
+							esigate supporte complètement la norme (proposal) W3C <a
+								hre="http://www.w3.org/TR/esi-lang">ESI 1.0</a>.
+						</p>
+						<p>
+							Des <a href="http://www.esigate.org/esi.html">additions
+								uniques</a> permettent d'utiliser l'ESI pour développer beaucoup
+							plus facilement des applications performantes, scallables dont
+							les contenus proviennent de différentes sources :
+						</p>
+						<ul>
+							<li>Gestion de fragments et support du XPath pour intégrer
+								seulement des portions de pages.</li>
+							<li>Replacement de fragments de pages pour permettre un
+								fonctionnement via templates.</li>
+							<li>Support du XSLT pour mettre en page des fragments XML.</li>
+							<li>Configurations différentes (ttl, extensions, ...) selon
+								les sources de données.</li>
+						</ul>
+
+
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-compatibility">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Extensions et API
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>
+							esigate dispose d'un <a
+								href="http://www.esigate.org/extensions.html">mécanisme
+								d'extensions</a>, développées en Java. Les extensions peuvent agir à
+							différent niveau du cycle de vies des requêtes pour introduire un
+							comportement totalement personnalisé en fonction de vos besoins.
+						</p>
+						<p>
+							Les extensions permettent également d'utiliser des sources de
+							données nécessitant une authentification. Esigate dispose en
+							natif d'une extension <a href="http://www.jasig.org/cas">CAS
+								SSO</a>.
+						</p>
+						<div  class="feature-integration-img"><img src="website/img/cas-logo.png" title="Logo CAS"/></div>
+
+						<p>esigate peut également être intégré dans vos applications
+							et utilisé sous forme d'API pour réaliser des applications
+							inovantes et performantes.</p>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</section>
+	
+
+	<section id="project">
+		<div class="row row-gradient top-space5">
+			<div class="span12">
+
+				<h2>Projet</h2>
+
+
+				<div class="row">
+					<div class="span3 offset1">
+					<div class="project-logo">
+						<img src="website/img/sflogo.gif" title="Sourceforge logo" alt="Sourceforge"/>
+					</div>
+						<p>
+							esigate est développé sur Sourceforge. Le <a
+								href="http://sourceforge.net/projects/webassembletool/">site du projet</a> donne accès au code source, aux téléchargements, aux listes de diffusions et au wiki.
+						</p>
+					</div>
+					
+					<div class="span3 ">
+						<div class="project-logo">
+							<img src="website/img/maven-logo.png" title="Maven logo" alt="Maven" />
+						</div>
+						<p>
+							Maven est utilisé pour la construction du projet. Pour les
+							développeurs, le site Maven est publié avec les <a
+								href="http://www.esigate.org/project-info.html">informations
+								projet</a> (développeurs, code source, dépendances, ...) et les <a
+								href="http://www.esigate.org/project-reports.html">rapports</a>
+							(Javadoc, changelog, ...).
+						</p>
+					</div>
+
+					<div class="span3">
+						<div class="project-logo">
+							<img src="website/img/centralRepository_logo.png"
+								title="Maven central repository logo"
+								alt="Maven central repository" />
+						</div>
+						<p>
+
+
+							esigate est disponible sur le référentiel Maven <a
+								href="http://search.maven.org/"> central</a>. Vous pouvez
+							l'ajouter facilement à vos projets en ajoutant la <a
+								href="http://search.maven.org/#search%7Cga%7C1%7Cesigate">dépendance
+								esigate-*</a> adaptée.
+						</p>
+					</div>
+
+				</div>
+
+
+				<h3>					Liens rapides:</h3> 
+				<p>
+					<a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php">Versions</a>
+					| <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/roadmap_page.php">Feuille
+						de route</a> | <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php">Bugs</a>
+					| <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/bug_report_page.php">Signaler
+						un bug</a> (<i class="icon-lock"></i> nécessite un compte sourceforge)</p>
+						
+						
+						<h3>Discutez avec nous !</h3>
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a> : liste de diffusion à destination des utilisateurs : discussions générales, questions, etc. </p> 
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-devel@lists.sourceforge.net">webassembletool-devel@lists.sourceforge.net</a> : liste de diffusion à destination des développeurs esigate.</p>
+						 
+				<h3>Statistiques via Ohloh:</h3>
+				<script type="text/javascript"
+					src="http://www.ohloh.net/p/9896/widgets/project_factoids_stats.js"></script>
+
+			</div>
+		</div>
+	</section>
+
+	<section id="support">
+		<div class="row row-gradient top-space">
+			<div class="span12">
+				
+<h2>Support</h2>
+
+<p>Esigate est un projet open-source qui peut être utilisé et
+	modifié sans aucun coût de license.</p>
+<h3>Support de la communauté</h3>
+<p>Vous pouvez obtenir de l'aide de la communauté en utilisant la
+	liste de diffusion
+	<i class="icon-envelope"></i> <a
+		href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a>.
+</p>
+
+
+<h3>Support commercial</h3>
+
+<p>Les sociétés suivantes proposent des prestations de services sur
+	Esigate pour vous accompagner dans vos projets :</p>
+
+
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/smile.png" />
+
+	</div>
+
+	<div class="span8">
+		<p>Premier intégrateur européen de solutions open source, Smile
+			comprend 7 développeurs actifs dont le créateur du projet.</p>
+		<p>Smile a réalisé et accompagné de nombreux projets basés sur
+			Esigate.</p>
+		<p>
+			<span class="badge badge-success"
+				title="Développeur esigate"><i
+				class="icon-ok-sign icon-white"></i> Committer</span> <a
+				href="http://www.smile.fr">Contact...</a>
+		</p>
+	</div>
+</div>
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/nicolas-richeton.png" />
+	</div>
+
+	<div class="span8">
+		<p>Développeur et utilisateur d'Esigate depuis les premières versions, conçoit et accompagne des
+			projets majeurs depuis la création du projet.</p>
+		<p>Nicolas propose des prestations d'accompagnement de façon indépendante
+			: formation et support. Accompagne également des projets d'intégration chez Capgemini.</p>
+		<p>
+			<span class="badge badge-success"
+				title="Développeur esigate"><i
+				class="icon-ok-sign icon-white"></i> Committer</span> <a
+				href="http://blog.richeton.com/esigate/commercial-support/">Contact...</a>
+		</p>
+	</div>
+</div>
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/capgemini.png" />
+	</div>
+
+	<div class="span8">
+		<p>Fort d’environ 120 000 collaborateurs et présent dans 40 pays,
+			Capgemini est l’un des leaders mondiaux du conseil, des services
+			informatiques et de l’infogérance.</p>
+		<p>Capgemini a réalisé plusieurs projets d'intégration majeurs basés sur Esigate.</p>
+		<p>
+		<span class="badge badge-notice"
+				title="Intégrateur"><i
+				class="icon-ok-sign icon-white"></i> Intégrateur</span>
+				
+			<a href="http://www.capgemini.fr">Contact...</a>
+		</p>
+	</div>
+</div>
+
+
+			</div>
+		</div>
+
+
+
+	</section>
+
+
+	  <hr>
+
+      <footer>
+        <p>&copy; 2008-2013</p>
+      </footer>
+
+</div>
+<!-- /container -->
+
+
+
+
+
+	<script src="website/js/jquery-1.8.3.min.js"></script>
+	<script src="website/js/bootstrap.min.js?v1"></script>
+
+	<script src="website/js/users.js?v1"></script>
+
+</body>
+</html>
+
+
