@@ -68,6 +68,9 @@ public class TopoRouteService implements ITopoRouteService {
 	    // Test whether we are computing a path from/to the same DPID.
 	    // If "yes", then just list the "src" and "dest" in the return
 	    // result.
+	    // NOTE: The return value will change in the future to return
+	    // a single hop/entry instead of two. Currently, we need
+	    // both entries to capture the source and destination ports.
 	    //
 	    if (dpid_src.equals(dpid_dest)) {
 		result_list.add(new NodePortTuple(src));
