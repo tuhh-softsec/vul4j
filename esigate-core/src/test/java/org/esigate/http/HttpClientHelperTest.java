@@ -237,6 +237,8 @@ public class HttpClientHelperTest extends TestCase {
 		else
 			response = createMockResponse(statusCode, null);
 		response.setHeader("Cache-control", "no-cache");
+		if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY)
+			response.setHeader("Location", "http://www.foo.com");
 		mockHttpClient.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
@@ -261,7 +263,7 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	public void test302RedirectPageIsCachedWithTTL() throws Exception {
-		assertStatusCodeIsCachedWithTtl(301, false);
+		assertStatusCodeIsCachedWithTtl(302, false);
 	}
 
 	public void test404ErrorPageIsCachedWithTTL() throws Exception {
@@ -489,6 +491,7 @@ public class HttpClientHelperTest extends TestCase {
 		properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
 		properties.put(Parameters.FORWARD_COOKIES.name, "*");
+		properties.put(Parameters.USE_CACHE, "false");
 		createHttpClientHelper();
 		HttpEntityEnclosingRequest originalRequest = TestUtils.createRequest();
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
@@ -674,7 +677,7 @@ public class HttpClientHelperTest extends TestCase {
 		GenericHttpRequest request2 = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse result3 = httpClientHelper.execute(request2);
 		assertEquals(200, result3.getStatusLine().getStatusCode());
-		assertTrue(result3.getFirstHeader("X-cache").getValue(), result3.getFirstHeader("X-cache").getValue().startsWith("MISS"));
+		assertTrue(result3.getFirstHeader("X-cache").getValue(), !result3.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		assertNotNull(result3.getEntity());
 	}
 

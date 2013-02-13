@@ -16,6 +16,7 @@ package org.esigate.http;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -232,6 +233,13 @@ public class MockHttpClient extends DefaultHttpClient {
 
 							public HttpRoute getRoute() {
 								return route;
+							}
+
+							public void bind(Socket socket) throws IOException {
+							}
+
+							public Socket getSocket() {
+								return null;
 							}
 						};
 					}
