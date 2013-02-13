@@ -168,8 +168,7 @@ public class SwitchStorageImplTest {
 	    }
 	    public Boolean compute(LoopBundle<Vertex> bundle) {
 		Boolean output = false;
-		if ((bundle.getObject().getProperty("dpid") != dpid) && 
-		    (bundle.getLoops() < 10)) {
+		if (bundle.getObject().getProperty("dpid") != dpid) {
 		    output = true;
 		}
 		return output;
@@ -183,11 +182,15 @@ public class SwitchStorageImplTest {
 
 	    //
 	    // Implement the Shortest Path between two vertices by using
-	    // the following Gremlin code:
-	    //   results = []; v_src.as('x').out.out.in.has("type", "switch").dedup().loop('x'){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)
+	    // the following Gremlin CLI code:
+	    //   v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path(){it.dpid}{it.number}{it.number}
+	    // The equivalent code used here is:
+	    //   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
 	    //
 
-	    String gremlin = "v_src.as(\"x\").out.out.in.has(\"type\", \"switch\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)";
+	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
+
+	    String gremlin_nopath = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != \"NO-SUCH-DPID\"}.path().fill(results)";
 
 	    // Get the source vertex
 	    Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
@@ -257,9 +260,23 @@ public class SwitchStorageImplTest {
 	    //
 	    MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
 	    GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-	    // pipe.start(v_src).as("x").out().out().in().has("type", "switch").dedup().loop("x", whileFunction);
+	    ArrayList<ArrayList<Vertex>> results2 = new ArrayList<ArrayList<Vertex>>();
+	    // TODO: The statement below doesn't compile
+	    // pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path().fill(results2);
 
 	    // Check the result
 	    assertEquals(results_str, expected_result);
+
+	    //
+	    // Test Shortest-Path computation to non-existing destination
+	    //
+	    results.clear();
+	    try {
+		engine.eval(gremlin_nopath);
+	    } catch (ScriptException e) {
+		System.err.println("Caught ScriptException running Gremlin script: " + e.getMessage());
+		return;
+	    }
+	    assertTrue(results.size() == 0);
 	}
 }
