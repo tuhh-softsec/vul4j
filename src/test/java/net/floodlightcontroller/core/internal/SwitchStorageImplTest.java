@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import net.floodlightcontroller.core.ISwitchStorage;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
@@ -19,16 +18,10 @@ import org.junit.Test;
 import org.openflow.protocol.OFPhysicalPort;
 
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.groovy.Gremlin;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
-import com.tinkerpop.pipes.Pipe;
 import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe;
 import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
-import com.tinkerpop.pipes.filter.FilterPipe.Filter;
-import com.tinkerpop.pipes.util.PipesFluentPipeline;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -258,9 +251,9 @@ public class SwitchStorageImplTest {
 	    //
 	    // XXX: An alternative (faster?) solution that fails to compile
 	    //
-	    MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
-	    GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-	    ArrayList<ArrayList<Vertex>> results2 = new ArrayList<ArrayList<Vertex>>();
+	    // MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
+	    // GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+	    // ArrayList<ArrayList<Vertex>> results2 = new ArrayList<ArrayList<Vertex>>();
 	    // TODO: The statement below doesn't compile
 	    // pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path().fill(results2);
 
