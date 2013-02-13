@@ -10,20 +10,8 @@ import net.floodlightcontroller.topology.NodePortTuple;
 
 import org.openflow.util.HexString;
 
-import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
-// import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-// import com.tinkerpop.gremlin.groovy.Gremlin;
-// import com.tinkerpop.gremlin.java.GremlinPipeline;
-// import com.tinkerpop.pipes.Pipe;
-// import com.tinkerpop.pipes.PipeFunction;
-// import com.tinkerpop.pipes.branch.LoopPipe;
-// import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
-// import com.tinkerpop.pipes.filter.FilterPipe.Filter;
-// import com.tinkerpop.pipes.util.PipesFluentPipeline;
-
-import com.tinkerpop.blueprints.Element;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
