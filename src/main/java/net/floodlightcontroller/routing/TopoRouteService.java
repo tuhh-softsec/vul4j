@@ -56,11 +56,12 @@ public class TopoRouteService implements ITopoRouteService {
 
 	    //
 	    // Implement the Shortest Path between two vertices by using
-	    // the following Gremlin code:
-	    //   results = []; v_src.as('x').out.out.in.has("type", "switch").dedup().loop('x'){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)
+	    // the following Gremlin CLI code:
+	    //   v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path(){it.dpid}{it.number}{it.number}
+	    // The equivalent code used here is:
+	    //   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
 	    //
 
-//	    String gremlin = "v_src.as(\"x\").out.out.in.has(\"type\", \"switch\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)";
 	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
 
 	    // Get the source vertex
