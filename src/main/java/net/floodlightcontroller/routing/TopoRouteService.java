@@ -63,7 +63,18 @@ public class TopoRouteService implements ITopoRouteService {
 	    if (! iter.hasNext())
 		return null;		// Destination vertex not found
 	    Vertex v_dest = iter.next();
-	
+
+	    //
+	    // Test whether we are computing a path from/to the same DPID.
+	    // If "yes", then just list the "src" and "dest" in the return
+	    // result.
+	    //
+	    if (dpid_src.equals(dpid_dest)) {
+		result_list.add(new NodePortTuple(src));
+		result_list.add(new NodePortTuple(dest));
+		return result_list;
+	    }
+
 	    //
 	    // Implement the Gremlin script and run it
 	    //
