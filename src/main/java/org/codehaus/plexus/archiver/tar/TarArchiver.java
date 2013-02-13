@@ -119,6 +119,8 @@ public class TarArchiver
      * <li>  fail - paths greater than the maximum cause a build exception
      * <li>  warn - paths greater than the maximum cause a warning and GNU is used
      * <li>  gnu - GNU extensions are used for any paths greater than the maximum.
+     * <li>  posix - posix extensions are used for any paths greater than the maximum.
+     * <li>  posixwarn - posix extensions are used (with warning) for any paths greater than the maximum.
      * <li>  omit - paths greater than the maximum are omitted from the archive
      * </ul>
      *
@@ -244,11 +246,43 @@ public class TarArchiver
             vPath = vPath.substring( 1, l );
         }
 
+        int pathLength = vPath.length();
         try
         {
-            if ( vPath.length() >= TarConstants.NAMELEN )
-            {
-                if ( longFileMode.isOmitMode() )
+        	TarEntry te = null;
+			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
+			{
+        		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
+            	if ( longFileMode.isPosixMode() )
+            	{
+            		if ( pathLength > maxPosixPathLen )
+            		{
+                        te = new TarEntry( vPath );
+            		}
+            		else
+            		{
+                        te = new PosixTarEntry( vPath );
+            		}
+            	}
+            	else if ( longFileMode.isPosixWarnMode() )
+            	{
+            		if ( pathLength > maxPosixPathLen )
+            		{
+                        getLogger().warn( "Entry: " + vPath + " longer than " + maxPosixPathLen + " characters." );
+                        if ( !longWarningGiven )
+                        {
+                            getLogger().warn( "Resulting tar file can only be processed "
+                                              + "successfully by GNU compatible tar commands" );
+                            longWarningGiven = true;
+                        }
+                        te = new TarEntry( vPath );
+            		}
+            		else
+            		{
+                        te = new PosixTarEntry( vPath );
+            		}
+            	}
+            	else if ( longFileMode.isOmitMode() )
                 {
                     getLogger().info( "Omitting: " + vPath );
                     return;
@@ -262,15 +296,25 @@ public class TarArchiver
                                           + "successfully by GNU compatible tar commands" );
                         longWarningGiven = true;
                     }
+                    te = new TarEntry( vPath );
                 }
                 else if ( longFileMode.isFailMode() )
                 {
                     throw new ArchiverException( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN
-                                                 + "characters." );
+                                                 + " characters." );
+                }
+                else
+                {
+                    throw new IllegalStateException("Non gnu mode should never get here?");
                 }
             }
+        	else
+        	{
+        		/* Did not touch it, because this would change the following default tar format, however
+        		 * GNU tar can untar POSIX tar, so I think we should us PosixTarEntry here instead. */
+                te = new TarEntry( vPath );
+        	}
 
-            TarEntry te = new TarEntry( vPath );
             long teLastModified = entry.getResource().getLastModified();
             te.setModTime( teLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
                             : teLastModified );

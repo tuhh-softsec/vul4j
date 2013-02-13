@@ -85,77 +85,77 @@ public class TarEntry
     /**
      * The entry's name.
      */
-    private StringBuffer name;
+    protected StringBuffer name;
 
     /**
      * The entry's permission mode.
      */
-    private int mode;
+    protected int mode;
 
     /**
      * The entry's user id.
      */
-    private int userId;
+    protected int userId;
 
     /**
      * The entry's group id.
      */
-    private int groupId;
+    protected int groupId;
 
     /**
      * The entry's size.
      */
-    private long size;
+    protected long size;
 
     /**
      * The entry's modification time.
      */
-    private long modTime;
+    protected long modTime;
 
     /**
      * The entry's checksum.
      */
-    private int checkSum;
+    protected int checkSum;
 
     /**
      * The entry's link flag.
      */
-    private byte linkFlag;
+    protected byte linkFlag;
 
     /**
      * The entry's link name.
      */
-    private StringBuffer linkName;
+    protected StringBuffer linkName;
 
     /**
      * The entry's magic tag.
      */
-    private StringBuffer magic;
+    protected StringBuffer magic;
 
     /**
      * The entry's user name.
      */
-    private StringBuffer userName;
+    protected StringBuffer userName;
 
     /**
      * The entry's group name.
      */
-    private StringBuffer groupName;
+    protected StringBuffer groupName;
 
     /**
      * The entry's major device number.
      */
-    private int devMajor;
+    protected int devMajor;
 
     /**
      * The entry's minor device number.
      */
-    private int devMinor;
+    protected int devMinor;
 
     /**
      * The entry's file reference
      */
-    private File file;
+    protected File file;
 
     /**
      * Maximum length of a user's name in the tar file

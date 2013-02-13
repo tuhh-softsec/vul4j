@@ -35,9 +35,11 @@ public class TarLongFileMode
         FAIL = "fail",
         TRUNCATE = "truncate",
         GNU = "gnu",
-        OMIT = "omit";
+        OMIT = "omit",
+        POSIX = "posix",
+        POSIX_WARN = "posix_warn";
 
-    private final String[] validModes = {WARN, FAIL, TRUNCATE, GNU, OMIT};
+    private final String[] validModes = {WARN, FAIL, TRUNCATE, GNU, OMIT, POSIX, POSIX_WARN};
 
     /**
      * Constructor, defaults to "warn"
@@ -101,5 +103,21 @@ public class TarLongFileMode
     public boolean isOmitMode()
     {
         return OMIT.equalsIgnoreCase( getValue() );
+    }
+
+    /**
+     * @return true if value is "posix".
+     */
+    public boolean isPosixMode()
+    {
+        return POSIX.equalsIgnoreCase( getValue() );
+    }
+
+    /**
+     * @return true if value is "posix_warn".
+     */
+    public boolean isPosixWarnMode()
+    {
+        return POSIX_WARN.equalsIgnoreCase( getValue() );
     }
 }

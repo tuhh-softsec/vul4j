@@ -68,6 +68,11 @@ public interface TarConstants
     int MAGICLEN = 8;
 
     /**
+     * The length of the magic field in a POSIX header buffer.
+     */
+    int POSIX_MAGICLEN = 6;
+
+    /**
      * The length of the modification time field in a header buffer.
      */
     int MODTIMELEN = 12;
@@ -144,6 +149,11 @@ public interface TarConstants
     String GNU_TMAGIC = "ustar  ";
 
     /**
+     * The magic tag representing POSIX tar archive in version called ustar.
+     */
+    String POSIX_TMAGIC = "ustar\0";
+
+    /**
      * The namr of the GNU tar entry which contains a long name.
      */
     String GNU_LONGLINK = "././@LongLink";
@@ -152,4 +162,19 @@ public interface TarConstants
      * Identifies the *next* file on the tape as having a long name.
      */
     byte LF_GNUTYPE_LONGNAME = (byte) 'L';
+
+    /**
+     * The length of the version field in a POSIX tar header buffer.
+     */
+    int POSIX_VERSIONLEN = 2;
+
+    /**
+     * The content of the version field in a POSIX tar header buffer.
+     */
+    String POSIX_VERSION = "00";
+
+    /**
+     * The length of the prefix field in a POSIX tar header buffer.
+     */
+    int POSIX_PREFIXLEN = 155;
 }
