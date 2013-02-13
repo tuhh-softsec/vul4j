@@ -65,6 +65,7 @@ import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
+import net.floodlightcontroller.mastership.IMastershipService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -134,6 +135,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+
 /**
  * The main controller class.  Handles all setup and network listeners
  */
@@ -187,6 +189,7 @@ public class Controller implements IFloodlightProviderService,
     protected IStorageSourceService storageSource;
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
+    protected IMastershipService masterHelper;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -389,6 +392,10 @@ public class Controller implements IFloodlightProviderService,
         this.threadPool = tp;
     }
 
+	public void setMastershipService(IMastershipService serviceImpl) {
+		this.masterHelper = serviceImpl;		
+	}
+	
     @Override
     public Role getRole() {
         synchronized(roleChanger) {
@@ -761,7 +768,7 @@ public class Controller implements IFloodlightProviderService,
                     else {
                         // Role supported not enabled on controller (for now)
                         // automatically promote switch to active state. 
-                        log.debug("This controller's role is null, " + 
+                        log.debug("This controller's role is {}, " + 
                                 "not sending role request msg to {}",
                                 role, sw);
                         // Need to clear FlowMods before we add the switch
