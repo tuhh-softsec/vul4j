@@ -136,7 +136,6 @@ What is your name?
 				ESIGate can be used for much more complex cases with several applications that have to be seen as a single one by users.
 				Have a look at the <a href="reference.html">reference documentation</a> for more information.
 			</p>
-		</section>
 		
 		 <div id="disqus_thread"></div>
     <script type="text/javascript">
@@ -154,6 +153,6 @@ What is your name?
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
    	
-   	
+   	</section>
 	</body>
 </document>

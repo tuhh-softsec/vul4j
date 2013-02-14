@@ -171,7 +171,6 @@ webapp.remoteUrlBase=http://localhost:8080/webappcontext/
 					efficient to use instead other tools such as Apache mod_proxy
 				</p>
 			</subsection>
-		</section>
 		
 		 <div id="disqus_thread"></div>
     <script type="text/javascript">
@@ -188,7 +187,7 @@ webapp.remoteUrlBase=http://localhost:8080/webappcontext/
     </script>
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-   	
+   	</section>
    	
 	</body>
 </document>

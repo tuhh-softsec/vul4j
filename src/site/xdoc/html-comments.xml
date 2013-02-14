@@ -160,7 +160,6 @@ Some text from aggregated1
 <strong>&lt;!--$endput$--&gt;</strong>&#160;
 <strong>&lt;!--$endincludetemplate$--&gt;</strong>
 </source>
- 		</section>
  		
  		 <div id="disqus_thread"></div>
     <script type="text/javascript">
@@ -178,6 +177,6 @@ Some text from aggregated1
     <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
    	
-   	
+   	</section>
      </body>
 </document>
