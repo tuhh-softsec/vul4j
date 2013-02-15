@@ -2,7 +2,7 @@ package net.floodlightcontroller.core.web;
 
 import java.util.Iterator;
 
-import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.internal.TopoSwitchServiceImpl;
 
 import org.restlet.resource.Get;

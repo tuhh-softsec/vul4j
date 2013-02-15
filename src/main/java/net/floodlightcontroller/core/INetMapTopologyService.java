@@ -2,7 +2,7 @@ package net.floodlightcontroller.core;
 
 import java.util.List;
 
-import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.NodePortTuple;
 
