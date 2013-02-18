@@ -11,7 +11,7 @@ public interface IMastershipService extends IFloodlightService {
 	}
 	
 	// Acquire mastership for a switch. 
-	public void acquireMastership(long dpid, MastershipCallback cb);
+	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception;
 	
 	// Release mastership for a switch
 	public void releaseMastership(long dpid);
