@@ -4,8 +4,14 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 
 public interface IMastershipService extends IFloodlightService {
 	
+	// Callback for all mastership changes. 
+	// Change callback is called when mastership is acquired or released
+	public interface MastershipCallback {
+		public void changeCallback(long dpid, boolean isMaster);
+	}
+	
 	// Acquire mastership for a switch. 
-	public void acquireMastership(long dpid, boolean blockOk);
+	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception;
 	
 	// Release mastership for a switch
 	public void releaseMastership(long dpid);
