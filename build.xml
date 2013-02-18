@@ -41,6 +41,7 @@
     <property name="main-class" value="net.floodlightcontroller.core.Main"/>
     <property name="floodlight-jar" location="${target}/floodlight.jar"/>
     <property name="floodlight-test-jar" location="${target}/floodlight-test.jar"/>
+    <property name="floodlight-only-jar" location="${target}/floodlight-only.jar"/>
     <property name="thrift.dir" value="${basedir}/src/main/thrift"/>
     <property name="thrift.out.dir" value="lib/gen-java"/>
     <property name="thrift.package" value="net/floodlightcontroller/packetstreamer/thrift"/>
@@ -226,6 +227,16 @@
               srcdir="${source}"/>
     </target>
     <target name="coverage" depends="instrument,test,coverage-report"/>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${floodlight-only-jar}">
+	    <fileset dir="${build}"/>
+	    <fileset dir="${resources}"/>
+	    <fileset dir="${python-src}">
+	        <include name="**/*.py"/>
+	    </fileset>
+        </jar>
+    </target>
 
     <target name="dist" depends="compile,compile-test">
         <jar destfile="${floodlight-jar}" filesetmanifest="mergewithoutmain">
