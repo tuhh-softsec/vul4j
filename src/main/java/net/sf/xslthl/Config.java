@@ -58,6 +58,7 @@ import net.sf.xslthl.highlighters.RegexHighlighterEx;
 import net.sf.xslthl.highlighters.StringHighlighter;
 import net.sf.xslthl.highlighters.WordHighlighter;
 import net.sf.xslthl.highlighters.XMLHighlighter;
+import net.sf.xslthl.highlighters.HTMLHighlighter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -127,6 +128,7 @@ public class Config {
 		highlighterClasses.put("number", NumberHighlighter.class);
 		highlighterClasses.put("hexnumber", HexaDecimalHighlighter.class);
 		highlighterClasses.put("xml", XMLHighlighter.class);
+		highlighterClasses.put("html", HTMLHighlighter.class);
 	}
 
 	/**
@@ -472,6 +474,12 @@ public class Config {
 			MainHighlighter xml = new MainHighlighter("xml", null);
 			xml.add(new XMLHighlighter());
 			highlighters.put("xml", xml);
+		}
+		if (!highlighters.containsKey("html")) {
+			// add the built-in HTML highlighting if it wasn't overloaded
+			MainHighlighter html = new MainHighlighter("html", null);
+			html.add(new HTMLHighlighter());
+			highlighters.put("html", html);
 		}
 	}
 }

@@ -1,5 +1,7 @@
 2.1.0
 
+* Added new syntax highlighter for HTML
+  Basicaly same as for XML, but handles better some edge cases
 * New syntax configurations for:
   - bourne (Bourne shell)
   - css21/css (Cascading Stylesheets version 2.1)
