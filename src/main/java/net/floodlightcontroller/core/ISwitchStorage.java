@@ -1,6 +1,9 @@
 package net.floodlightcontroller.core;
 
 import java.util.Collection;
+
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.openflow.protocol.OFPhysicalPort;
@@ -17,52 +20,7 @@ public interface ISwitchStorage extends INetMapStorage {
 		INACTIVE,
 		ACTIVE
 	}
-
-	public interface ISwitchObject extends VertexFrame{
-		
-		@JsonProperty("dpid")
-		@Property("dpid")
-		public String getDPID();
-		
-		@JsonProperty("state")
-		@Property("state")
-		public String getState();
-		
-		@JsonIgnore
-		@Property("type")
-		public String getType();
-		
-		@JsonProperty("ports")
-		@Adjacency(label="on")
-		public Iterable<IPortObject> getPorts();
-	}
 	
-	public interface IPortObject extends VertexFrame{
-		
-		@JsonProperty("state")
-		@Property("state")
-		public int getState();
-		
-		@JsonIgnore
-		@Property("type")
-		public String getType();
-		
-		@JsonProperty("number")
-		@Property("number")
-		public Short getNumber();
-		
-		@JsonProperty("desc")
-		@Property("desc")
-		public String getDesc();
-		
-		@JsonIgnore
-		@Incidence(label="on",direction = Direction.IN)
-		public ISwitchObject getSwitch();
-		
-//		@JsonIgnore
-//		@Adjacency(label="link")
-//		public Iterable<ILinkObject> getLinks();
-	}
 	/*
 	 * Update the switch details
 	 */

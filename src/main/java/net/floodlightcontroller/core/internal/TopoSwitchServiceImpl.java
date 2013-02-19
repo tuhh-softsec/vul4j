@@ -2,8 +2,8 @@ package net.floodlightcontroller.core.internal;
 
 import java.util.List;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
-import net.floodlightcontroller.core.ISwitchStorage.ISwitchObject;
 
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	

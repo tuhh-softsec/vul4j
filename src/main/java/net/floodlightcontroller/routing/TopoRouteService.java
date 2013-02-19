@@ -10,20 +10,8 @@ import net.floodlightcontroller.topology.NodePortTuple;
 
 import org.openflow.util.HexString;
 
-import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
-// import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
-// import com.tinkerpop.gremlin.groovy.Gremlin;
-// import com.tinkerpop.gremlin.java.GremlinPipeline;
-// import com.tinkerpop.pipes.Pipe;
-// import com.tinkerpop.pipes.PipeFunction;
-// import com.tinkerpop.pipes.branch.LoopPipe;
-// import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
-// import com.tinkerpop.pipes.filter.FilterPipe.Filter;
-// import com.tinkerpop.pipes.util.PipesFluentPipeline;
-
-import com.tinkerpop.blueprints.Element;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -56,11 +44,13 @@ public class TopoRouteService implements ITopoRouteService {
 
 	    //
 	    // Implement the Shortest Path between two vertices by using
-	    // the following Gremlin code:
-	    //   results = []; v_src.as('x').out.out.in.has("type", "switch").dedup().loop('x'){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)
+	    // the following Gremlin CLI code:
+	    //   v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path(){it.dpid}{it.number}{it.number}
+	    // The equivalent code used here is:
+	    //   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
 	    //
 
-	    String gremlin = "v_src.as(\"x\").out.out.in.has(\"type\", \"switch\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid & it.loops < 10}.path().fill(results)";
+	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
 
 	    // Get the source vertex
 	    Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
@@ -73,7 +63,21 @@ public class TopoRouteService implements ITopoRouteService {
 	    if (! iter.hasNext())
 		return null;		// Destination vertex not found
 	    Vertex v_dest = iter.next();
-	
+
+	    //
+	    // Test whether we are computing a path from/to the same DPID.
+	    // If "yes", then just list the "src" and "dest" in the return
+	    // result.
+	    // NOTE: The return value will change in the future to return
+	    // a single hop/entry instead of two. Currently, we need
+	    // both entries to capture the source and destination ports.
+	    //
+	    if (dpid_src.equals(dpid_dest)) {
+		result_list.add(new NodePortTuple(src));
+		result_list.add(new NodePortTuple(dest));
+		return result_list;
+	    }
+
 	    //
 	    // Implement the Gremlin script and run it
 	    //
