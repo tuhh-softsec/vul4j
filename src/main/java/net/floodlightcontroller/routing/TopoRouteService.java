@@ -33,7 +33,7 @@ public class TopoRouteService implements ITopoRouteService {
 	SwitchStorageImpl swStore = store.get();
 
 	@Override
-	public List<NodePortTuple> GetShortestPath(NodePortTuple src,
+	public List<NodePortTuple> getShortestPath(NodePortTuple src,
 			NodePortTuple dest) {
 	    List<NodePortTuple> result_list = new ArrayList<NodePortTuple>();
 
@@ -145,8 +145,8 @@ public class TopoRouteService implements ITopoRouteService {
 	}
 
 	@Override
-	public Boolean RouteExists(NodePortTuple src, NodePortTuple dest) {
-		List<NodePortTuple> route = GetShortestPath(src, dest);
+	public Boolean routeExists(NodePortTuple src, NodePortTuple dest) {
+		List<NodePortTuple> route = getShortestPath(src, dest);
 		if (route != null)
 		    return true;
 		return false;

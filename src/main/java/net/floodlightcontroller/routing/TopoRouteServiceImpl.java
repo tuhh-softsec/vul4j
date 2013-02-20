@@ -8,14 +8,14 @@ import net.floodlightcontroller.topology.NodePortTuple;
 public class TopoRouteServiceImpl implements ITopoRouteService {
 
 	@Override
-	public List<NodePortTuple> GetShortestPath(NodePortTuple src,
+	public List<NodePortTuple> getShortestPath(NodePortTuple src,
 			NodePortTuple dest) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Boolean RouteExists(NodePortTuple src, NodePortTuple dest) {
+	public Boolean routeExists(NodePortTuple src, NodePortTuple dest) {
 		// TODO Auto-generated method stub
 		return null;
 	}

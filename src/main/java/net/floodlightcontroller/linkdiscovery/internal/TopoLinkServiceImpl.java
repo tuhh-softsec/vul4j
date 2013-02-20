@@ -19,14 +19,14 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
  
 	LinkStorageImpl linkStore = store.get();
 	@Override
-	public List<Link> GetActiveLinks() {
+	public List<Link> getActiveLinks() {
 		// TODO Auto-generated method stub
 		List<Link> retval = linkStore.getActiveLinks();
 		return retval;
 	}
 
 	@Override
-	public List<Link> GetLinksOnSwitch(String dpid) {
+	public List<Link> getLinksOnSwitch(String dpid) {
 		// TODO Auto-generated method stub
 		return linkStore.getLinks(dpid);
 	}

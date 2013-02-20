@@ -224,7 +224,7 @@ public class LinkStorageImpl implements ILinkStorage {
 
 		ITopoSwitchService swService = new TopoSwitchServiceImpl();
 		
-		Iterable<ISwitchObject> switches = swService.GetActiveSwitches();
+		Iterable<ISwitchObject> switches = swService.getActiveSwitches();
 
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {

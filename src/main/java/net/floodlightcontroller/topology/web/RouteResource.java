@@ -51,7 +51,7 @@ public class RouteResource extends ServerResource {
         }
 	*/
 	List<NodePortTuple> result =
-	    onos_routing.GetShortestPath(new NodePortTuple(longSrcDpid, shortSrcPort),
+	    onos_routing.getShortestPath(new NodePortTuple(longSrcDpid, shortSrcPort),
 					 new NodePortTuple(longDstDpid, shortDstPort));
 	if ((result != null) && (result.size() > 0)) {
 	    return result;

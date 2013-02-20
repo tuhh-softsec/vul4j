@@ -17,12 +17,12 @@ public class TopoSwitchesResource extends ServerResource {
 		String filter = (String) getRequestAttributes().get("filter");
 		
 		if (filter.equals("active")) {
-			return (Iterator<ISwitchObject>) impl.GetActiveSwitches().iterator();
+			return (Iterator<ISwitchObject>) impl.getActiveSwitches().iterator();
 		}
 		if (filter.equals("inactive")) {
-			return (Iterator<ISwitchObject>) impl.GetInactiveSwitches().iterator();
+			return (Iterator<ISwitchObject>) impl.getInactiveSwitches().iterator();
 		} else {
-		    return (Iterator<ISwitchObject>) impl.GetAllSwitches().iterator();
+		    return (Iterator<ISwitchObject>) impl.getAllSwitches().iterator();
 		}
 	}
 

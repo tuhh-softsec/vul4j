@@ -88,7 +88,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
             		Vertex p = graph.addVertex(null);
             		p.setProperty("type","port");
             		p.setProperty("number",port.getPortNumber());
-            		p.setProperty("state",port.getState());
+            		p.setProperty("state", "ACTIVE");
+            		p.setProperty("port_state",port.getState());
             		p.setProperty("desc",port.getName());
             		Edge e = graph.addEdge(null, sw, p, "on");
             		e.setProperty("state","ACTIVE");

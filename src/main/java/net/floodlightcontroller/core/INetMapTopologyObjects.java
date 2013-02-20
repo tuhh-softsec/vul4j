@@ -21,6 +21,7 @@ public interface IBaseObject extends VertexFrame {
 	@JsonProperty("state")
 	@Property("state")
 	public String getState();
+	
 	@Property("state")
 	public void setState(final String state);
 	
