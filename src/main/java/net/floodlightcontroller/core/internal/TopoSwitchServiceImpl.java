@@ -2,6 +2,7 @@ package net.floodlightcontroller.core.internal;
 
 import java.util.List;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
 
@@ -20,25 +21,31 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	SwitchStorageImpl swStore = store.get();
 	
 	@Override
-	public Iterable<ISwitchObject> GetActiveSwitches() {
+	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
 		return swStore.getActiveSwitches();
 	}
 
 	@Override
-	public Iterable<ISwitchObject> GetAllSwitches() {
+	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub		
 		return swStore.getAllSwitches();
 	}
 
 	@Override
-	public Iterable<ISwitchObject> GetInactiveSwitches() {
+	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
 		return swStore.getInactiveSwitches();
 	}
 
 	@Override
-	public List<String> GetPortsOnSwitch(String dpid) {
+	public Iterable<IPortObject> getPortsOnSwitch(String dpid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IPortObject getPortOnSwitch(String dpid, short port_num) {
 		// TODO Auto-generated method stub
 		return null;
 	}	

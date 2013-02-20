@@ -1,5 +1,9 @@
 package net.floodlightcontroller.core;
 
+import java.util.List;
+
+import net.floodlightcontroller.devicemanager.SwitchPort;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -87,27 +91,32 @@ public interface ISwitchObject extends IBaseObject{
 		@Property("dl_addr")
 		public String getMACAddress();
 		@Property("dl_addr")
-		public void setMACAddress();
+		public void setMACAddress(String macaddr);
 		
 		@JsonProperty("ipv4")
 		@Property("nw_addr")
 		public String getIPAddress();
 		@Property("dl_addr")
-		public void setIPAddress();
+		public void setIPAddress(String ipaddr);
 		
 		@JsonIgnore
 		@Incidence(label="host",direction = Direction.IN)
-		public IPortObject getPort();
+		public Iterable<IPortObject> getAttachedPorts();
+			
+		@JsonIgnore
+		@Incidence(label="host",direction=Direction.IN)
+		public void setHostPort(final IPortObject port);
+		
+		@JsonIgnore
+		@Incidence(label="host",direction=Direction.IN)
+		public void removeHostPort(final IPortObject port);
 		
 		@JsonIgnore
 		@GremlinGroovy("_().in('host').in('on')")
-		public ISwitchObject getSwitch();
-				
-		public interface AttachmentPoint {
-			@GremlinGroovy("_().in('host').in('on').dpid")
-			public String getDPID();
-			@GremlinGroovy("_().in('host').number")
-			public Short getPortNumber();
-		}
+		public Iterable<ISwitchObject> getSwitch();
+		
+		@JsonProperty("AttachmentPoint")
+		@GremlinGroovy("_().in('host').in('on').path(){it.number}{it.dpid}")
+		public List<SwitchPort> getAttachmentPoints();
 	}
 }

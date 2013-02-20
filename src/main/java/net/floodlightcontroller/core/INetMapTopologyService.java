@@ -2,6 +2,8 @@ package net.floodlightcontroller.core;
 
 import java.util.List;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.NodePortTuple;
@@ -9,29 +11,32 @@ import net.floodlightcontroller.topology.NodePortTuple;
 public interface INetMapTopologyService extends INetMapService {
 
 	public interface ITopoSwitchService {
-		Iterable<ISwitchObject> GetActiveSwitches();
-		Iterable<ISwitchObject> GetAllSwitches();
-		Iterable<ISwitchObject> GetInactiveSwitches();
-		List<String> GetPortsOnSwitch(String dpid);
+		Iterable<ISwitchObject> getActiveSwitches();
+		Iterable<ISwitchObject> getAllSwitches();
+		Iterable<ISwitchObject> getInactiveSwitches();
+		Iterable<IPortObject> getPortsOnSwitch(String dpid);
+		IPortObject getPortOnSwitch(String dpid, short port_num);
+
 	}
 	
 	public interface ITopoLinkService {
-		List<Link> GetActiveLinks();
-		List<Link> GetLinksOnSwitch(String dpid);
+		List<Link> getActiveLinks();
+		List<Link> getLinksOnSwitch(String dpid);
 	}
 	public interface ITopoDeviceService {
-		List<Link> GetActiveDevices();
-		List<Link> GetDevicesOnSwitch(String dpid);
+		Iterable<IDeviceObject> getActiveDevices();
+		Iterable<IDeviceObject> getDevicesOnSwitch(String dpid);
+		Iterable<IDeviceObject> getDevicesOnSwitch(String dpid, short port_num);
 	}
 	
 	public interface ITopoRouteService {
-		List<NodePortTuple> GetShortestPath(NodePortTuple src, NodePortTuple dest);
-		Boolean RouteExists(NodePortTuple src, NodePortTuple dest);
+		List<NodePortTuple> getShortestPath(NodePortTuple src, NodePortTuple dest);
+		Boolean routeExists(NodePortTuple src, NodePortTuple dest);
 	}
 	
 	public interface ITopoFlowService {
-		Boolean FlowExists(NodePortTuple src, NodePortTuple dest);
-		List<NodePortTuple> GetShortestFlowPath(NodePortTuple src, NodePortTuple dest);
+		Boolean flowExists(NodePortTuple src, NodePortTuple dest);
+		List<NodePortTuple> getShortestFlowPath(NodePortTuple src, NodePortTuple dest);
 		
 	}
 }
