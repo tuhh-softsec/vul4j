@@ -11,11 +11,11 @@ var users = [{
 		   "title": "Capgemini",
 		   "url": "http://www.capgemini.com",
 		   "weight": Math.random()
-//	}, {
-//		"img": "carif-oref.png",
-//		   "title": "Carif-Oref",
-//		   "url": "http://www.meformer.org",
-//		   "weight": Math.random()
+	}, {
+		"img": "carif-oref.png",
+		   "title": "Carif-Oref",
+		   "url": "http://www.meformer.org",
+		   "weight": Math.random()
 	}, {
 		"img": "hec.png",
 		   "title": "HEC Paris",
