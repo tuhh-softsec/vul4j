@@ -4,8 +4,6 @@
 <style>
 path.link {
   fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
 }
 circle {
   stroke: #333;
@@ -16,17 +14,14 @@ text {
   font: 20px sans-serif;
   pointer-events: none;
 }
-
 </style>
 <head>
 <title>ONOS GUI</title>
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="js/onos-topology.js"></script>
+<script type="text/javascript" src="js/onos-topology-route.js"></script>
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 </head>
 <body>
-<button id="more">more</button>
-<button id="less">lesse</button>
 <svg width="4in" height="2in" 
      viewBox="0 0 4000 2000" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
@@ -38,9 +33,16 @@ text {
       orient="auto">
       <path d="M0,-5L10,0L0,5"/>
     </marker>
+    <marker id="TriangleRed"
+      viewBox="0 -5 10 10" refX="10" refY="-0.2" 
+      markerUnits="strokeWidth"
+      markerWidth="6" markerHeight="6"
+      orient="auto">
+      <path d="M0,-5L10,0L0,5" fill="red" stroke="red"/>
+    </marker>
   </defs>
 <script type="text/javascript">
-gui("http://onosnat.onlab.us:8080/topology");
+gui("http://onosnat.onlab.us:8080/wm/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json");
 </script>
 </svg>
 </body>

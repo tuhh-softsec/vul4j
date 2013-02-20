@@ -122,9 +122,15 @@ def topology_for_gui():
       sw = {}
       sw['name']=dpid
       if str(v['state']) == "ACTIVE":
-         sw['group']=0
-      if str(v['state']) == "INACTIVE":
+        if dpid[-2:-1] == "a":
          sw['group']=1
+        if dpid[-2:-1] == "b":
+         sw['group']=2
+        if dpid[-2:-1] == "c":
+         sw['group']=3
+      if str(v['state']) == "INACTIVE":
+         sw['group']=0
+
 
       switches.append(sw)
   

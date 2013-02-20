@@ -15,8 +15,13 @@ function gui(data_source){
     var path = svg.selectAll("path");
     var circle = svg.selectAll("circle");
     var text = svg.selectAll("g");
+    var pathlen = 0;
+    var from;
+    var to;
+    var path_set = 0;
 
-    d3.json(data_source, init);
+
+    d3.json(data_source,init);
 
     function init(json){
         nodes = force.nodes();
@@ -25,42 +30,17 @@ function gui(data_source){
 	json.nodes.forEach(function(item) {
             nodes.push(item);
 	});
+/*
+        nodes.sort(function(a,b) {
+            if (a.name > b.name) {return 1;}
+            else if (a.name < b.name) {return -1;}
+            else {return 0;}
+        });
+*/
 	json.links.forEach(function(item) {
             links.push(item);
 	});
 	draw(nodes, links);
-    }
-    function gone_links (json, links, gone) {
-	for (var i = 0; i < links.length ; i ++){
-	    var found = 0;
-	    for (var j = 0; j < json.links.length ; j ++){
-		if (links[i].source.name == json.nodes[json.links[j].source].name && 
-		    links[i].target.name == json.nodes[json.links[j].target].name ){
-		    found = 1;
-		    break;
-		}
-	    }
-	    if ( found == 0 ){
-		gone.push(links[i]);
-	    }
-	}
-	return gone;
-    }
-    function added_links (json, links, added) {
-	for (var j = 0; j < json.links.length ; j ++){
-	    var found = 0;
-	    for (var i = 0; i < links.length ; i ++){
-		if (links[i].source.name == json.nodes[json.links[j].source].name && 
-		    links[i].target.name == json.nodes[json.links[j].target].name ){
-		    found = 1;
-		    break;
-		}
-	    }
-	    if ( found == 0 ){
-		added.push(json.links[j]);
-	    }
-	}
-	return added;
     }
 
     function update(json) {
@@ -97,15 +77,16 @@ function gui(data_source){
 	};
 
 
-//        links.sort(function(a,b) {
-//            if (a.source > b.source) {return 1;}
-//            else if (a.source < b.source) {return -1;}
-//            else {
-//                if (a.target > b.target) {return 1;}
-//                if (a.target < b.target) {return -1;}
-//                else {return 0;}
-//            }
-//        });
+        links.sort(function(a,b) {
+            if (a.source > b.source) {return 1;}
+            else if (a.source < b.source) {return -1;}
+            else {
+                if (a.target > b.target) {return 1;}
+                if (a.target < b.target) {return -1;}
+                else {return 0;}
+            }
+        });
+
 //        for (var i=0; i<links.length; i++) {
 //          if (i != 0 &&
 //            links[i].source == links[i-1].source &&
@@ -114,6 +95,7 @@ function gui(data_source){
 //          }
 //          else {links[i].linknum = 1;};
 //        };
+
 
 	function cdiff(topo) {
             var changed = false;
@@ -174,32 +156,61 @@ function gui(data_source){
 
 
 	var changed = cdiff(json);
-        for (var i = 0; i < nodes.length; i++) {
-            for (var j = 0; j < json.nodes.length; j++) {
-		if ( nodes[i].name == json.nodes[j].name ){
-		    nodes[i].group = json.nodes[j].group
+
+        for (var i = 0; i < json.nodes.length; i++) {
+	    nodes[i].group = json.nodes[i].group
+	}
+	var rewrite = 0;
+	for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < json.links.length; j++) {
+	/*	
+		console.log("link" + i);
+		console.log(links[i].source.name + "->" + links[i].target.name);
+		console.log("type " + links[i].type);
+		console.log("json link" + j);
+		console.log(json.nodes[json.links[j].source].name + "->" + json.nodes[json.links[j].target].name);
+	*/
+		if (links[i].target.name == json.nodes[json.links[j].target].name && 
+		    links[i].source.name == json.nodes[json.links[j].source].name ){
+		    links[i].type = json.links[j].type;
+		    rewrite ++;
 		}
 	    }
 	}
-
-//	console.log(nodes);
-//	console.log(links);
-
-	console.log("changed? " + changed);
-
+	console.log("changed?" + changed);
 	if (changed){
+	    console.log(nodes);
+	    console.log(links);
             path = svg.selectAll("path").data(links)
             circle = svg.selectAll("circle").data(nodes);
 	    text = svg.selectAll("text").data(nodes);
 
 	    force.stop();
+
             path.enter().append("svg:path")
 		.attr("class", function(d) { return "link"; })
-		.attr("marker-end", "url(#Triangle)");
+		.attr("marker-end", function(d) {
+		    if(d.type == 1){
+			return "url(#TriangleRed)";
+		    } else {
+			return "url(#Triangle)";
+		    }
+		});
 
             circle.enter().append("svg:circle")
-		.attr("r", 6)
-                .call(force.drag);
+               .attr("r", 8)
+/*		.on("click", function(d,i) {
+		    if ( path_set == 0 || path_set == 2 ){
+			fm = d.name;
+			path_set = 1;
+			alert("from set to " + d.name);
+		    }else if ( path_set == 1 ){
+			to = d.name;
+			path_set = 2;
+			alert("to set to " + d.name);
+		    }
+		}) */
+               .call(force.drag);
 
 /*	    text.enter().append("svg:text")
 		.attr("x", 8)
@@ -215,21 +226,25 @@ function gui(data_source){
             circle.append("title")
 	      .text(function(d) { return d.name; });
 
-	    circle.attr("fill", function(d) {
-		if (d.group == 1){return "red";}
-		else if (d.group == 2){return "blue";}
-		else if (d.group == 3){return "green";}
-		else{ return "gray"; }
+	    path.attr("stroke", function(d) {
+		if(d.type == 1){
+		    return "red"
+		} else {
+		    return "black"
+		}
+	    })
+	    .attr("stroke-width", function(d) {
+		if(d.type == 1){
+		    return "4px";
+		} else {
+		    return "1.5px";
+		}
 	    });
 
 
 	    path.exit().remove();
             circle.exit().remove();
             text.exit().remove();
-
-	    console.log(nodes);
-	    console.log(links);
-
 	    force.on("tick", tick);
             force.start();
 	}
@@ -241,11 +256,49 @@ function gui(data_source){
 
         path.enter().append("svg:path")
 	    .attr("class", function(d) { return "link"; })
-	    .attr("marker-end", "url(#Triangle)");
+	    .attr("marker-end", function(d) {
+		if(d.type == 1){
+		    return "url(#TriangleRed)";
+		} else {
+		    return "url(#Triangle)";
+		}
+	    });
+
+	path.attr("stroke", function(d) {
+	    if(d.type == 1){
+		return "red"
+	    } else {
+		return "black"
+	    }
+	}).attr("stroke-width", function(d) {
+	    if(d.type == 1){
+		return "4px";
+	    } else {
+		return "1.5px";
+	    }
+	}).attr("marker-end", function(d) {
+	    if(d.type == 1){
+		return "url(#TriangleRed)";
+	    } else {
+		return "url(#Triangle)";
+	    }
+	});
+
 
         circle.enter().append("svg:circle")
-            .attr("r", 8)
-            .call(force.drag);
+          .attr("r", 8)
+/*	    .on("click", function(d,i) {
+		if ( path_set == 0 || path_set == 2 ){
+		    fm = d.name;
+		    path_set = 1;
+		    alert("from set to " + d.name);
+		}else if ( path_set == 1 ){
+		    to = d.name;
+		    path_set = 2;
+		    alert("to set to " + d.name);
+		}
+	    }) */
+          .call(force.drag);
 
 /*	text.enter().append("svg:text")
 	    .attr("x", 8)
@@ -268,6 +321,7 @@ function gui(data_source){
 	    else{ return "gray"; }
 	});
 
+
 	force.on("tick", tick);
 	path.exit().remove();
         circle.exit().remove();
@@ -286,28 +340,6 @@ function gui(data_source){
             });
 	}, 3000); 
     }
-
-/*
-    $("#more").click( function() {
-        $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_more',
-	    success: function(json) {
-		update(json)
-	    },
-	    dataType: "json"
-        });
-    });
-    $("#less").click( function() {
-        $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_less',
-	    success: function(json) {
-		update(json)
-	    },
-	    dataType: "json"
-        });
-    });
-*/
-
     function tick() {
 	path.attr("d", function(d) {
 	    var dx = d.target.x - d.source.x,
@@ -316,6 +348,29 @@ function gui(data_source){
 	    dr = 300;
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
+
+	path
+	    .attr("stroke", function(d) {
+	    if(d.type == 1){
+		return "red"
+	    } else {
+		return "black"
+	    }
+	}).attr("stroke-width", function(d) {
+	    if(d.type == 1){
+		return "4px";
+	    } else {
+		return "1.5px";
+	    }
+	}).attr("marker-end", function(d) {
+	    if(d.type == 1){
+		return "url(#TriangleRed)";
+	    } else {
+		return "url(#Triangle)";
+	    }
+	});
+
+
 //	circle.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; });
 	circle.attr("transform", function(d) {
 	    return "translate(" + d.x + "," + d.y + ")";
