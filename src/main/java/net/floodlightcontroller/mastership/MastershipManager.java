@@ -153,11 +153,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		try {
 			latch.close();
 		} catch (IOException e) {
-			
+			//I think it's OK not to do anything here. Either the node got deleted correctly,
+			//or the connection went down and the node got deleted.
+		} finally {
+			switchLatches.remove(dpidStr);
+			switchCallbacks.remove(dpidStr);
 		}
-		
-		switchLatches.remove(dpidStr);
-		switchCallbacks.remove(dpidStr);
 	}
 
 	@Override
@@ -188,9 +189,9 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 	
 	@Override
-	public Collection<String> getAllControllers() {
-		// TODO Auto-generated method stub
+	public Collection<String> getAllControllers() throws RegistryException {
 		log.debug("Getting all controllers");
+		
 		List<String> controllers = new ArrayList<String>();
 		for (ChildData data : controllerCache.getCurrentData()){
 
@@ -198,8 +199,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			try {
 				d = new String(data.getData(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				// TODO unlikely(throw exception)
-				e.printStackTrace();
+				throw new RegistryException("Error encoding string", e);
 			}
 
 			controllers.add(d);
@@ -208,14 +208,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 
 	@Override
-	public void registerController(String id) {
-		// TODO Auto-generated method stub
+	public void registerController(String id) throws RegistryException {
 		byte bytes[] = null;
 		try {
 			bytes = id.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Throw some exception (very unlikely this will happen)
-			e1.printStackTrace();
+			throw new RegistryException("Error encoding string", e1);
 		}
 		
 		String path = controllerPath + "/" + id;
@@ -227,14 +225,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			client.create().withProtection().withMode(CreateMode.EPHEMERAL)
 					.forPath(path, bytes);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// TODO Make an exception that will be thrown here
-			e.printStackTrace();
+			throw new RegistryException("Error contacting the Zookeeper service", e);
 		}
 	}
 	
 	@Override
-	public String getControllerForSwitch(long dpid) {
+	public String getControllerForSwitch(long dpid) throws RegistryException {
 		// TODO Work out how we should store this controller/switch data.
 		// The leader latch might be a index to the /controllers collections
 		// which holds more info on the controller (how to talk to it for example).
@@ -252,8 +248,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		try {
 			leader = latch.getLeader();
 		} catch (Exception e) {
-			// TODO Zookeeper issue, throw exception
-			e.printStackTrace();
+			throw new RegistryException("Error contacting the Zookeeper service", e);
 		}
 		
 		return leader.getId();
@@ -293,7 +288,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	
 	@Override
 	public void init (FloodlightModuleContext context) throws FloodlightModuleException {
-
+		/*
 		try {
 			String localHostname = java.net.InetAddress.getLocalHost().getHostName();
 			mastershipId = localHostname;
@@ -323,7 +318,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	*/
 	}
 	
 	@Override
