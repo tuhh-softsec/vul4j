@@ -99,7 +99,7 @@ def node_id(switch_array, dpid):
 
   return id
 
-@app.route("/topology")
+@app.route('/topology', methods=['GET'])
 def topology_for_gui():
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
@@ -122,9 +122,15 @@ def topology_for_gui():
       sw = {}
       sw['name']=dpid
       if str(v['state']) == "ACTIVE":
-         sw['group']=0
-      if str(v['state']) == "INACTIVE":
+        if dpid[-2:-1] == "a":
          sw['group']=1
+        if dpid[-2:-1] == "b":
+         sw['group']=2
+        if dpid[-2:-1] == "c":
+         sw['group']=3
+      if str(v['state']) == "INACTIVE":
+         sw['group']=0
+
 
       switches.append(sw)
   
@@ -254,6 +260,7 @@ def query_switch():
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
 #    http://localhost:8080/wm/core/topology/switches/active/json
+    print command
     result = os.popen(command).read()
     parsedResult = json.loads(result)
   except:
@@ -346,6 +353,7 @@ def switch_stat(switchId, statType):
 def query_links():
   try:
     command = 'curl -s http://%s:%s/graphs/%s/vertices?key=type\&value=port' % (RestIP, RestPort, DBName)
+    print command
     result = os.popen(command).read()
     parsedResult = json.loads(result)['results']
   except:
@@ -401,5 +409,4 @@ if __name__ == "__main__":
 #    devices()
   else:
     app.debug = True
-#    app.run(host="10.0.1.29", port=9000)
-    app.run(host="0.0.0.0", port=9000)
+    app.run(threaded=True, host="0.0.0.0", port=9000)

@@ -51,16 +51,16 @@ EOF_LOGBACK
 #<appender-ref ref="STDOUT" />
 
 function lotate {
-logfile=$1
-nr_max=$2
-if [ -f $logfile ]; then
-for i in `seq $(expr 10 - 1) -1 1`; do
-if [ -f ${logfile}.${i} ]; then
-mv -f ${logfile}.${i} ${logfile}.`expr $i + 1`
-fi
-done
-mv $logfile $logfile.1
-fi
+    logfile=$1
+    nr_max=${2:-10}
+    if [ -f $logfile ]; then
+	for i in `seq $(expr $nr_max - 1) -1 1`; do
+	    if [ -f ${logfile}.${i} ]; then
+		mv -f ${logfile}.${i} ${logfile}.`expr $i + 1`
+	    fi
+	done
+	mv $logfile $logfile.1
+    fi
 }
 
 function start {
