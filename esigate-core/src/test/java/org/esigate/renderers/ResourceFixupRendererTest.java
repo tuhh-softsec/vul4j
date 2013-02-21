@@ -169,4 +169,34 @@ public class ResourceFixupRendererTest extends TestCase {
 		tested.render(null, input, out);
 		assertEquals(expectedOutputAbsolute, out.toString());
 	}
+	
+	
+	/**
+	 * Ensures links like &lt;a href="?test=true">link&lt;a/> are correctly
+	 * fixed, with both RELATIVE and ABSOLUTE settings.
+	 * 
+	 * @throws IOException
+	 */
+	public void testSimpleUrlWithParamsOnly() throws IOException {
+		String base = "http://myapp/";
+		String page = "/context/status";
+		final String input = "<a href=\"?p=services\">test</a>";
+		final String expectedOutputRelative = "<a href=\"/context/status?p=services\">test</a>";
+		final String expectedOutputAbsolute = "<a href=\"http://myapp/context/status?p=services\">test</a>";
+
+		// Relative test
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, base,
+				page, ResourceFixupRenderer.RELATIVE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputRelative, out.toString());
+
+		// Absolute test
+		out = new StringWriter();
+		tested = new ResourceFixupRenderer(base, base, page,
+				ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+
+	}
 }

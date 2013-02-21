@@ -46,7 +46,12 @@ public class ResourceFixupRenderer implements Renderer {
 	private static final Pattern URL_PATTERN = Pattern.compile("<([^\\!][^>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>", Pattern.CASE_INSENSITIVE);
 	private String contextAdd = null;
 	private String contextRemove = null;
+	/**
+	 * Page path without the filename
+	 */
 	private String pagePath = null;
+	
+	private String fileName = null;
 	private String server = null;
 	private String baseUrl;
 	private String replacementUrl;
@@ -138,6 +143,14 @@ public class ResourceFixupRenderer implements Renderer {
 		if (cleanPageFullPath.charAt(0) == SLASH) {
 			cleanPageFullPath = cleanPageFullPath.substring(1);
 		}
+		
+		// Store the filename, if specified 
+		if (cleanPageFullPath.charAt(cleanPageFullPath.length() - 1) != SLASH) {
+			fileName = cleanPageFullPath.substring(cleanPageFullPath
+					.lastIndexOf(SLASH) + 1);
+		}
+		
+		// Build clean URI for further processing 
 		URI url;
 		url = UriUtils.createUri(cleanBaseUrl + SLASH + cleanPageFullPath);
 
@@ -208,6 +221,11 @@ public class ResourceFixupRenderer implements Renderer {
 				url = server + url;
 			}
 		} else if (fixRelativeUrls) {
+			
+			if( url.charAt(0) == '?' && fileName != null){
+			    url = fileName+url; 	
+			}
+			
 			// Process relative urls
 			if (mode == ABSOLUTE) {
 				url = server + pagePath + SLASH + url;
