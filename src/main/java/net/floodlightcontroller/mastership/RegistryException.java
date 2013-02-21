@@ -4,6 +4,7 @@ public class RegistryException extends Exception {
 
 	private static final long serialVersionUID = -8276300722010217913L;
 
+	/*
 	public RegistryException() {
 		// TODO Auto-generated constructor stub
 	}
@@ -28,5 +29,6 @@ public class RegistryException extends Exception {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
+	*/
 
 }

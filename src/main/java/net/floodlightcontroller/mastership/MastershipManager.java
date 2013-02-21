@@ -189,7 +189,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 	
 	@Override
-	public Collection<String> getAllControllers() throws RegistryException {
+	public Collection<String> getAllControllers() throws Exception {
 		log.debug("Getting all controllers");
 		
 		List<String> controllers = new ArrayList<String>();
@@ -199,7 +199,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			try {
 				d = new String(data.getData(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				throw new RegistryException("Error encoding string", e);
+				throw new Exception("Error encoding string", e);
 			}
 
 			controllers.add(d);
@@ -208,12 +208,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 
 	@Override
-	public void registerController(String id) throws RegistryException {
+	public void registerController(String id) throws Exception {
 		byte bytes[] = null;
 		try {
 			bytes = id.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e1) {
-			throw new RegistryException("Error encoding string", e1);
+			throw new Exception("Error encoding string", e1);
 		}
 		
 		String path = controllerPath + "/" + id;
@@ -225,12 +225,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			client.create().withProtection().withMode(CreateMode.EPHEMERAL)
 					.forPath(path, bytes);
 		} catch (Exception e) {
-			throw new RegistryException("Error contacting the Zookeeper service", e);
+			throw new Exception("Error contacting the Zookeeper service", e);
 		}
 	}
 	
 	@Override
-	public String getControllerForSwitch(long dpid) throws RegistryException {
+	public String getControllerForSwitch(long dpid) throws Exception {
 		// TODO Work out how we should store this controller/switch data.
 		// The leader latch might be a index to the /controllers collections
 		// which holds more info on the controller (how to talk to it for example).
@@ -248,7 +248,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		try {
 			leader = latch.getLeader();
 		} catch (Exception e) {
-			throw new RegistryException("Error contacting the Zookeeper service", e);
+			throw new Exception("Error contacting the Zookeeper service", e);
 		}
 		
 		return leader.getId();

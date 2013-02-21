@@ -32,16 +32,16 @@ public interface IMastershipService extends IFloodlightService {
 	 * @param controller A string identifying the controller and (possibly) how to talk to it.
 	 * (We will have to develop a convention for this - most likely hostname:port)
 	 */
-	public void registerController(String controllerId) throws RegistryException;
+	public void registerController(String controllerId) throws Exception;
 	
 	/**
 	 * Get all controllers in the cluster
 	 * @return
 	 */
-	public Collection<String> getAllControllers() throws RegistryException;
+	public Collection<String> getAllControllers() throws Exception;
 	
 	
-	public String getControllerForSwitch(long dpid) throws RegistryException;
+	public String getControllerForSwitch(long dpid) throws Exception;
 	
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
 }
