@@ -25,12 +25,13 @@ import com.netflix.curator.RetryPolicy;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.api.CuratorWatcher;
+import com.netflix.curator.framework.imps.CuratorFrameworkState;
 import com.netflix.curator.framework.recipes.cache.ChildData;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache.StartMode;
 import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.Participant;
-import com.netflix.curator.retry.ExponentialBackoffRetry;
+import com.netflix.curator.retry.RetryOneTime;
 
 public class MastershipManager implements IFloodlightModule, IMastershipService {
 
@@ -49,6 +50,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 
 	protected Map<String, LeaderLatch> switchLatches;
 	protected Map<String, MastershipCallback> switchCallbacks;
+	
+	protected boolean moduleEnabled = false;
 	
 	protected class ParamaterizedCuratorWatcher implements CuratorWatcher {
 		private String dpid;
@@ -111,6 +114,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	@Override
 	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception {
 		
+		if (!moduleEnabled) return;
+		
 		if (mastershipId == null){
 			throw new RuntimeException("Must set mastershipId before calling aquireMastership");
 		}
@@ -142,6 +147,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 
 	@Override
 	public void releaseMastership(long dpid) {
+		if (!moduleEnabled) return;
+		
 		String dpidStr = HexString.toHexString(dpid);
 		
 		LeaderLatch latch = switchLatches.get(dpidStr);
@@ -163,6 +170,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 
 	@Override
 	public boolean amMaster(long dpid) {
+		if (!moduleEnabled) return false;
+		
 		LeaderLatch latch = switchLatches.get(HexString.toHexString(dpid));
 		
 		if (latch == null) {
@@ -189,7 +198,9 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 	
 	@Override
-	public Collection<String> getAllControllers() throws Exception {
+	public Collection<String> getAllControllers() throws RegistryException {
+		if (!moduleEnabled) return null;
+		
 		log.debug("Getting all controllers");
 		
 		List<String> controllers = new ArrayList<String>();
@@ -199,7 +210,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			try {
 				d = new String(data.getData(), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				throw new Exception("Error encoding string", e);
+				throw new RegistryException("Error encoding string", e);
 			}
 
 			controllers.add(d);
@@ -208,29 +219,32 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 
 	@Override
-	public void registerController(String id) throws Exception {
+	public void registerController(String id) throws RegistryException {
+		if (!moduleEnabled) return;
+		
 		byte bytes[] = null;
 		try {
 			bytes = id.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e1) {
-			throw new Exception("Error encoding string", e1);
+			throw new RegistryException("Error encoding string", e1);
 		}
 		
 		String path = controllerPath + "/" + id;
 		
 		log.info("Registering controller with id {}", id);
 		
-		//Create ephemeral node with my id
+		//Create ephemeral node in controller registry
 		try {
 			client.create().withProtection().withMode(CreateMode.EPHEMERAL)
 					.forPath(path, bytes);
 		} catch (Exception e) {
-			throw new Exception("Error contacting the Zookeeper service", e);
+			throw new RegistryException("Error contacting the Zookeeper service", e);
 		}
 	}
 	
 	@Override
-	public String getControllerForSwitch(long dpid) throws Exception {
+	public String getControllerForSwitch(long dpid) throws RegistryException {
+		if (!moduleEnabled) return null;
 		// TODO Work out how we should store this controller/switch data.
 		// The leader latch might be a index to the /controllers collections
 		// which holds more info on the controller (how to talk to it for example).
@@ -248,7 +262,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		try {
 			leader = latch.getLeader();
 		} catch (Exception e) {
-			throw new Exception("Error contacting the Zookeeper service", e);
+			throw new RegistryException("Error contacting the Zookeeper service", e);
 		}
 		
 		return leader.getId();
@@ -288,7 +302,19 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	
 	@Override
 	public void init (FloodlightModuleContext context) throws FloodlightModuleException {
-		/*
+		
+		//Read config to see if we should try and connect to zookeeper
+		Map<String, String> configOptions = context.getConfigParams(this);
+		String enableZookeeper = configOptions.get("enableZookeeper");
+		if (enableZookeeper != null) {
+			log.info("Enabling Mastership module - requires Zookeeper connection");
+			moduleEnabled = true;
+		}
+		else {
+			log.info("Mastership module is disabled");
+			return;
+		}
+		
 		try {
 			String localHostname = java.net.InetAddress.getLocalHost().getHostName();
 			mastershipId = localHostname;
@@ -301,7 +327,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		switchLatches = new HashMap<String, LeaderLatch>();
 		switchCallbacks = new HashMap<String, MastershipCallback>();
 		
-		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+		//RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+		RetryPolicy retryPolicy = new RetryOneTime(0);
 		client = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
 		
 		client.start();
@@ -312,13 +339,10 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		
 		try {
 			controllerCache.start(StartMode.BUILD_INITIAL_CACHE);
-			
-			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	*/
 	}
 	
 	@Override
