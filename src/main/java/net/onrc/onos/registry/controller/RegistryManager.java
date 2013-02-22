@@ -1,4 +1,4 @@
-package net.floodlightcontroller.mastership;
+package net.onrc.onos.registry.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -25,7 +25,6 @@ import com.netflix.curator.RetryPolicy;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.api.CuratorWatcher;
-import com.netflix.curator.framework.imps.CuratorFrameworkState;
 import com.netflix.curator.framework.recipes.cache.ChildData;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCache.StartMode;
@@ -33,9 +32,9 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.RetryOneTime;
 
-public class MastershipManager implements IFloodlightModule, IMastershipService {
+public class RegistryManager implements IFloodlightModule, IControllerRegistryService {
 
-	protected static Logger log = LoggerFactory.getLogger(MastershipManager.class);
+	protected static Logger log = LoggerFactory.getLogger(RegistryManager.class);
 	protected String mastershipId = null;
 	
 	//TODO read this from configuration
@@ -49,7 +48,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	protected PathChildrenCache controllerCache;
 
 	protected Map<String, LeaderLatch> switchLatches;
-	protected Map<String, MastershipCallback> switchCallbacks;
+	protected Map<String, ControlChangeCallback> switchCallbacks;
 	
 	protected boolean moduleEnabled = false;
 	
@@ -74,7 +73,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 					log.debug("Disconnected while leader - lost leadership for {}", dpid);
 					
 					isLeader = false;
-					switchCallbacks.get(dpid).changeCallback(HexString.toLong(dpid), false);
+					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), false);
 				}
 				return;
 			}
@@ -87,13 +86,13 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 					log.debug("Became leader for {}", dpid);
 					
 					isLeader = true;
-					switchCallbacks.get(dpid).changeCallback(HexString.toLong(dpid), true);
+					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), true);
 				}
 				else if (!leader.getId().equals(mastershipId) && isLeader){
 					log.debug("Lost leadership for {}", dpid);
 					
 					isLeader = false;
-					switchCallbacks.get(dpid).changeCallback(HexString.toLong(dpid), false);
+					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), false);
 				}
 			} catch (Exception e){
 				if (isLeader){
@@ -101,7 +100,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 							dpid);
 					
 					isLeader = false;
-					switchCallbacks.get(dpid).changeCallback(HexString.toLong(dpid), false);
+					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), false);
 				}
 			}
 			
@@ -112,7 +111,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 
 	
 	@Override
-	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception {
+	public void requestControl(long dpid, ControlChangeCallback cb) throws Exception {
 		
 		if (!moduleEnabled) return;
 		
@@ -146,7 +145,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 
 	@Override
-	public void releaseMastership(long dpid) {
+	public void releaseControl(long dpid) {
 		if (!moduleEnabled) return;
 		
 		String dpidStr = HexString.toHexString(dpid);
@@ -169,7 +168,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	}
 
 	@Override
-	public boolean amMaster(long dpid) {
+	public boolean hasControl(long dpid) {
 		if (!moduleEnabled) return false;
 		
 		LeaderLatch latch = switchLatches.get(HexString.toHexString(dpid));
@@ -274,6 +273,13 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		return null;
 	}
 	
+
+	@Override
+	public Collection<Map<String, String>> getAllSwitches() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/*
 	 * IFloodlightModule
 	 */
@@ -282,7 +288,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
 		Collection<Class<? extends IFloodlightService>> l = 
 				new ArrayList<Class<? extends IFloodlightService>>();
-		l.add(IMastershipService.class);
+		l.add(IControllerRegistryService.class);
 		return l;
 	}
 	
@@ -290,7 +296,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m = 
 				new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
-		m.put(IMastershipService.class,  this);
+		m.put(IControllerRegistryService.class,  this);
 		return m;
 	}
 	
@@ -325,7 +331,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		}
 
 		switchLatches = new HashMap<String, LeaderLatch>();
-		switchCallbacks = new HashMap<String, MastershipCallback>();
+		switchCallbacks = new HashMap<String, ControlChangeCallback>();
 		
 		//RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		RetryPolicy retryPolicy = new RetryOneTime(0);
@@ -349,4 +355,5 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	public void startUp (FloodlightModuleContext context) {
 		// Nothing to be done on startup
 	}
+
 }

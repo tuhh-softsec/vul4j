@@ -65,7 +65,6 @@ import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.mastership.IMastershipService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -75,6 +74,7 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -189,7 +189,7 @@ public class Controller implements IFloodlightProviderService,
     protected IStorageSourceService storageSource;
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
-    protected IMastershipService masterHelper;
+    protected IControllerRegistryService masterHelper;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -392,7 +392,7 @@ public class Controller implements IFloodlightProviderService,
         this.threadPool = tp;
     }
 
-	public void setMastershipService(IMastershipService serviceImpl) {
+	public void setMastershipService(IControllerRegistryService serviceImpl) {
 		this.masterHelper = serviceImpl;		
 	}
 	

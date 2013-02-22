@@ -1,4 +1,4 @@
-package net.floodlightcontroller.mastership;
+package net.onrc.onos.registry.controller;
 
 import org.restlet.resource.ServerResource;
 import org.restlet.resource.Get;
@@ -8,9 +8,9 @@ import org.restlet.resource.Delete;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-public class MastershipRouteResource extends ServerResource {
+public class RegistryRouteResource extends ServerResource {
 
-	protected static Logger log = LoggerFactory.getLogger(MastershipRouteResource.class);
+	protected static Logger log = LoggerFactory.getLogger(RegistryRouteResource.class);
 
 	@Get
 	public String get(String fmJson) {
