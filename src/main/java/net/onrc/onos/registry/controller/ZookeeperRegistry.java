@@ -2,7 +2,6 @@ package net.onrc.onos.registry.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
@@ -37,10 +35,10 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 
-public class RegistryManager implements IFloodlightModule, IControllerRegistryService {
+public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistryService {
 
-	protected static Logger log = LoggerFactory.getLogger(RegistryManager.class);
-	protected String mastershipId = null;
+	protected static Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
+	protected String controllerId = null;
 	
 	protected IRestApiService restApi;
 	
@@ -61,7 +59,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 	protected Map<String, ControlChangeCallback> switchCallbacks;
 	protected Map<String, PathChildrenCache> switchPathCaches;
 	
-	protected boolean moduleEnabled = false;
+	//protected boolean zookeeperEnabled = false;
 	
 	protected class ParamaterizedCuratorWatcher implements CuratorWatcher {
 		private String dpid;
@@ -97,13 +95,13 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 				
 				Participant leader = latch.getLeader();
 
-				if (leader.getId().equals(mastershipId) && !isLeader){
+				if (leader.getId().equals(controllerId) && !isLeader){
 					log.debug("Became leader for {}", dpid);
 					
 					isLeader = true;
 					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), true);
 				}
-				else if (!leader.getId().equals(mastershipId) && isLeader){
+				else if (!leader.getId().equals(controllerId) && isLeader){
 					log.debug("Lost leadership for {}", dpid);
 					
 					isLeader = false;
@@ -173,11 +171,17 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 	
 	@Override
 	public void requestControl(long dpid, ControlChangeCallback cb) throws RegistryException {
+		/*
+		if (!zookeeperEnabled) {
+			//If zookeeper connection is disabled all control requests succeed immediately
+			if (cb != null){
+				cb.controlChanged(dpid, true);
+			}
+			return;
+		}*/
 		
-		if (!moduleEnabled) return;
-		
-		if (mastershipId == null){
-			throw new RuntimeException("Must set mastershipId before calling aquireMastership");
+		if (controllerId == null){
+			throw new RuntimeException("Must register a controller before calling requestControl");
 		}
 		
 		String dpidStr = HexString.toHexString(dpid);
@@ -188,7 +192,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 					"is already running");
 		}
 		
-		LeaderLatch latch = new LeaderLatch(client, latchPath, mastershipId);
+		LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
 		switchLatches.put(dpidStr, latch);
 		switchCallbacks.put(dpidStr, cb);
 		
@@ -207,7 +211,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 
 	@Override
 	public void releaseControl(long dpid) {
-		if (!moduleEnabled) return;
+		//if (!zookeeperEnabled) return;
 		
 		String dpidStr = HexString.toHexString(dpid);
 		
@@ -230,7 +234,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 
 	@Override
 	public boolean hasControl(long dpid) {
-		if (!moduleEnabled) return false;
+		//if (!zookeeperEnabled) return false;
 		
 		LeaderLatch latch = switchLatches.get(HexString.toHexString(dpid));
 		
@@ -240,7 +244,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 		}
 		
 		try {
-			return latch.getLeader().getId().equals(mastershipId);
+			return latch.getLeader().getId().equals(controllerId);
 		} catch (Exception e) {
 			//TODO swallow exception?
 			return false;
@@ -249,17 +253,18 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 
 	@Override
 	public void setMastershipId(String id) {
-		mastershipId = id;
+		//TODO remove this method if not needed
+		//controllerId = id;
 	}
 
 	@Override
 	public String getMastershipId() {
-		return mastershipId;
+		return controllerId;
 	}
 	
 	@Override
 	public Collection<String> getAllControllers() throws RegistryException {
-		if (!moduleEnabled) return null;
+		//if (!zookeeperEnabled) return null;
 		
 		log.debug("Getting all controllers");
 		
@@ -280,7 +285,9 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 
 	@Override
 	public void registerController(String id) throws RegistryException {
-		if (!moduleEnabled) return;
+		//if (!zookeeperEnabled) return;
+		
+		controllerId = id;
 		
 		byte bytes[] = null;
 		try {
@@ -304,7 +311,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 	
 	@Override
 	public String getControllerForSwitch(long dpid) throws RegistryException {
-		if (!moduleEnabled) return null;
+		//if (!zookeeperEnabled) return null;
 		// TODO Work out how we should store this controller/switch data.
 		// The leader latch might be a index to the /controllers collections
 		// which holds more info on the controller (how to talk to it for example).
@@ -331,7 +338,7 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 	@Override
 	public Collection<Long> getSwitchesControlledByController(String controllerId) {
 		//TODO remove this if not needed
-		throw new NotImplementedException();
+		throw new RuntimeException("Not yet implemented");
 	}
 	
 
@@ -407,35 +414,40 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 	@Override
 	public void init (FloodlightModuleContext context) throws FloodlightModuleException {
 		
+		log.info("Initialising the Zookeeper Registry - Zookeeper connection required");
+		
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
-		//Read config to see if we should try and connect to zookeeper
-		Map<String, String> configOptions = context.getConfigParams(this);
+		//We have a config option that determines whether we try and connect to 
+		//zookeeper or not. By default zookeeper connection is disabled. When we don't
+		//have a zookeeper connection we act as though we are the only server in the 
+		//cluster, i.e. all control requests will succeed.
+		/*Map<String, String> configOptions = context.getConfigParams(this);
 		String enableZookeeper = configOptions.get("enableZookeeper");
 		if (enableZookeeper != null) {
-			log.info("Enabling Mastership module - requires Zookeeper connection");
-			moduleEnabled = true;
+			log.info("Enabling Zookeeper connection");
+			zookeeperEnabled = true;
 		}
 		else {
-			log.info("Mastership module is disabled");
+			log.info("Zookeeper connectivity is disabled - running in standalone mode");
 			return;
-		}
+		}*/
 		
+		/*
 		try {
 			String localHostname = java.net.InetAddress.getLocalHost().getHostName();
-			mastershipId = localHostname;
-			log.debug("Setting mastership id to {}", mastershipId);
+			controllerId = localHostname;
+			log.debug("Setting controller id to {}", controllerId);
 		} catch (UnknownHostException e) {
 			// TODO Handle this exception
 			e.printStackTrace();
-		}
+		}*/
 
 		switchLatches = new HashMap<String, LeaderLatch>();
 		switchCallbacks = new HashMap<String, ControlChangeCallback>();
 		switchPathCaches = new HashMap<String, PathChildrenCache>();
 		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-		//RetryPolicy retryPolicy = new RetryOneTime(0);
 		client = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
 		
 		client.start();
@@ -443,13 +455,14 @@ public class RegistryManager implements IFloodlightModule, IControllerRegistrySe
 		client = client.usingNamespace(namespace);
 		
 		//Put some data in for testing
+		/*
 		try {
-			registerController(mastershipId);
+			registerController("zookeeperController");
 			requestControl(2L, null);
 		} catch (RegistryException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 		
 		controllerCache = new PathChildrenCache(client, controllerPath, true);
 		switchCache = new PathChildrenCache(client, switchLatchesPath, true);
