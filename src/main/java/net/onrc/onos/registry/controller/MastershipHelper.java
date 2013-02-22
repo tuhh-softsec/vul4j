@@ -1,4 +1,4 @@
-package net.floodlightcontroller.mastership;
+package net.onrc.onos.registry.controller;
 
 public class MastershipHelper implements IMastershipHelper {
 

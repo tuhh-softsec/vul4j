@@ -1,26 +1,27 @@
-package net.floodlightcontroller.mastership;
+package net.onrc.onos.registry.controller;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 
-//Will change to something like IRegistryService
-public interface IMastershipService extends IFloodlightService {
+public interface IControllerRegistryService extends IFloodlightService {
 	
 	// Callback for all mastership changes. 
 	// Change callback is called when mastership is acquired or released
-	public interface MastershipCallback {
-		public void changeCallback(long dpid, boolean isMaster);
+	public interface ControlChangeCallback {
+		public void controlChanged(long dpid, boolean hasControl);
 	}
 	
 	// Acquire mastership for a switch. 
-	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception;
+	public void requestControl(long dpid, ControlChangeCallback cb) throws RegistryException;
 	
 	// Release mastership for a switch
-	public void releaseMastership(long dpid);
+	public void releaseControl(long dpid);
 	
 	// Check if I am the master of a switch. This is a nonblocking call that checks if the caller is a 
-	public boolean amMaster(long dpid);
+	public boolean hasControl(long dpid);
 	
 	// Set/Get mastership identifier.
 	// This is typically a unique identifier of the controller that does not change across restarts
@@ -29,19 +30,20 @@ public interface IMastershipService extends IFloodlightService {
 	
 	/**
 	 * Register a controller to the ONOS cluster
-	 * @param controller A string identifying the controller and (possibly) how to talk to it.
-	 * (We will have to develop a convention for this - most likely hostname:port)
+	 * @param controller A string identifying the controller
 	 */
-	public void registerController(String controllerId) throws Exception;
+	public void registerController(String controllerId) throws RegistryException;
 	
 	/**
 	 * Get all controllers in the cluster
 	 * @return
 	 */
-	public Collection<String> getAllControllers() throws Exception;
+	public Collection<String> getAllControllers() throws RegistryException;
 	
 	
-	public String getControllerForSwitch(long dpid) throws Exception;
+	public String getControllerForSwitch(long dpid) throws RegistryException;
+	
+	public Map<String, List<ControllerRegistryEntry>> getAllSwitches();
 	
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
 }

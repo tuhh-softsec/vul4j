@@ -1,8 +1,8 @@
-package net.floodlightcontroller.mastership;
+package net.onrc.onos.registry.controller;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
-import net.floodlightcontroller.mastership.IMastershipService.MastershipCallback;
+import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -14,12 +14,14 @@ import org.slf4j.LoggerFactory;
  * @author jono
  *
  */
-public class MastershipRunner {
-	protected static Logger log = LoggerFactory.getLogger(MastershipRunner.class);
+public class RegistryRunner {
+	protected static Logger log = LoggerFactory.getLogger(RegistryRunner.class);
 
 	public static void main(String args[]){
 		FloodlightModuleContext fmc = new FloodlightModuleContext();
-		MastershipManager mm = new MastershipManager();
+		ZookeeperRegistry rm = new ZookeeperRegistry();
+		
+		fmc.addConfigParam(rm, "enableZookeeper", "true");
 		
 		String id = null;
 		if (args.length > 0){
@@ -28,17 +30,21 @@ public class MastershipRunner {
 		}
 		
 		try {
-			mm.init(fmc);
-			mm.startUp(fmc);
+			rm.init(fmc);
+			rm.startUp(fmc);
 			
-			if (id != null){
-				mm.setMastershipId(id);
+			if (id == null){
+				log.error("No unique ID supplied");
+				System.exit(1);
 			}
+			
+			rm.registerController(id);
+			//rm.setMastershipId(id);
 				
-			mm.acquireMastership(1L, 
-				new MastershipCallback(){
+			rm.requestControl(1L, 
+				new ControlChangeCallback(){
 					@Override
-					public void changeCallback(long dpid, boolean isMaster) {
+					public void controlChanged(long dpid, boolean isMaster) {
 						if (isMaster){
 							log.debug("Callback for becoming master for {}", HexString.toHexString(dpid));
 						}
@@ -48,10 +54,16 @@ public class MastershipRunner {
 					}
 				});
 			
-			mm.registerController(id);
+			Thread.sleep(1000);
 			
-			Thread.sleep(5000);
-			
+			/*
+			Map<String, List<ControllerRegistryEntry>> switches = rm.getAllSwitches();
+			for (List<ControllerRegistryEntry> ls : switches.values()){
+				for (ControllerRegistryEntry cre : ls){
+					log.debug("ctrlr: {}", cre.getControllerId());
+				}
+			}
+			*/
 			//"Server" loop
 			while (true) {
 				Thread.sleep(60000);
@@ -65,6 +77,6 @@ public class MastershipRunner {
 			e.printStackTrace();
 		}
 		
-		log.debug("is master: {}", mm.amMaster(1L));
+		log.debug("is master: {}", rm.hasControl(1L));
 	}
 }
