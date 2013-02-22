@@ -1,7 +1,10 @@
 package net.floodlightcontroller.mastership;
 
+import java.util.Collection;
+
 import net.floodlightcontroller.core.module.IFloodlightService;
 
+//Will change to something like IRegistryService
 public interface IMastershipService extends IFloodlightService {
 	
 	// Callback for all mastership changes. 
@@ -24,4 +27,21 @@ public interface IMastershipService extends IFloodlightService {
 	public void setMastershipId (String id);
 	public String getMastershipId ();
 	
+	/**
+	 * Register a controller to the ONOS cluster
+	 * @param controller A string identifying the controller and (possibly) how to talk to it.
+	 * (We will have to develop a convention for this - most likely hostname:port)
+	 */
+	public void registerController(String controllerId) throws Exception;
+	
+	/**
+	 * Get all controllers in the cluster
+	 * @return
+	 */
+	public Collection<String> getAllControllers() throws Exception;
+	
+	
+	public String getControllerForSwitch(long dpid) throws Exception;
+	
+	public Collection<Long> getSwitchesControlledByController(String controllerId);
 }

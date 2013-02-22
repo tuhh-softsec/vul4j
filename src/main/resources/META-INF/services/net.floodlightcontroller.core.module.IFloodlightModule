@@ -25,3 +25,5 @@ net.floodlightcontroller.core.test.MockThreadPoolService
 net.floodlightcontroller.firewall.Firewall
 net.floodlightcontroller.mastership.MastershipManager
 net.floodlightcontroller.onoslistener.OnosPublisher
+net.floodlightcontroller.flowcache.FlowManager
+net.floodlightcontroller.routing.TopoRouteService

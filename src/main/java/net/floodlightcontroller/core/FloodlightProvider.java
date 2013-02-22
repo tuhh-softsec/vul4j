@@ -10,7 +10,9 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.counter.ICounterStoreService;
+import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.mastership.IMastershipService;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -51,6 +53,8 @@ public class FloodlightProvider implements IFloodlightModule {
         dependencies.add(ICounterStoreService.class);
         dependencies.add(IThreadPoolService.class);
         dependencies.add(IMastershipService.class);
+        dependencies.add(IFlowService.class);
+        dependencies.add(ITopoRouteService.class);
         return dependencies;
     }
 
@@ -67,6 +71,8 @@ public class FloodlightProvider implements IFloodlightModule {
        controller.setThreadPoolService(
            context.getServiceImpl(IThreadPoolService.class));
        controller.setMastershipService(context.getServiceImpl(IMastershipService.class));
+       controller.setFlowService(context.getServiceImpl(IFlowService.class));
+       controller.setTopoRouteService(context.getServiceImpl(ITopoRouteService.class));
        controller.init(context.getConfigParams(this));
     }
 

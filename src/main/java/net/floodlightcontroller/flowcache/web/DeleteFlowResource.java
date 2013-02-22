@@ -1,6 +1,7 @@
 package net.floodlightcontroller.flowcache.web;
 
 import net.floodlightcontroller.flowcache.IFlowService;
+import net.floodlightcontroller.util.FlowId;
 
 import org.openflow.util.HexString;
 import org.restlet.resource.Get;
@@ -26,11 +27,11 @@ public class DeleteFlowResource extends ServerResource {
 
 	// Extract the arguments
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	long flowId = HexString.toLong(flowIdStr);
+	FlowId flowId = new FlowId(HexString.toLong(flowIdStr));
+
 	log.debug("Delete Flow Id: " + flowIdStr);
 
-	// TODO: Implement it.
-	result = true;
+	result = flowService.deleteFlow(flowId);
 
         return result;
     }

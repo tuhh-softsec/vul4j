@@ -1,8 +1,14 @@
 package net.floodlightcontroller.util;
 
+import net.floodlightcontroller.util.serializers.FlowEntryIdSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing a Flow Entry ID.
  */
+@JsonSerialize(using=FlowEntryIdSerializer.class)
 public class FlowEntryId {
     private long value;
 
@@ -39,14 +45,12 @@ public class FlowEntryId {
     }
 
     /**
-     * Convert the Flow Entry ID value to a string.
+     * Convert the Flow Entry ID value to a hexadecimal string.
      *
-     * @return the Flow Entry ID value to a string.
+     * @return the Flow Entry ID value to a hexadecimal string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return Long.toHexString(this.value);
     }
 }

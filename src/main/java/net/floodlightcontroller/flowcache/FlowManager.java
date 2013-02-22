@@ -26,7 +26,7 @@ public class FlowManager implements IFloodlightModule, IFlowService {
 
     /** The logger. */
     private static Logger logger =
-	LoggerFactory.getLogger(FlowReconcileManager.class);
+	LoggerFactory.getLogger(FlowManager.class);
 
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {

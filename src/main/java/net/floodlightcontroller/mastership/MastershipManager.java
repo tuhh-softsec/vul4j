@@ -1,10 +1,12 @@
 package net.floodlightcontroller.mastership;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -12,6 +14,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.openflow.util.HexString;
@@ -22,6 +25,9 @@ import com.netflix.curator.RetryPolicy;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
 import com.netflix.curator.framework.api.CuratorWatcher;
+import com.netflix.curator.framework.recipes.cache.ChildData;
+import com.netflix.curator.framework.recipes.cache.PathChildrenCache;
+import com.netflix.curator.framework.recipes.cache.PathChildrenCache.StartMode;
 import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
@@ -34,9 +40,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	//TODO read this from configuration
 	protected String connectionString = "localhost:2181";
 	private final String namespace = "onos";
-	private final String switchLatchesPath = "/switchmastership";
+	private final String switchLatchesPath = "/switches";
 	
 	protected CuratorFramework client;
+	
+	private final String controllerPath = "/controllers";
+	protected PathChildrenCache controllerCache;
 
 	protected Map<String, LeaderLatch> switchLatches;
 	protected Map<String, MastershipCallback> switchCallbacks;
@@ -52,7 +61,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		}
 		
 		@Override
-		public void process(WatchedEvent event) throws Exception {
+		public synchronized void process(WatchedEvent event) throws Exception {
 			log.debug("Watch Event: {}", event);
 
 			LeaderLatch latch = switchLatches.get(dpid);
@@ -68,6 +77,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			}
 			
 			try {
+				
 				Participant leader = latch.getLeader();
 
 				if (leader.getId().equals(mastershipId) && !isLeader){
@@ -96,6 +106,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 			//client.getChildren().usingWatcher(this).forPath(latchPath);
 		}
 	}
+
 	
 	@Override
 	public void acquireMastership(long dpid, MastershipCallback cb) throws Exception {
@@ -142,11 +153,12 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		try {
 			latch.close();
 		} catch (IOException e) {
-			
+			//I think it's OK not to do anything here. Either the node got deleted correctly,
+			//or the connection went down and the node got deleted.
+		} finally {
+			switchLatches.remove(dpidStr);
+			switchCallbacks.remove(dpidStr);
 		}
-		
-		switchLatches.remove(dpidStr);
-		switchCallbacks.remove(dpidStr);
 	}
 
 	@Override
@@ -176,6 +188,77 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		return mastershipId;
 	}
 	
+	@Override
+	public Collection<String> getAllControllers() throws Exception {
+		log.debug("Getting all controllers");
+		
+		List<String> controllers = new ArrayList<String>();
+		for (ChildData data : controllerCache.getCurrentData()){
+
+			String d = null;
+			try {
+				d = new String(data.getData(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new Exception("Error encoding string", e);
+			}
+
+			controllers.add(d);
+		}
+		return controllers;
+	}
+
+	@Override
+	public void registerController(String id) throws Exception {
+		byte bytes[] = null;
+		try {
+			bytes = id.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			throw new Exception("Error encoding string", e1);
+		}
+		
+		String path = controllerPath + "/" + id;
+		
+		log.info("Registering controller with id {}", id);
+		
+		//Create ephemeral node with my id
+		try {
+			client.create().withProtection().withMode(CreateMode.EPHEMERAL)
+					.forPath(path, bytes);
+		} catch (Exception e) {
+			throw new Exception("Error contacting the Zookeeper service", e);
+		}
+	}
+	
+	@Override
+	public String getControllerForSwitch(long dpid) throws Exception {
+		// TODO Work out how we should store this controller/switch data.
+		// The leader latch might be a index to the /controllers collections
+		// which holds more info on the controller (how to talk to it for example).
+		
+		
+		String strDpid = HexString.toHexString(dpid);
+		LeaderLatch latch = switchLatches.get(strDpid);
+		
+		if (latch == null){
+			log.warn("Tried to get controller for non-existent switch");
+			return null;
+		}
+		
+		Participant leader = null;
+		try {
+			leader = latch.getLeader();
+		} catch (Exception e) {
+			throw new Exception("Error contacting the Zookeeper service", e);
+		}
+		
+		return leader.getId();
+	}
+	
+	@Override
+	public Collection<Long> getSwitchesControlledByController(String controllerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/*
 	 * IFloodlightModule
@@ -183,7 +266,8 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-		Collection<Class<? extends IFloodlightService>> l = new ArrayList<Class<? extends IFloodlightService>>();
+		Collection<Class<? extends IFloodlightService>> l = 
+				new ArrayList<Class<? extends IFloodlightService>>();
 		l.add(IMastershipService.class);
 		return l;
 	}
@@ -204,7 +288,7 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 	
 	@Override
 	public void init (FloodlightModuleContext context) throws FloodlightModuleException {
-
+		/*
 		try {
 			String localHostname = java.net.InetAddress.getLocalHost().getHostName();
 			mastershipId = localHostname;
@@ -224,58 +308,21 @@ public class MastershipManager implements IFloodlightModule, IMastershipService 
 		
 		client = client.usingNamespace(namespace);
 		
-		return;
+		controllerCache = new PathChildrenCache(client, controllerPath, true);
+		
+		try {
+			controllerCache.start(StartMode.BUILD_INITIAL_CACHE);
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	*/
 	}
 	
 	@Override
 	public void startUp (FloodlightModuleContext context) {
 		// Nothing to be done on startup
-	}
-	
-	public static void main(String args[]){
-		FloodlightModuleContext fmc = new FloodlightModuleContext();
-		MastershipManager mm = new MastershipManager();
-		
-		String id = null;
-		if (args.length > 0){
-			id = args[0];
-			log.info("Using unique id: {}", id);
-		}
-		
-		try {
-			mm.init(fmc);
-			mm.startUp(fmc);
-			
-			if (id != null){
-				mm.setMastershipId(id);
-			}
-				
-			mm.acquireMastership(1L, 
-				new MastershipCallback(){
-					@Override
-					public void changeCallback(long dpid, boolean isMaster) {
-						if (isMaster){
-							log.debug("Callback for becoming master for {}", HexString.toHexString(dpid));
-						}
-						else {
-							log.debug("Callback for losing mastership for {}", HexString.toHexString(dpid));
-						}
-					}
-				});
-			
-			//"Server" loop
-			while (true) {
-				Thread.sleep(60000);
-			}
-			
-		} catch (FloodlightModuleException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		log.debug("is master: {}", mm.amMaster(1L));
 	}
 }

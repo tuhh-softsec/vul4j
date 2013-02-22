@@ -58,6 +58,7 @@ import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
@@ -65,6 +66,7 @@ import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
+import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.mastership.IMastershipService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
@@ -190,6 +192,8 @@ public class Controller implements IFloodlightProviderService,
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
     protected IMastershipService masterHelper;
+    protected IFlowService flowService;
+    protected ITopoRouteService topoRouteService;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -392,9 +396,17 @@ public class Controller implements IFloodlightProviderService,
         this.threadPool = tp;
     }
 
-	public void setMastershipService(IMastershipService serviceImpl) {
-		this.masterHelper = serviceImpl;		
-	}
+    public void setMastershipService(IMastershipService serviceImpl) {
+	this.masterHelper = serviceImpl;		
+    }
+
+    public void setFlowService(IFlowService serviceImpl) {
+	this.flowService = serviceImpl;		
+    }
+
+    public void setTopoRouteService(ITopoRouteService serviceImpl) {
+	this.topoRouteService = serviceImpl;		
+    }
 	
     @Override
     public Role getRole() {

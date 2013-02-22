@@ -1,10 +1,15 @@
 package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.IPv4;
+import net.floodlightcontroller.util.serializers.IPv4NetSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing an IPv4 network address.
  */
+@JsonSerialize(using=IPv4NetSerializer.class)
 public class IPv4Net {
     private IPv4 address;		// The IPv4 address
     private short prefixLen;		// The prefix length
@@ -59,8 +64,6 @@ public class IPv4Net {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return this.address.toString() + "/" + this.prefixLen;
     }
 }

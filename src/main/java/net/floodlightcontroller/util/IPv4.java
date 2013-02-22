@@ -1,8 +1,14 @@
 package net.floodlightcontroller.util;
 
+import net.floodlightcontroller.util.serializers.IPv4Serializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing an IPv4 address.
  */
+@JsonSerialize(using=IPv4Serializer.class)
 public class IPv4 {
     private int value;
 
@@ -45,8 +51,9 @@ public class IPv4 {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return ((this.value >> 24) & 0xFF) + "." +
+	    ((this.value >> 16) & 0xFF) + "." +
+	    ((this.value >> 8) & 0xFF) + "." +
+	    (this.value & 0xFF);
     }
 }

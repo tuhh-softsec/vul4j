@@ -1,8 +1,14 @@
 package net.floodlightcontroller.util;
 
+import net.floodlightcontroller.util.serializers.PortSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing a network port of a switch.
  */
+@JsonSerialize(using=PortSerializer.class)
 public class Port {
     private short value;
 
@@ -45,8 +51,6 @@ public class Port {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return Short.toString(this.value);
     }
 }
