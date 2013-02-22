@@ -4,15 +4,7 @@ import java.util.Collection;
 
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.openflow.protocol.OFPhysicalPort;
-
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.frames.Adjacency;
-import com.tinkerpop.frames.Incidence;
-import com.tinkerpop.frames.Property;
-import com.tinkerpop.frames.VertexFrame;
 
 public interface ISwitchStorage extends INetMapStorage {
 	

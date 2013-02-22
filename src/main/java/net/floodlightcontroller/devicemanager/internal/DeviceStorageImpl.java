@@ -1,21 +1,12 @@
 package net.floodlightcontroller.devicemanager.internal;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.thinkaurelius.titan.core.TitanException;
-import com.thinkaurelius.titan.core.TitanFactory;
-import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
-import com.tinkerpop.frames.FramedGraph;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
@@ -23,31 +14,19 @@ import net.floodlightcontroller.core.internal.SwitchStorageImpl;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceStorage;
 import net.floodlightcontroller.devicemanager.SwitchPort;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 public class DeviceStorageImpl implements IDeviceStorage {
 	
-	public TitanGraph graph;
+//	public TitanGraph graph;
+	public GraphDBConnection conn;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	public ITopoSwitchService svc;
 
 	@Override
 	public void init(String conf) {
-	       graph = TitanFactory.open(conf);
-	        
-	        // FIXME: Creation on Indexes should be done only once
-	        Set<String> s = graph.getIndexedKeys(Vertex.class);
-	        if (!s.contains("dpid")) {
-	           graph.createKeyIndex("dpid", Vertex.class);
-	           graph.stopTransaction(Conclusion.SUCCESS);
-	        }
-	        if (!s.contains("type")) {
-	        	graph.createKeyIndex("type", Vertex.class);
-	        	graph.stopTransaction(Conclusion.SUCCESS);
-	        }
-	        if (!s.contains("dl_address")) {
-	        	graph.createKeyIndex("dl_address", Vertex.class);
-	        	graph.stopTransaction(Conclusion.SUCCESS);
-	        }
+		conn = GraphDBConnection.getInstance(conf);
 	}	
 
 	public void finalize() {
@@ -56,45 +35,32 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	
 	@Override
 	public void close() {
-		graph.shutdown();
+		conn.close();
 	}
 
 	@Override
 	public IDeviceObject addDevice(IDevice device) {
 		// TODO Auto-generated method stub
-		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);;
 		IDeviceObject obj = null;
-       	SwitchPort[] attachmentPoints = device.getAttachmentPoints();
-       	List<IPortObject> attachedPorts; 
  		try {
-            if (fg.getVertices("dl_address",device.getMACAddressString()).iterator().hasNext()) {
-            	obj = fg.getVertices("dl_address",device.getMACAddressString(),
-            			IDeviceObject.class).iterator().next();
-                attachedPorts = Lists.newArrayList(obj.getAttachedPorts());
-
+            if ((obj = conn.utils().searchDevice(conn, device.getMACAddressString())) != null) {
+                log.debug("Adding device {}: found existing device",device.getMACAddressString());
             } else {
-            	obj = fg.addVertex(null,IDeviceObject.class);
-            	attachedPorts = new ArrayList<IPortObject>();
+            	obj = conn.utils().newDevice(conn);
+                log.debug("Adding device {}: creating new device",device.getMACAddressString());
             }
-            for (SwitchPort ap : attachmentPoints) {
-            	 IPortObject port = svc.getPortOnSwitch(HexString.toHexString(ap.getSwitchDPID()),
-            												(short) ap.getPort());
-            	if (attachedPorts.contains(port)) {
-            		attachedPorts.remove(port);
-            	} else {
-            		obj.setHostPort(port);
-            	}            		
-            }
-            for (IPortObject port: attachedPorts) {
-            		obj.removeHostPort(port);
-            }
+            changeDeviceAttachments(device, obj);
+            
  			obj.setIPAddress(device.getIPv4Addresses().toString());
  			obj.setMACAddress(device.getMACAddressString());
  			obj.setType("device");
  			obj.setState("ACTIVE");
- 			graph.stopTransaction(Conclusion.SUCCESS);
-		} catch (TitanException e) {
+ 			conn.endTx(Transaction.COMMIT);
+ 			
+ 			log.debug("Adding device {}",device.getMACAddressString());
+		} catch (Exception e) {
             // TODO: handle exceptions
+          	conn.endTx(Transaction.ROLLBACK);
 			log.error(":addDevice mac:{} failed", device.getMACAddressString());
 		}	
 		
@@ -103,19 +69,29 @@ public class DeviceStorageImpl implements IDeviceStorage {
 
 	@Override
 	public IDeviceObject updateDevice(IDevice device) {
-		// TODO Auto-generated method stub
 		return addDevice(device);
 	}
 
 	@Override
-	public IDeviceObject removeDevice(IDevice device) {
+	public void removeDevice(IDevice device) {
 		// TODO Auto-generated method stub
-		return null;
+		IDeviceObject dev;
+		try {
+			if ((dev = conn.utils().searchDevice(conn, device.getMACAddressString())) != null) {
+             	conn.utils().removeDevice(conn, dev);
+              	conn.endTx(Transaction.COMMIT);
+            	log.error("DeviceStorage:removeDevice mac:{} done", device.getMACAddressString());
+            }
+		} catch (Exception e) {
+             // TODO: handle exceptions
+          	conn.endTx(Transaction.ROLLBACK);
+			log.error("DeviceStorage:removeDevice mac:{} failed", device.getMACAddressString());
+		}
 	}
 
 	@Override
 	public IDeviceObject getDeviceByMac(String mac) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -123,6 +99,66 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	public IDeviceObject getDeviceByIP(String ip) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void changeDeviceAttachments(IDevice device) {
+		// TODO Auto-generated method stub
+		IDeviceObject obj = null;
+ 		try {
+            if ((obj = conn.utils().searchDevice(conn, device.getMACAddressString())) != null) {
+                log.debug("Changing device ports {}: found existing device",device.getMACAddressString());
+                changeDeviceAttachments(device, obj);
+     			conn.endTx(Transaction.COMMIT);
+           } else {
+   				log.debug("failed to search device...now adding {}",device.getMACAddressString());
+   				addDevice(device);
+           }            			
+		} catch (Exception e) {
+            // TODO: handle exceptions
+          	conn.endTx(Transaction.ROLLBACK);
+			log.error(":addDevice mac:{} failed", device.getMACAddressString());
+		}	
+	}
+	
+	public void changeDeviceAttachments(IDevice device, IDeviceObject obj) {
+		SwitchPort[] attachmentPoints = device.getAttachmentPoints();
+		List<IPortObject> attachedPorts = Lists.newArrayList(obj.getAttachedPorts());
+
+        for (SwitchPort ap : attachmentPoints) {
+       	 IPortObject port = conn.utils().searchPort(conn,
+       			 									HexString.toHexString(ap.getSwitchDPID()),
+       												(short) ap.getPort());
+       	if (attachedPorts.contains(port)) {
+       		attachedPorts.remove(port);
+       	} else {
+               log.debug("Adding device {}: attaching to port",device.getMACAddressString());
+               port.setDevice(obj);
+       		//obj.setHostPort(port);
+       	}            		
+       }
+       for (IPortObject port: attachedPorts) {
+       		port.removeDevice(obj);
+       	//	obj.removeHostPort(port);
+       }	
+	}
+
+	@Override
+	public void changeDeviceIPv4Address(IDevice device) {
+		// TODO Auto-generated method stub
+		IDeviceObject obj;
+  		try {
+  			if ((obj = conn.utils().searchDevice(conn, device.getMACAddressString())) != null) {
+            	obj.setIPAddress(device.getIPv4Addresses().toString());
+              	conn.endTx(Transaction.COMMIT); 
+  			} else {
+            	log.error(":changeDeviceIPv4Address mac:{} failed", device.getMACAddressString());
+             }		
+  		} catch (TitanException e) {
+            // TODO: handle exceptions
+          	conn.endTx(Transaction.ROLLBACK);
+			log.error(":changeDeviceIPv4Address mac:{} failed due to exception {}", device.getMACAddressString(),e);
+		}
 	}
 
 }

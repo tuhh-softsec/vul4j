@@ -20,8 +20,6 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage;
 
