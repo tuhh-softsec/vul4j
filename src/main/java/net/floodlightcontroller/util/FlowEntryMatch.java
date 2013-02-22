@@ -2,6 +2,10 @@ package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.IPv4Net;
+import net.floodlightcontroller.util.serializers.FlowEntryMatchSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Flow Entry Matching filter.
@@ -15,6 +19,7 @@ import net.floodlightcontroller.util.IPv4Net;
  * more matching fields, we need to indicate which fields need to be
  * matched, etc.
  */
+@JsonSerialize(using=FlowEntryMatchSerializer.class)
 public class FlowEntryMatch {
     private MACAddress srcMac;		// Matching source MAC address
     private MACAddress dstMac;		// Matching destination MAC address
@@ -94,12 +99,18 @@ public class FlowEntryMatch {
     /**
      * Convert the matching filter to a string.
      *
+     * The string has the following form:
+     *  [srcMac:XXX dstMac:XXX srcIPv4Net:XXX dstIPv4Net:XXX]
+     *
      * @return the matching filter as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[srcMac: " + this.srcMac.toString();
+	ret += " dstMac:" + this.dstMac.toString();
+	ret += " srcIPv4Net:" + this.srcIPv4Net.toString();
+	ret += " dstIPv4Net:" + this.dstIPv4Net.toString();
+	ret += "]";
 	return ret;
     }
 }

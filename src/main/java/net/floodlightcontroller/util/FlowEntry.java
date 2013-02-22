@@ -5,6 +5,10 @@ import net.floodlightcontroller.util.FlowEntryActions;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.serializers.FlowEntrySerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The Flow Entry state as set by the user (via the ONOS API).
@@ -34,6 +38,7 @@ enum FlowEntrySwitchState {
  * NOTE: The specification is incomplete. E.g., the entry needs to
  * support multiple in-ports and multiple out-ports.
  */
+@JsonSerialize(using=FlowEntrySerializer.class)
 public class FlowEntry {
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
@@ -213,12 +218,25 @@ public class FlowEntry {
     /**
      * Convert the flow entry to a string.
      *
+     * The string has the following form:
+     *  [flowEntryId:XXX flowEntryMatch:XXX flowEntryActions:XXX dpid:XXX
+     *   inPort:XXX outPort:XXX flowEntryUserState:XXX flowEntrySwitchState:XXX
+     *   flowEntryErrorState:XXX]
      * @return the flow entry as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[flowEntryId:" + this.flowEntryId.toString();
+	ret += " flowEntryMatch:" + this.flowEntryMatch.toString();
+	ret += " flowEntryActions:" + this.flowEntryActions.toString();
+	ret += " dpid:" + this.dpid.toString();
+	ret += " inPort:" + this.inPort.toString();
+	ret += " outPort:" + this.outPort.toString();
+	ret += " flowEntryUserState:" + this.flowEntryUserState;
+	ret += " flowEntrySwitchState:" + this.flowEntrySwitchState;
+	ret += " flowEntryErrorState:" + this.flowEntryErrorState.toString();
+	ret += "]";
+
 	return ret;
     }
 }

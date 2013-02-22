@@ -2,10 +2,15 @@ package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.serializers.SwitchPortSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Switch-Port.
  */
+@JsonSerialize(using=SwitchPortSerializer.class)
 public class SwitchPort {
     private Dpid dpid;		// The DPID of the switch
     private Port port;		// The port of the switch
@@ -55,12 +60,13 @@ public class SwitchPort {
     /**
      * Convert the Switch-Port value to a string.
      *
+     * The string has the following form:
+     *  01:02:03:04:05:06:07:08/1234
+     *
      * @return the Switch-Port value as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return this.dpid.toString() + "/" + this.port;
     }
 }

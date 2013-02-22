@@ -1,8 +1,14 @@
 package net.floodlightcontroller.util;
 
+import net.floodlightcontroller.util.serializers.FlowEntryErrorStateSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing the Flow Entry error state.
  */
+@JsonSerialize(using=FlowEntryErrorStateSerializer.class)
 public class FlowEntryErrorState {
     private short type;	// The error type (e.g., see OF-1.3.1 spec, pp. 95)
     private short code;	// The error code (e.g., see OF-1.3.1 spec, pp. 95)
@@ -54,12 +60,14 @@ public class FlowEntryErrorState {
     /**
      * Convert the error type and code to a string.
      *
+     * The string has the following form:
+     * [type:1 code:2]
+     *
      * @return the error type and code as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[type:" + this.type + " code:" + code + "]";
 	return ret;
     }
 }

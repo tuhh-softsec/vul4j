@@ -3,10 +3,15 @@ package net.floodlightcontroller.util;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.FlowId;
+import net.floodlightcontroller.util.serializers.FlowPathSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Flow Path.
  */
+@JsonSerialize(using=FlowPathSerializer.class)
 public class FlowPath {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
@@ -73,8 +78,9 @@ public class FlowPath {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[flowId:" + this.flowId.toString();
+	ret += " installerId:" + this.installerId.toString();
+	ret += " dataPath:" + this.dataPath.toString();
 	return ret;
     }
 }

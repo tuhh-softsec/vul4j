@@ -1,8 +1,15 @@
 package net.floodlightcontroller.util;
 
+import org.openflow.util.HexString;
+import net.floodlightcontroller.util.serializers.IPv6Serializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing an IPv6 address.
  */
+@JsonSerialize(using=IPv6Serializer.class)
 public class IPv6 {
     private long valueHigh;	// The higher (more significant) 64 bits
     private long valueLow;	// The lower (less significant) 64 bits
@@ -60,8 +67,7 @@ public class IPv6 {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return HexString.toHexString(this.valueHigh) + ":" +
+	    HexString.toHexString(this.valueLow);
     }
 }

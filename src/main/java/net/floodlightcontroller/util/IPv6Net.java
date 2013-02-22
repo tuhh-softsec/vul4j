@@ -1,10 +1,15 @@
 package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.IPv6;
+import net.floodlightcontroller.util.serializers.IPv6NetSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing an IPv6 network address.
  */
+@JsonSerialize(using=IPv6NetSerializer.class)
 public class IPv6Net {
     private IPv6 address;		// The IPv6 address
     private short prefixLen;		// The prefix length
@@ -59,8 +64,6 @@ public class IPv6Net {
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return this.address.toString() + "/" + this.prefixLen;
     }
 }

@@ -1,8 +1,15 @@
 package net.floodlightcontroller.util;
 
+import org.openflow.util.HexString;
+import net.floodlightcontroller.util.serializers.DpidSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing a network switch DPID.
  */
+@JsonSerialize(using=DpidSerializer.class)
 public class Dpid {
     static public long UNKNOWN = 0;
 
@@ -41,14 +48,12 @@ public class Dpid {
     }
 
     /**
-     * Convert the DPID value to a ':' separated hex string.
+     * Convert the DPID value to a ':' separated hexadecimal string.
      *
-     * @return the DPID value as a ':' separated hex string.
+     * @return the DPID value as a ':' separated hexadecimal string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return HexString.toHexString(this.value);
     }
 }
