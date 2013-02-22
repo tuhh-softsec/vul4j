@@ -1,5 +1,8 @@
 package net.onrc.onos.registry.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
@@ -52,8 +55,14 @@ public class RegistryRunner {
 			
 			rm.registerController(id);
 			
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 			
+			Map<String, List<ControllerRegistryEntry>> switches = rm.getAllSwitches();
+			for (List<ControllerRegistryEntry> ls : switches.values()){
+				for (ControllerRegistryEntry cre : ls){
+					log.debug("ctrlr: {}", cre.getControllerId());
+				}
+			}
 			//"Server" loop
 			while (true) {
 				Thread.sleep(60000);

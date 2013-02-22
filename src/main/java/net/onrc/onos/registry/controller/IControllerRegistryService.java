@@ -1,6 +1,7 @@
 package net.onrc.onos.registry.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
@@ -14,7 +15,7 @@ public interface IControllerRegistryService extends IFloodlightService {
 	}
 	
 	// Acquire mastership for a switch. 
-	public void requestControl(long dpid, ControlChangeCallback cb) throws Exception;
+	public void requestControl(long dpid, ControlChangeCallback cb) throws RegistryException;
 	
 	// Release mastership for a switch
 	public void releaseControl(long dpid);
@@ -42,7 +43,7 @@ public interface IControllerRegistryService extends IFloodlightService {
 	
 	public String getControllerForSwitch(long dpid) throws RegistryException;
 	
-	public Collection<Map<String, String>> getAllSwitches();
+	public Map<String, List<ControllerRegistryEntry>> getAllSwitches();
 	
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
 }
