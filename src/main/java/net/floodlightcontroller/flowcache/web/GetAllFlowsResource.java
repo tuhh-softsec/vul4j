@@ -29,7 +29,7 @@ public class GetAllFlowsResource extends ServerResource {
 	// Extract the arguments
 	log.debug("Get All Flows Endpoints");
 
-	// TODO: Implement it.
+	flowService.getAllFlows(result);
 
         return result;
     }

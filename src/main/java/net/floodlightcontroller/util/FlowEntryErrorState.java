@@ -61,13 +61,13 @@ public class FlowEntryErrorState {
      * Convert the error type and code to a string.
      *
      * The string has the following form:
-     * [type:1 code:2]
+     * [type=1 code=2]
      *
      * @return the error type and code as a string.
      */
     @Override
     public String toString() {
-	String ret = "[type:" + this.type + " code:" + code + "]";
+	String ret = "[type=" + this.type + " code=" + code + "]";
 	return ret;
     }
 }

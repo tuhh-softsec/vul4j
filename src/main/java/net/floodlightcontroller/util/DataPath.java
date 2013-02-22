@@ -76,18 +76,18 @@ public class DataPath {
      * Convert the data path to a string.
      *
      * The string has the following form:
-     * [src:01:01:01:01:01:01:01:01/1111 flowEntry:<entry1> flowEntry:<entry2> flowEntry:<entry3> dst:02:02:02:02:02:02:02:02/2222]
+     * [src=01:01:01:01:01:01:01:01/1111 flowEntry=<entry1> flowEntry=<entry2> flowEntry=<entry3> dst=02:02:02:02:02:02:02:02/2222]
      *
      * @return the data path as a string.
      */
     @Override
     public String toString() {
-	String ret = "[src:" + this.srcPort.toString();
+	String ret = "[src=" + this.srcPort.toString();
 
 	for (FlowEntry fe : flowEntries) {
-	    ret += " flowEntry:" + fe.toString();
+	    ret += " flowEntry=" + fe.toString();
 	}
-	ret += " dst:" + this.dstPort.toString() + "]";
+	ret += " dst=" + this.dstPort.toString() + "]";
 
 	return ret;
     }

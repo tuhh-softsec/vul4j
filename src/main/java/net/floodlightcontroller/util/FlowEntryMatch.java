@@ -100,16 +100,16 @@ public class FlowEntryMatch {
      * Convert the matching filter to a string.
      *
      * The string has the following form:
-     *  [srcMac:XXX dstMac:XXX srcIPv4Net:XXX dstIPv4Net:XXX]
+     *  [srcMac=XXX dstMac=XXX srcIPv4Net=XXX dstIPv4Net=XXX]
      *
      * @return the matching filter as a string.
      */
     @Override
     public String toString() {
-	String ret = "[srcMac: " + this.srcMac.toString();
-	ret += " dstMac:" + this.dstMac.toString();
-	ret += " srcIPv4Net:" + this.srcIPv4Net.toString();
-	ret += " dstIPv4Net:" + this.dstIPv4Net.toString();
+	String ret = "[srcMac=" + this.srcMac.toString();
+	ret += " dstMac=" + this.dstMac.toString();
+	ret += " srcIPv4Net=" + this.srcIPv4Net.toString();
+	ret += " dstIPv4Net=" + this.dstIPv4Net.toString();
 	ret += "]";
 	return ret;
     }

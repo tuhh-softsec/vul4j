@@ -24,6 +24,13 @@ public class FlowPath {
     }
 
     /**
+     * Constructor from a string.
+     */
+    public FlowPath(String str) {
+	// TODO: Implement it.
+    }
+
+    /**
      * Get the flow path Flow ID.
      *
      * @return the flow path Flow ID.
@@ -74,13 +81,17 @@ public class FlowPath {
     /**
      * Convert the flow path to a string.
      *
+     * The string has the following form:
+     *  [flowId=XXX installerId=XXX dataPath=XXX]
+     *
      * @return the flow path as a string.
      */
     @Override
     public String toString() {
-	String ret = "[flowId:" + this.flowId.toString();
-	ret += " installerId:" + this.installerId.toString();
-	ret += " dataPath:" + this.dataPath.toString();
+	String ret = "[flowId=" + this.flowId.toString();
+	ret += " installerId=" + this.installerId.toString();
+	ret += " dataPath=" + this.dataPath.toString();
+	ret += "]";
 	return ret;
     }
 }

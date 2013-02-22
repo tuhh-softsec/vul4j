@@ -219,22 +219,22 @@ public class FlowEntry {
      * Convert the flow entry to a string.
      *
      * The string has the following form:
-     *  [flowEntryId:XXX flowEntryMatch:XXX flowEntryActions:XXX dpid:XXX
-     *   inPort:XXX outPort:XXX flowEntryUserState:XXX flowEntrySwitchState:XXX
-     *   flowEntryErrorState:XXX]
+     *  [flowEntryId=XXX flowEntryMatch=XXX flowEntryActions=XXX dpid=XXX
+     *   inPort=XXX outPort=XXX flowEntryUserState=XXX flowEntrySwitchState=XXX
+     *   flowEntryErrorState=XXX]
      * @return the flow entry as a string.
      */
     @Override
     public String toString() {
-	String ret = "[flowEntryId:" + this.flowEntryId.toString();
-	ret += " flowEntryMatch:" + this.flowEntryMatch.toString();
-	ret += " flowEntryActions:" + this.flowEntryActions.toString();
-	ret += " dpid:" + this.dpid.toString();
-	ret += " inPort:" + this.inPort.toString();
-	ret += " outPort:" + this.outPort.toString();
-	ret += " flowEntryUserState:" + this.flowEntryUserState;
-	ret += " flowEntrySwitchState:" + this.flowEntrySwitchState;
-	ret += " flowEntryErrorState:" + this.flowEntryErrorState.toString();
+	String ret = "[flowEntryId=" + this.flowEntryId.toString();
+	ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
+	ret += " flowEntryActions=" + this.flowEntryActions.toString();
+	ret += " dpid=" + this.dpid.toString();
+	ret += " inPort=" + this.inPort.toString();
+	ret += " outPort=" + this.outPort.toString();
+	ret += " flowEntryUserState=" + this.flowEntryUserState;
+	ret += " flowEntrySwitchState=" + this.flowEntrySwitchState;
+	ret += " flowEntryErrorState=" + this.flowEntryErrorState.toString();
 	ret += "]";
 
 	return ret;

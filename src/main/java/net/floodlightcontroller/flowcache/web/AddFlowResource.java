@@ -1,6 +1,8 @@
 package net.floodlightcontroller.flowcache.web;
 
 import net.floodlightcontroller.flowcache.IFlowService;
+import net.floodlightcontroller.util.FlowId;
+import net.floodlightcontroller.util.FlowPath;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -12,8 +14,8 @@ public class AddFlowResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
     @Get("json")
-    public Boolean retrieve() {
-	Boolean result = false;
+    public FlowId retrieve() {
+	FlowId result = new FlowId();
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -26,10 +28,13 @@ public class AddFlowResource extends ServerResource {
 
 	// Extract the arguments
 	String flowPathStr = (String) getRequestAttributes().get("flow");
+	FlowPath flowPath = new FlowPath(flowPathStr);
+
 	log.debug("Add Flow Path: " + flowPathStr);
 
-	// TODO: Implement it.
-	result = true;
+	if (flowService.addFlow(flowPath, result) != true) {
+	    result = new FlowId();	// Error: Empty Flow Id
+	}
 
         return result;
     }
