@@ -2,6 +2,7 @@ package net.floodlightcontroller.core;
 
 import java.util.List;
 
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -29,7 +30,7 @@ public interface INetMapTopologyService extends INetMapService {
 		Iterable<IDeviceObject> getDevicesOnSwitch(String dpid, short port_num);
 	}
 	
-	public interface ITopoRouteService {
+	public interface ITopoRouteService extends IFloodlightService {
 		List<NodePortTuple> getShortestPath(NodePortTuple src, NodePortTuple dest);
 		Boolean routeExists(NodePortTuple src, NodePortTuple dest);
 	}

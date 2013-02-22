@@ -58,6 +58,7 @@ import net.floodlightcontroller.core.IListener.Command;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
@@ -192,6 +193,7 @@ public class Controller implements IFloodlightProviderService,
     protected IThreadPoolService threadPool;
     protected IMastershipService masterHelper;
     protected IFlowService flowService;
+    protected ITopoRouteService topoRouteService;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -400,6 +402,10 @@ public class Controller implements IFloodlightProviderService,
 
     public void setFlowService(IFlowService serviceImpl) {
 	this.flowService = serviceImpl;		
+    }
+
+    public void setTopoRouteService(ITopoRouteService serviceImpl) {
+	this.topoRouteService = serviceImpl;		
     }
 	
     @Override

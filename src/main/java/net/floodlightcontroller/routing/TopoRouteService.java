@@ -1,10 +1,17 @@
 package net.floodlightcontroller.routing;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.floodlightcontroller.core.internal.SwitchStorageImpl;
+import net.floodlightcontroller.core.module.FloodlightModuleContext;
+import net.floodlightcontroller.core.module.FloodlightModuleException;
+import net.floodlightcontroller.core.module.IFloodlightModule;
+import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.topology.NodePortTuple;
 
@@ -18,7 +25,54 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngine;
 
-public class TopoRouteService implements ITopoRouteService {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
+
+    /** The logger. */
+    private static Logger logger =
+	LoggerFactory.getLogger(TopoRouteService.class);
+
+    @Override
+    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
+        Collection<Class<? extends IFloodlightService>> l = 
+            new ArrayList<Class<? extends IFloodlightService>>();
+        l.add(ITopoRouteService.class);
+        return l;
+    }
+
+    @Override
+    public Map<Class<? extends IFloodlightService>, IFloodlightService> 
+			       getServiceImpls() {
+        Map<Class<? extends IFloodlightService>,
+        IFloodlightService> m = 
+            new HashMap<Class<? extends IFloodlightService>,
+                IFloodlightService>();
+        m.put(ITopoRouteService.class, this);
+        return m;
+    }
+
+    @Override
+    public Collection<Class<? extends IFloodlightService>> 
+                                                    getModuleDependencies() {
+	Collection<Class<? extends IFloodlightService>> l =
+	    new ArrayList<Class<? extends IFloodlightService>>();
+	// TODO: Add the appropriate dependencies
+	// l.add(IRestApiService.class);
+        return l;
+    }
+
+    @Override
+    public void init(FloodlightModuleContext context)
+	throws FloodlightModuleException {
+	// TODO: Add the appropriate initialization
+    }
+
+    @Override
+    public void startUp(FloodlightModuleContext context) {
+	// TODO: Add the approprate setup
+    }
 
 	ThreadLocal<SwitchStorageImpl> store = new ThreadLocal<SwitchStorageImpl>() {
 	    @Override
