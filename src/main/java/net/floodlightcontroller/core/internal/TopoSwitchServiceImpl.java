@@ -1,7 +1,5 @@
 package net.floodlightcontroller.core.internal;
 
-import java.util.List;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;

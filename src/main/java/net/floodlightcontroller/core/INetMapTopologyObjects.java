@@ -47,6 +47,9 @@ public interface ISwitchObject extends IBaseObject{
 		public Iterable<IPortObject> getPorts();
 		
 		@Adjacency(label="on")
+		public IPortObject getPort(final short port_num);
+		
+		@Adjacency(label="on")
 		public void addPort(final IPortObject port);
 		
 		@Adjacency(label="on")
