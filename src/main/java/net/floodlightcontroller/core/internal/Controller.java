@@ -22,8 +22,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
+import java.net.UnknownHostException;
 import java.nio.channels.ClosedChannelException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -52,13 +53,13 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
-import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IListener.Command;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
@@ -77,6 +78,7 @@ import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.RegistryException;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -109,9 +111,9 @@ import org.openflow.protocol.OFGetConfigReply;
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPhysicalPort;
-import org.openflow.protocol.OFPortStatus;
 import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
 import org.openflow.protocol.OFPhysicalPort.OFPortState;
+import org.openflow.protocol.OFPortStatus;
 import org.openflow.protocol.OFPortStatus.OFPortReason;
 import org.openflow.protocol.OFSetConfig;
 import org.openflow.protocol.OFStatisticsRequest;
@@ -193,7 +195,7 @@ public class Controller implements IFloodlightProviderService,
     protected IThreadPoolService threadPool;
     protected IFlowService flowService;
     protected ITopoRouteService topoRouteService;
-    protected IControllerRegistryService masterHelper;
+    protected IControllerRegistryService registryService;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -405,7 +407,7 @@ public class Controller implements IFloodlightProviderService,
     }
 
 	public void setMastershipService(IControllerRegistryService serviceImpl) {
-		this.masterHelper = serviceImpl;		
+		this.registryService = serviceImpl;		
 	}
 	
     @Override
@@ -2057,6 +2059,16 @@ public class Controller implements IFloodlightProviderService,
         if (controllerId != null) {
             this.controllerId = controllerId;
         }
+        else {
+        	//Try to get the hostname of the machine and use that for controller ID
+        	try {
+    			String hostname = java.net.InetAddress.getLocalHost().getHostName();
+    			this.controllerId = hostname;
+    		} catch (UnknownHostException e) {
+    			// Can't get hostname, we'll just use the default
+    		}
+        }
+        
         log.debug("ControllerId set to {}", this.controllerId);
     }
 
@@ -2112,6 +2124,12 @@ public class Controller implements IFloodlightProviderService,
                         "that the system database has failed to start. " +
                         LogMessageDoc.CHECK_CONTROLLER)
     public void startupComponents() {
+    	try {
+			registryService.registerController(controllerId);
+		} catch (RegistryException e2) {
+			log.warn("Registry service error: {}", e2.getMessage());
+		}
+    	
         // Create the table names we use
         storageSource.createTable(CONTROLLER_TABLE_NAME, null);
         storageSource.createTable(SWITCH_TABLE_NAME, null);

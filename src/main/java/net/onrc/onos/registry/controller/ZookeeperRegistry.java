@@ -22,6 +22,7 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.netflix.curator.RetryPolicy;
 import com.netflix.curator.framework.CuratorFramework;
 import com.netflix.curator.framework.CuratorFrameworkFactory;
@@ -286,15 +287,20 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	@Override
 	public void registerController(String id) throws RegistryException {
 		//if (!zookeeperEnabled) return;
+		if (controllerId != null) {
+			throw new RegistryException(
+					"Controller already registered with id " + controllerId);
+		}
 		
 		controllerId = id;
 		
-		byte bytes[] = null;
+		byte bytes[] = id.getBytes(Charsets.UTF_8);
+		/*byte bytes[] = null;
 		try {
 			bytes = id.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e1) {
 			throw new RegistryException("Error encoding string", e1);
-		}
+		}*/
 		
 		String path = controllerPath + "/" + id;
 		
@@ -364,12 +370,13 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 				}
 				*/
 				
-				String controllerId = null;
+				/*String controllerId = null;
 				try {
 					controllerId = new String(d.getData(), "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					log.warn("Encoding exception: {}", e.getMessage());
-				}
+				}*/
+				String controllerId = new String(d.getData(), Charsets.UTF_8);
 				
 				String[] splitted = d.getPath().split("-");
 				int sequenceNumber = Integer.parseInt(splitted[splitted.length - 1]);

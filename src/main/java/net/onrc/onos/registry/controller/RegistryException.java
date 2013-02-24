@@ -9,17 +9,15 @@ public class RegistryException extends Exception {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	public RegistryException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
-
 	public RegistryException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 	*/
+	
+	public RegistryException(String message) {
+		super(message);
+	}
 	
 	public RegistryException(String message, Throwable cause) {
 		super(message, cause);

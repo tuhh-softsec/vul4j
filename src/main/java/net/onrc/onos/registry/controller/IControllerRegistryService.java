@@ -29,8 +29,9 @@ public interface IControllerRegistryService extends IFloodlightService {
 	public String getMastershipId ();
 	
 	/**
-	 * Register a controller to the ONOS cluster
+	 * Register a controller to the ONOS cluster. 
 	 * @param controller A string identifying the controller
+	 * @throws errors connecting to registry service, controllerId already registered
 	 */
 	public void registerController(String controllerId) throws RegistryException;
 	
