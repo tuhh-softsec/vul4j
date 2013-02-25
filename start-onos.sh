@@ -103,10 +103,22 @@ function deldb {
       mkdir /tmp/cassandra.titan
    fi
 }
+function check_db {
+   if [ -d "/tmp/cassandra.titan" ]; then
+      echo "Cassandra is running on local berkely db. Exitting"
+      exit
+   fi
+   n=`ps -edalf |grep java |grep apache-cassandra | wc -l`
+   if [ x$n != "x1" ]; then
+      echo "Cassandra is not running. Exitting"
+      exit
+   fi
+}
 
 case "$1" in
   start)
     stop
+    check_db
     start 
     ;;
   stop)
