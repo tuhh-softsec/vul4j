@@ -57,7 +57,7 @@ public class XMLX509Digest extends Signature11ElementProxy implements XMLX509Dat
     public XMLX509Digest(Document doc, byte[] digestBytes, String algorithmURI) {
         super(doc);
         this.addBase64Text(digestBytes);
-        this.constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM, algorithmURI);
+        setLocalAttribute(Constants._ATT_ALGORITHM, algorithmURI);
     }
 
     /**
@@ -71,7 +71,7 @@ public class XMLX509Digest extends Signature11ElementProxy implements XMLX509Dat
     public XMLX509Digest(Document doc, X509Certificate x509certificate, String algorithmURI) throws XMLSecurityException {
         super(doc);
         this.addBase64Text(getDigestBytesFromCert(x509certificate, algorithmURI));
-        this.constructionElement.setAttributeNS(null, Constants._ATT_ALGORITHM, algorithmURI);
+        setLocalAttribute(Constants._ATT_ALGORITHM, algorithmURI);
     }
     
     /**
@@ -80,7 +80,7 @@ public class XMLX509Digest extends Signature11ElementProxy implements XMLX509Dat
      * @return the Algorithm attribute
      */
     public Attr getAlgorithmAttr() {
-        return this.constructionElement.getAttributeNodeNS(null, Constants._ATT_ALGORITHM);
+        return getElement().getAttributeNodeNS(null, Constants._ATT_ALGORITHM);
     }
 
     /**

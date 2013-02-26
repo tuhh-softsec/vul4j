@@ -124,8 +124,7 @@ public class KeyInfo extends SignatureElementProxy {
      */
     public KeyInfo(Document doc) {
         super(doc);
-
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
     }
 
     /**
@@ -158,8 +157,7 @@ public class KeyInfo extends SignatureElementProxy {
      */
     public void setId(String id) {
         if (id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
+            setLocalIdAttribute(Constants._ATT_ID, id);
         }
     }
 
@@ -169,7 +167,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the <code>Id</code> attribute
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /**
@@ -178,7 +176,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param keynameString
      */
     public void addKeyName(String keynameString) {
-        this.add(new KeyName(this.doc, keynameString));
+        this.add(new KeyName(getDocument(), keynameString));
     }
 
     /**
@@ -187,8 +185,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param keyname
      */
     public void add(KeyName keyname) {
-        this.constructionElement.appendChild(keyname.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(keyname);
+        addReturnToSelf();
     }
 
     /**
@@ -197,7 +195,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param pk
      */
     public void addKeyValue(PublicKey pk) {
-        this.add(new KeyValue(this.doc, pk));
+        this.add(new KeyValue(getDocument(), pk));
     }
 
     /**
@@ -206,7 +204,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param unknownKeyValueElement
      */
     public void addKeyValue(Element unknownKeyValueElement) {
-        this.add(new KeyValue(this.doc, unknownKeyValueElement));
+        this.add(new KeyValue(getDocument(), unknownKeyValueElement));
     }
 
     /**
@@ -215,7 +213,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param dsakeyvalue
      */
     public void add(DSAKeyValue dsakeyvalue) {
-        this.add(new KeyValue(this.doc, dsakeyvalue));
+        this.add(new KeyValue(getDocument(), dsakeyvalue));
     }
 
     /**
@@ -224,7 +222,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param rsakeyvalue
      */
     public void add(RSAKeyValue rsakeyvalue) {
-        this.add(new KeyValue(this.doc, rsakeyvalue));
+        this.add(new KeyValue(getDocument(), rsakeyvalue));
     }
 
     /**
@@ -233,7 +231,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param pk
      */
     public void add(PublicKey pk) {
-        this.add(new KeyValue(this.doc, pk));
+        this.add(new KeyValue(getDocument(), pk));
     }
 
     /**
@@ -242,8 +240,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param keyvalue
      */
     public void add(KeyValue keyvalue) {
-        this.constructionElement.appendChild(keyvalue.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(keyvalue);
+        addReturnToSelf();
     }
 
     /**
@@ -252,7 +250,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param mgmtdata
      */
     public void addMgmtData(String mgmtdata) {
-        this.add(new MgmtData(this.doc, mgmtdata));
+        this.add(new MgmtData(getDocument(), mgmtdata));
     }
 
     /**
@@ -261,8 +259,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param mgmtdata
      */
     public void add(MgmtData mgmtdata) {
-        this.constructionElement.appendChild(mgmtdata.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(mgmtdata);
+        addReturnToSelf();
     }
 
     /**
@@ -271,8 +269,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param pgpdata
      */
     public void add(PGPData pgpdata) {
-        this.constructionElement.appendChild(pgpdata.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(pgpdata);
+        addReturnToSelf();
     }
 
     /**
@@ -283,7 +281,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @param Type  
      */
     public void addRetrievalMethod(String uri, Transforms transforms, String Type) {
-        this.add(new RetrievalMethod(this.doc, uri, transforms, Type));
+        this.add(new RetrievalMethod(getDocument(), uri, transforms, Type));
     }
 
     /**
@@ -292,8 +290,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param retrievalmethod
      */
     public void add(RetrievalMethod retrievalmethod) {
-        this.constructionElement.appendChild(retrievalmethod.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(retrievalmethod);
+        addReturnToSelf();
     }
 
     /**
@@ -302,8 +300,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param spkidata
      */
     public void add(SPKIData spkidata) {
-        this.constructionElement.appendChild(spkidata.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(spkidata);
+        addReturnToSelf();
     }
 
     /**
@@ -316,8 +314,8 @@ public class KeyInfo extends SignatureElementProxy {
             x509Datas = new ArrayList<X509Data>();
         }
         x509Datas.add(x509data);
-        this.constructionElement.appendChild(x509data.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(x509data);
+        addReturnToSelf();
     }
 
     /**
@@ -333,7 +331,7 @@ public class KeyInfo extends SignatureElementProxy {
         }
         encryptedKeys.add(encryptedKey);
         XMLCipher cipher = XMLCipher.getInstance();
-        this.constructionElement.appendChild(cipher.martial(encryptedKey));
+        appendSelf(cipher.martial(encryptedKey));
     }
     
     /**
@@ -343,7 +341,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException 
      */
     public void addDEREncodedKeyValue(PublicKey pk) throws XMLSecurityException {
-        this.add(new DEREncodedKeyValue(this.doc, pk));
+        this.add(new DEREncodedKeyValue(getDocument(), pk));
     }
 
     /**
@@ -352,8 +350,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param derEncodedKeyValue
      */
     public void add(DEREncodedKeyValue derEncodedKeyValue) {
-        this.constructionElement.appendChild(derEncodedKeyValue.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(derEncodedKeyValue);
+        addReturnToSelf();
     }
     
     /**
@@ -363,7 +361,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @throws XMLSecurityException 
      */
     public void addKeyInfoReference(String URI) throws XMLSecurityException {
-        this.add(new KeyInfoReference(this.doc, URI));
+        this.add(new KeyInfoReference(getDocument(), URI));
     }
 
     /**
@@ -372,8 +370,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param keyInfoReference
      */
     public void add(KeyInfoReference keyInfoReference) {
-        this.constructionElement.appendChild(keyInfoReference.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(keyInfoReference);
+        addReturnToSelf();
     }
 
     /**
@@ -382,8 +380,8 @@ public class KeyInfo extends SignatureElementProxy {
      * @param element
      */
     public void addUnknownElement(Element element) {
-        this.constructionElement.appendChild(element);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(element);
+        addReturnToSelf();
     }
 
     /**
@@ -477,7 +475,7 @@ public class KeyInfo extends SignatureElementProxy {
      */
     public int lengthUnknownElement() {
         int res = 0;
-        NodeList nl = this.constructionElement.getChildNodes();
+        NodeList nl = getElement().getChildNodes();
 
         for (int i = 0; i < nl.getLength(); i++) {
             Node current = nl.item(i);
@@ -505,7 +503,7 @@ public class KeyInfo extends SignatureElementProxy {
     public KeyName itemKeyName(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_KEYNAME, i);
+                getFirstChild(), Constants._TAG_KEYNAME, i);
 
         if (e != null) {
             return new KeyName(e, this.baseURI);
@@ -523,7 +521,7 @@ public class KeyInfo extends SignatureElementProxy {
     public KeyValue itemKeyValue(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_KEYVALUE, i);
+                getFirstChild(), Constants._TAG_KEYVALUE, i);
 
         if (e != null) {
             return new KeyValue(e, this.baseURI);
@@ -541,7 +539,7 @@ public class KeyInfo extends SignatureElementProxy {
     public MgmtData itemMgmtData(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_MGMTDATA, i);
+                getFirstChild(), Constants._TAG_MGMTDATA, i);
 
         if (e != null) {
             return new MgmtData(e, this.baseURI);
@@ -559,7 +557,7 @@ public class KeyInfo extends SignatureElementProxy {
     public PGPData itemPGPData(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_PGPDATA, i);
+                getFirstChild(), Constants._TAG_PGPDATA, i);
 
         if (e != null) {
             return new PGPData(e, this.baseURI);
@@ -577,7 +575,7 @@ public class KeyInfo extends SignatureElementProxy {
     public RetrievalMethod itemRetrievalMethod(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_RETRIEVALMETHOD, i);
+                getFirstChild(), Constants._TAG_RETRIEVALMETHOD, i);
 
         if (e != null) {
             return new RetrievalMethod(e, this.baseURI);
@@ -595,7 +593,7 @@ public class KeyInfo extends SignatureElementProxy {
     public SPKIData itemSPKIData(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_SPKIDATA, i);
+                getFirstChild(), Constants._TAG_SPKIDATA, i);
 
         if (e != null) {
             return new SPKIData(e, this.baseURI);
@@ -616,7 +614,7 @@ public class KeyInfo extends SignatureElementProxy {
         }
         Element e = 
             XMLUtils.selectDsNode(
-                this.constructionElement.getFirstChild(), Constants._TAG_X509DATA, i);
+                getFirstChild(), Constants._TAG_X509DATA, i);
 
         if (e != null) {
             return new X509Data(e, this.baseURI);
@@ -637,7 +635,7 @@ public class KeyInfo extends SignatureElementProxy {
         }
         Element e = 
             XMLUtils.selectXencNode(
-                this.constructionElement.getFirstChild(), EncryptionConstants._TAG_ENCRYPTEDKEY, i);
+                getFirstChild(), EncryptionConstants._TAG_ENCRYPTEDKEY, i);
 
         if (e != null) {
             XMLCipher cipher = XMLCipher.getInstance();
@@ -657,7 +655,7 @@ public class KeyInfo extends SignatureElementProxy {
     public DEREncodedKeyValue itemDEREncodedKeyValue(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDs11Node(
-                this.constructionElement.getFirstChild(), Constants._TAG_DERENCODEDKEYVALUE, i);
+                getFirstChild(), Constants._TAG_DERENCODEDKEYVALUE, i);
 
         if (e != null) {
             return new DEREncodedKeyValue(e, this.baseURI);
@@ -675,7 +673,7 @@ public class KeyInfo extends SignatureElementProxy {
     public KeyInfoReference itemKeyInfoReference(int i) throws XMLSecurityException {
         Element e = 
             XMLUtils.selectDs11Node(
-                this.constructionElement.getFirstChild(), Constants._TAG_KEYINFOREFERENCE, i);
+                getFirstChild(), Constants._TAG_KEYINFOREFERENCE, i);
 
         if (e != null) {
             return new KeyInfoReference(e, this.baseURI);
@@ -690,7 +688,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @return the element number of the unknown elements
      */
     public Element itemUnknownElement(int i) {
-        NodeList nl = this.constructionElement.getChildNodes();
+        NodeList nl = getElement().getChildNodes();
         int res = 0;
 
         for (int j = 0; j < nl.getLength(); j++) {
@@ -719,7 +717,7 @@ public class KeyInfo extends SignatureElementProxy {
      * @return true if the element has no descendants.
      */
     public boolean isEmpty() {
-        return this.constructionElement.getFirstChild() == null;
+        return getFirstChild() == null;
     }
 
     /**
@@ -859,7 +857,7 @@ public class KeyInfo extends SignatureElementProxy {
         while (it.hasNext()) {
             KeyResolverSpi keyResolver = it.next();
             keyResolver.setSecureValidation(secureValidation);
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null) {       
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
@@ -892,7 +890,7 @@ public class KeyInfo extends SignatureElementProxy {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
             keyResolver.setSecureValidation(secureValidation);
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {            
@@ -984,7 +982,7 @@ public class KeyInfo extends SignatureElementProxy {
     private X509Certificate applyCurrentResolver(
         String uri, KeyResolverSpi keyResolver
     ) throws KeyResolverException {
-        Node currentChild = this.constructionElement.getFirstChild();
+        Node currentChild = getFirstChild();
         while (currentChild != null)      {       
             if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
                 for (StorageResolver storage : storageResolvers) {
@@ -1079,7 +1077,7 @@ public class KeyInfo extends SignatureElementProxy {
             KeyResolverSpi keyResolver = it.next();
             keyResolver.setSecureValidation(secureValidation);
 
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
@@ -1113,7 +1111,7 @@ public class KeyInfo extends SignatureElementProxy {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
             keyResolver.setSecureValidation(secureValidation);
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
@@ -1179,7 +1177,7 @@ public class KeyInfo extends SignatureElementProxy {
             KeyResolverSpi keyResolver = it.next();
             keyResolver.setSecureValidation(secureValidation);
 
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null)      {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {
@@ -1212,7 +1210,7 @@ public class KeyInfo extends SignatureElementProxy {
                 log.debug("Try " + keyResolver.getClass().getName());
             }
             keyResolver.setSecureValidation(secureValidation);
-            Node currentChild = this.constructionElement.getFirstChild();
+            Node currentChild = getFirstChild();
             String uri = this.getBaseURI();
             while (currentChild != null) {    
                 if (currentChild.getNodeType() == Node.ELEMENT_NODE) {

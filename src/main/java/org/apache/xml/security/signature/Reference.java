@@ -161,7 +161,7 @@ public class Reference extends SignatureElementProxy {
     ) throws XMLSignatureException {
         super(doc);
 
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
 
         this.baseURI = baseURI;
         this.manifest = manifest;
@@ -175,21 +175,21 @@ public class Reference extends SignatureElementProxy {
 
         if (transforms != null) {
             this.transforms=transforms;
-            this.constructionElement.appendChild(transforms.getElement());
-            XMLUtils.addReturnToElement(this.constructionElement);
+            appendSelf(transforms);
+            addReturnToSelf();
         }
         MessageDigestAlgorithm mda =
-            MessageDigestAlgorithm.getInstance(this.doc, messageDigestAlgorithm);
+            MessageDigestAlgorithm.getInstance(getDocument(), messageDigestAlgorithm);
 
         digestMethodElem = mda.getElement();
-        this.constructionElement.appendChild(digestMethodElem);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(digestMethodElem);
+        addReturnToSelf();
 
         digestValueElement =
-            XMLUtils.createElementInSignatureSpace(this.doc, Constants._TAG_DIGESTVALUE);
+            XMLUtils.createElementInSignatureSpace(getDocument(), Constants._TAG_DIGESTVALUE);
 
-        this.constructionElement.appendChild(digestValueElement);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(digestValueElement);
+        addReturnToSelf();
     }
 
     
@@ -265,7 +265,7 @@ public class Reference extends SignatureElementProxy {
             throw new XMLSignatureException("signature.signatureAlgorithm", exArgs);
         }
 
-        return MessageDigestAlgorithm.getInstance(this.doc, uri);
+        return MessageDigestAlgorithm.getInstance(getDocument(), uri);
     }
 
     /**
@@ -275,7 +275,7 @@ public class Reference extends SignatureElementProxy {
      */
     public void setURI(String uri) {
         if (uri != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_URI, uri);
+            setLocalAttribute(Constants._ATT_URI, uri);
         }
     }
 
@@ -285,7 +285,7 @@ public class Reference extends SignatureElementProxy {
      * @return URI the <code>URI</code> of this <code>Reference</code> element
      */
     public String getURI() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_URI);
+        return getLocalAttribute(Constants._ATT_URI);
     }
 
     /**
@@ -295,8 +295,7 @@ public class Reference extends SignatureElementProxy {
      */
     public void setId(String id) {
         if (id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
+            setLocalIdAttribute(Constants._ATT_ID, id);
         }
     }
 
@@ -306,7 +305,7 @@ public class Reference extends SignatureElementProxy {
      * @return Id the <code>Id</code> attribute of this <code>Reference</code> element
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /**
@@ -318,7 +317,7 @@ public class Reference extends SignatureElementProxy {
      */
     public void setType(String type) {
         if (type != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_TYPE, type);
+            setLocalAttribute(Constants._ATT_TYPE, type);
         }
     }
 
@@ -330,7 +329,7 @@ public class Reference extends SignatureElementProxy {
      * @return the <code>type</code> attribute of the Reference
      */
     public String getType() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_TYPE);
+        return getLocalAttribute(Constants._ATT_TYPE);
     }
 
     /**
@@ -380,7 +379,7 @@ public class Reference extends SignatureElementProxy {
         }
 
         String base64codedValue = Base64.encode(digestValue);
-        Text t = this.doc.createTextNode(base64codedValue);
+        Text t = createText(base64codedValue);
 
         digestValueElement.appendChild(t);
     }
@@ -406,7 +405,7 @@ public class Reference extends SignatureElementProxy {
         throws ReferenceNotInitializedException {
         try {
             Attr uriAttr = 
-                this.constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
+                getElement().getAttributeNodeNS(null, Constants._ATT_URI);
 
             ResourceResolver resolver = 
                 ResourceResolver.getInstance(
@@ -414,7 +413,7 @@ public class Reference extends SignatureElementProxy {
                 );
             resolver.addProperties(this.manifest.getResolverProperties());
 
-            return resolver.resolve(uriAttr, this.baseURI);
+            return resolver.resolve(uriAttr, this.baseURI, secureValidation);
         }  catch (ResourceResolverException ex) {
             throw new ReferenceNotInitializedException("empty", ex);
         }
@@ -692,9 +691,9 @@ public class Reference extends SignatureElementProxy {
             if (Reference.useC14N11 && !validating && !output.isOutputStreamSet() 
                 && !output.isOctetStream()) {
                 if (transforms == null) {
-                    transforms = new Transforms(this.doc);
+                    transforms = new Transforms(getDocument());
                     transforms.setSecureValidation(secureValidation);
-                    this.constructionElement.insertBefore(transforms.getElement(), digestMethodElem);
+                    getElement().insertBefore(transforms.getElement(), digestMethodElem);
                 }
                 transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
                 output.updateOutputStream(os, true);

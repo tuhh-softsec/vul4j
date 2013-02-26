@@ -85,8 +85,7 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
             }
         }
         
-        this.constructionElement.setAttributeNS(
-            null, InclusiveNamespaces._ATT_EC_PREFIXLIST, sb.toString().trim());
+        setLocalAttribute(InclusiveNamespaces._ATT_EC_PREFIXLIST, sb.toString().trim());
     }
 
     /**
@@ -107,7 +106,7 @@ public class InclusiveNamespaces extends ElementProxy implements TransformParam 
      * @return The Inclusive Namespace string
      */
     public String getInclusiveNamespaces() {
-        return this.constructionElement.getAttributeNS(null, InclusiveNamespaces._ATT_EC_PREFIXLIST);
+        return getLocalAttribute(InclusiveNamespaces._ATT_EC_PREFIXLIST);
     }
     
     /**

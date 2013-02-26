@@ -52,7 +52,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
     public KeyInfoReference(Document doc, String URI) {
         super(doc);
 
-        this.constructionElement.setAttributeNS(null, Constants._ATT_URI, URI);
+        setLocalAttribute(Constants._ATT_URI, URI);
     }
 
     /**
@@ -61,7 +61,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
      * @return the URI attribute
      */
     public Attr getURIAttr() {
-        return this.constructionElement.getAttributeNodeNS(null, Constants._ATT_URI);
+        return getElement().getAttributeNodeNS(null, Constants._ATT_URI);
     }
 
     /**
@@ -79,12 +79,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
      * @param Id ID
      */
     public void setId(String id) {
-        if (id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
-        } else {
-            this.constructionElement.removeAttributeNS(null, Constants._ATT_ID);
-        }
+        setLocalIdAttribute(Constants._ATT_ID, id);
     }
 
     /**
@@ -93,7 +88,7 @@ public class KeyInfoReference extends Signature11ElementProxy implements KeyInfo
      * @return the <code>Id</code> attribute
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /** @inheritDoc */

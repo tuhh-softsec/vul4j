@@ -82,12 +82,7 @@ public class DEREncodedKeyValue extends Signature11ElementProxy implements KeyIn
      * @param Id ID
      */
     public void setId(String id) {
-        if (id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
-        } else {
-            this.constructionElement.removeAttributeNS(null, Constants._ATT_ID);
-        }
+        setLocalIdAttribute(Constants._ATT_ID, id);
     }
 
     /**
@@ -96,7 +91,7 @@ public class DEREncodedKeyValue extends Signature11ElementProxy implements KeyIn
      * @return the <code>Id</code> attribute
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /** @inheritDoc */

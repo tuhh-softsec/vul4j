@@ -3323,11 +3323,11 @@ public class XMLCipher {
                     throw new RuntimeException("Document is null");
                 }
 
-                this.doc = doc;
-                this.constructionElement = 
-                    createElementForFamilyLocal(
-                        this.doc, this.getBaseNamespace(), this.getBaseLocalName()
-                    ); 
+                setDocument(doc);
+                setElement(createElementForFamilyLocal(
+                        this.getBaseNamespace(), this.getBaseLocalName()
+                    )
+                );
             }
 
             /**
@@ -3349,8 +3349,8 @@ public class XMLCipher {
              * @return the XML Element form of that Transforms
              */
             public Element toElement() {
-                if (doc == null) {
-                    doc = contextDocument;
+                if (getDocument() == null) {
+                    setDocument(contextDocument);
                 }
 
                 return getElement();

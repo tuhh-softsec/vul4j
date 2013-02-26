@@ -42,9 +42,9 @@ public abstract class SignatureElementProxy extends ElementProxy {
             throw new RuntimeException("Document is null");
         }
 
-        this.doc = doc;
-        this.constructionElement = 
-            XMLUtils.createElementInSignatureSpace(this.doc, this.getBaseLocalName());
+        setDocument(doc);
+        setElement(XMLUtils.createElementInSignatureSpace(doc,
+                this.getBaseLocalName()));
     }
 
     /**

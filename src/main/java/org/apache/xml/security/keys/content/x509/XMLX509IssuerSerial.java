@@ -25,7 +25,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.RFC2253Parser;
 import org.apache.xml.security.utils.SignatureElementProxy;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -55,7 +54,7 @@ public class XMLX509IssuerSerial extends SignatureElementProxy implements XMLX50
      */
     public XMLX509IssuerSerial(Document doc, String x509IssuerName, BigInteger x509SerialNumber) {
         super(doc);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
         addTextElement(x509IssuerName, Constants._TAG_X509ISSUERNAME);
         addTextElement(x509SerialNumber.toString(), Constants._TAG_X509SERIALNUMBER);
     }

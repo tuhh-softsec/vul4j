@@ -62,8 +62,7 @@ public class ObjectContainer extends SignatureElementProxy {
      */
     public void setId(String Id) {
         if (Id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
+            setLocalIdAttribute(Constants._ATT_ID, Id);
         }
     }
 
@@ -73,7 +72,7 @@ public class ObjectContainer extends SignatureElementProxy {
      * @return the <code>Id</code> attribute
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /**
@@ -83,7 +82,7 @@ public class ObjectContainer extends SignatureElementProxy {
      */
     public void setMimeType(String MimeType) {
         if (MimeType != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_MIMETYPE, MimeType);
+            setLocalAttribute(Constants._ATT_MIMETYPE, MimeType);
         }
     }
 
@@ -93,7 +92,7 @@ public class ObjectContainer extends SignatureElementProxy {
      * @return the <code>MimeType</code> attribute
      */
     public String getMimeType() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_MIMETYPE);
+        return getLocalAttribute(Constants._ATT_MIMETYPE);
     }
 
     /**
@@ -103,7 +102,7 @@ public class ObjectContainer extends SignatureElementProxy {
      */
     public void setEncoding(String Encoding) {
         if (Encoding != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ENCODING, Encoding);
+            setLocalAttribute(Constants._ATT_ENCODING, Encoding);
         }
     }
 
@@ -113,7 +112,7 @@ public class ObjectContainer extends SignatureElementProxy {
      * @return the <code>Encoding</code> attribute
      */
     public String getEncoding() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ENCODING);
+        return getLocalAttribute(Constants._ATT_ENCODING);
     }
 
     /**
@@ -123,7 +122,8 @@ public class ObjectContainer extends SignatureElementProxy {
      * @return the new node in the tree.
      */
     public Node appendChild(Node node) {
-        return this.constructionElement.appendChild(node);
+        appendSelf(node);
+        return node;
     }
 
     /** @inheritDoc */

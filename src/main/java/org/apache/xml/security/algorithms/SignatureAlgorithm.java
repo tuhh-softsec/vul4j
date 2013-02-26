@@ -71,7 +71,7 @@ public class SignatureAlgorithm extends Algorithm {
         this.algorithmURI = algorithmURI;
         
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);
-        signatureAlgorithm.engineGetContextFromElement(this.constructionElement);
+        signatureAlgorithm.engineGetContextFromElement(getElement());
     }
 
     /**
@@ -89,10 +89,10 @@ public class SignatureAlgorithm extends Algorithm {
         this.algorithmURI = algorithmURI;
         
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);
-        signatureAlgorithm.engineGetContextFromElement(this.constructionElement);
+        signatureAlgorithm.engineGetContextFromElement(getElement());
         
         signatureAlgorithm.engineSetHMACOutputLength(hmacOutputLength);
-        ((IntegrityHmac)signatureAlgorithm).engineAddContextToElement(constructionElement);
+        ((IntegrityHmac)signatureAlgorithm).engineAddContextToElement(getElement());
     }
 
     /**
@@ -133,7 +133,7 @@ public class SignatureAlgorithm extends Algorithm {
         }
         
         signatureAlgorithm = getSignatureAlgorithmSpi(algorithmURI);
-        signatureAlgorithm.engineGetContextFromElement(this.constructionElement);
+        signatureAlgorithm.engineGetContextFromElement(getElement());
     }
 
     /**
@@ -307,7 +307,7 @@ public class SignatureAlgorithm extends Algorithm {
      * @return the URI representation of Transformation algorithm
      */
     public final String getURI() {
-        return constructionElement.getAttributeNS(null, Constants._ATT_ALGORITHM);
+        return getLocalAttribute(Constants._ATT_ALGORITHM);
     }
 
     /**

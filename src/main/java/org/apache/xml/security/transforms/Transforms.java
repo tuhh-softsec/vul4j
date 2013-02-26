@@ -115,7 +115,7 @@ public class Transforms extends SignatureElementProxy {
      */
     public Transforms(Document doc) {
         super(doc);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
     }
 
     /**
@@ -166,7 +166,7 @@ public class Transforms extends SignatureElementProxy {
                 log.debug("Transforms.addTransform(" + transformURI + ")");
             }
 
-            Transform transform = new Transform(this.doc, transformURI);
+            Transform transform = new Transform(getDocument(), transformURI);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -190,7 +190,7 @@ public class Transforms extends SignatureElementProxy {
                 log.debug("Transforms.addTransform(" + transformURI + ")");
             }
 
-            Transform transform = new Transform(this.doc, transformURI, contextElement);
+            Transform transform = new Transform(getDocument(), transformURI, contextElement);
 
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
@@ -211,7 +211,7 @@ public class Transforms extends SignatureElementProxy {
        throws TransformationException {
 
         try {
-            Transform transform = new Transform(this.doc, transformURI, contextNodes);
+            Transform transform = new Transform(getDocument(), transformURI, contextNodes);
             this.addTransform(transform);
         } catch (InvalidTransformException ex) {
             throw new TransformationException("empty", ex);
@@ -230,8 +230,8 @@ public class Transforms extends SignatureElementProxy {
 
         Element transformElement = transform.getElement();
 
-        this.constructionElement.appendChild(transformElement);
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(transformElement);
+        addReturnToSelf();
     }
 
     /**
@@ -304,11 +304,8 @@ public class Transforms extends SignatureElementProxy {
      * @return the number of transformations
      */
     public int getLength() {
-        if (transforms == null) {
-            transforms = 
-                XMLUtils.selectDsNodes(this.constructionElement.getFirstChild(), "Transform");
-        }
-        return transforms.length;       
+        initTransforms();
+        return transforms.length;
     }
 
     /**
@@ -321,13 +318,16 @@ public class Transforms extends SignatureElementProxy {
      */
     public Transform item(int i) throws TransformationException {
         try {
-            if (transforms == null) {
-                transforms = 
-                    XMLUtils.selectDsNodes(this.constructionElement.getFirstChild(), "Transform");
-            }
+            initTransforms();
             return new Transform(transforms[i], this.baseURI);
         } catch (XMLSecurityException ex) {
             throw new TransformationException("empty", ex);
+        }
+    }
+
+    private void initTransforms() {
+        if (transforms == null) {
+            transforms = XMLUtils.selectDsNodes(getFirstChild(), "Transform");
         }
     }
 

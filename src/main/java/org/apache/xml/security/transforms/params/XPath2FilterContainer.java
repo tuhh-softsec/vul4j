@@ -86,9 +86,8 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
     private XPath2FilterContainer(Document doc, String xpath2filter, String filterType) {
         super(doc);
 
-        this.constructionElement.setAttributeNS(
-            null, XPath2FilterContainer._ATT_FILTER, filterType);
-        this.constructionElement.appendChild(doc.createTextNode(xpath2filter));
+        setLocalAttribute(XPath2FilterContainer._ATT_FILTER, filterType);
+        appendSelf(createText(xpath2filter));
     }
 
     /**
@@ -102,8 +101,7 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
 
         super(element, BaseURI);
 
-        String filterStr = 
-            this.constructionElement.getAttributeNS(null, XPath2FilterContainer._ATT_FILTER);
+        String filterStr = getLocalAttribute(XPath2FilterContainer._ATT_FILTER);
 
         if (!filterStr.equals(XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT) 
             && !filterStr.equals(XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT) 
@@ -210,8 +208,7 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
      * @return <code>true</code> if the <code>Filter</code> attribute has value "intersect".
      */
     public boolean isIntersect() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer._ATT_FILTER
         ).equals(XPath2FilterContainer._ATT_FILTER_VALUE_INTERSECT);
     }
 
@@ -221,8 +218,7 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
      * @return <code>true</code> if the <code>Filter</code> attribute has value "subtract".
      */
     public boolean isSubtract() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer._ATT_FILTER
         ).equals(XPath2FilterContainer._ATT_FILTER_VALUE_SUBTRACT);
     }
 
@@ -232,8 +228,7 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
      * @return <code>true</code> if the <code>Filter</code> attribute has value "union".
      */
     public boolean isUnion() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer._ATT_FILTER
         ).equals(XPath2FilterContainer._ATT_FILTER_VALUE_UNION);
     }
 
@@ -256,7 +251,7 @@ public class XPath2FilterContainer extends ElementProxy implements TransformPara
      */
     public Node getXPathFilterTextNode() {
 
-        NodeList children = this.constructionElement.getChildNodes();
+        NodeList children = getElement().getChildNodes();
         int length = children.getLength();
 
         for (int i = 0; i < length; i++) {

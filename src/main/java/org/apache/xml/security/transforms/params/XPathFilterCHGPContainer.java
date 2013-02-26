@@ -83,13 +83,9 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
         super(doc);
 
         if (includeSlashPolicy) {
-            this.constructionElement.setAttributeNS(
-                null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true"
-            );
+            setLocalAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "true");
         } else {
-            this.constructionElement.setAttributeNS(
-                null, XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false"
-            );
+            setLocalAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH, "false");
         }
 
         if ((includeButSearch != null) && (includeButSearch.trim().length() > 0)) {
@@ -99,10 +95,10 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
                 );
 
             includeButSearchElem.appendChild(
-                this.doc.createTextNode(indentXPathText(includeButSearch))
+                createText(indentXPathText(includeButSearch))
             );
-            XMLUtils.addReturnToElement(this.constructionElement);
-            this.constructionElement.appendChild(includeButSearchElem);
+            addReturnToSelf();
+            appendSelf(includeButSearchElem);
         }
 
         if ((excludeButSearch != null) && (excludeButSearch.trim().length() > 0)) {
@@ -112,10 +108,10 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
                 );
 
             excludeButSearchElem.appendChild(
-                this.doc.createTextNode(indentXPathText(excludeButSearch)));
+                createText(indentXPathText(excludeButSearch)));
             
-            XMLUtils.addReturnToElement(this.constructionElement);
-            this.constructionElement.appendChild(excludeButSearchElem);
+            addReturnToSelf();
+            appendSelf(excludeButSearchElem);
         }
 
         if ((exclude != null) && (exclude.trim().length() > 0)) {
@@ -123,12 +119,12 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
                 ElementProxy.createElementForFamily(
                    doc, this.getBaseNamespace(), XPathFilterCHGPContainer._TAG_EXCLUDE);
 
-            excludeElem.appendChild(this.doc.createTextNode(indentXPathText(exclude)));
-            XMLUtils.addReturnToElement(this.constructionElement);
-            this.constructionElement.appendChild(excludeElem);
+            excludeElem.appendChild(createText(indentXPathText(exclude)));
+            addReturnToSelf();
+            appendSelf(excludeElem);
         }
 
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
     }
 
     /**
@@ -202,7 +198,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
 
         Element xElem = 
             XMLUtils.selectNode(
-                this.constructionElement.getFirstChild(), this.getBaseNamespace(), type, 0
+                getElement().getFirstChild(), this.getBaseNamespace(), type, 0
             );
 
         return XMLUtils.getFullTextChildrenFromElement(xElem);
@@ -241,8 +237,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
      * @return the string
      */
     public boolean getIncludeSlashPolicy() {
-        return this.constructionElement.getAttributeNS(
-            null, XPathFilterCHGPContainer._ATT_INCLUDESLASH).equals("true");
+        return getLocalAttribute(XPathFilterCHGPContainer._ATT_INCLUDESLASH).equals("true");
     }
 
     /**
@@ -261,7 +256,7 @@ public class XPathFilterCHGPContainer extends ElementProxy implements TransformP
         }
 
         return XMLUtils.selectNodeText(
-            this.constructionElement.getFirstChild(), this.getBaseNamespace(), type, 0
+            getFirstChild(), this.getBaseNamespace(), type, 0
         );
     }
 

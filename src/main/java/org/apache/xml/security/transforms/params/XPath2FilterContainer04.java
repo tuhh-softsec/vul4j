@@ -21,7 +21,6 @@ package org.apache.xml.security.transforms.params;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.transforms.TransformParam;
 import org.apache.xml.security.utils.ElementProxy;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,16 +73,15 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
     private XPath2FilterContainer04(Document doc, String xpath2filter, String filterType) {
         super(doc);
 
-        this.constructionElement.setAttributeNS(
-            null, XPath2FilterContainer04._ATT_FILTER, filterType);
+        setLocalAttribute(XPath2FilterContainer04._ATT_FILTER, filterType);
 
         if ((xpath2filter.length() > 2)
             && (!Character.isWhitespace(xpath2filter.charAt(0)))) {
-            XMLUtils.addReturnToElement(this.constructionElement);
-            this.constructionElement.appendChild(doc.createTextNode(xpath2filter));
-            XMLUtils.addReturnToElement(this.constructionElement);
+            addReturnToSelf();
+            appendSelf(createText(xpath2filter));
+            addReturnToSelf();
         } else {
-            this.constructionElement.appendChild(doc.createTextNode(xpath2filter));
+            appendSelf(createText(xpath2filter));
         }
     }
 
@@ -99,8 +97,7 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
 
         super(element, BaseURI);
 
-        String filterStr =
-            this.constructionElement.getAttributeNS(null, XPath2FilterContainer04._ATT_FILTER);
+        String filterStr = getLocalAttribute(XPath2FilterContainer04._ATT_FILTER);
 
         if (!filterStr.equals(XPath2FilterContainer04._ATT_FILTER_VALUE_INTERSECT) 
             && !filterStr.equals(XPath2FilterContainer04._ATT_FILTER_VALUE_SUBTRACT) 
@@ -179,8 +176,7 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
      * @return <code>true</code> if the <code>Filter</code> attribute has value "intersect".
      */
     public boolean isIntersect() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer04._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer04._ATT_FILTER
         ).equals(XPath2FilterContainer04._ATT_FILTER_VALUE_INTERSECT);
     }
 
@@ -190,8 +186,7 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
      * @return <code>true</code> if the <code>Filter</code> attribute has value "subtract".
      */
     public boolean isSubtract() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer04._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer04._ATT_FILTER
         ).equals(XPath2FilterContainer04._ATT_FILTER_VALUE_SUBTRACT);
     }
 
@@ -201,8 +196,7 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
      * @return <code>true</code> if the <code>Filter</code> attribute has value "union".
      */
     public boolean isUnion() {
-        return this.constructionElement.getAttributeNS(
-            null, XPath2FilterContainer04._ATT_FILTER
+        return getLocalAttribute(XPath2FilterContainer04._ATT_FILTER
         ).equals(XPath2FilterContainer04._ATT_FILTER_VALUE_UNION);
     }
 
@@ -224,7 +218,7 @@ public class XPath2FilterContainer04 extends ElementProxy implements TransformPa
      * @return the first Text node which contains information from the XPath 2 Filter String
      */
     public Node getXPathFilterTextNode() {
-        NodeList children = this.constructionElement.getChildNodes();
+        NodeList children = getElement().getChildNodes();
         int length = children.getLength();
 
         for (int i = 0; i < length; i++) {

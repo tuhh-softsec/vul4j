@@ -31,7 +31,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.SignatureElementProxy;
-import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,7 +57,7 @@ public class RSAKeyValue extends SignatureElementProxy implements KeyValueConten
     public RSAKeyValue(Document doc, BigInteger modulus, BigInteger exponent) {
         super(doc);
 
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
         this.addBigIntegerElement(modulus, Constants._TAG_MODULUS);
         this.addBigIntegerElement(exponent, Constants._TAG_EXPONENT);
     }
@@ -73,7 +72,7 @@ public class RSAKeyValue extends SignatureElementProxy implements KeyValueConten
     public RSAKeyValue(Document doc, Key key) throws IllegalArgumentException {
         super(doc);
 
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
 
         if (key instanceof java.security.interfaces.RSAPublicKey ) {
             this.addBigIntegerElement(

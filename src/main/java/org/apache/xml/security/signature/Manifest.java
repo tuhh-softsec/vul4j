@@ -83,7 +83,7 @@ public class Manifest extends SignatureElementProxy {
     public Manifest(Document doc) {
         super(doc);
 
-        XMLUtils.addReturnToElement(this.constructionElement);
+        addReturnToSelf();
 
         this.references = new ArrayList<Reference>();
     }
@@ -121,7 +121,7 @@ public class Manifest extends SignatureElementProxy {
         // check out Reference children
         this.referencesEl = 
             XMLUtils.selectDsNodes(
-                this.constructionElement.getFirstChild(), Constants._TAG_REFERENCE
+                getFirstChild(), Constants._TAG_REFERENCE
             );
         int le = this.referencesEl.length;
         if (le == 0) {
@@ -172,7 +172,7 @@ public class Manifest extends SignatureElementProxy {
     ) throws XMLSignatureException {
         // the this.doc is handed implicitly by the this.getOwnerDocument()
         Reference ref = 
-            new Reference(this.doc, baseURI, referenceURI, this, transforms, digestURI);
+            new Reference(getDocument(), baseURI, referenceURI, this, transforms, digestURI);
 
         if (referenceId != null) {
             ref.setId(referenceId);
@@ -186,8 +186,8 @@ public class Manifest extends SignatureElementProxy {
         this.references.add(ref);
 
         // add the Element of the Reference object to the Manifest/SignedInfo
-        this.constructionElement.appendChild(ref.getElement());
-        XMLUtils.addReturnToElement(this.constructionElement);
+        appendSelf(ref);
+        addReturnToSelf();
     }
 
     /**
@@ -243,8 +243,7 @@ public class Manifest extends SignatureElementProxy {
      */
     public void setId(String Id) {
         if (Id != null) {
-            this.constructionElement.setAttributeNS(null, Constants._ATT_ID, Id);
-            this.constructionElement.setIdAttributeNS(null, Constants._ATT_ID, true);
+            setLocalIdAttribute(Constants._ATT_ID, Id);
         }
     }
 
@@ -254,7 +253,7 @@ public class Manifest extends SignatureElementProxy {
      * @return the <code>Id</code> attribute in <code>ds:Manifest</code>
      */
     public String getId() {
-        return this.constructionElement.getAttributeNS(null, Constants._ATT_ID);
+        return getLocalAttribute(Constants._ATT_ID);
     }
 
     /**
@@ -306,7 +305,7 @@ public class Manifest extends SignatureElementProxy {
         if (referencesEl == null) {
             this.referencesEl =  
                 XMLUtils.selectDsNodes(
-                    this.constructionElement.getFirstChild(), Constants._TAG_REFERENCE
+                    getFirstChild(), Constants._TAG_REFERENCE
                 );
         }
         if (log.isDebugEnabled()) {
