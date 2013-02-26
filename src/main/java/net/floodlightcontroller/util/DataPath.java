@@ -19,6 +19,7 @@ public class DataPath {
      * Default constructor.
      */
     public DataPath() {
+	flowEntries = new ArrayList<FlowEntry>();
     }
 
     /**

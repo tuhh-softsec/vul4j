@@ -16,6 +16,15 @@ public class Port {
     }
 
     /**
+     * Constructor from another entry.
+     *
+     * @param other the other entry to use.
+     */
+    public Port(Port other) {
+	this.value = other.value();
+    }
+
+    /**
      * Constructor from a long value.
      *
      * @param value the value to use.

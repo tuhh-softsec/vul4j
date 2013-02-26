@@ -8,6 +8,8 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.NodePortTuple;
+import net.floodlightcontroller.util.DataPath;
+import net.floodlightcontroller.util.SwitchPort;
 
 public interface INetMapTopologyService extends INetMapService {
 
@@ -31,8 +33,8 @@ public interface INetMapTopologyService extends INetMapService {
 	}
 	
 	public interface ITopoRouteService extends IFloodlightService {
-		List<NodePortTuple> getShortestPath(NodePortTuple src, NodePortTuple dest);
-		Boolean routeExists(NodePortTuple src, NodePortTuple dest);
+	    DataPath getShortestPath(SwitchPort src, SwitchPort dest);
+	    Boolean routeExists(SwitchPort src, SwitchPort dest);
 	}
 	
 	public interface ITopoFlowService {
