@@ -78,6 +78,7 @@ import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -466,6 +467,63 @@ public class Controller implements IFloodlightProviderService,
         return new OFChannelHandler(state);
     }
     
+    protected class RoleChangeCallback implements ControlChangeCallback {
+		@Override
+		public void controlChanged(long dpid, boolean hasControl) {
+			log.info("Role change callback for switch {}, hasControl {}", 
+					HexString.toHexString(dpid), hasControl);
+			
+			synchronized(roleChanger){
+				OFSwitchImpl sw = null;
+				for (OFSwitchImpl connectedSw : connectedSwitches){
+					if (connectedSw.getId() == dpid){
+						sw = connectedSw;
+						break;
+					}
+				}
+				if (sw == null){
+					log.warn("Switch {} not found in connected switches",
+							HexString.toHexString(dpid));
+					return;
+				}
+				
+				Role role = null;
+				
+				if (sw.getRole() == null){
+					if (hasControl){
+						role = Role.MASTER;
+					}
+					else {
+						role = Role.SLAVE;
+					}
+				}
+				else if (hasControl && sw.getRole() == Role.SLAVE) {
+					// Send a MASTER role request to the switch.
+					// If this is the first role request, 
+                    // this is a probe that we'll use to determine if the switch
+                    // actually supports the role request message. If it does we'll
+                    // get back a role reply message. If it doesn't we'll get back an
+                    // OFError message. 
+                    // If role is MASTER we will promote switch to active
+                    // list when we receive the switch's role reply messages
+					role = Role.MASTER;
+				}
+				else if (!hasControl && sw.getRole() == Role.MASTER) {
+					//Send a SLAVE role request to the switch
+					role = Role.SLAVE;
+				}
+				
+				if (role != null) {
+					log.debug("Sending role request {} msg to {}", role, sw);
+	                Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+	                swList.add(sw);
+	                roleChanger.submitRequest(swList, role);
+				}
+			}
+			
+		}
+    }
+    
     /**
      * Channel handler deals with the switch connection and dispatches
      * switch messages to the appropriate locations.
@@ -513,6 +571,7 @@ public class Controller implements IFloodlightProviderService,
                     removeSwitch(sw);
                 }
                 synchronized(roleChanger) {
+                	registryService.releaseControl(sw.getId());
                     connectedSwitches.remove(sw);
                 }
                 sw.setConnected(false);
@@ -765,6 +824,19 @@ public class Controller implements IFloodlightProviderService,
                     connectedSwitches.add(sw);
                     
                     if (role != null) {
+                    	//Request control of the switch from the global registry
+                    	try {
+							registryService.requestControl(sw.getId(), 
+									new RoleChangeCallback());
+						} catch (RegistryException e) {
+							log.debug("Registry error: {}", e.getMessage());
+						}
+                    	
+                    	log.debug("Setting new switch {} to SLAVE", sw.getStringId());
+                    	Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+                    	swList.add(sw);
+                    	roleChanger.submitRequest(swList, Role.SLAVE);
+                    	
                         // Send a role request if role support is enabled for the controller
                         // This is a probe that we'll use to determine if the switch
                         // actually supports the role request message. If it does we'll
@@ -772,12 +844,14 @@ public class Controller implements IFloodlightProviderService,
                         // OFError message. 
                         // If role is MASTER we will promote switch to active
                         // list when we receive the switch's role reply messages
+                        /*
                         log.debug("This controller's role is {}, " + 
                                 "sending initial role request msg to {}",
                                 role, sw);
                         Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
                         swList.add(sw);
                         roleChanger.submitRequest(swList, role);
+                        */
                     } 
                     else {
                         // Role supported not enabled on controller (for now)
@@ -2109,7 +2183,9 @@ public class Controller implements IFloodlightProviderService,
         this.factory = new BasicFactory();
         this.providerMap = new HashMap<String, List<IInfoProvider>>();
         setConfigParams(configParams);
-        this.role = getInitialRole(configParams);
+        //this.role = getInitialRole(configParams);
+        //Set the controller's role to MASTER so it always tries to do role requests.
+        this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();

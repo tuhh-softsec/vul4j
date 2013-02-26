@@ -60,7 +60,9 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	protected Map<String, ControlChangeCallback> switchCallbacks;
 	protected Map<String, PathChildrenCache> switchPathCaches;
 	
-	//protected boolean zookeeperEnabled = false;
+	//Performance-related configuration
+	protected static final int sessionTimeout = 2000;
+	protected static final int connectionTimeout = 4000;
 	
 	protected class ParamaterizedCuratorWatcher implements CuratorWatcher {
 		private String dpid;
@@ -455,7 +457,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		switchPathCaches = new HashMap<String, PathChildrenCache>();
 		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-		client = CuratorFrameworkFactory.newClient(connectionString, retryPolicy);
+		client = CuratorFrameworkFactory.newClient(connectionString, 
+				sessionTimeout, connectionTimeout, retryPolicy);
 		
 		client.start();
 		
