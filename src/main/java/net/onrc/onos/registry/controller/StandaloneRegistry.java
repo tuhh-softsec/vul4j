@@ -32,7 +32,8 @@ public class StandaloneRegistry implements IFloodlightModule,
 	public void requestControl(long dpid, ControlChangeCallback cb)
 			throws RegistryException {
 		if (controllerId == null) {
-			throw new RuntimeException("Must register a controller before calling requestControl");
+			throw new RuntimeException(
+					"Must register a controller before calling requestControl");
 		}
 		
 		switchCallbacks.put(HexString.toHexString(dpid), cb);
@@ -75,6 +76,10 @@ public class StandaloneRegistry implements IFloodlightModule,
 	@Override
 	public void registerController(String controllerId)
 			throws RegistryException {
+		if (this.controllerId != null) {
+			throw new RegistryException(
+					"Controller already registered with id " + this.controllerId);
+		}
 		this.controllerId = controllerId;
 	}
 
