@@ -1,13 +1,16 @@
 package net.floodlightcontroller.util;
 
+import net.floodlightcontroller.util.serializers.FlowEntryIdDeserializer;
 import net.floodlightcontroller.util.serializers.FlowEntryIdSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Flow Entry ID.
  */
+@JsonDeserialize(using=FlowEntryIdDeserializer.class)
 @JsonSerialize(using=FlowEntryIdSerializer.class)
 public class FlowEntryId {
     private long value;
@@ -26,6 +29,15 @@ public class FlowEntryId {
      */
     public FlowEntryId(long value) {
 	this.value = value;
+    }
+
+    /**
+     * Constructor from a string.
+     *
+     * @param value the value to use.
+     */
+    public FlowEntryId(String value) {
+	this.value = Long.decode(value);
     }
 
     /**

@@ -1,14 +1,10 @@
 package net.floodlightcontroller.util;
 
-import net.floodlightcontroller.util.serializers.CallerIdSerializer;
-
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Caller ID for an ONOS component.
  */
-@JsonSerialize(using=CallerIdSerializer.class)
 public class CallerId {
     private String value;
 
@@ -31,6 +27,7 @@ public class CallerId {
      *
      * @return the value of the Caller ID.
      */
+    @JsonProperty("value")
     public String value() { return value; }
 
     /**
@@ -38,6 +35,7 @@ public class CallerId {
      *
      * @param value the value to set.
      */
+    @JsonProperty("value")
     public void setValue(String value) {
 	this.value = value;
     }

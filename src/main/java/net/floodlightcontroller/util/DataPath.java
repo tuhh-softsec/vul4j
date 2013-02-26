@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import net.floodlightcontroller.util.SwitchPort;
 import net.floodlightcontroller.util.FlowEntry;
-import net.floodlightcontroller.util.serializers.DataPathSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Data Path.
  */
-@JsonSerialize(using=DataPathSerializer.class)
 public class DataPath {
     private SwitchPort srcPort;		// The source port
     private SwitchPort dstPort;		// The destination port
@@ -29,6 +26,7 @@ public class DataPath {
      *
      * @return the data path source port.
      */
+    @JsonProperty("srcPort")
     public SwitchPort srcPort() { return srcPort; }
 
     /**
@@ -36,6 +34,7 @@ public class DataPath {
      *
      * @param srcPort the data path source port to set.
      */
+    @JsonProperty("srcPort")
     public void setSrcPort(SwitchPort srcPort) {
 	this.srcPort = srcPort;
     }
@@ -45,6 +44,7 @@ public class DataPath {
      *
      * @return the data path destination port.
      */
+    @JsonProperty("dstPort")
     public SwitchPort dstPort() { return dstPort; }
 
     /**
@@ -52,6 +52,7 @@ public class DataPath {
      *
      * @param dstPort the data path destination port to set.
      */
+    @JsonProperty("dstPort")
     public void setDstPort(SwitchPort dstPort) {
 	this.dstPort = dstPort;
     }
@@ -61,6 +62,7 @@ public class DataPath {
      *
      * @return the data path flow entries.
      */
+    @JsonProperty("flowEntries")
     public ArrayList<FlowEntry> flowEntries() { return flowEntries; }
 
     /**
@@ -68,6 +70,7 @@ public class DataPath {
      *
      * @param flowEntries the data path flow entries to set.
      */
+    @JsonProperty("flowEntries")
     public void setFlowEntries(ArrayList<FlowEntry> flowEntries) {
 	this.flowEntries = flowEntries;
     }

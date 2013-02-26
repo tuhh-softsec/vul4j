@@ -1,9 +1,15 @@
 package net.floodlightcontroller.flowcache.web;
 
+import java.io.IOException;
+
 import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
@@ -26,14 +32,29 @@ public class AddFlowResource extends ServerResource {
             return result;
 	}
 
+	//
 	// Extract the arguments
+	// NOTE: The "flow" is specified in JSON format.
+	//
+	ObjectMapper mapper = new ObjectMapper();
 	String flowPathStr = (String) getRequestAttributes().get("flow");
-	FlowPath flowPath = new FlowPath(flowPathStr);
-
+	FlowPath flowPath = null;
 	log.debug("Add Flow Path: " + flowPathStr);
+	try {
+	    flowPath = mapper.readValue(flowPathStr, FlowPath.class);
+	} catch (JsonGenerationException e) {
+	    e.printStackTrace();
+	} catch (JsonMappingException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 
-	if (flowService.addFlow(flowPath, result) != true) {
-	    result = new FlowId();	// Error: Empty Flow Id
+	// Process the request
+	if (flowPath != null) {
+	    if (flowService.addFlow(flowPath, result) != true) {
+		result = new FlowId();		// Error: Return empty Flow Id
+	    }
 	}
 
         return result;

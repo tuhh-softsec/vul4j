@@ -3,15 +3,12 @@ package net.floodlightcontroller.util;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.FlowId;
-import net.floodlightcontroller.util.serializers.FlowPathSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Flow Path.
  */
-@JsonSerialize(using=FlowPathSerializer.class)
 public class FlowPath {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
@@ -24,17 +21,11 @@ public class FlowPath {
     }
 
     /**
-     * Constructor from a string.
-     */
-    public FlowPath(String str) {
-	// TODO: Implement it.
-    }
-
-    /**
      * Get the flow path Flow ID.
      *
      * @return the flow path Flow ID.
      */
+    @JsonProperty("flowId")
     public FlowId flowId() { return flowId; }
 
     /**
@@ -42,6 +33,7 @@ public class FlowPath {
      *
      * @param flowId the flow path Flow ID to set.
      */
+    @JsonProperty("flowId")
     public void setFlowId(FlowId flowId) {
 	this.flowId = flowId;
     }
@@ -51,6 +43,7 @@ public class FlowPath {
      *
      * @return the Caller ID of the flow path installer.
      */
+    @JsonProperty("installerId")
     public CallerId installerId() { return installerId; }
 
     /**
@@ -58,6 +51,7 @@ public class FlowPath {
      *
      * @param installerId the Caller ID of the flow path installer.
      */
+    @JsonProperty("installerId")
     public void setInstallerId(CallerId installerId) {
 	this.installerId = installerId;
     }
@@ -67,6 +61,7 @@ public class FlowPath {
      *
      * @return the flow path's data path.
      */
+    @JsonProperty("dataPath")
     public DataPath dataPath() { return dataPath; }
 
     /**
@@ -74,6 +69,7 @@ public class FlowPath {
      *
      * @param dataPath the flow path's data path to set.
      */
+    @JsonProperty("dataPath")
     public void setDataPath(DataPath dataPath) {
 	this.dataPath = dataPath;
     }
