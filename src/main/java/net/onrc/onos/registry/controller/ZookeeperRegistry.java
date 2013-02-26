@@ -60,7 +60,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	protected Map<String, ControlChangeCallback> switchCallbacks;
 	protected Map<String, PathChildrenCache> switchPathCaches;
 	
-	//Performance-related configuration
+	//Zookeeper performance-related configuration
 	protected static final int sessionTimeout = 2000;
 	protected static final int connectionTimeout = 4000;
 	
@@ -135,7 +135,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		@Override
 		public void childEvent(CuratorFramework client,
 				PathChildrenCacheEvent event) throws Exception {
-			// TODO Auto-generated method stub
 			log.debug("Root switch path cache got {} event", event.getType());
 			
 			String strSwitch = null;
@@ -174,14 +173,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public void requestControl(long dpid, ControlChangeCallback cb) throws RegistryException {
-		/*
-		if (!zookeeperEnabled) {
-			//If zookeeper connection is disabled all control requests succeed immediately
-			if (cb != null){
-				cb.controlChanged(dpid, true);
-			}
-			return;
-		}*/
 		
 		if (controllerId == null){
 			throw new RuntimeException("Must register a controller before calling requestControl");
@@ -214,7 +205,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public void releaseControl(long dpid) {
-		//if (!zookeeperEnabled) return;
 		
 		String dpidStr = HexString.toHexString(dpid);
 		
@@ -237,7 +227,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public boolean hasControl(long dpid) {
-		//if (!zookeeperEnabled) return false;
 		
 		LeaderLatch latch = switchLatches.get(HexString.toHexString(dpid));
 		
@@ -267,8 +256,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public Collection<String> getAllControllers() throws RegistryException {
-		//if (!zookeeperEnabled) return null;
-		
 		log.debug("Getting all controllers");
 		
 		List<String> controllers = new ArrayList<String>();
@@ -288,7 +275,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public void registerController(String id) throws RegistryException {
-		//if (!zookeeperEnabled) return;
 		if (controllerId != null) {
 			throw new RegistryException(
 					"Controller already registered with id " + controllerId);
@@ -297,12 +283,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		controllerId = id;
 		
 		byte bytes[] = id.getBytes(Charsets.UTF_8);
-		/*byte bytes[] = null;
-		try {
-			bytes = id.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			throw new RegistryException("Error encoding string", e1);
-		}*/
 		
 		String path = controllerPath + "/" + id;
 		
@@ -319,11 +299,9 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public String getControllerForSwitch(long dpid) throws RegistryException {
-		//if (!zookeeperEnabled) return null;
 		// TODO Work out how we should store this controller/switch data.
 		// The leader latch might be a index to the /controllers collections
 		// which holds more info on the controller (how to talk to it for example).
-		
 		
 		String strDpid = HexString.toHexString(dpid);
 		LeaderLatch latch = switchLatches.get(strDpid);
@@ -365,19 +343,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			}
 			
 			for (ChildData d : entry.getValue().getCurrentData()) {
-				/*
-				if (d.getPath().length() < 1){
-					log.info("Switch entry with no leader elections: {}", d.getPath());
-					continue;
-				}
-				*/
-				
-				/*String controllerId = null;
-				try {
-					controllerId = new String(d.getData(), "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					log.warn("Encoding exception: {}", e.getMessage());
-				}*/
+			
 				String controllerId = new String(d.getData(), Charsets.UTF_8);
 				
 				String[] splitted = d.getPath().split("-");
@@ -422,57 +388,30 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public void init (FloodlightModuleContext context) throws FloodlightModuleException {
-		
 		log.info("Initialising the Zookeeper Registry - Zookeeper connection required");
 		
-		restApi = context.getServiceImpl(IRestApiService.class);
-		
-		//We have a config option that determines whether we try and connect to 
-		//zookeeper or not. By default zookeeper connection is disabled. When we don't
-		//have a zookeeper connection we act as though we are the only server in the 
-		//cluster, i.e. all control requests will succeed.
-		/*Map<String, String> configOptions = context.getConfigParams(this);
-		String enableZookeeper = configOptions.get("enableZookeeper");
-		if (enableZookeeper != null) {
-			log.info("Enabling Zookeeper connection");
-			zookeeperEnabled = true;
+		//Read the Zookeeper connection string from the config
+		Map<String, String> configParams = context.getConfigParams(this);
+		String connectionString = configParams.get("connectionString");
+		if (connectionString != null){
+			this.connectionString = connectionString;
 		}
-		else {
-			log.info("Zookeeper connectivity is disabled - running in standalone mode");
-			return;
-		}*/
+		log.info("Setting Zookeeper connection string to {}", this.connectionString);
 		
-		/*
-		try {
-			String localHostname = java.net.InetAddress.getLocalHost().getHostName();
-			controllerId = localHostname;
-			log.debug("Setting controller id to {}", controllerId);
-		} catch (UnknownHostException e) {
-			// TODO Handle this exception
-			e.printStackTrace();
-		}*/
+		restApi = context.getServiceImpl(IRestApiService.class);
 
 		switchLatches = new HashMap<String, LeaderLatch>();
 		switchCallbacks = new HashMap<String, ControlChangeCallback>();
 		switchPathCaches = new HashMap<String, PathChildrenCache>();
 		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-		client = CuratorFrameworkFactory.newClient(connectionString, 
+		client = CuratorFrameworkFactory.newClient(this.connectionString, 
 				sessionTimeout, connectionTimeout, retryPolicy);
 		
 		client.start();
 		
 		client = client.usingNamespace(namespace);
-		
-		//Put some data in for testing
-		/*
-		try {
-			registerController("zookeeperController");
-			requestControl(2L, null);
-		} catch (RegistryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
+
 		
 		controllerCache = new PathChildrenCache(client, controllerPath, true);
 		switchCache = new PathChildrenCache(client, switchLatchesPath, true);

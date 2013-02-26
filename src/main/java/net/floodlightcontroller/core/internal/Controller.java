@@ -824,6 +824,12 @@ public class Controller implements IFloodlightProviderService,
                     connectedSwitches.add(sw);
                     
                     if (role != null) {
+                    	//Put the switch in SLAVE mode until we know we have control
+                    	log.debug("Setting new switch {} to SLAVE", sw.getStringId());
+                    	Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+                    	swList.add(sw);
+                    	roleChanger.submitRequest(swList, Role.SLAVE);
+                    	
                     	//Request control of the switch from the global registry
                     	try {
 							registryService.requestControl(sw.getId(), 
@@ -832,10 +838,7 @@ public class Controller implements IFloodlightProviderService,
 							log.debug("Registry error: {}", e.getMessage());
 						}
                     	
-                    	log.debug("Setting new switch {} to SLAVE", sw.getStringId());
-                    	Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
-                    	swList.add(sw);
-                    	roleChanger.submitRequest(swList, Role.SLAVE);
+                    	
                     	
                         // Send a role request if role support is enabled for the controller
                         // This is a probe that we'll use to determine if the switch
