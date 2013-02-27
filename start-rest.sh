@@ -36,10 +36,11 @@ function stop {
 
 function status {
     nr_process=`ps -edalf |grep ${script_name} | grep python | grep -v grep | wc -l` 
-    if [ x${nr_process} == "x" ] ; then
-      nr_process=0
+    if [ x${nr_process} != "x" ] ; then
+      echo "rest server is running"
+    else
+      echo "rest server is not running"
     fi
-    echo "${nr_process} instance of rest server is running"
 }
 
 function start {

@@ -121,19 +121,44 @@ def topology_for_gui():
       state = str(v['state'])
       sw = {}
       sw['name']=dpid
-      if str(v['state']) == "ACTIVE":
-        if dpid[-2:-1] == "a":
-         sw['group']=1
-        if dpid[-2:-1] == "b":
-         sw['group']=2
-        if dpid[-2:-1] == "c":
-         sw['group']=3
-      if str(v['state']) == "INACTIVE":
-         sw['group']=0
-
-
+      if state == "ACTIVE":
+#        print state
+        if dpid.split(":")[5] == "0a":
+          sw['group']=1
+        if dpid.split(":")[5] == "0b":
+          sw['group']=2
+        if dpid.split(":")[5] == "0c":
+          sw['group']=3
+      if state == "INACTIVE":
+#        print state
+        sw['group']=0
+#      print sw
       switches.append(sw)
-  
+
+  try:
+    command = "curl -s \'http://%s:%s/wm/registry/controllers/json\'" % (RestIP, RestPort)
+    result = os.popen(command).read()
+    controllers = json.loads(result)
+  except:
+    log_error("xx REST IF has issue: %s" % command)
+    log_error("%s" % result)
+
+  try:
+    command = "curl -s \'http://%s:%s/wm/registry/switches/json\'" % (RestIP, RestPort)
+    result = os.popen(command).read()
+    parsedResult = json.loads(result)
+  except:
+    log_error("REST IF has issue: %s" % command)
+    log_error("%s" % result)
+
+  for key in parsedResult:
+    dpid = key
+    ctrl = parsedResult[dpid][0]['controllerId']
+    sw_id = node_id(switches, dpid)
+    if sw_id != -1:
+      if switches[sw_id]['group'] != 0:
+        switches[sw_id]['group'] = controllers.index(ctrl) + 1
+
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
     result = os.popen(command).read()
@@ -158,7 +183,7 @@ def topology_for_gui():
   topo['nodes'] = switches
   topo['links'] = links
 
-  pp.pprint(topo)
+#  pp.pprint(topo)
   js = json.dumps(topo)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
@@ -246,14 +271,10 @@ def shortest_path(v1, p1, v2, p2):
   topo['nodes'] = switches
   topo['links'] = links
 
-  pp.pprint(topo)
+#  pp.pprint(topo)
   js = json.dumps(topo)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
-
-
-
-
 
 @app.route("/wm/core/controller/switches/json")
 def query_switch():
@@ -281,7 +302,7 @@ def query_switch():
         sw['active']=state
         switches_.append(sw)
 
-  pp.pprint(switches_)
+#  pp.pprint(switches_)
   js = json.dumps(switches_)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
@@ -362,7 +383,7 @@ def query_links():
     sys.exit(0)
 
   debug("query_links %s" % command)
-  pp.pprint(parsedResult)
+#  pp.pprint(parsedResult)
   sport = []
   links = []
   for v in parsedResult:
@@ -392,10 +413,87 @@ def query_links():
         link["type"]="internal"
         links.append(link)
 
-  pp.pprint(links)
+#  pp.pprint(links)
   js = json.dumps(links)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
+
+topo_less = { 
+  "nodes" : [ 
+    {"name" : "00:a0", "group" : 1},
+    {"name" : "00:a1", "group" : 1},
+    {"name" : "00:a2", "group" : 1},
+    ],
+  "links" : [
+    {"source" :0, "target": 1},
+    {"source" :1, "target": 0},
+    {"source" :0, "target": 2},
+    {"source" :2, "target": 0},
+    {"source" :1, "target": 2},
+    {"source" :2, "target": 1},
+    ]
+}
+
+topo_more = { 
+  "nodes" : [ 
+    {"name" : "00:a3", "group" : 2},
+    {"name" : "00:a0", "group" : 1},
+    {"name" : "00:a1", "group" : 1},
+    {"name" : "00:a2", "group" : 1},
+    ],
+  "links" : [
+    {"source" :1, "target": 2},
+    {"source" :2, "target": 1},
+    {"source" :1, "target": 3},
+    {"source" :3, "target": 1},
+    {"source" :2, "target": 3},
+    {"source" :3, "target": 2},
+    {"source" :0, "target": 2},
+    ]
+}
+
+@app.route("/topology_more")
+def topology_more():
+  topo = topo_more
+  js = json.dumps(topo)
+  resp = Response(js, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/topology_less")
+def topology_less():
+  topo = topo_less
+  js = json.dumps(topo)
+  resp = Response(js, status=200, mimetype='application/json')
+  return resp
+
+cont_status1 = [
+           {"name":"onos9vpc",  "onos": 1, "cassandra": 1},
+            {"name":"onos10vpc",  "onos": 0, "cassandra": 1},
+            {"name":"onos11vpc",  "onos": 1, "cassandra": 0},
+            {"name":"onos12vpc",  "onos": 1, "cassandra": 0}]
+
+cont_status2 = [
+            {"name":"onos9vpc",  "onos": 0, "cassandra": 1},
+            {"name":"onos10vpc",  "onos": 0, "cassandra": 1},
+            {"name":"onos11vpc",  "onos": 0, "cassandra": 1},
+            {"name":"onos12vpc",  "onos": 0, "cassandra": 1}]
+
+@app.route("/controller_status1")
+def controller_status1():
+  status = cont_status1
+  js = json.dumps(status)
+  resp = Response(js, status=200, mimetype='application/json')
+  pp.pprint(resp)
+  return resp
+
+@app.route("/controller_status2")
+def controller_status2():
+  status = cont_status2
+  js = json.dumps(status)
+  resp = Response(js, status=200, mimetype='application/json')
+  pp.pprint(resp)
+  return resp
+
 
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
