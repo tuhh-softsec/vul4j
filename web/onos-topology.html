@@ -26,7 +26,7 @@ text {
 </head>
 <body>
 <button id="more">more</button>
-<button id="less">lesse</button>
+<button id="less">less</button>
 <svg width="4in" height="2in" 
      viewBox="0 0 4000 2000" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
@@ -39,7 +39,12 @@ text {
       <path d="M0,-5L10,0L0,5"/>
     </marker>
   </defs>
+<div id="servers"></div>
+<div id="onos-status"></div>
+<div id="cassandra-status"></div>
+<script type="text/javascript" src="js/controller-status.js"></script>
 <script type="text/javascript">
+controller_status("http://gui.onlab.us:8080/topology");
 gui("http://gui.onlab.us:8080/topology");
 </script>
 </svg>

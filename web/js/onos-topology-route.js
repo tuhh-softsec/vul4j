@@ -43,6 +43,29 @@ function gui(data_source){
 	draw(nodes, links);
     }
 
+    var node_drag = d3.behavior.drag()
+        .on("dragstart", dragstart)
+        .on("drag", dragmove)
+        .on("dragend", dragend);
+
+    function dragstart(d, i) {
+        force.stop() // stops the force auto positioning before you start dragging
+    }
+
+    function dragmove(d, i) {
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+        d.x += d3.event.dx;
+        d.y += d3.event.dy; 
+        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+    }
+
+    function dragend(d, i) {
+        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+        tick();
+        force.resume();
+    }
+
     function update(json) {
 	Array.prototype.diff2 = function(arr) {
 	    return this.filter(function(i) {
@@ -210,7 +233,8 @@ function gui(data_source){
 			alert("to set to " + d.name);
 		    }
 		}) */
-               .call(force.drag);
+	        .call(node_drag);
+//               .call(force.drag);
 
 /*	    text.enter().append("svg:text")
 		.attr("x", 8)
@@ -298,7 +322,8 @@ function gui(data_source){
 		    alert("to set to " + d.name);
 		}
 	    }) */
-          .call(force.drag);
+	    .call(node_drag);
+//          .call(force.drag);
 
 /*	text.enter().append("svg:text")
 	    .attr("x", 8)
@@ -344,7 +369,7 @@ function gui(data_source){
 	path.attr("d", function(d) {
 	    var dx = d.target.x - d.source.x,
 	    dy = d.target.y - d.source.y,
-	    dr = 1/d.linknum;  //linknum is defined above
+//	    dr = 1/d.linknum;  //linknum is defined above
 	    dr = 300;
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
