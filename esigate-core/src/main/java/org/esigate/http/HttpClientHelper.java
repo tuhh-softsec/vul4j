@@ -16,17 +16,14 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -34,26 +31,19 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.DefaultedHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
-import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.cache.CacheConfigHelper;
@@ -87,8 +77,10 @@ public class HttpClientHelper {
 	private HttpClient httpClient;
 	private EventManager eventManager;
 	private HeaderManager headerManager;
+	private final int connectTimeout;
+	private final int socketTimeout;
 
-	private final static HttpClient buildDefaultHttpClient(Properties properties) {
+	private final static HttpClient buildHttpClient(Properties properties, EventManager eventManager, HttpClientConnectionManager connectionManager) {
 		HttpHost proxyHost = null;
 		Credentials proxyCredentials = null;
 		// Proxy settings
@@ -102,68 +94,62 @@ public class HttpClientHelper {
 				proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
 			}
 		}
-		// Create and initialize scheme registry
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		try {
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(null, null, null);
-			SSLSocketFactory sslSocketFactory = new SSLSocketFactory(sslContext, SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-			Scheme https = new Scheme("https", 443, sslSocketFactory);
-			schemeRegistry.register(https);
-		} catch (NoSuchAlgorithmException e) {
-			throw new ConfigurationException(e);
-		} catch (KeyManagementException e) {
-			throw new ConfigurationException(e);
-		}
-		schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-		// Create an HttpClient with the ThreadSafeClientConnManager.
-		// This connection manager must be used if more than one thread will
-		// be using the HttpClient.
-		PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager(schemeRegistry);
-		connectionManager.setMaxTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
-		connectionManager.setDefaultMaxPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
-		HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, Parameters.CONNECT_TIMEOUT.getValueInt(properties));
-		HttpConnectionParams.setSoTimeout(httpParams, Parameters.SOCKET_TIMEOUT.getValueInt(properties));
-		httpParams.setBooleanParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
-		DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionManager, httpParams);
-		defaultHttpClient.setRedirectStrategy(new RedirectStrategy());
+
+		ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
+
+		httpClientBuilder.setProperties(properties);
+
+		httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
+		httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValueInt(properties));
+		httpClientBuilder.setRedirectStrategy(new RedirectStrategy());
 		// Proxy settings
 		if (proxyHost != null) {
+			httpClientBuilder.setProxy(proxyHost);
 			if (proxyCredentials != null) {
-				defaultHttpClient.getCredentialsProvider().setCredentials(new AuthScope(proxyHost.getHostName(), proxyHost.getPort()), proxyCredentials);
+				CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+				credentialsProvider.setCredentials(new AuthScope(proxyHost), proxyCredentials);
+				httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
 			}
-			defaultHttpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxyHost);
 		}
-		return defaultHttpClient;
-	}
 
-	private final static HttpClient decorateWithCache(EventManager d, HttpClient HttpClient, Properties properties) {
+		// Cache settings
 		boolean useCache = Parameters.USE_CACHE.getValueBoolean(properties);
+		httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValueBoolean(properties));
 		if (useCache) {
-			return CacheConfigHelper.addCache(d, properties, HttpClient);
-		} else {
-			return HttpClient;
+			httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
+			httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));
 		}
+
+		// Event manager
+		httpClientBuilder.setEventManager(eventManager);
+
+		// Used for tests to skip connection manager and return hard coded
+		// responses
+		if (connectionManager != null)
+			httpClientBuilder.setConnectionManager(connectionManager);
+
+		return httpClientBuilder.build();
 	}
 
 	private HttpClientHelper(Properties properties, CookieManager cookieManager) {
 		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(properties);
 		headerManager = new HeaderManager(properties);
 		this.cookieManager = cookieManager;
-	}
+		connectTimeout = Parameters.CONNECT_TIMEOUT.getValueInt(properties);
+		socketTimeout = Parameters.SOCKET_TIMEOUT.getValueInt(properties);
 
-	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, HttpClient defaultHttpClient, Properties properties) {
-		this(properties, cookieManager);
-		this.eventManager = eventManager;
-		httpClient = decorateWithCache(eventManager, defaultHttpClient, properties);
-		getClass();
 	}
 
 	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, Properties properties) {
 		this(properties, cookieManager);
 		this.eventManager = eventManager;
-		httpClient = decorateWithCache(eventManager, buildDefaultHttpClient(properties), properties);
+		httpClient = buildHttpClient(properties, eventManager, null);
+	}
+
+	public HttpClientHelper(EventManager eventManager, CookieManager cookieManager, Properties properties, HttpClientConnectionManager connectionManager) {
+		this(properties, cookieManager);
+		this.eventManager = eventManager;
+		httpClient = buildHttpClient(properties, eventManager, connectionManager);
 	}
 
 	public GenericHttpRequest createHttpRequest(HttpEntityEnclosingRequest originalRequest, String uri, boolean proxy) throws HttpErrorPage {
@@ -189,18 +175,27 @@ public class HttpClientHelper {
 		String method = (proxy) ? originalRequest.getRequestLine().getMethod().toUpperCase() : "GET";
 		GenericHttpRequest httpRequest;
 		if (SIMPLE_METHODS.contains(method)) {
-			httpRequest = new GenericHttpRequest(method, uri);
+			httpRequest = new GenericHttpRequest(method, uri, originalRequest.getProtocolVersion());
 		} else if (ENTITY_METHODS.contains(method)) {
-			httpRequest = new GenericHttpRequest(method, uri);
+			httpRequest = new GenericHttpRequest(method, uri, originalRequest.getProtocolVersion());
 			httpRequest.setEntity(originalRequest.getEntity());
 		} else {
 			throw new UnsupportedHttpMethodException(method + " " + uri);
 		}
-		httpRequest.setParams(new DefaultedHttpParams(new BasicHttpParams(), originalRequest.getParams()));
-		httpRequest.getParams().setParameter(ClientPNames.HANDLE_REDIRECTS, !proxy);
+
+		RequestConfig.Builder builder = RequestConfig.custom();
+		builder.setConnectTimeout(connectTimeout);
+		builder.setSocketTimeout(socketTimeout);
+		builder.setCircularRedirectsAllowed(true);
 		// Use browser compatibility cookie policy. This policy is the closest
 		// to the behavior of a real browser.
-		httpRequest.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+		builder.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY);
+
+		builder.setRedirectsEnabled(!proxy);
+
+		httpRequest.setConfig(builder.build());
+
+		httpRequest.setParams(new DefaultedHttpParams(new BasicHttpParams(), originalRequest.getParams()));
 
 		// We use the same user-agent and accept headers that the one sent by
 		// the browser as some web sites generate different pages and scripts
@@ -212,6 +207,8 @@ public class HttpClientHelper {
 		// When the cache is used the request from ExecutionContext is not set
 		// so we set it just in case
 		httpRequest.getParams().setParameter(ExecutionContext.HTTP_REQUEST, httpRequest);
+
+		httpRequest.setHeader(HttpHeaders.HOST, virtualHost.toHostString());
 
 		return httpRequest;
 	}

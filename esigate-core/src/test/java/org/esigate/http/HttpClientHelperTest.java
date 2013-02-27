@@ -53,11 +53,11 @@ import org.esigate.test.TestUtils;
 public class HttpClientHelperTest extends TestCase {
 
 	private HttpClientHelper httpClientHelper;
-	private MockHttpClient mockHttpClient;
+	private MockConnectionManager mockConnectionManager;
 	private Properties properties;
 
 	private void createHttpClientHelper() {
-		httpClientHelper = new HttpClientHelper(new EventManager(), null, mockHttpClient, properties);
+		httpClientHelper = new HttpClientHelper(new EventManager(), null, properties, mockConnectionManager);
 	}
 
 	private boolean compare(HttpResponse response1, HttpResponse response2) throws Exception, IOException {
@@ -110,7 +110,7 @@ public class HttpClientHelperTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		properties = new Properties();
-		mockHttpClient = new MockHttpClient();
+		mockConnectionManager = new MockConnectionManager();
 	}
 
 	public void testCacheAndLoadBalancing() throws Exception {
@@ -121,13 +121,13 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("0");
 		response.setHeader("Cache-control", "public, max-age=3600");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
 		// Second request should reuse the cache entry even if it uses a
 		// different node
 		HttpResponse response1 = createMockResponse("1");
-		mockHttpClient.setResponse(response1);
+		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
 	}
@@ -182,18 +182,18 @@ public class HttpClientHelperTest extends TestCase {
 															// and send a
 															// conditional
 															// request next time
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
 		// Second request should use cache even if first response was a 404
 		HttpResponse response1 = createMockResponse(500, "1");
-		mockHttpClient.setResponse(response1);
+		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
 		// Third request no more error but stale-while-refresh should trigger a
 		// background revalidation and serve the old version.
 		HttpResponse response2 = createMockResponse(200, "2");
-		mockHttpClient.setResponse(response2);
+		mockConnectionManager.setResponse(response2);
 		result = executeRequest();
 		assertTrue("Response should not have been refreshed yet.", compare(response, result));
 		// Wait until revalidation is complete
@@ -210,13 +210,13 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("0");
 		response.setHeader("Cache-control", "no-cache");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
 		// Second request should use cache
 		HttpResponse response1 = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
-		mockHttpClient.setResponse(response1);
+		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
 		// Third request after cache has expired
@@ -239,13 +239,13 @@ public class HttpClientHelperTest extends TestCase {
 		response.setHeader("Cache-control", "no-cache");
 		if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY)
 			response.setHeader("Location", "http://www.foo.com");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
 		// Second request should use cache even if first response was a 404
 		HttpResponse response1 = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
-		mockHttpClient.setResponse(response1);
+		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used.", result.getFirstHeader("X-cache").getValue().startsWith("HIT"));
 		// Third request after cache has expired
@@ -286,13 +286,13 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("0");
 		response.setHeader("Cache-control", "public, max-age=3600");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertTrue("Response content should be '0'", compare(response, result));
 		// Second request should reuse the cache entry even if it uses a
 		// different node
 		HttpResponse response1 = createMockResponse("1");
-		mockHttpClient.setResponse(response1);
+		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
 	}
@@ -304,7 +304,7 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("0");
 		response.setHeader("Cache-control", "public, max-age=3600");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = executeRequest();
 		assertNotNull("X-Cache header is missing", result.getFirstHeader("X-Cache"));
 		assertTrue("X-Cache header should start with MISS", result.getFirstHeader("X-Cache").getValue().startsWith("MISS"));
@@ -327,7 +327,7 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("1");
 		response.setHeader("Cache-control", "no-cache");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
 		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		HttpResponse result = httpClientHelper.execute(apacheHttpRequest);
@@ -335,7 +335,7 @@ public class HttpClientHelperTest extends TestCase {
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
 		response.setHeader("Cache-control", "no-cache");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
 		result = httpClientHelper.execute(apacheHttpRequest);
@@ -357,7 +357,7 @@ public class HttpClientHelperTest extends TestCase {
 		// First request
 		HttpResponse response = createMockResponse("1");
 		response.setHeader("Cache-control", "max-age=60");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("http://localhost:8080");
 		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		HttpResponse result = httpClientHelper.execute(apacheHttpRequest);
@@ -365,7 +365,7 @@ public class HttpClientHelperTest extends TestCase {
 		assertNotNull("X-Cache header is missing", xCacheHeader1);
 		response = createMockResponse("2");
 		response.setHeader("Cache-control", "max-age=60");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		httpRequest = TestUtils.createRequest("http://localhost:8080");
 		apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://127.0.0.1:8080", true);
 		result = httpClientHelper.execute(apacheHttpRequest);
@@ -381,7 +381,7 @@ public class HttpClientHelperTest extends TestCase {
 		createHttpClientHelper();
 		String content = "To be compressed";
 		HttpResponse httpResponse = createMockGzippedResponse(content);
-		mockHttpClient.setResponse(httpResponse);
+		mockConnectionManager.setResponse(httpResponse);
 		HttpResponse result = executeRequest();
 		String entityString = HttpResponseUtils.toString(result);
 		assertEquals("Content should have been decompressed", content, entityString);
@@ -394,7 +394,7 @@ public class HttpClientHelperTest extends TestCase {
 		properties.put(Parameters.USE_CACHE.name, "false");
 		createHttpClientHelper();
 
-		mockHttpClient.setResponse(createMockResponse(""));
+		mockConnectionManager.setResponse(createMockResponse(""));
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest(uri);
 		if (virtualHost != null)
 			httpRequest.setHeader("Host", virtualHost);
@@ -403,7 +403,7 @@ public class HttpClientHelperTest extends TestCase {
 		// taken into account
 		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, targetHost, true);
 		httpClientHelper.execute(apacheHttpRequest);
-		Header[] headers = mockHttpClient.getSentRequest().getHeaders("Host");
+		Header[] headers = mockConnectionManager.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers.length);
 		assertEquals("Wrong Host header", ExpectedHostHeader, headers[0].getValue());
 	}
@@ -440,7 +440,7 @@ public class HttpClientHelperTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testIssue123() throws Exception {
-		mockHttpClient.setResponse(createMockResponse(""));
+		mockConnectionManager.setResponse(createMockResponse(""));
 
 		// Create a first HttpClientHelper with preserveHost = true
 		properties = new Properties();
@@ -466,13 +466,13 @@ public class HttpClientHelperTest extends TestCase {
 		// request or copied to other requests
 		apacheHttpRequest.getParams().setParameter("test", "test");
 		httpClientHelper1.execute(apacheHttpRequest);
-		Header[] headers = mockHttpClient.getSentRequest().getHeaders("Host");
+		Header[] headers = mockConnectionManager.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers.length);
 		assertEquals("www.foo.com", headers[0].getValue());
 
 		GenericHttpRequest apacheHttpRequest2 = httpClientHelper2.createHttpRequest(httpRequest, "http://localhost:8080", false);
 		httpClientHelper2.execute(apacheHttpRequest2);
-		Header[] headers2 = mockHttpClient.getSentRequest().getHeaders("Host");
+		Header[] headers2 = mockConnectionManager.getSentRequest().getHeaders("Host");
 		assertEquals("We should have 1 Host header", 1, headers2.length);
 		assertEquals("localhost:8080", headers2[0].getValue());
 
@@ -497,11 +497,11 @@ public class HttpClientHelperTest extends TestCase {
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse response = createMockResponse("");
 		response.addHeader("Set-Cookie", "test=\"a b\"; Version=1");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		httpClientHelper.execute(request);
 		request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		httpClientHelper.execute(request);
-		HttpRequest sentRequest = mockHttpClient.getSentRequest();
+		HttpRequest sentRequest = mockConnectionManager.getSentRequest();
 		assertNotNull(sentRequest.getHeaders("Cookie"));
 		assertEquals(1, sentRequest.getHeaders("Cookie").length);
 		assertEquals("test=\"a b\"", sentRequest.getHeaders("Cookie")[0].getValue());
@@ -522,7 +522,7 @@ public class HttpClientHelperTest extends TestCase {
 		originalRequest.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_NOT_MODIFIED, "Not Modified"));
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = httpClientHelper.execute(request);
 		if (result.getEntity() != null)
 			result.getEntity().writeTo(new NullOutputStream());
@@ -544,7 +544,7 @@ public class HttpClientHelperTest extends TestCase {
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_PERMANENTLY, "Moved permanently"));
 		response.addHeader("Location", "http://www.foo.com");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = httpClientHelper.execute(request);
 		if (result.getEntity() != null)
 			result.getEntity().writeTo(new NullOutputStream());
@@ -566,7 +566,7 @@ public class HttpClientHelperTest extends TestCase {
 		GenericHttpRequest request = httpClientHelper.createHttpRequest(originalRequest, "http://localhost:8080", false);
 		HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Moved temporarily"));
 		response.addHeader("Location", "http://www.foo.com");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 		HttpResponse result = httpClientHelper.execute(request);
 		if (result.getEntity() != null)
 			result.getEntity().writeTo(new NullOutputStream());
@@ -595,7 +595,7 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
 		response.setEntity(new StringEntity("test"));
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 
 		// First call to load the cache
 		HttpResponse result = httpClientHelper.execute(request);
@@ -609,7 +609,7 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
 		response.addHeader("Expires", "Mon, 10 Dec 2012 20:35:27 GMT");
 		response.addHeader("Cache-Control", "private, no-cache, must-revalidate, proxy-revalidate");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 
 		result = httpClientHelper.execute(request);
 		// Check that the cache has been used
@@ -650,7 +650,7 @@ public class HttpClientHelperTest extends TestCase {
 		response.addHeader("Date", "Mon, 10 Dec 2012 19:37:52 GMT");
 		response.addHeader("Etag", "etag");
 		response.addHeader("Cache-Control", "max-age=0");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 
 		// First request returns a 304
 		HttpResponse result1 = httpClientHelper.execute(request1);
@@ -670,7 +670,7 @@ public class HttpClientHelperTest extends TestCase {
 		response2.addHeader("Etag", "etag");
 		response2.addHeader("Cache-Control", "max-age=0");
 		response2.setEntity(new StringEntity("test"));
-		mockHttpClient.setResponse(response2);
+		mockConnectionManager.setResponse(response2);
 
 		// Third request not conditional ! Should call backend server as we
 		// don't have the entity in the cache.
@@ -691,11 +691,11 @@ public class HttpClientHelperTest extends TestCase {
 		properties.put(Parameters.REMOTE_URL_BASE.name, "http://localhost:8080");
 		createHttpClientHelper();
 
-		mockHttpClient.setResponse(createMockResponse(""));
+		mockConnectionManager.setResponse(createMockResponse(""));
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest("https://wwww.foo.com");
 		GenericHttpRequest apacheHttpRequest = httpClientHelper.createHttpRequest(httpRequest, "http://localhost:8080", true);
 		httpClientHelper.execute(apacheHttpRequest);
-		Header[] headers = mockHttpClient.getSentRequest().getHeaders("X-Forwarded-Proto");
+		Header[] headers = mockConnectionManager.getSentRequest().getHeaders("X-Forwarded-Proto");
 		assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);
 		assertEquals("Wrong X-Forwarded-Proto header", "https", headers[0].getValue());
 	}
@@ -712,7 +712,7 @@ public class HttpClientHelperTest extends TestCase {
 		response.setHeader("Date", now);
 		response.setHeader("Expires", inOneHour);
 		response.setHeader("Cache-Control", "max-age=3600");
-		mockHttpClient.setResponse(response);
+		mockConnectionManager.setResponse(response);
 
 		// First request to load the cache
 		HttpEntityEnclosingRequest httpRequest = TestUtils.createRequest();

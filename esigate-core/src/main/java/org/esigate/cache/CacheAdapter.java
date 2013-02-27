@@ -18,18 +18,19 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.Properties;
 
+import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.cache.CacheResponseStatus;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.cache.CachingHttpClient;
-import org.apache.http.params.HttpParams;
+import org.apache.http.client.cache.HttpCacheContext;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpExecutionAware;
+import org.apache.http.client.methods.HttpRequestWrapper;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.impl.execchain.ClientExecChain;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.ConfigurationException;
@@ -63,122 +64,19 @@ public class CacheAdapter {
 		viaHeader = Parameters.VIA_HEADER.getValueBoolean(properties);
 	}
 
-	private abstract class HttpClientWrapper implements HttpClient {
-		private final HttpClient wrapped;
+	private abstract class ClientExecDecorator implements ClientExecChain {
+		private final ClientExecChain wrapped;
 
-		HttpClientWrapper(HttpClient wrapped) {
+		ClientExecDecorator(ClientExecChain wrapped) {
 			this.wrapped = wrapped;
 		}
 
-		public HttpParams getParams() {
-			return wrapped.getParams();
-		}
-
-		public ClientConnectionManager getConnectionManager() {
-			return wrapped.getConnectionManager();
-		}
-
-		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
-			if (transformRequest(request, context)) {
-				T response = wrapped.execute(target, request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-						transformResponse(request, response, context);
-						return responseHandler.handleResponse(response);
-					}
-				}, context);
+		public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request, HttpClientContext clientContext, HttpExecutionAware execAware) throws IOException, HttpException {
+			if (transformRequest(request, clientContext)) {
+				CloseableHttpResponse response = wrapped.execute(route, request, clientContext, execAware);
+				transformResponse(request, response, clientContext);
 				return response;
 			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public <T> T execute(HttpHost target, final HttpRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			if (transformRequest(request, null)) {
-				T response = wrapped.execute(target, request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-						transformResponse(request, response, null);
-						return responseHandler.handleResponse(response);
-					}
-				});
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler, final HttpContext context) throws IOException, ClientProtocolException {
-			if (transformRequest(request, context)) {
-				T response = wrapped.execute(request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-						transformResponse(request, response, context);
-						return responseHandler.handleResponse(response);
-					}
-				}, context);
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			if (transformRequest(request, context)) {
-				HttpResponse response = wrapped.execute(target, request, context);
-				transformResponse(request, response, context);
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public <T> T execute(final HttpUriRequest request, final ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException {
-			if (transformRequest(request, null)) {
-
-				T response = wrapped.execute(request, new ResponseHandler<T>() {
-					public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-						transformResponse(request, response, null);
-						return responseHandler.handleResponse(response);
-					}
-				});
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public HttpResponse execute(HttpHost target, HttpRequest request) throws IOException, ClientProtocolException {
-			if (transformRequest(request, null)) {
-				HttpResponse response = wrapped.execute(target, request);
-				transformResponse(request, response, null);
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public HttpResponse execute(HttpUriRequest request, HttpContext context) throws IOException, ClientProtocolException {
-			if (transformRequest(request, context)) {
-				HttpResponse response = wrapped.execute(request, context);
-				transformResponse(request, response, context);
-				return response;
-			}
-			// TODO: returning null may be hard. However, this only happens if
-			// an extension cancels the request. Need to think on the usecase.
-			return null;
-		}
-
-		public HttpResponse execute(HttpUriRequest request) throws IOException, ClientProtocolException {
-			if (transformRequest(request, null)) {
-				HttpResponse response = wrapped.execute(request);
-				transformResponse(request, response, null);
-				return response;
-			}
-
 			// TODO: returning null may be hard. However, this only happens if
 			// an extension cancels the request. Need to think on the usecase.
 			return null;
@@ -197,8 +95,8 @@ public class CacheAdapter {
 
 	}
 
-	public HttpClient wrapCachingHttpClient(final HttpClient wrapped) {
-		return new HttpClientWrapper(wrapped) {
+	public ClientExecDecorator wrapCachingHttpClient(final ClientExecChain wrapped) {
+		return new ClientExecDecorator(wrapped) {
 
 			/**
 			 * Removes client http cache directives like "Cache-control" and
@@ -223,7 +121,7 @@ public class CacheAdapter {
 				// Add X-cache header
 				if (xCacheHeader) {
 					if (context != null) {
-						CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context.getAttribute(CachingHttpClient.CACHE_RESPONSE_STATUS);
+						CacheResponseStatus cacheResponseStatus = (CacheResponseStatus) context.getAttribute(HttpCacheContext.CACHE_RESPONSE_STATUS);
 						HttpHost host = (HttpHost) context.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
 						String xCacheString;
 						if (cacheResponseStatus.equals(CacheResponseStatus.CACHE_HIT))
@@ -246,8 +144,8 @@ public class CacheAdapter {
 		};
 	}
 
-	public HttpClient wrapBackendHttpClient(final EventManager eventManager, HttpClient wrapped) {
-		return new HttpClientWrapper(wrapped) {
+	public ClientExecDecorator wrapBackendHttpClient(final EventManager eventManager, ClientExecChain wrapped) {
+		return new ClientExecDecorator(wrapped) {
 
 			/**
 			 * Fire pre-Fetch event

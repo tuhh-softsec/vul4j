@@ -17,17 +17,18 @@ package org.esigate.http;
 
 import org.apache.http.ProtocolVersion;
 import org.apache.http.RequestLine;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.Configurable;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
-import org.apache.http.params.HttpProtocolParams;
 
-public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest {
+public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implements Configurable {
 
 	private RequestLine requestLine;
+	private RequestConfig requestConfig;
 
-	public GenericHttpRequest(String method, String uri) {
-		super(method, uri);
-		ProtocolVersion version = HttpProtocolParams.getVersion(getParams());
+	public GenericHttpRequest(String method, String uri, ProtocolVersion version) {
+		super(method, uri, version);
 		requestLine = new BasicRequestLine(method, uri, version);
 	}
 
@@ -48,6 +49,14 @@ public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest {
 	@Override
 	public String toString() {
 		return requestLine.toString();
+	}
+
+	public RequestConfig getConfig() {
+		return requestConfig;
+	}
+
+	public void setConfig(RequestConfig requestConfig) {
+		this.requestConfig = requestConfig;
 	}
 
 }
