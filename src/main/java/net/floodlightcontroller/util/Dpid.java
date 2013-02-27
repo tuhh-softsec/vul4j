@@ -1,14 +1,17 @@
 package net.floodlightcontroller.util;
 
 import org.openflow.util.HexString;
+import net.floodlightcontroller.util.serializers.DpidDeserializer;
 import net.floodlightcontroller.util.serializers.DpidSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a network switch DPID.
  */
+@JsonDeserialize(using=DpidDeserializer.class)
 @JsonSerialize(using=DpidSerializer.class)
 public class Dpid {
     static public long UNKNOWN = 0;
@@ -29,6 +32,15 @@ public class Dpid {
      */
     public Dpid(long value) {
 	this.value = value;
+    }
+
+    /**
+     * Constructor from a string.
+     *
+     * @param value the value to use.
+     */
+    public Dpid(String value) {
+	this.value = HexString.toLong(value);
     }
 
     /**

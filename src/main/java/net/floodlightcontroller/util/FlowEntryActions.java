@@ -1,9 +1,6 @@
 package net.floodlightcontroller.util;
 
-import net.floodlightcontroller.util.serializers.FlowEntryActionsSerializer;
-
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Flow Entry set of actions.
@@ -13,7 +10,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * NOTE: This is just an empty placeholder (for now). The implied action is
  * forwarding on a single port.
  */
-@JsonSerialize(using=FlowEntryActionsSerializer.class)
 public class FlowEntryActions {
 
     /**

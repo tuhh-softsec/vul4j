@@ -8,7 +8,6 @@ import net.floodlightcontroller.util.FlowPath;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
 
-import org.openflow.util.HexString;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
@@ -42,9 +41,9 @@ public class GetFlowByInstallerIdResource extends ServerResource {
 		  dstDpidStr + "--" + dstPortStr);
 
 	CallerId installerId = new CallerId(installerIdStr);
-	Dpid srcDpid = new Dpid(HexString.toLong(srcDpidStr));
+	Dpid srcDpid = new Dpid(srcDpidStr);
 	Port srcPort = new Port(Short.parseShort(srcPortStr));
-	Dpid dstDpid = new Dpid(HexString.toLong(dstDpidStr));
+	Dpid dstDpid = new Dpid(dstDpidStr);
 	Port dstPort = new Port(Short.parseShort(dstPortStr));
 	SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 	SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);

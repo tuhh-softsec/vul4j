@@ -6,6 +6,10 @@ import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.routing.IRoutingService;
 import net.floodlightcontroller.routing.Route;
 import net.floodlightcontroller.topology.NodePortTuple;
+import net.floodlightcontroller.util.DataPath;
+import net.floodlightcontroller.util.Dpid;
+import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.SwitchPort;
 
 import org.openflow.util.HexString;
 import org.restlet.resource.Get;
@@ -18,7 +22,7 @@ public class RouteResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(RouteResource.class);
 
     @Get("json")
-    public List<NodePortTuple> retrieve() {
+    public DataPath retrieve() {
         ITopoRouteService topoRouteService = 
                 (ITopoRouteService)getContext().getAttributes().
                     get(ITopoRouteService.class.getCanonicalName());
@@ -27,22 +31,22 @@ public class RouteResource extends ServerResource {
 	    return null;
 	}
         
-        String srcDpid = (String) getRequestAttributes().get("src-dpid");
-        String srcPort = (String) getRequestAttributes().get("src-port");
-        String dstDpid = (String) getRequestAttributes().get("dst-dpid");
-        String dstPort = (String) getRequestAttributes().get("dst-port");
+        String srcDpidStr = (String) getRequestAttributes().get("src-dpid");
+        String srcPortStr = (String) getRequestAttributes().get("src-port");
+        String dstDpidStr = (String) getRequestAttributes().get("dst-dpid");
+        String dstPortStr = (String) getRequestAttributes().get("dst-port");
 
-        log.debug( srcDpid + "--" + srcPort + "--" + dstDpid + "--" + dstPort);
+        log.debug( srcDpidStr + "--" + srcPortStr + "--" + dstDpidStr + "--" + dstPortStr);
 
-        long longSrcDpid = HexString.toLong(srcDpid);
-        short shortSrcPort = Short.parseShort(srcPort);
-        long longDstDpid = HexString.toLong(dstDpid);
-        short shortDstPort = Short.parseShort(dstPort);
+	Dpid srcDpid = new Dpid(srcDpidStr);
+	Port srcPort = new Port(Short.parseShort(srcPortStr));
+	Dpid dstDpid = new Dpid(dstDpidStr);
+	Port dstPort = new Port(Short.parseShort(dstPortStr));
         
-	List<NodePortTuple> result =
-	    topoRouteService.getShortestPath(new NodePortTuple(longSrcDpid, shortSrcPort),
-					     new NodePortTuple(longDstDpid, shortDstPort));
-	if ((result != null) && (result.size() > 0)) {
+	DataPath result =
+	    topoRouteService.getShortestPath(new SwitchPort(srcDpid, srcPort),
+					     new SwitchPort(dstDpid, dstPort));
+	if (result != null) {
 	    return result;
 	} else {
             log.debug("ERROR! no route found");

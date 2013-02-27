@@ -18,6 +18,8 @@ public class FlowIdSerializer extends JsonSerializer<FlowId> {
     public void serialize(FlowId flowId, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
-	jGen.writeString(flowId.toString());
+	jGen.writeStartObject();
+	jGen.writeStringField("value", flowId.toString());
+	jGen.writeEndObject();
     }
 }

@@ -18,6 +18,8 @@ public class IPv6Serializer extends JsonSerializer<IPv6> {
     public void serialize(IPv6 ipv6, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
-	jGen.writeString(ipv6.toString());
+	jGen.writeStartObject();
+	jGen.writeStringField("value", ipv6.toString());
+	jGen.writeEndObject();
     }
 }

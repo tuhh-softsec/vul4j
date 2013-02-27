@@ -18,6 +18,8 @@ public class IPv4NetSerializer extends JsonSerializer<IPv4Net> {
     public void serialize(IPv4Net ipv4Net, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
-	jGen.writeString(ipv4Net.toString());
+	jGen.writeStartObject();
+	jGen.writeStringField("value", ipv4Net.toString());
+	jGen.writeEndObject();
     }
 }

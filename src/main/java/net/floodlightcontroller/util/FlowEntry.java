@@ -5,10 +5,8 @@ import net.floodlightcontroller.util.FlowEntryActions;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.Port;
-import net.floodlightcontroller.util.serializers.FlowEntrySerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The Flow Entry state as set by the user (via the ONOS API).
@@ -38,7 +36,6 @@ enum FlowEntrySwitchState {
  * NOTE: The specification is incomplete. E.g., the entry needs to
  * support multiple in-ports and multiple out-ports.
  */
-@JsonSerialize(using=FlowEntrySerializer.class)
 public class FlowEntry {
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
@@ -64,6 +61,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry ID.
      */
+    @JsonProperty("flowEntryId")
     public FlowEntryId flowEntryId() { return flowEntryId; }
 
     /**
@@ -71,6 +69,7 @@ public class FlowEntry {
      *
      * @param flowEntryId the Flow Entry ID to set.
      */
+    @JsonProperty("flowEntryId")
     public void setFlowEntryId(FlowEntryId flowEntryId) {
 	this.flowEntryId = flowEntryId;
     }
@@ -80,6 +79,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Match.
      */
+    @JsonProperty("flowEntryMatch")
     public FlowEntryMatch flowEntryMatch() { return flowEntryMatch; }
 
     /**
@@ -87,6 +87,7 @@ public class FlowEntry {
      *
      * @param flowEntryMatch the Flow Entry Match to set.
      */
+    @JsonProperty("flowEntryMatch")
     public void setFlowEntryMatch(FlowEntryMatch flowEntryMatch) {
 	this.flowEntryMatch = flowEntryMatch;
     }
@@ -96,6 +97,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Actions.
      */
+    @JsonProperty("flowEntryActions")
     public FlowEntryActions flowEntryActions() { return flowEntryActions; }
 
     /**
@@ -103,6 +105,7 @@ public class FlowEntry {
      *
      * @param flowEntryActions the Flow Entry Actions to set.
      */
+    @JsonProperty("flowEntryActions")
     public void setFlowEntryActions(FlowEntryActions flowEntryActions) {
 	this.flowEntryActions = flowEntryActions;
     }
@@ -112,6 +115,7 @@ public class FlowEntry {
      *
      * @return the Switch DPID.
      */
+    @JsonProperty("dpid")
     public Dpid dpid() { return dpid; }
 
     /**
@@ -119,6 +123,7 @@ public class FlowEntry {
      *
      * @param dpid the Switch DPID to set.
      */
+    @JsonProperty("dpid")
     public void setDpid(Dpid dpid) {
 	this.dpid = dpid;
     }
@@ -128,6 +133,7 @@ public class FlowEntry {
      *
      * @return the Switch incoming port.
      */
+    @JsonProperty("inPort")
     public Port inPort() { return inPort; }
 
     /**
@@ -135,6 +141,7 @@ public class FlowEntry {
      *
      * @param inPort the Switch incoming port to set.
      */
+    @JsonProperty("inPort")
     public void setInPort(Port inPort) {
 	this.inPort = inPort;
     }
@@ -144,6 +151,7 @@ public class FlowEntry {
      *
      * @return the Switch outgoing port.
      */
+    @JsonProperty("outPort")
     public Port outPort() { return outPort; }
 
     /**
@@ -151,6 +159,7 @@ public class FlowEntry {
      *
      * @param outPort the Switch outgoing port to set.
      */
+    @JsonProperty("outPort")
     public void setOutPort(Port outPort) {
 	this.outPort = outPort;
     }
@@ -160,6 +169,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry User state.
      */
+    @JsonProperty("flowEntryUserState")
     public FlowEntryUserState flowEntryUserState() {
 	return flowEntryUserState;
     }
@@ -169,6 +179,7 @@ public class FlowEntry {
      *
      * @param flowEntryUserState the Flow Entry User state to set.
      */
+    @JsonProperty("flowEntryUserState")
     public void setFlowEntryUserState(FlowEntryUserState flowEntryUserState) {
 	this.flowEntryUserState = flowEntryUserState;
     }
@@ -181,6 +192,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Switch state.
      */
+    @JsonProperty("flowEntrySwitchState")
     public FlowEntrySwitchState flowEntrySwitchState() {
 	return flowEntrySwitchState;
     }
@@ -193,6 +205,7 @@ public class FlowEntry {
      *
      * @param flowEntrySwitchState the Flow Entry Switch state to set.
      */
+    @JsonProperty("flowEntrySwitchState")
     public void setFlowEntrySwitchState(FlowEntrySwitchState flowEntrySwitchState) {
 	this.flowEntrySwitchState = flowEntrySwitchState;
     }
@@ -202,6 +215,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Error state.
      */
+    @JsonProperty("flowEntryErrorState")
     public FlowEntryErrorState flowEntryErrorState() {
 	return flowEntryErrorState;
     }
@@ -211,6 +225,7 @@ public class FlowEntry {
      *
      * @param flowEntryErrorState the Flow Entry Error state to set.
      */
+    @JsonProperty("flowEntryErrorState")
     public void setFlowEntryErrorState(FlowEntryErrorState flowEntryErrorState) {
 	this.flowEntryErrorState = flowEntryErrorState;
     }

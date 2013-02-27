@@ -2,10 +2,8 @@ package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.IPv4Net;
-import net.floodlightcontroller.util.serializers.FlowEntryMatchSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing the Flow Entry Matching filter.
@@ -19,7 +17,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * more matching fields, we need to indicate which fields need to be
  * matched, etc.
  */
-@JsonSerialize(using=FlowEntryMatchSerializer.class)
 public class FlowEntryMatch {
     private MACAddress srcMac;		// Matching source MAC address
     private MACAddress dstMac;		// Matching destination MAC address
@@ -37,6 +34,7 @@ public class FlowEntryMatch {
      *
      * @return the matching source MAC address.
      */
+    @JsonProperty("srcMac")
     public MACAddress srcMac() { return srcMac; }
 
     /**
@@ -44,6 +42,7 @@ public class FlowEntryMatch {
      *
      * @param srcMac the matching source MAC address to set.
      */
+    @JsonProperty("srcMac")
     public void setSrcMac(MACAddress srcMac) {
 	this.srcMac = srcMac;
     }
@@ -53,6 +52,7 @@ public class FlowEntryMatch {
      *
      * @return the matching destination MAC address.
      */
+    @JsonProperty("dstMac")
     public MACAddress dstMac() { return dstMac; }
 
     /**
@@ -60,6 +60,7 @@ public class FlowEntryMatch {
      *
      * @param dstMac the matching destination MAC address to set.
      */
+    @JsonProperty("dstMac")
     public void setDstMac(MACAddress dstMac) {
 	this.dstMac = dstMac;
     }
@@ -69,6 +70,7 @@ public class FlowEntryMatch {
      *
      * @return the matching source IPv4 prefix.
      */
+    @JsonProperty("srcIPv4Net")
     public IPv4Net srcIPv4Net() { return srcIPv4Net; }
 
     /**
@@ -76,6 +78,7 @@ public class FlowEntryMatch {
      *
      * @param srcIPv4Net the matching source IPv4 prefix to set.
      */
+    @JsonProperty("srcIPv4Net")
     public void setSrcIPv4Net(IPv4Net srcIPv4Net) {
 	this.srcIPv4Net = srcIPv4Net;
     }
@@ -85,6 +88,7 @@ public class FlowEntryMatch {
      *
      * @return the matching destination IPv4 prefix.
      */
+    @JsonProperty("dstIPv4Net")
     public IPv4Net dstIPv4Net() { return dstIPv4Net; }
 
     /**
@@ -92,6 +96,7 @@ public class FlowEntryMatch {
      *
      * @param srcIPv4Net the matching destination IPv4 prefix to set.
      */
+    @JsonProperty("dstIPv4Net")
     public void setDstIPv4Net(IPv4Net dstIPv4Net) {
 	this.dstIPv4Net = dstIPv4Net;
     }
