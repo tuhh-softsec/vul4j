@@ -25,8 +25,10 @@ text {
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 </head>
 <body>
+<!--
 <button id="more">more</button>
 <button id="less">less</button>
+--!>
 <svg width="4in" height="2in" 
      viewBox="0 0 4000 2000" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
@@ -39,12 +41,16 @@ text {
       <path d="M0,-5L10,0L0,5"/>
     </marker>
   </defs>
+<h1>ONOS Sprint 4 Demo GUI</h1>
+<h2>Controller Status</h2>
 <div id="servers"></div>
 <div id="onos-status"></div>
 <div id="cassandra-status"></div>
+<h2>Topology View</h2>
+<div id="topology"></div>
 <script type="text/javascript" src="js/controller-status.js"></script>
 <script type="text/javascript">
-controller_status("http://gui.onlab.us:8080/topology");
+controller_status("http://gui.onlab.us:8080/controller_status");
 gui("http://gui.onlab.us:8080/topology");
 </script>
 </svg>
