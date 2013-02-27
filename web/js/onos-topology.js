@@ -1,9 +1,10 @@
 function gui(data_source){
     var width = 960,
     height = 500;
+    var radius = 8;
     var color = d3.scale.category20();
 
-    var svg = d3.select("body").append("svg:svg")
+    var svg = d3.select("#topology").append("svg:svg")
 	.attr("width", width)
 	.attr("height", height);
 
@@ -216,12 +217,12 @@ function gui(data_source){
 	    .attr("class", function(d) { return "link"; });
 
         circle.enter().append("svg:circle")
-	    .attr("r", 8)
+	    .attr("r", radius)
 	    .call(node_drag);
 //            .call(force.drag);
 
 	text.enter().append("svg:text")
-	    .attr("x", 8)
+	    .attr("x", radius)
 	    .attr("y", ".31em")
 	    .text(function(d) { return d.name.split(":")[5] + d.name.split(":")[6] + d.name.split(":")[7] });
 
@@ -310,13 +311,17 @@ function gui(data_source){
 	});
 //	circle.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; });
 	circle.attr("transform", function(d) {
-	    return "translate(" + d.x + "," + d.y + ")";
+	    x = Math.max(radius, Math.min(width - radius, d.x));
+	    y = Math.max(radius, Math.min(height - radius, d.y)); 
+//	    return "translate(" + d.x + "," + d.y + ")";
+	    return "translate(" + x + "," + y + ")";
 	})
+
 	circle.attr("fill", function(d) {
-	    if (d.group == 1){return "red";}
+	    ;	    if (d.group == 1){return "red";}
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
-	    else if (d.group == 3){return "orange";}
+	    else if (d.group == 4){return "orange";}
 	    else{ return "gray"; }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });

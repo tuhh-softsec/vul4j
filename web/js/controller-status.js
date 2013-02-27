@@ -8,7 +8,6 @@ function controller_status(data_source){
     var width = (barWidth + 10) * 4
     var height = 50;
 
-
     var Servers = d3.select("#servers").
 	append("svg:svg").
 	attr("width", 800).
@@ -45,6 +44,19 @@ function controller_status(data_source){
 	    append("svg:text").
 	    attr("x", function(datum, index) { return x(index); }).
 	    attr("y", function(datum) { return 20; }).
+	    attr("fill", function(datum, index) { 
+		if (index == 0){
+		    return "red"
+		}else if (index == 1){
+		    return "blue"
+		}else if (index == 2){
+		    return "green"
+		}else if (index == 3){
+		    return "orange"
+		}else{
+		    return "black"
+		}
+	    }).
 	    text(function(datum) { return datum.name; });
 
 	controller_rect.
@@ -54,7 +66,19 @@ function controller_status(data_source){
 	    attr("y", function(datum) { return height - y(datum.onos); }).
 	    attr("height", function(datum) { return y(datum.onos); }).
 	    attr("width", barWidth).
-	    attr("fill", "#2d578b");
+	    attr("fill", function(datum, index) { 
+		if (index == 0){
+		    return "red"
+		}else if (index == 1){
+		    return "blue"
+		}else if (index == 2){
+		    return "green"
+		}else if (index == 3){
+		    return "orange"
+		}else{
+		    return "black"
+		}
+	    });
 
 	controller_text.
 	    enter().
@@ -85,12 +109,25 @@ function controller_status(data_source){
 	    attr("width", barWidth).
 	    attr('fill', 'white'); 
 
+
 	controller_rect.
 	    attr("x", function(datum, index) { return x(index); }).
 	    attr("y", function(datum) { return height - y(datum.onos); }).
 	    attr("height", function(datum) { return y(datum.onos); }).
 	    attr("width", barWidth).
-	    attr("fill", "#2d578b");
+	    attr("fill", function(datum, index) { 
+		if (index == 0){
+		    return "red"
+		}else if (index == 1){
+		    return "blue"
+		}else if (index == 2){
+		    return "green"
+		}else if (index == 3){
+		    return "orange"
+		}else{
+		    return "black"
+		}
+	    });
 
 	controller_text.
 	    text(function(){return "ONOS"}).
@@ -121,7 +158,18 @@ function controller_status(data_source){
 	controller_text.exit().remove();
 	cassandra_rect.exit().remove();
 	cassandra_text.exit().remove();
+
+	setInterval(function() {
+            $.ajax({
+		url: data_source,
+		success: function(json) {
+		    draw(json)
+		},
+		dataType: "json"
+            });
+	}, 3000); 
     }
+/*
     $("#more").click( function() {
         $.ajax({
 	    url: 'http://gui.onlab.us:8080/controller_status1',
@@ -140,6 +188,6 @@ function controller_status(data_source){
 	    dataType: "json"
         });
     });
-
+*/
 }
 

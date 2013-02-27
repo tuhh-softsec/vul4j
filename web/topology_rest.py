@@ -498,6 +498,26 @@ def controller_status2():
   pp.pprint(resp)
   return resp
 
+@app.route("/controller_status")
+def controller_status():
+  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
+  #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
+
+  cont_status=[]
+  for i in controllers:
+    status={}
+    onos=os.popen(onos_check % i).read()[:-1]
+    status["name"]=i
+    status["onos"]=onos
+    status["cassandra"]=1
+    cont_status.append(status)
+
+  js = json.dumps(cont_status)
+  resp = Response(js, status=200, mimetype='application/json')
+  pp.pprint(js)
+  return resp
+
+
 
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
