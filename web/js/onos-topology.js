@@ -232,6 +232,7 @@ function gui(data_source){
 	    if (d.group == 1){return "red";}
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
+	    else if (d.group == 4){return "orange";}
 	    else{ return "gray"; }
 	});
 
@@ -315,6 +316,7 @@ function gui(data_source){
 	    if (d.group == 1){return "red";}
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
+	    else if (d.group == 3){return "orange";}
 	    else{ return "gray"; }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });

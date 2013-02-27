@@ -14,6 +14,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
+controllers=["onos9vpc", "onos10vpc", "onos11vpc", "onos12vpc"]
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -121,27 +122,27 @@ def topology_for_gui():
       state = str(v['state'])
       sw = {}
       sw['name']=dpid
+      sw['group']= -1
       if state == "ACTIVE":
-#        print state
         if dpid.split(":")[5] == "0a":
           sw['group']=1
         if dpid.split(":")[5] == "0b":
           sw['group']=2
         if dpid.split(":")[5] == "0c":
           sw['group']=3
+        if dpid.split(":")[5] == "0d":
+          sw['group']=4
       if state == "INACTIVE":
-#        print state
         sw['group']=0
-#      print sw
       switches.append(sw)
 
-  try:
-    command = "curl -s \'http://%s:%s/wm/registry/controllers/json\'" % (RestIP, RestPort)
-    result = os.popen(command).read()
-    controllers = json.loads(result)
-  except:
-    log_error("xx REST IF has issue: %s" % command)
-    log_error("%s" % result)
+#  try:
+#    command = "curl -s \'http://%s:%s/wm/registry/controllers/json\'" % (RestIP, RestPort)
+#    result = os.popen(command).read()
+#    controllers = json.loads(result)
+#  except:
+#    log_error("xx REST IF has issue: %s" % command)
+#    log_error("%s" % result)
 
   try:
     command = "curl -s \'http://%s:%s/wm/registry/switches/json\'" % (RestIP, RestPort)
@@ -158,6 +159,9 @@ def topology_for_gui():
     if sw_id != -1:
       if switches[sw_id]['group'] != 0:
         switches[sw_id]['group'] = controllers.index(ctrl) + 1
+
+
+
 
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
