@@ -606,10 +606,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         if (!isReverse && autoPortFastFeature && isFastPort(sw, port))
             return;
 
-        // FIXME ONOS does not support BSN packets 
-        if (!isStandard) {
-        	return;
-        }
         if (log.isTraceEnabled()) {
             log.trace("Sending LLDP packet out of swich: {}, port: {}",
                       sw, port);
