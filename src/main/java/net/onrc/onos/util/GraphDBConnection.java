@@ -24,7 +24,7 @@ public class GraphDBConnection {
 	   
 	   /* Static 'instance' method */
 	   public static GraphDBConnection getInstance(String conf) {
-		   if (graph == null||graph.isOpen()) {
+		   if (graph == null||graph.isOpen() == Boolean.FALSE) {
 		        graph = TitanFactory.open(conf);		        
 		        // FIXME: Creation on Indexes should be done only once
 		        Set<String> s = graph.getIndexedKeys(Vertex.class);

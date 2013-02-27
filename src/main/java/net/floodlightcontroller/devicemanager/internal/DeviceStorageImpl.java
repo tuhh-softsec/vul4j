@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.thinkaurelius.titan.core.TitanException;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.floodlightcontroller.core.internal.SwitchStorageImpl;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceStorage;
@@ -19,10 +18,8 @@ import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 public class DeviceStorageImpl implements IDeviceStorage {
 	
-//	public TitanGraph graph;
 	public GraphDBConnection conn;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
-	public ITopoSwitchService svc;
 
 	@Override
 	public void init(String conf) {
@@ -91,8 +88,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 
 	@Override
 	public IDeviceObject getDeviceByMac(String mac) {
-		
-		return null;
+		return conn.utils().searchDevice(conn, mac);
 	}
 
 	@Override
