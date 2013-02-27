@@ -1,7 +1,6 @@
 package net.onrc.onos.util;
 
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.thinkaurelius.titan.graphdb.transaction.VertexIterable;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
 import com.tinkerpop.frames.FramedVertexIterable;
@@ -10,7 +9,6 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.routing.Link;
 
 public class GraphDBUtils implements IDBUtils {
 
@@ -54,6 +52,12 @@ public class GraphDBUtils implements IDBUtils {
 	public void removeDevice(GraphDBConnection conn, IDeviceObject dev) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		fg.removeVertex(dev.asVertex());		
+	}
+
+	@Override
+	public Iterable<IDeviceObject> getDevices(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		return fg.getVertices("type","device",IDeviceObject.class);
 	}
 
 }

@@ -2,15 +2,12 @@ package net.floodlightcontroller.util;
 
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.Port;
-import net.floodlightcontroller.util.serializers.SwitchPortSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing a Switch-Port.
  */
-@JsonSerialize(using=SwitchPortSerializer.class)
 public class SwitchPort {
     private Dpid dpid;		// The DPID of the switch
     private Port port;		// The port of the switch
@@ -37,14 +34,36 @@ public class SwitchPort {
      *
      * @return the DPID value of the Switch-Port.
      */
+    @JsonProperty("dpid")
     public Dpid dpid() { return dpid; }
+
+    /**
+     * Set the DPID value of the Switch-Port.
+     *
+     * @param dpid the DPID to use.
+     */
+    @JsonProperty("dpid")
+    public void setDpid(Dpid dpid) {
+	this.dpid = dpid;
+    }
 
     /**
      * Get the port value of the Switch-Port.
      *
      * @return the port value of the Switch-Port.
      */
+    @JsonProperty("port")
     public Port port() { return port; }
+
+    /**
+     * Set the port value of the Switch-Port.
+     *
+     * @param port the port to use.
+     */
+    @JsonProperty("port")
+    public void setPort(Port port) {
+	this.port = port;
+    }
 
     /**
      * Set the DPID and port values of the Switch-Port.

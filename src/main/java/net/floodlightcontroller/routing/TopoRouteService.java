@@ -13,7 +13,11 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.floodlightcontroller.topology.NodePortTuple;
+import net.floodlightcontroller.util.DataPath;
+import net.floodlightcontroller.util.Dpid;
+import net.floodlightcontroller.util.FlowEntry;
+import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.SwitchPort;
 
 import org.openflow.util.HexString;
 
@@ -87,14 +91,17 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     SwitchStorageImpl swStore = store.get();
 
     @Override
-    public List<NodePortTuple> getShortestPath(NodePortTuple src,
-					       NodePortTuple dest) {
-	List<NodePortTuple> result_list = new ArrayList<NodePortTuple>();
+    public DataPath getShortestPath(SwitchPort src, SwitchPort dest) {
+	DataPath result_data_path = new DataPath();
+
+	// Initialize the source and destination in the data path to return
+	result_data_path.setSrcPort(src);
+	result_data_path.setDstPort(dest);
 
 	TitanGraph titanGraph = swStore.graph;
 
-	String dpid_src = HexString.toHexString(src.getNodeId());
-	String dpid_dest = HexString.toHexString(dest.getNodeId());
+	String dpid_src = src.dpid().toString();
+	String dpid_dest = dest.dpid().toString();
 
 	//
 	// Implement the Shortest Path between two vertices by using
@@ -120,16 +127,18 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
 	//
 	// Test whether we are computing a path from/to the same DPID.
-	// If "yes", then just list the "src" and "dest" in the return
-	// result.
+	// If "yes", then just add a single flow entry in the return result.
 	// NOTE: The return value will change in the future to return
 	// a single hop/entry instead of two. Currently, we need
 	// both entries to capture the source and destination ports.
 	//
 	if (dpid_src.equals(dpid_dest)) {
-	    result_list.add(new NodePortTuple(src));
-	    result_list.add(new NodePortTuple(dest));
-	    return result_list;
+	    FlowEntry flowEntry = new FlowEntry();
+	    flowEntry.setDpid(src.dpid());
+	    flowEntry.setInPort(src.port());
+	    flowEntry.setOutPort(dest.port());
+	    result_data_path.flowEntries().add(flowEntry);
+	    return result_data_path;
 	}
 
 	//
@@ -151,11 +160,13 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	}
 
 	//
-	// Loop through the result and return the list
+	// Loop through the result and collect the list
 	// of <dpid, port> tuples.
 	//
 	long nodeId = 0;
 	short portId = 0;
+	Port inPort = new Port(src.port().value());
+	Port outPort = new Port();
 	for (ArrayList<Vertex> lv : results) {
 	    int idx = 0;
 	    for (Vertex v: lv) {
@@ -181,27 +192,48 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
 		    System.out.println("dpid: " + dpid);
 		}
-		if (idx == 0) {
-		    idx++;
+		idx++;
+		if (idx == 1) {
 		    continue;
 		}
-		int mod = (idx - 1) % 3;
-		if ((mod == 0) || (mod == 2))  {
-		    result_list.add(new NodePortTuple(nodeId, portId));
+		int mod = idx % 3;
+		if (mod == 0) {
+		    // Setup the incoming port
+		    inPort = new Port(portId);
+		    continue;
 		}
-		idx++;
+		if (mod == 2) {
+		    // Setup the outgoing port, and add the Flow Entry
+		    outPort = new Port(portId);
+
+		    FlowEntry flowEntry = new FlowEntry();
+		    flowEntry.setDpid(new Dpid(nodeId));
+		    flowEntry.setInPort(inPort);
+		    flowEntry.setOutPort(outPort);
+		    result_data_path.flowEntries().add(flowEntry);
+		    continue;
+		}
+	    }
+
+	    if (idx > 0) {
+		// Add the last Flow Entry
+		FlowEntry flowEntry = new FlowEntry();
+		flowEntry.setDpid(new Dpid(nodeId));
+		flowEntry.setInPort(inPort);
+		flowEntry.setOutPort(dest.port());
+		result_data_path.flowEntries().add(flowEntry);
 	    }
 	}
-	if (result_list.size() > 0)
-	    return result_list;
+	if (result_data_path.flowEntries().size() > 0)
+	    return result_data_path;
 
 	return null;
     }
 
     @Override
-    public Boolean routeExists(NodePortTuple src, NodePortTuple dest) {
-	List<NodePortTuple> route = getShortestPath(src, dest);
-	if (route != null)
+    public Boolean routeExists(SwitchPort src, SwitchPort dest) {
+	DataPath dataPath = getShortestPath(src, dest);
+	if (dataPath != null)
 	    return true;
 	return false;
     }

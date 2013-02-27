@@ -18,6 +18,8 @@ public class DpidSerializer extends JsonSerializer<Dpid> {
     public void serialize(Dpid dpid, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
-	jGen.writeString(dpid.toString());
+	jGen.writeStartObject();
+	jGen.writeStringField("value", dpid.toString());
+	jGen.writeEndObject();
     }
 }

@@ -27,12 +27,11 @@ public class DeleteFlowResource extends ServerResource {
 
 	// Extract the arguments
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	FlowId flowId = new FlowId(HexString.toLong(flowIdStr));
-
+	FlowId flowId = new FlowId(flowIdStr);
 	log.debug("Delete Flow Id: " + flowIdStr);
 
+	// Process the request
 	result = flowService.deleteFlow(flowId);
-
-        return result;
+	return result;
     }
 }

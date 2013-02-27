@@ -19,6 +19,7 @@ package net.floodlightcontroller.core.web;
 
 import net.floodlightcontroller.core.module.ModuleLoaderResource;
 import net.floodlightcontroller.linkdiscovery.web.TopoLinksResource;
+import net.floodlightcontroller.devicemanager.web.TopoDevicesResource;
 import net.floodlightcontroller.restserver.RestletRoutable;
 
 import org.restlet.Context;
@@ -63,6 +64,7 @@ public class CoreWebRoutable implements RestletRoutable {
         router.attach("/system/uptime/json", SystemUptimeResource.class);
         router.attach("/topology/switches/{filter}/json", TopoSwitchesResource.class);
         router.attach("/topology/links/json", TopoLinksResource.class);
+        router.attach("/topology/devices/json", TopoDevicesResource.class);
         return router;
     }
 }

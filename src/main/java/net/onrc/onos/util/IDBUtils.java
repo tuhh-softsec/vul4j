@@ -10,4 +10,5 @@ public interface IDBUtils {
 	public IDeviceObject newDevice(GraphDBConnection conn);
 	public void removeDevice(GraphDBConnection conn, IDeviceObject dev);
 	public IPortObject searchPort(GraphDBConnection conn, String dpid, short number);
+	public Iterable<IDeviceObject> getDevices(GraphDBConnection conn);
 }

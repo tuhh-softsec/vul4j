@@ -22,26 +22,26 @@ function gui(data_source){
 
     d3.json(data_source, init);
 
-/* For debugging  */
+/* For debugging  
     $("#more").click( function() {
         $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_more',
+	    url: 'http://gui.onlab.us:8080/topology_more',
 	    success: function(json) {
-		update(json)
+		update(json);
 	    },
 	    dataType: "json"
         });
     });
     $("#less").click( function() {
         $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_less',
+	    url: 'http://gui.onlab.us:8080/topology_less',
 	    success: function(json) {
-		update(json)
+		update(json);
 	    },
 	    dataType: "json"
         });
     });
-/**/
+*/
 
     function compare_link (a, b){
         if (a.source > b.source) {return 1;}
@@ -223,7 +223,7 @@ function gui(data_source){
 	text.enter().append("svg:text")
 	    .attr("x", 8)
 	    .attr("y", ".31em")
-	    .text(function(d) { return d.name.split(":")[6] + d.name.split(":")[7] });
+	    .text(function(d) { return d.name.split(":")[5] + d.name.split(":")[6] + d.name.split(":")[7] });
 
         circle.append("title")
 	    .text(function(d) { return d.name; });
@@ -281,7 +281,7 @@ function gui(data_source){
     }
 
     function init_draw(nodes, links){
-        path = svg.append("svg:g").selectAll("path").data(links)
+        path = svg.append("svg:g").selectAll("path").data(links);
         circle = svg.append("svg:g").selectAll("circle").data(nodes);
 	text = svg.append("svg:g").selectAll("text").data(nodes);
 
@@ -289,7 +289,6 @@ function gui(data_source){
 
 	setInterval(function() {
             $.ajax({
-//		url: 'http://onosnat.onlab.us:8080/topology',
 		url: data_source,
 		success: function(json) {
 		    update(json)

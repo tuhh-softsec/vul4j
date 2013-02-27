@@ -1,14 +1,17 @@
 package net.floodlightcontroller.util;
 
 import org.openflow.util.HexString;
+import net.floodlightcontroller.util.serializers.IPv6Deserializer;
 import net.floodlightcontroller.util.serializers.IPv6Serializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * The class representing an IPv6 address.
  */
+@JsonDeserialize(using=IPv6Deserializer.class)
 @JsonSerialize(using=IPv6Serializer.class)
 public class IPv6 {
     private long valueHigh;	// The higher (more significant) 64 bits
@@ -34,6 +37,17 @@ public class IPv6 {
     }
 
     /**
+     * Constructor from a string.
+     *
+     * @param value the value to use.
+     */
+    public IPv6(String value) {
+	// TODO: Implement it!
+	this.valueHigh = 0;
+	this.valueLow = 0;
+    }
+
+    /**
      * Get the value of the higher (more significant) 64 bits of the address.
      *
      * @return the value of the higher (more significant) 64 bits of the
@@ -42,12 +56,30 @@ public class IPv6 {
     public long valueHigh() { return valueHigh; }
 
     /**
+     * Set the value of the higher (more significant) 64 bits of the address.
+     *
+     * @param valueHigh the higher (more significant) 64 bits of the address.
+     */
+    public void setValueHigh(long valueHigh) {
+	this.valueHigh = valueHigh;
+    }
+
+    /**
      * Get the value of the lower (less significant) 64 bits of the address.
      *
      * @return the value of the lower (less significant) 64 bits of the
      * address.
      */
     public long valueLow() { return valueLow; }
+
+    /**
+     * Get the value of the lower (less significant) 64 bits of the address.
+     *
+     * @param valueLow the lower (less significant) 64 bits of the address.
+     */
+    public void setValueLow(long valueLow) {
+	this.valueLow = valueLow;
+    }
 
     /**
      * Set the value of the IPv6 address.

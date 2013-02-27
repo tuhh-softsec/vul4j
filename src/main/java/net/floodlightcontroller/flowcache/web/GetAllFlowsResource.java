@@ -30,6 +30,8 @@ public class GetAllFlowsResource extends ServerResource {
 	log.debug("Get All Flows Endpoints");
 
 	flowService.getAllFlows(result);
+	FlowPath flowPath = new FlowPath();
+	result.add(flowPath);
 
         return result;
     }

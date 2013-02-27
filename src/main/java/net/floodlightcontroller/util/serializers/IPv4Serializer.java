@@ -18,6 +18,8 @@ public class IPv4Serializer extends JsonSerializer<IPv4> {
     public void serialize(IPv4 ipv4, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
-	jGen.writeString(ipv4.toString());
+	jGen.writeStartObject();
+	jGen.writeStringField("value", ipv4.toString());
+	jGen.writeEndObject();
     }
 }

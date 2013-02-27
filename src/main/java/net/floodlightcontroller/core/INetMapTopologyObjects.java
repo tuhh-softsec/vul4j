@@ -74,7 +74,8 @@ public interface ISwitchObject extends IBaseObject{
 		@Incidence(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 		
-		@JsonIgnore
+		
+		@JsonProperty("devices")
 		@Adjacency(label="host")
 		public Iterable<IDeviceObject> getDevices();
 		
@@ -119,8 +120,16 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("_().in('host').in('on')")
 		public Iterable<ISwitchObject> getSwitch();
 		
+/*		@JsonProperty("dpid")
+		@GremlinGroovy("_().in('host').in('on').next().getProperty('dpid')")
+		public Iterable<String> getSwitchDPID();
+		
+		@JsonProperty("number")
+		@GremlinGroovy("_().in('host').transform{it.number}")
+		public Iterable<Short> getPortNumber();
+		
 		@JsonProperty("AttachmentPoint")
 		@GremlinGroovy("_().in('host').in('on').path(){it.number}{it.dpid}")
-		public List<SwitchPort> getAttachmentPoints();
+		public Iterable<SwitchPort> getAttachmentPoints();*/
 	}
 }
