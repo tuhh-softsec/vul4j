@@ -160,7 +160,7 @@ public class Base64 {
      * @param bitlen <code>int<code> the desired length in bits of the representation
      * @return a byte array with <code>bitlen</code> bits of <code>big</code>
      */
-    public static final  byte[] encode(BigInteger big, int bitlen) {
+    public static final byte[] encode(BigInteger big, int bitlen) {
 
         //round bitlen
         bitlen = ((bitlen + 7) >> 3) << 3;
@@ -252,7 +252,7 @@ public class Base64 {
     public static final byte[] decode(Element element) throws Base64DecodingException {
 
         Node sibling = element.getFirstChild();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         while (sibling != null) {
             if (sibling.getNodeType() == Node.TEXT_NODE) {
@@ -595,7 +595,7 @@ public class Base64 {
         throws Base64DecodingException, IOException {
         byte[] bytes = new byte[base64Data.length()];
         int len = getBytesInternal(base64Data, bytes);
-        decode(bytes,os,len);
+        decode(bytes, os, len);
     }
 
     /**
@@ -608,7 +608,7 @@ public class Base64 {
      */
     public static final void decode(byte[] base64Data, OutputStream os) 
         throws Base64DecodingException, IOException {	    
-        decode(base64Data,os,-1);
+        decode(base64Data, os, -1);
     }
 
     protected static final void decode(byte[] base64Data, OutputStream os, int len) 
@@ -636,7 +636,7 @@ public class Base64 {
         int dataIndex = 0;    
 
         //the begin
-        for (i=numberQuadruple - 1; i > 0; i--) {
+        for (i = numberQuadruple - 1; i > 0; i--) {
             b1 = base64Alphabet[base64Data[dataIndex++]];
             b2 = base64Alphabet[base64Data[dataIndex++]];
             b3 = base64Alphabet[base64Data[dataIndex++]];
@@ -644,14 +644,14 @@ public class Base64 {
             if ((b1 == -1) ||
                 (b2 == -1) ||
                 (b3 == -1) ||
-                (b4 == -1) ) {
+                (b4 == -1)) {
                 //if found "no data" just return null
                 throw new Base64DecodingException("decoding.general");
             }
 
             os.write((byte)(b1 << 2 | b2 >> 4));
             os.write((byte)(((b2 & 0xf) << 4 ) | ((b3 >> 2) & 0xf)));
-            os.write( (byte)(b3 << 6 | b4));
+            os.write((byte)(b3 << 6 | b4));
         }   
         b1 = base64Alphabet[base64Data[dataIndex++]];
         b2 = base64Alphabet[base64Data[dataIndex++]];
@@ -702,7 +702,7 @@ public class Base64 {
         //byte decodedData[] = null;
         byte b1 = 0, b2 = 0, b3 = 0, b4 = 0;    
 
-        int index=0;
+        int index = 0;
         byte[] data = new byte[4];
         int read;
         //the begin
