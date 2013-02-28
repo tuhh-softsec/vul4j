@@ -851,7 +851,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     log.trace("Getting BDDP packets from a different controller" +
                             "and letting it go through normal processing chain.");
                 }
-                return Command.CONTINUE;
+                //XXX Fix the BDDP broadcast issue
+                //return Command.CONTINUE;
+                return Command.STOP;
             }
         }
 
