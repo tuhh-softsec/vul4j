@@ -27,7 +27,6 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		ILinkDiscoveryListener, IFloodlightModule {
 	
 	protected IDeviceStorage devStore;
-	protected ISwitchStorage swStore;
 	protected static Logger log;
 	protected IDeviceService deviceService;
 	
@@ -126,8 +125,6 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		log = LoggerFactory.getLogger(OnosPublisher.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
 		
-		swStore = new SwitchStorageImpl();
-		swStore.init(conf);
 		devStore = new DeviceStorageImpl();
 		devStore.init(conf);
 		
