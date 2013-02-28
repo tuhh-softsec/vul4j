@@ -58,6 +58,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			graph.stopTransaction(Conclusion.FAILURE);
 			log.info("SwitchStorage:setStatus dpid:{} state: {} failed", dpid, state);
 		}
             	
@@ -98,6 +99,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			graph.stopTransaction(Conclusion.FAILURE);
 			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, port.getPortNumber());
 		}	
 
@@ -149,6 +151,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             /*
              * retry till we succeed?
              */
+    	graph.stopTransaction(Conclusion.FAILURE);
     	log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
     }
 
@@ -168,6 +171,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			graph.stopTransaction(Conclusion.FAILURE);
 			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
 		}
 
@@ -190,6 +194,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (TitanException e) {
              // TODO: handle exceptions
+			graph.stopTransaction(Conclusion.FAILURE);
 			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
 	}
