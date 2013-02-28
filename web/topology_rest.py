@@ -160,7 +160,24 @@ def topology_for_gui():
       if switches[sw_id]['group'] != 0:
         switches[sw_id]['group'] = controllers.index(ctrl) + 1
 
+  try:
+    v1 = "00:00:00:00:00:0a:0d:00"
+    p1=1
+    v2 = "00:00:00:00:00:0b:0d:03"
+    p1=2
+    command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (RestIP, RestPort, v1, p1, v2, p2)
+    result = os.popen(command).read()
+    parsedResult = json.loads(result)
+  except:
+    log_error("No route")
+    parsedResult = []
 
+  path = [];    
+  for i, v in enumerate(parsedResult):
+    if i < len(parsedResult) - 1:
+      sdpid= parsedResult[i]['switch']
+      ddpid = parsedResult[i+1]['switch']
+      path.append( (sdpid, ddpid))  
 
 
   try:
@@ -182,6 +199,14 @@ def topology_for_gui():
       src_id = node_id(switches, src_dpid)
     link['source'] = src_id
     link['target'] = dst_id
+
+    onpath = 0
+    for (s,d) in path:
+      if s == v['src-switch'] and d == v['dst-switch']:
+        onpath = 1
+        break
+    link['type'] = onpath
+
     links.append(link)
 
   topo['nodes'] = switches
