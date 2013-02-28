@@ -109,7 +109,7 @@ function check_db {
       exit
    fi
    n=`ps -edalf |grep java |grep apache-cassandra | wc -l`
-   if [ x$n != "x1" ]; then
+   if [ x$n == "x0" ]; then
       echo "Cassandra is not running. Exitting"
       exit
    fi
