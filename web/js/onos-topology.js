@@ -208,13 +208,31 @@ function gui(data_source){
 		}
 	    }
 	}
+	for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < json.links.length; j++) {
+		if (links[i].target.name == json.nodes[json.links[j].target].name && 
+		    links[i].source.name == json.nodes[json.links[j].source].name ){
+		    if (links[i].type != json.links[j].type){
+			links[i].type = json.links[j].type;
+			changed = true;
+		    }
+		}
+	    }
+	}
 	return changed
     }
 
     function draw(force, path, circle, text){
 	force.stop();
         path.enter().append("svg:path")
-	    .attr("class", function(d) { return "link"; });
+	    .attr("class", function(d) { return "link"; })
+	    .attr("marker-end", function(d) {
+		if(d.type == 1){
+		    return "url(#TriangleRed)";
+		} else {
+		    return "url(#Triangle)";
+		}
+	    });
 
         circle.enter().append("svg:circle")
 	    .attr("r", radius)
@@ -245,7 +263,7 @@ function gui(data_source){
 	    }
 	}).attr("stroke-width", function(d) {
 	    if(d.type == 1){
-		return "4px";
+		return "2px";
 	    } else {
 		return "1.5px";
 	    }
@@ -271,12 +289,12 @@ function gui(data_source){
 	var changed = cdiff(json);
 
 	console.log("changed? " + changed);
+        path = svg.selectAll("path").data(links)
+        circle = svg.selectAll("circle").data(nodes);
+	text = svg.selectAll("text").data(nodes);
 
+	console.log(path)
 	if (changed){
-
-            path = svg.selectAll("path").data(links)
-            circle = svg.selectAll("circle").data(nodes);
-	    text = svg.selectAll("text").data(nodes);
 
 	    draw(force, path, circle, text);
 	}
@@ -299,8 +317,6 @@ function gui(data_source){
             });
 	}, 3000); 
     }
-
-
     function tick() {
 	path.attr("d", function(d) {
 	    var dx = d.target.x - d.source.x,
@@ -309,6 +325,26 @@ function gui(data_source){
 	    dr = 0;  // 0 for direct line
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
+	path.attr("stroke", function(d) {
+	    if(d.type == 1){
+		return "red"
+	    } else {
+		return "black"
+	    }
+	}).attr("stroke-width", function(d) {
+	    if(d.type == 1){
+		return "3px";
+	    } else {
+		return "1.5px";
+	    }
+	}).attr("marker-end", function(d) {
+	    if(d.type == 1){
+		return "url(#TriangleRed)";
+	    } else {
+		return "url(#Triangle)";
+	    }
+	});
+
 //	circle.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; });
 	circle.attr("transform", function(d) {
 	    x = Math.max(radius, Math.min(width - radius, d.x));
