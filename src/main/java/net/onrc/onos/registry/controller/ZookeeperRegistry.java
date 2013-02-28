@@ -36,6 +36,12 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 
+/**
+ * A registry service that uses Zookeeper. All data is stored in Zookeeper,
+ * so this can be used as a global registry in a multi-node ONOS cluster.
+ * @author jono
+ *
+ */
 public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistryService {
 
 	protected static Logger log = LoggerFactory.getLogger(ZookeeperRegistry.class);
@@ -43,9 +49,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	protected IRestApiService restApi;
 	
-	//TODO read this from configuration
+	//This is the default, it's overwritten by the connectionString configuration parameter
 	protected String connectionString = "localhost:2181";
-	
 	
 	private final String namespace = "onos";
 	private final String switchLatchesPath = "/switches";
@@ -64,6 +69,19 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	protected static final int sessionTimeout = 2000;
 	protected static final int connectionTimeout = 4000;
 	
+	/**
+	 * Watches for changes in switch leadership election. The Curator
+	 * LeaderLatch doesn't notify us when leadership changes so we set a watch
+	 * on the election znodes to get leadership change events. The process
+	 * method will be called whenever the switches children change in 
+	 * Zookeeper. We then have to work out whether to send a control-changed
+	 * event to our clients and reset the watch.
+	 * 
+	 * TODO I think it's possible to miss events that happen while we're 
+	 * processing the watch and before we've set a new watch. Need to think
+	 * of a safer way to implement leader change notifications.
+	 *
+	 */
 	protected class ParamaterizedCuratorWatcher implements CuratorWatcher {
 		private String dpid;
 		private boolean isLeader = false;
@@ -78,7 +96,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		public synchronized void process(WatchedEvent event) throws Exception {
 			log.debug("Watch Event: {}", event);
 
-			LeaderLatch latch = switchLatches.get(dpid);
 			
 			if (event.getState() == KeeperState.Disconnected){
 				if (isLeader) {
@@ -91,6 +108,14 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 						cb.controlChanged(HexString.toLong(dpid), false);
 					}
 				}
+				return;
+				//TODO Watcher is never reset once we reconnect to Zookeeper
+			}
+			
+			LeaderLatch latch = switchLatches.get(dpid);
+			if (latch == null){
+				log.debug("In watcher process, looks like control was released for {}",
+						dpid);
 				return;
 			}
 			
@@ -112,24 +137,24 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 				}
 			} catch (Exception e){
 				if (isLeader){
-					log.debug("Exception checking leadership status. Assume leadship lost for {}",
+					log.debug("Exception checking leadership status. Assume leadership lost for {}",
 							dpid);
 					
 					isLeader = false;
 					switchCallbacks.get(dpid).controlChanged(HexString.toLong(dpid), false);
 				}
+			} finally {
+				client.getChildren().usingWatcher(this).inBackground().forPath(latchPath);
 			}
-			
-			client.getChildren().usingWatcher(this).inBackground().forPath(latchPath);
 			//client.getChildren().usingWatcher(this).forPath(latchPath);
 		}
 	}
 	
 	
-	/*
-	 * Listens for changes to the switch znodes in Zookeeper. This maintains the second level of
-	 * PathChildrenCaches that hold the controllers contending for each switch - there's one for
-	 * each switch.
+	/**
+	 * Listens for changes to the switch znodes in Zookeeper. This maintains
+	 * the second level of PathChildrenCaches that hold the controllers 
+	 * contending for each switch - there's one for each switch.
 	 */
 	PathChildrenCacheListener switchPathCacheListener = new PathChildrenCacheListener() {
 		@Override
@@ -173,6 +198,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public void requestControl(long dpid, ControlChangeCallback cb) throws RegistryException {
+		log.info("Requesting control for {}", HexString.toHexString(dpid));
 		
 		if (controllerId == null){
 			throw new RuntimeException("Must register a controller before calling requestControl");
@@ -205,20 +231,21 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public void releaseControl(long dpid) {
+		log.info("Releasing control for {}", HexString.toHexString(dpid));
 		
 		String dpidStr = HexString.toHexString(dpid);
 		
 		LeaderLatch latch = switchLatches.get(dpidStr);
 		if (latch == null) {
-			log.debug("Trying to release mastership for switch we are not contesting");
+			log.debug("Trying to release control of a switch we are not contesting");
 			return;
 		}
 		
 		try {
 			latch.close();
 		} catch (IOException e) {
-			//I think it's OK not to do anything here. Either the node got deleted correctly,
-			//or the connection went down and the node got deleted.
+			//I think it's OK not to do anything here. Either the node got 
+			//deleted correctly, or the connection went down and the node got deleted.
 		} finally {
 			switchLatches.remove(dpidStr);
 			switchCallbacks.remove(dpidStr);
@@ -244,13 +271,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	}
 
 	@Override
-	public void setMastershipId(String id) {
-		//TODO remove this method if not needed
-		//controllerId = id;
-	}
-
-	@Override
-	public String getMastershipId() {
+	public String getControllerId() {
 		return controllerId;
 	}
 	
@@ -423,8 +444,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			//Don't prime the cache, we want a notification for each child node in the path
 			switchCache.start(StartMode.NORMAL);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new FloodlightModuleException("Error initialising ZookeeperRegistry: " 
+					+ e.getMessage());
 		}
 	}
 	
@@ -432,5 +453,4 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	public void startUp (FloodlightModuleContext context) {
 		restApi.addRestletRoutable(new RegistryWebRoutable());
 	}
-
 }
