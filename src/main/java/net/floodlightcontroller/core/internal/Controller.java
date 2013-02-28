@@ -1546,9 +1546,11 @@ public class Controller implements IFloodlightProviderService,
         }
         
         updateActiveSwitchInfo(sw);
-        swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-        for (OFPhysicalPort port: sw.getPorts()) {
-            swStore.addPort(sw.getStringId(), port);
+        if (registryService.hasControl(sw.getId())) {
+        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
+        	for (OFPhysicalPort port: sw.getPorts()) {
+        		swStore.addPort(sw.getStringId(), port);
+        	}
         }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
@@ -1569,7 +1571,9 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
-        swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+        if (registryService.hasControl(sw.getId())) {
+        	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+        }
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
