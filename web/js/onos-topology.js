@@ -208,23 +208,50 @@ function gui(data_source){
 		}
 	    }
 	}
+	for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < json.links.length; j++) {
+		if (links[i].target.name == json.nodes[json.links[j].target].name && 
+		    links[i].source.name == json.nodes[json.links[j].source].name ){
+		    if (links[i].type != json.links[j].type){
+			links[i].type = json.links[j].type;
+			changed = true;
+		    }
+		}
+	    }
+	}
 	return changed
     }
 
     function draw(force, path, circle, text){
 	force.stop();
         path.enter().append("svg:path")
-	    .attr("class", function(d) { return "link"; });
+	    .attr("class", function(d) { return "link"; })
+	    .attr("marker-end", function(d) {
+		if(d.type == 1){
+		    return "url(#TriangleRed)";
+		} else {
+		    return "url(#Triangle)";
+		}
+	    });
 
         circle.enter().append("svg:circle")
-	    .attr("r", radius)
+	    .attr("r", function(d) { 
+		if (d.group == 1000){
+		    return radius/2;
+		}else{
+		    return radius;
+		}
+	    })
 	    .call(node_drag);
 //            .call(force.drag);
 
 	text.enter().append("svg:text")
 	    .attr("x", radius)
 	    .attr("y", ".31em")
-	    .text(function(d) { return d.name.split(":")[5] + d.name.split(":")[6] + d.name.split(":")[7] });
+	    .text(function(d) { 
+		l=d.name.split(":").length
+		return d.name.split(":")[l-3] + ":" + d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
+	    });
 
         circle.append("title")
 	    .text(function(d) { return d.name; });
@@ -234,6 +261,7 @@ function gui(data_source){
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
 	    else if (d.group == 4){return "orange";}
+	    else if (d.group == 1000){return "black";}
 	    else{ return "gray"; }
 	});
 
@@ -245,7 +273,7 @@ function gui(data_source){
 	    }
 	}).attr("stroke-width", function(d) {
 	    if(d.type == 1){
-		return "4px";
+		return "2px";
 	    } else {
 		return "1.5px";
 	    }
@@ -271,12 +299,12 @@ function gui(data_source){
 	var changed = cdiff(json);
 
 	console.log("changed? " + changed);
+        path = svg.selectAll("path").data(links)
+        circle = svg.selectAll("circle").data(nodes);
+	text = svg.selectAll("text").data(nodes);
 
+	console.log(path)
 	if (changed){
-
-            path = svg.selectAll("path").data(links)
-            circle = svg.selectAll("circle").data(nodes);
-	    text = svg.selectAll("text").data(nodes);
 
 	    draw(force, path, circle, text);
 	}
@@ -299,8 +327,6 @@ function gui(data_source){
             });
 	}, 3000); 
     }
-
-
     function tick() {
 	path.attr("d", function(d) {
 	    var dx = d.target.x - d.source.x,
@@ -309,6 +335,26 @@ function gui(data_source){
 	    dr = 0;  // 0 for direct line
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
+	path.attr("stroke", function(d) {
+	    if(d.type == 1){
+		return "red"
+	    } else {
+		return "black"
+	    }
+	}).attr("stroke-width", function(d) {
+	    if(d.type == 1){
+		return "3px";
+	    } else {
+		return "1.5px";
+	    }
+	}).attr("marker-end", function(d) {
+	    if(d.type == 1){
+		return "url(#TriangleRed)";
+	    } else {
+		return "url(#Triangle)";
+	    }
+	});
+
 //	circle.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; });
 	circle.attr("transform", function(d) {
 	    x = Math.max(radius, Math.min(width - radius, d.x));
@@ -322,6 +368,7 @@ function gui(data_source){
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
 	    else if (d.group == 4){return "orange";}
+	    else if (d.group == 1000){return "black";}
 	    else{ return "gray"; }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });

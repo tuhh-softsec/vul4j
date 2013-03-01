@@ -24,6 +24,15 @@ function controller_status(data_source){
 	attr("height", 50);
 
     d3.json(data_source, draw);
+    setInterval(function() {
+        $.ajax({
+	    url: data_source,
+	    success: function(json) {
+		draw(json)
+	    },
+	    dataType: "json"
+        });
+    }, 5000); 
 
     function draw(json){
 //	var data = json.data;
@@ -159,15 +168,6 @@ function controller_status(data_source){
 	cassandra_rect.exit().remove();
 	cassandra_text.exit().remove();
 
-	setInterval(function() {
-            $.ajax({
-		url: data_source,
-		success: function(json) {
-		    draw(json)
-		},
-		dataType: "json"
-            });
-	}, 3000); 
     }
 /*
     $("#more").click( function() {
