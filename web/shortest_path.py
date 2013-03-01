@@ -41,14 +41,20 @@ def debug(txt):
 def shortest_path(v1, p1, v2, p2):
   try:
     command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
+    debug("shortest_path %s" % command)
+
     result = os.popen(command).read()
+    debug("result %s" % result)
+
+    if len(result) == 0:
+	print "No Path found"
+	return;
+
     parsedResult = json.loads(result)
+    debug("parsed %s" % parsedResult)
   except:
     log_error("Controller IF has issue")
     exit(1)
-
-  debug("shortest_path %s" % command)
-  debug("parsed %s" % parsedResult)
 
   srcSwitch = parsedResult['srcPort']['dpid']['value'];
   srcPort = parsedResult['srcPort']['port']['value'];
