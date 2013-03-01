@@ -1,7 +1,7 @@
-#! /usr/bin/expect
+#! /usr/bin/expect -f
 set timeout 5
 spawn ~/apache-cassandra-1.1.4/bin/cassandra-cli
-expect "\[default\@unknown\]"
-send "drop onos;\r"
-expect "\[default@unknown\]"
-send "quit;\r"
+expect "unknown\]\ "
+send "drop keyspace onos;\n"
+expect "unknown\]\ "
+send "quit;\n"
