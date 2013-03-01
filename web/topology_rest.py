@@ -114,6 +114,7 @@ def topology_for_gui():
   topo = {}
   switches = []
   links = []
+  devices = []
 
   for v in parsedResult:
     if v.has_key('dpid'):
@@ -123,18 +124,44 @@ def topology_for_gui():
       sw = {}
       sw['name']=dpid
       sw['group']= -1
-      if state == "ACTIVE":
-        if dpid.split(":")[5] == "0a":
-          sw['group']=1
-        if dpid.split(":")[5] == "0b":
-          sw['group']=2
-        if dpid.split(":")[5] == "0c":
-          sw['group']=3
-        if dpid.split(":")[5] == "0d":
-          sw['group']=4
+
+#      if state == "ACTIVE":
+#        if dpid.split(":")[5] == "0a":
+#          sw['group']=1
+#        if dpid.split(":")[5] == "0b":
+#          sw['group']=2
+#        if dpid.split(":")[5] == "0c":
+#          sw['group']=3
+#        if dpid.split(":")[5] == "0d":
+#          sw['group']=4
       if state == "INACTIVE":
         sw['group']=0
       switches.append(sw)
+
+## Comment in if we need devies
+#      sw_index = len(switches) - 1
+#      for p in v['ports']:
+#        for d in p['devices']:
+#          device = {}
+#          device['attached_switch']=dpid
+#          device['name']=d['mac']
+#          if d['state'] == "ACTIVE":
+#            device['group']=1000
+#          else:
+#            device['group']=1001
+#
+#          switches.append(device)
+#          device_index = len (switches) -1
+#          link = {}
+#          link['source'] = device_index
+#          link['target'] = sw_index
+#          link['type'] = -1
+#          links.append(link)
+#          link = {}
+#          link['source'] = sw_index
+#          link['target'] = device_index
+#          link['type'] = -1
+#          links.append(link)
 
 #  try:
 #    command = "curl -s \'http://%s:%s/wm/registry/controllers/json\'" % (RestIP, RestPort)
@@ -215,11 +242,10 @@ def topology_for_gui():
   topo['nodes'] = switches
   topo['links'] = links
 
-#  pp.pprint(topo)
+  pp.pprint(topo)
   js = json.dumps(topo)
   resp = Response(js, status=200, mimetype='application/json')
   return resp
-
 
 #@app.route("/wm/topology/toporoute/00:00:00:00:00:a1/2/00:00:00:00:00:c1/3/json")
 #@app.route("/wm/topology/toporoute/<srcdpid>/<srcport>/<destdpid>/<destport>/json")

@@ -235,14 +235,23 @@ function gui(data_source){
 	    });
 
         circle.enter().append("svg:circle")
-	    .attr("r", radius)
+	    .attr("r", function(d) { 
+		if (d.group == 1000){
+		    return radius/2;
+		}else{
+		    return radius;
+		}
+	    })
 	    .call(node_drag);
 //            .call(force.drag);
 
 	text.enter().append("svg:text")
 	    .attr("x", radius)
 	    .attr("y", ".31em")
-	    .text(function(d) { return d.name.split(":")[5] + d.name.split(":")[6] + d.name.split(":")[7] });
+	    .text(function(d) { 
+		l=d.name.split(":").length
+		return d.name.split(":")[l-3] + ":" + d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
+	    });
 
         circle.append("title")
 	    .text(function(d) { return d.name; });
@@ -252,6 +261,7 @@ function gui(data_source){
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
 	    else if (d.group == 4){return "orange";}
+	    else if (d.group == 1000){return "black";}
 	    else{ return "gray"; }
 	});
 
@@ -358,6 +368,7 @@ function gui(data_source){
 	    else if (d.group == 2){return "blue";}
 	    else if (d.group == 3){return "green";}
 	    else if (d.group == 4){return "orange";}
+	    else if (d.group == 1000){return "black";}
 	    else{ return "gray"; }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });

@@ -374,8 +374,7 @@ function gui(data_source){
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
 
-	path
-	    .attr("stroke", function(d) {
+	path.attr("stroke", function(d) {
 	    if(d.type == 1){
 		return "red"
 	    } else {
