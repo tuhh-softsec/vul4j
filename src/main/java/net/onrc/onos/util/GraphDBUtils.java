@@ -7,8 +7,12 @@ import com.tinkerpop.frames.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.floodlightcontroller.util.FlowEntryId;
+import net.floodlightcontroller.util.FlowId;
 
 public class GraphDBUtils implements IDBUtils {
 
@@ -60,4 +64,69 @@ public class GraphDBUtils implements IDBUtils {
 		return fg.getVertices("type","device",IDeviceObject.class);
 	}
 
+	@Override
+	public IFlowPath searchFlowPath(GraphDBConnection conn,
+					FlowId flowId) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		
+		return fg.getVertices("flow_id", flowId.toString()).iterator().hasNext() ? 
+		    fg.getVertices("flow_id", flowId.toString(),
+				   IFlowPath.class).iterator().next() : null;
+	}
+
+	@Override
+	public IFlowPath newFlowPath(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		IFlowPath flowPath = fg.addVertex(null, IFlowPath.class);
+		return flowPath;
+	}
+
+	@Override
+	public void removeFlowPath(GraphDBConnection conn,
+				   IFlowPath flowPath) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		fg.removeVertex(flowPath.asVertex());
+	}
+
+	@Override
+	public IFlowPath getFlowPathByFlowEntry(GraphDBConnection conn,
+						IFlowEntry flowEntry) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
+		pipe.start(flowEntry.asVertex());
+		pipe.out("flow");
+		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IFlowPath.class);
+		return r.iterator().hasNext() ? r.iterator().next() : null;
+	}
+
+	@Override
+	public IFlowEntry searchFlowEntry(GraphDBConnection conn,
+					  FlowEntryId flowEntryId) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		
+		return fg.getVertices("flow_entry_id", flowEntryId.toString()).iterator().hasNext() ? 
+		    fg.getVertices("flow_entry_id", flowEntryId.toString(),
+				   IFlowEntry.class).iterator().next() : null;
+	}
+
+	@Override
+	public IFlowEntry newFlowEntry(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		IFlowEntry flowEntry = fg.addVertex(null, IFlowEntry.class);
+		return flowEntry;
+	}
+
+	@Override
+	public void removeFlowEntry(GraphDBConnection conn,
+				    IFlowEntry flowEntry) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		fg.removeVertex(flowEntry.asVertex());
+	}
+
+	@Override
+        public Iterable<IFlowEntry> getAllFlowEntries(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		
+		return fg.getVertices("type", "flow_entry", IFlowEntry.class);
+	}
 }

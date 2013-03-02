@@ -4,31 +4,11 @@ import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntryActions;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowEntryMatch;
+import net.floodlightcontroller.util.FlowEntrySwitchState;
+import net.floodlightcontroller.util.FlowEntryUserState;
 import net.floodlightcontroller.util.Port;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-
-/**
- * The Flow Entry state as set by the user (via the ONOS API).
- */
-enum FlowEntryUserState {
-	FE_USER_UNKNOWN,		// Initialization value: state unknown
-	FE_USER_ADD,			// Flow entry that is added
-	FE_USER_MODIFY,			// Flow entry that is modified
-	FE_USER_DELETE			// Flow entry that is deleted
-}
-
-/**
- * The Flow Entry state as set by the controller.
- */
-enum FlowEntrySwitchState {
-	FE_SWITCH_UNKNOWN,		// Initialization value: state unknown
-	FE_SWITCH_NOT_UPDATED,		// Switch not updated with this entry
-	FE_SWITCH_UPDATE_IN_PROGRESS,	// Switch update in progress
-	FE_SWITCH_UPDATED,		// Switch updated with this entry
-	FE_SWITCH_UPDATE_FAILED	// Error updating the switch with this entry
-}
-
 
 /**
  * The class representing the Flow Entry.

@@ -50,7 +50,7 @@ public class GetFlowByInstallerIdResource extends ServerResource {
 	DataPathEndpoints dataPathEndpoints =
 	    new DataPathEndpoints(srcSwitchPort, dstSwitchPort);
 
-	flowService.getFlow(installerId, dataPathEndpoints, result);
+	result = flowService.getFlow(installerId, dataPathEndpoints);
 
         return result;
     }

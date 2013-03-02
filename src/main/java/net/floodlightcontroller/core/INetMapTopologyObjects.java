@@ -132,4 +132,101 @@ public interface ISwitchObject extends IBaseObject{
 		@GremlinGroovy("_().in('host').in('on').path(){it.number}{it.dpid}")
 		public Iterable<SwitchPort> getAttachmentPoints();*/
 	}
+
+public interface IFlowPath extends IBaseObject {
+		@Property("flow_id")
+		public String getFlowId();
+
+		@Property("flow_id")
+		public void setFlowId(String flowId);
+
+		@Property("installer_id")
+		public String getInstallerId();
+
+		@Property("installer_id")
+		public void setInstallerId(String installerId);
+
+		@Property("src_switch")
+		public String getSrcSwitch();
+
+		@Property("src_switch")
+		public void setSrcSwitch(String srcSwitch);
+
+		@Property("src_port")
+		public Short getSrcPort();
+
+		@Property("src_port")
+		public void setSrcPort(Short srcPort);
+
+		@Property("dst_switch")
+		public String getDstSwitch();
+
+		@Property("dst_switch")
+		public void setDstSwitch(String dstSwitch);
+
+		@Property("dst_port")
+		public Short getDstPort();
+
+		@Property("dst_port")
+		public void setDstPort(Short dstPort);
+
+		@Adjacency(label="flow", direction=Direction.IN)
+		public Iterable<IFlowEntry> getFlowEntries();
+
+		@Adjacency(label="flow", direction=Direction.IN)
+		public void addFlowEntry(final IFlowEntry flowEntry);
+
+		@Adjacency(label="flow", direction=Direction.IN)
+		public void removeFlowEntry(final IFlowEntry flowEntry);
+	}
+
+public interface IFlowEntry extends IBaseObject {
+		@Property("flow_entry_id")
+		public String getFlowEntryId();
+
+		@Property("flow_entry_id")
+		public void setFlowEntryId(String flowEntryId);
+
+		@Property("switch_dpid")
+		public String getSwitchDpid();
+
+		@Property("switch_dpid")
+		public void setSwitchDpid(String switchDpid);
+
+		@Property("in_port")
+		public Short getInPort();
+
+		@Property("in_port")
+		public void setInPort(Short inPort);
+
+		@Property("out_port")
+		public Short getOutPort();
+
+		@Property("out_port")
+		public void setOutPort(Short outPort);
+
+		@Property("user_state")
+		public String getUserState();
+
+		@Property("user_state")
+		public void setUserState(String userState);
+
+		@Property("switch_state")
+		public String getSwitchState();
+
+		@Property("switch_state")
+		public void setSwitchState(String switchState);
+
+		@Property("error_state_type")
+		public String getErrorStateType();
+
+		@Property("error_state_type")
+		public void setErrorStateType(String errorStateType);
+
+		@Property("error_state_code")
+		public String getErrorStateCode();
+
+		@Property("error_state_code")
+		public void setErrorStateCode(String errorStateCode);
+	}
 }

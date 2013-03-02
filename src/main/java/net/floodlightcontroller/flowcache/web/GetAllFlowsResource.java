@@ -15,7 +15,7 @@ public class GetAllFlowsResource extends ServerResource {
 
     @Get("json")
     public ArrayList<FlowPath> retrieve() {
-	ArrayList<FlowPath> result = new ArrayList<FlowPath>();
+	ArrayList<FlowPath> result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -29,9 +29,7 @@ public class GetAllFlowsResource extends ServerResource {
 	// Extract the arguments
 	log.debug("Get All Flows Endpoints");
 
-	flowService.getAllFlows(result);
-	FlowPath flowPath = new FlowPath();
-	result.add(flowPath);
+	result = flowService.getAllFlows();
 
         return result;
     }

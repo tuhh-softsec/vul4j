@@ -19,7 +19,7 @@ public class GetAllFlowsByEndpointsResource extends ServerResource {
 
     @Get("json")
     public ArrayList<FlowPath> retrieve() {
-	ArrayList<FlowPath> result = new ArrayList<FlowPath>();
+	ArrayList<FlowPath> result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -48,7 +48,7 @@ public class GetAllFlowsByEndpointsResource extends ServerResource {
 	DataPathEndpoints dataPathEndpoints =
 	    new DataPathEndpoints(srcSwitchPort, dstSwitchPort);
 
-	flowService.getAllFlows(dataPathEndpoints, result);
+	result = flowService.getAllFlows(dataPathEndpoints);
 
         return result;
     }

@@ -38,6 +38,9 @@ public class AddFlowResource extends ServerResource {
 	//
 	ObjectMapper mapper = new ObjectMapper();
 	String flowPathStr = (String) getRequestAttributes().get("flow");
+	// TODO: Remove it later
+	// String flowPathStr = "{\"flowId\":{\"value\":\"5\"},\"installerId\":{\"value\":\"FOOBAR\"},\"dataPath\":{\"srcPort\":{\"dpid\":{\"value\":\"00:00:00:00:00:00:00:01\"},\"port\":{\"value\":0}},\"dstPort\":{\"dpid\":{\"value\":\"00:00:00:00:00:00:00:02\"},\"port\":{\"value\":0}},\"flowEntries\":[{\"flowEntryId\":null,\"flowEntryMatch\":null,\"flowEntryActions\":null,\"dpid\":{\"value\":\"00:00:00:00:00:00:00:01\"},\"inPort\":{\"value\":0},\"outPort\":{\"value\":1},\"flowEntryUserState\":\"FE_USER_UNKNOWN\",\"flowEntrySwitchState\":\"FE_SWITCH_UNKNOWN\",\"flowEntryErrorState\":null},{\"flowEntryId\":null,\"flowEntryMatch\":null,\"flowEntryActions\":null,\"dpid\":{\"value\":\"00:00:00:00:00:00:00:02\"},\"inPort\":{\"value\":9},\"outPort\":{\"value\":0},\"flowEntryUserState\":\"FE_USER_UNKNOWN\",\"flowEntrySwitchState\":\"FE_SWITCH_UNKNOWN\",\"flowEntryErrorState\":null}]}}";
+
 	FlowPath flowPath = null;
 	log.debug("Add Flow Path: " + flowPathStr);
 	try {
