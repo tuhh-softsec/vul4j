@@ -41,15 +41,15 @@ public interface IFlowService extends IFloodlightService {
     FlowPath getFlow(FlowId flowId);
 
     /**
-     * Get a previously added flow by a specific installer for given
+     * Get all previously added flows by a specific installer for a given
      * data path endpoints.
      *
      * @param installerId the Caller ID of the installer of the flow to get.
      * @param dataPathEndpoints the data path endpoints of the flow to get.
-     * @return the Flow Path if found, otherwise null.
+     * @return the Flow Paths if found, otherwise null.
      */
-    FlowPath getFlow(CallerId installerId,
-		     DataPathEndpoints dataPathEndpoints);
+    ArrayList<FlowPath> getAllFlows(CallerId installerId,
+				 DataPathEndpoints dataPathEndpoints);
 
     /**
      * Get all installed flows by all installers for given data path endpoints.

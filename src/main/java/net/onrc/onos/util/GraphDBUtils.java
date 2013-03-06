@@ -100,6 +100,13 @@ public class GraphDBUtils implements IDBUtils {
 	}
 
 	@Override
+        public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		
+		return fg.getVertices("type", "flow", IFlowPath.class);
+	}
+
+	@Override
 	public IFlowEntry searchFlowEntry(GraphDBConnection conn,
 					  FlowEntryId flowEntryId) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();

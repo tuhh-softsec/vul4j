@@ -84,7 +84,7 @@ def add_flow_path(flow_path):
     exit(1)
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s <flow-id> <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
+  usage_msg = "Usage: %s <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
 
   # app.debug = False;
 
@@ -94,14 +94,14 @@ if __name__ == "__main__":
     exit(0)
 
   # Check arguments
-  if len(sys.argv) < 6:
+  if len(sys.argv) < 7:
     log_error(usage_msg)
     exit(1)
 
   # Do the work
-  data_path = shortest_path(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]);
-  my_installer_id = 'ONOS-Path-Computation-Python'
-  my_flow_id = sys.argv[1];
+  my_flow_id = sys.argv[1]
+  my_installer_id = sys.argv[2];	# 'ONOS-Path-Computation-Python'
+  data_path = shortest_path(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
 
   debug("Data Path: %s" % data_path)
 
