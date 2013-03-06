@@ -505,7 +505,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // TODO: String-based comparison is sub-optimal.
 	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "haskCode()" methods.
+	    // implementing the "equals()" and "hashCode()" methods.
 	    //
 	    if (! flow.installerId().toString().equals(installerId.toString()))
 		continue;
@@ -555,7 +555,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    // TODO: String-based comparison is sub-optimal.
 	    // We are using it for now to save us the extra work of
-	    // implementing the "equals()" and "haskCode()" methods.
+	    // implementing the "equals()" and "hashCode()" methods.
 	    //
 	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
 		continue;
