@@ -612,7 +612,27 @@ public class Reference extends SignatureElementProxy {
             try {
                 final Set<Node> s = input.getNodeSet();
                 referenceData = new ReferenceNodeSetData() {
-                    public Iterator<Node> iterator() { return s.iterator(); }
+                    public Iterator<Node> iterator() { 
+                        return new Iterator<Node>() {
+                            
+                            Iterator<Node> sIterator = s.iterator();
+                            
+                            @Override
+                            public boolean hasNext() {
+                                return sIterator.hasNext();
+                            }
+
+                            @Override
+                            public Node next() {
+                                return sIterator.next();
+                            }
+
+                            @Override
+                            public void remove() {
+                                throw new UnsupportedOperationException();
+                            }
+                        };
+                    }
                 };
             } catch (Exception e) {
                 // log a warning

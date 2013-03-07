@@ -131,13 +131,13 @@ public class ReferenceSubTreeData implements ReferenceNodeSetData {
         {
             switch (node.getNodeType()) {
                 case Node.ELEMENT_NODE :
+                    nodeSet.add(node);
                     NamedNodeMap attrs = node.getAttributes();
                     if (attrs != null) {
                         for (int i = 0, len = attrs.getLength(); i < len; i++) {
                             nodeSet.add(attrs.item(i));
                         }
                     }
-                    nodeSet.add(node);
                     Node pSibling = null;
                     for (Node child = node.getFirstChild(); child != null;
                         child = child.getNextSibling()) {
