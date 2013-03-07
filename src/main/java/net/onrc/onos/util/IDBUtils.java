@@ -20,6 +20,7 @@ public interface IDBUtils {
 	public void removeFlowPath(GraphDBConnection conn, IFlowPath flowPath);
         public IFlowPath getFlowPathByFlowEntry(GraphDBConnection conn,
 						IFlowEntry flowEntry);
+	public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn);
 	public IFlowEntry searchFlowEntry(GraphDBConnection conn,
 					  FlowEntryId flowEntryId);
 	public IFlowEntry newFlowEntry(GraphDBConnection conn);

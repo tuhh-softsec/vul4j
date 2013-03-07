@@ -1,5 +1,7 @@
 package net.floodlightcontroller.flowcache.web;
 
+import java.util.ArrayList;
+
 import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPathEndpoints;
@@ -13,12 +15,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetFlowByInstallerIdResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetFlowByInstallerIdResource.class);
+public class GetAllFlowsByInstallerIdResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(GetAllFlowsByInstallerIdResource.class);
 
     @Get("json")
-    public FlowPath retrieve() {
-	FlowPath result = null;
+    public ArrayList<FlowPath> retrieve() {
+	ArrayList<FlowPath> result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -36,7 +38,8 @@ public class GetFlowByInstallerIdResource extends ServerResource {
         String dstDpidStr = (String) getRequestAttributes().get("dst-dpid");
         String dstPortStr = (String) getRequestAttributes().get("dst-port");
 
-	log.debug("Get Flow By Installer: " + installerIdStr + " Endpoints: " +
+	log.debug("Get All Flow By Installer: " + installerIdStr +
+		  " Endpoints: " +
 		  srcDpidStr + "--" + srcPortStr + "--" +
 		  dstDpidStr + "--" + dstPortStr);
 
@@ -50,7 +53,7 @@ public class GetFlowByInstallerIdResource extends ServerResource {
 	DataPathEndpoints dataPathEndpoints =
 	    new DataPathEndpoints(srcSwitchPort, dstSwitchPort);
 
-	result = flowService.getFlow(installerId, dataPathEndpoints);
+	result = flowService.getAllFlows(installerId, dataPathEndpoints);
 
         return result;
     }

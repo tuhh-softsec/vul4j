@@ -469,7 +469,162 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Extract the Flow state
 	//
+	FlowPath flowPath = extractFlowPath(flowObj);
+	conn.endTx(Transaction.COMMIT);
+
+	return flowPath;
+    }
+
+    /**
+     * Get all previously added flows by a specific installer for a given
+     * data path endpoints.
+     *
+     * @param installerId the Caller ID of the installer of the flow to get.
+     * @param dataPathEndpoints the data path endpoints of the flow to get.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    @Override
+    public ArrayList<FlowPath> getAllFlows(CallerId installerId,
+					   DataPathEndpoints dataPathEndpoints) {
+	//
+	// TODO: The implementation below is not optimal:
+	// We fetch all flows, and then return only the subset that match
+	// the query conditions.
+	// We should use the appropriate Titan/Gremlin query to filter-out
+	// the flows as appropriate.
+	//
+	ArrayList<FlowPath> allFlows = getAllFlows();
+
+	if (allFlows == null) {
+	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
+	    return null;
+	}
+
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+	for (FlowPath flow : allFlows) {
+	    //
+	    // TODO: String-based comparison is sub-optimal.
+	    // We are using it for now to save us the extra work of
+	    // implementing the "equals()" and "hashCode()" methods.
+	    //
+	    if (! flow.installerId().toString().equals(installerId.toString()))
+		continue;
+	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
+		continue;
+	    }
+	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
+		continue;
+	    }
+	    flowPaths.add(flow);
+	}
+
+	if (flowPaths.isEmpty()) {
+	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
+	    flowPaths = null;
+	} else {
+	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: FlowPaths are found", installerId, dataPathEndpoints);
+	}
+
+	return flowPaths;
+    }
+
+    /**
+     * Get all installed flows by all installers for given data path endpoints.
+     *
+     * @param dataPathEndpoints the data path endpoints of the flows to get.
+     * @return the Flow Paths if found, otherwise null.
+     */
+    @Override
+    public ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints) {
+	//
+	// TODO: The implementation below is not optimal:
+	// We fetch all flows, and then return only the subset that match
+	// the query conditions.
+	// We should use the appropriate Titan/Gremlin query to filter-out
+	// the flows as appropriate.
+	//
+	ArrayList<FlowPath> allFlows = getAllFlows();
+
+	if (allFlows == null) {
+	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
+	    return null;
+	}
+
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+	for (FlowPath flow : allFlows) {
+	    //
+	    // TODO: String-based comparison is sub-optimal.
+	    // We are using it for now to save us the extra work of
+	    // implementing the "equals()" and "hashCode()" methods.
+	    //
+	    if (! flow.dataPath().srcPort().toString().equals(dataPathEndpoints.srcPort().toString())) {
+		continue;
+	    }
+	    if (! flow.dataPath().dstPort().toString().equals(dataPathEndpoints.dstPort().toString())) {
+		continue;
+	    }
+	    flowPaths.add(flow);
+	}
+
+	if (flowPaths.isEmpty()) {
+	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
+	    flowPaths = null;
+	} else {
+	    log.debug("Get FlowPaths for dataPathEndpoints{}: FlowPaths are found", dataPathEndpoints);
+	}
+
+	return flowPaths;
+    }
+
+    /**
+     * Get all installed flows by all installers.
+     *
+     * @return the Flow Paths if found, otherwise null.
+     */
+    @Override
+    public ArrayList<FlowPath> getAllFlows() {
+	Iterable<IFlowPath> flowPathsObj = null;
+
+	try {
+	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
+		log.debug("Get all FlowPaths: found FlowPaths");
+	    } else {
+		log.debug("Get all FlowPaths: no FlowPaths found");
+	    }
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    conn.endTx(Transaction.ROLLBACK);
+	    log.error(":getAllFlowPaths failed");
+	}
+	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false))
+	    return null;	// No Flows found
+
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+	for (IFlowPath flowObj : flowPathsObj) {
+	    //
+	    // Extract the Flow state
+	    //
+	    FlowPath flowPath = extractFlowPath(flowObj);
+	    flowPaths.add(flowPath);
+	}
+
+	conn.endTx(Transaction.COMMIT);
+
+	return flowPaths;
+    }
+
+    /**
+     * Extract Flow Path State from a Titan Database Object @ref IFlowPath.
+     *
+     * @param flowObj the object to extract the Flow Path State from.
+     * @return the extracted Flow Path State.
+     */
+    private FlowPath extractFlowPath(IFlowPath flowObj) {
 	FlowPath flowPath = new FlowPath();
+
+	//
+	// Extract the Flow state
+	//
 	flowPath.setFlowId(new FlowId(flowObj.getFlowId()));
 	flowPath.setInstallerId(new CallerId(flowObj.getInstallerId()));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
@@ -497,46 +652,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    //
 	    flowPath.dataPath().flowEntries().add(flowEntry);
 	}
-	conn.endTx(Transaction.COMMIT);
 
 	return flowPath;
-    }
-
-    /**
-     * Get a previously added flow by a specific installer for given
-     * data path endpoints.
-     *
-     * @param installerId the Caller ID of the installer of the flow to get.
-     * @param dataPathEndpoints the data path endpoints of the flow to get.
-     * @return the Flow Path if found, otherwise null.
-     */
-    @Override
-    public FlowPath getFlow(CallerId installerId,
-			    DataPathEndpoints dataPathEndpoints) {
-	// TODO
-	return null;
-    }
-
-    /**
-     * Get all installed flows by all installers for given data path endpoints.
-     *
-     * @param dataPathEndpoints the data path endpoints of the flows to get.
-     * @return the Flow Paths if found, otherwise null.
-     */
-    @Override
-    public ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints) {
-	// TODO
-	return null;
-    }
-
-    /**
-     * Get all installed flows by all installers.
-     *
-     * @return the Flow Paths if found, otherwise null.
-     */
-    @Override
-    public ArrayList<FlowPath> getAllFlows() {
-	// TODO
-	return null;
     }
 }
