@@ -243,9 +243,7 @@ public class Driver {
 		url = VariablesResolver.replaceAllVariables(url, originalRequest);
 		url = ResourceUtils.getHttpUrlWithQueryString(url, originalRequest, false);
 
-		// Pre get ressource
-
-		// pre : get from cache
+		// Get from cache
 		boolean cacheable = "GET".equalsIgnoreCase(originalRequest.getRequestLine().getMethod());
 		if (cacheable) {
 			result = (String) originalRequest.getParams().getParameter(url);
@@ -256,12 +254,11 @@ public class Driver {
 		GenericHttpRequest httpRequest = httpClientHelper.createHttpRequest(originalRequest, url, false);
 		HttpResponse httpResponse = execute(httpRequest);
 
-		// post getResource
 
-		// post : unzip
+		// Unzip
 		result = HttpResponseUtils.toString(httpResponse);
 
-		// post : cache
+		// Cache
 		if (cacheable) {
 			originalRequest.getParams().setParameter(url, result);
 		}
