@@ -75,7 +75,7 @@ public class HttpClientHelper {
 	private final boolean preserveHost;
 	private CookieManager cookieManager;
 	private HttpClient httpClient;
-	private EventManager eventManager;
+	private EventManager eventManager = null;
 	private HeaderManager headerManager;
 	private final int connectTimeout;
 	private final int socketTimeout;
@@ -255,6 +255,15 @@ public class HttpClientHelper {
 			eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
 		}
 		return event.httpResponse;
+	}
+
+	/**
+	 * Get the Event manager used to create the HttpClientHelper.
+	 * 
+	 * @return current EventManager or null if no cacheDecorator was used.
+	 */
+	public EventManager getEventManager() {
+		return eventManager;
 	}
 
 }

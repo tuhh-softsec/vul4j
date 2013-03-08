@@ -63,9 +63,10 @@ public class Driver {
 	private final DriverConfiguration config;
 	private HttpClientHelper httpClientHelper;
 	private final List<String> parsableContentTypes;
-	private final EventManager eventManager = new EventManager();
+	private final EventManager eventManager ;
 
-	private Driver(Properties properties, String name) {
+	private Driver(Properties properties, String name, EventManager eventManagerParam) {
+		this.eventManager = eventManagerParam;
 		config = new DriverConfiguration(name, properties);
 		// Load extensions.
 		ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, this);
@@ -82,13 +83,13 @@ public class Driver {
 	}
 
 	public Driver(String name, Properties properties) {
-		this(properties, name);
+		this(properties, name,  new EventManager());
 		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, this);
 		httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
 	}
 
 	public Driver(String name, Properties properties, HttpClientHelper httpClientHelper) {
-		this(properties, name);
+		this(properties, name, httpClientHelper.getEventManager());
 		this.httpClientHelper = httpClientHelper;
 	}
 
