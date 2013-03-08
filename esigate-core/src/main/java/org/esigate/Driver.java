@@ -21,10 +21,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -62,7 +62,7 @@ public class Driver {
 	private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 	private final DriverConfiguration config;
 	private HttpClientHelper httpClientHelper;
-	private final List<String> parsableContentTypes;
+	private final Collection<String> parsableContentTypes;
 	private final EventManager eventManager ;
 
 	private Driver(Properties properties, String name, EventManager eventManagerParam) {
@@ -71,15 +71,7 @@ public class Driver {
 		// Load extensions.
 		ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, this);
 
-		parsableContentTypes = new ArrayList<String>();
-		String strContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueString(properties);
-		StringTokenizer tokenizer = new StringTokenizer(strContentTypes, ",");
-		String contentType;
-		while (tokenizer.hasMoreElements()) {
-			contentType = tokenizer.nextToken();
-			contentType = contentType.trim();
-			parsableContentTypes.add(contentType);
-		}
+		parsableContentTypes = Parameters.PARSABLE_CONTENT_TYPES.getValueList(properties);
 	}
 
 	public Driver(String name, Properties properties) {
@@ -224,12 +216,6 @@ public class Driver {
 			}
 			eventManager.fire(EventManager.EVENT_RENDER_POST, renderEvent);
 
-			// Write the result to the OutpuStream using default charset
-			// ISO-8859-1 if not defined
-			String charsetName = HttpResponseUtils.getContentCharset(httpResponse);
-			if (charsetName == null) {
-				charsetName = "ISO-8859-1";
-			}
 			HttpEntity transformedHttpEntity = new StringEntity(currentValue, ContentType.get(httpResponse.getEntity()));
 			HttpResponse transformedResponse = new BasicHttpResponse(httpResponse.getStatusLine());
 			transformedResponse.setHeaders(httpResponse.getAllHeaders());
