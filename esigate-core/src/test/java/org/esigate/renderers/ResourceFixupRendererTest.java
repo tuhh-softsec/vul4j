@@ -199,4 +199,36 @@ public class ResourceFixupRendererTest extends TestCase {
 		assertEquals(expectedOutputAbsolute, out.toString());
 
 	}
+	
+	
+	/**
+	 * Test for 0000186: ResourceFixup : StringIndexOutOfBoundsException: String index out of range: -1
+	 * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=186
+	 * 
+	 * @throws IOException
+	 */
+	public void testBug186() throws IOException {
+		String base = "http://localhost:8084/applicationPath/";
+		String visible = "http://localhost:8084/";
+		String page = "/";
+		final String input = "<script src=\"/applicationPath/controller\"></script>";
+		final String expectedOutputRelative = "<script src=\"/controller\"></script>";
+		final String expectedOutputAbsolute = "<script src=\"http://localhost:8084/controller\"></script>";
+
+		// Relative test
+		Writer out = new StringWriter();
+		ResourceFixupRenderer tested = new ResourceFixupRenderer(base, visible,
+				page, ResourceFixupRenderer.RELATIVE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputRelative, out.toString());
+
+		// Absolute test
+		out = new StringWriter();
+		tested = new ResourceFixupRenderer(base, visible, page,
+				ResourceFixupRenderer.ABSOLUTE);
+		tested.render(null, input, out);
+		assertEquals(expectedOutputAbsolute, out.toString());
+
+	}
+	
 }

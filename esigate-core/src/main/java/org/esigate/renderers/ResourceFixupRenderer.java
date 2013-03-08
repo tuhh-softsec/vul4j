@@ -145,7 +145,7 @@ public class ResourceFixupRenderer implements Renderer {
 		}
 		
 		// Store the filename, if specified 
-		if (cleanPageFullPath.charAt(cleanPageFullPath.length() - 1) != SLASH) {
+		if (cleanPageFullPath.length() > 0 && cleanPageFullPath.charAt(cleanPageFullPath.length() - 1) != SLASH) {
 			fileName = cleanPageFullPath.substring(cleanPageFullPath
 					.lastIndexOf(SLASH) + 1);
 		}
