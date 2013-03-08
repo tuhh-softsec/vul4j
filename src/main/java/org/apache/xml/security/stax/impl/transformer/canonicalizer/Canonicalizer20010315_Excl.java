@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.transformer.canonicalizer;
 
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
@@ -36,7 +37,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
     @Override
     protected List<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
         List<XMLSecNamespace> utilizedNamespaces = Collections.emptyList();
 
         XMLSecNamespace elementNamespace = xmlSecStartElement.getElementNamespace();
@@ -76,13 +77,13 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
     @Override
     protected List<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
         return getCurrentUtilizedNamespaces(xmlSecStartElement, outputStack);
     }
 
     @Override
     protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
         List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
         @SuppressWarnings("unchecked")
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();

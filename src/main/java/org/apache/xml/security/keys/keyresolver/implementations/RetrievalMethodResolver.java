@@ -305,7 +305,7 @@ public class RetrievalMethodResolver extends KeyResolverSpi {
         // Apply the transforms
         Transforms transforms = rm.getTransforms();
         ResourceResolver resRes = ResourceResolver.getInstance(uri, baseURI, secureValidation);
-        XMLSignatureInput resource = resRes.resolve(uri, baseURI);
+        XMLSignatureInput resource = resRes.resolve(uri, baseURI, secureValidation);
         if (transforms != null) {
             if (log.isDebugEnabled()) {
                 log.debug("We have Transforms");

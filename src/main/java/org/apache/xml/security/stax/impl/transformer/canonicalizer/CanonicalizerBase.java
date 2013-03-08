@@ -66,7 +66,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     private static final Map<String, byte[]> cache = new WeakHashMap<String, byte[]>();
-    private final C14NStack outputStack = new C14NStack();
+    private final C14NStack<XMLSecEvent> outputStack = new C14NStack<XMLSecEvent>();
     private boolean includeComments = false;
     private DocumentLevel currentDocumentLevel = DocumentLevel.NODE_BEFORE_DOCUMENT_ELEMENT;
     private boolean firstCall = true;
@@ -78,7 +78,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void setList(List list) throws XMLSecurityException {
+    public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
         this.inclusiveNamespaces = prefixList2Set(list);
     }
 
@@ -109,7 +109,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     protected List<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
 
         List<XMLSecNamespace> utilizedNamespaces = Collections.emptyList();
 
@@ -168,7 +168,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     protected List<XMLSecAttribute> getCurrentUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
         if (comparableAttributes.isEmpty()) {
             return Collections.emptyList();
@@ -178,7 +178,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     protected List<XMLSecNamespace> getInitialUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
 
         final List<XMLSecNamespace> utilizedNamespaces = new ArrayList<XMLSecNamespace>();
         List<XMLSecNamespace> visibleNamespaces = new ArrayList<XMLSecNamespace>();
@@ -206,7 +206,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     }
 
     protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
 
         List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
 

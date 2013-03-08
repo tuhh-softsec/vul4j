@@ -54,7 +54,7 @@ public class ResourceResolverTest extends org.junit.Assert {
         Attr uriAttr = doc.createAttribute("URI");
         uriAttr.setValue("http://www.apache.org");
         ResourceResolver res = 
-            ResourceResolver.getInstance(uriAttr, "http://www.apache.org");
+            ResourceResolver.getInstance(uriAttr, "http://www.apache.org", true);
         try {
             uriAttr.setValue("http://xmldsig.pothole.com/xml-stylesheet.txt");
             res.resolve(uriAttr, null, true);
@@ -80,7 +80,7 @@ public class ResourceResolverTest extends org.junit.Assert {
         String basedir = System.getProperty("basedir");
         String file = new File(basedir, "pom.xml").toURI().toString();
         uriAttr.setValue(file);
-        ResourceResolver res = ResourceResolver.getInstance(uriAttr, file);
+        ResourceResolver res = ResourceResolver.getInstance(uriAttr, file, false);
         try {
             res.resolve(uriAttr, "", true);
         } catch (Exception e) {

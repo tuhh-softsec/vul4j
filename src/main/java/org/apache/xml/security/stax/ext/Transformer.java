@@ -36,7 +36,7 @@ public interface Transformer {
 
     void setTransformer(Transformer transformer) throws XMLSecurityException;
 
-    void setList(List list) throws XMLSecurityException;
+    void setList(List<?> list) throws XMLSecurityException;
 
     XMLSecurityConstants.TransformMethod getPreferredTransformMethod(XMLSecurityConstants.TransformMethod forInput);
 

@@ -19,7 +19,6 @@
 package org.apache.xml.security.utils.resolver;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.w3c.dom.Attr;
 
 /**
  * This Exception is thrown if something related to the
@@ -97,34 +96,6 @@ public class ResourceResolverException extends XMLSecurityException {
 
         this.uri = uri;
         this.baseURI = baseURI;
-    }
-
-    /**
-     * @deprecated New clients should use {@link #ResourceResolverException(String, Object[], Exception, String, String)}
-     */
-    public ResourceResolverException(String msgID, Exception originalException,
-                                     Attr uri, String baseURI) {
-
-        this(msgID, originalException, getNodeValue(uri), baseURI);
-    }
-
-    /**
-     * @deprecated New clients should use {@link #ResourceResolverException(String, String, String)}
-     */
-    public ResourceResolverException(String msgID, Attr uri, String baseURI) {
-        this(msgID, getNodeValue(uri), baseURI);
-    }
-
-    /**
-     * @deprecated New clients should use {@link #ResourceResolverException(String, Object[], String, String)}
-     */
-    public ResourceResolverException(String _msgID, Object exArgs[], Attr uri,
-                                    String BaseURI) {
-        this(_msgID, exArgs, getNodeValue(uri), BaseURI);
-    }
-
-    private static String getNodeValue(Attr uri) {
-        return (uri != null) ? uri.getNodeValue() : null;
     }
 
     /**

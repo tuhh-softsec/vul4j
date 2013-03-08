@@ -61,20 +61,6 @@ public class ResourceResolver {
      *
      * @param uri
      * @param baseURI
-     * @return the instance
-     *
-     * @throws ResourceResolverException
-     */
-    public static final ResourceResolver getInstance(Attr uri, String baseURI)
-        throws ResourceResolverException {
-        return getInstance(uri, baseURI, false);
-    }
-    
-    /**
-     * Method getInstance
-     *
-     * @param uri
-     * @param baseURI
      * @param secureValidation
      * @return the instance
      *
@@ -272,14 +258,6 @@ public class ResourceResolver {
         }
     }
     
-    /**
-     * @deprecated New clients should use {@link #resolve(Attr, String, boolean)}
-     */
-    public XMLSignatureInput resolve(Attr uri, String baseURI)
-        throws ResourceResolverException {
-        return resolve(uri, baseURI, true);
-    }
-
     /**
      * Method resolve
      *

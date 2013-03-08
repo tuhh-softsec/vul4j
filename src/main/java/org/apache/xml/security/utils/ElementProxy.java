@@ -366,24 +366,6 @@ public abstract class ElementProxy {
     }
 
     /**
-     * Method getBytesFromChildElement
-     * @deprecated
-     * @param localname
-     * @param namespace
-     * @return the bytes
-     * @throws XMLSecurityException
-     */
-    public byte[] getBytesFromChildElement(String localname, String namespace)
-        throws XMLSecurityException {
-        Element e =
-            XMLUtils.selectNode(
-                getFirstChild(), namespace, localname, 0
-            );
-
-        return Base64.decode(e);
-    }
-
-    /**
      * Method getTextFromChildElement
      *
      * @param localname

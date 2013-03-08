@@ -53,6 +53,7 @@ public class ResolverFragment extends ResourceResolverSpi {
      * @param uri
      * @param baseURI
      */
+    @Override
     public XMLSignatureInput engineResolveURI(ResourceResolverContext context) 
         throws ResourceResolverException {
 

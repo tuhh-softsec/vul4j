@@ -129,7 +129,7 @@ public class XMLCipherInput {
             try {
                 ResourceResolver resolver = 
                     ResourceResolver.getInstance(uriAttr, null, secureValidation);
-                input = resolver.resolve(uriAttr, null);
+                input = resolver.resolve(uriAttr, null, secureValidation);
             } catch (ResourceResolverException ex) {
                 throw new XMLEncryptionException("empty", ex);
             } 

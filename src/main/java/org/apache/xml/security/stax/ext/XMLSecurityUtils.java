@@ -101,7 +101,7 @@ public class XMLSecurityUtils {
         }
     }
 
-    public static Class loadClass(String className) throws ClassNotFoundException {
+    public static Class<?> loadClass(String className) throws ClassNotFoundException {
         return Thread.currentThread().getContextClassLoader().loadClass(className);
     }
 
@@ -115,7 +115,7 @@ public class XMLSecurityUtils {
         try {
             childTransformer = transformerClass.newInstance();
             if (methodParameter2 != null) {
-                childTransformer.setList((List) methodParameter1);
+                childTransformer.setList((List<?>) methodParameter1);
                 childTransformer.setOutputStream((OutputStream) methodParameter2);
             } else {
                 childTransformer.setTransformer((Transformer) methodParameter1);
@@ -133,7 +133,7 @@ public class XMLSecurityUtils {
         for (int i = 0; i < objects.size(); i++) {
             Object o = objects.get(i);
             if (o instanceof JAXBElement) {
-                o = ((JAXBElement) o).getValue();
+                o = ((JAXBElement<?>) o).getValue();
             }
             if (clazz.isAssignableFrom(o.getClass())) {
                 return (T) o;
@@ -147,7 +147,7 @@ public class XMLSecurityUtils {
         for (int i = 0; i < objects.size(); i++) {
             Object o = objects.get(i);
             if (o instanceof JAXBElement) {
-                JAXBElement jaxbElement = (JAXBElement) o;
+                JAXBElement<?> jaxbElement = (JAXBElement<?>) o;
                 if (jaxbElement.getName().equals(qName)) {
                     return (T) jaxbElement.getValue();
                 }

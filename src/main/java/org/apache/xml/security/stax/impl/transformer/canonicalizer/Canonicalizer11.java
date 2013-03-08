@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.transformer.canonicalizer;
 
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
+import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 import javax.xml.namespace.QName;
@@ -35,7 +36,7 @@ public class Canonicalizer11 extends CanonicalizerBase {
 
     @Override
     protected List<XMLSecAttribute> getInitialUtilizedAttributes(final XMLSecStartElement xmlSecStartElement,
-                                                                      final C14NStack outputStack) {
+                                                                      final C14NStack<XMLSecEvent> outputStack) {
 
         List<XMLSecAttribute> utilizedAttributes = Collections.emptyList();
 

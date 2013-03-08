@@ -57,7 +57,7 @@ public class ResolverDirectHTTPTest extends org.junit.Assert {
         uri.setNodeValue("urn:ddd:uuu");
         ((Element) doc.createElement("test")).setAttributeNode(uri);
         try {
-            ResourceResolver resolver = ResourceResolver.getInstance(uri, null);
+            ResourceResolver resolver = ResourceResolver.getInstance(uri, null, true);
             fail("No exception thrown, but resolver found: " + resolver);
         } catch (ResourceResolverException e) {
             //

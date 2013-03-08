@@ -92,7 +92,7 @@ public class XMLSecurityStreamWriter implements XMLStreamWriter {
             }
 
             @Override
-            public Iterator getPrefixes(String namespaceURI) {
+            public Iterator<?> getPrefixes(String namespaceURI) {
                 List<String> prefixList = new ArrayList<String>(1);
                 if (namespaceContext != null) {
                     @SuppressWarnings("unchecked")
