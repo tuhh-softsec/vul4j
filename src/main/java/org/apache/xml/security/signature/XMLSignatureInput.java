@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -215,12 +215,12 @@ public class XMLSignatureInput {
             if (circumvent) {
                 XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(subNode));
             }
-            inputNodeSet = new HashSet<Node>();
+            inputNodeSet = new LinkedHashSet<Node>();
             XMLUtils.getSet(subNode, inputNodeSet, excludeNode, excludeComments);
             return inputNodeSet;
         } else if (isOctetStream()) {
             convertToNodes();
-            Set<Node> result = new HashSet<Node>();
+            Set<Node> result = new LinkedHashSet<Node>();
             XMLUtils.getSet(subNode, result, null, false); 
             return result;
         }
