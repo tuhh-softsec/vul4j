@@ -36,7 +36,7 @@ import org.esigate.http.HttpClientHelper;
 import org.esigate.http.MockConnectionManager;
 import org.esigate.test.TestUtils;
 
-public class DriverEncodingTest extends TestCase {
+public class HtmlEncodingProcessorTest extends TestCase {
 
 	private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager) {
 		return createMockDriver(properties, connectionManager, "tested");
