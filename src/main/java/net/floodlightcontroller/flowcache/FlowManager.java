@@ -367,7 +367,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntryObj.setUserState("FE_USER_ADD");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryActions,
+	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
 	    // and FlowEntryErrorState.
 	    //
 
@@ -647,7 +647,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    String switchState = flowEntryObj.getSwitchState();
 	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryActions,
+	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
 	    // and FlowEntryErrorState.
 	    //
 	    flowPath.dataPath().flowEntries().add(flowEntry);

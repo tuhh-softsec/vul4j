@@ -34,22 +34,114 @@ def debug(txt):
 # {"flowId":{"value":"0x5"},"installerId":{"value":"FOOBAR"},"dataPath":{"srcPort":{"dpid":{"value":"00:00:00:00:00:00:00:01"},"port":{"value":0}},"dstPort":{"dpid":{"value":"00:00:00:00:00:00:00:02"},"port":{"value":0}},"flowEntries":[{"flowEntryId":"0x1389","flowEntryMatch":null,"flowEntryActions":null,"dpid":{"value":"00:00:00:00:00:00:00:01"},"inPort":{"value":0},"outPort":{"value":1},"flowEntryUserState":"FE_USER_DELETE","flowEntrySwitchState":"FE_SWITCH_NOT_UPDATED","flowEntryErrorState":null},{"flowEntryId":"0x138a","flowEntryMatch":null,"flowEntryActions":null,"dpid":{"value":"00:00:00:00:00:00:00:02"},"inPort":{"value":9},"outPort":{"value":0},"flowEntryUserState":"FE_USER_DELETE","flowEntrySwitchState":"FE_SWITCH_NOT_UPDATED","flowEntryErrorState":null}]}}
 
 def print_flow_path(parsedResult):
-  flowId = parsedResult['flowId']['value'];
-  installerId = parsedResult['installerId']['value'];
-  srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value'];
-  srcPort = parsedResult['dataPath']['srcPort']['port']['value'];
-  dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value'];
-  dstPort = parsedResult['dataPath']['dstPort']['port']['value'];
+  flowId = parsedResult['flowId']['value']
+  installerId = parsedResult['installerId']['value']
+  srcSwitch = parsedResult['dataPath']['srcPort']['dpid']['value']
+  srcPort = parsedResult['dataPath']['srcPort']['port']['value']
+  dstSwitch = parsedResult['dataPath']['dstPort']['dpid']['value']
+  dstPort = parsedResult['dataPath']['dstPort']['port']['value']
 
   print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
 
   for f in parsedResult['dataPath']['flowEntries']:
-    inPort = f['inPort']['value'];
-    outPort = f['outPort']['value'];
+    inPort = f['inPort']['value']
+    outPort = f['outPort']['value']
     dpid = f['dpid']['value']
     userState = f['flowEntryUserState']
     switchState = f['flowEntrySwitchState']
+    match = f['flowEntryMatch'];
+    actions = f['flowEntryActions']
     print "  FlowEntry: (%s, %s, %s, %s, %s)" % (inPort, dpid, outPort, userState, switchState)
+
+    inPort = match['inPort']
+    matchInPort = match['matchInPort']
+    srcMac = match['srcMac']
+    matchSrcMac = match['matchSrcMac']
+    dstMac = match['dstMac']
+    matchDstMac = match['matchDstMac']
+    vlanId = match['vlanId']
+    matchVlanId = match['matchVlanId']
+    vlanPriority = match['vlanPriority']
+    matchVlanPriority = match['matchVlanPriority']
+    ethernetFrameType = match['ethernetFrameType']
+    matchEthernetFrameType = match['matchEthernetFrameType']
+    ipToS = match['ipToS']
+    matchIpToS = match['matchIpToS']
+    ipProto = match['ipProto']
+    matchIpProto = match['matchIpProto']
+    srcIPv4Net = match['srcIPv4Net']
+    matchSrcIPv4Net = match['matchSrcIPv4Net']
+    dstIPv4Net = match['dstIPv4Net']
+    matchDstIPv4Net = match['matchDstIPv4Net']
+    srcTcpUdpPort = match['srcTcpUdpPort']
+    matchSrcTcpUdpPort = match['matchSrcTcpUdpPort']
+    dstTcpUdpPort = match['dstTcpUdpPort']
+    matchDstTcpUdpPort = match['matchDstTcpUdpPort']
+    if matchInPort == True:
+      print "    inPort: %s" % inPort['value']
+    if matchSrcMac == True:
+      print "    srcMac: %s" % srcMac['value']
+    if matchDstMac == True:
+      print "    dstMac: %s" % dstMac['value']
+    if matchVlanId == True:
+      print "    vlanId: %s" % vlanId
+    if matchVlanPriority == True:
+      print "    vlanPriority: %s" % vlanPriority
+    if matchEthernetFrameType == True:
+      print "    ethernetFrameType: %s" % ethernetFrameType
+    if matchIpToS == True:
+      print "    ipToS: %s" % ipToS
+    if matchIpProto == True:
+      print "    ipProto: %s" % ipProto
+    if matchSrcIPv4Net == True:
+      print "    srcIPv4Net: %s" % srcIPv4Net['value']
+    if matchDstIPv4Net == True:
+      print "    dstIPv4Net: %s" % dstIPv4Net['value']
+    if matchSrcTcpUdpPort == True:
+      print "    srcTcpUdpPort: %s" % srcTcpUdpPort
+    if matchDstTcpUdpPort == True:
+      print "    dstTcpUdpPort: %s" % dstTcpUdpPort
+
+    for a in actions:
+      actionType = a['actionType']
+      if actionType == "ACTION_OUTPUT":
+	port = a['actionOutput']['port']
+	maxLen = a['actionOutput']['maxLen']
+	print "    actionType: %s port: %s maxLen: %s" % (actionType, port, maxLen)
+      if actionType == "ACTION_SET_VLAN_VID":
+	vlanId = a['actionSetVlanId']['vlanId']
+	print "    actionType: %s vlanId: %s" % (actionType, vlanId)
+      if actionType == "ACTION_SET_VLAN_PCP":
+	vlanPriority = a['actionSetVlanPriority']['vlanPriority']
+	print "    actionType: %s vlanPriority: %s" % (actionType, vlanPriority)
+      if actionType == "ACTION_STRIP_VLAN":
+	stripVlan = a['actionStripVlan']['stripVlan']
+	print "    actionType: %s stripVlan: %s" % (actionType, stripVlan)
+      if actionType == "ACTION_SET_DL_SRC":
+	setEthernetSrcAddr = a['actionSetEthernetSrcAddr']['addr']['value']
+	print "    actionType: %s setEthernetSrcAddr: %s" % (actionType, setEthernetSrcAddr)
+      if actionType == "ACTION_SET_DL_DST":
+	setEthernetDstAddr = a['actionSetEthernetDstAddr']['addr']['value']
+	print "    actionType: %s setEthernetDstAddr: %s" % (actionType, setEthernetDstAddr)
+      if actionType == "ACTION_SET_NW_SRC":
+	setIPv4SrcAddr = a['actionSetIPv4SrcAddr']['addr']['value']
+	print "    actionType: %s setIPv4SrcAddr: %s" % (actionType, setIPv4SrcAddr)
+      if actionType == "ACTION_SET_NW_DST":
+	setIPv4DstAddr = a['actionSetIPv4DstAddr']['addr']['value']
+	print "    actionType: %s setIPv4DstAddr: %s" % (actionType, setIPv4DstAddr)
+      if actionType == "ACTION_SET_NW_TOS":
+	setIpToS = a['actionSetIpToS']['ipToS']
+	print "    actionType: %s setIpToS: %s" % (actionType, setIpToS)
+      if actionType == "ACTION_SET_TP_SRC":
+	setTcpUdpSrcPort = a['actionSetTcpUdpSrcPort']['port']
+	print "    actionType: %s setTcpUdpSrcPort: %s" % (actionType, setTcpUdpSrcPort)
+      if actionType == "ACTION_SET_TP_DST":
+	setTcpUdpDstPort = a['actionSetTcpUdpDstPort']['port']
+	print "    actionType: %s setTcpUdpDstPort: %s" % (actionType, setTcpUdpDstPort)
+      if actionType == "ACTION_ENQUEUE":
+	port = a['actionEnqueue']['port']['value']
+	queueId = a['actionEnqueue']['queueId']
+	print "    actionType: %s port: %s queueId: %s" % (actionType, port, queueId)
 
 def get_flow_path(flow_id):
   try:
