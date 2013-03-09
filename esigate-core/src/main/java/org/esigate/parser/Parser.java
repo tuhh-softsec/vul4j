@@ -66,11 +66,11 @@ public class Parser {
 			currentPosition = matcher.end();
 			if (ctx.isCurrentTagEnd(tag)) {
 				// check if this is the end tag for current element
-				LOG.info("Processing end tag " + tag);
+				LOG.debug("Processing end tag {}" , tag);
 				ctx.endElement(tag);
 			} else {
 				// if not, it is an opening tag for a new element
-				LOG.info("Processing start tag " + tag);
+				LOG.debug("Processing start tag {}" , tag);
 				ElementType type = null;
 				for (ElementType t : elementTypes) {
 					if (t.isStartTag(tag)) {
