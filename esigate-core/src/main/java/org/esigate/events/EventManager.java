@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Encoding event : response is read using the charset declared by HTTP headers.
  * <ul>
- * <li>{@link EventManager#EVENT_ENCODING} : after reading using the default encoding</li>
+ * <li>{@link EventManager#EVENT_ENCODING} : after reading response using the default encoding</li>
  * </ul>
  * 
  * @author Nicolas Richeton

@@ -1843,6 +1843,14 @@ discardCookies=*
 							</li>
 						</ul>
 					</li>
+					<li>
+						Encoding event : response is read using the charset declared by HTTP headers.
+						
+						<ul>
+							<li>EVENT_ENCODING :  after reading response using the default encoding
+							</li>
+						</ul>
+					</li>
 				</ul>
 			</subsection>
 			<subsection name="Available extensions">
@@ -1889,6 +1897,14 @@ discardCookies=*
 						<b>Default</b>
 						org.esigate.extension.XPoweredBy :
 						adds X-Powered-By: ESIGate in response.
+					</li>
+					<li>
+						org.esigate.extension.DefaultCharset :
+						use a custom defaut charset instead of ISO-8859-1 when no charset information is available in HTTP headers. Use <b>providerid.defaultCharset</b> parameter.
+					</li>
+					<li>
+						org.esigate.extension.HtmlEncodingProcessor :
+						Read HTML documents (text/html and application/xhmtl+xml) meta tags to get the right charset. 
 					</li>
 				</ul>
 				<p>ESIGate users can add custom extensions packaged in a jar or
