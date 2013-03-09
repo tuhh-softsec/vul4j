@@ -61,8 +61,8 @@ public class HttpClientHelperTest extends TestCase {
 	}
 
 	private boolean compare(HttpResponse response1, HttpResponse response2) throws Exception, IOException {
-		String entity1 = HttpResponseUtils.toString(response1);
-		String entity2 = HttpResponseUtils.toString(response2);
+		String entity1 = HttpResponseUtils.toString(response1, null);
+		String entity2 = HttpResponseUtils.toString(response2, null);
 		return entity1.equals(entity2);
 	}
 
@@ -383,7 +383,7 @@ public class HttpClientHelperTest extends TestCase {
 		HttpResponse httpResponse = createMockGzippedResponse(content);
 		mockConnectionManager.setResponse(httpResponse);
 		HttpResponse result = executeRequest();
-		String entityString = HttpResponseUtils.toString(result);
+		String entityString = HttpResponseUtils.toString(result, null);
 		assertEquals("Content should have been decompressed", content, entityString);
 	}
 

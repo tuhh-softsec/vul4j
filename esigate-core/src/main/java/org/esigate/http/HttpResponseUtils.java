@@ -16,7 +16,9 @@
 package org.esigate.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -31,15 +33,21 @@ import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.esigate.HttpErrorPage;
+import org.esigate.events.EventManager;
+import org.esigate.events.impl.EncodingEvent;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HttpResponseUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpResponseUtils.class);
+ 
 
+ 	
+ 	
 	public static boolean isError(HttpResponse httpResponse) {
 		int statusCode = httpResponse.getStatusLine().getStatusCode();
 		return statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_MOVED_TEMPORARILY && statusCode != HttpStatus.SC_MOVED_PERMANENTLY && statusCode != HttpStatus.SC_NOT_MODIFIED;
@@ -101,7 +109,7 @@ public class HttpResponseUtils {
 		}
 	}
 
-	public static String toString(HttpResponse httpResponse) throws HttpErrorPage {
+	public static String toString(HttpResponse httpResponse, EventManager eventManager) throws HttpErrorPage {
 		HttpEntity httpEntity = httpResponse.getEntity();
 		String result;
 		if (httpEntity == null) {
@@ -119,12 +127,42 @@ public class HttpResponseUtils {
 					throw new UnsupportedContentEncodingException("Content-encoding \"" + contentEncoding + "\" is not supported");
 				}
 			}
+			
 			try {
-				result = EntityUtils.toString(httpEntity);
+				EncodingEvent event = new EncodingEvent();
+				event.rawEntityContent = EntityUtils.toByteArray(httpEntity);
+
+				try {
+					ContentType contentType = ContentType
+							.getOrDefault(httpEntity);
+					event.mimeType = contentType.getMimeType();
+					event.charset = contentType.getCharset();
+				} catch (UnsupportedCharsetException ex) {
+					throw new UnsupportedEncodingException(ex.getMessage());
+				}
+
+				// Use default charset is no valid information found from HTTP
+				// headers
+				if (event.charset == null) {
+					event.charset = HTTP.DEF_CONTENT_CHARSET;
+				}
+
+				// Read using charset based on HTTP headers
+				event.entityContent = new String(event.rawEntityContent, event.charset);
+
+				// Allow extensions to detect document encoding
+				if (eventManager != null) {
+					eventManager.fire(EventManager.EVENT_ENCODING, event);
+				}
+
+				// Return entityContent
+				result = event.entityContent;
+
 			} catch (IOException e) {
 				throw new HttpErrorPage(IOExceptionHandler.toHttpResponse(e));
 			}
 		}
+		
 		return removeSessionId(result, httpResponse);
 	}
 }

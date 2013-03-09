@@ -46,7 +46,7 @@ public class TestUtils {
 	public final static String getResponseBodyAsString(HttpEntityEnclosingRequest request) throws HttpErrorPage {
 		MockMediator mediator = (MockMediator) HttpRequestHelper.getMediator(request);
 		HttpResponse response = mediator.getHttpResponse();
-		return HttpResponseUtils.toString(response);
+		return HttpResponseUtils.toString(response, null);
 	}
 
 	public final static void sendHttpErrorPage(HttpErrorPage e, HttpEntityEnclosingRequest request) throws IOException {

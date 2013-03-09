@@ -196,7 +196,7 @@ public class Driver {
 			HttpRequestHelper.getMediator(request).sendResponse(httpResponse);
 		} else {
 			LOG.debug("'{}' is text : will apply renderers.", relUrl);
-			String currentValue = HttpResponseUtils.toString(httpResponse);
+			String currentValue = HttpResponseUtils.toString(httpResponse, eventManager);
 
 			// Start rendering
 			RenderEvent renderEvent = new RenderEvent();
@@ -256,7 +256,7 @@ public class Driver {
 
 
 		// Unzip
-		result = HttpResponseUtils.toString(httpResponse);
+		result = HttpResponseUtils.toString(httpResponse, eventManager);
 
 		// Cache
 		if (cacheable) {

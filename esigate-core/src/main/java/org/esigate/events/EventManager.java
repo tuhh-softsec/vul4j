@@ -46,6 +46,11 @@ import org.slf4j.LoggerFactory;
  * <li>{@link EventManager#EVENT_RENDER_PRE} : before applying renderers</li>
  * <li>{@link EventManager#EVENT_RENDER_POST} : after applying renderers</li>
  * </ul>
+ * <p>
+ * Encoding event : response is read using the charset declared by HTTP headers.
+ * <ul>
+ * <li>{@link EventManager#EVENT_ENCODING} : after reading using the default encoding</li>
+ * </ul>
  * 
  * @author Nicolas Richeton
  */
@@ -71,6 +76,9 @@ public class EventManager {
 	public static EventDefinition EVENT_RENDER_POST = new EventDefinition(
 			"org.esigate.render-post", EventDefinition.TYPE_POST);
 
+	public static EventDefinition EVENT_ENCODING = new EventDefinition(
+			"org.esigate.encoding.", EventDefinition.TYPE_DEFAULT);
+	
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EventManager.class);
 
