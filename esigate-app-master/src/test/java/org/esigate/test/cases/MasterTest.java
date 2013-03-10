@@ -126,7 +126,7 @@ public class MasterTest extends TestCase {
 		long after = System.currentTimeMillis();
 		assertEquals("Status should be 200", HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
 		assertTrue("Request should take more than 2 s as it is not in cache", after - before >= 1500);
-		assertEquals(getResource("timeout.jsp"), HttpResponseUtils.toString(response));
+		assertEquals(getResource("timeout.jsp"), HttpResponseUtils.toString(response, null));
 		// Second request: should use cache
 		// FIXME Errors are not in cache anymore since HttpClient cache does not
 		// support error caching
