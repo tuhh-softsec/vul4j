@@ -50,7 +50,7 @@ public class VaryAggregatorTest extends TestCase {
 		}
 		HttpResponse response = client.execute(request);
 		// Ensure content is valid.
-		String text = HttpResponseUtils.toString(response);
+		String text = HttpResponseUtils.toString(response, null);
 		assertNotNull(text);
 		if (headerValue != null) {
 			assertTrue("no value '" + headerValue + "' found", text.contains(headerValue));

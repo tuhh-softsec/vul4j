@@ -67,7 +67,7 @@ public class PerformanceTestCase extends TestCase {
 				try {
 					HttpUriRequest request = new HttpGet(url);
 					HttpResponse response = httpClient.execute(request);
-					String result = HttpResponseUtils.toString(response);
+					String result = HttpResponseUtils.toString(response, null);
 					if (lastResult == null) {
 						lastResult = result;
 					}
