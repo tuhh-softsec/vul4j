@@ -16,7 +16,6 @@
 package org.esigate.http;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +24,6 @@ import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpConnectionMetrics;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
@@ -125,13 +123,6 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 		open.set(false);
 	}
 
-	public void connect(HttpClientConnection conn, HttpHost host, InetSocketAddress localAddress, int connectTimeout, HttpContext context) throws IOException {
-		// Nothing to do
-	}
-
-	public void upgrade(HttpClientConnection conn, HttpHost host, HttpContext context) throws IOException {
-		// Nothing to do
-	}
 
 	public void closeIdleConnections(long idletime, TimeUnit tunit) {
 		// Nothing to do
@@ -160,6 +151,21 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 
 	public final boolean isOpen() {
 		return open.get();
+	}
+
+	public void connect(HttpClientConnection conn, HttpRoute route,
+			int connectTimeout, HttpContext context) throws IOException {
+		// Nothing to do
+	}
+
+	public void upgrade(HttpClientConnection conn, HttpRoute route,
+			HttpContext context) throws IOException {
+		// Nothing to do
+	}
+
+	public void routeComplete(HttpClientConnection conn, HttpRoute route,
+			HttpContext context) throws IOException {
+		// Nothing to do
 	}
 
 }
