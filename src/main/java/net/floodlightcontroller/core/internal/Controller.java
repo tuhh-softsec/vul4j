@@ -489,36 +489,25 @@ public class Controller implements IFloodlightProviderService,
 				
 				Role role = null;
 				
-				if (sw.getRole() == null){
-					if (hasControl){
-						role = Role.MASTER;
-					}
-					else {
-						role = Role.SLAVE;
-					}
-				}
-				else if (hasControl && sw.getRole() == Role.SLAVE) {
-					// Send a MASTER role request to the switch.
-					// If this is the first role request, 
-                    // this is a probe that we'll use to determine if the switch
-                    // actually supports the role request message. If it does we'll
-                    // get back a role reply message. If it doesn't we'll get back an
-                    // OFError message. 
-                    // If role is MASTER we will promote switch to active
-                    // list when we receive the switch's role reply messages
+				/*
+				 * issue #229
+				 * Cannot rely on sw.getRole() as it can be behind due to pending
+				 * role changes in the queue. Just submit it and late the RoleChanger
+				 * handle duplicates.
+				 */
+
+				if (hasControl){
 					role = Role.MASTER;
 				}
-				else if (!hasControl && sw.getRole() == Role.MASTER) {
-					//Send a SLAVE role request to the switch
+				else {
 					role = Role.SLAVE;
 				}
-				
-				if (role != null) {
-					log.debug("Sending role request {} msg to {}", role, sw);
-	                Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
-	                swList.add(sw);
-	                roleChanger.submitRequest(swList, role);
-				}
+
+				log.debug("Sending role request {} msg to {}", role, sw);
+				Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+				swList.add(sw);
+				roleChanger.submitRequest(swList, role);
+
 			}
 			
 		}

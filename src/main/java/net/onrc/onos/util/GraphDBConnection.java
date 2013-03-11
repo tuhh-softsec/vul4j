@@ -37,6 +37,13 @@ public class GraphDBConnection {
 		        if (!s.contains("dl_address")) {
 		        	graph.createKeyIndex("dl_address", Vertex.class);
 		        }
+		        if (!s.contains("flow_id")) {
+		        	graph.createKeyIndex("flow_id", Vertex.class);
+		        }
+		        if (!s.contains("flow_entry_id")) {
+		        	graph.createKeyIndex("flow_entry_id",
+						     Vertex.class);
+		        }
 		   }
 		   graph.stopTransaction(Conclusion.SUCCESS);
 		   if (utils == null) {

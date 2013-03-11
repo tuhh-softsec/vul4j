@@ -63,6 +63,6 @@ public class FlowEntryId {
      */
     @Override
     public String toString() {
-	return Long.toHexString(this.value);
+	return "0x" + Long.toHexString(this.value);
     }
 }

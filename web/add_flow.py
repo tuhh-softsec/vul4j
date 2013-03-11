@@ -45,13 +45,13 @@ def shortest_path(v1, p1, v2, p2):
 
     result = os.popen(command).read()
     debug("result %s" % result)
-
     if len(result) == 0:
-	print "No Path found"
-	return;
+	log_error("No Path found")
+	exit(1);
 
     parsedResult = json.loads(result)
     debug("parsed %s" % parsedResult)
+
   except:
     log_error("Controller IF has issue")
     exit(1)
@@ -69,9 +69,22 @@ def shortest_path(v1, p1, v2, p2):
     dpid = f['dpid']['value']
     print "FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
 
+  return parsedResult
+
+def add_flow_path(flow_path):
+  try:
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add/json" % (flow_path, ControllerIP, ControllerPort)
+    debug("add_flow_path %s" % command)
+    result = os.popen(command).read()
+    debug("result %s" % result)
+    # parsedResult = json.loads(result)
+    # debug("parsed %s" % parsedResult)
+  except:
+    log_error("Controller IF has issue")
+    exit(1)
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
+  usage_msg = "Usage: %s <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
 
   # app.debug = False;
 
@@ -81,9 +94,28 @@ if __name__ == "__main__":
     exit(0)
 
   # Check arguments
-  if len(sys.argv) < 5:
+  if len(sys.argv) < 7:
     log_error(usage_msg)
     exit(1)
 
   # Do the work
-  shortest_path(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]);
+  my_flow_id = sys.argv[1]
+  my_installer_id = sys.argv[2];	# 'ONOS-Path-Computation-Python'
+  data_path = shortest_path(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+
+  debug("Data Path: %s" % data_path)
+
+  flow_id = {}
+  flow_id['value'] = my_flow_id
+  installer_id = {}
+  installer_id['value'] = my_installer_id
+
+  flow_path = {}
+  flow_path['flowId'] = flow_id
+  flow_path['installerId'] = installer_id
+  flow_path['dataPath'] = data_path
+
+  flow_path_json = json.dumps(flow_path)
+  debug("Flow Path: %s" % flow_path_json)
+
+  add_flow_path(flow_path_json)

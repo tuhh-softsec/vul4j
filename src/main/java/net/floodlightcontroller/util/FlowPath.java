@@ -18,6 +18,7 @@ public class FlowPath {
      * Default constructor.
      */
     public FlowPath() {
+	dataPath = new DataPath();
     }
 
     /**

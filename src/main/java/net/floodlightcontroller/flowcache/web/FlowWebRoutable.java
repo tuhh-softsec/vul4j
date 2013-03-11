@@ -13,11 +13,11 @@ public class FlowWebRoutable implements RestletRoutable {
     @Override
     public Restlet getRestlet(Context context) {
         Router router = new Router(context);
-        router.attach("/add/{flow}/json", AddFlowResource.class);
+        router.attach("/add/json", AddFlowResource.class);
         router.attach("/delete/{flow-id}/json", DeleteFlowResource.class);
         router.attach("/get/{flow-id}/json", GetFlowByIdResource.class);
-        router.attach("/get/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetFlowByInstallerIdResource.class);
-        router.attach("/getall/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByEndpointsResource.class);
+        router.attach("/getall-by-installer-id/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByInstallerIdResource.class);
+        router.attach("/getall-by-endpoints/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByEndpointsResource.class);
         router.attach("/getall/json", GetAllFlowsResource.class);
         return router;
     }

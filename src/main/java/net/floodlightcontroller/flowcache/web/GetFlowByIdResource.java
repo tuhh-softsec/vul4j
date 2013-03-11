@@ -31,7 +31,7 @@ public class GetFlowByIdResource extends ServerResource {
 
 	log.debug("Get Flow Id: " + flowIdStr);
 
-	flowService.getFlow(flowId, result);
+	result = flowService.getFlow(flowId);
 
         return result;
     }

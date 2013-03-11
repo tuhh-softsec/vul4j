@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deserialize an IPv6Net from a string.
+ * Deserialize an IPv6Net address from a string.
  */
 public class IPv6NetDeserializer extends JsonDeserializer<IPv6Net> {
 

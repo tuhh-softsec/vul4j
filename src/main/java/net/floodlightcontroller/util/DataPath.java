@@ -19,6 +19,8 @@ public class DataPath {
      * Default constructor.
      */
     public DataPath() {
+	srcPort = new SwitchPort();
+	dstPort = new SwitchPort();
 	flowEntries = new ArrayList<FlowEntry>();
     }
 

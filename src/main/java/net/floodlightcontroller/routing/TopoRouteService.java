@@ -22,6 +22,7 @@ import net.floodlightcontroller.util.SwitchPort;
 import org.openflow.util.HexString;
 
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 
 import javax.script.ScriptContext;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
     /** The logger. */
-    private static Logger logger =
+    private static Logger log =
 	LoggerFactory.getLogger(TopoRouteService.class);
 
     @Override
@@ -115,14 +116,18 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
 	// Get the source vertex
 	Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
-	if (! iter.hasNext())
+	if (! iter.hasNext()) {
+	    // titanGraph.stopTransaction(Conclusion.SUCCESS);
 	    return null;		// Source vertex not found
+	}
 	Vertex v_src = iter.next();
 
 	// Get the destination vertex
 	iter = titanGraph.getVertices("dpid", dpid_dest).iterator();
-	if (! iter.hasNext())
+	if (! iter.hasNext()) {
+	    // titanGraph.stopTransaction(Conclusion.SUCCESS);
 	    return null;		// Destination vertex not found
+	}
 	Vertex v_dest = iter.next();
 
 	//
@@ -138,6 +143,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    flowEntry.setInPort(src.port());
 	    flowEntry.setOutPort(dest.port());
 	    result_data_path.flowEntries().add(flowEntry);
+	    // titanGraph.stopTransaction(Conclusion.SUCCESS);
 	    return result_data_path;
 	}
 
@@ -156,6 +162,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    engine.eval(gremlin);
 	} catch (ScriptException e) {
 	    System.err.println("Caught ScriptException running Gremlin script: " + e.getMessage());
+	    // titanGraph.stopTransaction(Conclusion.SUCCESS);
 	    return null;
 	}
 
@@ -224,6 +231,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		result_data_path.flowEntries().add(flowEntry);
 	    }
 	}
+	// titanGraph.stopTransaction(Conclusion.SUCCESS);
 	if (result_data_path.flowEntries().size() > 0)
 	    return result_data_path;
 

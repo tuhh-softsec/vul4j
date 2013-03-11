@@ -2,11 +2,20 @@ package net.floodlightcontroller.util;
 
 import java.util.Arrays;
 
+import net.floodlightcontroller.util.serializers.MACAddressDeserializer;
+import net.floodlightcontroller.util.serializers.MACAddressSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing MAC address.
  *
  * @author Sho Shimizu (sho.shimizu@gmail.com)
  */
+@JsonDeserialize(using=MACAddressDeserializer.class)
+@JsonSerialize(using=MACAddressSerializer.class)
 public class MACAddress {
     public static final int MAC_ADDRESS_LENGTH = 6;
     private byte[] address = new byte[MAC_ADDRESS_LENGTH];

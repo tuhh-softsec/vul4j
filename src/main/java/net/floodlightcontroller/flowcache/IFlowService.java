@@ -36,37 +36,33 @@ public interface IFlowService extends IFloodlightService {
      * Get a previously added flow.
      *
      * @param flowId the Flow ID of the flow to get.
-     * @param flowPath the return-by-reference flow path.
-     * @return true on success, otherwise false.
+     * @return the Flow Path if found, otherwise null.
      */
-    boolean getFlow(FlowId flowId, FlowPath flowPath);
+    FlowPath getFlow(FlowId flowId);
 
     /**
-     * Get a previously added flow by a specific installer for given
+     * Get all previously added flows by a specific installer for a given
      * data path endpoints.
      *
      * @param installerId the Caller ID of the installer of the flow to get.
      * @param dataPathEndpoints the data path endpoints of the flow to get.
-     * @param flowPath the return-by-reference flow path.
-     * @return true on success, otherwise false.
+     * @return the Flow Paths if found, otherwise null.
      */
-    boolean getFlow(CallerId installerId,
-		    DataPathEndpoints dataPathEndpoints,
-		    FlowPath flowPath);
+    ArrayList<FlowPath> getAllFlows(CallerId installerId,
+				 DataPathEndpoints dataPathEndpoints);
 
     /**
      * Get all installed flows by all installers for given data path endpoints.
      *
      * @param dataPathEndpoints the data path endpoints of the flows to get.
-     * @param flowPaths the return-by-reference list of flows.
+     * @return the Flow Paths if found, otherwise null.
      */
-    void getAllFlows(DataPathEndpoints dataPathEndpoints,
-		     ArrayList<FlowPath> flowPaths);
+    ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints);
 
     /**
      * Get all installed flows by all installers.
      *
-     * @param flowPaths the return-by-reference list of flows.
+     * @return the Flow Paths if found, otherwise null.
      */
-    void getAllFlows(ArrayList<FlowPath> flowPaths);
+    ArrayList<FlowPath> getAllFlows();
 }

@@ -10,7 +10,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,8 @@ public class AddFlowResource extends ServerResource {
 
     protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
-    @Get("json")
-    public FlowId retrieve() {
+    @Post("json")
+    public FlowId store(String flowJson) {
 	FlowId result = new FlowId();
 
         IFlowService flowService =
@@ -37,7 +37,7 @@ public class AddFlowResource extends ServerResource {
 	// NOTE: The "flow" is specified in JSON format.
 	//
 	ObjectMapper mapper = new ObjectMapper();
-	String flowPathStr = (String) getRequestAttributes().get("flow");
+	String flowPathStr = flowJson;
 	FlowPath flowPath = null;
 	log.debug("Add Flow Path: " + flowPathStr);
 	try {
