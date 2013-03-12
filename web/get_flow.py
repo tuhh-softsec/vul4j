@@ -115,7 +115,7 @@ def print_flow_path(parsedResult):
       for a in actions:
 	actionType = a['actionType']
 	if actionType == "ACTION_OUTPUT":
-	  port = a['actionOutput']['port']
+	  port = a['actionOutput']['port']['value']
 	  maxLen = a['actionOutput']['maxLen']
 	  print "    actionType: %s port: %s maxLen: %s" % (actionType, port, maxLen)
 	if actionType == "ACTION_SET_VLAN_VID":
