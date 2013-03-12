@@ -175,7 +175,7 @@ if __name__ == "__main__":
       # Just mark whether inPort matching is enabled
       matchInPortEnabled = arg2 in ['True', 'true']
       # inPort = {}
-      # inPort['value'] = int(arg2)
+      # inPort['value'] = int(arg2, 0)
       # match['inPort'] = inPort
       ## match['matchInPort'] = True
     elif arg1 == "matchSrcMac":
@@ -189,19 +189,19 @@ if __name__ == "__main__":
       match['dstMac'] = dstMac
       # match['matchDstMac'] = True
     elif arg1 == "matchVlanId":
-      match['vlanId'] = int(arg2)
+      match['vlanId'] = int(arg2, 0)
       # match['matchVlanId'] = True
     elif arg1 == "matchVlanPriority":
-      match['vlanPriority'] = int(arg2)
+      match['vlanPriority'] = int(arg2, 0)
       # match['matchVlanPriority'] = True
     elif arg1 == "matchEthernetFrameType":
-      match['ethernetFrameType'] = int(arg2)
+      match['ethernetFrameType'] = int(arg2, 0)
       # match['matchEthernetFrameType'] = True
     elif arg1 == "matchIpToS":
-      match['ipToS'] = int(arg2)
+      match['ipToS'] = int(arg2, 0)
       # match['matchIpToS'] = True
     elif arg1 == "matchIpProto":
-      match['ipProto'] = int(arg2)
+      match['ipProto'] = int(arg2, 0)
       # match['matchIpProto'] = True
     elif arg1 == "matchSrcIPv4Net":
       srcIPv4Net = {}
@@ -214,10 +214,10 @@ if __name__ == "__main__":
       match['dstIPv4Net'] = dstIPv4Net
       # match['matchDstIPv4Net'] = True
     elif arg1 == "matchSrcTcpUdpPort":
-      match['srcTcpUdpPort'] = int(arg2)
+      match['srcTcpUdpPort'] = int(arg2, 0)
       # match['matchSrcTcpUdpPort'] = True
     elif arg1 == "matchDstTcpUdpPort":
-      match['dstTcpUdpPort'] = int(arg2)
+      match['dstTcpUdpPort'] = int(arg2, 0)
       # match['matchDstTcpUdpPort'] = True
     elif arg1 == "actionOutput":
       # Just mark whether ACTION_OUTPUT action is enabled
@@ -226,40 +226,40 @@ if __name__ == "__main__":
       # TODO: Complete the implementation for ACTION_OUTPUT
       #   actionOutput = {}
       #   outPort = {}
-      #   outPort['value'] = int(arg2)
+      #   outPort['value'] = int(arg2, 0)
       #   actionOutput['port'] = outPort
-      #   actionOutput['maxLen'] = int(arg3)
+      #   actionOutput['maxLen'] = int(arg3, 0)
       #   action['actionOutput'] = actionOutput
       #   # action['actionType'] = 'ACTION_OUTPUT'
       #   actions.append(action)
       #
     elif arg1 == "actionSetVlanId":
       vlanId = {}
-      vlanId['vlanId'] = int(arg2)
+      vlanId['vlanId'] = int(arg2, 0)
       action['actionSetVlanId'] = vlanId
       # action['actionType'] = 'ACTION_SET_VLAN_VID'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionSetVlanPriority":
       vlanPriority = {}
-      vlanPriority['vlanPriority'] = int(arg2)
+      vlanPriority['vlanPriority'] = int(arg2, 0)
       action['actionSetVlanPriority'] = vlanPriority
       # action['actionType'] = 'ACTION_SET_VLAN_PCP'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionSetIpToS":
       ipToS = {}
-      ipToS['ipToS'] = int(arg2)
+      ipToS['ipToS'] = int(arg2, 0)
       action['actionSetIpToS'] = ipToS
       # action['actionType'] = 'ACTION_SET_NW_TOS'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionSetTcpUdpSrcPort":
       tcpUdpSrcPort = {}
-      tcpUdpSrcPort['port'] = int(arg2)
+      tcpUdpSrcPort['port'] = int(arg2, 0)
       action['actionSetTcpUdpSrcPort'] = tcpUdpSrcPort
       # action['actionType'] = 'ACTION_SET_TP_SRC'
       actions.append(copy.deepcopy(action))
     elif arg1 == "actionSetTcpUdpDstPort":
       tcpUdpDstPort = {}
-      tcpUdpDstPort['port'] = int(arg2)
+      tcpUdpDstPort['port'] = int(arg2, 0)
       action['actionSetTcpUdpDstPort'] = tcpUdpDstPort
       # action['actionType'] = 'ACTION_SET_TP_DST'
       actions.append(copy.deepcopy(action))
@@ -304,9 +304,9 @@ if __name__ == "__main__":
     elif arg1 == "actionEnqueue":
       # TODO: Implement ACTION_ENQUEUE
       actionEnqueue = {}
-      #   actionEnqueue['queueId'] = int(arg2)
+      #   actionEnqueue['queueId'] = int(arg2, 0)
       #   enqueuePort = {}
-      #   enqueuePort['value'] = int(arg3)
+      #   enqueuePort['value'] = int(arg3, 0)
       #   actionEnqueue['port'] = enqueuePort
       #   action['actionEnqueue'] = actionEnqueue
       #   # action['actionType'] = 'ACTION_ENQUEUE'

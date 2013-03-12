@@ -92,7 +92,7 @@ def print_flow_path(parsedResult):
       if matchVlanPriority == True:
 	print "    vlanPriority: %s" % vlanPriority
       if matchEthernetFrameType == True:
-	print "    ethernetFrameType: %s" % ethernetFrameType
+	print "    ethernetFrameType: %s" % hex(ethernetFrameType)
       if matchIpToS == True:
 	print "    ipToS: %s" % ipToS
       if matchIpProto == True:
