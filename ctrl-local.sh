@@ -1,5 +1,5 @@
 #! /bin/bash
-controller="localhost"
+controller=`hostname`
 switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
 
 function host2ip (){
