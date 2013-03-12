@@ -10,24 +10,24 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.floodlightcontroller.util.IPv4;
+import net.floodlightcontroller.util.MACAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deserialize an IPv4 address from a string.
+ * Deserialize a MAC address from a string.
  */
-public class IPv4Deserializer extends JsonDeserializer<IPv4> {
+public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
 
-    protected static Logger log = LoggerFactory.getLogger(IPv4Deserializer.class);
+    protected static Logger log = LoggerFactory.getLogger(MACAddressDeserializer.class);
 
     @Override
-    public IPv4 deserialize(JsonParser jp,
-			    DeserializationContext ctxt)
+    public MACAddress deserialize(JsonParser jp,
+				  DeserializationContext ctxt)
 	throws IOException, JsonProcessingException {
 
-	IPv4 ipv4 = null;
+	MACAddress mac = null;
 
 	jp.nextToken();		// Move to JsonToken.START_OBJECT
 	while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -35,9 +35,9 @@ public class IPv4Deserializer extends JsonDeserializer<IPv4> {
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
 		log.debug("Fieldname: " + fieldname + " Value: " + value);
-		ipv4 = new IPv4(value);
+		mac = MACAddress.valueOf(value);
 	    }
 	}
-	return ipv4;
+	return mac;
     }
 }

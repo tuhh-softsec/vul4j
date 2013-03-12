@@ -193,18 +193,6 @@ public interface IFlowEntry extends IBaseObject {
 		@Property("switch_dpid")
 		public void setSwitchDpid(String switchDpid);
 
-		@Property("in_port")
-		public Short getInPort();
-
-		@Property("in_port")
-		public void setInPort(Short inPort);
-
-		@Property("out_port")
-		public Short getOutPort();
-
-		@Property("out_port")
-		public void setOutPort(Short outPort);
-
 		@Property("user_state")
 		public String getUserState();
 
@@ -228,5 +216,47 @@ public interface IFlowEntry extends IBaseObject {
 
 		@Property("error_state_code")
 		public void setErrorStateCode(String errorStateCode);
+
+		@Property("matchInPort")
+		public Short getMatchInPort();
+
+		@Property("matchInPort")
+		public void setMatchInPort(Short matchInPort);
+
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType();
+
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
+
+		@Property("matchSrcMac")
+		public String getMatchSrcMac();
+
+		@Property("matchSrcMac")
+		public void setMatchSrcMac(String matchSrcMac);
+
+		@Property("matchDstMac")
+		public String getMatchDstMac();
+
+		@Property("matchDstMac")
+		public void setMatchDstMac(String matchDstMac);
+
+		@Property("matchSrcIPv4Net")
+		public String getMatchSrcIPv4Net();
+
+		@Property("matchSrcIPv4Net")
+		public void setMatchSrcIPv4Net(String matchSrcIPv4Net);
+
+		@Property("matchDstIPv4Net")
+		public String getMatchDstIPv4Net();
+
+		@Property("matchDstIPv4Net")
+		public void setMatchDstIPv4Net(String matchDstIPv4Net);
+
+		@Property("actionOutput")
+		public Short getActionOutput();
+
+		@Property("actionOutput")
+		public void setActionOutput(Short actionOutput);
 	}
 }

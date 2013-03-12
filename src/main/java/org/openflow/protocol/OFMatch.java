@@ -911,7 +911,7 @@ public class OFMatch implements Cloneable, Serializable {
      *            one of STR_NW_DST or STR_NW_SRC
      * @throws IllegalArgumentException
      */
-    private void setFromCIDR(String cidr, String which)
+    public void setFromCIDR(String cidr, String which)
             throws IllegalArgumentException {
         String values[] = cidr.split("/");
         String[] ip_str = values[0].split("\\.");

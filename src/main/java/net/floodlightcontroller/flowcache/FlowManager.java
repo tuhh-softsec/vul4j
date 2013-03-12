@@ -29,11 +29,15 @@ import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.DataPathEndpoints;
 import net.floodlightcontroller.util.FlowEntry;
+import net.floodlightcontroller.util.FlowEntryAction;
 import net.floodlightcontroller.util.FlowEntryId;
+import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.FlowEntrySwitchState;
 import net.floodlightcontroller.util.FlowEntryUserState;
 import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
+import net.floodlightcontroller.util.IPv4Net;
+import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
 import net.onrc.onos.util.GraphDBConnection;
@@ -123,14 +127,54 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			continue;
 		    }
 
+		    //
+		    // Fetch the match conditions
+		    //
 		    OFMatch match = new OFMatch();
-		    match.setInputPort(flowEntryObj.getInPort());
+		    match.setWildcards(OFMatch.OFPFW_ALL);
+		    Short matchInPort = flowEntryObj.getMatchInPort();
+		    if (matchInPort != null) {
+			match.setInputPort(matchInPort);
+			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
+		    }
+		    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+		    if (matchEthernetFrameType != null) {
+			match.setDataLayerType(matchEthernetFrameType);
+			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+		    }
+		    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+		    if (matchSrcIPv4Net != null) {
+			match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
+		    }
+		    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+		    if (matchDstIPv4Net != null) {
+			match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
+		    }
+		    String matchSrcMac = flowEntryObj.getMatchSrcMac();
+		    if (matchSrcMac != null) {
+			match.setDataLayerSource(matchSrcMac);
+			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+		    }
+		    String matchDstMac = flowEntryObj.getMatchDstMac();
+		    if (matchDstMac != null) {
+			match.setDataLayerDestination(matchDstMac);
+			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+		    }
+		    log.debug("PAVPAV {}:", match.toString());
 
-		    OFActionOutput action = new OFActionOutput();
-		    action.setMaxLength((short)0xffff);
-		    action.setPort(flowEntryObj.getOutPort());
+
+		    //
+		    // Fetch the actions
+		    //
 		    List<OFAction> actions = new ArrayList<OFAction>();
-		    actions.add(action);
+		    Short actionOutputPort = flowEntryObj.getActionOutput();
+		    if (actionOutputPort != null) {
+			OFActionOutput action = new OFActionOutput();
+			// XXX: The max length is hard-coded for now
+			action.setMaxLength((short)0xffff);
+			action.setPort(actionOutputPort);
+			actions.add(action);
+		    }
 
 		    fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
 			.setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
@@ -351,15 +395,35 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // - flowEntry.flowEntryMatch()
 	    // - flowEntry.flowEntryActions()
 	    // - flowEntry.dpid()
-	    // - flowEntry.inPort()
-	    // - flowEntry.outPort()
 	    // - flowEntry.flowEntryUserState()
 	    // - flowEntry.flowEntrySwitchState()
 	    // - flowEntry.flowEntryErrorState()
+	    // - flowEntry.matchInPort()
+	    // - flowEntry.matchEthernetFrameType()
+	    // - flowEntry.matchSrcIPv4Net()
+	    // - flowEntry.matchDstIPv4Net()
+	    // - flowEntry.matchSrcMac()
+	    // - flowEntry.matchDstMac()
+	    // - flowEntry.actionOutput()
 	    //
 	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    flowEntryObj.setInPort(flowEntry.inPort().value());
-	    flowEntryObj.setOutPort(flowEntry.outPort().value());
+	    if (flowEntry.flowEntryMatch().matchInPort())
+		flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    if (flowEntry.flowEntryMatch().matchEthernetFrameType())
+		flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net())
+		flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	    if (flowEntry.flowEntryMatch().matchDstIPv4Net())
+		flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	    if (flowEntry.flowEntryMatch().matchSrcMac())
+		flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	    if (flowEntry.flowEntryMatch().matchDstMac())
+		flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+
+	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
+		if (fa.actionOutput() != null)
+		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+	    }
 	    // TODO: Hacks with hard-coded state names!
 	    if (found)
 		flowEntryObj.setUserState("FE_USER_MODIFY");
@@ -367,7 +431,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowEntryObj.setUserState("FE_USER_ADD");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryActions,
+	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
 	    // and FlowEntryErrorState.
 	    //
 
@@ -640,14 +704,49 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    FlowEntry flowEntry = new FlowEntry();
 	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryObj.getFlowEntryId()));
 	    flowEntry.setDpid(new Dpid(flowEntryObj.getSwitchDpid()));
-	    flowEntry.setInPort(new Port(flowEntryObj.getInPort()));
-	    flowEntry.setOutPort(new Port(flowEntryObj.getOutPort()));
+
+	    //
+	    // Extract the match conditions
+	    //
+	    FlowEntryMatch match = new FlowEntryMatch();
+	    Short matchInPort = flowEntryObj.getMatchInPort();
+	    if (matchInPort != null)
+		match.enableInPort(new Port(matchInPort));
+	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	    if (matchEthernetFrameType != null)
+		match.enableEthernetFrameType(matchEthernetFrameType);
+	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	    if (matchSrcIPv4Net != null)
+		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	    if (matchDstIPv4Net != null)
+		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	    if (matchSrcMac != null)
+		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	    String matchDstMac = flowEntryObj.getMatchDstMac();
+	    if (matchDstMac != null)
+		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	    flowEntry.setFlowEntryMatch(match);
+
+	    //
+	    // Extract the actions
+	    //
+	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+	    Short actionOutputPort = flowEntryObj.getActionOutput();
+	    if (actionOutputPort != null) {
+		FlowEntryAction action = new FlowEntryAction();
+		action.setActionOutput(new Port(actionOutputPort));
+		actions.add(action);
+	    }
+	    flowEntry.setFlowEntryActions(actions);
+
 	    String userState = flowEntryObj.getUserState();
 	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
 	    String switchState = flowEntryObj.getSwitchState();
 	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryActions,
+	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
 	    // and FlowEntryErrorState.
 	    //
 	    flowPath.dataPath().flowEntries().add(flowEntry);
