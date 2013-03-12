@@ -92,11 +92,11 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        matchDstMac <destination MAC address>\n"
   usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
   usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
+  usage_msg = usage_msg + "        matchEthernetFrameType <Ethernet frame type>\n"
 
   usage_msg = usage_msg + "    Match Conditions (not implemented yet):\n"
   usage_msg = usage_msg + "        matchVlanId <VLAN ID>\n"
   usage_msg = usage_msg + "        matchVlanPriority <VLAN priority>\n"
-  usage_msg = usage_msg + "        matchEthernetFrametype <Ethernet frame type>\n"
   usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
   usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
   usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
