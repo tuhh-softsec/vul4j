@@ -54,6 +54,15 @@ public class FlowEntryAction {
 				// if the port is set to PORT_CONTROLLER
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionOutput() {
+	    this.port = null;
+	    this.maxLen = 0;
+	}
+
+
+	/**
 	 * Constructor for a given output port and maximum length.
 	 *
 	 * @param port the output port to set.
@@ -63,6 +72,16 @@ public class FlowEntryAction {
 	public ActionOutput(Port port, short maxLen) {
 	    this.port = port;
 	    this.maxLen = maxLen;
+	}
+
+	/**
+	 * Constructor for a given output port.
+	 *
+	 * @param port the output port to set.
+	 */
+	public ActionOutput(Port port) {
+	    this.port = port;
+	    this.maxLen = 0;
 	}
 
 	/**
@@ -113,11 +132,18 @@ public class FlowEntryAction {
 	private short vlanId;		// The VLAN ID to set
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetVlanId() {
+	    this.vlanId = 0;
+	}
+
+	/**
 	 * Constructor for a given VLAN ID.
 	 *
 	 * @param vlanId the VLAN ID to set.
 	 */
-	ActionSetVlanId(short vlanId) {
+	public ActionSetVlanId(short vlanId) {
 	    this.vlanId = vlanId;
 	}
 
@@ -156,11 +182,18 @@ public class FlowEntryAction {
 	private byte vlanPriority;	// The VLAN priority to set
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetVlanPriority() {
+	    this.vlanPriority = 0;
+	}
+
+	/**
 	 * Constructor for a given VLAN priority.
 	 *
 	 * @param vlanPriority the VLAN priority to set.
 	 */
-	ActionSetVlanPriority(byte vlanPriority) {
+	public ActionSetVlanPriority(byte vlanPriority) {
 	    this.vlanPriority = vlanPriority;
 	}
 
@@ -199,11 +232,18 @@ public class FlowEntryAction {
 	private boolean stripVlan;	// If true, strip the VLAN header
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionStripVlan() {
+	    this.stripVlan = false;
+	}
+
+	/**
 	 * Constructor for a given boolean flag.
 	 *
 	 * @param stripVlan if true, strip the VLAN header.
 	 */
-	ActionStripVlan(boolean stripVlan) {
+	public ActionStripVlan(boolean stripVlan) {
 	    this.stripVlan = stripVlan;
 	}
 
@@ -243,11 +283,18 @@ public class FlowEntryAction {
 	private MACAddress addr;	// The MAC address to set
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetEthernetAddr() {
+	    this.addr = null;
+	}
+
+	/**
 	 * Constructor for a given MAC address.
 	 *
 	 * @param addr the MAC address to set.
 	 */
-	ActionSetEthernetAddr(MACAddress addr) {
+	public ActionSetEthernetAddr(MACAddress addr) {
 	    this.addr = addr;
 	}
 
@@ -287,11 +334,18 @@ public class FlowEntryAction {
 	private IPv4 addr;		// The IPv4 address to set
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetIPv4Addr() {
+	    this.addr = null;
+	}
+
+	/**
 	 * Constructor for a given IPv4 address.
 	 *
 	 * @param addr the IPv4 address to set.
 	 */
-	ActionSetIPv4Addr(IPv4 addr) {
+	public ActionSetIPv4Addr(IPv4 addr) {
 	    this.addr = addr;
 	}
 
@@ -331,11 +385,18 @@ public class FlowEntryAction {
 	private byte ipToS;	// The IP ToS to set DSCP field, 6 bits)
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetIpToS() {
+	    this.ipToS = 0;
+	}
+
+	/**
 	 * Constructor for a given IP ToS (DSCP field, 6 bits).
 	 *
 	 * @param ipToS the IP ToS (DSCP field, 6 bits) to set.
 	 */
-	ActionSetIpToS(byte ipToS) {
+	public ActionSetIpToS(byte ipToS) {
 	    this.ipToS = ipToS;
 	}
 
@@ -375,11 +436,18 @@ public class FlowEntryAction {
 	private short port;		// The TCP/UDP port to set
 
 	/**
+	 * Default constructor.
+	 */
+	public ActionSetTcpUdpPort() {
+	    this.port = 0;
+	}
+
+	/**
 	 * Constructor for a given TCP/UDP port.
 	 *
 	 * @param port the TCP/UDP port to set.
 	 */
-	ActionSetTcpUdpPort(short port) {
+	public ActionSetTcpUdpPort(short port) {
 	    this.port = port;
 	}
 
@@ -419,6 +487,14 @@ public class FlowEntryAction {
 				// refer to a valid physical port
 				// (i.e. < PORT_MAX) or PORT_IN_PORT
 	private int queueId;	// Where to enqueue the packets
+
+	/**
+	 * Default constructor.
+	 */
+	public ActionEnqueue() {
+	    this.port = null;
+	    this.queueId = 0;
+	}
 
 	/**
 	 * Constructor for a given port and queue ID.
@@ -515,11 +591,21 @@ public class FlowEntryAction {
     /**
      * Set the output action on a port.
      *
-     * @param port the output port to set.
+     * @param action the action to set.
      */
     @JsonProperty("actionOutput")
+    public void setActionOutput(ActionOutput action) {
+	actionOutput = action;
+	actionType = ActionValues.ACTION_OUTPUT;
+    }
+
+    /**
+     * Set the output action on a port.
+     *
+     * @param port the output port to set.
+     */
     public void setActionOutput(Port port) {
-	actionOutput = new ActionOutput(port, (short)0);
+	actionOutput = new ActionOutput(port);
 	actionType = ActionValues.ACTION_OUTPUT;
     }
 
@@ -528,7 +614,6 @@ public class FlowEntryAction {
      *
      * @param maxLen the maximum length (in bytes) to send to controller.
      */
-    @JsonProperty("actionOutputToController")
     public void setActionOutputToController(short maxLen) {
 	Port port = new Port(Port.PortValues.PORT_CONTROLLER);
 	actionOutput = new ActionOutput(port, maxLen);
@@ -546,9 +631,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the VLAN ID.
      *
-     * @param vlanId the VLAN ID to set.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetVlanId")
+    public void setActionSetVlanId(ActionSetVlanId action) {
+	actionSetVlanId = action;
+	actionType = ActionValues.ACTION_SET_VLAN_VID;
+    }
+
+    /**
+     * Set the action to set the VLAN ID.
+     *
+     * @param vlanId the VLAN ID to set.
+     */
     public void setActionSetVlanId(short vlanId) {
 	actionSetVlanId = new ActionSetVlanId(vlanId);
 	actionType = ActionValues.ACTION_SET_VLAN_VID;
@@ -567,9 +662,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the VLAN priority.
      *
-     * @param vlanPriority the VLAN priority to set.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetVlanPriority")
+    public void setActionSetVlanPriority(ActionSetVlanPriority action) {
+	actionSetVlanPriority = action;
+	actionType = ActionValues.ACTION_SET_VLAN_PCP;
+    }
+
+    /**
+     * Set the action to set the VLAN priority.
+     *
+     * @param vlanPriority the VLAN priority to set.
+     */
     public void setActionSetVlanPriority(byte vlanPriority) {
 	actionSetVlanPriority = new ActionSetVlanPriority(vlanPriority);
 	actionType = ActionValues.ACTION_SET_VLAN_PCP;
@@ -588,9 +693,19 @@ public class FlowEntryAction {
     /**
      * Set the action to strip the VLAN header.
      *
-     * @param stripVlan if true, strip the VLAN header.
+     * @param action the action to set.
      */
     @JsonProperty("actionStripVlan")
+    public void setActionStripVlan(ActionStripVlan action) {
+	actionStripVlan = action;
+	actionType = ActionValues.ACTION_STRIP_VLAN;
+    }
+
+    /**
+     * Set the action to strip the VLAN header.
+     *
+     * @param stripVlan if true, strip the VLAN header.
+     */
     public void setActionStripVlan(boolean stripVlan) {
 	actionStripVlan = new ActionStripVlan(stripVlan);
 	actionType = ActionValues.ACTION_STRIP_VLAN;
@@ -609,9 +724,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the Ethernet source address.
      *
-     * @param addr the MAC address to set as the Ethernet source address.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetEthernetSrcAddr")
+    public void setActionSetEthernetSrcAddr(ActionSetEthernetAddr action) {
+	actionSetEthernetSrcAddr = action;
+	actionType = ActionValues.ACTION_SET_DL_SRC;
+    }
+
+    /**
+     * Set the action to set the Ethernet source address.
+     *
+     * @param addr the MAC address to set as the Ethernet source address.
+     */
     public void setActionSetEthernetSrcAddr(MACAddress addr) {
 	actionSetEthernetSrcAddr = new ActionSetEthernetAddr(addr);
 	actionType = ActionValues.ACTION_SET_DL_SRC;
@@ -630,9 +755,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the Ethernet destination address.
      *
-     * @param addr the MAC address to set as the Ethernet destination address.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetEthernetDstAddr")
+    public void setActionSetEthernetDstAddr(ActionSetEthernetAddr action) {
+	actionSetEthernetDstAddr = action;
+	actionType = ActionValues.ACTION_SET_DL_DST;
+    }
+
+    /**
+     * Set the action to set the Ethernet destination address.
+     *
+     * @param addr the MAC address to set as the Ethernet destination address.
+     */
     public void setActionSetEthernetDstAddr(MACAddress addr) {
 	actionSetEthernetDstAddr = new ActionSetEthernetAddr(addr);
 	actionType = ActionValues.ACTION_SET_DL_DST;
@@ -651,9 +786,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the IPv4 source address.
      *
-     * @param addr the IPv4 address to set as the IPv4 source address.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetIPv4SrcAddr")
+    public void setActionSetIPv4SrcAddr(ActionSetIPv4Addr action) {
+	actionSetIPv4SrcAddr = action;
+	actionType = ActionValues.ACTION_SET_NW_SRC;
+    }
+
+    /**
+     * Set the action to set the IPv4 source address.
+     *
+     * @param addr the IPv4 address to set as the IPv4 source address.
+     */
     public void setActionSetIPv4SrcAddr(IPv4 addr) {
 	actionSetIPv4SrcAddr = new ActionSetIPv4Addr(addr);
 	actionType = ActionValues.ACTION_SET_NW_SRC;
@@ -672,9 +817,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the IPv4 destination address.
      *
-     * @param addr the IPv4 address to set as the IPv4 destination address.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetIPv4DstAddr")
+    public void setActionSetIPv4DstAddr(ActionSetIPv4Addr action) {
+	actionSetIPv4DstAddr = action;
+	actionType = ActionValues.ACTION_SET_NW_DST;
+    }
+
+    /**
+     * Set the action to set the IPv4 destination address.
+     *
+     * @param addr the IPv4 address to set as the IPv4 destination address.
+     */
     public void setActionSetIPv4DstAddr(IPv4 addr) {
 	actionSetIPv4DstAddr = new ActionSetIPv4Addr(addr);
 	actionType = ActionValues.ACTION_SET_NW_DST;
@@ -693,9 +848,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the IP ToS (DSCP field, 6 bits).
      *
-     * @param ipToS the IP ToS (DSCP field, 6 bits) to set.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetIpToS")
+    public void setActionSetIpToS(ActionSetIpToS action) {
+	actionSetIpToS = action;
+	actionType = ActionValues.ACTION_SET_NW_TOS;
+    }
+
+    /**
+     * Set the action to set the IP ToS (DSCP field, 6 bits).
+     *
+     * @param ipToS the IP ToS (DSCP field, 6 bits) to set.
+     */
     public void setActionSetIpToS(byte ipToS) {
 	actionSetIpToS = new ActionSetIpToS(ipToS);
 	actionType = ActionValues.ACTION_SET_NW_TOS;
@@ -714,9 +879,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the TCP/UDP source port.
      *
-     * @param port the TCP/UDP port to set as the TCP/UDP source port.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetTcpUdpSrcPort")
+    public void setActionSetTcpUdpSrcPort(ActionSetTcpUdpPort action) {
+	actionSetTcpUdpSrcPort = action;
+	actionType = ActionValues.ACTION_SET_TP_SRC;
+    }
+
+    /**
+     * Set the action to set the TCP/UDP source port.
+     *
+     * @param port the TCP/UDP port to set as the TCP/UDP source port.
+     */
     public void setActionSetTcpUdpSrcPort(short port) {
 	actionSetTcpUdpSrcPort = new ActionSetTcpUdpPort(port);
 	actionType = ActionValues.ACTION_SET_TP_SRC;
@@ -735,9 +910,19 @@ public class FlowEntryAction {
     /**
      * Set the action to set the TCP/UDP destination port.
      *
-     * @param port the TCP/UDP port to set as the TCP/UDP destination port.
+     * @param action the action to set.
      */
     @JsonProperty("actionSetTcpUdpDstPort")
+    public void setActionSetTcpUdpDstPort(ActionSetTcpUdpPort action) {
+	actionSetTcpUdpDstPort = action;
+	actionType = ActionValues.ACTION_SET_TP_DST;
+    }
+
+    /**
+     * Set the action to set the TCP/UDP destination port.
+     *
+     * @param port the TCP/UDP port to set as the TCP/UDP destination port.
+     */
     public void setActionSetTcpUdpDstPort(short port) {
 	actionSetTcpUdpDstPort = new ActionSetTcpUdpPort(port);
 	actionType = ActionValues.ACTION_SET_TP_DST;
@@ -754,10 +939,20 @@ public class FlowEntryAction {
     /**
      * Set the action to output to queue on a port.
      *
+     * @param action the action to set.
+     */
+    @JsonProperty("actionEnqueue")
+    public void setActionEnqueue(ActionEnqueue action) {
+	actionEnqueue = action;
+	actionType = ActionValues.ACTION_ENQUEUE;
+    }
+
+    /**
+     * Set the action to output to queue on a port.
+     *
      * @param port the port to set.
      * @param int queueId the queue ID to set.
      */
-    @JsonProperty("actionEnqueue")
     public void setActionEnqueue(Port port, int queueId) {
 	actionEnqueue = new ActionEnqueue(port, queueId);
 	actionType = ActionValues.ACTION_ENQUEUE;
