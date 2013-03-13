@@ -46,6 +46,7 @@ import net.onrc.onos.util.GraphDBConnection.Transaction;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFPacketOut;
+import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
@@ -62,10 +63,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected OFMessageDamper messageDamper;
 
-    protected static int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
-    protected static int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
-    public static short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
-    public static short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
+    //
+    // TODO: Values copied from elsewhere (class LearningSwitch).
+    // The local copy should go away!
+    //
+    protected static final int OFMESSAGE_DAMPER_CAPACITY = 50000; // TODO: find sweet spot
+    protected static final int OFMESSAGE_DAMPER_TIMEOUT = 250;	// ms
+    public static final short FLOWMOD_DEFAULT_IDLE_TIMEOUT = 0;	// infinity
+    public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
+    public static final short PRIORITY_DEFAULT = 100;
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -176,12 +182,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 		    fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
 			.setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
+			.setPriority(PRIORITY_DEFAULT)
 			.setBufferId(OFPacketOut.BUFFER_ID_NONE)
 			.setCookie(cookie)
 			.setCommand(flowModCommand)
 			.setMatch(match)
 			.setActions(actions)
 			.setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+		    fm.setOutPort(OFPort.OFPP_NONE.getValue());
+		    if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+			(flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+			if (actionOutputPort != null)
+			    fm.setOutPort(actionOutputPort);
+		    }
+
 		    //
 		    // TODO: Set the following flag
 		    // fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
