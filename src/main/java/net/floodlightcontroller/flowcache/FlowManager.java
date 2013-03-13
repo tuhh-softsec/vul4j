@@ -160,8 +160,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			match.setDataLayerDestination(matchDstMac);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
 		    }
-		    log.debug("PAVPAV {}:", match.toString());
-
 
 		    //
 		    // Fetch the actions

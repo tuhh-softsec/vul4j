@@ -59,4 +59,5 @@ if __name__ == "__main__":
     exit(1)
 
   # Do the work
-  delete_flow_path(sys.argv[1]);
+  flow_id_arg = int(sys.argv[1], 0)
+  delete_flow_path(flow_id_arg);
