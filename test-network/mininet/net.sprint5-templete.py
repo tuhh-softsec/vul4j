@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
 NWID=1
-NR_NODES=50
+NR_NODES=20
 #Controllers=[{"ip":'127.0.0.1', "port":6633}, {"ip":'10.0.1.28', "port":6633}]
-Controllers=[{"ip":'127.0.0.1', "port":6633}]
+Controllers=[{"ip":'10.0.1.28', "port":6633}]
 
 """
 Start up a Simple topology
@@ -119,6 +119,10 @@ def sdnnet(opt):
       host.append(net.get( 'host%d' % i ))
 
     net.start()
+
+    sw=net.get('sw01.00')
+    print "center sw", sw
+    sw.attach('tapa0')
 
     for i in range (NR_NODES):
         host[i].defaultIntf().setIP('192.168.%d.%d/16' % (NWID,i)) 
