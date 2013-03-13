@@ -33,6 +33,8 @@ import com.netflix.curator.framework.recipes.cache.PathChildrenCache.StartMode;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import com.netflix.curator.framework.recipes.cache.PathChildrenCacheListener;
 import com.netflix.curator.framework.recipes.leader.LeaderLatch;
+import com.netflix.curator.framework.recipes.leader.LeaderLatchEvent;
+import com.netflix.curator.framework.recipes.leader.LeaderLatchListener;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 
@@ -150,6 +152,24 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		}
 	}
 	
+	protected class ParamaterizedLeaderListener implements LeaderLatchListener{
+		String dpid;
+		LeaderLatch latch;
+		
+		public ParamaterizedLeaderListener(String dpid, LeaderLatch latch){
+			this.dpid = dpid;
+			this.latch = latch;
+		}
+		
+		@Override
+		public void leaderLatchEvent(CuratorFramework arg0,
+				LeaderLatchEvent arg1) {
+			log.debug("Got leader latch event for {} hasLeadership {}",
+					dpid, latch.hasLeadership());
+			
+		}
+	}
+	
 	
 	/**
 	 * Listens for changes to the switch znodes in Zookeeper. This maintains
@@ -216,11 +236,13 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		switchLatches.put(dpidStr, latch);
 		switchCallbacks.put(dpidStr, cb);
 		
+		latch.addListener(new ParamaterizedLeaderListener(dpidStr, latch));
+		
 		try {
 			//client.getChildren().usingWatcher(watcher).inBackground().forPath(singleLatchPath);
-			client.getChildren().usingWatcher(
-					new ParamaterizedCuratorWatcher(dpidStr, latchPath))
-					.inBackground().forPath(latchPath);
+			//client.getChildren().usingWatcher(
+			//		new ParamaterizedCuratorWatcher(dpidStr, latchPath))
+			//		.inBackground().forPath(latchPath);
 			latch.start();
 		} catch (Exception e) {
 			log.warn("Error starting leader latch: {}", e.getMessage());
