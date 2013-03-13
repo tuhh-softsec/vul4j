@@ -208,8 +208,10 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		String latchPath = switchLatchesPath + "/" + dpidStr;
 		
 		if (switchLatches.get(dpidStr) != null){
-			throw new RuntimeException("Leader election for switch " + dpidStr +
-					"is already running");
+			//throw new RuntimeException("Leader election for switch " + dpidStr +
+			//		"is already running");
+			log.debug("Already contesting {}, returning", HexString.toHexString(dpid));
+			return;
 		}
 		
 		LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
