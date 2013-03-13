@@ -18,8 +18,9 @@ from flask import Flask, json, Response, render_template, make_response, request
 #
 
 ## Global Var ##
-ControllerIP="127.0.0.1"
-ControllerPort=8080
+ControllerIP = "127.0.0.1"
+ControllerPort = 8080
+MonitoringEnabled = False
 
 DEBUG=0
 pp = pprint.PrettyPrinter(indent=4)
@@ -68,13 +69,15 @@ def shortest_path(v1, p1, v2, p2):
     inPort = f['inPort']['value'];
     outPort = f['outPort']['value'];
     dpid = f['dpid']['value']
-    print "FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
+    print "  FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
 
   return parsedResult
 
 def add_flow_path(flow_path):
+  flow_path_json = json.dumps(flow_path)
+
   try:
-    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add/json" % (flow_path, ControllerIP, ControllerPort)
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add/json" % (flow_path_json, ControllerIP, ControllerPort)
     debug("add_flow_path %s" % command)
     result = os.popen(command).read()
     debug("result %s" % result)
@@ -84,91 +87,47 @@ def add_flow_path(flow_path):
     log_error("Controller IF has issue")
     exit(1)
 
-if __name__ == "__main__":
-  usage_msg = "Usage: %s <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
-  usage_msg = usage_msg + "    Match Conditions:\n"
-  usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
-  usage_msg = usage_msg + "        matchSrcMac <source MAC address>\n"
-  usage_msg = usage_msg + "        matchDstMac <destination MAC address>\n"
-  usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
-  usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
-  usage_msg = usage_msg + "        matchEthernetFrameType <Ethernet frame type>\n"
+def delete_flow_path(flow_id):
+  command = "curl -s \"http://%s:%s/wm/flow/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
+  debug("delete_flow_path %s" % command)
+  result = os.popen(command).read()
+  debug("result %s" % result)
+  # parsedResult = json.loads(result)
+  # debug("parsed %s" % parsedResult)
 
-  usage_msg = usage_msg + "    Match Conditions (not implemented yet):\n"
-  usage_msg = usage_msg + "        matchVlanId <VLAN ID>\n"
-  usage_msg = usage_msg + "        matchVlanPriority <VLAN priority>\n"
-  usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
-  usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
-  usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
-  usage_msg = usage_msg + "        matchDstTcpUdpPort <destination TCP/UDP port>\n"
-  usage_msg = usage_msg + "    Actions:\n"
-  usage_msg = usage_msg + "        actionOutput <True|False> (default to True)\n"
-  usage_msg = usage_msg + "        actionSetEthernetSrcAddr <source MAC address>\n"
-  usage_msg = usage_msg + "        actionSetEthernetDstAddr <destination MAC address>\n"
-  usage_msg = usage_msg + "        actionSetIPv4SrcAddr <source IPv4 address>\n"
-  usage_msg = usage_msg + "        actionSetIPv4DstAddr <destination IPv4 address>\n"
-  usage_msg = usage_msg + "    Actions (not implemented yet):\n"
-  usage_msg = usage_msg + "        actionSetVlanId <VLAN ID>\n"
-  usage_msg = usage_msg + "        actionSetVlanPriority <VLAN priority>\n"
-  usage_msg = usage_msg + "        actionSetIpToS <IP ToS (DSCP field, 6 bits)>\n"
-  usage_msg = usage_msg + "        actionSetTcpUdpSrcPort <source TCP/UDP port>\n"
-  usage_msg = usage_msg + "        actionSetTcpUdpDstPort <destination TCP/UDP port>\n"
-  usage_msg = usage_msg + "        actionStripVlan <True|False>\n"
-  usage_msg = usage_msg + "        actionEnqueue <dummy argument>\n"
-
-  # app.debug = False;
-
-  # Usage info
-  if len(sys.argv) > 1 and (sys.argv[1] == "-h" or sys.argv[1] == "--help"):
-    print(usage_msg)
-    exit(0)
-
-  # Check arguments
-  if len(sys.argv) < 7:
+def extract_flow_args(my_args):
+  # Check the arguments
+  if len(my_args) < 6:
     log_error(usage_msg)
     exit(1)
 
   # Extract the mandatory arguments
-  my_flow_id = sys.argv[1]
-  my_installer_id = sys.argv[2]
-  my_src_dpid = sys.argv[3]
-  my_src_port = sys.argv[4]
-  my_dst_dpid = sys.argv[5]
-  my_dst_port = sys.argv[6]
-
-  # Compute the shortest path
-  data_path = shortest_path(my_src_dpid, my_src_port, my_dst_dpid, my_dst_port)
-
-  debug("Data Path: %s" % data_path)
-
-  flow_id = {}
-  flow_id['value'] = my_flow_id
-  installer_id = {}
-  installer_id['value'] = my_installer_id
-
-  flow_path = {}
-  flow_path['flowId'] = flow_id
-  flow_path['installerId'] = installer_id
+  my_flow_id = my_args[0]
+  my_installer_id = my_args[1]
+  my_src_dpid = my_args[2]
+  my_src_port = my_args[3]
+  my_dst_dpid = my_args[4]
+  my_dst_port = my_args[5]
 
   #
   # Extract the "match" and "action" arguments
   #
-  idx = 7
   match = {}
   matchInPortEnabled = True		# NOTE: Enabled by default
   actions = []
   actionOutputEnabled = True		# NOTE: Enabled by default
-  while idx < len(sys.argv):
+  idx = 6
+  while idx < len(my_args):
     action = {}
-    arg1 = sys.argv[idx]
+    arg1 = my_args[idx]
     idx = idx + 1
     # Extract the second argument
-    if idx >= len(sys.argv):
+    if idx >= len(my_args):
       error_arg = "ERROR: Missing or invalid '" + arg1 + "' argument"
       log_error(error_arg)
       log_error(usage_msg)
       exit(1)
-    arg2 = sys.argv[idx]
+    arg2 = my_args[idx]
     idx = idx + 1
 
     if arg1 == "matchInPort":
@@ -317,18 +276,62 @@ if __name__ == "__main__":
       log_error(usage_msg)
       exit(1)
 
+    return {
+      'my_flow_id' : my_flow_id,
+      'my_installer_id' : my_installer_id,
+      'my_src_dpid' : my_src_dpid,
+      'my_src_port' : my_src_port,
+      'my_dst_dpid' : my_dst_dpid,
+      'my_dst_port' : my_dst_port,
+      'match' : match,
+      'matchInPortEnabled' : matchInPortEnabled,
+      'actions' : actions,
+      'actionOutputEnabled' : actionOutputEnabled
+      }
+
+def compute_data_path(parsed_args):
+
+  my_src_dpid = parsed_args['my_src_dpid']
+  my_src_port = parsed_args['my_src_port']
+  my_dst_dpid = parsed_args['my_dst_dpid']
+  my_dst_port = parsed_args['my_dst_port']
+
+  # Compute the shortest path
+  data_path = shortest_path(my_src_dpid, my_src_port, my_dst_dpid, my_dst_port)
+
+  debug("Data Path: %s" % data_path)
+  return data_path
+
+def compute_flow_path(parsed_args, data_path):
+
+  my_flow_id = parsed_args['my_flow_id']
+  my_installer_id = parsed_args['my_installer_id']
+  match = parsed_args['match']
+  matchInPortEnabled = parsed_args['matchInPortEnabled']
+  actions = parsed_args['actions']
+  actionOutputEnabled = parsed_args['actionOutputEnabled']
+  my_data_path = copy.deepcopy(data_path)
+
+  flow_id = {}
+  flow_id['value'] = my_flow_id
+  installer_id = {}
+  installer_id['value'] = my_installer_id
+
+  flow_path = {}
+  flow_path['flowId'] = flow_id
+  flow_path['installerId'] = installer_id
 
   #
   # Add the match conditions to each flow entry
   #
   if (len(match) > 0) or matchInPortEnabled:
     idx = 0
-    while idx < len(data_path['flowEntries']):
+    while idx < len(my_data_path['flowEntries']):
       if matchInPortEnabled:
-	inPort = data_path['flowEntries'][idx]['inPort']
+	inPort = my_data_path['flowEntries'][idx]['inPort']
 	match['inPort'] = copy.deepcopy(inPort)
 	# match['matchInPort'] = True
-      data_path['flowEntries'][idx]['flowEntryMatch'] = copy.deepcopy(match)
+      my_data_path['flowEntries'][idx]['flowEntryMatch'] = copy.deepcopy(match)
       idx = idx + 1
 
   #
@@ -341,11 +344,11 @@ if __name__ == "__main__":
   #
   if (len(actions) > 0) or actionOutputEnabled:
     idx = 0
-    while idx < len(data_path['flowEntries']):
+    while idx < len(my_data_path['flowEntries']):
       if idx > 0:
 	actions = []	# Reset the actions for all but first entry
       action = {}
-      outPort = data_path['flowEntries'][idx]['outPort']
+      outPort = my_data_path['flowEntries'][idx]['outPort']
       actionOutput = {}
       actionOutput['port'] = copy.deepcopy(outPort)
       # actionOutput['maxLen'] = 0	# TODO: not used for now
@@ -353,13 +356,85 @@ if __name__ == "__main__":
       # action['actionType'] = 'ACTION_OUTPUT'
       actions.append(copy.deepcopy(action))
 
-      data_path['flowEntries'][idx]['flowEntryActions'] = copy.deepcopy(actions)
+      my_data_path['flowEntries'][idx]['flowEntryActions'] = copy.deepcopy(actions)
       idx = idx + 1
 
 
-  flow_path['dataPath'] = data_path
+  flow_path['dataPath'] = my_data_path
+  debug("Flow Path: %s" % flow_path)
 
-  flow_path_json = json.dumps(flow_path)
-  debug("Flow Path: %s" % flow_path_json)
+  add_flow_path(flow_path)
 
-  add_flow_path(flow_path_json)
+
+if __name__ == "__main__":
+  usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
+  usage_msg = usage_msg + "    Flags:\n"
+  usage_msg = usage_msg + "        -m        Monitor and maintain the installed shortest path\n"
+  usage_msg = usage_msg + "    Match Conditions:\n"
+  usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
+  usage_msg = usage_msg + "        matchSrcMac <source MAC address>\n"
+  usage_msg = usage_msg + "        matchDstMac <destination MAC address>\n"
+  usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
+  usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
+  usage_msg = usage_msg + "        matchEthernetFrameType <Ethernet frame type>\n"
+
+  usage_msg = usage_msg + "    Match Conditions (not implemented yet):\n"
+  usage_msg = usage_msg + "        matchVlanId <VLAN ID>\n"
+  usage_msg = usage_msg + "        matchVlanPriority <VLAN priority>\n"
+  usage_msg = usage_msg + "        matchIpToS <IP ToS (DSCP field, 6 bits)>\n"
+  usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
+  usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
+  usage_msg = usage_msg + "        matchDstTcpUdpPort <destination TCP/UDP port>\n"
+  usage_msg = usage_msg + "    Actions:\n"
+  usage_msg = usage_msg + "        actionOutput <True|False> (default to True)\n"
+  usage_msg = usage_msg + "        actionSetEthernetSrcAddr <source MAC address>\n"
+  usage_msg = usage_msg + "        actionSetEthernetDstAddr <destination MAC address>\n"
+  usage_msg = usage_msg + "        actionSetIPv4SrcAddr <source IPv4 address>\n"
+  usage_msg = usage_msg + "        actionSetIPv4DstAddr <destination IPv4 address>\n"
+  usage_msg = usage_msg + "    Actions (not implemented yet):\n"
+  usage_msg = usage_msg + "        actionSetVlanId <VLAN ID>\n"
+  usage_msg = usage_msg + "        actionSetVlanPriority <VLAN priority>\n"
+  usage_msg = usage_msg + "        actionSetIpToS <IP ToS (DSCP field, 6 bits)>\n"
+  usage_msg = usage_msg + "        actionSetTcpUdpSrcPort <source TCP/UDP port>\n"
+  usage_msg = usage_msg + "        actionSetTcpUdpDstPort <destination TCP/UDP port>\n"
+  usage_msg = usage_msg + "        actionStripVlan <True|False>\n"
+  usage_msg = usage_msg + "        actionEnqueue <dummy argument>\n"
+
+  # app.debug = False;
+
+  # Usage info
+  if len(sys.argv) > 1 and (sys.argv[1] == "-h" or sys.argv[1] == "--help"):
+    print(usage_msg)
+    exit(0)
+
+  #
+  # Check the flags
+  #
+  start_argv_index = 1
+  if len(sys.argv) > 1 and sys.argv[1] == "-m":
+    MonitoringEnabled = True
+    start_argv_index = start_argv_index + 1
+
+  #
+  # Parse the remaining arguments
+  #
+  my_args = sys.argv[start_argv_index:]
+  parsed_args = copy.deepcopy(extract_flow_args(my_args))
+
+  last_data_path = []
+  my_flow_id = parsed_args['my_flow_id']
+  # Cleanup leftover state
+  delete_flow_path(my_flow_id)
+
+  while True:
+    data_path = compute_data_path(parsed_args)
+    if data_path != last_data_path:
+      if len(last_data_path) > 0:
+	delete_flow_path(my_flow_id)
+      flow_path = compute_flow_path(parsed_args, data_path)
+      add_flow_path(flow_path)
+      last_data_path = data_path
+
+    if MonitoringEnabled != True:
+      break
+    time.sleep(1)
