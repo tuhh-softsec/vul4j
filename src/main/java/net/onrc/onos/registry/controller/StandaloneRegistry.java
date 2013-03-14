@@ -16,13 +16,18 @@ import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implementation of a registry that doesn't rely on any external registry
+ * service. This is designed to be used only in single-node setups (e.g. for
+ * development). All registry data is stored in local memory.
+ * @author jono
+ *
+ */
 public class StandaloneRegistry implements IFloodlightModule,
 		IControllerRegistryService {
 	protected static Logger log = LoggerFactory.getLogger(StandaloneRegistry.class);
 	
 	protected IRestApiService restApi;
-	
-	//protected String controllerId;
 	
 	protected String controllerId = null;
 	protected Map<String, ControlChangeCallback> switchCallbacks;
@@ -63,13 +68,7 @@ public class StandaloneRegistry implements IFloodlightModule,
 	}
 
 	@Override
-	public void setMastershipId(String id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getMastershipId() {
+	public String getControllerId() {
 		return controllerId;
 	}
 
@@ -147,16 +146,6 @@ public class StandaloneRegistry implements IFloodlightModule,
 		restApi = context.getServiceImpl(IRestApiService.class);
 		
 		switchCallbacks = new HashMap<String, ControlChangeCallback>();
-		
-		//Put some data in for testing
-		/*
-		try {
-			registerController("hurro");
-			requestControl(2L, null);
-		} catch (RegistryException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
 	}
 
 	@Override

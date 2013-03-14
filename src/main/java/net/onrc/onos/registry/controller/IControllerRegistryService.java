@@ -6,6 +6,23 @@ import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 
+/**
+ * A registry service that allows ONOS to register controllers and switches
+ * in a way that is global to the entire ONOS cluster. The registry is the
+ * arbiter for allowing controllers to control switches. 
+ * 
+ * The OVS/OF1.{2,3} fault tolerance model is a switch connects to multiple 
+ * controllers, and the controllers send role requests to determine what their
+ * role is in controlling the switch.
+ * 
+ * The ONOS fault tolerance model allows only a single controller to have 
+ * control of a switch (MASTER role) at once. Controllers therefore need a 
+ * mechanism that enables them to decide who should control a each switch.
+ * The registry service provides this mechanism.
+ * 
+ * @author jono
+ *
+ */
 public interface IControllerRegistryService extends IFloodlightService {
 	
 	/**
@@ -54,19 +71,11 @@ public interface IControllerRegistryService extends IFloodlightService {
 	 */
 	public boolean hasControl(long dpid);
 	
-	
-	/**
-	 * Superseded by registerController
-	 * @param id
-	 */
-	@Deprecated
-	public void setMastershipId (String id);
-	
 	/**
 	 * Get the unique ID used to identify this controller in the cluster
 	 * @return
 	 */
-	public String getMastershipId ();
+	public String getControllerId ();
 	
 	/**
 	 * Register a controller to the ONOS cluster. Must be called before
@@ -92,7 +101,18 @@ public interface IControllerRegistryService extends IFloodlightService {
 	 */
 	public Map<String, List<ControllerRegistryEntry>> getAllSwitches();
 	
+	/**
+	 * Get the controller that has control of a given switch
+	 * @param dpid Switch to find controller for
+	 * @return controller ID
+	 * @throws RegistryException Errors contacting registry service
+	 */
 	public String getControllerForSwitch(long dpid) throws RegistryException;
 	
+	/**
+	 * Get all switches controlled by a given controller
+	 * @param controllerId 
+	 * @return Collection of dpids
+	 */
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
 }

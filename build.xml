@@ -66,9 +66,10 @@
         <include name="concurrentlinkedhashmap-lru-1.3.jar"/>
         <include name="jython-2.5.2.jar"/>
         <include name="libthrift-0.7.0.jar"/>
-	<include name="curator-client-1.3.1.jar"/>
-	<include name="curator-framework-1.3.1.jar"/>
-	<include name="curator-recipes-1.3.1.jar"/>
+	<include name="curator-client-1.3.3.jar"/>
+	<include name="curator-framework-1.3.3.jar"/>
+	<include name="curator-recipes-1.3.3.jar"/>
+	<include name="zookeeper-3.4.5.jar"/>
     </patternset>
 
     <patternset id="titanlib">

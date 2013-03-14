@@ -1,5 +1,5 @@
 #! /bin/bash
-controller=`hostname`
+controller=""
 switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
 
 function host2ip (){
@@ -13,6 +13,5 @@ for c in $controller; do
 done
 echo $url
 for s in $switches; do
-    echo "set switch $s controller $url"
-    sudo ovs-vsctl set-controller $s $url
+    sudo ovs-ofctl  show  $s |grep dpid
 done
