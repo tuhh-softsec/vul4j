@@ -1560,9 +1560,14 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
-        if (registryService.hasControl(sw.getId())) {
-        	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
-        }
+ //
+ //     Cannot set sw to inactive in network map due to race condition
+ //     Need a cleanup thread to periodically check switches not active in registry
+ //     and acquire control to set to inactive state in network map and release it       
+ //
+ //       if (registryService.hasControl(sw.getId())) {
+ //      	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+ //       }
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
