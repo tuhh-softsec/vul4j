@@ -276,18 +276,18 @@ def extract_flow_args(my_args):
       log_error(usage_msg)
       exit(1)
 
-    return {
-      'my_flow_id' : my_flow_id,
-      'my_installer_id' : my_installer_id,
-      'my_src_dpid' : my_src_dpid,
-      'my_src_port' : my_src_port,
-      'my_dst_dpid' : my_dst_dpid,
-      'my_dst_port' : my_dst_port,
-      'match' : match,
-      'matchInPortEnabled' : matchInPortEnabled,
-      'actions' : actions,
-      'actionOutputEnabled' : actionOutputEnabled
-      }
+  return {
+    'my_flow_id' : my_flow_id,
+    'my_installer_id' : my_installer_id,
+    'my_src_dpid' : my_src_dpid,
+    'my_src_port' : my_src_port,
+    'my_dst_dpid' : my_dst_dpid,
+    'my_dst_port' : my_dst_port,
+    'match' : match,
+    'matchInPortEnabled' : matchInPortEnabled,
+    'actions' : actions,
+    'actionOutputEnabled' : actionOutputEnabled
+    }
 
 def compute_data_path(parsed_args):
 
