@@ -1,5 +1,5 @@
 #! /bin/bash
-controller="localhost onos9vpc onos10vpc onos11vpc"
+controller="onos9vpc onos10vpc onos11vpc"
 me=`hostname`
 controller=`echo $controller | sed "s/$me//g"`
 switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
