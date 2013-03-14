@@ -1,9 +1,5 @@
 package net.floodlightcontroller.core;
 
-import java.util.List;
-
-import net.floodlightcontroller.devicemanager.SwitchPort;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
