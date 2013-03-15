@@ -16,6 +16,7 @@ import com.thinkaurelius.titan.core.TitanException;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
@@ -244,9 +245,6 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
 
-		for (ISwitchObject sw: switches) {
-			log.debug("switch: {}", sw.getDPID());
-		}
 
 		return switches;
 	}
