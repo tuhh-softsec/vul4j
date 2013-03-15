@@ -236,7 +236,16 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	public Collection<String> getAllControllers() throws RegistryException {
 		log.debug("Getting all controllers");
 		
+		//Rebuild the cache to make sure we have the latest data
+		//If we don't have ZK connection this will hang until we do. Undesirable.
+		try {
+			controllerCache.rebuild();
+		} catch (Exception e1) {
+			return null;
+		}
+		
 		List<String> controllers = new ArrayList<String>();
+		
 		for (ChildData data : controllerCache.getCurrentData()){
 
 			String d = null;
@@ -253,6 +262,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public void registerController(String id) throws RegistryException {
+		//TODO this isn't replaced if we lose Zookeeper connection
 		if (controllerId != null) {
 			throw new RegistryException(
 					"Controller already registered with id " + controllerId);
