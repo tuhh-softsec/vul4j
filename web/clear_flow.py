@@ -14,7 +14,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 
 #
 # TODO: remove this! We don't use JSON argument here!
-# curl http://127.0.0.1:8080/wm/flow/delete/{"value":"0xf"}/json'
+# curl http://127.0.0.1:8080/wm/flow/clear/{"value":"0xf"}/json'
 #
 
 ## Global Var ##
@@ -34,17 +34,17 @@ def debug(txt):
   if DEBUG:
     print '%s' % (txt)
 
-# @app.route("/wm/flow/delete/<flow-id>/json")
-def delete_flow_path(flow_id):
-  command = "curl -s \"http://%s:%s/wm/flow/delete/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
-  debug("delete_flow_path %s" % command)
+# @app.route("/wm/flow/clear/<flow-id>/json")
+def clear_flow_path(flow_id):
+  command = "curl -s \"http://%s:%s/wm/flow/clear/%s/json\"" % (ControllerIP, ControllerPort, flow_id)
+  debug("clear_flow_path %s" % command)
   result = os.popen(command).read()
   debug("result %s" % result)
   # parsedResult = json.loads(result)
   # debug("parsed %s" % parsedResult)
 
 if __name__ == "__main__":
-  usage_msg = "Delete flow state from the ONOS Network Map and the switches\n"
+  usage_msg = "Clear flow state from the ONOS Network Map\n"
   usage_msg = usage_msg + "Usage: %s <flow_id>\n" % (sys.argv[0])
 
   # app.debug = False;
@@ -61,4 +61,4 @@ if __name__ == "__main__":
 
   # Do the work
   flow_id_arg = int(sys.argv[1], 0)
-  delete_flow_path(flow_id_arg);
+  clear_flow_path(flow_id_arg);
