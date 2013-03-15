@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -73,6 +74,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
     public static final short PRIORITY_DEFAULT = 100;
 
+    private static long nextFlowEntryId = 1;
+
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
@@ -89,9 +92,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 		Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
 
-		// Fetch all Flow Entries
-		Iterable<IFlowEntry> flowEntries = conn.utils().getAllFlowEntries(conn);
-		for (IFlowEntry flowEntryObj : flowEntries) {
+		Map<Long, IFlowEntry> myFlowEntries = new TreeMap<Long, IFlowEntry>();
+
+		//
+		// Fetch all Flow Entries and select only my Flow Entries
+		//
+		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    FlowEntryId flowEntryId =
 			new FlowEntryId(flowEntryObj.getFlowEntryId());
 		    String userState = flowEntryObj.getUserState();
@@ -107,6 +114,29 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 
 		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
+		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
+		    if (mySwitch == null) {
+			log.debug("Flow Entry ignored: not my switch");
+			continue;
+		    }
+		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
+		}
+
+		//
+		// Process my Flow Entries
+		//
+		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
+		    IFlowEntry flowEntryObj = entry.getValue();
+
+		    //
+		    // TODO: Eliminate the re-fetching of flowEntryId,
+		    // userState, switchState, and dpid from the flowEntryObj.
+		    //
+		    FlowEntryId flowEntryId =
+			new FlowEntryId(flowEntryObj.getFlowEntryId());
+		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
+		    String userState = flowEntryObj.getUserState();
+		    String switchState = flowEntryObj.getSwitchState();
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null) {
 			log.debug("Flow Entry ignored: not my switch");
@@ -316,13 +346,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	//
 	// Assign the FlowEntry IDs
-	// TODO: This is an ugly hack!
-	// The Flow Entry IDs are set to 1000*FlowId + Index
+	// Right now every new flow entry gets a new flow entry ID
+	// TODO: This needs to be redesigned!
 	//
-	int i = 1;
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    long id = flowPath.flowId().value() * 1000 + i;
-	    ++i;
+	    long id = nextFlowEntryId++;
 	    flowEntry.setFlowEntryId(new FlowEntryId(id));
 	}
 
