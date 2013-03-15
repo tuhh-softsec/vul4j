@@ -44,12 +44,13 @@ def shortest_path(v1, p1, v2, p2):
   try:
     command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
     debug("shortest_path %s" % command)
+    parsedResult = []
 
     result = os.popen(command).read()
     debug("result %s" % result)
     if len(result) == 0:
 	log_error("No Path found")
-	exit(1);
+	return parsedResult
 
     parsedResult = json.loads(result)
     debug("parsed %s" % parsedResult)
@@ -431,8 +432,9 @@ if __name__ == "__main__":
     if data_path != last_data_path:
       if len(last_data_path) > 0:
 	delete_flow_path(my_flow_id)
-      flow_path = compute_flow_path(parsed_args, data_path)
-      add_flow_path(flow_path)
+      if len(data_path) > 0:
+	flow_path = compute_flow_path(parsed_args, data_path)
+	add_flow_path(flow_path)
       last_data_path = data_path
 
     if MonitoringEnabled != True:
