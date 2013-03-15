@@ -91,7 +91,7 @@ public class StandaloneRegistry implements IFloodlightModule,
 
 	@Override
 	public String getControllerForSwitch(long dpid) throws RegistryException {
-		return controllerId;
+		return (switchCallbacks.get(HexString.toHexString(dpid)) != null)? controllerId: null;
 	}
 
 	@Override

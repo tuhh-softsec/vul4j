@@ -3,34 +3,110 @@ package net.floodlightcontroller.onoslistener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.ISwitchStorage;
 import net.floodlightcontroller.core.internal.SwitchStorageImpl;
+import net.floodlightcontroller.core.internal.TopoSwitchServiceImpl;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceListener;
 import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.IDeviceStorage;
 import net.floodlightcontroller.devicemanager.internal.DeviceStorageImpl;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
+import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
+import net.onrc.onos.registry.controller.RegistryException;
 
 public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		ILinkDiscoveryListener, IFloodlightModule {
 	
 	protected IDeviceStorage devStore;
+	protected ISwitchStorage swStore;
 	protected static Logger log;
 	protected IDeviceService deviceService;
+	protected IControllerRegistryService registryService;
 	
 	protected static final String DBConfigFile = "dbconf";
+	protected IThreadPoolService threadPool;
+	
+	protected final int CLEANUP_TASK_INTERVAL = 999; // 999 ms
+	protected SingletonTask cleanupTask;
+	
+	/**
+     *  Cleanup and synch switch state from registry
+     */
+    protected class SwitchCleanup implements ControlChangeCallback, Runnable {
+        @Override
+        public void run() {
+            try {
+            	log.debug("Running cleanup thread");
+                switchCleanup();
+            }
+            catch (Exception e) {
+                log.error("Error in cleanup thread", e);
+            } finally {
+                    cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
+                                              TimeUnit.MILLISECONDS);
+            }
+        }
+
+		@Override
+		public void controlChanged(long dpid, boolean hasControl) {
+			// TODO Auto-generated method stub
+			
+			if (hasControl) {
+				log.debug("got control to set inactive sw {}", dpid);
+				swStore.update(HexString.toHexString(dpid),SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+			    registryService.releaseControl(dpid);	
+			}						
+		}
+    }
+    
+
+    
+    protected void switchCleanup() {
+    	
+    	TopoSwitchServiceImpl impl = new TopoSwitchServiceImpl();
+    	Iterable<ISwitchObject> switches = impl.getActiveSwitches();
+    	// For each switch check if a controller exists in controller registry
+    	for (ISwitchObject sw: switches) {
+			log.debug("checking if switch is inactive: {}", sw.getDPID());
+			try {
+				long dpid = HexString.toLong(sw.getDPID());
+				String controller = registryService.getControllerForSwitch(dpid);
+				if (controller == null) {
+					log.debug("request Control to set inactive sw {}", dpid);
+					registryService.requestControl(dpid, new SwitchCleanup());
+				} else {
+					log.debug("sw {} is controlled by controller: {}",dpid,controller);
+				}
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RegistryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}
+    }
 
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
@@ -112,6 +188,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	            new ArrayList<Class<? extends IFloodlightService>>();
 	        l.add(IFloodlightProviderService.class);
 	        l.add(IDeviceService.class);
+	        l.add(IThreadPoolService.class);
 	        return l;
 	}
 
@@ -124,10 +201,15 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		
 		log = LoggerFactory.getLogger(OnosPublisher.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
+		threadPool = context.getServiceImpl(IThreadPoolService.class);
+		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		
 		devStore = new DeviceStorageImpl();
 		devStore.init(conf);
 		
+		swStore = new SwitchStorageImpl();
+		swStore.init(conf);
+				
 		log.debug("Initializing OnosPublisher module with {}", conf);
 		
 	}
@@ -135,7 +217,11 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		// TODO Auto-generated method stub
-		deviceService.addListener(this);		
+		ScheduledExecutorService ses = threadPool.getScheduledExecutor();
+		deviceService.addListener(this);
+	       // Setup the Cleanup task. 
+        cleanupTask = new SingletonTask(ses, new SwitchCleanup());
+        cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 
 }
