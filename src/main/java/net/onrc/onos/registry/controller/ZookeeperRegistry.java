@@ -281,7 +281,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		
 		String dpidStr = HexString.toHexString(dpid);
 
-		LeaderLatch latch = switches.get(dpidStr).getLatch();
+		
+		LeaderLatch latch = (switches.get(dpidStr) != null)?switches.get(dpidStr).getLatch():null;
 		
 		if (latch == null){
 			log.warn("Tried to get controller for non-existent switch");
