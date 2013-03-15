@@ -67,7 +67,7 @@ def shortest_path(v1, p1, v2, p2):
     inPort = f['inPort']['value'];
     outPort = f['outPort']['value'];
     dpid = f['dpid']['value']
-    print "FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
+    print "  FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
 
 
 if __name__ == "__main__":
