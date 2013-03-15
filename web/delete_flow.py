@@ -44,7 +44,8 @@ def delete_flow_path(flow_id):
   # debug("parsed %s" % parsedResult)
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s <flow_id>" % (sys.argv[0])
+  usage_msg = "Delete flow state from the ONOS Network Map and the switches\n"
+  usage_msg = usage_msg + "Usage: %s <flow_id>\n" % (sys.argv[0])
 
   # app.debug = False;
 
