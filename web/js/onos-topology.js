@@ -1,6 +1,6 @@
 function gui(data_source){
-    var width = 960,
-    height = 500;
+    var width = 1280,
+    height = 1280;
     var radius = 8;
     var color = d3.scale.category20();
 
