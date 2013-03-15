@@ -127,6 +127,7 @@
            debug="true" 
            srcdir="${source}:${thrift.out.dir}"
            destdir="${build}">
+	  <compilerarg value="-Xlint:unchecked"/>
         </javac>
     </target>
 
