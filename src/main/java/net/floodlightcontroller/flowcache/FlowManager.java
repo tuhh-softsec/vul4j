@@ -545,6 +545,47 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Clear the state for a previously added flow.
+     *
+     * @param flowId the Flow ID of the flow to clear.
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean clearFlow(FlowId flowId) {
+	IFlowPath flowObj = null;
+	try {
+	    if ((flowObj = conn.utils().searchFlowPath(conn, flowId))
+		!= null) {
+		log.debug("Clearing FlowPath with FlowId {}: found existing FlowPath",
+			  flowId.toString());
+	    } else {
+		log.debug("Clearing FlowPath with FlowId {}:  FlowPath not found",
+			  flowId.toString());
+	    }
+	} catch (Exception e) {
+	    // TODO: handle exceptions
+	    conn.endTx(Transaction.ROLLBACK);
+	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
+	}
+	if (flowObj == null)
+	    return true;		// OK: No such flow
+
+	//
+	// Remove all Flow Entries
+	//
+	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	for (IFlowEntry flowEntryObj : flowEntries) {
+	    flowObj.removeFlowEntry(flowEntryObj);
+	    conn.utils().removeFlowEntry(conn, flowEntryObj);
+	}
+	// Remove the Flow itself
+	conn.utils().removeFlowPath(conn, flowObj);
+	conn.endTx(Transaction.COMMIT);
+
+	return true;
+    }
+
+    /**
      * Get a previously added flow.
      *
      * @param flowId the Flow ID of the flow to get.
