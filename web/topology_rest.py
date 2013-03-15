@@ -14,7 +14,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
-controllers=["onos9vpc", "onos10vpc", "onos11vpc", "onos12vpc"]
+controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -563,7 +563,7 @@ def controller_status():
     onos=os.popen(onos_check % i).read()[:-1]
     status["name"]=i
     status["onos"]=onos
-    status["cassandra"]=1
+    status["cassandra"]=0
     cont_status.append(status)
 
   js = json.dumps(cont_status)
