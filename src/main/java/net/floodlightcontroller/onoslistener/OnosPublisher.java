@@ -223,7 +223,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 
 		deviceService.addListener(this);
 	       // Setup the Cleanup task. 
-		if (cleanupNeeded.equals("True")) {
+		if (cleanupNeeded != null &&cleanupNeeded.equals("True")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 				cleanupTask = new SingletonTask(ses, new SwitchCleanup());
 				cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.MILLISECONDS);
