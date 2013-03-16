@@ -161,8 +161,8 @@ def get_flow_path(flow_id):
     result = os.popen(command).read()
     debug("result %s" % result)
     if len(result) == 0:
-	print "No Flow found"
-	return;
+      print "No Flow found"
+      return;
 
     parsedResult = json.loads(result)
     debug("parsed %s" % parsedResult)
