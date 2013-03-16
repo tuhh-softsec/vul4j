@@ -44,12 +44,13 @@ def print_flow_path(parsedResult):
   print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
 
   for f in parsedResult['dataPath']['flowEntries']:
+    flowEntryId = f['flowEntryId']
     dpid = f['dpid']['value']
     userState = f['flowEntryUserState']
     switchState = f['flowEntrySwitchState']
     match = f['flowEntryMatch'];
     actions = f['flowEntryActions']
-    print "  FlowEntry: (%s, %s, %s)" % (dpid, userState, switchState)
+    print "  FlowEntry: (%s, %s, %s, %s)" % (flowEntryId, dpid, userState, switchState)
 
     #
     # Print the match conditions
