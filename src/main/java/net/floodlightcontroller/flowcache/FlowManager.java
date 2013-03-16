@@ -101,12 +101,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    FlowEntryId flowEntryId =
 			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
+		    String userState = "User State: " + flowEntryObj.getUserState();
+		    String switchState = "Switch State: " + flowEntryObj.getSwitchState();
 
-		    log.debug("Found Flow Entry {}: ", flowEntryId.toString());
-		    log.debug("User State {}:", userState);
-		    log.debug("Switch State {}:", switchState);
+		    log.debug("Found Flow Entry {}: {}",
+			      flowEntryId.toString(),
+			      userState + " " + switchState);
 
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
 			// Ignore the entry: nothing to do
@@ -116,7 +116,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null) {
-			log.debug("Flow Entry ignored: not my switch");
+			log.debug("Flow Entry ignored: not my switch (FlowEntryId = {} DPID = {})", flowEntryId.toString(), dpid.toString());
 			continue;
 		    }
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
