@@ -44,12 +44,13 @@ def print_flow_path(parsedResult):
   print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
 
   for f in parsedResult['dataPath']['flowEntries']:
+    flowEntryId = f['flowEntryId']
     dpid = f['dpid']['value']
     userState = f['flowEntryUserState']
     switchState = f['flowEntrySwitchState']
     match = f['flowEntryMatch'];
     actions = f['flowEntryActions']
-    print "  FlowEntry: (%s, %s, %s)" % (dpid, userState, switchState)
+    print "  FlowEntry: (%s, %s, %s, %s)" % (flowEntryId, dpid, userState, switchState)
 
     #
     # Print the match conditions
@@ -161,8 +162,8 @@ def get_flow_path(flow_id):
     result = os.popen(command).read()
     debug("result %s" % result)
     if len(result) == 0:
-	print "No Flow found"
-	return;
+      print "No Flow found"
+      return;
 
     parsedResult = json.loads(result)
     debug("parsed %s" % parsedResult)

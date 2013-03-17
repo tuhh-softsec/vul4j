@@ -101,12 +101,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    FlowEntryId flowEntryId =
 			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
+		    String userState = "User State: " + flowEntryObj.getUserState();
+		    String switchState = "Switch State: " + flowEntryObj.getSwitchState();
 
-		    log.debug("Found Flow Entry {}: ", flowEntryId.toString());
-		    log.debug("User State {}:", userState);
-		    log.debug("Switch State {}:", switchState);
+		    log.debug("Found Flow Entry {}: {}",
+			      flowEntryId.toString(),
+			      userState + " " + switchState);
 
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
 			// Ignore the entry: nothing to do
@@ -116,7 +116,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null) {
-			log.debug("Flow Entry ignored: not my switch");
+			log.debug("Flow Entry ignored: not my switch (FlowEntryId = {} DPID = {})", flowEntryId.toString(), dpid.toString());
 			continue;
 		    }
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
@@ -371,8 +371,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    log.error(":addFlow FlowId:{} failed",
 		      flowPath.flowId().toString());
 	}
-	if (flowObj == null)
+	if (flowObj == null) {
+	    conn.endTx(Transaction.COMMIT);
 	    return false;
+	}
 
 	//
 	// Set the Flow key:
@@ -420,8 +422,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		log.error(":addFlow FlowEntryId:{} failed",
 			  flowEntry.flowEntryId().toString());
 	    }
-	    if (flowEntryObj == null)
+	    if (flowEntryObj == null) {
+		conn.endTx(Transaction.COMMIT);
 		return false;
+	    }
 
 	    //
 	    // Set the Flow Entry key:
@@ -490,6 +494,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// TODO: We need a proper Flow ID allocation mechanism.
 	//
 	flowId.setValue(flowPath.flowId().value());
+
 	return true;
     }
 
@@ -521,8 +526,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    conn.endTx(Transaction.ROLLBACK);
 	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
 	}
-	if (flowObj == null)
+	if (flowObj == null) {
+	    conn.endTx(Transaction.COMMIT);
 	    return true;		// OK: No such flow
+	}
 
 	//
 	// Find and mark for deletion all Flow Entries
@@ -567,8 +574,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    conn.endTx(Transaction.ROLLBACK);
 	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
 	}
-	if (flowObj == null)
+	if (flowObj == null) {
+	    conn.endTx(Transaction.COMMIT);
 	    return true;		// OK: No such flow
+	}
 
 	//
 	// Remove all Flow Entries
@@ -608,8 +617,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    conn.endTx(Transaction.ROLLBACK);
 	    log.error(":getFlow FlowId:{} failed", flowId.toString());
 	}
-	if (flowObj == null)
+	if (flowObj == null) {
+	    conn.endTx(Transaction.COMMIT);
 	    return null;		// Flow not found
+	}
 
 	//
 	// Extract the Flow state
@@ -741,8 +752,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    conn.endTx(Transaction.ROLLBACK);
 	    log.error(":getAllFlowPaths failed");
 	}
-	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false))
+	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
+	    conn.endTx(Transaction.COMMIT);
 	    return null;	// No Flows found
+	}
 
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	for (IFlowPath flowObj : flowPathsObj) {

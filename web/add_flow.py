@@ -21,6 +21,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ControllerIP = "127.0.0.1"
 ControllerPort = 8080
 MonitoringEnabled = False
+ReadFromFile = ""
 
 DEBUG=0
 pp = pprint.PrettyPrinter(indent=4)
@@ -49,30 +50,32 @@ def shortest_path(v1, p1, v2, p2):
     result = os.popen(command).read()
     debug("result %s" % result)
     if len(result) == 0:
-	log_error("No Path found")
-	return parsedResult
-
-    parsedResult = json.loads(result)
-    debug("parsed %s" % parsedResult)
+      log_error("No Path found from %s/%s to %s/%s" % (v1, p1, v2, p2))
+    else:
+      parsedResult = json.loads(result)
+      debug("parsed %s" % parsedResult)
 
   except:
-    log_error("Controller IF has issue")
-    exit(1)
+    log_error("Controller IF has issue: No Path found from %s/%s to %s/%s" % (v1, p1, v2, p2))
 
-  srcSwitch = parsedResult['srcPort']['dpid']['value'];
-  srcPort = parsedResult['srcPort']['port']['value'];
-  dstSwitch = parsedResult['dstPort']['dpid']['value'];
-  dstPort = parsedResult['dstPort']['port']['value'];
+  return parsedResult
+
+def print_data_path(data_path):
+  if len(data_path) == 0:
+    return
+
+  srcSwitch = data_path['srcPort']['dpid']['value'];
+  srcPort = data_path['srcPort']['port']['value'];
+  dstSwitch = data_path['dstPort']['dpid']['value'];
+  dstPort = data_path['dstPort']['port']['value'];
 
   print "DataPath: (src = %s/%s dst = %s/%s)" % (srcSwitch, srcPort, dstSwitch, dstPort);
 
-  for f in parsedResult['flowEntries']:
+  for f in data_path['flowEntries']:
     inPort = f['inPort']['value'];
     outPort = f['outPort']['value'];
     dpid = f['dpid']['value']
     print "  FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
-
-  return parsedResult
 
 def add_flow_path(flow_path):
   flow_path_json = json.dumps(flow_path)
@@ -370,7 +373,10 @@ def compute_flow_path(parsed_args, data_path):
 if __name__ == "__main__":
   usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "    Flags:\n"
-  usage_msg = usage_msg + "        -m        Monitor and maintain the installed shortest path\n"
+  usage_msg = usage_msg + "        -m              Monitor and maintain the installed shortest path(s)\n"
+  usage_msg = usage_msg + "        -f <filename>   Read the flow(s) to install from a file\n"
+  usage_msg = usage_msg + "                        File format: one line per flow starting with <flow-id>\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions:\n"
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
   usage_msg = usage_msg + "        matchSrcMac <source MAC address>\n"
@@ -378,7 +384,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        matchSrcIPv4Net <source IPv4 network address>\n"
   usage_msg = usage_msg + "        matchDstIPv4Net <destination IPv4 network address>\n"
   usage_msg = usage_msg + "        matchEthernetFrameType <Ethernet frame type>\n"
-
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions (not implemented yet):\n"
   usage_msg = usage_msg + "        matchVlanId <VLAN ID>\n"
   usage_msg = usage_msg + "        matchVlanPriority <VLAN priority>\n"
@@ -386,12 +392,14 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "        matchIpProto <IP protocol>\n"
   usage_msg = usage_msg + "        matchSrcTcpUdpPort <source TCP/UDP port>\n"
   usage_msg = usage_msg + "        matchDstTcpUdpPort <destination TCP/UDP port>\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Actions:\n"
   usage_msg = usage_msg + "        actionOutput <True|False> (default to True)\n"
   usage_msg = usage_msg + "        actionSetEthernetSrcAddr <source MAC address>\n"
   usage_msg = usage_msg + "        actionSetEthernetDstAddr <destination MAC address>\n"
   usage_msg = usage_msg + "        actionSetIPv4SrcAddr <source IPv4 address>\n"
   usage_msg = usage_msg + "        actionSetIPv4DstAddr <destination IPv4 address>\n"
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Actions (not implemented yet):\n"
   usage_msg = usage_msg + "        actionSetVlanId <VLAN ID>\n"
   usage_msg = usage_msg + "        actionSetVlanPriority <VLAN priority>\n"
@@ -412,30 +420,78 @@ if __name__ == "__main__":
   # Check the flags
   #
   start_argv_index = 1
-  if len(sys.argv) > 1 and sys.argv[1] == "-m":
-    MonitoringEnabled = True
-    start_argv_index = start_argv_index + 1
+  idx = 1
+  while idx < len(sys.argv):
+    arg1 = sys.argv[idx]
+    idx = idx + 1
+    if arg1 == "-m":
+      MonitoringEnabled = True
+      start_argv_index = idx
+    elif arg1 == "-f":
+      if idx >= len(sys.argv):
+	error_arg = "ERROR: Missing or invalid '" + arg1 + "' argument"
+	log_error(error_arg)
+	log_error(usage_msg)
+	exit(1)
+      ReadFromFile = sys.argv[idx]
+      idx = idx + 1
+      start_argv_index = idx
+    else:
+      break;
 
   #
-  # Parse the remaining arguments
+  # Read the arguments from a file or from the remaining command line options
   #
-  my_args = sys.argv[start_argv_index:]
-  parsed_args = copy.deepcopy(extract_flow_args(my_args))
+  my_lines = []
+  if len(ReadFromFile) > 0:
+    f = open(ReadFromFile, "rt")
+    my_line = f.readline()
+    while my_line:
+      if len(my_line.rstrip()) > 0 and my_line[0] != "#":
+	my_token_line = my_line.rstrip().split()
+	my_lines.append(my_token_line)
+      my_line = f.readline()
+  else:
+    my_lines.append(copy.deepcopy(sys.argv[start_argv_index:]))
 
-  last_data_path = []
-  my_flow_id = parsed_args['my_flow_id']
-  # Cleanup leftover state
-  delete_flow_path(my_flow_id)
+  #
+  # Initialization
+  #
+  last_data_paths = []
+  parsed_args = []
+  idx = 0
+  while idx < len(my_lines):
+    last_data_path = []
+    last_data_paths.append(copy.deepcopy(last_data_path))
+    #
+    # Parse the flow arguments
+    #
+    my_args = my_lines[idx]
+    parsed_args.append(copy.deepcopy(extract_flow_args(my_args)))
+    # Cleanup leftover state
+    my_flow_id = parsed_args[idx]['my_flow_id']
+    delete_flow_path(my_flow_id)
 
+    idx = idx + 1
+
+  #
+  # Do the work: install and/or periodically monitor each flow
+  #
   while True:
-    data_path = compute_data_path(parsed_args)
-    if data_path != last_data_path:
-      if len(last_data_path) > 0:
-	delete_flow_path(my_flow_id)
-      if len(data_path) > 0:
-	flow_path = compute_flow_path(parsed_args, data_path)
-	add_flow_path(flow_path)
-      last_data_path = data_path
+    idx = 0
+    while idx < len(parsed_args):
+      last_data_path = last_data_paths[idx]
+      my_flow_id = parsed_args[idx]['my_flow_id']
+      data_path = compute_data_path(parsed_args[idx])
+      if data_path != last_data_path:
+	print_data_path(data_path)
+	if len(last_data_path) > 0:
+	  delete_flow_path(my_flow_id)
+	if len(data_path) > 0:
+	  flow_path = compute_flow_path(parsed_args[idx], data_path)
+	  add_flow_path(flow_path)
+	last_data_paths[idx] = copy.deepcopy(data_path)
+      idx = idx + 1
 
     if MonitoringEnabled != True:
       break

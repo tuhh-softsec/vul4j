@@ -45,6 +45,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected IControllerRegistryService registryService;
 	
 	protected static final String DBConfigFile = "dbconf";
+	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
 	
 	protected final int CLEANUP_TASK_INTERVAL = 999; // 999 ms
@@ -217,11 +218,16 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	@Override
 	public void startUp(FloodlightModuleContext context) {
 		// TODO Auto-generated method stub
-		ScheduledExecutorService ses = threadPool.getScheduledExecutor();
+		Map<String, String> configMap = context.getConfigParams(this);
+		String cleanupNeeded = configMap.get(CleanupEnabled);
+
 		deviceService.addListener(this);
 	       // Setup the Cleanup task. 
-        cleanupTask = new SingletonTask(ses, new SwitchCleanup());
-        cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.MILLISECONDS);
+		if (cleanupNeeded != null &&cleanupNeeded.equals("True")) {
+				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
+				cleanupTask = new SingletonTask(ses, new SwitchCleanup());
+				cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.MILLISECONDS);
+		}
 	}
 
 }

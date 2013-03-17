@@ -1,0 +1,6 @@
+g=TitanFactory.open('/tmp/cassandra.titan')
+g.V('type','port').each{g.removeVertex(it)}
+g.V('type','switch').each{g.removeVertex(it)}
+g.V('type','flow').each{g.removeVertex(it)}
+g.V('type','flow_entry').each{g.removeVertex(it)}
+g.stopTransaction(SUCCESS) 
