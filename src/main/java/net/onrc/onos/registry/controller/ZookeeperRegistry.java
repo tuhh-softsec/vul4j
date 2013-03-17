@@ -19,7 +19,6 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.data.Stat;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,10 +115,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			
 			String strSwitch = null;
 			if (event.getData() != null){
-				log.debug("Event path {}", event.getData().getPath());
 				String[] splitted = event.getData().getPath().split("/");
 				strSwitch = splitted[splitted.length - 1];
-				log.debug("Switch name is {}", strSwitch);
 			}
 			
 			switch (event.getType()){
