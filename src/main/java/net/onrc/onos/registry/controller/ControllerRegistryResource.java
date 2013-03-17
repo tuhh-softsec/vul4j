@@ -32,7 +32,7 @@ public class ControllerRegistryResource extends ServerResource {
 		if (controllers == null){
 			controllers = new ArrayList<String>();
 			Response response = getResponse();
-			response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+			response.setStatus(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
 			Representation error = new StringRepresentation("Null data returned. Zookeeper connection may be down");
 			response.setEntity(error);
 			return null;
