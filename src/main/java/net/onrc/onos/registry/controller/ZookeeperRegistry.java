@@ -17,6 +17,8 @@ import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatchEvent;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchListener;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
+import com.netflix.curator.utils.ZKPaths;
 
 /**
  * A registry service that uses Zookeeper. All data is stored in Zookeeper,
@@ -65,8 +68,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	protected Map<String, PathChildrenCache> switchPathCaches;
 	
 	//Zookeeper performance-related configuration
-	protected static final int sessionTimeout = 2000;
-	protected static final int connectionTimeout = 4000;
+	protected static final int sessionTimeout = 5000;
+	protected static final int connectionTimeout = 7000;
 	
 
 	protected class SwitchLeaderListener implements LeaderLatchListener{
@@ -112,10 +115,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			
 			String strSwitch = null;
 			if (event.getData() != null){
-				log.debug("Event path {}", event.getData().getPath());
 				String[] splitted = event.getData().getPath().split("/");
 				strSwitch = splitted[splitted.length - 1];
-				log.debug("Switch name is {}", strSwitch);
 			}
 			
 			switch (event.getType()){
@@ -261,15 +262,48 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		controllerId = id;
 		
 		byte bytes[] = id.getBytes(Charsets.UTF_8);
-		
-		String path = controllerPath + "/" + id;
+		String path = ZKPaths.makePath(controllerPath, controllerId);
 		
 		log.info("Registering controller with id {}", id);
 		
-		//Create ephemeral node in controller registry
 		try {
-			client.create().withProtection().withMode(CreateMode.EPHEMERAL)
+			//We need to set a watch to recreate the node in the controller
+			//registry if it gets deleted - e.g. on Zookeeper connection loss.
+			Watcher watcher = new Watcher(){
+				@Override
+				public void process(WatchedEvent event) {
+					log.debug("got any watch event {} ", event);
+					
+					String path = ZKPaths.makePath(controllerPath, controllerId);
+					byte bytes[] = controllerId.getBytes(Charsets.UTF_8);
+					
+					try {
+						if (event.getType() == Event.EventType.NodeDeleted){
+							log.debug("got a node deleted event");
+							
+							
+							client.create().withMode(CreateMode.EPHEMERAL)
+								.forPath(path, bytes);
+						}
+					} catch (Exception e) {
+						log.warn("Error recreating controller node for {}: {}",
+								controllerId, e.getMessage());
+					} finally {
+						try {
+							client.checkExists().usingWatcher(this).forPath(path);
+						} catch (Exception e2){
+							log.warn("Error resetting watch for {}: {}", 
+									controllerId, e2.getMessage());
+						}
+					}
+				}
+			};
+			
+			//Create ephemeral node in controller registry
+			//TODO Use protection
+			client.create().withMode(CreateMode.EPHEMERAL)
 					.forPath(path, bytes);
+			client.checkExists().usingWatcher(watcher).forPath(path);
 		} catch (Exception e) {
 			throw new RegistryException("Error contacting the Zookeeper service", e);
 		}
@@ -281,13 +315,15 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		
 		String dpidStr = HexString.toHexString(dpid);
 
+		SwitchLeadershipData swData = switches.get(dpidStr);
+		//LeaderLatch latch = (switches.get(dpidStr) != null)?switches.get(dpidStr).getLatch():null;
 		
-		LeaderLatch latch = (switches.get(dpidStr) != null)?switches.get(dpidStr).getLatch():null;
-		
-		if (latch == null){
+		if (swData == null){
 			log.warn("Tried to get controller for non-existent switch");
 			return null;
 		}
+		
+		LeaderLatch latch = swData.getLatch();
 		
 		Participant leader = null;
 		try {
