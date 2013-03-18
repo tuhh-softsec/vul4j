@@ -560,7 +560,9 @@ public class Controller implements IFloodlightProviderService,
                     removeSwitch(sw);
                 }
                 synchronized(roleChanger) {
-                	registryService.releaseControl(sw.getId());
+                	if (controlRequested) {
+                		registryService.releaseControl(sw.getId());
+                	}
                     connectedSwitches.remove(sw);
                 }
                 sw.setConnected(false);
@@ -795,9 +797,10 @@ public class Controller implements IFloodlightProviderService,
                     dfuture);
 
         }
-        
+ 
+      	volatile Boolean controlRequested = Boolean.FALSE;
         protected void checkSwitchReady() {
-        	Boolean controlRequested = Boolean.TRUE;
+  
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
@@ -822,6 +825,7 @@ public class Controller implements IFloodlightProviderService,
                     	
                     	//Request control of the switch from the global registry
                     	try {
+                    		controlRequested = Boolean.TRUE;
 							registryService.requestControl(sw.getId(), 
 									new RoleChangeCallback());
 						} catch (RegistryException e) {
