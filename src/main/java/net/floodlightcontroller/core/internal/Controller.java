@@ -1114,16 +1114,19 @@ public class Controller implements IFloodlightProviderService,
                                           +"role reply earlier", sw);
                             }
                             state.firstRoleReplyReceived = true;
-                            sw.deliverRoleRequestNotSupported(error.getXid());
+                            Role requestedRole = 
+                            		sw.deliverRoleRequestNotSupported(error.getXid());
                             synchronized(roleChanger) {
                                 if (sw.role == null && Controller.this.role==Role.SLAVE) {
+                                	//This will now never happen. The Controller's role
+                                	//is now never SLAVE, always MASTER.
                                     // the switch doesn't understand role request
                                     // messages and the current controller role is
                                     // slave. We need to disconnect the switch. 
                                     // @see RoleChanger for rationale
                                     sw.getChannel().close();
                                 }
-                                else if (sw.role == null) {
+                                else if (sw.role == null && requestedRole == Role.MASTER) {
                                     // Controller's role is master: add to
                                     // active 
                                     // TODO: check if clearing flow table is

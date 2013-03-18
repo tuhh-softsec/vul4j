@@ -787,15 +787,17 @@ public class OFSwitchImpl implements IOFSwitch {
      * Otherwise we ignore it.
      * @param xid
      */
-    protected void deliverRoleRequestNotSupported(int xid) {
+    protected Role deliverRoleRequestNotSupported(int xid) {
         synchronized(pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.poll();
             this.role = null;
             if (head!=null && head.xid == xid) {
                 setAttribute(SWITCH_SUPPORTS_NX_ROLE, false);
+                return head.role;
             }
             else {
                 this.channel.close();
+                return null;
             }
         }
     }
