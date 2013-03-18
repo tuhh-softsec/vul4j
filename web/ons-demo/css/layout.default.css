@@ -1,0 +1,32 @@
+body {
+	display: -webkit-box;
+}
+
+.header {
+	width: 100%;
+	display: -webkit-box;
+	-webkit-box-pack: justify;
+	-webkit-box-align: center;
+}
+
+#status {
+	display: -webkit-box;
+}
+
+#right {
+	width: 100%;
+	-webkit-box-flex: 1.0;
+}
+
+#controllers, #topology {
+	height: 100%;
+	-webkit-box-flex: 1.0;
+}
+
+/* tmp */
+#controllers, #topology {
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+}
+

@@ -1,0 +1,50 @@
+body {
+	background-color: black;
+	color: white;
+	font-family: Helvetica;
+	margin: 0px;
+}
+
+.status {
+	padding: 1em;
+	border-right: 1px solid white;
+}
+
+.status:last-child {
+	border-right: none;
+}
+
+.status .static {
+	color: white;
+	padding: .25em;
+}
+
+.status .dynamic {
+	color: blue;
+	padding: .25em;
+}
+
+.button {
+	padding: 1em;
+	background-color: lightgray;
+	color: black;
+	border: 1px solid white;
+}
+
+#left .header {
+	background-color: lightgreen;
+}
+
+#right .header {
+	background-color: lightblue;
+}
+
+#controllers {
+	background-color: darkgreen;
+}
+
+#topology {
+	background-color: blue;
+}
+
+#logo {}
