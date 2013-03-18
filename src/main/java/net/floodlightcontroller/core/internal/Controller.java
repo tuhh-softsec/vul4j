@@ -797,6 +797,7 @@ public class Controller implements IFloodlightProviderService,
         }
         
         protected void checkSwitchReady() {
+        	Boolean controlRequested = Boolean.TRUE;
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
@@ -825,6 +826,7 @@ public class Controller implements IFloodlightProviderService,
 									new RoleChangeCallback());
 						} catch (RegistryException e) {
 							log.debug("Registry error: {}", e.getMessage());
+							controlRequested = Boolean.FALSE;
 						}
                     	
                     	
@@ -857,6 +859,16 @@ public class Controller implements IFloodlightProviderService,
                         addSwitch(sw);
                         state.firstRoleReplyReceived = true;
                     }
+                }
+                if (!controlRequested) {
+                	// yield to allow other thread(s) to release control
+                	try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// Ignore interruptions						
+					}
+                	// safer to bounce the switch to reconnect here than proceeding further
+                	sw.channel.close();
                 }
             }
         }
