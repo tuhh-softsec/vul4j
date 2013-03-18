@@ -158,7 +158,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		
 		if (switches.get(dpidStr) != null){
 			log.debug("Already contesting {}, returning", HexString.toHexString(dpid));
-			return;
+			throw new RegistryException("Already contesting control for " + dpidStr);
 		}
 		
 		LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
