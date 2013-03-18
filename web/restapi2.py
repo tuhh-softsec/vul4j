@@ -32,6 +32,7 @@ app = Flask(__name__)
 @app.route('/ons-demo/js/<filename>', methods=['GET'])
 @app.route('/ons-demo/css/<filename>', methods=['GET'])
 @app.route('/ons-demo/assets/<filename>', methods=['GET'])
+@app.route('/ons-demo/data/<filename>', methods=['GET'])
 def return_file(filename="index.html"):
   if request.path == "/":
     fullpath = "./index.html"

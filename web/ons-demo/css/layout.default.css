@@ -23,8 +23,12 @@ body {
 	-webkit-box-flex: 1.0;
 }
 
+#selectedFlows {
+	height: 5em;
+}
+
 /* tmp */
-#controllers, #topology {
+#controllers, #topology, #selectedFlows {
 	display: -webkit-box;
 	-webkit-box-align: center;
 	-webkit-box-pack: center;

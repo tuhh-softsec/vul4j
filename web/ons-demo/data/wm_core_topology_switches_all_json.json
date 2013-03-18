@@ -1,0 +1,2318 @@
+[
+    {
+        "dpid": "00:00:00:00:00:00:01:19",
+        "ports": [
+            {
+                "desc": "sw01.25-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.25-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0b",
+        "ports": [
+            {
+                "desc": "sw01.11-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.11-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:06",
+        "ports": [
+            {
+                "desc": "sw01.06-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.06-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:02",
+        "ports": [
+            {
+                "desc": "sw01.02-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.02-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:12",
+        "ports": [
+            {
+                "desc": "sw03.18-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.18-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:10",
+        "ports": [
+            {
+                "desc": "sw01.16-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.16-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0e",
+        "ports": [
+            {
+                "desc": "sw02.14-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.14-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:13",
+        "ports": [
+            {
+                "desc": "sw03.19-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.19-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:11",
+        "ports": [
+            {
+                "desc": "sw03.17-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.17-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1c",
+        "ports": [
+            {
+                "desc": "sw01.28-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.28-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:11",
+        "ports": [
+            {
+                "desc": "sw01.17-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.17-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:10",
+        "ports": [
+            {
+                "desc": "sw02.16-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.16-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2d",
+        "ports": [
+            {
+                "desc": "sw01.45-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.45-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1b",
+        "ports": [
+            {
+                "desc": "sw01.27-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.27-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:20",
+        "ports": [
+            {
+                "desc": "sw01.32-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.32-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0f",
+        "ports": [
+            {
+                "desc": "sw03.15-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.15-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:21",
+        "ports": [
+            {
+                "desc": "sw01.33-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.33-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0b",
+        "ports": [
+            {
+                "desc": "sw03.11-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.11-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2a",
+        "ports": [
+            {
+                "desc": "sw01.42-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.42-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:00",
+        "ports": [
+            {
+                "desc": "sw02.00-eth12",
+                "devices": [],
+                "number": 12,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth20",
+                "devices": [],
+                "number": 20,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth6",
+                "devices": [],
+                "number": 6,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth13",
+                "devices": [],
+                "number": 13,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth19",
+                "devices": [],
+                "number": 19,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth5",
+                "devices": [],
+                "number": 5,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth18",
+                "devices": [],
+                "number": 18,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth7",
+                "devices": [],
+                "number": 7,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth8",
+                "devices": [],
+                "number": 8,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth17",
+                "devices": [],
+                "number": 17,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth9",
+                "devices": [],
+                "number": 9,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth10",
+                "devices": [],
+                "number": 10,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth16",
+                "devices": [],
+                "number": 16,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth15",
+                "devices": [],
+                "number": 15,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth14",
+                "devices": [],
+                "number": 14,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "tapb0",
+                "devices": [],
+                "number": 21,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth11",
+                "devices": [],
+                "number": 11,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.00-eth4",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:08",
+        "ports": [
+            {
+                "desc": "sw01.08-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.08-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0c",
+        "ports": [
+            {
+                "desc": "sw03.12-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.12-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2b",
+        "ports": [
+            {
+                "desc": "sw01.43-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.43-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:04",
+        "ports": [
+            {
+                "desc": "sw02.04-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.04-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:10",
+        "ports": [
+            {
+                "desc": "sw03.16-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.16-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:04",
+        "ports": [
+            {
+                "desc": "sw01.04-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.04-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:25",
+        "ports": [
+            {
+                "desc": "sw01.37-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.37-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:24",
+        "ports": [
+            {
+                "desc": "sw01.36-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.36-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:07",
+        "ports": [
+            {
+                "desc": "sw02.07-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.07-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:06",
+        "ports": [
+            {
+                "desc": "sw03.06-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.06-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1e",
+        "ports": [
+            {
+                "desc": "sw01.30-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.30-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:07",
+        "ports": [
+            {
+                "desc": "sw03.07-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.07-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0d",
+        "ports": [
+            {
+                "desc": "sw01.13-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.13-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:02",
+        "ports": [
+            {
+                "desc": "sw02.02-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.02-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:12",
+        "ports": [
+            {
+                "desc": "sw01.18-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.18-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d5",
+        "ports": [
+            {
+                "desc": "swd5-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd5-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd5-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2c",
+        "ports": [
+            {
+                "desc": "sw01.44-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.44-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:08",
+        "ports": [
+            {
+                "desc": "sw02.08-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.08-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0a",
+        "ports": [
+            {
+                "desc": "sw03.10-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.10-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:13",
+        "ports": [
+            {
+                "desc": "sw01.19-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.19-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d3",
+        "ports": [
+            {
+                "desc": "swd3-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd3-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd3-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "tapd2",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:05",
+        "ports": [
+            {
+                "desc": "sw03.05-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.05-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:23",
+        "ports": [
+            {
+                "desc": "sw01.35-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.35-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0b",
+        "ports": [
+            {
+                "desc": "sw02.11-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.11-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:05",
+        "ports": [
+            {
+                "desc": "sw01.05-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.05-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d6",
+        "ports": [
+            {
+                "desc": "swd6-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd6-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd6-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:03",
+        "ports": [
+            {
+                "desc": "sw03.03-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.03-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:07",
+        "ports": [
+            {
+                "desc": "sw01.07-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.07-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0c",
+        "ports": [
+            {
+                "desc": "sw02.12-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.12-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2f",
+        "ports": [
+            {
+                "desc": "sw01.47-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.47-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0c",
+        "ports": [
+            {
+                "desc": "sw01.12-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.12-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:09",
+        "ports": [
+            {
+                "desc": "sw03.09-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.09-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0f",
+        "ports": [
+            {
+                "desc": "sw02.15-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.15-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0e",
+        "ports": [
+            {
+                "desc": "sw03.14-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.14-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:28",
+        "ports": [
+            {
+                "desc": "sw01.40-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.40-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:05",
+        "ports": [
+            {
+                "desc": "sw02.05-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.05-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:26",
+        "ports": [
+            {
+                "desc": "sw01.38-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.38-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:22",
+        "ports": [
+            {
+                "desc": "sw01.34-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.34-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0d",
+        "ports": [
+            {
+                "desc": "sw02.13-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.13-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1f",
+        "ports": [
+            {
+                "desc": "sw01.31-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.31-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:16",
+        "ports": [
+            {
+                "desc": "sw01.22-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.22-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:01",
+        "ports": [
+            {
+                "desc": "sw02.01-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.01-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:08",
+        "ports": [
+            {
+                "desc": "sw03.08-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.08-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:01",
+        "ports": [
+            {
+                "desc": "sw03.01-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.01-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:01",
+        "ports": [
+            {
+                "desc": "sw01.01-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.01-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d4",
+        "ports": [
+            {
+                "desc": "swd4-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd4-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd4-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd4-eth4",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:00",
+        "ports": [
+            {
+                "desc": "sw03.00-eth12",
+                "devices": [],
+                "number": 12,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth20",
+                "devices": [],
+                "number": 20,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth6",
+                "devices": [],
+                "number": 6,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth13",
+                "devices": [],
+                "number": 13,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth19",
+                "devices": [],
+                "number": 19,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth5",
+                "devices": [],
+                "number": 5,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth18",
+                "devices": [],
+                "number": 18,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth7",
+                "devices": [],
+                "number": 7,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth8",
+                "devices": [],
+                "number": 8,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth17",
+                "devices": [],
+                "number": 17,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth9",
+                "devices": [],
+                "number": 9,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth10",
+                "devices": [],
+                "number": 10,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth16",
+                "devices": [],
+                "number": 16,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth15",
+                "devices": [],
+                "number": 15,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth14",
+                "devices": [],
+                "number": 14,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "tapc0",
+                "devices": [],
+                "number": 21,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth11",
+                "devices": [],
+                "number": 11,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.00-eth4",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:14",
+        "ports": [
+            {
+                "desc": "sw01.20-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.20-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0a",
+        "ports": [
+            {
+                "desc": "sw01.10-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.10-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:18",
+        "ports": [
+            {
+                "desc": "sw01.24-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.24-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:13",
+        "ports": [
+            {
+                "desc": "sw02.19-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.19-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:02",
+        "ports": [
+            {
+                "desc": "sw03.02-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.02-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:03",
+        "ports": [
+            {
+                "desc": "sw01.03-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.03-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:06",
+        "ports": [
+            {
+                "desc": "sw02.06-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.06-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:00",
+        "ports": [
+            {
+                "desc": "sw01.00-eth40",
+                "devices": [],
+                "number": 40,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth22",
+                "devices": [],
+                "number": 22,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth49",
+                "devices": [],
+                "number": 49,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth12",
+                "devices": [],
+                "number": 12,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth31",
+                "devices": [],
+                "number": 31,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth20",
+                "devices": [],
+                "number": 20,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth6",
+                "devices": [],
+                "number": 6,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth27",
+                "devices": [],
+                "number": 27,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth34",
+                "devices": [],
+                "number": 34,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth19",
+                "devices": [],
+                "number": 19,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth13",
+                "devices": [],
+                "number": 13,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth41",
+                "devices": [],
+                "number": 41,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth48",
+                "devices": [],
+                "number": 48,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth5",
+                "devices": [],
+                "number": 5,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth28",
+                "devices": [],
+                "number": 28,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth33",
+                "devices": [],
+                "number": 33,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth18",
+                "devices": [],
+                "number": 18,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth42",
+                "devices": [],
+                "number": 42,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth25",
+                "devices": [],
+                "number": 25,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth47",
+                "devices": [],
+                "number": 47,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth46",
+                "devices": [],
+                "number": 46,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth7",
+                "devices": [],
+                "number": 7,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth26",
+                "devices": [],
+                "number": 26,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth36",
+                "devices": [],
+                "number": 36,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth8",
+                "devices": [],
+                "number": 8,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth45",
+                "devices": [],
+                "number": 45,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth35",
+                "devices": [],
+                "number": 35,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth17",
+                "devices": [],
+                "number": 17,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth9",
+                "devices": [],
+                "number": 9,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "tapa0",
+                "devices": [],
+                "number": 51,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth37",
+                "devices": [],
+                "number": 37,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth44",
+                "devices": [],
+                "number": 44,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth43",
+                "devices": [],
+                "number": 43,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth16",
+                "devices": [],
+                "number": 16,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth30",
+                "devices": [],
+                "number": 30,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth23",
+                "devices": [],
+                "number": 23,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth10",
+                "devices": [],
+                "number": 10,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth15",
+                "devices": [],
+                "number": 15,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth38",
+                "devices": [],
+                "number": 38,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth29",
+                "devices": [],
+                "number": 29,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth24",
+                "devices": [],
+                "number": 24,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth14",
+                "devices": [],
+                "number": 14,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth21",
+                "devices": [],
+                "number": 21,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth39",
+                "devices": [],
+                "number": 39,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth32",
+                "devices": [],
+                "number": 32,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth11",
+                "devices": [],
+                "number": 11,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth4",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.00-eth50",
+                "devices": [],
+                "number": 50,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0e",
+        "ports": [
+            {
+                "desc": "sw01.14-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.14-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:12",
+        "ports": [
+            {
+                "desc": "sw02.18-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.18-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:09",
+        "ports": [
+            {
+                "desc": "sw01.09-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.09-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:30",
+        "ports": [
+            {
+                "desc": "sw01.48-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.48-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:09",
+        "ports": [
+            {
+                "desc": "sw02.09-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.09-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1a",
+        "ports": [
+            {
+                "desc": "sw01.26-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.26-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:27",
+        "ports": [
+            {
+                "desc": "sw01.39-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.39-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:11",
+        "ports": [
+            {
+                "desc": "sw02.17-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.17-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:04",
+        "ports": [
+            {
+                "desc": "sw03.04-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.04-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:03",
+        "ports": [
+            {
+                "desc": "sw02.03-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.03-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d1",
+        "ports": [
+            {
+                "desc": "swd1-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd1-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd1-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "tapd0",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:31",
+        "ports": [
+            {
+                "desc": "sw01.49-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.49-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:1d",
+        "ports": [
+            {
+                "desc": "sw01.29-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.29-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:03:0d",
+        "ports": [
+            {
+                "desc": "sw03.13-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw03.13-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:0f",
+        "ports": [
+            {
+                "desc": "sw01.15-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.15-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:15",
+        "ports": [
+            {
+                "desc": "sw01.21-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.21-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:17",
+        "ports": [
+            {
+                "desc": "sw01.23-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.23-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:0d:00:d2",
+        "ports": [
+            {
+                "desc": "tapd1",
+                "devices": [],
+                "number": 5,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd2-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd2-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd2-eth3",
+                "devices": [],
+                "number": 3,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "swd2-eth4",
+                "devices": [],
+                "number": 4,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:29",
+        "ports": [
+            {
+                "desc": "sw01.41-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.41-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:02:0a",
+        "ports": [
+            {
+                "desc": "sw02.10-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw02.10-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    },
+    {
+        "dpid": "00:00:00:00:00:00:01:2e",
+        "ports": [
+            {
+                "desc": "sw01.46-eth2",
+                "devices": [],
+                "number": 2,
+                "state": "ACTIVE"
+            },
+            {
+                "desc": "sw01.46-eth1",
+                "devices": [],
+                "number": 1,
+                "state": "ACTIVE"
+            }
+        ],
+        "state": "ACTIVE"
+    }
+]
