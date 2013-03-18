@@ -2,7 +2,7 @@
 
 function toD3(results) {
 	var model = {
-		edgeSwitchs: [],
+		edgeSwitches: [],
 		aggregationSwitches: [],
 		coreSwitches: []
 	}
@@ -25,7 +25,7 @@ function toD3(results) {
 		} else if (aggregationSwitchDPIDs[s.dpid]) {
 			model.aggregationSwitches.push(s);
 		} else {
-			model.edgeSwitchs.push(s);
+			model.edgeSwitches.push(s);
 		}
 	});
 

@@ -1,3 +1,7 @@
+html, body {
+	height: 100%;
+}
+
 body {
 	display: -webkit-box;
 }
@@ -13,14 +17,19 @@ body {
 	display: -webkit-box;
 }
 
+#left, #right {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
 #right {
 	width: 100%;
 	-webkit-box-flex: 1.0;
 }
 
 #controllers, #topology {
-	height: 100%;
 	-webkit-box-flex: 1.0;
+	position: relative;
 }
 
 #selectedFlows {
@@ -28,9 +37,15 @@ body {
 }
 
 /* tmp */
-#controllers, #topology, #selectedFlows {
+#controllers, #selectedFlows {
 	display: -webkit-box;
 	-webkit-box-align: center;
 	-webkit-box-pack: center;
 }
 
+#svg-container {
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	width: 100%;
+}
