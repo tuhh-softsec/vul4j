@@ -66,7 +66,7 @@ body {
 }
 
 path {
-	stroke: white;
+	stroke: rgba(255, 255, 255, .25);
 	stroke-width: 1px;
 }
 

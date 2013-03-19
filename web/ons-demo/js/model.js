@@ -10,6 +10,17 @@ function toD3(results) {
 		links: results.links
 	}
 
+	// sort the switches
+	results.switches.sort(function (a, b) {
+		var aA = a.dpid.split(':');
+		var bB = b.dpid.split(':');
+		for (var i=0; i<aA.length; i+=1) {
+			if (aA[i] != bB[i]) {
+				return aA[i] - bB[i];
+			}
+		}
+		return 0;
+	});
 
 	// identify switch types
 	var coreSwitchDPIDs = {};
@@ -23,7 +34,7 @@ function toD3(results) {
 	});
 
 	results.switches.forEach(function (s) {
-		s.controller = results.mapping[s.dpid][0].controllerId
+		s.controller = results.mapping[s.dpid][0].controllerId;
 
 		if (coreSwitchDPIDs[s.dpid]) {
 			model.coreSwitches.push(s);

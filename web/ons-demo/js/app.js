@@ -42,27 +42,69 @@ function updateTopology(svg, model) {
 	// DRAW THE NODES
 	var rings = [{
 		radius: 3,
-		width: 4,
+		width: 6,
 		switches: model.edgeSwitches,
-		className: 'edge'
+		className: 'edge',
+		angles: []
 	}, {
 		radius: 2.25,
-		width: 8,
+		width: 12,
 		switches: model.aggregationSwitches,
-		className: 'aggregation'
+		className: 'aggregation',
+		angles: []
 	}, {
 		radius: .75,
-		width: 16,
+		width: 18,
 		switches: model.coreSwitches,
-		className: 'core'
+		className: 'core',
+		angles: []
 	}];
+
+
+	var aggRanges = {};
+
+	// arrange edge switches at equal increments
+	var k = 360 / rings[0].switches.length;
+	rings[0].switches.forEach(function (s, i) {
+		var angle = k * i;
+
+		rings[0].angles[i] = angle;
+
+		// record the angle for the agg switch layout
+		var dpid = s.dpid.split(':');
+		dpid[7] = '00';
+		var aggdpid = dpid.join(':');
+		var aggRange = aggRanges[aggdpid];
+		if (!aggRange) {
+			aggRange = aggRanges[aggdpid] = {};
+			aggRange.min = aggRange.max = angle;
+		} else {
+			aggRange.max = angle;
+		}
+
+
+	});
+
+	// arrange aggregation switches to "fan out" to edge switches
+	k = 360 / rings[1].switches.length;
+	rings[1].switches.forEach(function (s, i) {
+//		rings[1].angles[i] = k * i;
+		var range = aggRanges[s.dpid];
+
+		rings[1].angles[i] = (range.min + range.max)/2;
+	});
+
+	// arrange core switches at equal increments
+	k = 360 / rings[2].switches.length;
+	rings[2].switches.forEach(function (s, i) {
+		rings[2].angles[i] = k * i;
+	});
 
 	function ringEnter(data, i) {
 		if (!data.switches.length) {
 			return;
 		}
 
-		var k = 360 / data.switches.length;
 
 		d3.select(this).selectAll("g")
 			.data(d3.range(data.switches.length).map(function() {
@@ -73,7 +115,7 @@ function updateTopology(svg, model) {
 				return data.switches[i].dpid;
 			})
 			.attr("transform", function(_, i) {
-				return "rotate(" + i * k + ")translate(" + data.radius * 150 + ")rotate(" + (-i * k) + ")";
+				return "rotate(" + data.angles[i]+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angles[i]) + ")";
 			})
 			.append("svg:circle")
 			.attr('class', data.className)
@@ -101,7 +143,7 @@ function updateTopology(svg, model) {
 	function zoom(data, index) {
 		svg.selectAll('.edge').data(model.edgeSwitches).transition().duration(100)
 			.attr("r", function (data, i) {
-				return rings[0].width * (index == i ? 2 : 1);
+				return rings[0].width * (index == i ? 3 : 1);
 			})
 	}
 
