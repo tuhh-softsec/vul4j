@@ -28,6 +28,11 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 @app.route('/<filename>', methods=['GET'])
 @app.route('/tpl/<filename>', methods=['GET'])
+@app.route('/ons-demo/<filename>', methods=['GET'])
+@app.route('/ons-demo/js/<filename>', methods=['GET'])
+@app.route('/ons-demo/css/<filename>', methods=['GET'])
+@app.route('/ons-demo/assets/<filename>', methods=['GET'])
+@app.route('/ons-demo/data/<filename>', methods=['GET'])
 def return_file(filename="index.html"):
   if request.path == "/":
     fullpath = "./index.html"
@@ -127,7 +132,7 @@ def switch_stat(switchId, statType):
         ret = {}
         ret[switchId]=aggr
     else:
-        ret = {} 
+        ret = {}
 
     js = json.dumps(ret)
     resp = Response(js, status=200, mimetype='application/json')
@@ -244,7 +249,7 @@ def id_to_dpid(vertex):
     sw_dpid = parsedResult['dpid']
 
   return sw_dpid
-  
+
 
 if __name__ == "__main__":
     app.debug = True

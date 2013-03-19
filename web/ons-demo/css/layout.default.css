@@ -1,0 +1,73 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	display: -webkit-box;
+}
+
+.header {
+	width: 100%;
+	display: -webkit-box;
+	-webkit-box-pack: justify;
+	-webkit-box-align: center;
+}
+
+#status {
+	display: -webkit-box;
+}
+
+#left, #right {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+#right {
+	width: 100%;
+	-webkit-box-flex: 1.0;
+}
+
+#controllers, #topology {
+	-webkit-box-flex: 1.0;
+	position: relative;
+}
+
+#selectedFlows {
+	height: 5em;
+}
+
+/* tmp */
+#selectedFlows {
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+}
+
+#controllers {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+#controllers .header {
+	-webkit-box-pack: center;
+	border-bottom: 1px solid white;
+}
+
+#controllerList {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-flex: 1.0;
+	overflow: scroll;
+}
+
+.controller {
+	margin: .25em;
+	background-color: blue;
+}
+
+#svg-container {
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	width: 100%;
+}

@@ -1,0 +1,161 @@
+
+body {
+	background-color: black;
+	color: white;
+	font-family: Helvetica;
+	margin: 0px;
+}
+
+.status {
+	padding: 1em;
+	border-right: 1px solid white;
+}
+
+.status:last-child {
+	border-right: none;
+}
+
+.status .static {
+	color: white;
+	padding: .25em;
+}
+
+.status .dynamic {
+	color: blue;
+	padding: .25em;
+}
+
+.button {
+	padding: 1em;
+	background-color: lightgray;
+	color: black;
+	border: 1px solid white;
+}
+
+.header {
+	height: 50px;
+}
+
+
+#right .header {
+	font-size: 12px;
+	padding-right: .25em;
+	-webkit-box-sizing: border-box;
+}
+
+#controllers, #selectedFlows {
+	border-top: 1px solid white;
+}
+
+#selectedFlows {
+	border-bottom: 1px solid white;
+}
+
+#controllers {
+	border-right: 1px solid white;
+}
+
+.controller {
+	padding: .25em;
+}
+
+
+#logo {
+	height: 50px;
+}
+
+.edge {
+	stroke: black;
+	stroke-width: 1.5px;
+}
+
+.nolabel text {
+	display: none;
+}
+
+text {
+	stroke: none;
+	fill: white;
+	font-size: 12px;
+	pointer-events: none;
+}
+
+path {
+	stroke: rgba(255, 255, 255, .25);
+	stroke-width: 1px;
+}
+
+.aggregation {
+	stroke: black;
+	stroke-width: 2px;
+}
+
+#traceButton {
+	visibility: hidden
+}
+
+.color1, .color2, .color3, .color4, .color5, .color6, .color7, .color8, .color9, .color10, .color11, .color12  {
+	fill: rgba(255, 255, 255, .15);
+	background-color: rgba(255, 255, 255, .15);
+}
+
+
+.color1-selected .color1 {
+	fill: #EC0033;
+	background-color: #EC0033;
+}
+
+.color2-selected .color2 {
+	fill: #FFBA00;
+	background-color: #FFBA00;
+}
+
+.color3-selected .color3 {
+	fill: #3714B0;
+	background-color: #3714B0;
+}
+
+.color4-selected .color4 {
+	fill: #B12C49;
+	background-color: #B12C49;
+}
+
+.color5-selected .color5 {
+	fill: #402C84;
+	background-color: #402C84;
+}
+
+.color6-selected .color6 {
+	fill: #990021;
+	background-color: #990021;
+}
+
+.color7-selected .color7 {
+	fill: #990021;
+	background-color: ;
+}
+
+.color8-selected .color8 {
+	fill: #A67900;
+	background-color: #A67900;
+}
+
+.color9-selected .color9 {
+	fill: #F53D65;
+	background-color: #F53D65;
+}
+
+.color10-selected .color10 {
+	fill: #1F0772;
+	background-color: #1F0772;
+}
+
+.color11-selected .color11 {
+	fill: #F56E8B;
+	background-color: #F56E8B;
+}
+
+.color12-selected .color12 {
+	fill: #6949D7;
+	background-color: #6949D7;
+}

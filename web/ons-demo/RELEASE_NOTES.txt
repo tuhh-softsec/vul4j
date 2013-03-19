@@ -1,0 +1,5 @@
+** March 19, 2013 **
+- aggregation switch sample data DPIDs do not match official switch config.
+	- switch config hacked 00:00:00:00:00:00:01:01 ==> 00:00:00:00:00:00:01:00 etc.
+- layout does not dynamically adjust when window is resized
+	- refresh browser window after resizing to fix layout
