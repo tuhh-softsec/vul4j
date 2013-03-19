@@ -275,8 +275,11 @@ public class RoleChanger {
                         sw.getAttribute(IOFSwitch.SWITCH_SUPPORTS_NX_ROLE);
                 if ((supportsNxRole == null) || supportsNxRole) {
                     // Handle cases #1 and #2
+                	log.debug("Sending NxRoleRequest to {}", sw);
                     sw.sendNxRoleRequest(role, cookie);
                 } else {
+                	log.debug("Switch {} doesn't support NxRoleRequests so we can't send " + 
+                				"a {} request - doing nothing", sw, role);
                     // Handle case #3
                     if (role == Role.SLAVE) {
                         log.debug("Disconnecting switch {} that doesn't support " +

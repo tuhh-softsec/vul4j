@@ -1100,6 +1100,7 @@ public class Controller implements IFloodlightProviderService,
                     shouldHandleMessage = handleVendorMessage((OFVendor)m);
                     break;
                 case ERROR:
+                	log.debug("Recieved ERROR message from switch {}: {}", sw, m);
                     // TODO: we need better error handling. Especially for 
                     // request/reply style message (stats, roles) we should have
                     // a unified way to lookup the xid in the error message. 
@@ -1123,6 +1124,7 @@ public class Controller implements IFloodlightProviderService,
                         // is not a spurious error
                         shouldLogError = !isBadVendorError;
                         if (isBadVendorError) {
+                        	log.debug("Handling bad vendor error for {}", sw);
                             if (state.firstRoleReplyReceived && (role != null)) {
                                 log.warn("Received ERROR from sw {} that "
                                           +"indicates roles are not supported "
@@ -1143,6 +1145,8 @@ public class Controller implements IFloodlightProviderService,
                                     sw.getChannel().close();
                                 }
                                 else if (sw.role == null && requestedRole == Role.MASTER) {
+                                	log.debug("Adding switch {} because we got an error" +
+                                			" returned from a MASTER role request", sw);
                                     // Controller's role is master: add to
                                     // active 
                                     // TODO: check if clearing flow table is
