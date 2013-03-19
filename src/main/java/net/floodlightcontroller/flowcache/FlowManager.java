@@ -101,12 +101,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    FlowEntryId flowEntryId =
 			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = "User State: " + flowEntryObj.getUserState();
-		    String switchState = "Switch State: " + flowEntryObj.getSwitchState();
+		    String userState = flowEntryObj.getUserState();
+		    String switchState = flowEntryObj.getSwitchState();
 
 		    log.debug("Found Flow Entry {}: {}",
 			      flowEntryId.toString(),
-			      userState + " " + switchState);
+			      "User State: " + userState +
+			      " Switch State: " + switchState);
 
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
 			// Ignore the entry: nothing to do
@@ -160,6 +161,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
 		    } else {
 			// Unknown user state. Ignore the entry
+			log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
+				  flowEntryId.toString(), userState);
 			continue;
 		    }
 
