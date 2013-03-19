@@ -32,12 +32,19 @@ body {
 	border: 1px solid white;
 }
 
+.header {
+	height: 50px;
+}
+
 #left .header {
 	background-color: lightgreen;
 }
 
 #right .header {
 	background-color: lightblue;
+	font-size: 12px;
+	padding-right: .25em;
+	-webkit-box-sizing: border-box;
 }
 
 #controllers {
@@ -48,4 +55,18 @@ body {
 	background-color: blue;
 }
 
-#logo {}
+#logo {
+	height: 50px;
+}
+
+.edge {
+	fill: lightgray;
+	stroke: black;
+	stroke-width: 1.5px;
+}
+
+.aggregation {
+	fill: darkgrey;
+	stroke: black;
+	stroke-width: 2px;
+}

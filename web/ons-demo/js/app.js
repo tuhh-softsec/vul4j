@@ -1,30 +1,37 @@
 /*global d3*/
 
 function createTopologyView() {
-	return d3.select('#svg-container').append('svg:svg').attr('viewBox', '0 0 1000 1000').
-			append('svg:g').attr('transform', 'translate(500 500)');
+	return d3.select('#svg-container').append('svg:svg').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
+			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
 }
-
-
 
 function drawHeader(model) {
 	d3.select('#lastUpdate').text(model.timestamp);
+	d3.select('#activeSwitches').text(model.edgeSwitches.length + model.aggregationSwitches.length + model.coreSwitches.length);
+	d3.select('#activeFlows').text(model.flows.length);
+}
+
+function toRadians (angle) {
+  return angle * (Math.PI / 180);
 }
 
 function drawTopology(svg, model) {
 
 	var rings = [{
 		radius: 3,
-		width: 16,
-		switches: model.edgeSwitches
+		width: 8,
+		switches: model.edgeSwitches,
+		className: 'edge'
 	}, {
 		radius: 1.5,
 		width: 32,
-		switches: model.aggregationSwitches
+		switches: model.aggregationSwitches,
+		className: 'aggregation'
 	}, {
 		radius: 1,
 		width: 32,
-		switches: model.coreSwitches
+		switches: model.coreSwitches,
+		className: 'core'
 	}];
 
 	function ringEnter(data, i) {
@@ -41,13 +48,21 @@ function drawTopology(svg, model) {
 			.enter().append("svg:g")
 			.attr("class", "square")
 			.attr("transform", function(_, i) {
-			return "rotate(" + i * k + ")translate(" + data.radius*150 + ")";
-		})
-			.append("svg:rect")
+				return "rotate(" + i*k + ")translate(" + data.radius*150 + ")rotate(" + (-i*k) + ")";
+			}
+		)
+			.append("svg:circle")
+			.attr('class', data.className)
+			.attr("transform", function(_, i) {
+				var m = document.querySelector('svg').getTransformToElement().inverse();
+				return "matrix( " +  m.a + " " +  m.b + " " +  m.c + " " +  m.d + " " +  m.e + " " +  m.f + " )";
+			})
 			.attr("x", -data.width / 2)
 			.attr("y", -data.width / 2)
-			.attr("width", data.width)
-			.attr("height", data.width);
+			// .attr("width", data.width)
+			// .attr("height", data.width)
+			.attr("r", data.width)
+
 	}
 
 	var ring = svg.selectAll("g")

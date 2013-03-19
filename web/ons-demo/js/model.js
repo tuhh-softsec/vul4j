@@ -4,7 +4,8 @@ function toD3(results) {
 	var model = {
 		edgeSwitches: [],
 		aggregationSwitches: [],
-		coreSwitches: []
+		coreSwitches: [],
+		flows: results.flows
 	}
 
 
