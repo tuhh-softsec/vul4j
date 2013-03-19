@@ -65,6 +65,17 @@ body {
 	stroke-width: 1.5px;
 }
 
+.nolabel text {
+	display: none;
+}
+
+text {
+	stroke: none;
+	fill: white;
+	font-size: 12px;
+	pointer-events: none;
+}
+
 path {
 	stroke: rgba(255, 255, 255, .25);
 	stroke-width: 1px;
