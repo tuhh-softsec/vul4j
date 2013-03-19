@@ -36,37 +36,45 @@ body {
 	height: 50px;
 }
 
-#left .header {
-	background-color: lightgreen;
-}
 
 #right .header {
-	background-color: lightblue;
 	font-size: 12px;
 	padding-right: .25em;
 	-webkit-box-sizing: border-box;
 }
 
-#controllers {
-	background-color: darkgreen;
+#controllers, #selectedFlows {
+	border-top: 1px solid white;
 }
 
-#topology {
-	background-color: blue;
+#selectedFlows {
+	border-bottom: 1px solid white;
 }
+
+#controllers {
+	border-right: 1px solid white;
+}
+
 
 #logo {
 	height: 50px;
 }
 
 .edge {
-	fill: lightgray;
 	stroke: black;
 	stroke-width: 1.5px;
 }
 
+path {
+	stroke: white;
+	stroke-width: 1px;
+}
+
 .aggregation {
-	fill: darkgrey;
 	stroke: black;
 	stroke-width: 2px;
+}
+
+#traceButton {
+	visibility: hidden
 }

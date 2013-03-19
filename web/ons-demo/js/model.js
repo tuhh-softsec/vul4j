@@ -5,7 +5,9 @@ function toD3(results) {
 		edgeSwitches: [],
 		aggregationSwitches: [],
 		coreSwitches: [],
-		flows: results.flows
+		flows: results.flows,
+		controllers: results.controllers,
+		links: results.links
 	}
 
 
@@ -21,6 +23,8 @@ function toD3(results) {
 	});
 
 	results.switches.forEach(function (s) {
+		s.controller = results.mapping[s.dpid][0].controllerId
+
 		if (coreSwitchDPIDs[s.dpid]) {
 			model.coreSwitches.push(s);
 		} else if (aggregationSwitchDPIDs[s.dpid]) {

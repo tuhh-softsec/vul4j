@@ -37,10 +37,32 @@ body {
 }
 
 /* tmp */
-#controllers, #selectedFlows {
+#selectedFlows {
 	display: -webkit-box;
 	-webkit-box-align: center;
 	-webkit-box-pack: center;
+}
+
+#controllers {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+#controllers .header {
+	-webkit-box-pack: center;
+	border-bottom: 1px solid white;
+}
+
+#controllerList {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-flex: 1.0;
+	overflow: scroll;
+}
+
+.controller {
+	margin: .25em;
+	background-color: blue;
 }
 
 #svg-container {
