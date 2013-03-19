@@ -2,20 +2,18 @@
 
 
 var colors = [
-	'#EC0033',
-	'#FFBA00',
-	'#3714B0',
-	'#B12C49',
-	'#BF9830',
-	'#402C84',
-	'#990021',
-	'#A67900',
-	'#F53D65',
-	'#1F0772',
-	'#F56E8B',
-	'#FFCB40',
-	'#6949D7',
-	'#FFD973'
+	'color1',
+	'color2',
+	'color3',
+	'color4',
+	'color5',
+	'color6',
+	'color7',
+	'color8',
+	'color9',
+	'color10',
+	'color11',
+	'color12',
 ]
 
 var controllerColorMap = {};
@@ -120,7 +118,9 @@ function updateTopology(svg, model) {
 			});
 
 		nodes.append("svg:circle")
-			.attr('class', data.className)
+			.attr('class', function (_, i)  {
+				return data.className + ' ' + controllerColorMap[data.switches[i].controller];
+			})
 			.attr("transform", function(_, i) {
 				var m = document.querySelector('#viewbox').getTransformToElement().inverse();
 				if (data.scale) {
@@ -131,9 +131,9 @@ function updateTopology(svg, model) {
 			.attr("x", -data.width / 2)
 			.attr("y", -data.width / 2)
 			.attr("r", data.width)
-			.attr("fill", function (_, i) {
-				return controllerColorMap[data.switches[i].controller]
-			})
+			// .attr("fill", function (_, i) {
+			// 	return controllerColorMap[data.switches[i].controller]
+			// })
 
 		nodes.append("svg:text")
 				.text(function (d, i) {return d.switches[i].dpid})
@@ -210,21 +210,26 @@ function updateTopology(svg, model) {
 
 function updateControllers(model) {
 	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
-	controllers.enter().append('div').attr('class', 'controller')
-		.attr('style', function (d) {
+	controllers.enter().append('div')
+		.attr('class', function (d) {
 			var color = controllerColorMap[d];
 			if (!color) {
 				color = controllerColorMap[d] = colors.pop();
 			}
-			return 'background-color:' + color;
+			return 'controller ' + color;
 		});
 	controllers.text(function (d) {
 		return d;
 	});
 	controllers.exit().remove();
 
-	controllers.on('click', function (data, index) {
+	model.controllers.forEach(function (c) {
+		d3.select(document.body).classed(controllerColorMap[c] + '-selected', true);
+	});
 
+	controllers.on('click', function (c, index) {
+		var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
+		d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
 	});
 }
 
