@@ -80,16 +80,15 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 			}						
 		}
     }
-    
 
-    
     protected void switchCleanup() {
-    	
     	TopoSwitchServiceImpl impl = new TopoSwitchServiceImpl();
     	Iterable<ISwitchObject> switches = impl.getActiveSwitches();
+    	
+    	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
     	for (ISwitchObject sw: switches) {
-			log.debug("checking if switch is inactive: {}", sw.getDPID());
+			//log.debug("checking if switch is inactive: {}", sw.getDPID());
 			try {
 				long dpid = HexString.toLong(sw.getDPID());
 				String controller = registryService.getControllerForSwitch(dpid);

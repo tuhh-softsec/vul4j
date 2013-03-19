@@ -26,11 +26,11 @@ public class SwitchRegistryResource extends ServerResource {
 			switches = new HashMap<String, List<ControllerRegistryEntry>>();
 		}
 		
-		for (List<ControllerRegistryEntry> list: switches.values()){
+		/*for (List<ControllerRegistryEntry> list: switches.values()){
 			for (ControllerRegistryEntry en : list) {
 				log.debug("Controller id {}", en.getControllerId());
 			}
-		}
+		}*/
 		
 		return switches;
 	}
