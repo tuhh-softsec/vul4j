@@ -15,6 +15,7 @@ var colors = [
 	'color11',
 	'color12',
 ]
+colors.reverse();
 
 var controllerColorMap = {};
 
