@@ -21,32 +21,6 @@ JVM_OPTS=""
 # Set classpath to include titan libs
 CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
 
-# Create a logback file if required
-cat <<EOF_LOGBACK >${FL_LOGBACK}
-<configuration scan="true" debug="true">
-<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-<encoder>
-<pattern>%level [%logger:%thread] %msg%n</pattern>
-</encoder>
-</appender>
-
-<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-<file>${FL_LOG}</file>
-<encoder>
-<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
-</encoder>
-</appender>
-
-<logger name="org" level="WARN"/>
-<logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
-<logger name="net.floodlightcontroller.logging" level="WARN"/>
-
-<root level="DEBUG">
-<appender-ref ref="FILE" />
-</root>
-</configuration>
-EOF_LOGBACK
-
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
@@ -74,6 +48,32 @@ function start {
       lotate ${log}
     fi
   done
+
+# Create a logback file if required
+  cat <<EOF_LOGBACK >${FL_LOGBACK}
+<configuration scan="true" debug="true">
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<encoder>
+<pattern>%level [%logger:%thread] %msg%n</pattern>
+</encoder>
+</appender>
+
+<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+<file>${FL_LOG}</file>
+<encoder>
+<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+</encoder>
+</appender>
+
+<logger name="org" level="WARN"/>
+<logger name="LogService" level="WARN"/> <!-- Restlet access logging -->
+<logger name="net.floodlightcontroller.logging" level="WARN"/>
+
+<root level="DEBUG">
+<appender-ref ref="FILE" />
+</root>
+</configuration>
+EOF_LOGBACK
 
   # Run floodlight
   echo "Starting ONOS controller ..."
