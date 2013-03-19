@@ -28,7 +28,7 @@ function createTopologyView() {
 }
 
 function updateHeader(model) {
-	d3.select('#lastUpdate').text(model.timestamp);
+	d3.select('#lastUpdate').text(new Date());
 	d3.select('#activeSwitches').text(model.edgeSwitches.length + model.aggregationSwitches.length + model.coreSwitches.length);
 	d3.select('#activeFlows').text(model.flows.length);
 }
@@ -228,12 +228,19 @@ function updateControllers(model) {
 	});
 }
 
+var oldModel;
 function sync(svg) {
-	updateModel(function (model) {
+	updateModel(function (newModel) {
 
-		updateHeader(model);
-		updateControllers(model);
-		updateTopology(svg, model);
+		if (!oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+			updateControllers(newModel);
+			updateTopology(svg, newModel);
+		} else {
+			console.log('no change');
+		}
+		updateHeader(newModel);
+
+		oldModel = newModel;
 
 		// do it again in 1s
 		setTimeout(function () {

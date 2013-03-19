@@ -83,7 +83,6 @@ function updateModel(cb) {
 	},
 	function(err, results) {
 		var model = toD3(results);
-		model.timestamp = new Date();
 		cb(model);
 	});
 }
