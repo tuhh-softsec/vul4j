@@ -19,7 +19,7 @@ function drawTopology(svg, model) {
 
 	var rings = [{
 		radius: 3,
-		width: 8,
+		width: 4,
 		switches: model.edgeSwitches,
 		className: 'edge'
 	}, {
@@ -46,7 +46,9 @@ function drawTopology(svg, model) {
 			return data;
 		}))
 			.enter().append("svg:g")
-			.attr("class", "square")
+			.attr("id", function (_, i) {
+				return data.className + i;
+			})
 			.attr("transform", function(_, i) {
 				return "rotate(" + i * k + ")translate(" + data.radius * 150 + ")rotate(" + (-i * k) + ")";
 			})
@@ -79,10 +81,13 @@ function drawTopology(svg, model) {
 		d.scale = 2;
 
 		svg.selectAll('.edge').data(model.edgeSwitches).transition().duration(100)
-			.attr("transform", function(data, i) {
-				var m = document.querySelector('svg').getTransformToElement().inverse();
-					m = m.scale(data.scale);
-				return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+			// .attr("transform", function(data, i) {
+			// 	var m = document.querySelector('svg').getTransformToElement().inverse();
+			// 		m = m.scale(data.scale);
+			// 	return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+			// })
+			.attr("r", function (data, i) {
+				return rings[0].width * data.scale;
 			})
 	}
 
@@ -99,7 +104,7 @@ function sync(svg) {
 		// do it again in 1s
 		setTimeout(function () {
 			sync(svg)
-		}, 1000);
+		}, 5000);
 	});
 }
 
