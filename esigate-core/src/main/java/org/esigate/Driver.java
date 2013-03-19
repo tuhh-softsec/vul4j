@@ -121,11 +121,13 @@ public class Driver {
 		RenderEvent renderEvent = new RenderEvent();
 		renderEvent.originalRequest = request;
 		renderEvent.remoteUrl = page;
-		// Create renderer list from parameters. Ensure at least an additional
-		// renderer can be added at no cost.
-		renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 1);
-		renderEvent.renderers.addAll(Arrays.asList(renderers));
-
+		// Create renderer list from parameters. Ensure at least 10 additional
+		// renderers can be added at no cost.
+		renderEvent.renderers = new ArrayList<Renderer>(renderers.length + 10);
+		// Add renderers used as parameters
+		if( renderers != null && renderers.length > 0 ){
+			renderEvent.renderers.addAll(Arrays.asList(renderers));
+		}
 		eventManager.fire(EventManager.EVENT_RENDER_PRE, renderEvent);
 
 		// Process all renderers
