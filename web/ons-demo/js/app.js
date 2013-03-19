@@ -48,21 +48,22 @@ function drawTopology(svg, model) {
 			.enter().append("svg:g")
 			.attr("class", "square")
 			.attr("transform", function(_, i) {
-				return "rotate(" + i*k + ")translate(" + data.radius*150 + ")rotate(" + (-i*k) + ")";
-			}
-		)
+				return "rotate(" + i * k + ")translate(" + data.radius * 150 + ")rotate(" + (-i * k) + ")";
+			})
 			.append("svg:circle")
 			.attr('class', data.className)
 			.attr("transform", function(_, i) {
 				var m = document.querySelector('svg').getTransformToElement().inverse();
-				return "matrix( " +  m.a + " " +  m.b + " " +  m.c + " " +  m.d + " " +  m.e + " " +  m.f + " )";
+				if (data.scale) {
+					m = m.scale(data.scale);
+				}
+				return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
 			})
 			.attr("x", -data.width / 2)
 			.attr("y", -data.width / 2)
-			// .attr("width", data.width)
-			// .attr("height", data.width)
-			.attr("r", data.width)
-
+		// .attr("width", data.width)
+		// .attr("height", data.width)
+		.attr("r", data.width)
 	}
 
 	var ring = svg.selectAll("g")
@@ -70,6 +71,23 @@ function drawTopology(svg, model) {
 		.enter().append("svg:g")
 		.attr("class", "ring")
 		.each(ringEnter);
+
+	function zoom(d, i) {
+		model.edgeSwitches.forEach(function (s) {
+			s.scale = 1;
+		});
+		d.scale = 2;
+
+		svg.selectAll('.edge').data(model.edgeSwitches).transition().duration(100)
+			.attr("transform", function(data, i) {
+				var m = document.querySelector('svg').getTransformToElement().inverse();
+					m = m.scale(data.scale);
+				return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+			})
+	}
+
+	svg.selectAll('.edge').on('mouseover', zoom);
+	svg.selectAll('.edge').on('mousedown', zoom);
 }
 
 function sync(svg) {
