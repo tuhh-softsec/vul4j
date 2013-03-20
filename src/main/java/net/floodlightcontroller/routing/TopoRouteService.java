@@ -24,6 +24,9 @@ import org.openflow.util.HexString;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
+import com.tinkerpop.pipes.PipeFunction;
+import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -91,6 +94,21 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
     SwitchStorageImpl swStore = store.get();
 
+    static class ShortestPathLoopFunction implements PipeFunction<LoopBundle<Vertex>, Boolean> {
+	String dpid;
+	public ShortestPathLoopFunction(String dpid) {
+	    super();
+	    this.dpid = dpid;
+	}
+	public Boolean compute(LoopBundle<Vertex> bundle) {
+	    Boolean output = false;
+	    if (! bundle.getObject().getProperty("dpid").equals(dpid)) {
+		output = true;
+	    }
+	    return output;
+	}
+    }
+
     @Override
     public DataPath getShortestPath(SwitchPort src, SwitchPort dest) {
 	DataPath result_data_path = new DataPath();
@@ -111,8 +129,6 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	// The equivalent code used here is:
 	//   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
 	//
-
-	String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
 
 	// Get the source vertex
 	Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
@@ -147,24 +163,12 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    return result_data_path;
 	}
 
-	//
-	// Implement the Gremlin script and run it
-	//
-	ScriptEngine engine = new GremlinGroovyScriptEngine();
-
-	ArrayList<ArrayList<Vertex>> results = new ArrayList<ArrayList<Vertex>>();
-	engine.getBindings(ScriptContext.ENGINE_SCOPE).put("g", titanGraph);
-	engine.getBindings(ScriptContext.ENGINE_SCOPE).put("v_src", v_src);
-	engine.getBindings(ScriptContext.ENGINE_SCOPE).put("v_dest", v_dest);
-	engine.getBindings(ScriptContext.ENGINE_SCOPE).put("results", results);
-
-	try {
-	    engine.eval(gremlin);
-	} catch (ScriptException e) {
-	    System.err.println("Caught ScriptException running Gremlin script: " + e.getMessage());
-	    // titanGraph.stopTransaction(Conclusion.SUCCESS);
-	    return null;
-	}
+	ShortestPathLoopFunction whileFunction = new ShortestPathLoopFunction(dpid_dest);
+	GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+	Collection<List> results = new ArrayList<List>();
+	GremlinPipeline<Vertex, List> path;
+	path = pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path();
+	path.fill(results);
 
 	//
 	// Loop through the result and collect the list
@@ -174,14 +178,15 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	short portId = 0;
 	Port inPort = new Port(src.port().value());
 	Port outPort = new Port();
-	for (ArrayList<Vertex> lv : results) {
+	for (List l : results) {
 	    int idx = 0;
-	    for (Vertex v: lv) {
+	    for (Object o: l) {
+		Vertex v = (Vertex)(o);
 		String type = v.getProperty("type").toString();
-		System.out.println("type: " + type);
+		// System.out.println("type: " + type);
 		if (type.equals("port")) {
 		    String number = v.getProperty("number").toString();
-		    System.out.println("number: " + number);
+		    // System.out.println("number: " + number);
 
 		    Object obj = v.getProperty("number");
 		    // String class_str = obj.getClass().toString();
@@ -197,7 +202,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		    String dpid = v.getProperty("dpid").toString();
 		    nodeId = HexString.toLong(dpid);
 
-		    System.out.println("dpid: " + dpid);
+		    // System.out.println("dpid: " + dpid);
 		}
 		idx++;
 		if (idx == 1) {
