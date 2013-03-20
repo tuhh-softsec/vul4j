@@ -186,8 +186,8 @@ public class Init {
                 if (tag.equals("ResourceBundles")) {
                     Element resource = (Element)el;
                     /* configure internationalization */
-                    Attr langAttr = resource.getAttributeNode("defaultLanguageCode");
-                    Attr countryAttr = resource.getAttributeNode("defaultCountryCode");
+                    Attr langAttr = resource.getAttributeNodeNS(null, "defaultLanguageCode");
+                    Attr countryAttr = resource.getAttributeNodeNS(null, "defaultCountryCode");
                     String languageCode = 
                         (langAttr == null) ? null : langAttr.getNodeValue();
                     String countryCode = 
@@ -245,7 +245,7 @@ public class Init {
                             XMLUtils.selectNodes(algorithmsNode.getFirstChild(), CONF_NS, "Algorithm");
                         for (int i = 0; i < algorithms.length; i++) {
                             Element element = algorithms[i];
-                            String id = element.getAttribute("URI");
+                            String id = element.getAttributeNS(null, "URI");
                             JCEMapper.register(id, new JCEMapper.Algorithm(element));
                         }
                     }

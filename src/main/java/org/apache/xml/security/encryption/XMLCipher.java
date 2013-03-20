@@ -2444,7 +2444,7 @@ public class XMLCipher {
                         EncryptionConstants.EncryptionSpecNS, 
                         EncryptionConstants._TAG_DATAREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
-                    String uri = ((Element) list.item(i)).getAttribute("URI");
+                    String uri = ((Element) list.item(i)).getAttributeNS(null, "URI");
                     result.add(result.newDataReference(uri));
                 }
                 break;
@@ -2454,7 +2454,7 @@ public class XMLCipher {
                         EncryptionConstants.EncryptionSpecNS, 
                         EncryptionConstants._TAG_KEYREFERENCE);
                 for (int i = 0; i < list.getLength() ; i++) {
-                    String uri = ((Element) list.item(i)).getAttribute("URI");
+                    String uri = ((Element) list.item(i)).getAttributeNS(null, "URI");
                     result.add(result.newKeyReference(uri));
                 }
             }
@@ -3497,7 +3497,7 @@ public class XMLCipher {
                             EncryptionConstants.EncryptionSpecNS,
                             tagName
                         );
-                    result.setAttribute(EncryptionConstants._ATT_URI, uri);
+                    result.setAttributeNS(null, EncryptionConstants._ATT_URI, uri);
 
                     // TODO: Need to martial referenceInformation
                     // Figure out how to make this work..

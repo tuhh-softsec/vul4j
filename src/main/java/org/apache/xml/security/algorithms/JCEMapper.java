@@ -308,11 +308,11 @@ public class JCEMapper {
          * @param el
          */
         public Algorithm(Element el) {
-            requiredKey = el.getAttribute("RequiredKey");
-            jceName = el.getAttribute("JCEName");
-            algorithmClass = el.getAttribute("AlgorithmClass");
+            requiredKey = el.getAttributeNS(null, "RequiredKey");
+            jceName = el.getAttributeNS(null, "JCEName");
+            algorithmClass = el.getAttributeNS(null, "AlgorithmClass");
             if (el.hasAttribute("KeyLength")) {
-                keyLength = Integer.parseInt(el.getAttribute("KeyLength"));
+                keyLength = Integer.parseInt(el.getAttributeNS(null, "KeyLength"));
             } else {
                 keyLength = 0;
             }
