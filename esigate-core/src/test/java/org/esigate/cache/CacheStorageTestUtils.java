@@ -24,6 +24,7 @@ public class CacheStorageTestUtils  {
 		TestCase.assertEquals("Now the entry should be in cache", getContent(entry), getContent(cacheStorage.getEntry(key)));
 		final HttpCacheEntry newEntry = makeCacheEntry("new entry");
 		HttpCacheUpdateCallback callback = new HttpCacheUpdateCallback() {
+			@Override
 			public HttpCacheEntry update(HttpCacheEntry existing) throws IOException {
 				return newEntry;
 			}

@@ -42,6 +42,7 @@ public class DefaultCookieManager implements CookieManager {
 	protected Collection<String> discardCookies;
 	protected Collection<String> forwardCookies;
 
+	@Override
 	public void init(Driver d, Properties properties) {
 		// Cookies to forward
 		forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
@@ -58,6 +59,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 	}
 
+	@Override
 	public void addCookie(Cookie cookie, HttpRequest originalRequest) {
 		String name = cookie.getName();
 		if (discardCookies.contains(name) || (discardCookies.contains("*") && !forwardCookies.contains(name))) {
@@ -83,6 +85,7 @@ public class DefaultCookieManager implements CookieManager {
 		}
 	}
 
+	@Override
 	public List<Cookie> getCookies(HttpRequest originalRequest) {
 		List<Cookie> cookies = new ArrayList<Cookie>();
 		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
@@ -214,6 +217,7 @@ public class DefaultCookieManager implements CookieManager {
 		return result.toString();
 	}
 
+	@Override
 	public boolean clearExpired(Date date, HttpRequest originalRequest) {
 		if (date == null)
 			return false;
@@ -233,6 +237,7 @@ public class DefaultCookieManager implements CookieManager {
 		return false;
 	}
 
+	@Override
 	public void clear(HttpRequest originalRequest) {
 		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
 		@SuppressWarnings("unchecked")

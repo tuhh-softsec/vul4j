@@ -9,6 +9,7 @@ import org.esigate.parser.ParserContext;
 class AttemptElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:attempt", "</esi:attempt") {
+		@Override
 		public AttemptElement newInstance() {
 			return new AttemptElement();
 		}

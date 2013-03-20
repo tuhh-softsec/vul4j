@@ -42,18 +42,22 @@ public class RequestCookieStore implements CookieStore {
 		this.cookieManager = cookieManager;
 	}
 
+	@Override
 	public void addCookie(Cookie cookie) {
 		cookieManager.addCookie(cookie, originalRequest);
 	}
 
+	@Override
 	public List<Cookie> getCookies() {
 		return cookieManager.getCookies(originalRequest);
 	}
 
+	@Override
 	public boolean clearExpired(Date date) {
 		return cookieManager.clearExpired(date,originalRequest);
 	}
 
+	@Override
 	public void clear() {
 		cookieManager.clear(originalRequest);
 	}

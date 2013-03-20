@@ -12,14 +12,17 @@ import org.esigate.parser.ParserContext;
 class ParamElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
+		@Override
 		public boolean isStartTag(String tag) {
 			return tag.startsWith("<!--$beginparam$");
 		}
 
+		@Override
 		public boolean isEndTag(String tag) {
 			return tag.startsWith("<!--$endparam$");
 		}
 
+		@Override
 		public Element newInstance() {
 			return new ParamElement();
 		}
@@ -29,14 +32,17 @@ class ParamElement implements Element {
 	private Element parent;
 	private boolean valueFound = false;
 
+	@Override
 	public boolean onError(Exception e, ParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void onTagEnd(String tag, ParserContext ctx) {
 		// Nothing to do
 	}
 
+	@Override
 	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		this.parent = ctx.getCurrent();
 		String[] parameters = tag.split("\\$");
@@ -54,10 +60,12 @@ class ParamElement implements Element {
 		}
 	}
 
+	@Override
 	public boolean isClosed() {
 		return false;
 	}
 
+	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
 		if (!valueFound) {
 			parent.characters(csq, start, end);

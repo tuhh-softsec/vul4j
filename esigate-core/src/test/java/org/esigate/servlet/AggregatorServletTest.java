@@ -16,19 +16,23 @@ import org.mockito.Mockito;
 public class AggregatorServletTest {
 
 	protected class TestServletConfig implements ServletConfig {
+		@Override
 		public String getServletName() {
 			return "aggregator";
 		}
 
+		@Override
 		public ServletContext getServletContext() {
 			return null;
 		}
 
+		@Override
 		@SuppressWarnings("rawtypes")
 		public Enumeration getInitParameterNames() {
 			return null;
 		}
 
+		@Override
 		public String getInitParameter(String name) {
 			if (name.equals("provider"))
 				return "single";

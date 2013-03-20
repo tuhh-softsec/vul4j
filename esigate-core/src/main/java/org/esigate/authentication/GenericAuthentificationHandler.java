@@ -102,6 +102,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 	 * @see org.esigate.extension.Extension#init(org.esigate.Driver,
 	 * java.util.Properties)
 	 */
+	@Override
 	public void init(Driver d, Properties properties) {
 		this.driver = d;
 		driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
@@ -113,6 +114,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
 	abstract public void init(Properties properties);
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 
 		if (EventManager.EVENT_FRAGMENT_PRE.equals(id)) {

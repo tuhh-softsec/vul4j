@@ -59,6 +59,7 @@ public class AggregateRenderer implements Renderer, Appendable {
 
 
 	/** {@inheritDoc} */
+	@Override
 	public void render(HttpEntityEnclosingRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
 		this.out = out;
 		if (content == null) {
@@ -68,16 +69,19 @@ public class AggregateRenderer implements Renderer, Appendable {
 		parser.parse(content, this);
 	}
 
+	@Override
 	public Appendable append(CharSequence csq) throws IOException {
 		out.append(csq);
 		return this;
 	}
 
+	@Override
 	public Appendable append(char c) throws IOException {
 		out.append(c);
 		return this;
 	}
 
+	@Override
 	public Appendable append(CharSequence csq, int start, int end)
 			throws IOException {
 		out.append(csq, start, end);

@@ -12,14 +12,17 @@ import org.esigate.parser.ParserContext;
 class BlockElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
+		@Override
 		public boolean isStartTag(String tag) {
 			return tag.startsWith("<!--$beginblock$");
 		}
 
+		@Override
 		public boolean isEndTag(String tag) {
 			return tag.startsWith("<!--$endblock$");
 		}
 
+		@Override
 		public Element newInstance() {
 			return new BlockElement();
 		}
@@ -29,10 +32,12 @@ class BlockElement implements Element {
 	private BlockRenderer blockRenderer;
 	private boolean nameMatches;
 
+	@Override
 	public boolean onError(Exception e, ParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void onTagEnd(String tag, ParserContext ctx) {
 		// Stop writing
 		if (nameMatches) {
@@ -40,6 +45,7 @@ class BlockElement implements Element {
 		}
 	}
 
+	@Override
 	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		String[] parameters = tag.split("\\$");
 		if (parameters.length != 4) {
@@ -54,10 +60,12 @@ class BlockElement implements Element {
 		}
 	}
 
+	@Override
 	public boolean isClosed() {
 		return false;
 	}
 
+	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
 		blockRenderer.append(csq, start, end);
 	}

@@ -8,6 +8,7 @@ import org.esigate.parser.ParserContext;
 class ExceptElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:except", "</esi:except") {
+		@Override
 		public ExceptElement newInstance() {
 			return new ExceptElement();
 		}

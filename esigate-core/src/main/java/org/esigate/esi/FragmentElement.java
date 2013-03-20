@@ -24,7 +24,8 @@ class FragmentElement extends BaseElement {
 
     public final static ElementType TYPE = new BaseElementType("<esi:fragment", "</esi:fragment") {
 
-        public FragmentElement newInstance() {
+        @Override
+		public FragmentElement newInstance() {
             return new FragmentElement();
         }
 

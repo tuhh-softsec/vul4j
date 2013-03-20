@@ -67,6 +67,7 @@ public class FragmentLogging implements Extension, IEventListener {
 			.getLogger(FragmentLogging.class);
 	private Driver driver;
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		this.driver = driver;
 		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST,
@@ -75,6 +76,7 @@ public class FragmentLogging implements Extension, IEventListener {
 				this); 
 	}
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 
 		FragmentEvent e = (FragmentEvent) event;

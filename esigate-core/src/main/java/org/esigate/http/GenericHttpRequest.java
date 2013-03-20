@@ -51,6 +51,7 @@ public class GenericHttpRequest extends BasicHttpEntityEnclosingRequest implemen
 		return requestLine.toString();
 	}
 
+	@Override
 	public RequestConfig getConfig() {
 		return requestConfig;
 	}

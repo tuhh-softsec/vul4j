@@ -6,6 +6,7 @@ import org.esigate.parser.ParserContext;
 class ChooseElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:choose", "</esi:choose") {
+		@Override
 		public ChooseElement newInstance() {
 			return new ChooseElement();
 		}

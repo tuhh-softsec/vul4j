@@ -25,6 +25,7 @@ import org.esigate.vars.VariablesResolver;
 class OtherwiseElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:otherwise", "</esi:otherwise") {
+		@Override
 		public OtherwiseElement newInstance() {
 			return new OtherwiseElement();
 		}

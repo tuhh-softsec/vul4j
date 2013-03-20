@@ -12,6 +12,7 @@ import org.esigate.parser.ElementType;
  */
 class CommentElement extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<esi:comment", "</esi:comment") {
+		@Override
 		public CommentElement newInstance() {
 			return new CommentElement();
 		}

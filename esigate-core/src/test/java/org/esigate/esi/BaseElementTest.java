@@ -78,22 +78,27 @@ public class BaseElementTest extends TestCase {
 	}
 
 	private static class MockParserContext implements ParserContext {
+		@Override
 		public HttpEntityEnclosingRequest getHttpRequest() {
 			return null;
 		}
 
+		@Override
 		public boolean reportError(Exception e) {
 			return false;
 		}
 
+		@Override
 		public Element getCurrent() {
 			return null;
 		}
 
+		@Override
 		public <T> T findAncestor(Class<T> type) {
 			return null;
 		}
 
+		@Override
 		public HttpResponse getHttpResponse() {
 			return null;
 		}

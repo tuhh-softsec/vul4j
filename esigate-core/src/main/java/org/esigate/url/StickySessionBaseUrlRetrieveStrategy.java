@@ -31,6 +31,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 		this.urls = urls;
 	}
 
+	@Override
 	public String getBaseURL(HttpRequest originalRequest) {
 		ContainerRequestMediator mediator = HttpRequestHelper.getMediator(originalRequest);
 		Cookie sessionCookie = getEsiSessionCookie(mediator.getCookies());

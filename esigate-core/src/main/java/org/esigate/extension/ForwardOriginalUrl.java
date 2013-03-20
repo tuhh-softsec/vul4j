@@ -32,6 +32,7 @@ import org.esigate.events.impl.FragmentEvent;
  */
 public class ForwardOriginalUrl implements Extension, IEventListener {
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 		// Cast event
 		FragmentEvent fe = (FragmentEvent) event;
@@ -44,6 +45,7 @@ public class ForwardOriginalUrl implements Extension, IEventListener {
 		return true;
 	}
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager()
 				.register(EventManager.EVENT_FRAGMENT_PRE, this);

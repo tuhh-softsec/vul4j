@@ -238,6 +238,7 @@ public class ResourceFixupRenderer implements Renderer {
 		return url;
 	}
 
+	@Override
 	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException {
 		out.write(replace(src).toString());
 	}

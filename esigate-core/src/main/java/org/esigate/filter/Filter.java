@@ -35,9 +35,11 @@ public interface Filter  {
 	void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, HttpRequest originalRequest);
 
 	Filter EMPTY = new Filter() {
+		@Override
 		public void preRequest(GenericHttpRequest request, HttpContext httpContext, HttpRequest originalRequest) {
 		}
 
+		@Override
 		public void postRequest(GenericHttpRequest httpRequest, HttpResponse response, HttpContext httpContext, HttpRequest originalRequest) {
 		}
 

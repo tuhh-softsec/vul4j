@@ -22,6 +22,7 @@ import org.esigate.parser.ParserContext;
 class TryElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:try", "</esi:try") {
+		@Override
 		public TryElement newInstance() {
 			return new TryElement();
 		}

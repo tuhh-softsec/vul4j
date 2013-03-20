@@ -65,27 +65,33 @@ public class MockMediator implements ContainerRequestMediator {
 		this("http://localhost:8080");
 	}
 
+	@Override
 	public Cookie[] getCookies() {
 		Cookie[] cookiesArray = new Cookie[cookies.size()];
 		return cookies.toArray(cookiesArray);
 	}
 
+	@Override
 	public void addCookie(Cookie cookie) {
 		cookies.add(cookie);
 	}
 
+	@Override
 	public String getRemoteAddr() {
 		return remoteAddr;
 	}
 
+	@Override
 	public String getRemoteUser() {
 		return remoteUser;
 	}
 
+	@Override
 	public Principal getUserPrincipal() {
 		throw new RuntimeException("Method not implemented");
 	}
 
+	@Override
 	public void sendResponse(HttpResponse response) throws IOException {
 		httpResponse = new BasicHttpResponse(response.getStatusLine());
 		httpResponse.setHeaders(response.getAllHeaders());
@@ -98,22 +104,27 @@ public class MockMediator implements ContainerRequestMediator {
 		}
 	}
 
+	@Override
 	public void setSessionAttribute(String key, Serializable value) {
 		attributes.put(key, value);
 	}
 
+	@Override
 	public Serializable getSessionAttribute(String key) {
 		return (Serializable) attributes.get(key);
 	}
 
+	@Override
 	public InputStream getResourceAsStream(String path) {
 		throw new RuntimeException("Method not implemented");
 	}
 
+	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return httpRequest;
 	}
 
+	@Override
 	public String getSessionId() {
 		throw new RuntimeException("Method not implemented");
 	}

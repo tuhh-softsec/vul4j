@@ -45,6 +45,7 @@ public class ProxyFilter implements Filter {
 	private Driver[] providers;
 	private FilterConfig config;
 
+	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.config = filterConfig;
 		Properties properties = new Properties();
@@ -70,6 +71,7 @@ public class ProxyFilter implements Filter {
 		}
 	}
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
@@ -99,6 +101,7 @@ public class ProxyFilter implements Filter {
 		}
 	}
 
+	@Override
 	public void destroy() {
 		// Nothing to do
 	}

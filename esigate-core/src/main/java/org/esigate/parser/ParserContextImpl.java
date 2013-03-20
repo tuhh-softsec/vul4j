@@ -42,6 +42,7 @@ class ParserContextImpl implements ParserContext {
 		this.httpResponse = httpResponse;
 	}
 
+	@Override
 	public <T> T findAncestor(Class<T> type) {
 		T result = null;
 		for (int i = stack.size() - 1; i > -1; i--) {
@@ -60,6 +61,7 @@ class ParserContextImpl implements ParserContext {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean reportError(Exception e) {
 		boolean result = false;
 		for (int i = stack.size() - 1; i > -1; i--) {
@@ -96,10 +98,12 @@ class ParserContextImpl implements ParserContext {
 		getCurrent().characters(csq, start, end);
 	}
 
+	@Override
 	public Element getCurrent() {
 		return (!stack.isEmpty()) ? stack.peek().element : root;
 	}
 
+	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return httpRequest;
 	}
@@ -121,25 +125,31 @@ class ParserContextImpl implements ParserContext {
 			this.root = root;
 		}
 
+		@Override
 		public void onTagStart(String tag, ParserContext ctx) {
 		}
 
+		@Override
 		public void onTagEnd(String tag, ParserContext ctx) {
 		}
 
+		@Override
 		public boolean onError(Exception e, ParserContext ctx) {
 			return false;
 		}
 
+		@Override
 		public void characters(CharSequence csq, int start, int end) throws IOException {
 			root.append(csq, start, end);
 		}
 
+		@Override
 		public boolean isClosed() {
 			return false;
 		}
 	}
 
+	@Override
 	public HttpResponse getHttpResponse() {
 		return httpResponse;
 	}

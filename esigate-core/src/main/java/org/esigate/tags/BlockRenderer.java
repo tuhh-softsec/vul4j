@@ -64,6 +64,7 @@ public class BlockRenderer implements Renderer, Appendable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void render(HttpEntityEnclosingRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
 		LOG.debug("Rendering block " + name + " in page " + page);
 		this.out = out;
@@ -77,6 +78,7 @@ public class BlockRenderer implements Renderer, Appendable {
 		}
 	}
 
+	@Override
 	public Appendable append(CharSequence csq) throws IOException {
 		if (write) {
 			out.append(csq);
@@ -84,6 +86,7 @@ public class BlockRenderer implements Renderer, Appendable {
 		return this;
 	}
 
+	@Override
 	public Appendable append(char c) throws IOException {
 		if (write) {
 			out.append(c);
@@ -91,6 +94,7 @@ public class BlockRenderer implements Renderer, Appendable {
 		return this;
 	}
 
+	@Override
 	public Appendable append(CharSequence csq, int start, int end) throws IOException {
 		if (write) {
 			out.append(csq, start, end);

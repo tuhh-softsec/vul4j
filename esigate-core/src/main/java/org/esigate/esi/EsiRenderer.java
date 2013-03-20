@@ -98,7 +98,8 @@ public class EsiRenderer implements Renderer, Appendable {
         this.fragmentsToReplace = fragmentsToReplace;
     }
 
-    public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    @Override
+	public void render(HttpEntityEnclosingRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
         if (name != null) {
             LOG.debug("Rendering fragment {} in page {}", name, page);
         }
@@ -121,21 +122,24 @@ public class EsiRenderer implements Renderer, Appendable {
         }
     }
 
-    public Appendable append(CharSequence csq) throws IOException {
+    @Override
+	public Appendable append(CharSequence csq) throws IOException {
         if (write) {
             out.append(csq);
         }
         return this;
     }
 
-    public Appendable append(char c) throws IOException {
+    @Override
+	public Appendable append(char c) throws IOException {
         if (write) {
             out.append(c);
         }
         return this;
     }
 
-    public Appendable append(CharSequence csq, int start, int end) throws IOException {
+    @Override
+	public Appendable append(CharSequence csq, int start, int end) throws IOException {
         if (write) {
             out.append(csq, start, end);
         }

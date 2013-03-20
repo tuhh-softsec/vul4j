@@ -50,6 +50,7 @@ public class DefaultCharset implements Extension, IEventListener {
 	private Collection<String> parsableContentTypes;
 	private String defaultCharset;
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
@@ -62,6 +63,7 @@ public class DefaultCharset implements Extension, IEventListener {
 
 	}
 
+	@Override
 	public boolean event(EventDefinition arg0, Event arg1) {
 		FetchEvent fe = (FetchEvent) arg1;
 

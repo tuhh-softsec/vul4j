@@ -42,6 +42,7 @@ class IncludeElement extends BaseElement {
 	private static final String LEGACY_PROVIDER_PATTERN = "$PROVIDER({";
 
 	public final static ElementType TYPE = new BaseElementType("<esi:include", "</esi:include") {
+		@Override
 		public IncludeElement newInstance() {
 			return new IncludeElement();
 		}
@@ -50,15 +51,18 @@ class IncludeElement extends BaseElement {
 
 	private final Appendable outAdapter = new Appendable() {
 
+		@Override
 		public Appendable append(CharSequence csq, int start, int end) throws IOException {
 			IncludeElement.this.characters(csq, start, end);
 			return this;
 		}
 
+		@Override
 		public Appendable append(char c) throws IOException {
 			return append(new StringBuilder(1).append(c), 0, 1);
 		}
 
+		@Override
 		public Appendable append(CharSequence csq) throws IOException {
 			return append(csq, 0, csq.length());
 		}

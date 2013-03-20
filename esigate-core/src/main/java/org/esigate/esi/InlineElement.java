@@ -25,6 +25,7 @@ import org.esigate.util.UriUtils;
 class InlineElement extends BaseElement {
 
 	public final static ElementType TYPE = new BaseElementType("<esi:inline", "</esi:inline") {
+		@Override
 		public InlineElement newInstance() {
 			return new InlineElement();
 		}

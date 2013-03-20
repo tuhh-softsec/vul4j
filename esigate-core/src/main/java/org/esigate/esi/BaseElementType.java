@@ -11,10 +11,12 @@ abstract class BaseElementType implements ElementType {
 		this.endTag = endTag;
 	}
 
+	@Override
 	public final boolean isStartTag(String tag) {
 		return tag.startsWith(startTag);
 	}
 
+	@Override
 	public final boolean isEndTag(String tag) {
 		return tag.startsWith(endTag);
 	}

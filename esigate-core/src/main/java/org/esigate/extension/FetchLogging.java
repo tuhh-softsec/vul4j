@@ -62,11 +62,13 @@ public class FetchLogging implements Extension, IEventListener {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(FetchLogging.class);
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 		driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
 	}
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 
 		FetchEvent e = (FetchEvent) event;

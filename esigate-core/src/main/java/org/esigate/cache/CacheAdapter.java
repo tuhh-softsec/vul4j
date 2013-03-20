@@ -71,6 +71,7 @@ public class CacheAdapter {
 			this.wrapped = wrapped;
 		}
 
+		@Override
 		public CloseableHttpResponse execute(HttpRoute route, HttpRequestWrapper request, HttpClientContext clientContext, HttpExecutionAware execAware) throws IOException, HttpException {
 			if (transformRequest(request, clientContext)) {
 				CloseableHttpResponse response = wrapped.execute(route, request, clientContext, execAware);

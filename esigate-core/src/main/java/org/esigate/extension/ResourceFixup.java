@@ -15,6 +15,7 @@ import org.esigate.util.HttpRequestHelper;
 public class ResourceFixup implements Extension, IEventListener {
 	private DriverConfiguration config;
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 
 		RenderEvent renderEvent = (RenderEvent) event;
@@ -34,6 +35,7 @@ public class ResourceFixup implements Extension, IEventListener {
 		return true;
 	}
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		this.config = driver.getConfiguration();
 		driver.getEventManager().register(EventManager.EVENT_RENDER_PRE, this);

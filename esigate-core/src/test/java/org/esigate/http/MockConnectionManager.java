@@ -49,10 +49,12 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 
 	private final ConnectionRequest connectionRequest = new ConnectionRequest() {
 
+		@Override
 		public boolean cancel() {
 			return false;
 		}
 
+		@Override
 		public HttpClientConnection get(long timeout, TimeUnit tunit) throws InterruptedException, ExecutionException, ConnectionPoolTimeoutException {
 			if (open.get())
 				throw new IllegalStateException("Connection is busy");
@@ -61,77 +63,95 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 	};
 	private final HttpClientConnection httpClientConnection = new HttpClientConnection() {
 
+		@Override
 		public void shutdown() throws IOException {
 			open.set(false);
 		}
 
+		@Override
 		public void setSocketTimeout(int timeout) {
 			// Nothing to do
 		}
 
+		@Override
 		public boolean isStale() {
 			return !open.get();
 		}
 
+		@Override
 		public boolean isOpen() {
 			return open.get();
 		}
 
+		@Override
 		public int getSocketTimeout() {
 			return 0;
 		}
 
+		@Override
 		public HttpConnectionMetrics getMetrics() {
 			return null;
 		}
 
+		@Override
 		public void close() throws IOException {
 			open.set(false);
 		}
 
+		@Override
 		public void sendRequestHeader(HttpRequest request) throws HttpException, IOException {
 			sentRequest = request;
 		}
 
+		@Override
 		public void sendRequestEntity(HttpEntityEnclosingRequest request) throws HttpException, IOException {
 			sentRequest = request;
 		}
 
+		@Override
 		public HttpResponse receiveResponseHeader() throws HttpException, IOException {
 			sleep();
 			return execute(sentRequest);
 		}
 
+		@Override
 		public void receiveResponseEntity(HttpResponse response) throws HttpException, IOException {
 			// Nothing to do
 		}
 
+		@Override
 		public boolean isResponseAvailable(int timeout) throws IOException {
 			return true;
 		}
 
+		@Override
 		public void flush() throws IOException {
 			// Nothing to do
 		}
 	};
 
+	@Override
 	public ConnectionRequest requestConnection(HttpRoute route, Object state) {
 		return connectionRequest;
 	}
 
+	@Override
 	public void releaseConnection(HttpClientConnection conn, Object newState, long validDuration, TimeUnit timeUnit) {
 		open.set(false);
 	}
 
 
+	@Override
 	public void closeIdleConnections(long idletime, TimeUnit tunit) {
 		// Nothing to do
 	}
 
+	@Override
 	public void closeExpiredConnections() {
 		// Nothing to do
 	}
 
+	@Override
 	public void shutdown() {
 		open.set(false);
 	}
@@ -153,16 +173,19 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 		return open.get();
 	}
 
+	@Override
 	public void connect(HttpClientConnection conn, HttpRoute route,
 			int connectTimeout, HttpContext context) throws IOException {
 		// Nothing to do
 	}
 
+	@Override
 	public void upgrade(HttpClientConnection conn, HttpRoute route,
 			HttpContext context) throws IOException {
 		// Nothing to do
 	}
 
+	@Override
 	public void routeComplete(HttpClientConnection conn, HttpRoute route,
 			HttpContext context) throws IOException {
 		// Nothing to do

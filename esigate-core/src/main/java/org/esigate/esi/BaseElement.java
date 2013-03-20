@@ -19,10 +19,12 @@ abstract class BaseElement implements Element {
 		// Default implementation does nothing
 	}
 
+	@Override
 	public boolean isClosed() {
 		return closed;
 	}
 
+	@Override
 	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		Tag tagObj = Tag.create(tag);
 		closed = tagObj.isOpenClosed();
@@ -30,13 +32,16 @@ abstract class BaseElement implements Element {
 		parseTag(tagObj, ctx);
 	}
 
+	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 	}
 
+	@Override
 	public boolean onError(Exception e, ParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
 		parent.characters(csq, start, end);
 	}

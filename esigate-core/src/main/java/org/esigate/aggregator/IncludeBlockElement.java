@@ -27,28 +27,34 @@ import org.esigate.tags.BlockRenderer;
 class IncludeBlockElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
 
+		@Override
 		public boolean isStartTag(String tag) {
 			return tag.startsWith("<!--$includeblock$");
 		}
 
+		@Override
 		public boolean isEndTag(String tag) {
 			return tag.startsWith("<!--$endincludeblock$");
 		}
 
+		@Override
 		public Element newInstance() {
 			return new IncludeBlockElement();
 		}
 
 	};
 
+	@Override
 	public boolean onError(Exception e, org.esigate.parser.ParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void onTagEnd(String tag, org.esigate.parser.ParserContext ctx) {
 		// Nothing to do
 	}
 
+	@Override
 	public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
 		Driver driver = tagAttributes.getDriver();
@@ -58,10 +64,12 @@ class IncludeBlockElement implements Element {
 		driver.render(page, null, new Adapter(ctx.getCurrent()), ctx.getHttpRequest(), new BlockRenderer(name, page), new AggregateRenderer());
 	}
 
+	@Override
 	public boolean isClosed() {
 		return false;
 	}
 
+	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 	}

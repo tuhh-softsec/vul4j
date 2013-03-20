@@ -17,6 +17,7 @@ import org.esigate.parser.ParserContext;
  */
 class Comment extends BaseElement {
 	public final static ElementType TYPE = new BaseElementType("<!--esi", "-->") {
+		@Override
 		public Comment newInstance() {
 			return new Comment();
 		}

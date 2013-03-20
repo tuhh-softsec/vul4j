@@ -30,22 +30,26 @@ public abstract class CacheStorage implements HttpCacheStorage {
 	abstract public void init( Properties properties);
 	protected HttpCacheStorage impl;
 
+	@Override
 	public void putEntry(String key, HttpCacheEntry entry) throws IOException {
 		LOG.debug("putEntry({})", key);
 		impl.putEntry(key, entry);
 	}
 
+	@Override
 	public HttpCacheEntry getEntry(String key) throws IOException {
 		LOG.debug("getEntry({})", key);
 		return impl.getEntry(key);
 	}
 
+	@Override
 	public void removeEntry(String key) throws IOException {
 		LOG.debug("removeEntry({})", key);
 		impl.removeEntry(key);
 
 	}
 
+	@Override
 	public void updateEntry(String key, HttpCacheUpdateCallback callback) throws IOException, HttpCacheUpdateException {
 		LOG.debug("updateEntry({})",  key );
 		impl.updateEntry(key, callback);

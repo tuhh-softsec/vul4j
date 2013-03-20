@@ -43,6 +43,7 @@ public class ReplaceRenderer implements Renderer {
 		this.replaceRules = replaceRules;
 	}
 
+	@Override
 	public void render(HttpEntityEnclosingRequest httpRequest, String src, Writer out) throws IOException, HttpErrorPage {
 		out.write(replace(src, replaceRules).toString());
 	}

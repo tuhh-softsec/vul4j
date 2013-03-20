@@ -28,14 +28,17 @@ import org.esigate.tags.TemplateRenderer;
 
 class IncludeTemplateElement implements Element {
 	public final static ElementType TYPE = new ElementType() {
+		@Override
 		public boolean isStartTag(String tag) {
 			return tag.startsWith("<!--$includetemplate$");
 		}
 
+		@Override
 		public boolean isEndTag(String tag) {
 			return tag.startsWith("<!--$endincludetemplate$");
 		}
 
+		@Override
 		public Element newInstance() {
 			return new IncludeTemplateElement();
 		}
@@ -48,10 +51,12 @@ class IncludeTemplateElement implements Element {
 	private final Map<String, String> params = new HashMap<String, String>();
 	private Appendable out;
 
+	@Override
 	public boolean onError(Exception e, ParserContext ctx) {
 		return false;
 	}
 
+	@Override
 	public void onTagStart(String tag, ParserContext ctx) {
 		this.out = new Adapter(ctx.getCurrent());
 
@@ -62,6 +67,7 @@ class IncludeTemplateElement implements Element {
 
 	}
 
+	@Override
 	public void onTagEnd(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
 		driver.render(page, null, out, ctx.getHttpRequest(), new TemplateRenderer(name, params, page), new AggregateRenderer());
 	}
@@ -70,10 +76,12 @@ class IncludeTemplateElement implements Element {
 		params.put(name, value);
 	}
 
+	@Override
 	public boolean isClosed() {
 		return false;
 	}
 
+	@Override
 	public void characters(CharSequence csq, int start, int end) throws IOException {
 		// Just ignore tag body
 	}

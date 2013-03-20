@@ -32,10 +32,12 @@ import org.esigate.events.impl.FragmentEvent;
  */
 public class XPoweredBy implements Extension, IEventListener {
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
 	}
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 
 		FragmentEvent e = (FragmentEvent) event;

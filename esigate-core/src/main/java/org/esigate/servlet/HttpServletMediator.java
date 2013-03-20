@@ -88,6 +88,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		this.httpRequest = result;
 	}
 
+	@Override
 	public Cookie[] getCookies() {
 		javax.servlet.http.Cookie[] src = request.getCookies();
 		Cookie result[] = null;
@@ -107,6 +108,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		return result;
 	}
 
+	@Override
 	public void addCookie(Cookie src) {
 		response.addCookie(rewriteCookie(src));
 	}
@@ -133,18 +135,22 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	}
 	
 
+	@Override
 	public String getRemoteAddr() {
 		return request.getRemoteAddr();
 	}
 
+	@Override
 	public String getRemoteUser() {
 		return request.getRemoteUser();
 	}
 
+	@Override
 	public Principal getUserPrincipal() {
 		return request.getUserPrincipal();
 	}
 
+	@Override
 	public void sendResponse(HttpResponse httpResponse) throws IOException {
 		response.setStatus(httpResponse.getStatusLine().getStatusCode());
 		for (Header header : httpResponse.getAllHeaders()) {
@@ -167,11 +173,13 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		}
 	}
 
+	@Override
 	public void setSessionAttribute(String key, Serializable value) {
 		HttpSession session = request.getSession();
 		session.setAttribute(key, value);
 	}
 
+	@Override
 	public Serializable getSessionAttribute(String key) {
 		HttpSession session = request.getSession(false);
 		if (session == null)
@@ -179,10 +187,12 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		return (Serializable) session.getAttribute(key);
 	}
 
+	@Override
 	public InputStream getResourceAsStream(String path) {
 		return servletContext.getResourceAsStream(path);
 	}
 
+	@Override
 	@Deprecated
 	public String getSessionId() {
 		HttpSession session = request.getSession(false);
@@ -191,6 +201,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		return null;
 	}
 
+	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
 		return httpRequest;
 	}

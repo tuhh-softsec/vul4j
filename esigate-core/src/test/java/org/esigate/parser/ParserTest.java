@@ -55,11 +55,13 @@ public class ParserTest extends TestCase {
 	}
 
 	private static final ElementType SIMPLE = new MockElementType("<test:simple", "</test:simple") {
+		@Override
 		public Element newInstance() {
 			return new SimpleElement();
 		}
 	};
 	private static final ElementType BODY = new MockElementType("<test:body", "</test:body") {
+		@Override
 		public Element newInstance() {
 			return new BodyElement();
 		}
@@ -74,10 +76,12 @@ public class ParserTest extends TestCase {
 			this.endTag = endTag;
 		}
 
+		@Override
 		public final boolean isStartTag(String tag) {
 			return tag.startsWith(startTag);
 		}
 
+		@Override
 		public final boolean isEndTag(String tag) {
 			return tag.startsWith(endTag);
 		}
@@ -107,20 +111,25 @@ public class ParserTest extends TestCase {
 		public SimpleElement() {
 		}
 
+		@Override
 		public boolean isClosed() {
 			return closed;
 		}
 
+		@Override
 		public void onTagStart(String tag, ParserContext ctx) {
 			closed = tag.endsWith("/>");
 		}
 
+		@Override
 		public void onTagEnd(String tag, ParserContext ctx) throws IOException {
 		}
 
+		@Override
 		public void characters(CharSequence csq, int start, int end) {
 		}
 
+		@Override
 		public boolean onError(Exception e, ParserContext ctx) {
 			return false;
 		}

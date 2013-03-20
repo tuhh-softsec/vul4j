@@ -25,6 +25,7 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 			".*<head>.*<meta[^>]+charset=([^>^\"]+)\"[^>]*/?>.*</head>.*",
 			Pattern.CASE_INSENSITIVE);
 
+	@Override
 	public boolean event(EventDefinition id, Event event) {
 		EncodingEvent encodingEvent = (EncodingEvent) event;
 		Charset charset = null;
@@ -61,6 +62,7 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 		return true;
 	}
 
+	@Override
 	public void init(Driver driver, Properties properties) {
 		driver.getEventManager().register(EventManager.EVENT_ENCODING, this);
 	}
