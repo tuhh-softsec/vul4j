@@ -45,7 +45,7 @@ def delete_flow_path(flow_id):
 
 if __name__ == "__main__":
   usage_msg = "Delete flow state from the ONOS Network Map and the switches\n"
-  usage_msg = usage_msg + "Usage: %s <flow_id>\n" % (sys.argv[0])
+  usage_msg = usage_msg + "Usage: %s <begin-flow-id> [<end-flow-id>]\n" % (sys.argv[0])
 
   # app.debug = False;
 
@@ -58,7 +58,14 @@ if __name__ == "__main__":
   if len(sys.argv) < 2:
     log_error(usage_msg)
     exit(1)
+  begin_flow_id = int(sys.argv[1], 0)
+  if len(sys.argv) >= 3:
+    end_flow_id = int(sys.argv[2], 0)
+  else:
+    end_flow_id = begin_flow_id
 
   # Do the work
-  flow_id_arg = int(sys.argv[1], 0)
-  delete_flow_path(flow_id_arg);
+  flow_id = begin_flow_id
+  while flow_id <= end_flow_id:
+    delete_flow_path(flow_id)
+    flow_id = flow_id + 1
