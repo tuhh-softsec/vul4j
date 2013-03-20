@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -161,7 +163,7 @@ public class SwitchStorageImplTest {
 	    }
 	    public Boolean compute(LoopBundle<Vertex> bundle) {
 		Boolean output = false;
-		if (bundle.getObject().getProperty("dpid") != dpid) {
+		if (! bundle.getObject().getProperty("dpid").equals(dpid)) {
 		    output = true;
 		}
 		return output;
@@ -181,10 +183,6 @@ public class SwitchStorageImplTest {
 	    //   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
 	    //
 
-	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
-
-	    String gremlin_nopath = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != \"NO-SUCH-DPID\"}.path().fill(results)";
-
 	    // Get the source vertex
 	    Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
 	    if (! iter.hasNext())
@@ -196,12 +194,19 @@ public class SwitchStorageImplTest {
 	    if (! iter.hasNext())
 		return;			// Destination vertex not found
 	    Vertex v_dest = iter.next();
-	
+
 	    //
 	    // Implement the Gremlin script and run it
 	    //
-	    ScriptEngine engine = new GremlinGroovyScriptEngine();
+	    // NOTE: This mechanism is slower. The code is kept here
+	    // for future reference.
+	    //
+	    /*
+	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
 
+	    String gremlin_nopath = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != \"NO-SUCH-DPID\"}.path().fill(results)";
+
+	    ScriptEngine engine = new GremlinGroovyScriptEngine();
 	    ArrayList<ArrayList<Vertex>> results = new ArrayList<ArrayList<Vertex>>();
 	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("g", titanGraph);
 	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("v_src", v_src);
@@ -215,14 +220,26 @@ public class SwitchStorageImplTest {
 		return;
 	    }
 
+	    for (ArrayList<Vertex> lv : results) {
+		...
+	    }
+	    */
+
+	    MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
+	    GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
+	    Collection<List> results = new ArrayList<List>();
+	    GremlinPipeline<Vertex, List> path;
+	    path = pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path();
+	    path.fill(results);
+
 	    //
 	    // Extract the result and compose it into a string
 	    //
 	    String results_str = "";
 	    // System.out.println("BEGIN " + results.size());
-	    for (ArrayList<Vertex> lv : results) {
-		// System.out.println(lv);
-		for (Vertex v: lv) {
+	    for (List l : results) {
+		for (Object o: l) {
+		    Vertex v = (Vertex)(o);
 		    // System.out.println(v);
 		    String type = v.getProperty("type").toString();
 		    results_str += "[type: " + type;
@@ -241,35 +258,21 @@ public class SwitchStorageImplTest {
 	    }
 	    // System.out.println("END\n");
 	    System.out.println(results_str);
-	    
+
+	    //
+	    // Check the result
+	    //
 	    String expected_result = "[type: switch dpid: 00:00:00:00:00:00:0a:01][type: port number: 2][type: port number: 1][type: switch dpid: 00:00:00:00:00:00:0a:03][type: port number: 2][type: port number: 2][type: switch dpid: 00:00:00:00:00:00:0a:04][type: port number: 3][type: port number: 1][type: switch dpid: 00:00:00:00:00:00:0a:06]";
 
-
-	    // Pipe<Vertex, Vertex> pipe = Gremlin.compile(gremlin);
-	    // pipe.setStarts(new SingleIterator<Vertex>(v1));
-
-	    //
-	    // XXX: An alternative (faster?) solution that fails to compile
-	    //
-	    // MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
-	    // GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-	    // ArrayList<ArrayList<Vertex>> results2 = new ArrayList<ArrayList<Vertex>>();
-	    // TODO: The statement below doesn't compile
-	    // pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path().fill(results2);
-
-	    // Check the result
 	    assertEquals(results_str, expected_result);
 
 	    //
 	    // Test Shortest-Path computation to non-existing destination
 	    //
 	    results.clear();
-	    try {
-		engine.eval(gremlin_nopath);
-	    } catch (ScriptException e) {
-		System.err.println("Caught ScriptException running Gremlin script: " + e.getMessage());
-		return;
-	    }
+	    MyLoopFunction noDestWhileFunction = new MyLoopFunction("NO-SUCH-DPID");
+	    path = pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", noDestWhileFunction).path();
+	    path.fill(results);
 	    assertTrue(results.size() == 0);
 	}
 }
