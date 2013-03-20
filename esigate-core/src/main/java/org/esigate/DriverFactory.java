@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Nicolas Richeton
  */
 public class DriverFactory {
-	private static final Map<String, Driver> INSTANCES = new HashMap<String, Driver>();
+	private static Map<String, Driver> INSTANCES = new HashMap<String, Driver>();
 	private static final String DEFAULT_INSTANCE_NAME = "default";
 	private static final Logger LOG = LoggerFactory.getLogger(DriverFactory.class);
 
@@ -161,20 +162,24 @@ public class DriverFactory {
 				driverProperties.put(name, value);
 			}
 		}
+		
 		// Merge with default properties
-		synchronized (INSTANCES) {
-			INSTANCES.clear();
-			for (Entry<String, Properties> entry : driversProps.entrySet()) {
-				String name = entry.getKey();
-				Properties properties = new Properties();
-				properties.putAll(defaultProperties);
-				properties.putAll(entry.getValue());
-				configure(name, properties);
-			}
-			if (INSTANCES.get(DEFAULT_INSTANCE_NAME) == null && Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
-				configure(DEFAULT_INSTANCE_NAME, defaultProperties);
-			}
+		Map<String, Driver> newInstances = new HashMap<String, Driver>();
+		for (Entry<String, Properties> entry : driversProps.entrySet()) {
+			String name = entry.getKey();
+			Properties properties = new Properties();
+			properties.putAll(defaultProperties);
+			properties.putAll(entry.getValue());
+			newInstances.put(name, new Driver(name, properties));
 		}
+		if (newInstances.get(DEFAULT_INSTANCE_NAME) == null
+				&& Parameters.REMOTE_URL_BASE.getValueString(defaultProperties) != null) {
+
+			newInstances.put(DEFAULT_INSTANCE_NAME, new Driver(
+					DEFAULT_INSTANCE_NAME, defaultProperties));
+		}
+		
+		INSTANCES = newInstances;
 	}
 
 	/**
@@ -184,8 +189,8 @@ public class DriverFactory {
 	 * @param name
 	 * @param props
 	 */
-	public static void configure(String name, Properties props) {
-		INSTANCES.put(name, new Driver(name, props));
+	public static final void configure(String name, Properties props) {
+		setInstance(name, new Driver(name, props));
 	}
 
 	/**
@@ -199,18 +204,19 @@ public class DriverFactory {
 	 * @return the named instance
 	 */
 	public final static Driver getInstance(String instanceName) {
-		synchronized (INSTANCES) {
-			if (instanceName == null)
-				instanceName = DEFAULT_INSTANCE_NAME;
-			if (INSTANCES.isEmpty()) {
-				throw new ConfigurationException("Driver has not been configured and driver.properties file was not found");
-			}
-			Driver instance = INSTANCES.get(instanceName);
-			if (instance == null) {
-				throw new ConfigurationException("No configuration properties found for factory : " + instanceName);
-			}
-			return instance;
+		if (instanceName == null)
+			instanceName = DEFAULT_INSTANCE_NAME;
+		if (INSTANCES.isEmpty()) {
+			throw new ConfigurationException(
+					"Driver has not been configured and driver.properties file was not found");
 		}
+		Driver instance = INSTANCES.get(instanceName);
+		if (instance == null) {
+			throw new ConfigurationException(
+					"No configuration properties found for factory : "
+							+ instanceName);
+		}
+		return instance;
 	}
 
 	/**
@@ -232,8 +238,30 @@ public class DriverFactory {
 	 *            The instance
 	 */
 	public final static void put(String instanceName, Driver instance) {
+		setInstance(instanceName, instance);
+	}
+	
+	/**
+	 * Add/replace instance in current instance map. Work on a copy of the
+	 * current map and replace it atomically.
+	 * 
+	 * @param instanceName
+	 * @param d
+	 */
+	private static final void setInstance(String instanceName, Driver d) {
+		// Copy current instances
+		Map<String, Driver> newInstances = new HashMap<String, Driver>();
 		synchronized (INSTANCES) {
-			INSTANCES.put(instanceName, instance);
+			Set<String> keys = INSTANCES.keySet();
+
+			for (String key : keys) {
+				newInstances.put(key, INSTANCES.get(key));
+			}
 		}
+		
+		// Add new instance
+		newInstances.put(instanceName, d);
+		
+		INSTANCES = newInstances;
 	}
 }
