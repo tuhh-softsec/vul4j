@@ -447,6 +447,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
+
+	//
+	// Extract all flow entries and assign the next Flow Entry ID
+	// to be larger than the largest Flow Entry ID
+	//
+	Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+	for (IFlowEntry flowEntryObj : allFlowEntries) {
+	    FlowEntryId flowEntryId =
+		new FlowEntryId(flowEntryObj.getFlowEntryId());
+	    if (flowEntryId.value() >= nextFlowEntryId)
+		nextFlowEntryId = flowEntryId.value() + 1;
+	}
+	conn.endTx(Transaction.COMMIT);
     }
 
     /**
