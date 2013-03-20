@@ -17,6 +17,7 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.INetMapStorage;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -41,6 +42,7 @@ import net.floodlightcontroller.util.IPv4Net;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -61,6 +63,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IRestApiService restApi;
     protected IFloodlightProviderService floodlightProvider;
+    protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
 
@@ -75,14 +78,96 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public static final short PRIORITY_DEFAULT = 100;
 
     private static long nextFlowEntryId = 1;
+    private static long measurementFlowId = 100000;
+    private static String measurementFlowIdStr = "0x186a0";	// 100000
+    private long modifiedMeasurementFlowTime = 0;
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
-    private final ScheduledExecutorService scheduler =
+    private final ScheduledExecutorService measureShortestPathScheduler =
 	Executors.newScheduledThreadPool(1);
-    final Runnable reader = new Runnable() {
+    private final ScheduledExecutorService measureMapReaderScheduler =
+	Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService mapReaderScheduler =
+	Executors.newScheduledThreadPool(1);
+
+    final Runnable measureShortestPath = new Runnable() {
+	    public void run() {
+		log.debug("Recomputing Shortest Paths from the Network Map Flows...");
+		if (floodlightProvider == null) {
+		    log.debug("FloodlightProvider service not found!");
+		    return;
+		}
+
+		ITopoRouteService topoRouteService =
+		    context.getServiceImpl(ITopoRouteService.class);
+		if (topoRouteService == null) {
+		    log.debug("Topology Route Service not found");
+		    return;
+		}
+
+		//
+		// Recompute the Shortest Paths for all Flows
+		//
+		int counter = 0;
+		long startTime = System.nanoTime();
+		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		for (IFlowPath flowPathObj : allFlowPaths) {
+		    counter++;
+		    FlowId flowId = new FlowId(flowPathObj.getFlowId());
+
+		    // log.debug("Found Path {}", flowId.toString());
+		    Dpid srcDpid = new Dpid(flowPathObj.getSrcSwitch());
+		    Port srcPort = new Port(flowPathObj.getSrcPort());
+		    Dpid dstDpid = new Dpid(flowPathObj.getDstSwitch());
+		    Port dstPort = new Port(flowPathObj.getDstPort());
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    DataPath dataPath =
+			topoRouteService.getShortestPath(srcSwitchPort,
+							 dstSwitchPort);
+		}
+		conn.endTx(Transaction.COMMIT);
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Computed " + counter + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
+		log.debug(logMsg);
+	    }
+	};
+
+    final Runnable measureMapReader = new Runnable() {
+	    public void run() {
+		if (floodlightProvider == null) {
+		    log.debug("FloodlightProvider service not found!");
+		    return;
+		}
+
+		//
+		// Fetch all Flow Entries
+		//
+		int counter = 0;
+		long startTime = System.nanoTime();
+		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+		for (IFlowEntry flowEntryObj : allFlowEntries) {
+		    counter++;
+		    FlowEntryId flowEntryId =
+			new FlowEntryId(flowEntryObj.getFlowEntryId());
+		    String userState = flowEntryObj.getUserState();
+		    String switchState = flowEntryObj.getSwitchState();
+		}
+		conn.endTx(Transaction.COMMIT);
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Fetched " + counter + " flow entries in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " entries/s";
+		log.debug(logMsg);
+	    }
+	};
+
+    final Runnable mapReader = new Runnable() {
 	    public void run() {
 		// log.debug("Reading Flow Entries from the Network Map...");
 		if (floodlightProvider == null) {
@@ -126,8 +211,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		// Process my Flow Entries
 		//
+		Boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
 		    IFlowEntry flowEntryObj = entry.getValue();
+		    // Code for measurement purpose
+		    {
+			IFlowPath flowObj =
+			    conn.utils().getFlowPathByFlowEntry(conn,
+								flowEntryObj);
+			if ((flowObj != null) &&
+			    flowObj.getFlowId().equals(measurementFlowIdStr)) {
+			    processed_measurement_flow = true;
+			}
+		    }
 
 		    //
 		    // TODO: Eliminate the re-fetching of flowEntryId,
@@ -268,10 +364,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		}
 		conn.endTx(Transaction.COMMIT);
+
+		if (processed_measurement_flow) {
+		    long estimatedTime = System.nanoTime() - modifiedMeasurementFlowTime;
+		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
+			(double)estimatedTime / 1000000000 + " sec";
+		    log.debug(logMsg);
+		}
 	    }
 	};
-    final ScheduledFuture<?> readerHandle =
-	scheduler.scheduleAtFixedRate(reader, 3, 3, TimeUnit.SECONDS);
+
+    /*
+    final ScheduledFuture<?> measureShortestPathHandle =
+	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
+    */
+
+    /*
+    final ScheduledFuture<?> measureMapReaderHandle =
+	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
+    */
+
+    final ScheduledFuture<?> mapReaderHandle =
+	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
 
     @Override
     public void init(String conf) {
@@ -319,6 +433,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
+	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
@@ -346,6 +461,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+	if (flowPath.flowId().value() == measurementFlowId) {
+	    modifiedMeasurementFlowTime = System.nanoTime();
+	}
 
 	//
 	// Assign the FlowEntry IDs
@@ -509,6 +627,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	if (flowId.value() == measurementFlowId) {
+	    modifiedMeasurementFlowTime = System.nanoTime();
+	}
+
 	IFlowPath flowObj = null;
 	//
 	// We just mark the entries for deletion,
