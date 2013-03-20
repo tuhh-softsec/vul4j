@@ -796,6 +796,8 @@ public class OFSwitchImpl implements IOFSwitch {
                 return head.role;
             }
             else {
+            	log.debug("Closing {} because a role request error didn't match " + 
+            			"head of pendingRoleRequests queue", this);
                 this.channel.close();
                 return null;
             }

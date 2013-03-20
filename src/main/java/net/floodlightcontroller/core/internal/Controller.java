@@ -769,6 +769,7 @@ public class Controller implements IFloodlightProviderService,
          */
         void sendHelloConfiguration() throws IOException {
             // Send initial Features Request
+        	log.debug("Sending FEATURES_REQUEST to {}", sw);
             sw.write(factory.getMessage(OFType.FEATURES_REQUEST), null);
         }
         
@@ -778,6 +779,7 @@ public class Controller implements IFloodlightProviderService,
          * @throws IOException
          */
         void sendFeatureReplyConfiguration() throws IOException {
+        	log.debug("Sending CONFIG_REQUEST to {}", sw);
             // Ensure we receive the full packet via PacketIn
             OFSetConfig config = (OFSetConfig) factory
                     .getMessage(OFType.SET_CONFIG);
@@ -805,6 +807,7 @@ public class Controller implements IFloodlightProviderService,
                     state.hasDescription && state.hasGetConfigReply) {
                 
                 state.hsState = HandshakeState.READY;
+                log.debug("Handshake with {} complete", sw);
                 
                 synchronized(roleChanger) {
                     // We need to keep track of all of the switches that are connected
@@ -872,6 +875,8 @@ public class Controller implements IFloodlightProviderService,
 						// Ignore interruptions						
 					}
                 	// safer to bounce the switch to reconnect here than proceeding further
+                	log.debug("Closing {} because we weren't able to request control " +
+                			"successfully" + sw);
                 	sw.channel.close();
                 }
             }
@@ -1142,6 +1147,8 @@ public class Controller implements IFloodlightProviderService,
                                     // messages and the current controller role is
                                     // slave. We need to disconnect the switch. 
                                     // @see RoleChanger for rationale
+                                	log.warn("Closing {} channel because controller's role " +
+                                			"is SLAVE", sw);
                                     sw.getChannel().close();
                                 }
                                 else if (sw.role == null && requestedRole == Role.MASTER) {
@@ -1179,6 +1186,8 @@ public class Controller implements IFloodlightProviderService,
                             // to make sure that the switch eventually accepts one
                             // of our requests or disconnect the switch. This feels
                             // cumbersome. 
+                        	log.debug("Closing {} channel because we recieved an " + 
+                        			"error other than BAD_VENDOR", sw);
                             sw.getChannel().close();
                         }
                     }
@@ -1550,6 +1559,8 @@ public class Controller implements IFloodlightProviderService,
                 // a "Not removing Switch ... already removed debug message.
                 // TODO: Figure out a way to handle this that avoids the
                 // spurious debug message.
+                log.debug("Closing {} because a new IOFSwitch got added " +
+                		"for this dpid", oldSw);
                 oldSw.getChannel().close();
             }
             finally {
