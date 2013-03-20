@@ -18,6 +18,8 @@ package org.esigate;
 import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
+import org.esigate.extension.Aggregate;
+import org.esigate.extension.Esi;
 import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
 import org.esigate.extension.ResourceFixup;
@@ -75,7 +77,13 @@ public interface Parameters {
 	public static final String ROUNDROBIN = "roundrobin";
 
 	// Extensions
-	public static final Parameter EXTENSIONS = new Parameter("extensions", FragmentLogging.class.getName()+","+FetchLogging.class.getName()+","+RemoteUserAuthenticationHandler.class.getName()+","+ResourceFixup.class.getName()+","+XPoweredBy.class.getName());;
+	public static final Parameter EXTENSIONS = new Parameter("extensions",
+			FragmentLogging.class.getName() + ","
+					+ FetchLogging.class.getName() + ","
+					+ RemoteUserAuthenticationHandler.class.getName() + ","
+					+ ResourceFixup.class.getName() + ","
+					+ XPoweredBy.class.getName() + "," + Esi.class.getName()
+					+ "," + Aggregate.class.getName());
 
 	public static final Parameter FILTER = new Parameter("filter", null);
 
@@ -97,7 +105,7 @@ public interface Parameters {
 	// when no cache directive at all, nothing is cached by default
 	public final static Parameter HEURISTIC_DEFAULT_LIFETIME_SECS = new Parameter("heuristicDefaultLifetimeSecs", "0");
 
-	// Backgroung revalidation
+	// Background revalidation
 	public final static Parameter STALE_WHILE_REVALIDATE = new Parameter("staleWhileRevalidate", "0");
 	public final static Parameter STALE_IF_ERROR = new Parameter("staleIfError", "0");
 	public final static Parameter MIN_ASYNCHRONOUS_WORKERS = new Parameter("minAsynchronousWorkers", "0");

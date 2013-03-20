@@ -30,8 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
-import org.esigate.aggregator.AggregateRenderer;
-import org.esigate.esi.EsiRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +113,7 @@ public class AggregatorServlet extends HttpServlet {
 		// Process ressource
 		HttpServletMediator mediator = new HttpServletMediator(request, response, getServletContext());
 		try {
-			getDriver(targetProvider).proxy(relUrl, mediator.getHttpRequest(), new AggregateRenderer(), new EsiRenderer());
+			getDriver(targetProvider).proxy(relUrl, mediator.getHttpRequest());
 		} catch (HttpErrorPage e) {
 			mediator.sendResponse(e.getHttpResponse());
 		}
