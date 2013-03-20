@@ -1,6 +1,19 @@
 #! /usr/bin/env python
 # -*- Mode: python; py-indent-offset: 4; tab-width: 8; indent-tabs-mode: t; -*-
 
+#
+# A script for generating a number of flows.
+#
+# The output of the script should be saved to a file, and the flows from
+# that file should be added by the following command:
+#
+#   web/add_flow.py -f filename
+# 
+# NOTE: Currently, some of the parameters fo the flows are hard-coded,
+# and all flows are between same source and destination DPID and ports
+# (differentiated by different matchSrcMac and matchDstMac).
+#
+
 import copy
 import pprint
 import os
@@ -49,9 +62,6 @@ if __name__ == "__main__":
 
   #
   # Do the work
-  #
-  # We generate a number of flows between same source and destination
-  # DPID and ports.
   #
   # NOTE: Currently, up to 65536 flows are supported.
   # More flows can be supported by iterating by, say, iterating over some of
