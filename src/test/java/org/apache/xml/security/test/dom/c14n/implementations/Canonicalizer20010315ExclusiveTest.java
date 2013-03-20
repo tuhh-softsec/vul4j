@@ -403,6 +403,219 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         assertTrue(equals);
     }
 
+    /**
+     * Test default namespace behavior if its in the InclusiveNamespace prefix list.
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testDefaultNSInInclusiveNamespacePrefixList1() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        {
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "#default xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+        {
+            //exactly the same outcome is expected if #default is not set:
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+    }
+
+    /**
+     * Test default namespace behavior if its in the InclusiveNamespace prefix list.
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testDefaultNSInInclusiveNamespacePrefixList2() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML1 =
+                "<env:Body"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        final String c14nXML2 =
+                "<env:Body"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        {
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "#default xsi");
+            assertEquals(c14nXML1, new String(bytes));
+        }
+        {
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "xsi");
+            assertEquals(c14nXML2, new String(bytes));
+        }
+    }
+
+    /**
+     * Test default namespace behavior if its in the InclusiveNamespace prefix list.
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testDefaultNSInInclusiveNamespacePrefixList3() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns=\"\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        {
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "#default xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+        {
+            //exactly the same outcome is expected if #default is not set:
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+    }
+
+    /**
+     * Test default namespace behavior if its in the InclusiveNamespace prefix list.
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testDefaultNSInInclusiveNamespacePrefixList4() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xmlns=\"\" xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        {
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "#default xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+        {
+            //exactly the same outcome is expected if #default is not set:
+            Canonicalizer20010315ExclOmitComments c14n =
+                    new Canonicalizer20010315ExclOmitComments();
+            XMLSignatureInput input = new XMLSignatureInput(doc.getDocumentElement().getFirstChild());
+            byte[] bytes = c14n.engineCanonicalize(input, "xsi");
+            assertEquals(c14nXML, new String(bytes));
+        }
+    }
+
     private String getAbsolutePath(String path) {
         String basedir = System.getProperty("basedir");
         if (basedir != null && !"".equals(basedir)) {
