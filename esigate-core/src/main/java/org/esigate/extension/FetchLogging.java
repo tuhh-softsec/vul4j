@@ -18,7 +18,9 @@ package org.esigate.extension;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
+import org.apache.http.protocol.ExecutionContext;
 import org.esigate.Driver;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
@@ -76,9 +78,9 @@ public class FetchLogging implements Extension, IEventListener {
 		if (EventManager.EVENT_FETCH_POST.equals(id)) {
 			int statusCode = e.httpResponse.getStatusLine().getStatusCode();
 
-			// Log only if info or issue 
+			// Log only if info or issue
 			if (LOG.isInfoEnabled() || statusCode >= 400) {
-				HttpRequest lastRequest =e.httpRequest;
+				HttpRequest lastRequest = e.httpRequest;
 
 				String url = lastRequest.getRequestLine().toString();
 				String status = e.httpResponse.getStatusLine().toString();
@@ -88,16 +90,42 @@ public class FetchLogging implements Extension, IEventListener {
 				String respHeaders = ArrayUtils.toString(e.httpResponse
 						.getAllHeaders());
 
+				HttpHost targetHost = (HttpHost) e.httpContext
+						.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+
 				long time = System.currentTimeMillis()
 						- (Long) e.httpContext.removeAttribute(TIME);
 
-				String logMessage = url + " " + reqHeaders + " -> " + status
-						+ " (" + time + " ms) "  + " " + respHeaders;
+				StringBuilder logMessage = new StringBuilder();
+				
+				// Add target host
+				if (targetHost != null) {
+					logMessage.append(targetHost.toHostString());
+					logMessage.append(" - ");
+				}
+				// Url
+				logMessage.append(url);
+				logMessage.append(" ");
+				
+				// request headers
+				logMessage.append(reqHeaders);
+				
+				// Response status
+				logMessage.append(" -> ");
+				logMessage.append(status);
+				
+				// Time
+				logMessage.append(" (" );
+				logMessage.append( time );
+				logMessage.append( " ms) ");
+				
+				// Response headers
+				logMessage.append(respHeaders);
 
 				if (statusCode >= 400)
-					LOG.warn(logMessage);
+					LOG.warn(logMessage.toString());
 				else
-					LOG.info(logMessage);
+					LOG.info(logMessage.toString());
 			}
 		} else {
 			e.httpContext.setAttribute(TIME, System.currentTimeMillis());
