@@ -59,7 +59,6 @@ body {
 	padding: .25em;
 }
 
-
 #logo {
 	height: 50px;
 }
@@ -94,6 +93,7 @@ path {
 	visibility: hidden
 }
 
+.color0-selected .color0,
 .color1-selected .color1,
 .color2-selected .color2,
 .color3-selected .color3,
@@ -109,74 +109,80 @@ path {
 	opacity: 1;
 }
 
+.color0 {
+	opacity: .25;
+	fill: #444;
+	background-color: #444;
+}
+
 .color1 {
-	opacity: .35;
+	opacity: .25;
 	fill: #EC0033;
 	background-color: #EC0033;
 }
 
 .color2 {
-	opacity: .35;
+	opacity: .25;
 	fill: #FFBA00;
 	background-color: #FFBA00;
 }
 
 .color3 {
-	opacity: .35;
+	opacity: .25;
 	fill: #3714B0;
 	background-color: #3714B0;
 }
 
 .color4 {
-	opacity: .35;
+	opacity: .25;
 	fill: #B12C49;
 	background-color: #B12C49;
 }
 
 .color5 {
-	opacity: .35;
+	opacity: .25;
 	fill: #402C84;
 	background-color: #402C84;
 }
 
 .color6 {
-	opacity: .35;
+	opacity: .25;
 	fill: #990021;
 	background-color: #990021;
 }
 
 .color7 {
-	opacity: .35;
+	opacity: .25;
 	fill: #990021;
 	background-color: ;
 }
 
 .color8 {
-	opacity: .35;
+	opacity: .25;
 	fill: #A67900;
 	background-color: #A67900;
 }
 
 .color9 {
-	opacity: .35;
+	opacity: .25;
 	fill: #F53D65;
 	background-color: #F53D65;
 }
 
 .color10 {
-	opacity: .35;
+	opacity: .25;
 	fill: #1F0772;
 	background-color: #1F0772;
 }
 
 .color11 {
-	opacity: .35;
+	opacity: .25;
 	fill: #F56E8B;
 	background-color: #F56E8B;
 }
 
 .color12 {
-	opacity: .35;
+	opacity: .25;
 	fill: #6949D7;
 	background-color: #6949D7;
 }

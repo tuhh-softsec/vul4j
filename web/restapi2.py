@@ -53,6 +53,77 @@ def return_file(filename="index.html"):
 
   return response
 
+## PROXY API (allows development where the webui is served from someplace other than the ONOS_HOST)##
+ONOS_HOST="http://gui3.onlab.us:8080"
+
+@app.route("/proxy/wm/core/topology/switches/all/json")
+def switches():
+  try:
+    command = "curl -s %s/wm/core/topology/switches/all/json" % (ONOS_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/wm/core/topology/links/json")
+def links():
+  try:
+    command = "curl -s %s/wm/core/topology/links/json" % (ONOS_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/wm/flow/getall/json")
+def flows():
+  try:
+    command = "curl -s %s/wm/flow/getall/json" % (ONOS_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/wm/registry/controllers/json")
+def registry_controllers():
+  try:
+    command = "curl -s %s/wm/registry/controllers/json" % (ONOS_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/wm/registry/switches/json")
+def registry_switches():
+  try:
+    command = "curl -s %s/wm/registry/switches/json" % (ONOS_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+
+
+
 ## REST API ##
 #@app.route("/wm/topology/links/json")
 #def links():

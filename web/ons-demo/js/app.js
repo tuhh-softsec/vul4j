@@ -90,7 +90,11 @@ function updateTopology(svg, model) {
 //		rings[1].angles[i] = k * i;
 		var range = aggRanges[s.dpid];
 
-		rings[1].angles[i] = (range.min + range.max)/2;
+		if (range) {
+			rings[1].angles[i] = (range.min + range.max)/2;
+		} else {
+			rings[1].angles[i] = 0;
+		}
 	});
 
 	// arrange core switches at equal increments
@@ -213,11 +217,18 @@ function updateControllers(model) {
 	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
 	controllers.enter().append('div')
 		.attr('class', function (d) {
-			var color = controllerColorMap[d];
-			if (!color) {
-				color = controllerColorMap[d] = colors.pop();
+
+			var color = 'color0';
+			if (model.activeControllers.indexOf(d) != -1) {
+				color = controllerColorMap[d];
+				if (!color) {
+					color = controllerColorMap[d] = colors.pop();
+				}
+			} else {
+				controllerColorMap[d] = color;
 			}
-			return 'controller ' + color;
+			var className = 'controller ' + color;
+			return className;
 		});
 	controllers.text(function (d) {
 		return d;
@@ -236,7 +247,9 @@ function updateControllers(model) {
 
 var oldModel;
 function sync(svg) {
+	var d = Date.now();
 	updateModel(function (newModel) {
+		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
 		if (!oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
