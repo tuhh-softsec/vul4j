@@ -236,8 +236,25 @@ function updateControllers(model) {
 	});
 
 	controllers.on('click', function (c, index) {
-		var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
-		d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
+		var allSelected = true;
+		for (var key in controllerColorMap) {
+			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {
+				allSelected = false;
+				break;
+			}
+		}
+		if (allSelected) {
+			for (var key in controllerColorMap) {
+				d3.select(document.body).classed(controllerColorMap[key] + '-selected', key == c)
+			}
+		} else {
+			for (var key in controllerColorMap) {
+				d3.select(document.body).classed(controllerColorMap[key] + '-selected', true)
+			}
+		}
+
+		// var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
+		// d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
 	});
 }
 

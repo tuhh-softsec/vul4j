@@ -64,7 +64,7 @@ var mockURLs = {
 	switches: 'data/wm_core_topology_switches_all_json.json',
 	flows: 'data/wm_flow_getall_json.json',
 	activeControllers: 'data/wm_registry_controllers_json.json',
-	controllers: '/data/controllers.json',
+	controllers: 'data/controllers.json',
 	mapping: 'data/wm_registry_switches_json.json',
 	configuration: 'data/configuration.json'
 }
