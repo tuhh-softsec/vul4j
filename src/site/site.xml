@@ -53,6 +53,7 @@
 			<item href="quickstart.html" name="Quick start" />
 			<item href="reference.html" name="Reference documentation" />
 			<item href="external-resources.html" name="External resources" />
+			<item href="upgrade.html" name="Upgrade" />
 		</menu>
 
 		<menu ref="reports" />
