@@ -17,7 +17,7 @@ function toD3(results) {
 		var bB = b.dpid.split(':');
 		for (var i=0; i<aA.length; i+=1) {
 			if (aA[i] != bB[i]) {
-				return aA[i] - bB[i];
+				return parseInt(aA[i], 16) - parseInt(bB[i], 16);
 			}
 		}
 		return 0;

@@ -71,7 +71,7 @@ function updateTopology(svg, model) {
 
 		// record the angle for the agg switch layout
 		var dpid = s.dpid.split(':');
-		dpid[7] = '00';
+		dpid[7] = '01'; // the last component of the agg switch is always '01'
 		var aggdpid = dpid.join(':');
 		var aggRange = aggRanges[aggdpid];
 		if (!aggRange) {
@@ -90,11 +90,7 @@ function updateTopology(svg, model) {
 //		rings[1].angles[i] = k * i;
 		var range = aggRanges[s.dpid];
 
-		if (range) {
-			rings[1].angles[i] = (range.min + range.max)/2;
-		} else {
-			rings[1].angles[i] = 0;
-		}
+		rings[1].angles[i] = (range.min + range.max)/2;
 	});
 
 	// arrange core switches at equal increments
