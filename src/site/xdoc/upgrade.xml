@@ -5,44 +5,47 @@
 		<title>Upgrade instructions</title>
 		<author email="nicolas.richeton@gmail.com">Nicolas Richeton</author>
 	</properties>
-	<body>	
+	<body>
 		<section name="4.0 -> 4.1">
 			<p>No changes required</p>
 		</section>
-	
+
 		<section name="4.1 -> 5.0">
 
-<subsection name="ESI & Aggregator">
-	<p>
-		ESI tags and comment-based directives are now processed by extensions.
-		These extensions are enabled by default.
-	</p>
-	<ul>
-		<li>org.esigate.extension.Esi				</li>
-		<li>org.esigate.extension.Aggregate			</li>
-	</ul>
-	<p>
-		If you are overriding extensions in esigate.properties and use ESI
-		and/or Aggregator features, you must add the corresponding extension
-		before other rendering extensions (especially ResourceFixup)
-	</p>
-</subsection>
+			<subsection name="ESI &amp; Aggregator">
+				<p>
+					ESI tags and comment-based directives are now processed by extensions.
+					These extensions are enabled by default.
+				</p>
+				<ul>
+					<li>org.esigate.extension.Esi				</li>
+					<li>org.esigate.extension.Aggregate			</li>
+				</ul>
+				<p>
+					If you are overriding extensions in esigate.properties and use ESI
+					and/or Aggregator features, you must add the corresponding
+					extension
+					before other rendering extensions (especially ResourceFixup)
+				</p>
+			</subsection>
 
-<subsection name="Cache">
-	<p>
-		The HTTP client and cache has been updated to Apache HttpClient 4.3.
-		This release fixes handling of "Vary: Cookie" header and has been
-		through major refactoring. All esigate tests have passed, but there may be
-		other small differences in behavior. It would be a good idea to test your
-		applications to ensure they are not broken by these changes.
-	</p>
+			<subsection name="Cache">
+				<p>
+					The HTTP client and cache has been updated to Apache HttpClient 4.3.
+					This release fixes handling of "Vary: Cookie" header and has been
+					through major refactoring. All esigate tests have passed, but there
+					may be
+					other small differences in behavior. It would be a good idea to test
+					your
+					applications to ensure they are not broken by these changes.
+				</p>
 
-</subsection>
-			
-		
-		
-		 <div id="disqus_thread"></div>
-    <script type="text/javascript">
+			</subsection>
+
+
+
+			<div id="disqus_thread"></div>
+			<script type="text/javascript">
 <![CDATA[  
         var disqus_shortname = 'esigate';
 
@@ -53,10 +56,16 @@
         })();
         
       //  ]]>
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-   	
-   	</section>
+			</script>
+			<noscript>
+				Please enable JavaScript to view the
+				<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+			</noscript>
+			<a href="http://disqus.com" class="dsq-brlink">
+				comments powered by
+				<span class="logo-disqus">Disqus</span>
+			</a>
+
+		</section>
 	</body>
 </document>
