@@ -115,16 +115,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	@Override
 	public void run() {
+	    /*
 	    String logMsg = "MEASUREMENT: Running Thread hint " + this.hint;
 	    log.debug(logMsg);
 	    long startTime = System.nanoTime();
+	    */
 	    for (DataPath dp : this.dpList) {
-		topoRouteService.getShortestPath(dp.srcPort(), dp.dstPort());
+		topoRouteService.getTopoShortestPath(dp.srcPort(), dp.dstPort());
 	    }
+	    /*
 	    long estimatedTime = System.nanoTime() - startTime;
 	    double rate = (estimatedTime > 0)? ((double)dpList.size() * 1000000000) / estimatedTime: 0.0;
 	    logMsg = "MEASUREMENT: Computed Thread hint " + hint + ": " + dpList.size() + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
 	    log.debug(logMsg);
+	    */
 	}
     }
 
@@ -158,6 +162,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		int hint = 0;
 		ArrayList<DataPath> dpList = new ArrayList<DataPath>();
 		long startTime = System.nanoTime();
+
+		topoRouteService.prepareShortestPathTopo();
+
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    FlowId flowId = new FlowId(flowPathObj.getFlowId());
@@ -169,6 +176,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Port dstPort = new Port(flowPathObj.getDstPort());
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+
+		    /*
 		    DataPath dp = new DataPath();
 		    dp.setSrcPort(srcSwitchPort);
 		    dp.setDstPort(dstSwitchPort);
@@ -180,18 +189,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			dpList = new ArrayList<DataPath>();
 			hint++;
 		    }
-		    /*
-		    DataPath dataPath =
-			topoRouteService.getShortestPath(srcSwitchPort,
-							 dstSwitchPort);
 		    */
 
-		    /*
-		    shortestPathExecutor.execute(
-			new ShortestPathTask(topoRouteService,
-					     srcSwitchPort,
-					     dstSwitchPort));
-		    */
+		    DataPath dataPath =
+			topoRouteService.getTopoShortestPath(srcSwitchPort,
+							     dstSwitchPort);
 		    counter++;
 		}
 		if (dpList.size() > 0) {
@@ -200,6 +202,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 					     dpList));
 		}
 
+		/*
 		// Wait for all tasks to finish
 		try {
 		    while (shortestPathExecutor.getQueue().size() > 0) {
@@ -208,7 +211,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		} catch (InterruptedException ex) {
 		    log.debug("MEASUREMENT: Shortest Path Computation interrupted");
 		}
+		*/
+
 		conn.endTx(Transaction.COMMIT);
+		topoRouteService.dropShortestPathTopo();
 
 		long estimatedTime = System.nanoTime() - startTime;
 		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
@@ -458,13 +464,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
     */
 
-    /*
     final ScheduledFuture<?> measureMapReaderHandle =
 	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
-    */
 
+    /*
     final ScheduledFuture<?> mapReaderHandle =
 	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
+    */
 
     @Override
     public void init(String conf) {
