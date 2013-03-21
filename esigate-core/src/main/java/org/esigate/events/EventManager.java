@@ -82,7 +82,10 @@ public class EventManager {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(EventManager.class);
 
-	public EventManager() {
+	private String driverId = null;
+	
+	public EventManager(String driverId) {
+		this.driverId = driverId;
 	}
 
 	/**
@@ -116,8 +119,8 @@ public class EventManager {
 		}
 
 		if (LOG.isInfoEnabled()) {
-			LOG.info("Registered {} on event {}",
-					listener.getClass().getName(), eventDefinition);
+			LOG.info("Registered {} on event {}/{}", new Object[] {
+					listener.getClass().getName(), driverId, eventDefinition });
 		}
 	}
 
@@ -163,7 +166,8 @@ public class EventManager {
 		// Loop on listeners
 		for (IEventListener el : eventListeners) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Running {} on event {}", el, eventDefinition);
+				LOG.debug("Running {} on event {}/{}", new Object[] { el,
+						driverId, eventDefinition });
 			}
 
 			if (el.event(eventDefinition, eventDetails) == false)
@@ -202,8 +206,8 @@ public class EventManager {
 		boolean removed = eventListeners.remove(listener);
 
 		if (LOG.isInfoEnabled() && removed) {
-			LOG.info("Unregistered {} on event {}", listener.getClass()
-					.getName(), eventDefinition);
+			LOG.info("Unregistered {} on event {}/{}", new Object[] {
+					listener.getClass().getName(), driverId, eventDefinition });
 		}
 	}
 }

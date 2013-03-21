@@ -57,7 +57,7 @@ public class HttpClientHelperTest extends TestCase {
 	private Properties properties;
 
 	private void createHttpClientHelper() {
-		httpClientHelper = new HttpClientHelper(new EventManager(), null, properties, mockConnectionManager);
+		httpClientHelper = new HttpClientHelper(new EventManager("default"), null, properties, mockConnectionManager);
 	}
 
 	private boolean compare(HttpResponse response1, HttpResponse response2) throws Exception, IOException {

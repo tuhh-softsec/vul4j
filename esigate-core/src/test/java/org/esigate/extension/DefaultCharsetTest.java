@@ -29,7 +29,7 @@ public class DefaultCharsetTest extends TestCase {
 	private Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager, String name) {
 		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, null);
 
-		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(), cookieManager, properties, connectionManager);
+		HttpClientHelper httpClientHelper = new HttpClientHelper(new EventManager(name), cookieManager, properties, connectionManager);
 		Driver driver = new Driver(name, properties, httpClientHelper);
 		DriverFactory.put(name, driver);
 		return driver;

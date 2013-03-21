@@ -75,7 +75,7 @@ public class Driver {
 	}
 
 	public Driver(String name, Properties properties) {
-		this(properties, name,  new EventManager());
+		this(properties, name,  new EventManager(name));
 		CookieManager cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, this);
 		httpClientHelper = new HttpClientHelper(eventManager, cookieManager, properties);
 	}
