@@ -467,13 +467,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
     */
 
+    /*
     final ScheduledFuture<?> measureMapReaderHandle =
 	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
+    */
 
-    /*
     final ScheduledFuture<?> mapReaderHandle =
 	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
-    */
 
     @Override
     public void init(String conf) {
