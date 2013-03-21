@@ -81,9 +81,9 @@ public interface Parameters {
 			FragmentLogging.class.getName() + ","
 					+ FetchLogging.class.getName() + ","
 					+ RemoteUserAuthenticationHandler.class.getName() + ","
-					+ ResourceFixup.class.getName() + ","
-					+ XPoweredBy.class.getName() + "," + Esi.class.getName()
-					+ "," + Aggregate.class.getName());
+					+ Esi.class.getName() + "," + Aggregate.class.getName()
+					+ "," + ResourceFixup.class.getName() + ","
+					+ XPoweredBy.class.getName() );
 
 	public static final Parameter FILTER = new Parameter("filter", null);
 
