@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -274,11 +275,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
 
+		    /**
 		    log.debug("Found Flow Entry {}: {}",
 			      flowEntryId.toString(),
 			      "User State: " + userState +
 			      " Switch State: " + switchState);
-
+		     */
+		    
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
 			// Ignore the entry: nothing to do
 			continue;
@@ -955,6 +958,61 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	return flowPaths;
     }
 
+    /**
+     * Get summary of all installed flows by all installers in a given range
+     *
+     * @param flowId the data path endpoints of the flows to get.
+     * @param maxFlows: the maximum number of flows to be returned
+     * @return the Flow Paths if found, otherwise null.
+     */
+    @Override
+    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
+		//
+		// TODO: The implementation below is not optimal:
+		// We fetch all flows, and then return only the subset that match
+		// the query conditions.
+		// We should use the appropriate Titan/Gremlin query to filter-out
+		// the flows as appropriate.
+		//
+	    ArrayList<FlowPath> allFlows = getAllFlows();
+	
+		if (allFlows == null) {
+		    log.debug("Get FlowPathsSummary for {} {}: no FlowPaths found", flowId, maxFlows);
+		    return null;
+		}
+	
+		Collections.sort(allFlows);
+		
+		ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+		for (FlowPath flow : allFlows) {
+			
+			// start from desired flowId
+			if (flow.flowId().value() < flowId.value()) {
+				continue;
+			}
+			
+			// Summarize by making null flow entry fields that are not relevant to report
+			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
+				flowEntry.setFlowEntryActions(null);
+				flowEntry.setFlowEntryMatch(null);
+			}
+			
+		    flowPaths.add(flow);
+		    if (maxFlows != 0 && flowPaths.size() >= maxFlows) {
+		    	break;
+		    }
+		}
+	
+		if (flowPaths.isEmpty()) {
+		    log.debug("Get FlowPathsSummary {} {}: no FlowPaths found", flowId, maxFlows);
+		    flowPaths = null;
+		} else {
+		    log.debug("Get FlowPathsSummary for {} {}: FlowPaths were found", flowId, maxFlows);
+		}
+	
+		return flowPaths;
+    }
+    
     /**
      * Get all installed flows by all installers.
      *

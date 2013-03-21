@@ -68,6 +68,15 @@ public interface IFlowService extends IFloodlightService {
     ArrayList<FlowPath> getAllFlows(DataPathEndpoints dataPathEndpoints);
 
     /**
+     * Get summary of all installed flows by all installers.
+     *
+     * @param flowId: starting flow Id of the range
+     * @param maxFlows: number of flows to return
+     * @return the Flow Paths if found, otherwise null.
+     */
+    ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
+    
+    /**
      * Get all installed flows by all installers.
      *
      * @return the Flow Paths if found, otherwise null.

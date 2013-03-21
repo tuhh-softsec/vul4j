@@ -47,7 +47,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
 		switch (op) {
 		case UPDATE:
-			break;
 		case CREATE:
 		case INSERT:
 			addOrUpdateLink(link, linkinfo, op);

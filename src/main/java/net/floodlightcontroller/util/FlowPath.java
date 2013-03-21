@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * The class representing the Flow Path.
  */
-public class FlowPath {
+public class FlowPath implements Comparable<FlowPath> {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
     private DataPath dataPath;		// The data path
@@ -91,4 +91,13 @@ public class FlowPath {
 	ret += "]";
 	return ret;
     }
+    
+    /**
+     * CompareTo method to order flowPath by Id
+     */
+    @Override
+    public int compareTo(FlowPath f) {
+    	return (int) (this.flowId.value() - f.flowId.value());
+    }
+
 }

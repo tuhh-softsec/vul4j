@@ -12,11 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GetSummaryFlowsResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetAllFlowsResource.class);
+    protected static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
 
     @Get("json")
     public ArrayList<FlowPath> retrieve() {
     	ArrayList<FlowPath> result = null;
+    	
+    	FlowId flowId;
+    	int maxFlows = 0;
     	
     	IFlowService flowService = (IFlowService)getContext().getAttributes().get(IFlowService.class.getCanonicalName());
 
@@ -26,11 +29,15 @@ public class GetSummaryFlowsResource extends ServerResource {
         }
 
         // Extract the arguments
-        log.debug("Get All Flows Endpoints");
+    	String flowIdStr = (String) getRequestAttributes().get("flow-id");
+    	String maxFlowStr = (String) getRequestAttributes().get("max-flows");
+    	log.debug("Get Summary Flows starting flow-id: " + flowIdStr + " max-flows: " + maxFlowStr);
+    	
+    	flowId = new FlowId(flowIdStr);
+    	maxFlows = Integer.parseInt(maxFlowStr);
+    	if (maxFlows < 0) maxFlows = 0;
 
-        FlowId flowId = new FlowId(0);
-        
-        result = flowService.getAllFlowsSummary(flowId, 0);
+        result = flowService.getAllFlowsSummary(flowId, maxFlows);
 
         return result;
     }
