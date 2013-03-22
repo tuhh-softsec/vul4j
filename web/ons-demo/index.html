@@ -5,6 +5,7 @@
 	<link rel="stylesheet" href="css/skin.default.css" type="text/css"/>
 	<script src="js/d3.v3.js" charset="utf-8"></script>
 	<script src="js/async.js"></script>
+	<script src="js/utils.js"></script>
 	<script src="js/model.js"></script>
 </head>
 
@@ -15,22 +16,24 @@
 		<img id='logo' src='assets/logo.png'></img>
 	</div>
 	<div id='controllers'>
-		<div class='header'>Controllers</div>
+		<div class='header'>ONOS Nodes</div>
 		<div id='controllerList'></div>
 	</div>
 </div>
 
 <div id='right'>
 	<div class='header'>
-		<div id='status'>
-			<div class='status'><span class='static'>Last updated:</span><span id='lastUpdate' class='dynamic'>Mon Mar 18 11:11:12 PDT 2013</span></div>
-			<div class='status'><span class='dynamic' id='activeFlows'>4000</span><span class='static'>Flows</span></div>
-			<div class='status'><span class='dynamic' id='activeSwitches'>200</span><span class='static'>Active Switches</span></div>
+		<div id='status' class='top'>
+			<div class='status'><span class='dynamic' id='activeFlows'>????</span><span class='static'>Flows</span></div>
+			<div class='status'><span class='dynamic' id='activeSwitches'>???</span><span class='static'>Active Switches</span></div>
 		</div>
 		<div id='traceButton' class='button'>Trace</div>
 	</div>
 	<div id='selectedFlows'>Selected Flows</div>
-	<div id='topology'><div id='svg-container'> </div></div>
+	<div id='topology'>
+		<div id='svg-container'></div>
+		<div class='status bottom'><span class='static'>Last updated:</span><span id='lastUpdate' class='dynamic'>Mon Mar 18 11:11:12 PDT 2013</span></div>
+	</div>
 </div>
 
 

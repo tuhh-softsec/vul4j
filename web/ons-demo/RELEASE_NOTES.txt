@@ -3,3 +3,17 @@
 	- switch config hacked 00:00:00:00:00:00:01:01 ==> 00:00:00:00:00:00:01:00 etc.
 - layout does not dynamically adjust when window is resized
 	- refresh browser window after resizing to fix layout
+
+** March 20, 2013 **
+- URL parameters control functions as follows:
+	http://localhost:9000/ons-demo/index.html
+		uses the ONOS_HOST defined in restapi2.py. currently http://gui3.onlab.us:8080
+	http://localhost:9000/ons-demo/index.html?proxy
+		uses the index.html host to proxy to ONOS_HOST (works around cross site scripting restrictions to allow the WebUI to be served from a different server than the one that hosts the controller)
+	http://localhost:9000/ons-demo/index.html?mock
+		uses the mock JSON responses under ons-dmo/data
+- clicking a controller behavior change
+	1) if all controllers are selected, deselects all controllers except the one clicked
+	2) if only the clicked controller is selected, selects all controllers again
+- Update configuration files to match test bed
+- Update sample JSON files from test bed
