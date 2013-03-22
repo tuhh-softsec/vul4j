@@ -96,7 +96,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 						HexString.toLong(dpid), latch.hasLeadership());
 			}
 			else {
-				log.debug("Latch for {} has changed", dpid);
+				log.debug("Latch for {} has changed: old latch {} - new latch {}", 
+						new Object[]{dpid, latch, swData.getLatch()});
 			}
 		}
 	}
@@ -123,21 +124,28 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			case CHILD_ADDED:
 			case CHILD_UPDATED:
 				//Check we have a PathChildrenCache for this child, add one if not
-				if (switchPathCaches.get(strSwitch) == null){
-					PathChildrenCache pc = new PathChildrenCache(client, 
-							event.getData().getPath(), true);
-					pc.start(StartMode.NORMAL);
-					switchPathCaches.put(strSwitch, pc);
+				synchronized (switchPathCaches){
+					if (switchPathCaches.get(strSwitch) == null){
+						PathChildrenCache pc = new PathChildrenCache(client, 
+								event.getData().getPath(), true);
+						pc.start(StartMode.NORMAL);
+						switchPathCaches.put(strSwitch, pc);
+					}
 				}
 				break;
 			case CHILD_REMOVED:
 				//Remove our PathChildrenCache for this child
-				PathChildrenCache pc = switchPathCaches.remove(strSwitch);
-				pc.close();
+				PathChildrenCache pc = null;
+				synchronized(switchPathCaches){
+					pc = switchPathCaches.remove(strSwitch);
+				}
+				if (pc != null){
+					pc.close();
+				}
 				break;
 			default:
-				//All other events are connection status events. We need to do anything
-				//as the path cache handles these on its own.
+				//All other events are connection status events. We don't need to 
+				//do anything as the path cache handles these on its own.
 				break;
 			}
 			
@@ -160,6 +168,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			log.debug("Already contesting {}, returning", HexString.toHexString(dpid));
 			throw new RegistryException("Already contesting control for " + dpidStr);
 		}
+		
+		log.debug("No latch for switch {}", dpidStr);
 		
 		LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
 		latch.addListener(new SwitchLeaderListener(dpidStr, latch));
@@ -203,8 +213,12 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			log.debug("Trying to release control of a switch we are not contesting");
 			return;
 		}
+		
+		log.debug("swData for {} was not null: {}", dpidStr, swData);
 
 		LeaderLatch latch = swData.getLatch();
+		
+		latch.removeAllListeners();
 		
 		try {
 			latch.close();
@@ -421,7 +435,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		restApi = context.getServiceImpl(IRestApiService.class);
 
 		switches = new ConcurrentHashMap<String, SwitchLeadershipData>();
-		switchPathCaches = new HashMap<String, PathChildrenCache>();
+		//switchPathCaches = new HashMap<String, PathChildrenCache>();
+		switchPathCaches = new ConcurrentHashMap<String, PathChildrenCache>();
 		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		client = CuratorFrameworkFactory.newClient(this.connectionString, 

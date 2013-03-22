@@ -102,7 +102,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (RegistryException e) {
-				// TODO Auto-generated catch block
+				log.debug("Caught RegistryException trying to requestControl in cleanup thread");
 				e.printStackTrace();
 			}			
 		}
