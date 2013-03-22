@@ -1855,58 +1855,123 @@ discardCookies=*
 			</subsection>
 			<subsection name="Available extensions">
 				<p>ESIGate comes with several existing extensions :</p>
-				<ul>
-					<li>
-						<b>Default</b>
-						org.esigate.extension.FetchLogging : log http calls to remote
-						backends, including request and response headers
-					</li>
-					<li>
-						<b>Default</b>
-						org.esigate.extension.FragmentLogging : log the use of http
-						fragments including request and response headers and cache use
-						(hit/miss/validated)
-					</li>
-					<li>
-						<b>Default</b>
-						org.esigate.extension.ResourceFixup : if enabled by configuration
-						directive, rewrites html content to ensure links points directly
+				
+				<table>
+					<tr>
+						<th>Class name</th>
+						<th>Description</th>
+						<th>Default</th>
+						<th>From</th>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.FetchLogging</td>
+						<td>log http calls to remote
+						backends, including target host, url, status code, request and response headers.</td>
+						<td>Yes</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.FragmentLogging</td>
+						<td>log the use of http
+						fragments (requests to the cache) including request and response headers and cache use
+						(hit/miss/validated).</td>
+						<td>Yes</td>
+						<td>4.0</td>
+					</tr>
+						<tr>
+						<td>org.esigate.extension.ResourceFixup</td>
+						<td>if enabled by configuration
+						directives (fixResources, fixMode, visibleUrlBase), rewrites html content to ensure links points directly
 						to the remote backend. This should be used when Esigate is
-						embedded in an application.
-					</li>
-					<li>
-						<b>Default</b>
-						org.esigate.authentication.RemoteUserAuthentificationHandler :
-						sends current user id as an http request header (X_REMOTE_USER).
-					</li>
-					<li>
-						org.esigate.authentication.CasAuthentificationHandler :
-						handles authentication on CAS SSO.
-					</li>
-					<li>
-						org.esigate.authentication.RequestAuthentificationHandler :
-						sends selected session attributes and request attributes as http
-						request headers.
-					</li>
-					<li>
-						org.esigate.extension.ForwardOriginalUrl :
-						sends original request url as recieved by esigate as http
-						request header (X-Esigate-Request).
-					</li>
-					<li>
-						<b>Default</b>
-						org.esigate.extension.XPoweredBy :
-						adds X-Powered-By: ESIGate in response.
-					</li>
-					<li>
-						org.esigate.extension.DefaultCharset :
-						use a custom defaut charset instead of ISO-8859-1 when no charset information is available in HTTP headers. Use <b>providerid.defaultCharset</b> parameter.
-					</li>
-					<li>
-						org.esigate.extension.HtmlEncodingProcessor :
-						Read HTML documents (text/html and application/xhmtl+xml) meta tags to get the right charset. 
-					</li>
-				</ul>
+						embedded in an application or to ensure all application links go through esigate.</td>
+						<td>Yes</td>
+						<td>4.0</td>
+					</tr>
+					
+					<tr>
+						<td>org.esigate.authentication.RemoteUserAuthentificationHandler</td>
+						<td>sends current user id as an http request header (X_REMOTE_USER).</td>
+						<td>Yes</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.authentication.CasAuthentificationHandler</td>
+						<td>handles backends requiring authentication on CAS SSO.</td>
+						<td>No</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.authentication.RequestAuthentificationHandler</td>
+						<td>sends selected session attributes and request attributes as http
+						request headers.</td>
+						<td>No</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.ForwardOriginalUrl</td>
+						<td>sends original request url as received by esigate as http
+						request header (X-Esigate-Request).</td>
+						<td>No</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.XPoweredBy</td>
+						<td>adds X-Powered-By: ESIGate in response.</td>
+						<td>Yes</td>
+						<td>4.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.DefaultCharset</td>
+						<td>use a custom defaut charset instead of ISO-8859-1 when no charset information is available in HTTP headers. Use <b>providerid.defaultCharset</b> parameter.</td>
+						<td>No</td>
+						<td>4.1</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.HtmlEncodingProcessor</td>
+						<td>Read HTML documents (text/html and application/xhmtl+xml) meta tags to get the right charset. </td>
+						<td>No</td>
+						<td>5.0</td>
+					</tr>
+					
+					<tr>
+						<td>org.esigate.extension.Esi</td>
+						<td>
+							This extension processes ESI directives, like : &lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/&gt;
+						</td>
+						<td>Yes</td>
+						<td>5.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.Aggregate</td>
+						<td>This
+							extension processes the old esigate directives based on html comments,
+							like :
+						
+							&lt;!--$includeblock$aggregated2$block.html$myblock$--&gt;
+						
+							<br />
+							see : http://www.esigate.org/html-comments.html for complete syntax.
+						</td>
+						<td>Yes</td>
+						<td>5.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.ConfigReloadOnChange</td>
+						<td>
+							This extension reloads configuration when esigate.properties is
+							updated.
+							<br />
+							This only works on configuration defined using "esigate.config" system
+							property.
+							<br />
+							This extension is not intended to use in production.
+						</td>
+						<td>No</td>
+						<td>5.0</td>
+					</tr>
+					
+				</table>
+				
 				<p>ESIGate users can add custom extensions packaged in a jar or
 					simply compiled classes depending on the way ESIGate is used
 					(standalone server or library).</p>
