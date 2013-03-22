@@ -19,8 +19,8 @@
 package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
 import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
@@ -56,7 +56,7 @@ import java.util.*;
  */
 public abstract class AbstractSignatureReferenceVerifyInputProcessor extends AbstractInputProcessor {
 
-    private static final transient Log logger = LogFactory.getLog(AbstractSignatureReferenceVerifyInputProcessor.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(AbstractSignatureReferenceVerifyInputProcessor.class);
 
     protected static final Integer maximumAllowedReferencesPerManifest =
             Integer.valueOf(ConfigurationProperties.getProperty("MaximumAllowedReferencesPerManifest"));

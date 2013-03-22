@@ -52,8 +52,8 @@ import org.w3c.dom.Element;
 public class ECDSASignatureTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(ECDSASignatureTest.class.getName());
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(ECDSASignatureTest.class.getName());
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");

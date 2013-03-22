@@ -48,8 +48,8 @@ import org.w3c.dom.Node;
 public class KeyResolver {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(KeyResolver.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(KeyResolver.class);
 
     /** Field resolverVector */
     private static List<KeyResolver> resolverVector = new CopyOnWriteArrayList<KeyResolver>();

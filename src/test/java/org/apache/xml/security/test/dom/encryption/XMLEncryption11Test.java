@@ -72,8 +72,8 @@ public class XMLEncryption11Test extends org.junit.Assert {
     private boolean haveISOPadding;
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLEncryption11Test.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XMLEncryption11Test.class.getName());
 
     /**
      *  Constructor XMLEncryption11Test

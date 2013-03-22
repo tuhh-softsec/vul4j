@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.binding.xmldsig.DigestMethodType;
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.binding.xmlenc.EncryptedKeyType;
@@ -53,7 +53,7 @@ import java.util.Deque;
  */
 public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHandler {
 
-    private static final transient Log logger = LogFactory.getLog(XMLEncryptedKeyInputHandler.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(XMLEncryptedKeyInputHandler.class);
 
     @Override
     public void handle(final InputProcessorChain inputProcessorChain, final XMLSecurityProperties securityProperties,

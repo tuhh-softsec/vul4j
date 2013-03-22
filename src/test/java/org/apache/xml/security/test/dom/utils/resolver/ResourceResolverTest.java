@@ -33,8 +33,8 @@ import org.apache.xml.security.utils.resolver.ResourceResolver;
 public class ResourceResolverTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger
             (ResourceResolverTest.class.getName());
     
     static {

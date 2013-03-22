@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 
@@ -31,7 +31,7 @@ import java.io.OutputStream;
  */
 public class SignerOutputStream extends OutputStream {
 
-    protected static final transient Log log = LogFactory.getLog(SignerOutputStream.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(SignerOutputStream.class);
     protected static final transient boolean isDebugEnabled = log.isDebugEnabled();
 
     private final SignatureAlgorithm signatureAlgorithm;

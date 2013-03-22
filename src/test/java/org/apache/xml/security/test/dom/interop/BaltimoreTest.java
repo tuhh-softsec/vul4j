@@ -33,8 +33,8 @@ import org.apache.xml.security.signature.XMLSignatureException;
 public class BaltimoreTest extends InteropTestBase {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(BaltimoreTest.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(BaltimoreTest.class.getName());
 
     /** Field merlinsDir15           */
     static String merlinsDir15 =

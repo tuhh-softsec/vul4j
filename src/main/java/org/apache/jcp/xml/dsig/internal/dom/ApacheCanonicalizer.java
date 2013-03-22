@@ -50,8 +50,8 @@ public abstract class ApacheCanonicalizer extends TransformService {
         org.apache.xml.security.Init.init();
     }
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(ApacheCanonicalizer.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(ApacheCanonicalizer.class);
     protected Canonicalizer apacheCanonicalizer;
     private Transform apacheTransform;
     protected String inclusiveNamespaces;

@@ -49,8 +49,8 @@ import org.apache.jcp.xml.dsig.internal.MacOutputStream;
  */
 public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod {
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(DOMHMACSignatureMethod.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(DOMHMACSignatureMethod.class);
 
     // see RFC 4051 for these algorithm definitions
     static final String HMAC_SHA256 =

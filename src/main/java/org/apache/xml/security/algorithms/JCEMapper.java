@@ -32,8 +32,8 @@ import org.w3c.dom.Element;
 public class JCEMapper {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(JCEMapper.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(JCEMapper.class);
 
     private static Map<String, Algorithm> algorithmsMap = 
         new ConcurrentHashMap<String, Algorithm>();

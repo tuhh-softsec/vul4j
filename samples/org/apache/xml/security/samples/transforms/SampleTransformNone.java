@@ -30,8 +30,8 @@ import org.apache.xml.security.transforms.TransformSpi;
 public class SampleTransformNone extends TransformSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SampleTransformNone.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SampleTransformNone.class.getName());
 
     /** Field implementedTransformURI */
     public static final String implementedTransformURI =

@@ -80,8 +80,8 @@ import org.w3c.dom.NodeList;
  */
 public class XMLCipher {
 
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLCipher.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XMLCipher.class);
 
     /** Triple DES EDE (192 bit key) in CBC mode */
     public static final String TRIPLEDES =                   
@@ -1425,7 +1425,7 @@ public class XMLCipher {
                 }
                 catch (Exception e) {
                     if (log.isDebugEnabled()) {
-                        log.debug(e);
+                        log.debug(e.getMessage(), e);
                     }
                 }
             }
@@ -1690,7 +1690,7 @@ public class XMLCipher {
                     key = ki.getSecretKey();
                 } catch (KeyResolverException kre) {
                     if (log.isDebugEnabled()) {
-                        log.debug(kre);
+                        log.debug(kre.getMessage(), kre);
                     }
                 }
             }

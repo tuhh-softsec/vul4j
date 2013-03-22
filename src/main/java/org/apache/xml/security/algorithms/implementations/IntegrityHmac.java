@@ -41,8 +41,8 @@ import org.w3c.dom.Text;
 public abstract class IntegrityHmac extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(IntegrityHmac.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(IntegrityHmac.class);
 
     /** Field macAlgorithm */
     private Mac macAlgorithm = null;

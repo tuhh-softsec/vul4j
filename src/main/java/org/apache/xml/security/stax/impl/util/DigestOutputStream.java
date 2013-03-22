@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.security.MessageDigest;
@@ -32,7 +32,7 @@ import java.security.MessageDigest;
  */
 public class DigestOutputStream extends OutputStream {
 
-    protected static final transient Log log = LogFactory.getLog(DigestOutputStream.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(DigestOutputStream.class);
     protected static final transient boolean isDebugEnabled = log.isDebugEnabled();
 
     private final MessageDigest messageDigest;

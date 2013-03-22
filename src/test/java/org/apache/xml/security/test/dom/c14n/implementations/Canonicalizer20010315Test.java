@@ -64,8 +64,8 @@ import org.xml.sax.SAXException;
 public class Canonicalizer20010315Test extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Canonicalizer20010315Test.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Canonicalizer20010315Test.class.getName());
 
     static {
         org.apache.xml.security.Init.init();

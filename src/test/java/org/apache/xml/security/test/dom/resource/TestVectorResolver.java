@@ -36,8 +36,8 @@ import org.xml.sax.InputSource;
 public class TestVectorResolver implements EntityResolver {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(TestVectorResolver.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(TestVectorResolver.class.getName());
     
     /** Field alreadyInitialized */
     static boolean alreadyInitialized = false;

@@ -66,8 +66,8 @@ import org.xml.sax.SAXException;
 public final class Transform extends SignatureElementProxy {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Transform.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Transform.class);
 
     /** All available Transform classes are registered here */
     private static Map<String, Class<? extends TransformSpi>> transformSpiHash = 

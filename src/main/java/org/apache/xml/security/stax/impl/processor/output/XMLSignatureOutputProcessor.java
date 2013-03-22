@@ -25,8 +25,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
 import org.apache.xml.security.stax.ext.SecurePart;
@@ -42,7 +42,7 @@ import org.apache.xml.security.stax.impl.util.IDGenerator;
  */
 public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcessor {
     
-    private static final transient Log logger = LogFactory.getLog(XMLSignatureOutputProcessor.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(XMLSignatureOutputProcessor.class);
 
     public XMLSignatureOutputProcessor() throws XMLSecurityException {
         super();

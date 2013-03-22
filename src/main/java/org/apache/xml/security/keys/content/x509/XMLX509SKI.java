@@ -37,8 +37,8 @@ import org.w3c.dom.Element;
 public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataContent {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLX509SKI.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XMLX509SKI.class);
 
     /**
      * <CODE>SubjectKeyIdentifier (id-ce-subjectKeyIdentifier) (2.5.29.14)</CODE>:
@@ -165,7 +165,7 @@ public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataCont
             }
         } catch (XMLSecurityException e) {
             if (log.isDebugEnabled()) {
-                log.debug(e);
+                log.debug(e.getMessage(), e);
             }
         }
         return result;

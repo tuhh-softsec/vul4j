@@ -36,8 +36,8 @@ import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
  */
 public class ClassLoaderTest extends org.junit.Assert {
     
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ClassLoaderTest.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(ClassLoaderTest.class);
 
     @org.junit.Test
     public void testMultipleLoaders() throws Exception {

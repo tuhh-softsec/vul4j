@@ -31,8 +31,8 @@ import org.xml.sax.SAXParseException;
 public class IgnoreAllErrorHandler implements ErrorHandler {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(IgnoreAllErrorHandler.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(IgnoreAllErrorHandler.class);
 
     /** Field throwExceptions */
     private static final boolean warnOnExceptions =

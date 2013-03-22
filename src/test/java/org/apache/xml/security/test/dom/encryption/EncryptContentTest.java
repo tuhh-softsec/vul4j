@@ -43,8 +43,8 @@ import org.w3c.dom.NodeList;
 public class EncryptContentTest extends org.junit.Assert {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(EncryptContentTest.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(EncryptContentTest.class.getName());
 
     private static final String DATA =
         "<users>\n" +

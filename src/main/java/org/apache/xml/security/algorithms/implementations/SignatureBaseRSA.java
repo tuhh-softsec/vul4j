@@ -37,8 +37,8 @@ import org.apache.xml.security.signature.XMLSignatureException;
 public abstract class SignatureBaseRSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureBaseRSA.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SignatureBaseRSA.class);
 
     /** @inheritDoc */
     public abstract String engineGetURI();

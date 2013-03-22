@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,7 +58,7 @@ import java.util.Map;
  */
 public class XIncludeHandler extends DefaultHandler {
 
-    private static final transient Log logger = LogFactory.getLog(XIncludeHandler.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(XIncludeHandler.class);
 
     private static final String xIncludeNS = "http://www.w3.org/2001/XInclude";
     private static final String xIncludeLN = "include";
@@ -236,7 +236,7 @@ public class XIncludeHandler extends DefaultHandler {
 
     @Override
     public void fatalError(SAXParseException e) throws SAXException {
-        logger.fatal(e.getMessage(), e);
+        logger.error(e.getMessage(), e);
     }
 
     private NodeList evaluateXPointer(String xpointer, Node node) throws SAXException {

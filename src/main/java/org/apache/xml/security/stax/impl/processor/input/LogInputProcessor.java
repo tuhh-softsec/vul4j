@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.processor.input;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -33,7 +33,7 @@ import java.io.StringWriter;
  */
 public class LogInputProcessor extends AbstractInputProcessor {
 
-    private static final transient Log logger = LogFactory.getLog(LogInputProcessor.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(LogInputProcessor.class);
 
     public LogInputProcessor(XMLSecurityProperties securityProperties) {
         super(securityProperties);

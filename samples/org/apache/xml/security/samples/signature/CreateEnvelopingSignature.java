@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
 public class CreateEnvelopingSignature {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(CreateSignature.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(CreateSignature.class.getName());
 
     static {
         org.apache.xml.security.Init.init();

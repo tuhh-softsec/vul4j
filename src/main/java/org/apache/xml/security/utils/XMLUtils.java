@@ -61,8 +61,8 @@ public class XMLUtils {
     private static volatile String xenc11Prefix = "xenc11";
     
     /** {@link org.apache.commons.logging} logging facility */
-    private static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLUtils.class);
+    private static final org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XMLUtils.class);
 
 
     /**
@@ -200,16 +200,16 @@ public class XMLUtils {
             );
         } catch (IOException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
         }
         catch (InvalidCanonicalizerException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
         } catch (CanonicalizationException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
         }
     }
@@ -234,17 +234,17 @@ public class XMLUtils {
             );
         } catch (IOException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
             // throw new RuntimeException(ex.getMessage());
         } catch (InvalidCanonicalizerException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
             // throw new RuntimeException(ex.getMessage());
         } catch (CanonicalizationException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
             // throw new RuntimeException(ex.getMessage());
         }

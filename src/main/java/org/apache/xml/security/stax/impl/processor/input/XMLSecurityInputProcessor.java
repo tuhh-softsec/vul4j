@@ -23,8 +23,8 @@ import java.util.ArrayDeque;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.AbstractInputProcessor;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
@@ -42,7 +42,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
  */
 public class XMLSecurityInputProcessor extends AbstractInputProcessor {
 
-    protected static final transient Log logger = LogFactory.getLog(XMLSecurityInputProcessor.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(XMLSecurityInputProcessor.class);
 
     private final ArrayDeque<XMLSecEvent> xmlSecEventList = new ArrayDeque<XMLSecEvent>();
     private int eventCount = 0;

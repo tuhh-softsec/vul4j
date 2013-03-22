@@ -146,8 +146,8 @@ public final class XMLSignature extends SignatureElementProxy {
         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XMLSignature.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XMLSignature.class);
     
     /** ds:Signature.ds:SignedInfo element */
     private SignedInfo signedInfo;
@@ -603,7 +603,7 @@ public final class XMLSignature extends SignatureElementProxy {
                         so.close();
                     } catch (IOException ex) {
                         if (log.isDebugEnabled()) {
-                            log.debug(ex);
+                            log.debug(ex.getMessage(), ex);
                         }
                     }
                 }
@@ -710,7 +710,7 @@ public final class XMLSignature extends SignatureElementProxy {
                 sigBytes = this.getSignatureValue();
             } catch (IOException ex) {
                 if (log.isDebugEnabled()) {
-                    log.debug(ex);
+                    log.debug(ex.getMessage(), ex);
                 }
                 // Impossible...
             } catch (XMLSecurityException ex) {

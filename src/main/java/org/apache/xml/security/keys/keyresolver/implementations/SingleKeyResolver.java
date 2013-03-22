@@ -17,8 +17,8 @@ import org.w3c.dom.Element;
 public class SingleKeyResolver extends KeyResolverSpi
 {
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SingleKeyResolver.class.getName());
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SingleKeyResolver.class.getName());
 
     private String keyName;
     private PublicKey publicKey;

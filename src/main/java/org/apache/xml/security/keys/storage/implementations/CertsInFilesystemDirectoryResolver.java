@@ -44,8 +44,8 @@ import org.apache.xml.security.utils.Base64;
 public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(
             CertsInFilesystemDirectoryResolver.class
         );
 

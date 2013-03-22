@@ -44,8 +44,8 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 public class OfflineResolver extends ResourceResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(OfflineResolver.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(OfflineResolver.class.getName());
     
     /** Field _uriMap */
     static Map<String, String> _uriMap = null;

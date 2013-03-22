@@ -151,7 +151,7 @@ public class XMLX509Certificate extends SignatureElementProxy implements XMLX509
             }
         } catch (XMLSecurityException e) {
             if (log.isDebugEnabled()) {
-                log.debug(e);
+                log.debug(e.getMessage(), e);
             }
         }
         return result;

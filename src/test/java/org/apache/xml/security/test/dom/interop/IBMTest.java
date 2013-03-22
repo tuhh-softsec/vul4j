@@ -47,8 +47,8 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 public class IBMTest extends InteropTestBase {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(IBMTest.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(IBMTest.class.getName());
 
     /** Field kentsDir           */
     static final String kentsDir = "data/com/ibm/xss4j-20030127/";

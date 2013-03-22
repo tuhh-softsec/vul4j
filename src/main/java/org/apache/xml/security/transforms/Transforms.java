@@ -98,8 +98,8 @@ public class Transforms extends SignatureElementProxy {
         = "http://www.w3.org/2002/06/xmldsig-filter2";
     
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Transforms.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Transforms.class);
 
     private Element[] transforms;
 

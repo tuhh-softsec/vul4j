@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.ext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
 import org.apache.xml.security.stax.impl.SecurityContextImpl;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class InboundXMLSec {
 
-    protected static final transient Log log = LogFactory.getLog(InboundXMLSec.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(InboundXMLSec.class);
 
     private static final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 

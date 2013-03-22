@@ -19,8 +19,8 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.*;
@@ -52,7 +52,7 @@ import java.util.List;
  */
 public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
 
-    private static final transient Log logger = LogFactory.getLog(XMLEncryptOutputProcessor.class);
+    private static final transient Logger logger = LoggerFactory.getLogger(XMLEncryptOutputProcessor.class);
 
     public XMLEncryptOutputProcessor() throws XMLSecurityException {
         super();

@@ -60,8 +60,8 @@ public class TransformXSLT extends TransformSpi {
     static final String defaultXSLTSpecNSprefix = "xslt";
     static final String XSLTSTYLESHEET          = "stylesheet";
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(TransformXSLT.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(TransformXSLT.class);
 
     /**
      * Method engineGetURI

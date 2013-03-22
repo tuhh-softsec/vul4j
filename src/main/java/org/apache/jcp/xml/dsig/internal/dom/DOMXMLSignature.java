@@ -60,8 +60,8 @@ import org.apache.xml.security.utils.Base64;
 public final class DOMXMLSignature extends DOMStructure
     implements XMLSignature {
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(DOMXMLSignature.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(DOMXMLSignature.class);
     private String id;
     private SignatureValue sv;
     private KeyInfo ki;

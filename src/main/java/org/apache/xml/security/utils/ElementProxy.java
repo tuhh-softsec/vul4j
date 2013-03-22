@@ -37,8 +37,8 @@ import org.w3c.dom.Text;
  */
 public abstract class ElementProxy {
 
-    protected static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ElementProxy.class);
+    protected static final org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(ElementProxy.class);
 
     /**
      * What XML element does this ElementProxy instance wrap? 

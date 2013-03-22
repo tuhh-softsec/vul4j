@@ -57,8 +57,8 @@ public class Manifest extends SignatureElementProxy {
     public static final int MAXIMUM_REFERENCE_COUNT = 30;
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Manifest.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Manifest.class);
 
     /** Field references */
     private List<Reference> references;
@@ -371,7 +371,7 @@ public class Manifest extends SignatureElementProxy {
                                     break findManifest;
                                 } catch (XMLSecurityException ex) {
                                     if (log.isDebugEnabled()) {
-                                        log.debug(ex);
+                                        log.debug(ex.getMessage(), ex);
                                     }
                                     // Hm, seems not to be a ds:Manifest
                                 }

@@ -53,8 +53,8 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
      */
     public static final int MAXIMUM_REFERENCE_COUNT = 30;
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(DOMSignedInfo.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(DOMSignedInfo.class);
     
     /** Signature - NOT Recommended RSAwithMD5 */
     private static final String ALGO_ID_SIGNATURE_NOT_RECOMMENDED_RSA_MD5 = 
@@ -218,7 +218,7 @@ public final class DOMSignedInfo extends DOMStructure implements SignedInfo {
             os.close();
         } catch (IOException e) {
             if (log.isDebugEnabled()) {
-                log.debug(e);
+                log.debug(e.getMessage(), e);
             }
             // Impossible
         }

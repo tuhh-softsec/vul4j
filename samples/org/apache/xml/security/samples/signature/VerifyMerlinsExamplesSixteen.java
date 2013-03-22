@@ -44,8 +44,8 @@ import org.w3c.dom.Element;
 public class VerifyMerlinsExamplesSixteen {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(VerifyMerlinsExamplesSixteen.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(VerifyMerlinsExamplesSixteen.class.getName());
 
     /** Field schemaValidate */
     static final boolean schemaValidate = false;

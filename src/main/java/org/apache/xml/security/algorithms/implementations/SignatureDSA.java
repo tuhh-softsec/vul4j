@@ -38,8 +38,8 @@ import org.apache.xml.security.utils.Constants;
 public class SignatureDSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureDSA.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SignatureDSA.class);
 
     /** Field URI */
     public static final String URI = Constants.SignatureSpecNS + "dsa-sha1";

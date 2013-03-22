@@ -35,8 +35,8 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
     private static final int FILE_URI_LENGTH = "file:/".length();
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ResolverLocalFilesystem.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(ResolverLocalFilesystem.class);
     
     @Override
     public boolean engineIsThreadSafe() {
@@ -127,7 +127,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
             }
         } catch (Exception e) {
             if (log.isDebugEnabled()) {
-                log.debug(e);
+                log.debug(e.getMessage(), e);
             }
         }
 

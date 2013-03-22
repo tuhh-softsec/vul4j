@@ -128,8 +128,8 @@ public class Reference extends SignatureElementProxy {
         })).booleanValue();
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Reference.class);
+    private static final org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Reference.class);
 
     private Manifest manifest;
     private XMLSignatureInput transformsOutput;

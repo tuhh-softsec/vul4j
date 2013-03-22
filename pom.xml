@@ -189,7 +189,7 @@
                               !org.apache.xml.security.*,
                               !javax.xml.crypto.*,
                               !org.apache.jcp.xml.dsig.internal.*,
-                              org.apache.commons.logging;resolution:=optional;version="[1.1,2)",
+                              org.slf4j.*;version="[1.7,2)",
                               org.apache.xml.dtm*;resolution:=optional;version="[2.7,3)",
                               org.apache.xml.utils*;resolution:=optional;version="[2.7,3)",
                               org.apache.xpath*;resolution:=optional;version="[2.7,3)",
@@ -392,7 +392,7 @@
 
     <properties>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <commons.logging.version>1.1.1</commons.logging.version>
+        <slf4j.version>1.7.2</slf4j.version>
         <xalan.version>2.7.1</xalan.version>
         <xerces.version>2.9.1</xerces.version>
         <junit.version>4.8.2</junit.version>
@@ -406,9 +406,9 @@
     
     <dependencies>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -424,15 +424,15 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -18,8 +18,8 @@
  */
 package org.apache.xml.security.stax.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class InputProcessorChainImpl implements InputProcessorChain {
 
-    protected static final transient Log log = LogFactory.getLog(InputProcessorChainImpl.class);
+    protected static final transient Logger log = LoggerFactory.getLogger(InputProcessorChainImpl.class);
     protected static final transient boolean isDebugEnabled = log.isDebugEnabled();
 
     private List<InputProcessor> inputProcessors;

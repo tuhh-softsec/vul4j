@@ -55,8 +55,8 @@ public class Init {
     public static final String CONF_NS = "http://www.xmlsecurity.org/NS/#configuration";
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(Init.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(Init.class);
 
     /** Field alreadyInitialized */
     private static boolean alreadyInitialized = false;
@@ -149,7 +149,7 @@ public class Init {
             //
             KeyResolver.registerDefaultResolvers();
         } catch (Exception ex) {
-            log.error(ex);
+            log.error(ex.getMessage(), ex);
             ex.printStackTrace();
         }
     }

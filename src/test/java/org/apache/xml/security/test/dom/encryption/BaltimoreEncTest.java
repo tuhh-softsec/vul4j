@@ -74,8 +74,8 @@ public class BaltimoreEncTest extends org.junit.Assert {
     private boolean haveKeyWraps;
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(BaltimoreEncTest.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(BaltimoreEncTest.class.getName());
 
     /**
      *  Constructor BaltimoreEncTest

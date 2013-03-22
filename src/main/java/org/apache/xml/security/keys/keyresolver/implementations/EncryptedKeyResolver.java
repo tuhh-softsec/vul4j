@@ -50,8 +50,8 @@ import org.w3c.dom.Element;
 public class EncryptedKeyResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(RSAKeyValueResolver.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(RSAKeyValueResolver.class);
 
     private Key kek;
     private String algorithm;
@@ -136,7 +136,7 @@ public class EncryptedKeyResolver extends KeyResolverSpi {
                 key = (SecretKey) cipher.decryptKey(ek, algorithm);
             } catch (XMLEncryptionException e) {
                 if (log.isDebugEnabled()) {
-                    log.debug(e);
+                    log.debug(e.getMessage(), e);
                 }
             }
         }

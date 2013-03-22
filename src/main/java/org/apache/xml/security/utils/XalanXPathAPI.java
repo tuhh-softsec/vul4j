@@ -44,8 +44,8 @@ import org.w3c.dom.NodeList;
  */
 public class XalanXPathAPI implements XPathAPI {
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(XalanXPathAPI.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(XalanXPathAPI.class);
 
     private String xpathStr = null;
 
@@ -152,7 +152,7 @@ public class XalanXPathAPI implements XPathAPI {
             xpath = (XPath) constructor.newInstance(objects);
         } catch (Exception ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
         }
         if (xpath == null) {

@@ -24,8 +24,8 @@ import org.w3c.dom.Element;
 public class DEREncodedKeyValueResolver extends KeyResolverSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(DEREncodedKeyValueResolver.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(DEREncodedKeyValueResolver.class);
 
     /** {@inheritDoc}. */
     public boolean engineCanResolve(Element element, String baseURI, StorageResolver storage) {

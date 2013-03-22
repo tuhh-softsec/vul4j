@@ -44,8 +44,8 @@ import org.apache.xml.security.utils.Base64;
 public abstract class SignatureECDSA extends SignatureAlgorithmSpi {
 
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SignatureECDSA.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SignatureECDSA.class);
 
     /** @inheritDoc */
     public abstract String engineGetURI();

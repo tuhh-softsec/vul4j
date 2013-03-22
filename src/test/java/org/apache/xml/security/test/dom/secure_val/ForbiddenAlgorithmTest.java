@@ -33,8 +33,8 @@ import org.w3c.dom.Element;
 public class ForbiddenAlgorithmTest extends InteropTestBase {
 
     /** {@link org.apache.commons.logging} logging facility */
-    static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(ForbiddenAlgorithmTest.class.getName());
+    static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(ForbiddenAlgorithmTest.class.getName());
 
     static {
         org.apache.xml.security.Init.init();

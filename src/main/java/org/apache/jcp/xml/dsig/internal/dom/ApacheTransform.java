@@ -54,8 +54,8 @@ public abstract class ApacheTransform extends TransformService {
         org.apache.xml.security.Init.init();
     }
 
-    private static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(ApacheTransform.class);
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(ApacheTransform.class);
     private Transform apacheTransform;
     protected Document ownerDoc;
     protected Element transformElem;

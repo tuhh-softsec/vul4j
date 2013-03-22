@@ -44,8 +44,8 @@ import org.w3c.dom.NodeList;
  * @author wglas
  */
 public class XPointerResourceResolver extends ResourceResolverSpi {
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(XPointerResourceResolver.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(XPointerResourceResolver.class);
 
     private static final String XP_OPEN = "xpointer(";
     private static final String XNS_OPEN = "xmlns(";

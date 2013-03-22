@@ -32,8 +32,8 @@ import org.w3c.dom.Element;
 public class DSAKeyValueResolver extends KeyResolverSpi {
     
     /** {@link org.apache.commons.logging} logging facility */
-    private static org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(DSAKeyValueResolver.class);
+    private static org.slf4j.Logger log = 
+        org.slf4j.LoggerFactory.getLogger(DSAKeyValueResolver.class);
 
 
     /**
@@ -73,7 +73,7 @@ public class DSAKeyValueResolver extends KeyResolverSpi {
             return pk;
         } catch (XMLSecurityException ex) {
             if (log.isDebugEnabled()) {
-                log.debug(ex);
+                log.debug(ex.getMessage(), ex);
             }
             //do nothing
         }

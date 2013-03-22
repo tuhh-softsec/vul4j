@@ -54,8 +54,8 @@ public class XmlSecTest extends org.junit.Assert {
     private static final String BASEDIR = 
         System.getProperty("basedir") == null ? "./": System.getProperty("basedir");
 
-    static org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger
             (XmlSecTest.class.getName());
 
     @org.junit.Test
