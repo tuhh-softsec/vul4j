@@ -5,43 +5,37 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import net.floodlightcontroller.core.internal.SwitchStorageImpl;
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntry;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.util.GraphDBConnection;
 
 import org.openflow.util.HexString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.core.TitanTransaction;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngine;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -99,11 +93,14 @@ class Node {
     }
 };
 
+
 public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
     /** The logger. */
     private static Logger log =
 	LoggerFactory.getLogger(TopoRouteService.class);
+    
+    GraphDBConnection conn;
 
     //
     // Topology state for storing (on demand) Switch and Ports info for
@@ -146,6 +143,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	// TODO: Add the appropriate initialization
+    	conn = GraphDBConnection.getInstance("");
     }
 
     @Override
@@ -153,17 +151,6 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	// TODO: Add the approprate setup
     }
 
-    ThreadLocal<SwitchStorageImpl> store = new ThreadLocal<SwitchStorageImpl>() {
-	@Override
-	protected SwitchStorageImpl initialValue() {
-	    SwitchStorageImpl swStore = new SwitchStorageImpl();
-	    // NOTE: This is the file path from global properties
-	    swStore.init("/tmp/cassandra.titan");
-	    return swStore;
-	}
-    };
-
-    SwitchStorageImpl swStore = store.get();
 
     static class ShortestPathLoopFunction implements PipeFunction<LoopBundle<Vertex>, Boolean> {
 	String dpid;
@@ -205,9 +192,9 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      *        }
      *        dropShortestPathTopo();
      */
-    @Override
+    
     public void prepareShortestPathTopo() {
-	TitanGraph titanGraph = swStore.graph;
+	TitanGraph titanGraph = TitanFactory.open("/tmp/cassandra.titan");
 	TitanTransaction titanTransaction = titanGraph.startTransaction();
 	shortestPathTopo = new HashMap<Long, Node>();
 
@@ -217,6 +204,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	//
 	Iterable<Vertex> nodes = titanTransaction.getVertices("type", "switch");
 	for (Vertex nodeVertex : nodes) {
+	
 	    //
 	    // The Switch info
 	    //
@@ -280,7 +268,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
      */
-    @Override
+  
     public void dropShortestPathTopo() {
 	shortestPathTopo = null;
     }
@@ -298,7 +286,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * @return the data path with the computed shortest path if
      * found, otherwise null.
      */
-    @Override
+  
     public DataPath getTopoShortestPath(SwitchPort src, SwitchPort dest) {
 	DataPath result_data_path = new DataPath();
 
@@ -421,29 +409,12 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	result_data_path.setSrcPort(src);
 	result_data_path.setDstPort(dest);
 
-	TitanGraph titanGraph = swStore.graph;
+	TitanGraph titanGraph = TitanFactory.open("/tmp/cassandra.titan");
 	TitanTransaction titanTransaction = titanGraph.startTransaction();
 
 	String dpid_src = src.dpid().toString();
 	String dpid_dest = dest.dpid().toString();
 
-	// Get the source vertex
-	Iterator<Vertex> iter = titanTransaction.getVertices("dpid", dpid_src).iterator();
-	if (! iter.hasNext()) {
-	    titanTransaction.stopTransaction(Conclusion.SUCCESS);
-	    // titanTransaction.shutdown();
-	    return null;		// Source vertex not found
-	}
-	Vertex v_src = iter.next();
-
-	// Get the destination vertex
-	iter = titanTransaction.getVertices("dpid", dpid_dest).iterator();
-	if (! iter.hasNext()) {
-	    titanTransaction.stopTransaction(Conclusion.SUCCESS);
-	    // titanTransaction.shutdown();
-	    return null;		// Destination vertex not found
-	}
-	Vertex v_dest = iter.next();
 
 	//
 	// Test whether we are computing a path from/to the same DPID.
@@ -459,6 +430,20 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    // titanTransaction.shutdown();
 	    return result_data_path;
 	}
+
+
+	// Get the source vertex
+
+	ISwitchObject srcSwitch = conn.utils().searchSwitch(conn, dpid_src);
+	ISwitchObject destSwitch = conn.utils().searchSwitch(conn, dpid_dest);
+
+	if (srcSwitch == null || destSwitch == null) {
+		return null;
+	}
+
+
+	Vertex v_src = srcSwitch.asVertex();	
+	Vertex v_dest = destSwitch.asVertex();
 
 	//
 	// Implement the Shortest Path computation by using Breath First Search
@@ -502,6 +487,8 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    previousVertex = currentVertex;
 	}
 	Collections.reverse(resultPath);
+
+
 
 	//
 	// Loop through the result and prepare the return result

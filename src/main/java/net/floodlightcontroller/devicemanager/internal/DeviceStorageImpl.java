@@ -26,7 +26,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 		conn = GraphDBConnection.getInstance(conf);
 	}	
 
-	public void finalize() {
+	public void finalize() {		
 		close();
 	}
 	

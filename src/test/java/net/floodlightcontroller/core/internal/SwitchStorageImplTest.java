@@ -41,7 +41,7 @@ public class SwitchStorageImplTest {
 		titanGraph = TestDatabaseManager.getTestDatabase();
 		TestDatabaseManager.populateTestData(titanGraph);
 		
-		switchStorage = new TestableSwitchStorageImpl(titanGraph);
+		switchStorage = new TestableSwitchStorageImpl();
 	}
 
 	@After

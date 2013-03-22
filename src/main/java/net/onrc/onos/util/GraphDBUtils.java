@@ -1,5 +1,8 @@
 package net.onrc.onos.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
@@ -11,11 +14,25 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowId;
 
 public class GraphDBUtils implements IDBUtils {
+	
+	@Override
+	public ISwitchObject newSwitch(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		ISwitchObject obj = fg.addVertex(null,ISwitchObject.class);
+		return obj;
+	}
 
+	@Override
+	public void removeSwitch(GraphDBConnection conn, ISwitchObject sw) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		fg.removeVertex(sw.asVertex());		
+	}
+	
 	@Override
 	public ISwitchObject searchSwitch(GraphDBConnection conn, String dpid) {
 		// TODO Auto-generated method stub
@@ -46,10 +63,23 @@ public class GraphDBUtils implements IDBUtils {
 	}
 
 	@Override
+	public IPortObject newPort(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		IPortObject obj = fg.addVertex(null,IPortObject.class);
+		return obj;
+	}
+	
+	@Override
 	public IDeviceObject newDevice(GraphDBConnection conn) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IDeviceObject obj = fg.addVertex(null,IDeviceObject.class);
 		return obj;
+	}
+	
+	@Override
+	public void removePort(GraphDBConnection conn, IPortObject port) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		fg.removeVertex(port.asVertex());		
 	}
 
 	@Override
@@ -135,5 +165,40 @@ public class GraphDBUtils implements IDBUtils {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
 		return fg.getVertices("type", "flow_entry", IFlowEntry.class);
+	}
+
+	@Override
+	public Iterable<ISwitchObject> getActiveSwitches(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+		List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
+
+		for (ISwitchObject sw: switches) {
+			if(sw.getState().equals(SwitchState.ACTIVE.toString())) {
+				activeSwitches.add(sw);
+			}
+		}
+		return activeSwitches;
+	}
+
+	@Override
+	public Iterable<ISwitchObject> getAllSwitches(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+		return switches;
+	}
+
+	@Override
+	public Iterable<ISwitchObject> getInactiveSwitches(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+		List<ISwitchObject> inactiveSwitches = new ArrayList<ISwitchObject>();
+
+		for (ISwitchObject sw: switches) {
+			if(sw.getState().equals(SwitchState.INACTIVE.toString())) {
+				inactiveSwitches.add(sw);
+			}
+		}
+		return inactiveSwitches;
 	}
 }

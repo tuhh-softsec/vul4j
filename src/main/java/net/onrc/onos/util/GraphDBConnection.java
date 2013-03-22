@@ -85,7 +85,7 @@ public class GraphDBConnection {
 	   }
 	   
 	   public void close() {
-		   
+		   graph.stopTransaction(Conclusion.SUCCESS);
 	   }
 	   
 }

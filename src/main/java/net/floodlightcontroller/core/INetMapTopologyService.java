@@ -19,12 +19,14 @@ public interface INetMapTopologyService extends INetMapService {
 		Iterable<ISwitchObject> getInactiveSwitches();
 		Iterable<IPortObject> getPortsOnSwitch(String dpid);
 		IPortObject getPortOnSwitch(String dpid, short port_num);
+		void close();
 
 	}
 	
 	public interface ITopoLinkService {
 		List<Link> getActiveLinks();
 		List<Link> getLinksOnSwitch(String dpid);
+		void close();
 	}
 	public interface ITopoDeviceService {
 		Iterable<IDeviceObject> getActiveDevices();
