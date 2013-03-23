@@ -91,7 +91,7 @@ body {
 text {
 	stroke: none;
 	fill: white;
-	font-size: 12px;
+	font-size: 16px;
 	pointer-events: none;
 }
 

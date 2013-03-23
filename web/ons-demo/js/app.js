@@ -132,7 +132,6 @@ function updateTopology(svg, model) {
 		}
 
 		// create the nodes
-		// TODO: do this in two layers so that the text can always be on top
 		var nodes = d3.select(this).selectAll("g")
 			.data(d3.range(data.switches.length).map(function() {
 				return data;
@@ -159,26 +158,13 @@ function updateTopology(svg, model) {
 			.attr("y", -data.width / 2)
 			.attr("r", data.width)
 
-		// add the text nodes which show on mouse over
-		nodes.append("svg:text")
-				.text(function (d, i) {return d.switches[i].dpid})
-				.attr("x", 0)
-				.attr("y", 0)
-				.attr("transform", function(_, i) {
-					var m = document.querySelector('#viewbox').getTransformToElement().inverse();
-					if (data.scale) {
-						m = m.scale(data.scale);
-					}
-					return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
-				})
-
 		// setup the mouseover behaviors
 		function showLabel(data, index) {
-			d3.select(document.getElementById(data.switches[index].dpid)).classed('nolabel', false);
+			d3.select(document.getElementById(data.switches[index].dpid + '-label')).classed('nolabel', false);
 		}
 
 		function hideLabel(data, index) {
-			d3.select(document.getElementById(data.switches[index].dpid)).classed('nolabel', true);
+			d3.select(document.getElementById(data.switches[index].dpid + '-label')).classed('nolabel', true);
 		}
 
 		nodes.on('mouseover', showLabel);
@@ -204,6 +190,50 @@ function updateTopology(svg, model) {
 
 	// update  switches
 	rings.each(ringUpdate);
+
+
+	// Now setup the labels
+	// This is done separately because SVG draws in node order and we want the labels
+	// always on top
+	var labelRings = svg.selectAll('.labelRing').data(createRingsFromModel(model));
+
+	function labelRingEnter(data, i) {
+		if (!data.switches.length) {
+			return;
+		}
+
+		// create the nodes
+		var nodes = d3.select(this).selectAll("g")
+			.data(d3.range(data.switches.length).map(function() {
+				return data;
+			}))
+			.enter().append("svg:g")
+			.classed('nolabel', true)
+			.attr("id", function (_, i) {
+				return data.switches[i].dpid + '-label';
+			})
+			.attr("transform", function(_, i) {
+				return "rotate(" + data.angles[i]+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angles[i]) + ")";
+			});
+
+		// add the text nodes which show on mouse over
+		nodes.append("svg:text")
+				.text(function (d, i) {return d.switches[i].dpid})
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("transform", function(_, i) {
+					var m = document.querySelector('#viewbox').getTransformToElement().inverse();
+					if (data.scale) {
+						m = m.scale(data.scale);
+					}
+					return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+				})
+	}
+
+	labelRings.enter().append("svg:g")
+		.attr("class", "textRing")
+		.each(labelRingEnter);
+
 
 	// switches should not change during operation of the ui so no
 	// rings.exit()
