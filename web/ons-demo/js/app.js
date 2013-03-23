@@ -252,28 +252,25 @@ function updateTopology(svg, model) {
 function updateControllers(model) {
 	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
 	controllers.enter().append('div')
-		.attr('class', function (d) {
+		.each(function (c) {
+			controllerColorMap[c] = colors.pop();
+			d3.select(document.body).classed(controllerColorMap[c] + '-selected', true);
+		})
+		.text(function (d) {
+			return d;
+		});
 
+	controllers.attr('class', function (d) {
 			var color = 'color0';
 			if (model.activeControllers.indexOf(d) != -1) {
 				color = controllerColorMap[d];
-				if (!color) {
-					color = controllerColorMap[d] = colors.pop();
-				}
-			} else {
-				controllerColorMap[d] = color;
 			}
 			var className = 'controller ' + color;
 			return className;
 		});
-	controllers.text(function (d) {
-		return d;
-	});
-	controllers.exit().remove();
 
-	model.controllers.forEach(function (c) {
-		d3.select(document.body).classed(controllerColorMap[c] + '-selected', true);
-	});
+	// this should never be needed
+	// controllers.exit().remove();
 
 	controllers.on('click', function (c, index) {
 		var allSelected = true;
@@ -304,7 +301,7 @@ function sync(svg) {
 	updateModel(function (newModel) {
 		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (true || !oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (!oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 			updateTopology(svg, newModel);
 		} else {
