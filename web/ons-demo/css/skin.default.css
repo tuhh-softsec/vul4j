@@ -45,7 +45,7 @@ body {
 
 #arrow {
 	stroke: none;
-	fill: rgba(255, 255, 255, .25);
+	fill: rgba(255, 255, 255, .35);
 }
 
 .header {
@@ -177,7 +177,7 @@ path {
 	opacity: .2;
 	pointer-events: none;
 	fill: #990021;
-	background-color: ;
+	background-color: #990021;
 }
 
 .color8 {

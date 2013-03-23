@@ -32,7 +32,7 @@ function createTopologyView() {
 	    .attr("markerHeight", 5)
 	    .attr("orient", "auto")
 	  .append("svg:path")
-	    .attr("d", "M0,-5L10,0L0,5");
+	    .attr("d", "M0,-3L10,0L0,3");
 
 	return svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
 			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
