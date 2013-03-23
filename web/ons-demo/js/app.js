@@ -93,10 +93,31 @@ function updateTopology(svg, model) {
 		rings[1].angles[i] = (range.min + range.max)/2;
 	});
 
-	// arrange core switches at equal increments
+	// find the association between core switches and aggregation switches
+	var aggregationSwitchMap = {};
+	model.aggregationSwitches.forEach(function (s, i) {
+		aggregationSwitchMap[s.dpid] = i + 1;
+	});
+
+	var coreSwitchMap = {};
+	model.coreSwitches.forEach(function (s, i) {
+		coreSwitchMap[s.dpid] = i + 1;
+	});
+
+	var coreLinks = {};
+	model.links.forEach(function (l) {
+		if (aggregationSwitchMap[l['src-switch']] && coreSwitchMap[l['dst-switch']]) {
+			coreLinks[l['dst-switch']] = aggregationSwitchMap[l['src-switch']] - 1;
+		}
+	});
+
+
+
+	// put core switches next to linked aggregation switches
 	k = 360 / rings[2].switches.length;
 	rings[2].switches.forEach(function (s, i) {
-		rings[2].angles[i] = k * i;
+//		rings[2].angles[i] = k * i;
+		rings[2].angles[i] = rings[1].angles[coreLinks[s.dpid]];
 	});
 
 	function ringEnter(data, i) {
