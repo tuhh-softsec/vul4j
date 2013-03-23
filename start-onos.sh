@@ -3,6 +3,7 @@
 # Set paths
 FL_HOME=`dirname $0`
 FL_JAR="${FL_HOME}/target/floodlight.jar"
+FL_ONLY_JAR="${FL_HOME}/target/floodlight-only.jar"
 FL_LOGBACK="${FL_HOME}/logback.xml"
 LOGDIR=${FL_HOME}/onos-logs
 FL_LOG="${LOGDIR}/onos.`hostname`.log"
@@ -19,7 +20,9 @@ JVM_OPTS=""
 #JVM_OPTS="$JVM_OPTS -Dpython.security.respectJavaAccessibility=false"
 
 # Set classpath to include titan libs
-CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+#CLASSPATH=`echo ${FL_HOME}/lib/*.jar ${FL_HOME}/lib/titan/*.jar | sed 's/ /:/g'`
+CLASSPATH="${FL_ONLY_JAR}:${FL_HOME}/lib/*:${FL_HOME}/lib/titan/*"
+MAIN_CLASS="net.floodlightcontroller.core.Main"
 
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
@@ -78,7 +81,10 @@ EOF_LOGBACK
   # Run floodlight
   echo "Starting ONOS controller ..."
   echo 
-  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
+  #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
+  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
+
+
 #  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
 #  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
 }

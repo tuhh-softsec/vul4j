@@ -15,6 +15,7 @@ var colors = [
 	'color11',
 	'color12',
 ]
+colors.reverse();
 
 var controllerColorMap = {};
 
@@ -70,7 +71,7 @@ function updateTopology(svg, model) {
 
 		// record the angle for the agg switch layout
 		var dpid = s.dpid.split(':');
-		dpid[7] = '00';
+		dpid[7] = '01'; // the last component of the agg switch is always '01'
 		var aggdpid = dpid.join(':');
 		var aggRange = aggRanges[aggdpid];
 		if (!aggRange) {
@@ -212,11 +213,18 @@ function updateControllers(model) {
 	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
 	controllers.enter().append('div')
 		.attr('class', function (d) {
-			var color = controllerColorMap[d];
-			if (!color) {
-				color = controllerColorMap[d] = colors.pop();
+
+			var color = 'color0';
+			if (model.activeControllers.indexOf(d) != -1) {
+				color = controllerColorMap[d];
+				if (!color) {
+					color = controllerColorMap[d] = colors.pop();
+				}
+			} else {
+				controllerColorMap[d] = color;
 			}
-			return 'controller ' + color;
+			var className = 'controller ' + color;
+			return className;
 		});
 	controllers.text(function (d) {
 		return d;
@@ -228,14 +236,33 @@ function updateControllers(model) {
 	});
 
 	controllers.on('click', function (c, index) {
-		var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
-		d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
+		var allSelected = true;
+		for (var key in controllerColorMap) {
+			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {
+				allSelected = false;
+				break;
+			}
+		}
+		if (allSelected) {
+			for (var key in controllerColorMap) {
+				d3.select(document.body).classed(controllerColorMap[key] + '-selected', key == c)
+			}
+		} else {
+			for (var key in controllerColorMap) {
+				d3.select(document.body).classed(controllerColorMap[key] + '-selected', true)
+			}
+		}
+
+		// var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
+		// d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
 	});
 }
 
 var oldModel;
 function sync(svg) {
+	var d = Date.now();
 	updateModel(function (newModel) {
+		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
 		if (!oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
