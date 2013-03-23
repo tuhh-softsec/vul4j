@@ -22,7 +22,19 @@ var controllerColorMap = {};
 
 
 function createTopologyView() {
-	return d3.select('#svg-container').append('svg:svg').append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
+	var svg = d3.select('#svg-container').append('svg:svg');
+
+	svg.append("svg:defs").append("svg:marker")
+	    .attr("id", "arrow")
+	    .attr("viewBox", "0 -5 10 10")
+	    .attr("refX", -1)
+	    .attr("markerWidth", 5)
+	    .attr("markerHeight", 5)
+	    .attr("orient", "auto")
+	  .append("svg:path")
+	    .attr("d", "M0,-5L10,0L0,5");
+
+	return svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
 			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
 }
 
@@ -220,30 +232,39 @@ function updateTopology(svg, model) {
 	    })
 	    .y(function(d) {
 	    	return d.y;
-	    })
-	    .interpolate("basis");
+	    });
+//	    .interpolate("basis");
 
 	// key on link dpids since these will come/go during demo
-	var links = d3.select('svg').selectAll('path').data(model.links, function (d) {
+	var links = d3.select('svg').selectAll('.link').data(model.links, function (d) {
 			return d['src-switch']+'->'+d['dst-switch'];
 	});
 
 	// add new links
-	links.enter().append("svg:path").attr("d", function (d) {
+	links.enter().append("svg:path")
+	.attr("class", "link")
+	.attr("d", function (d) {
 
 		var src = d3.select(document.getElementById(d['src-switch']));
 		var dst = d3.select(document.getElementById(d['dst-switch']));
 
 		var srcPt = document.querySelector('svg').createSVGPoint();
 		srcPt.x = src.attr('x');
-		srcPt.y = src.attr('y') + 10; // tmp: make up and down links distinguishable
+		srcPt.y = src.attr('y');
+		srcPt = srcPt.matrixTransform(src[0][0].getCTM());
 
 		var dstPt = document.querySelector('svg').createSVGPoint();
 		dstPt.x = dst.attr('x');
-		dstPt.y = dst.attr('y') - 10; // tmp: make up and down links distinguishable
+		dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
+		dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
 
-		return line([srcPt.matrixTransform(src[0][0].getCTM()), dstPt.matrixTransform(dst[0][0].getCTM())]);
-	});
+		var midPt = document.querySelector('svg').createSVGPoint();
+		midPt.x = (srcPt.x + dstPt.x)/2;
+		midPt.y = (srcPt.y + dstPt.y)/2;
+
+		return line([srcPt, midPt, dstPt]);
+	})
+	.attr("marker-mid", function(d) { return "url(#arrow)"; });
 
 	// remove old links
 	links.exit().remove();

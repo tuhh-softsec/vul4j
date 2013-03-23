@@ -43,6 +43,11 @@ body {
 	border: 1px solid white;
 }
 
+#arrow {
+	stroke: none;
+	fill: rgba(255, 255, 255, .25);
+}
+
 .header {
 	height: 50px;
 }
@@ -92,7 +97,7 @@ text {
 
 path {
 	stroke: rgba(255, 255, 255, .25);
-	stroke-width: 1px;
+	stroke-width: 1.5px;
 }
 
 .aggregation {
