@@ -54,8 +54,10 @@ def return_file(filename="index.html"):
   return response
 
 ## PROXY API (allows development where the webui is served from someplace other than the ONOS_HOST)##
-ONOS_HOST="http://gui3.onlab.us:8080"
+#ONOS_HOST="http://gui3.onlab.us:8080"
+ONOS_HOST="http://localhost:8080" ;# for Amazon EC2
 
+@app.route("/wm/core/topology/switches/all/json")
 @app.route("/proxy/wm/core/topology/switches/all/json")
 def switches():
   try:
@@ -69,6 +71,7 @@ def switches():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/wm/core/topology/links/json")
 @app.route("/proxy/wm/core/topology/links/json")
 def links():
   try:
@@ -82,6 +85,7 @@ def links():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/wm/flow/getall/json")
 @app.route("/proxy/wm/flow/getall/json")
 def flows():
   try:
@@ -95,6 +99,7 @@ def flows():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/wm/registry/controllers/json")
 @app.route("/proxy/wm/registry/controllers/json")
 def registry_controllers():
   try:
@@ -108,6 +113,7 @@ def registry_controllers():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/wm/registry/switches/json")
 @app.route("/proxy/wm/registry/switches/json")
 def registry_switches():
   try:
@@ -324,7 +330,7 @@ def id_to_dpid(vertex):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host="0.0.0.0", port=9000)
+    app.run(threaded=True, host="0.0.0.0", port=9000)
 #  query_switch()
 #   query_links()
 #  devices()
