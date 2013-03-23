@@ -109,6 +109,9 @@ function updateTopology(svg, model) {
 		if (aggregationSwitchMap[l['src-switch']] && coreSwitchMap[l['dst-switch']]) {
 			coreLinks[l['dst-switch']] = aggregationSwitchMap[l['src-switch']] - 1;
 		}
+		if (aggregationSwitchMap[l['dst-switch']] && coreSwitchMap[l['src-switch']]) {
+			coreLinks[l['src-switch']] = aggregationSwitchMap[l['dst-switch']] - 1;
+		}
 	});
 
 
@@ -220,11 +223,11 @@ function updateTopology(svg, model) {
 
 		var srcPt = document.querySelector('svg').createSVGPoint();
 		srcPt.x = src.attr('x');
-		srcPt.y = src.attr('y');
+		srcPt.y = src.attr('y') + 10;
 
 		var dstPt = document.querySelector('svg').createSVGPoint();
 		dstPt.x = dst.attr('x');
-		dstPt.y = dst.attr('y');
+		dstPt.y = dst.attr('y') - 10;
 
 		return line([srcPt.matrixTransform(src[0][0].getCTM()), dstPt.matrixTransform(dst[0][0].getCTM())]);
 	});
@@ -297,7 +300,7 @@ function sync(svg) {
 
 		// do it again in 1s
 		setTimeout(function () {
-//			sync(svg)
+			sync(svg)
 		}, 1000);
 	});
 }
