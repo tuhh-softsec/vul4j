@@ -282,7 +282,7 @@ function updateControllers(model) {
 		});
 
 	controllers.attr('class', function (d) {
-			var color = 'color0';
+			var color = 'colorInactive';
 			if (model.activeControllers.indexOf(d) != -1) {
 				color = controllerColorMap[d];
 			}

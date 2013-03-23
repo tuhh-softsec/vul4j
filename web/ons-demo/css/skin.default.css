@@ -109,7 +109,6 @@ path {
 	visibility: hidden
 }
 
-.color0-selected .color0,
 .color1-selected .color1,
 .color2-selected .color2,
 .color3-selected .color3,
@@ -131,14 +130,6 @@ path {
 	fill: #444;
 	background-color: #444;
 	color: #222;
-}
-
-.color0 {
-	opacity: .2;
-	pointer-events: none;
-	fill: #222;
-	background-color: #222;
-	color: #444;
 }
 
 .color1 {
