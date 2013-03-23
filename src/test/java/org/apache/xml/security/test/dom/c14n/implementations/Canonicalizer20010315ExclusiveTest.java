@@ -470,7 +470,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
                         + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
                         + "<env:Body wsu:Id=\"body\">"
                         + "<ns0:Ping xsi:type=\"ns0:ping\">"
-                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "<ns0:text xmlns=\"\" xsi:type=\"xsd:string\">hello</ns0:text>"
                         + "</ns0:Ping>"
                         + "</env:Body>"
                         + "</env:Envelope>";
@@ -483,7 +483,7 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
                         + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                         + " wsu:Id=\"body\">"
                         + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xsi:type=\"ns0:ping\">"
-                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "<ns0:text xmlns=\"\" xsi:type=\"xsd:string\">hello</ns0:text>"
                         + "</ns0:Ping>"
                         + "</env:Body>";
 
@@ -614,6 +614,180 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
             byte[] bytes = c14n.engineCanonicalize(input, "xsi");
             assertEquals(c14nXML, new String(bytes));
         }
+    }
+
+    /**
+     * Test default namespace behavior if its in the InclusiveNamespace prefix list.
+     *
+     * @throws Exception
+     */
+    @org.junit.Test
+    public void testPropagateDefaultNs1() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns=\"\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        Canonicalizer20010315ExclOmitComments c14n =
+                new Canonicalizer20010315ExclOmitComments();
+        byte[] bytes = c14n.engineCanonicalizeSubTree(doc.getDocumentElement().getFirstChild(), "#default", true);
+        assertEquals(c14nXML, new String(bytes));
+    }
+
+    @org.junit.Test
+    public void testPropagateDefaultNs2() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        Canonicalizer20010315ExclOmitComments c14n =
+                new Canonicalizer20010315ExclOmitComments();
+        byte[] bytes = c14n.engineCanonicalizeSubTree(doc.getDocumentElement().getFirstChild(), "#default", true);
+        assertEquals(c14nXML, new String(bytes));
+    }
+
+    @org.junit.Test
+    public void testPropagateDefaultNs3() throws Exception {
+        final String XML =
+                "<Envelope"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xmlns=\"\" xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xmlns=\"\" xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        Canonicalizer20010315ExclOmitComments c14n =
+                new Canonicalizer20010315ExclOmitComments();
+        byte[] bytes = c14n.engineCanonicalizeSubTree(doc.getDocumentElement().getFirstChild(), "#default", true);
+        assertEquals(c14nXML, new String(bytes));
+    }
+
+    @org.junit.Test
+    public void testPropagateDefaultNs4() throws Exception {
+        final String XML =
+                "<Envelope"
+                        + " xmlns=\"\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</Envelope>";
+
+        final String c14nXML =
+                "<env:Body"
+                        + " xmlns=\"\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\""
+                        + " wsu:Id=\"body\">"
+                        + "<ns0:Ping xmlns:ns0=\"http://xmlsoap.org/Ping\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        Canonicalizer20010315ExclOmitComments c14n =
+                new Canonicalizer20010315ExclOmitComments();
+        byte[] bytes = c14n.engineCanonicalizeSubTree(doc.getDocumentElement().getFirstChild(), "#default", true);
+        assertEquals(c14nXML, new String(bytes));
+    }
+
+    @org.junit.Test
+    public void testPropagateDefaultNs5() throws Exception {
+        final String XML =
+                "<env:Envelope"
+                        + " xmlns=\"http://example.com\""
+                        + " xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\""
+                        + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\""
+                        + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                        + " xmlns:ns0=\"http://xmlsoap.org/Ping\""
+                        + " xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+                        + "<env:Body xmlns=\"\" wsu:Id=\"body\">"
+                        + "<ns0:Ping xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>"
+                        + "</env:Body>"
+                        + "</env:Envelope>";
+
+        final String c14nXML =
+                "<ns0:Ping xmlns=\"\" xmlns:ns0=\"http://xmlsoap.org/Ping\" " +
+                        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns0:ping\">"
+                        + "<ns0:text xsi:type=\"xsd:string\">hello</ns0:text>"
+                        + "</ns0:Ping>";
+
+        Document doc = this.db.parse(new InputSource(new StringReader(XML)));
+        Canonicalizer20010315ExclOmitComments c14n =
+                new Canonicalizer20010315ExclOmitComments();
+        byte[] bytes = c14n.engineCanonicalizeSubTree(doc.getDocumentElement().getFirstChild().getFirstChild(), "#default", true);
+        assertEquals(c14nXML, new String(bytes));
     }
 
     private String getAbsolutePath(String path) {

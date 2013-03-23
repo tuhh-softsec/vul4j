@@ -90,6 +90,22 @@ public class CanonicalizerPhysical extends CanonicalizerBase {
     }
 
     /**
+     * Always throws a CanonicalizationException.
+     *
+     * @param rootNode
+     * @param inclusiveNamespaces
+     * @return none it always fails
+     * @throws CanonicalizationException
+     */
+    public byte[] engineCanonicalizeSubTree(
+            Node rootNode, String inclusiveNamespaces, boolean propagateDefaultNamespace)
+            throws CanonicalizationException {
+
+        /** $todo$ well, should we throw UnsupportedOperationException ? */
+        throw new CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation");
+    }
+
+    /**
      * Returns the Attr[]s to be output for the given element.
      * <br>
      * The code of this method is a copy of {@link #handleAttributes(Element,

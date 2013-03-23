@@ -220,7 +220,21 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
     ) throws CanonicalizationException {
         throw new CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation");
     }
-    
+
+    /**
+     * Always throws a CanonicalizationException because this is inclusive c14n.
+     *
+     * @param rootNode
+     * @param inclusiveNamespaces
+     * @return none it always fails
+     * @throws CanonicalizationException
+     */
+    public byte[] engineCanonicalizeSubTree(
+            Node rootNode, String inclusiveNamespaces, boolean propagateDefaultNamespace)
+            throws CanonicalizationException {
+        throw new CanonicalizationException("c14n.Canonicalizer.UnsupportedOperation");
+    }
+
     /**
      * Returns the Attr[]s to be output for the given element.
      * <br>

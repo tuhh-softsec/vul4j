@@ -308,6 +308,19 @@ public class Canonicalizer {
     }
 
     /**
+     * Canonicalizes the subtree rooted by <CODE>node</CODE>.
+     *
+     * @param node
+     * @param inclusiveNamespaces
+     * @return the result of the c14n.
+     * @throws CanonicalizationException
+     */
+    public byte[] canonicalizeSubtree(Node node, String inclusiveNamespaces, boolean propagateDefaultNamespace)
+            throws CanonicalizationException {
+        return canonicalizerSpi.engineCanonicalizeSubTree(node, inclusiveNamespaces, propagateDefaultNamespace);
+    }
+
+    /**
      * Canonicalizes an XPath node set. The <CODE>xpathNodeSet</CODE> is treated
      * as a list of XPath nodes, not as a list of subtrees.
      *

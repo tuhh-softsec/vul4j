@@ -64,6 +64,7 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
       * the inclusive namespaces.
       */
     private SortedSet<String> inclusiveNSSet;
+    private boolean propagateDefaultNamespace = false;
     
     private final SortedSet<Attr> result = new TreeSet<Attr>(COMPARE);
 
@@ -99,6 +100,22 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
     public byte[] engineCanonicalizeSubTree(
         Node rootNode, String inclusiveNamespaces
     ) throws CanonicalizationException {
+        return engineCanonicalizeSubTree(rootNode, inclusiveNamespaces, null);
+    }
+
+    /**
+     * Method engineCanonicalizeSubTree
+     *  @inheritDoc
+     * @param rootNode
+     * @param inclusiveNamespaces
+     * @param propagateDefaultNamespace If true the default namespace will be propagated to the c14n-ized root element
+     *
+     * @throws CanonicalizationException
+     */
+    public byte[] engineCanonicalizeSubTree(
+            Node rootNode, String inclusiveNamespaces, boolean propagateDefaultNamespace
+    ) throws CanonicalizationException {
+        this.propagateDefaultNamespace = propagateDefaultNamespace;
         return engineCanonicalizeSubTree(rootNode, inclusiveNamespaces, null);
     }
 
@@ -188,6 +205,12 @@ public abstract class Canonicalizer20010315Excl extends CanonicalizerBase {
                     );
                 }
             }
+        }
+        if (propagateDefaultNamespace && ns.getLevel() == 1 &&
+                inclusiveNSSet.contains(XMLNS) &&
+                ns.getMappingWithoutRendered(XMLNS) == null) {
+                ns.removeMapping(XMLNS);
+                ns.addMapping(XMLNS, "", nullNode);
         }
         String prefix = null;
         if (element.getNamespaceURI() != null

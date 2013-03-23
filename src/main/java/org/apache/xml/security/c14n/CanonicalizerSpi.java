@@ -156,6 +156,19 @@ public abstract class CanonicalizerSpi {
         throws CanonicalizationException;
 
     /**
+     * C14n a node tree.
+     *
+     * @param rootNode
+     * @param inclusiveNamespaces
+     * @param propagateDefaultNamespace If true the default namespace will be propagated to the c14n-ized root element
+     * @return the c14n bytes
+     * @throws CanonicalizationException
+     */
+    public abstract byte[] engineCanonicalizeSubTree(
+            Node rootNode, String inclusiveNamespaces, boolean propagateDefaultNamespace)
+            throws CanonicalizationException;
+
+    /**
      * Sets the writer where the canonicalization ends. ByteArrayOutputStream if 
      * none is set.
      * @param os
