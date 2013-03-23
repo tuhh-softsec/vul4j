@@ -54,7 +54,7 @@ var urls = {
 	switches: '/wm/core/topology/switches/all/json',
 	flows: '/wm/flow/getall/json',
 	activeControllers: '/wm/registry/controllers/json',
-	controllers: '/data/controllers.json',
+	controllers: 'data/controllers.json',
 	mapping: '/wm/registry/switches/json',
 	configuration: 'data/configuration.json'
 }
