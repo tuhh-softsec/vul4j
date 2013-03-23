@@ -70,12 +70,12 @@ var mockURLs = {
 }
 
 var proxyURLs = {
-	links: '/proxy/wm/core/topology/links/json',
-	switches: '/proxy/wm/core/topology/switches/all/json',
-	flows: '/proxy/wm/flow/getall/json',
-	activeControllers: '/proxy/wm/registry/controllers/json',
+	links: '/wm/core/topology/links/json?proxy',
+	switches: '/wm/core/topology/switches/all/json?proxy',
+	flows: '/wm/flow/getall/json?proxy',
+	activeControllers: '/wm/registry/controllers/json?proxy',
 	controllers: 'data/controllers.json',
-	mapping: '/proxy/wm/registry/switches/json',
+	mapping: '/wm/registry/switches/json?proxy',
 	configuration: 'data/configuration.json'
 }
 
