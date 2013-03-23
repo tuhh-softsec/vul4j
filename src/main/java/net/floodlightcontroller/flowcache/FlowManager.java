@@ -8,15 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Collections;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.INetMapStorage;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -41,6 +46,7 @@ import net.floodlightcontroller.util.IPv4Net;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
+import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -61,6 +67,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     protected IRestApiService restApi;
     protected IFloodlightProviderService floodlightProvider;
+    protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
 
@@ -75,14 +82,178 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public static final short PRIORITY_DEFAULT = 100;
 
     private static long nextFlowEntryId = 1;
+    private static long measurementFlowId = 100000;
+    private static String measurementFlowIdStr = "0x186a0";	// 100000
+    private long modifiedMeasurementFlowTime = 0;
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
-    private final ScheduledExecutorService scheduler =
+    private final ScheduledExecutorService measureShortestPathScheduler =
 	Executors.newScheduledThreadPool(1);
-    final Runnable reader = new Runnable() {
+    private final ScheduledExecutorService measureMapReaderScheduler =
+	Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService mapReaderScheduler =
+	Executors.newScheduledThreadPool(1);
+
+    private BlockingQueue<Runnable> shortestPathQueue = new LinkedBlockingQueue<Runnable>();
+    private ThreadPoolExecutor shortestPathExecutor =
+	new ThreadPoolExecutor(10, 10, 5, TimeUnit.SECONDS, shortestPathQueue);
+
+    class ShortestPathTask implements Runnable {
+	private int hint;
+	private ITopoRouteService topoRouteService;
+	private ArrayList<DataPath> dpList;
+
+	public ShortestPathTask(int hint,
+				ITopoRouteService topoRouteService,
+				ArrayList<DataPath> dpList) {
+	    this.hint = hint;
+	    this.topoRouteService = topoRouteService;
+	    this.dpList = dpList;
+	}
+
+	@Override
+	public void run() {
+	    /*
+	    String logMsg = "MEASUREMENT: Running Thread hint " + this.hint;
+	    log.debug(logMsg);
+	    long startTime = System.nanoTime();
+	    */
+	    for (DataPath dp : this.dpList) {
+		topoRouteService.getTopoShortestPath(dp.srcPort(), dp.dstPort());
+	    }
+	    /*
+	    long estimatedTime = System.nanoTime() - startTime;
+	    double rate = (estimatedTime > 0)? ((double)dpList.size() * 1000000000) / estimatedTime: 0.0;
+	    logMsg = "MEASUREMENT: Computed Thread hint " + hint + ": " + dpList.size() + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
+	    log.debug(logMsg);
+	    */
+	}
+    }
+
+    final Runnable measureShortestPath = new Runnable() {
+	    public void run() {
+		log.debug("Recomputing Shortest Paths from the Network Map Flows...");
+		if (floodlightProvider == null) {
+		    log.debug("FloodlightProvider service not found!");
+		    return;
+		}
+
+		ITopoRouteService topoRouteService =
+		    context.getServiceImpl(ITopoRouteService.class);
+		if (topoRouteService == null) {
+		    log.debug("Topology Route Service not found");
+		    return;
+		}
+
+		int leftoverQueueSize = shortestPathExecutor.getQueue().size();
+		if (leftoverQueueSize > 0) {
+		    String logMsg = "MEASUREMENT: Leftover Shortest Path Queue Size: " + leftoverQueueSize;
+		    log.debug(logMsg);
+		    return;
+		}
+		log.debug("MEASUREMENT: Beginning Shortest Path Computation");
+
+		//
+		// Recompute the Shortest Paths for all Flows
+		//
+		int counter = 0;
+		int hint = 0;
+		ArrayList<DataPath> dpList = new ArrayList<DataPath>();
+		long startTime = System.nanoTime();
+
+		topoRouteService.prepareShortestPathTopo();
+
+		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		for (IFlowPath flowPathObj : allFlowPaths) {
+		    FlowId flowId = new FlowId(flowPathObj.getFlowId());
+
+		    // log.debug("Found Path {}", flowId.toString());
+		    Dpid srcDpid = new Dpid(flowPathObj.getSrcSwitch());
+		    Port srcPort = new Port(flowPathObj.getSrcPort());
+		    Dpid dstDpid = new Dpid(flowPathObj.getDstSwitch());
+		    Port dstPort = new Port(flowPathObj.getDstPort());
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+
+		    /*
+		    DataPath dp = new DataPath();
+		    dp.setSrcPort(srcSwitchPort);
+		    dp.setDstPort(dstSwitchPort);
+		    dpList.add(dp);
+		    if ((dpList.size() % 10) == 0) {
+			shortestPathExecutor.execute(
+				new ShortestPathTask(hint, topoRouteService,
+						     dpList));
+			dpList = new ArrayList<DataPath>();
+			hint++;
+		    }
+		    */
+
+		    DataPath dataPath =
+			topoRouteService.getTopoShortestPath(srcSwitchPort,
+							     dstSwitchPort);
+		    counter++;
+		}
+		if (dpList.size() > 0) {
+		    shortestPathExecutor.execute(
+			new ShortestPathTask(hint, topoRouteService,
+					     dpList));
+		}
+
+		/*
+		// Wait for all tasks to finish
+		try {
+		    while (shortestPathExecutor.getQueue().size() > 0) {
+			Thread.sleep(100);
+		    }
+		} catch (InterruptedException ex) {
+		    log.debug("MEASUREMENT: Shortest Path Computation interrupted");
+		}
+		*/
+
+		conn.endTx(Transaction.COMMIT);
+		topoRouteService.dropShortestPathTopo();
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Computed " + counter + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
+		log.debug(logMsg);
+	    }
+	};
+
+    final Runnable measureMapReader = new Runnable() {
+	    public void run() {
+		if (floodlightProvider == null) {
+		    log.debug("FloodlightProvider service not found!");
+		    return;
+		}
+
+		//
+		// Fetch all Flow Entries
+		//
+		int counter = 0;
+		long startTime = System.nanoTime();
+		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+		for (IFlowEntry flowEntryObj : allFlowEntries) {
+		    counter++;
+		    FlowEntryId flowEntryId =
+			new FlowEntryId(flowEntryObj.getFlowEntryId());
+		    String userState = flowEntryObj.getUserState();
+		    String switchState = flowEntryObj.getSwitchState();
+		}
+		conn.endTx(Transaction.COMMIT);
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Fetched " + counter + " flow entries in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " entries/s";
+		log.debug(logMsg);
+	    }
+	};
+
+    final Runnable mapReader = new Runnable() {
 	    public void run() {
 		// log.debug("Reading Flow Entries from the Network Map...");
 		if (floodlightProvider == null) {
@@ -101,13 +272,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    FlowEntryId flowEntryId =
 			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = "User State: " + flowEntryObj.getUserState();
-		    String switchState = "Switch State: " + flowEntryObj.getSwitchState();
+		    String userState = flowEntryObj.getUserState();
+		    String switchState = flowEntryObj.getSwitchState();
 
+		    /**
 		    log.debug("Found Flow Entry {}: {}",
 			      flowEntryId.toString(),
-			      userState + " " + switchState);
-
+			      "User State: " + userState +
+			      " Switch State: " + switchState);
+		     */
+		    
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
 			// Ignore the entry: nothing to do
 			continue;
@@ -125,8 +299,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		// Process my Flow Entries
 		//
+		Boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
 		    IFlowEntry flowEntryObj = entry.getValue();
+		    // Code for measurement purpose
+		    {
+			IFlowPath flowObj =
+			    conn.utils().getFlowPathByFlowEntry(conn,
+								flowEntryObj);
+			if ((flowObj != null) &&
+			    flowObj.getFlowId().equals(measurementFlowIdStr)) {
+			    processed_measurement_flow = true;
+			}
+		    }
 
 		    //
 		    // TODO: Eliminate the re-fetching of flowEntryId,
@@ -160,6 +345,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
 		    } else {
 			// Unknown user state. Ignore the entry
+			log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
+				  flowEntryId.toString(), userState);
 			continue;
 		    }
 
@@ -265,10 +452,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		}
 		conn.endTx(Transaction.COMMIT);
+
+		if (processed_measurement_flow) {
+		    long estimatedTime = System.nanoTime() - modifiedMeasurementFlowTime;
+		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
+			(double)estimatedTime / 1000000000 + " sec";
+		    log.debug(logMsg);
+		}
 	    }
 	};
-    final ScheduledFuture<?> readerHandle =
-	scheduler.scheduleAtFixedRate(reader, 3, 3, TimeUnit.SECONDS);
+
+    /*
+    final ScheduledFuture<?> measureShortestPathHandle =
+	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
+    */
+
+    /*
+    final ScheduledFuture<?> measureMapReaderHandle =
+	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
+    */
+
+    final ScheduledFuture<?> mapReaderHandle =
+	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
 
     @Override
     public void init(String conf) {
@@ -316,6 +521,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
+	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
@@ -329,6 +535,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
+
+	//
+	// Extract all flow entries and assign the next Flow Entry ID
+	// to be larger than the largest Flow Entry ID
+	//
+	Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+	for (IFlowEntry flowEntryObj : allFlowEntries) {
+	    FlowEntryId flowEntryId =
+		new FlowEntryId(flowEntryObj.getFlowEntryId());
+	    if (flowEntryId.value() >= nextFlowEntryId)
+		nextFlowEntryId = flowEntryId.value() + 1;
+	}
+	conn.endTx(Transaction.COMMIT);
     }
 
     /**
@@ -343,6 +562,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+	if (flowPath.flowId().value() == measurementFlowId) {
+	    modifiedMeasurementFlowTime = System.nanoTime();
+	}
 
 	//
 	// Assign the FlowEntry IDs
@@ -506,6 +728,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	if (flowId.value() == measurementFlowId) {
+	    modifiedMeasurementFlowTime = System.nanoTime();
+	}
+
 	IFlowPath flowObj = null;
 	//
 	// We just mark the entries for deletion,
@@ -732,6 +958,61 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	return flowPaths;
     }
 
+    /**
+     * Get summary of all installed flows by all installers in a given range
+     *
+     * @param flowId the data path endpoints of the flows to get.
+     * @param maxFlows: the maximum number of flows to be returned
+     * @return the Flow Paths if found, otherwise null.
+     */
+    @Override
+    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
+		//
+		// TODO: The implementation below is not optimal:
+		// We fetch all flows, and then return only the subset that match
+		// the query conditions.
+		// We should use the appropriate Titan/Gremlin query to filter-out
+		// the flows as appropriate.
+		//
+	    ArrayList<FlowPath> allFlows = getAllFlows();
+	
+		if (allFlows == null) {
+		    log.debug("Get FlowPathsSummary for {} {}: no FlowPaths found", flowId, maxFlows);
+		    return null;
+		}
+	
+		Collections.sort(allFlows);
+		
+		ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+		for (FlowPath flow : allFlows) {
+			
+			// start from desired flowId
+			if (flow.flowId().value() < flowId.value()) {
+				continue;
+			}
+			
+			// Summarize by making null flow entry fields that are not relevant to report
+			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
+				flowEntry.setFlowEntryActions(null);
+				flowEntry.setFlowEntryMatch(null);
+			}
+			
+		    flowPaths.add(flow);
+		    if (maxFlows != 0 && flowPaths.size() >= maxFlows) {
+		    	break;
+		    }
+		}
+	
+		if (flowPaths.isEmpty()) {
+		    log.debug("Get FlowPathsSummary {} {}: no FlowPaths found", flowId, maxFlows);
+		    flowPaths = null;
+		} else {
+		    log.debug("Get FlowPathsSummary for {} {}: FlowPaths were found", flowId, maxFlows);
+		}
+	
+		return flowPaths;
+    }
+    
     /**
      * Get all installed flows by all installers.
      *

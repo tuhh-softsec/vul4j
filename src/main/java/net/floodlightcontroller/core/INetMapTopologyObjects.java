@@ -62,9 +62,22 @@ public interface ISwitchObject extends IBaseObject{
 		@Property("number")
 		public Short getNumber();
 		
+		@Property("number")
+		public void setNumber(Short n);
+		
 		@JsonProperty("desc")
 		@Property("desc")
 		public String getDesc();
+		
+		@Property("desc")
+		public void setDesc(String s);
+		
+		@JsonIgnore
+		@Property("port_sate")
+		public Integer getPortState();
+		
+		@Property("port_state")
+		public void setPortState(Integer s);
 		
 		@JsonIgnore
 		@Incidence(label="on",direction = Direction.IN)

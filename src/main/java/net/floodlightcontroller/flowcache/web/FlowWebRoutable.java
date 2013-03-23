@@ -20,6 +20,7 @@ public class FlowWebRoutable implements RestletRoutable {
         router.attach("/getall-by-installer-id/{installer-id}/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByInstallerIdResource.class);
         router.attach("/getall-by-endpoints/{src-dpid}/{src-port}/{dst-dpid}/{dst-port}/json", GetAllFlowsByEndpointsResource.class);
         router.attach("/getall/json", GetAllFlowsResource.class);
+        router.attach("/getsummary/{flow-id}/{max-flows}/json", GetSummaryFlowsResource.class);
         return router;
     }
 

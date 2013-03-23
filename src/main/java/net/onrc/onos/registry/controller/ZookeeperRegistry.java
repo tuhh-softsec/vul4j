@@ -111,7 +111,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		@Override
 		public void childEvent(CuratorFramework client,
 				PathChildrenCacheEvent event) throws Exception {
-			log.debug("Root switch path cache got {} event", event.getType());
+			//log.debug("Root switch path cache got {} event", event.getType());
 			
 			String strSwitch = null;
 			if (event.getData() != null){
@@ -158,7 +158,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		
 		if (switches.get(dpidStr) != null){
 			log.debug("Already contesting {}, returning", HexString.toHexString(dpid));
-			return;
+			throw new RegistryException("Already contesting control for " + dpidStr);
 		}
 		
 		LeaderLatch latch = new LeaderLatch(client, latchPath, controllerId);
@@ -355,7 +355,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 					 new ArrayList<ControllerRegistryEntry>(); 
 			
 			if (entry.getValue().getCurrentData().size() < 1){
-				log.info("Switch entry with no leader elections: {}", entry.getKey());
+				//TODO prevent even having the PathChildrenCache in this case
+				//log.info("Switch entry with no leader elections: {}", entry.getKey());
 				continue;
 			}
 			

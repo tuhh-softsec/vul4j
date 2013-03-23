@@ -2,7 +2,7 @@
 rm -f rest.json
 touch rest.json
 
-urls="'http://localhost:8080/wm/core/topology/switches/all/json' 'http://localhost:8080/wm/core/topology/links/json' 'http://localhost:8080/wm/registry/controllers/json' 'http://localhost:8080/wm/registry/switches/json'"
+urls="http://localhost:8080/wm/core/topology/switches/all/json http://localhost:8080/wm/core/topology/links/json http://localhost:8080/wm/registry/controllers/json http://localhost:8080/wm/registry/switches/json"
 
 for url in $urls; do
   echo "---REST CALL---" >> rest.json

@@ -48,7 +48,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
 	
-	protected final int CLEANUP_TASK_INTERVAL = 999; // 999 ms
+	protected final int CLEANUP_TASK_INTERVAL = 10; // 10 sec
 	protected SingletonTask cleanupTask;
 	
 	/**
@@ -65,7 +65,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
                 log.error("Error in cleanup thread", e);
             } finally {
                     cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
-                                              TimeUnit.MILLISECONDS);
+                                              TimeUnit.SECONDS);
             }
         }
 
@@ -74,30 +74,29 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 			// TODO Auto-generated method stub
 			
 			if (hasControl) {
-				log.debug("got control to set inactive sw {}", dpid);
+				log.debug("got control to set inactive sw {}", HexString.toHexString(dpid));
 				swStore.update(HexString.toHexString(dpid),SwitchState.INACTIVE, DM_OPERATION.UPDATE);
 			    registryService.releaseControl(dpid);	
 			}						
 		}
     }
-    
 
-    
     protected void switchCleanup() {
-    	
     	TopoSwitchServiceImpl impl = new TopoSwitchServiceImpl();
     	Iterable<ISwitchObject> switches = impl.getActiveSwitches();
+    	
+    	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
     	for (ISwitchObject sw: switches) {
-			log.debug("checking if switch is inactive: {}", sw.getDPID());
+			//log.debug("checking if switch is inactive: {}", sw.getDPID());
 			try {
 				long dpid = HexString.toLong(sw.getDPID());
 				String controller = registryService.getControllerForSwitch(dpid);
 				if (controller == null) {
-					log.debug("request Control to set inactive sw {}", dpid);
+					log.debug("request Control to set inactive sw {}", HexString.toHexString(dpid));
 					registryService.requestControl(dpid, new SwitchCleanup());
 				} else {
-					log.debug("sw {} is controlled by controller: {}",dpid,controller);
+					log.debug("sw {} is controlled by controller: {}",HexString.toHexString(dpid),controller);
 				}
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
@@ -223,10 +222,10 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 
 		deviceService.addListener(this);
 	       // Setup the Cleanup task. 
-		if (cleanupNeeded != null &&cleanupNeeded.equals("True")) {
+		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 				cleanupTask = new SingletonTask(ses, new SwitchCleanup());
-				cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.MILLISECONDS);
+				cleanupTask.reschedule(CLEANUP_TASK_INTERVAL, TimeUnit.SECONDS);
 		}
 	}
 

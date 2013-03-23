@@ -18,21 +18,13 @@ import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 
 public class TestableSwitchStorageImpl extends SwitchStorageImpl {
 	
-	public TestableSwitchStorageImpl(TitanGraph graph){
-		this.graph = graph;
+	public TestableSwitchStorageImpl(){
 	}
 	
 	@Override
 	public void init(String conf){
-        Set<String> s = graph.getIndexedKeys(Vertex.class);
-        if (!s.contains("dpid")) {
-           graph.createKeyIndex("dpid", Vertex.class);
-           graph.stopTransaction(Conclusion.SUCCESS);
-        }
-        if (!s.contains("type")) {
-        	graph.createKeyIndex("type", Vertex.class);
-        	graph.stopTransaction(Conclusion.SUCCESS);
-        }
+        
+		super.init(conf);
 		
 	}
 }

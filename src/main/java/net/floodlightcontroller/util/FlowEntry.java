@@ -26,8 +26,12 @@ public class FlowEntry {
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private ArrayList<FlowEntryAction> flowEntryActions; // The Flow Entry Actions
     private Dpid dpid;				// The Switch DPID
-    private Port inPort;			// The Switch incoming port
-    private Port outPort;			// The Switch outgoing port
+    private Port inPort;		// The Switch incoming port. Used only
+					// when the entry is used to return
+					// Shortest Path computation.
+    private Port outPort;		// The Switch outgoing port. Used only
+					// when the entry is used to return
+					// Shortest Path computation.
     private FlowEntryUserState flowEntryUserState; // The Flow Entry User state
     private FlowEntrySwitchState flowEntrySwitchState; // The Flow Entry Switch state
     // The Flow Entry Error state (if FlowEntrySwitchState is FE_SWITCH_FAILED)

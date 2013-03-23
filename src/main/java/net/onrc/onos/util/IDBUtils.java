@@ -10,6 +10,11 @@ import net.floodlightcontroller.util.FlowId;
 
 public interface IDBUtils {	
 	public ISwitchObject searchSwitch(GraphDBConnection conn, String dpid);
+	public Iterable<ISwitchObject> getActiveSwitches(GraphDBConnection conn);
+	public Iterable<ISwitchObject> getAllSwitches(GraphDBConnection conn);
+	public Iterable<ISwitchObject> getInactiveSwitches(GraphDBConnection conn);
+	
+
 	public IDeviceObject searchDevice(GraphDBConnection conn, String macAddr);
 	public IDeviceObject newDevice(GraphDBConnection conn);
 	public void removeDevice(GraphDBConnection conn, IDeviceObject dev);
@@ -27,4 +32,8 @@ public interface IDBUtils {
 	public void removeFlowEntry(GraphDBConnection conn,
 				    IFlowEntry flowEntry);
 	public Iterable<IFlowEntry> getAllFlowEntries(GraphDBConnection conn);
+	public IPortObject newPort(GraphDBConnection conn);
+	ISwitchObject newSwitch(GraphDBConnection conn);
+	void removePort(GraphDBConnection conn, IPortObject port);
+	void removeSwitch(GraphDBConnection conn, ISwitchObject sw);
 }

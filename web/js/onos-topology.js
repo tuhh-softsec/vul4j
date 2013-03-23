@@ -250,7 +250,7 @@ function gui(data_source){
 	    .attr("y", ".31em")
 	    .text(function(d) { 
 		l=d.name.split(":").length
-		return d.name.split(":")[l-3] + ":" + d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
+		return d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
 	    });
 
         circle.append("title")
