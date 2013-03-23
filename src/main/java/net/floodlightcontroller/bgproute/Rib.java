@@ -40,6 +40,7 @@ public class Rib {
 	
 	public boolean equals(Rib r) {
 				
-		return this.routerId == r.routerId && this.nextHop == r.nextHop && this.masklen == r.masklen;
+		return this.routerId.equals(r.routerId) && this.nextHop.equals(r.nextHop)  && this.masklen == r.masklen;
+		
 	}
 }
