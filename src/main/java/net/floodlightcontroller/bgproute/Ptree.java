@@ -13,7 +13,7 @@ public class Ptree {
 		maxKeyOctets = bit_to_octet(max_key_bits); 
 		refCount = 0;
 	}
-
+	
 	public PtreeNode acquire(byte [] key) {
 		return acquire(key, maxKeyBits);
 	}
@@ -277,6 +277,10 @@ public class Ptree {
 			add.key[j] = (byte)(node.key[j] & maskBits[add.keyBits % 8]);
 		
 		return add;
+	}
+	//add by linpp
+	private void clear() {
+	
 	}
 	
 	private void node_remove(PtreeNode node) {
