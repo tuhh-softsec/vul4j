@@ -36,9 +36,7 @@ function toRadians (angle) {
   return angle * (Math.PI / 180);
 }
 
-function updateTopology(svg, model) {
-
-	// DRAW THE NODES
+function createRingsFromModel(model) {
 	var rings = [{
 		radius: 3,
 		width: 6,
@@ -80,8 +78,6 @@ function updateTopology(svg, model) {
 		} else {
 			aggRange.max = angle;
 		}
-
-
 	});
 
 	// arrange aggregation switches to "fan out" to edge switches
@@ -96,39 +92,35 @@ function updateTopology(svg, model) {
 	// find the association between core switches and aggregation switches
 	var aggregationSwitchMap = {};
 	model.aggregationSwitches.forEach(function (s, i) {
-		aggregationSwitchMap[s.dpid] = i + 1;
+		aggregationSwitchMap[s.dpid] = i;
 	});
-
-	var coreSwitchMap = {};
-	model.coreSwitches.forEach(function (s, i) {
-		coreSwitchMap[s.dpid] = i + 1;
-	});
-
-	var coreLinks = {};
-	model.links.forEach(function (l) {
-		if (aggregationSwitchMap[l['src-switch']] && coreSwitchMap[l['dst-switch']]) {
-			coreLinks[l['dst-switch']] = aggregationSwitchMap[l['src-switch']] - 1;
-		}
-		if (aggregationSwitchMap[l['dst-switch']] && coreSwitchMap[l['src-switch']]) {
-			coreLinks[l['src-switch']] = aggregationSwitchMap[l['dst-switch']] - 1;
-		}
-	});
-
-
 
 	// put core switches next to linked aggregation switches
 	k = 360 / rings[2].switches.length;
 	rings[2].switches.forEach(function (s, i) {
 //		rings[2].angles[i] = k * i;
-		rings[2].angles[i] = rings[1].angles[coreLinks[s.dpid]];
+		var associatedAggregationSwitches = model.configuration.association[s.dpid];
+		// TODO: go between if there are multiple
+		var index = aggregationSwitchMap[associatedAggregationSwitches[0]];
+
+		rings[2].angles[i] = rings[1].angles[index];
 	});
+
+	return rings;
+}
+
+function updateTopology(svg, model) {
+
+	// DRAW THE SWITCHES
+	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
 
 	function ringEnter(data, i) {
 		if (!data.switches.length) {
 			return;
 		}
 
-
+		// create the nodes
+		// TODO: do this in two layers so that the text can always be on top
 		var nodes = d3.select(this).selectAll("g")
 			.data(d3.range(data.switches.length).map(function() {
 				return data;
@@ -142,10 +134,8 @@ function updateTopology(svg, model) {
 				return "rotate(" + data.angles[i]+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angles[i]) + ")";
 			});
 
+		// add the cirles representing the switches
 		nodes.append("svg:circle")
-			.attr('class', function (_, i)  {
-				return data.className + ' ' + controllerColorMap[data.switches[i].controller];
-			})
 			.attr("transform", function(_, i) {
 				var m = document.querySelector('#viewbox').getTransformToElement().inverse();
 				if (data.scale) {
@@ -156,10 +146,8 @@ function updateTopology(svg, model) {
 			.attr("x", -data.width / 2)
 			.attr("y", -data.width / 2)
 			.attr("r", data.width)
-			// .attr("fill", function (_, i) {
-			// 	return controllerColorMap[data.switches[i].controller]
-			// })
 
+		// add the text nodes which show on mouse over
 		nodes.append("svg:text")
 				.text(function (d, i) {return d.switches[i].dpid})
 				.attr("x", 0)
@@ -172,6 +160,7 @@ function updateTopology(svg, model) {
 					return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
 				})
 
+		// setup the mouseover behaviors
 		function showLabel(data, index) {
 			d3.select(document.getElementById(data.switches[index].dpid)).classed('nolabel', false);
 		}
@@ -184,27 +173,44 @@ function updateTopology(svg, model) {
 		nodes.on('mouseout', hideLabel);
 	}
 
-	var ring = svg.selectAll("g")
-		.data(rings)
-		.enter().append("svg:g")
+	// append switches
+	rings.enter().append("svg:g")
 		.attr("class", "ring")
 		.each(ringEnter);
 
 
+	function ringUpdate(data, i) {
+		nodes = d3.select(this).selectAll("circle");
+		nodes.attr('class', function (_, i)  {
+				if (data.switches[i].state == 'ACTIVE') {
+					return data.className + ' ' + controllerColorMap[data.switches[i].controller];
+				} else {
+					return data.className + ' ' + 'colorInactive';
+				}
+			})
+	}
+
+	// update  switches
+	rings.each(ringUpdate);
+
+	// switches should not change during operation of the ui so no
+	// rings.exit()
+
+
 	// do mouseover zoom on edge nodes
-	function zoom(data, index) {
-		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-			g.transition().duration(100).attr("r", rings[0].width*3);
-	}
+	// function zoom(data, index) {
+	// 	var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
+	// 		g.transition().duration(100).attr("r", rings[0].width*3);
+	// }
 
-	svg.selectAll('.edge').on('mouseover', zoom);
-	svg.selectAll('.edge').on('mousedown', zoom);
+	// svg.selectAll('.edge').on('mouseover', zoom);
+	// svg.selectAll('.edge').on('mousedown', zoom);
 
-	function unzoom(data, index) {
-		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-			g.transition().duration(100).attr("r", rings[0].width);
-	}
-	svg.selectAll('.edge').on('mouseout', unzoom);
+	// function unzoom(data, index) {
+	// 	var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
+	// 		g.transition().duration(100).attr("r", rings[0].width);
+	// }
+	// svg.selectAll('.edge').on('mouseout', unzoom);
 
 
 	// DRAW THE LINKS
@@ -217,20 +223,30 @@ function updateTopology(svg, model) {
 	    })
 	    .interpolate("basis");
 
-	d3.select('svg').selectAll('path').data(model.links).enter().append("svg:path").attr("d", function (d) {
+	// key on link dpids since these will come/go during demo
+	var links = d3.select('svg').selectAll('path').data(model.links, function (d) {
+			return d['src-switch']+'->'+d['dst-switch'];
+	});
+
+	// add new links
+	links.enter().append("svg:path").attr("d", function (d) {
+
 		var src = d3.select(document.getElementById(d['src-switch']));
 		var dst = d3.select(document.getElementById(d['dst-switch']));
 
 		var srcPt = document.querySelector('svg').createSVGPoint();
 		srcPt.x = src.attr('x');
-		srcPt.y = src.attr('y') + 10;
+		srcPt.y = src.attr('y') + 10; // tmp: make up and down links distinguishable
 
 		var dstPt = document.querySelector('svg').createSVGPoint();
 		dstPt.x = dst.attr('x');
-		dstPt.y = dst.attr('y') - 10;
+		dstPt.y = dst.attr('y') - 10; // tmp: make up and down links distinguishable
 
 		return line([srcPt.matrixTransform(src[0][0].getCTM()), dstPt.matrixTransform(dst[0][0].getCTM())]);
 	});
+
+	// remove old links
+	links.exit().remove();
 }
 
 function updateControllers(model) {
@@ -288,7 +304,7 @@ function sync(svg) {
 	updateModel(function (newModel) {
 		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (!oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (true || !oldModel && JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 			updateTopology(svg, newModel);
 		} else {
@@ -312,6 +328,7 @@ svg = createTopologyView();
 setTimeout(function () {
 	// workaround for another Chrome v25 bug
 	// viewbox transform stuff doesn't work in combination with browser zoom
+	// also works in Chrome v27
 	d3.select('#svg-container').style('zoom',  window.document.body.clientWidth/window.document.width);
 	sync(svg);
 }, 100);

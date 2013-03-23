@@ -121,6 +121,13 @@ path {
 	pointer-events: auto;
 }
 
+.colorInactive {
+	opacity: 1;
+	fill: #444;
+	background-color: #444;
+	color: #222;
+}
+
 .color0 {
 	opacity: .2;
 	pointer-events: none;
