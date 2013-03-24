@@ -123,11 +123,31 @@ function createRingsFromModel(model) {
 		rings[2].angles[i] = rings[1].angles[index];
 	});
 
+	// TODO: construct this form initially rather than converting. it works better because
+	// it allows binding by dpid
+	var testRings = [];
+	rings.forEach(function (ring) {
+		var testRing = [];
+		ring.switches.forEach(function (s, i) {
+			var testSwitch = {
+				dpid: s.dpid,
+				state: s.state,
+				radius: ring.radius,
+				width: ring.width,
+				className: ring.className,
+				angle: ring.angles[i],
+				controller: s.controller
+			}
+			testRing.push(testSwitch);
+		});
 
 
+		testRings.push(testRing);
+	});
 
 
-	return rings;
+//	return rings;
+	return testRings;
 }
 
 function updateTopology(svg, model) {
@@ -136,44 +156,50 @@ function updateTopology(svg, model) {
 	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
 
 	function ringEnter(data, i) {
-		if (!data.switches.length) {
+		if (!data.length) {
 			return;
 		}
 
 		// create the nodes
 		var nodes = d3.select(this).selectAll("g")
-			.data(d3.range(data.switches.length).map(function() {
-				return data;
-			}))
+			.data(data, function (data) {
+				return data.dpid;
+			})
 			.enter().append("svg:g")
 			.classed('nolabel', true)
-			.attr("id", function (_, i) {
-				return data.switches[i].dpid;
+			.attr("id", function (data, i) {
+				return data.dpid;
 			})
-			.attr("transform", function(_, i) {
-				return "rotate(" + data.angles[i]+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angles[i]) + ")";
+			.attr("transform", function(data, i) {
+				return "rotate(" + data.angle+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angle) + ")";
 			});
 
 		// add the cirles representing the switches
 		nodes.append("svg:circle")
-			.attr("transform", function(_, i) {
+			.attr("transform", function(data, i) {
 				var m = document.querySelector('#viewbox').getTransformToElement().inverse();
 				if (data.scale) {
 					m = m.scale(data.scale);
 				}
 				return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
 			})
-			.attr("x", -data.width / 2)
-			.attr("y", -data.width / 2)
-			.attr("r", data.width)
+			.attr("x", function (data) {
+				return -data.width / 2;
+			})
+			.attr("y", function (data) {
+				return -data.width / 2;
+			})
+			.attr("r", function (data) {
+				return data.width;
+			})
 
 		// setup the mouseover behaviors
 		function showLabel(data, index) {
-			d3.select(document.getElementById(data.switches[index].dpid + '-label')).classed('nolabel', false);
+			d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
 		}
 
 		function hideLabel(data, index) {
-			d3.select(document.getElementById(data.switches[index].dpid + '-label')).classed('nolabel', true);
+			d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
 		}
 
 		nodes.on('mouseover', showLabel);
@@ -187,10 +213,13 @@ function updateTopology(svg, model) {
 
 
 	function ringUpdate(data, i) {
-		nodes = d3.select(this).selectAll("circle");
-		nodes.attr('class', function (_, i)  {
-				if (data.switches[i].state == 'ACTIVE') {
-					return data.className + ' ' + controllerColorMap[data.switches[i].controller];
+		nodes = d3.select(this).selectAll("g")
+			.data(data, function (data) {
+				return data.dpid;
+			})
+		nodes.select('circle').attr('class', function (data, i)  {
+				if (data.state == 'ACTIVE') {
+					return data.className + ' ' + controllerColorMap[data.controller];
 				} else {
 					return data.className + ' ' + 'colorInactive';
 				}
@@ -207,30 +236,30 @@ function updateTopology(svg, model) {
 	var labelRings = svg.selectAll('.labelRing').data(createRingsFromModel(model));
 
 	function labelRingEnter(data, i) {
-		if (!data.switches.length) {
+		if (!data.length) {
 			return;
 		}
 
 		// create the nodes
 		var nodes = d3.select(this).selectAll("g")
-			.data(d3.range(data.switches.length).map(function() {
-				return data;
-			}))
+			.data(data, function (data) {
+				return data.dpid;
+			})
 			.enter().append("svg:g")
 			.classed('nolabel', true)
-			.attr("id", function (_, i) {
-				return data.switches[i].dpid + '-label';
+			.attr("id", function (data, i) {
+				return data.dpid + '-label';
 			})
-			.attr("transform", function(_, i) {
-				return "rotate(" + data.angles[i]+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angles[i]) + ")";
+			.attr("transform", function(data, i) {
+				return "rotate(" + data.angle+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angle) + ")";
 			});
 
 		// add the text nodes which show on mouse over
 		nodes.append("svg:text")
-				.text(function (d, i) {return d.switches[i].dpid})
+				.text(function (data, i) {return data.dpid})
 				.attr("x", 0)
 				.attr("y", 0)
-				.attr("transform", function(_, i) {
+				.attr("transform", function(data, i) {
 					var m = document.querySelector('#viewbox').getTransformToElement().inverse();
 					if (data.scale) {
 						m = m.scale(data.scale);
@@ -250,18 +279,18 @@ function updateTopology(svg, model) {
 
 	// do mouseover zoom on edge nodes
 	function zoom(data, index) {
-		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-			g.transition().duration(100).attr("r", g.data()[0].width*3);
+		var g = d3.select(document.getElementById(data.dpid)).select('circle');
+			g.transition().duration(100).attr("r", data.width*3);
 			// TODO: this doesn't work because the data binding is by index
-//			d3.select(this.parentNode).moveToFront();
+			d3.select(this.parentNode).moveToFront();
 	}
 
 	svg.selectAll('.edge').on('mouseover', zoom);
 	svg.selectAll('.edge').on('mousedown', zoom);
 
 	function unzoom(data, index) {
-		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-			g.transition().duration(100).attr("r", g.data()[0].width);
+		var g = d3.select(document.getElementById(data.dpid)).select('circle');
+			g.transition().duration(100).attr("r", data.width);
 	}
 	svg.selectAll('.edge').on('mouseout', unzoom);
 
@@ -309,6 +338,7 @@ function updateTopology(svg, model) {
 
 	// remove old links
 	links.exit().remove();
+
 }
 
 function updateControllers(model) {
