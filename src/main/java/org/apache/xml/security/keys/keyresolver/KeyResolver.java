@@ -47,8 +47,7 @@ import org.w3c.dom.Node;
  */
 public class KeyResolver {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(KeyResolver.class);
 
     /** Field resolverVector */
@@ -197,6 +196,8 @@ public class KeyResolver {
         Exception ex = null;
         try {
             keyResolverSpi = (KeyResolverSpi) Class.forName(className).newInstance();
+            keyResolverSpi.setGlobalResolver(globalResolver);
+            register(keyResolverSpi, true);
         } catch (ClassNotFoundException e) {
             ex = e;
         } catch (IllegalAccessException e) {
@@ -209,8 +210,6 @@ public class KeyResolver {
             throw (IllegalArgumentException) new
             IllegalArgumentException("Invalid KeyResolver class name").initCause(ex);
         }
-        keyResolverSpi.setGlobalResolver(globalResolver);
-        register(keyResolverSpi, true);
     }
     
     /**
@@ -397,7 +396,7 @@ public class KeyResolver {
         public void remove() {
             throw new UnsupportedOperationException("Can't remove resolvers using the iterator");
         }
-    };
+    }
 
     public static Iterator<KeyResolverSpi> iterator() {
         return new ResolverIterator(resolverVector);

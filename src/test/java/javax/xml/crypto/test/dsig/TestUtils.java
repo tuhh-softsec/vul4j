@@ -179,7 +179,7 @@ public class TestUtils {
             } catch (Exception ex) {
                 // should never be thrown
             }
-        };
+        }
         
         public MyOwnDOMReference(String id, boolean status) {
             super(newDocument());

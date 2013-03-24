@@ -66,10 +66,9 @@ public class Canonicalizer20010315ExclusiveTest extends org.junit.Assert {
         org.apache.xml.security.Init.init();
     }
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
+    static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(
-            Canonicalizer20010315ExclusiveTest.class.getName()
+            Canonicalizer20010315ExclusiveTest.class
         );
 
     /** Field dbf */

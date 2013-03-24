@@ -31,8 +31,7 @@ import org.w3c.dom.Element;
  */
 public class JCEMapper {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(JCEMapper.class);
 
     private static Map<String, Algorithm> algorithmsMap = 

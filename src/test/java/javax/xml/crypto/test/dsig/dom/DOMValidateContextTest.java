@@ -75,9 +75,9 @@ public class DOMValidateContextTest extends org.junit.Assert {
         String pvalue1 = "value";
         String pvalue2 = "newvalue";
         assertNull(domVC.setProperty(pname, pvalue1));
-        assertEquals((String)domVC.getProperty(pname), pvalue1);
+        assertEquals(domVC.getProperty(pname), pvalue1);
         assertEquals(domVC.setProperty(pname, pvalue2), pvalue1);
-        assertEquals((String)domVC.getProperty(pname), pvalue2);
+        assertEquals(domVC.getProperty(pname), pvalue2);
     }
 
     @org.junit.Test

@@ -32,8 +32,7 @@ import org.w3c.dom.Element;
 
 public class RSAKeyValueResolver extends KeyResolverSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(RSAKeyValueResolver.class);
 
 

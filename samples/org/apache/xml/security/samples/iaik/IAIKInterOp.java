@@ -42,9 +42,8 @@ import org.w3c.dom.Element;
  */
 public class IAIKInterOp {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(IAIKInterOp.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(IAIKInterOp.class);
 
     /** Field schemaValidate */
     static final boolean schemaValidate = false;

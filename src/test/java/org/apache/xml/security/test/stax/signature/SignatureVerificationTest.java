@@ -1376,6 +1376,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
 
         Field algorithmsClassMapInField = TransformerAlgorithmMapper.class.getDeclaredField("algorithmsClassMapIn");
         algorithmsClassMapInField.setAccessible(true);
+        @SuppressWarnings("unchecked")
         Map<String, Class<?>> transformMap = (Map<String, Class<?>>)algorithmsClassMapInField.get(null);
         transformMap.put(customC14N, org.apache.xml.security.stax.impl.transformer.canonicalizer.Canonicalizer20010315_OmitCommentsTransformer.class);
 

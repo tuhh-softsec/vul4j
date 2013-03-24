@@ -497,7 +497,7 @@ public final class DOMXMLSignature extends DOMStructure
 
         @Override
         public byte[] getValue() {
-            return (value == null) ? null : (byte[])value.clone();
+            return (value == null) ? null : value.clone();
         }
 
         public String getEncodedValue() {

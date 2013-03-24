@@ -149,7 +149,7 @@ public class XMLSignatureInputDebugger {
         }
 
         // get only a single node as anchor to fetch the owner document
-        Node n = (Node) this.xpathNodeSet.iterator().next();
+        Node n = this.xpathNodeSet.iterator().next();
 
         this.doc = XMLUtils.getOwnerDocument(n);
 

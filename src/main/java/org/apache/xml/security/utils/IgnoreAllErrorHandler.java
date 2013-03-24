@@ -30,7 +30,6 @@ import org.xml.sax.SAXParseException;
  */
 public class IgnoreAllErrorHandler implements ErrorHandler {
 
-    /** {@link org.apache.commons.logging} logging facility */
     private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(IgnoreAllErrorHandler.class);
 

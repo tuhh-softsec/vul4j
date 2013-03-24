@@ -56,8 +56,7 @@ public class Manifest extends SignatureElementProxy {
      */
     public static final int MAXIMUM_REFERENCE_COUNT = 30;
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(Manifest.class);
 
     /** Field references */
@@ -356,7 +355,7 @@ public class Manifest extends SignatureElementProxy {
                         Manifest referencedManifest = null;
                         Iterator<Node> nlIterator = nl.iterator();
 
-                        findManifest: while (nlIterator.hasNext()) {
+                        while (nlIterator.hasNext()) {
                             Node n = nlIterator.next();
 
                             if ((n.getNodeType() == Node.ELEMENT_NODE) 
@@ -368,7 +367,7 @@ public class Manifest extends SignatureElementProxy {
                                         new Manifest(
                                              (Element)n, signedManifestNodes.getSourceURI(), secureValidation
                                         );
-                                    break findManifest;
+                                    break;
                                 } catch (XMLSecurityException ex) {
                                     if (log.isDebugEnabled()) {
                                         log.debug(ex.getMessage(), ex);

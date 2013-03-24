@@ -37,12 +37,11 @@ import org.w3c.dom.Attr;
  */
 public class ResourceResolver {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(ResourceResolver.class);
     
     /** these are the system-wide resolvers */
-    private static List<ResourceResolver> resolverList = new ArrayList<ResourceResolver>();
+    private static final List<ResourceResolver> resolverList = new ArrayList<ResourceResolver>();
     
     /** Field resolverSpi */
     private final ResourceResolverSpi resolverSpi;

@@ -43,8 +43,7 @@ import org.apache.xml.security.utils.Base64;
  */
 public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(
             CertsInFilesystemDirectoryResolver.class
         );
@@ -98,7 +97,7 @@ public class CertsInFilesystemDirectoryResolver extends StorageResolverSpi {
         }
 
         for (int i = 0; i < al.size(); i++) {
-            String filename = certDir.getAbsolutePath() + File.separator + (String) al.get(i);
+            String filename = certDir.getAbsolutePath() + File.separator + al.get(i);
             File file = new File(filename);
             boolean added = false;
             String dn = null;

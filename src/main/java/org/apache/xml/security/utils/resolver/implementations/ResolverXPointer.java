@@ -44,8 +44,7 @@ import org.w3c.dom.Node;
  */
 public class ResolverXPointer extends ResourceResolverSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(ResolverXPointer.class);
     
     private static final String XP = "#xpointer(id(";

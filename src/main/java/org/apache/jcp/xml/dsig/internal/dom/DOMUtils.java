@@ -254,7 +254,7 @@ public class DOMUtils {
                 }
                 @Override
                 public boolean hasNext() {
-                    return index < nl.getLength() ? true : false;
+                    return index < nl.getLength();
                 }
             };
         }

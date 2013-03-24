@@ -323,11 +323,9 @@ public class Base64 {
         throws IOException, Base64DecodingException {
 
         byte[] retBytes = null;
-        UnsyncByteArrayOutputStream baos = null;
+        UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
         try {
-            baos = new UnsyncByteArrayOutputStream();
             String line;
-    
             while (null != (line = reader.readLine())) {
                 byte[] bytes = decode(line);
                 baos.write(bytes);

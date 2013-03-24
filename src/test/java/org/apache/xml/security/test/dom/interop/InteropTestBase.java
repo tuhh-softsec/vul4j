@@ -41,9 +41,8 @@ import org.w3c.dom.Node;
 
 public class InteropTestBase extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(InteropTestBase.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(InteropTestBase.class);
 
     /** Field dbf */
     static javax.xml.parsers.DocumentBuilderFactory dbf = null;
@@ -177,7 +176,7 @@ public class InteropTestBase extends org.junit.Assert {
                 assertTrue(iter.hasNext());
                 boolean found = false;
                 while (iter.hasNext()) {
-                    Node n = (Node)iter.next();
+                    Node n = iter.next();
                     if (n instanceof Element) {
                         found = true;
                         break;

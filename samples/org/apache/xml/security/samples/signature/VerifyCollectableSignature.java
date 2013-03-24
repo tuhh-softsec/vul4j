@@ -40,9 +40,8 @@ import org.w3c.dom.NodeList;
  */
 public class VerifyCollectableSignature {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(VerifyCollectableSignature.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(VerifyCollectableSignature.class);
 
     static {
         org.apache.xml.security.Init.init();

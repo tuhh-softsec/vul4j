@@ -67,7 +67,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             int level;
             boolean rendered = false;
             List<Attr> nodes = new ArrayList<Attr>();
-        };
+        }
         
         int currentLevel = 0;
         int lastlevel = 0;
@@ -180,7 +180,7 @@ public abstract class Canonicalizer11 extends CanonicalizerBase {
             cur.rendered = true;
             col.addAll(loa.values());
         }
-    };
+    }
     
     private XmlAttrStack xmlattrStack = new XmlAttrStack();
     

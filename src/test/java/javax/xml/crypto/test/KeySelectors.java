@@ -72,7 +72,7 @@ public class KeySelectors {
                     }
                     
                     public byte[] getEncoded() {
-                        return (byte[]) bytes.clone();
+                        return bytes.clone();
                     }
                 };
         }
@@ -186,12 +186,14 @@ public class KeySelectors {
             }
             certs = new Vector<X509Certificate>();
             File[] files = new File(certDir, "certs").listFiles();
-            for (File file : files) {
-                try {
-                    certs.add((X509Certificate)certFac.generateCertificate
-                              (new FileInputStream(file)));
-                } catch (Exception ex) {
-                    // ignore non-cert files
+            if (files != null) {
+                for (File file : files) {
+                    try {
+                        certs.add((X509Certificate)certFac.generateCertificate
+                                  (new FileInputStream(file)));
+                    } catch (Exception ex) {
+                        // ignore non-cert files
+                    }
                 }
             }
         }
@@ -354,16 +356,20 @@ public class KeySelectors {
 
         public static String dumpArray(byte[] in) {
             int numDumped = 0;
-            StringBuffer buf = new StringBuffer(512);
+            StringBuilder buf = new StringBuilder(512);
             buf.append("{");
             for (int i = 0;i < (in.length / numBytesPerRow); i++) {
                 for (int j=0; j < (numBytesPerRow); j++) {
-                    buf.append("(byte)0x" + getHex(in[i * numBytesPerRow+j]) + ", ");
+                    buf.append("(byte)0x");
+                    buf.append(getHex(in[i * numBytesPerRow+j]));
+                    buf.append(", ");
                 }
                 numDumped += numBytesPerRow;
             }
             while (numDumped < in.length) {
-                buf.append("(byte)0x" + getHex(in[numDumped]) + " ");
+                buf.append("(byte)0x");
+                buf.append(getHex(in[numDumped]));
+                buf.append(" ");
                 numDumped += 1;
             }
             buf.append("}");

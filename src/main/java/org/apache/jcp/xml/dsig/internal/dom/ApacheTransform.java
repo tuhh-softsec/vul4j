@@ -105,7 +105,7 @@ public abstract class ApacheTransform extends TransformService {
         if (data == null) {
             throw new NullPointerException("data must not be null");
         }
-        return transformIt(data, xc, (OutputStream)null);
+        return transformIt(data, xc, null);
     }
 
     @Override
@@ -145,7 +145,7 @@ public abstract class ApacheTransform extends TransformService {
         
         Boolean secureValidation = (Boolean)
             xc.getProperty("org.apache.jcp.xml.dsig.secureValidation");
-        if (secureValidation != null && secureValidation.booleanValue()) {
+        if (secureValidation != null && secureValidation) {
             String algorithm = getAlgorithm();
             if (Transforms.TRANSFORM_XSLT.equals(algorithm)) {
                 throw new TransformException(

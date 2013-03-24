@@ -50,7 +50,7 @@ public class XMLEncryptionException extends XMLSecurityException {
      * @param msgID
      * @param exArgs
      */
-    public XMLEncryptionException(String msgID, Object exArgs[]) {
+    public XMLEncryptionException(String msgID, Object ... exArgs) {
         super(msgID, exArgs);
     }
     

@@ -30,9 +30,9 @@ import org.w3c.dom.Element;
  * For a KeyName hint, the KeyName must match the alias of a PrivateKey entry within the KeyStore.
  */
 public class PrivateKeyResolver extends KeyResolverSpi {
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(PrivateKeyResolver.class.getName());
+
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(PrivateKeyResolver.class);
 
     private KeyStore keyStore;
     private char[] password;
@@ -204,7 +204,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
 
         Enumeration<String> aliases = keyStore.aliases();
         while (aliases.hasMoreElements()) {
-            String alias = (String) aliases.nextElement();
+            String alias = aliases.nextElement();
             if (keyStore.isKeyEntry(alias)) {
 
                 Certificate cert = keyStore.getCertificate(alias);
@@ -239,7 +239,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
 
         Enumeration<String> aliases = keyStore.aliases();
         while (aliases.hasMoreElements()) {
-            String alias = (String) aliases.nextElement();
+            String alias = aliases.nextElement();
             if (keyStore.isKeyEntry(alias)) {
 
                 Certificate cert = keyStore.getCertificate(alias);
@@ -275,7 +275,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
 
         Enumeration<String> aliases = keyStore.aliases();
         while (aliases.hasMoreElements()) {
-            String alias = (String) aliases.nextElement();
+            String alias = aliases.nextElement();
             if (keyStore.isKeyEntry(alias)) {
 
                 Certificate cert = keyStore.getCertificate(alias);
@@ -314,7 +314,7 @@ public class PrivateKeyResolver extends KeyResolverSpi {
 
         Enumeration<String> aliases = keyStore.aliases();
         while (aliases.hasMoreElements()) {
-            String alias = (String) aliases.nextElement();
+            String alias = aliases.nextElement();
             if (keyStore.isKeyEntry(alias)) {
 
                 Certificate cert = keyStore.getCertificate(alias);

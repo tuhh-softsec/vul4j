@@ -61,9 +61,8 @@ import org.w3c.dom.NodeList;
  */
 public class XMLCipherTest extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(XMLCipherTest.class.getName());
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(XMLCipherTest.class);
     
     static {
         org.apache.xml.security.Init.init();
@@ -86,7 +85,7 @@ public class XMLCipherTest extends org.junit.Assert {
         elementIndex = System.getProperty("org.apache.xml.enc.test.idx", "0");
 
         tstBase64EncodedString = 
-            new String("YmNkZWZnaGlqa2xtbm9wcRrPXjQ1hvhDFT+EdesMAPE4F6vlT+y0HPXe0+nAGLQ8");
+            "YmNkZWZnaGlqa2xtbm9wcRrPXjQ1hvhDFT+EdesMAPE4F6vlT+y0HPXe0+nAGLQ8";
 
         // Determine if we have ISO 10126 Padding - needed for Bulk AES or
         // 3DES encryption

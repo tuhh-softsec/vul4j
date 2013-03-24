@@ -56,7 +56,7 @@ public class Canonicalizer11 extends CanonicalizerBase {
             if (outputStack.containsOnStack(comparableAttribute) != null) {
                 continue;
             }
-            if (utilizedAttributes == (Object)Collections.emptyList()) {
+            if (utilizedAttributes == Collections.<XMLSecAttribute>emptyList()) {
                 utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
@@ -72,7 +72,7 @@ public class Canonicalizer11 extends CanonicalizerBase {
             if (XML.equals(attributeName.getPrefix())) {
                 continue;
             }
-            if (utilizedAttributes == (Object)Collections.emptyList()) {
+            if (utilizedAttributes == Collections.<XMLSecAttribute>emptyList()) {
                 utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);

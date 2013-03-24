@@ -31,9 +31,8 @@ import org.apache.xml.security.utils.XMLUtils;
  */
 public class Base64Test extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(Base64Test.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(Base64Test.class);
     
     static {
         org.apache.xml.security.Init.init();

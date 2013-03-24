@@ -50,9 +50,8 @@ import org.xml.sax.SAXException;
  */
 public class Canonicalizer11Test extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(Canonicalizer11Test.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(Canonicalizer11Test.class);
 
     static {
         org.apache.xml.security.Init.init();
@@ -386,7 +385,7 @@ public class Canonicalizer11Test extends org.junit.Assert {
                 new DSNamespaceContext(namespaces);
             xPath.setNamespaceContext(namespaceContext);
 
-            nl = (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
+            nl = (NodeList)xPath.evaluate(xpath, doc, XPathConstants.NODESET);
 
             c14nBytes = c14n.canonicalizeXPathNodeSet(nl);
         }

@@ -33,6 +33,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.net.URI;
+import java.net.URL;
 
 /**
  * Class to load the algorithms-mappings from a configuration file.
@@ -61,7 +62,13 @@ public class Init {
                 saxParserFactory.setNamespaceAware(true);
                 SAXParser saxParser = saxParserFactory.newSAXParser();
                 if (uri == null) {
-                    uri = Init.class.getClassLoader().getResource("security-config.xml").toURI();
+                    URL resource = Init.class.getClassLoader().getResource("security-config.xml");
+                    if (resource == null) {
+                        //kind of chicken-egg problem here
+                        I18n.init("en", "US");
+                        throw new XMLSecurityConfigurationException("empty", "security-config.xml not found in classpath");
+                    }
+                    uri = resource.toURI();
                 }
                 saxParser.parse(uri.toURL().toExternalForm(), new XIncludeHandler(unmarshallerHandler));
                 JAXBElement<ConfigurationType> configurationTypeJAXBElement = (JAXBElement<ConfigurationType>) unmarshallerHandler.getResult();

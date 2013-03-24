@@ -43,9 +43,8 @@ import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
  */
 public class OfflineResolver extends ResourceResolverSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(OfflineResolver.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(OfflineResolver.class);
     
     /** Field _uriMap */
     static Map<String, String> _uriMap = null;
@@ -104,7 +103,7 @@ public class OfflineResolver extends ResourceResolverSpi {
             String URI = context.uriToResolve;
 
             if (OfflineResolver._uriMap.containsKey(URI)) {
-                String newURI = (String) OfflineResolver._uriMap.get(URI);
+                String newURI = OfflineResolver._uriMap.get(URI);
 
                 log.debug("Mapped " + URI + " to " + newURI);
 
@@ -114,9 +113,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 
                 XMLSignatureInput result = new XMLSignatureInput(is);
 
-                // XMLSignatureInput result = new XMLSignatureInput(inputStream);
                 result.setSourceURI(URI);
-                result.setMIMEType((String) OfflineResolver._mimeMap.get(URI));
+                result.setMIMEType(OfflineResolver._mimeMap.get(URI));
 
                 return result;
             } else {

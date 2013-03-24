@@ -80,7 +80,7 @@ public abstract class KeyResolverSpi {
         Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException {
         throw new UnsupportedOperationException();
-    };
+    }
 
     /**
      * Method engineLookupAndResolvePublicKey
@@ -130,7 +130,7 @@ public abstract class KeyResolverSpi {
         Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException{
         throw new UnsupportedOperationException();
-    };
+    }
 
     /**
      * Method engineLookupResolveX509Certificate
@@ -166,7 +166,7 @@ public abstract class KeyResolverSpi {
         Element element, String baseURI, StorageResolver storage
     ) throws KeyResolverException{
         throw new UnsupportedOperationException();
-    }; 
+    }
 
     /**
      * Method engineLookupAndResolveSecretKey

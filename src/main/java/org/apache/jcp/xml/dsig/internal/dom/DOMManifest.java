@@ -88,7 +88,7 @@ public final class DOMManifest extends BaseStructure implements Manifest {
         Boolean secureValidation = (Boolean)
             context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
         boolean secVal = false;
-        if (secureValidation != null && secureValidation.booleanValue()) {
+        if (secureValidation != null && secureValidation) {
             secVal = true;
         }
         

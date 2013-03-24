@@ -61,7 +61,7 @@ public abstract class Canonicalizer20010315 extends CanonicalizerBase {
             int level;
             boolean rendered = false;
             List<Attr> nodes = new ArrayList<Attr>();
-        };
+        }
         
         int currentLevel = 0;
         int lastlevel = 0;

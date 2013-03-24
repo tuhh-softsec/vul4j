@@ -283,7 +283,7 @@ public class KeyResolverTest extends org.junit.Assert {
 
         // Now test with a static KeyResolver
         KeyResolver.registerAtStart(MyPrivateKeyResolver.class.getName(), false);
-        KeyResolverSpi resolver = (KeyResolverSpi)KeyResolver.iterator().next();
+        KeyResolverSpi resolver = KeyResolver.iterator().next();
         assertEquals(MyPrivateKeyResolver.class.getName(), resolver.getClass().getName());
 
         decryptDocument(document, null);

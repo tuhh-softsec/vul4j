@@ -65,7 +65,7 @@ public class PGPDataTest extends org.junit.Assert {
                 for (int j=0; j<types.length; j++) {
                     if (!(types[j] instanceof XMLStructure)) {
                         fail("PGP element has the wrong type");
-                    };
+                    }
                 }
             } 
         }

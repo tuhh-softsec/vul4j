@@ -115,7 +115,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                 continue;
             }
 
-            if (utilizedNamespaces == (Object)Collections.emptyList()) {
+            if (utilizedNamespaces == Collections.<XMLSecNamespace>emptyList()) {
                 utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
             }
             utilizedNamespaces.add(comparableNamespace);
@@ -137,7 +137,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
                     || !resultNamespace.getNamespaceURI().equals(attributeNamespace.getNamespaceURI())) {
 
-                if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                if (utilizedNamespaces == Collections.<XMLSecNamespace>emptyList()) {
                     utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
                 }
                 utilizedNamespaces.add(attributeNamespace);
@@ -201,7 +201,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (outputStack.containsOnStack(comparableAttribute) != null) {
                 continue;
             }
-            if (utilizedAttributes == (Object)Collections.emptyList()) {
+            if (utilizedAttributes == Collections.<XMLSecAttribute>emptyList()) {
                 utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);
@@ -217,7 +217,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
             if (XML.equals(attributeName.getPrefix())) {
                 continue;
             }
-            if (utilizedAttributes == (Object)Collections.emptyList()) {
+            if (utilizedAttributes == Collections.<XMLSecAttribute>emptyList()) {
                 utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);

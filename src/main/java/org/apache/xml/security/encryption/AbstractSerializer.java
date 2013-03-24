@@ -231,14 +231,20 @@ public abstract class AbstractSerializer implements Serializer {
                     String nodeName = att.getNodeName();
                     if ((nodeName.equals("xmlns") || nodeName.startsWith("xmlns:"))
                         && !storedNamespaces.containsKey(att.getNodeName())) {
-                        sb.append(" " + nodeName + "=\"" + att.getNodeValue() + "\"");
+                        sb.append(" ");
+                        sb.append(nodeName);
+                        sb.append("=\"");
+                        sb.append(att.getNodeValue());
+                        sb.append("\"");
                         storedNamespaces.put(nodeName, att.getNodeValue());
                     }
                 }
             }
             wk = wk.getParentNode();
         }
-        sb.append(">" + source + "</dummy>");
+        sb.append(">");
+        sb.append(source);
+        sb.append("</dummy>");
         return sb.toString();
     }
     

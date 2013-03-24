@@ -41,9 +41,8 @@ import org.w3c.dom.Node;
  */
 public class TransformBase64DecodeTest extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(TransformBase64DecodeTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(TransformBase64DecodeTest.class);
 
     static {
         org.apache.xml.security.Init.init();

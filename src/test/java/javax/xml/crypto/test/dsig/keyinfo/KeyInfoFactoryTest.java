@@ -119,7 +119,7 @@ public class KeyInfoFactoryTest extends org.junit.Assert {
         } catch (KeyException ke) { }
   
         try {
-            factory.newKeyValue((PublicKey) null); 
+            factory.newKeyValue(null);
             fail("Should raise a NPE for null key"); 
         } catch (KeyException ke) {
             fail("Should raise a NPE for null key"); 

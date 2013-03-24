@@ -34,8 +34,7 @@ import java.util.List;
  */
 public final class ClassLoaderUtils {
     
-    /** {@link org.apache.commons.logging} logging facility */
-    private static final org.slf4j.Logger log = 
+    private static final org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(ClassLoaderUtils.class);
     
     private ClassLoaderUtils() {

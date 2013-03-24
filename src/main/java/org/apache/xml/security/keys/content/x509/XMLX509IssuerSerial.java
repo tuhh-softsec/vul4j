@@ -30,8 +30,7 @@ import org.w3c.dom.Element;
 
 public class XMLX509IssuerSerial extends SignatureElementProxy implements XMLX509DataContent {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(XMLX509IssuerSerial.class);
 
     /**

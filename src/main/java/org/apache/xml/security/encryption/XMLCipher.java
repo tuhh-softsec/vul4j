@@ -277,7 +277,7 @@ public class XMLCipher {
      *                          is defined in the <code>EncryptionMethod</code> element.
      * @param provider          the JCE provider that supplies the transformation,
      *                          if null use the default provider.
-     * @param canon             the name of the c14n algorithm, if
+     * @param canonAlg             the name of the c14n algorithm, if
      *                          <code>null</code> use standard serializer
      * @param digestMethod      An optional digestMethod to use. 
      */
@@ -805,14 +805,14 @@ public class XMLCipher {
             log.debug("Encrypting element...");
         }
         if (null == element) { 
-            log.error("Element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
-            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if (cipherMode != ENCRYPT_MODE) {
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (algorithm == null) {
-            throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+            throw new XMLEncryptionException("empty", "XMLCipher instance without transformation specified");
         }
         encryptData(contextDocument, element, false);
 
@@ -843,14 +843,14 @@ public class XMLCipher {
             log.debug("Encrypting element content...");
         }
         if (null == element) { 
-            log.error("Element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
-            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if (cipherMode != ENCRYPT_MODE) {
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (algorithm == null) {
-            throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+            throw new XMLEncryptionException("empty", "XMLCipher instance without transformation specified");
         }
         encryptData(contextDocument, element, true);	
 
@@ -876,10 +876,10 @@ public class XMLCipher {
             log.debug("Processing source document...");
         }
         if (null == context) {
-            log.error("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == source) {
-            log.error("Source document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Source document unexpectedly null...");
         }
 
         contextDocument = context;
@@ -917,10 +917,10 @@ public class XMLCipher {
             log.debug("Processing source element...");
         }
         if (null == context) {
-            log.error("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == element) {
-            log.error("Source element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Source element unexpectedly null...");
         }
 
         contextDocument = context;
@@ -962,10 +962,11 @@ public class XMLCipher {
             log.debug("Processing source element...");
         }
         if (null == context) {
-            log.error("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == element) {
-            log.error("Source element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Source element unexpectedly null...");
+
         }
 
         contextDocument = context;
@@ -1035,13 +1036,13 @@ public class XMLCipher {
             log.debug("Encrypting element...");
         }
         if (null == context) {
-            log.error("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == serializedData) {
-            log.error("Serialized data unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Serialized data unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
-            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if (cipherMode != ENCRYPT_MODE) {
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         return encryptData(context, null, type, serializedData);
@@ -1068,13 +1069,13 @@ public class XMLCipher {
             log.debug("Encrypting element...");
         }
         if (null == context) {
-            log.error("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == element) {
-            log.error("Element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Element unexpectedly null...");
         }
-        if (cipherMode != ENCRYPT_MODE && log.isDebugEnabled()) {
-            log.debug("XMLCipher unexpectedly not in ENCRYPT_MODE...");
+        if (cipherMode != ENCRYPT_MODE) {
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in ENCRYPT_MODE...");
         }
 
         if (contentMode) {
@@ -1090,7 +1091,7 @@ public class XMLCipher {
         contextDocument = context;
 
         if (algorithm == null) {
-            throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+            throw new XMLEncryptionException("empty", "XMLCipher instance without transformation specified");
         }
 
         byte[] serializedOctets = null;
@@ -1100,8 +1101,7 @@ public class XMLCipher {
                 if (null != children) {
                     serializedOctets = serializer.serializeToByteArray(children);
                 } else {
-                    Object exArgs[] = { "Element has no content." };
-                    throw new XMLEncryptionException("empty", exArgs);
+                    throw new XMLEncryptionException("empty", "Element has no content.");
                 }
             } else {
                 serializedOctets = serializer.serializeToByteArray(element);
@@ -1222,13 +1222,13 @@ public class XMLCipher {
             log.debug("Loading encrypted element...");
         }
         if (null == context) {
-            throw new NullPointerException("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == element) {
-            throw new NullPointerException("Element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Element unexpectedly null...");
         }
         if (cipherMode != DECRYPT_MODE) {
-            throw new XMLEncryptionException("XMLCipher unexpectedly not in DECRYPT_MODE...");
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
         contextDocument = context;
@@ -1253,13 +1253,13 @@ public class XMLCipher {
             log.debug("Loading encrypted key...");
         }
         if (null == context) {
-            throw new NullPointerException("Context document unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (null == element) {
-            throw new NullPointerException("Element unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Context document unexpectedly null...");
         }
         if (cipherMode != UNWRAP_MODE && cipherMode != DECRYPT_MODE) {
-            throw new XMLEncryptionException(
+            throw new XMLEncryptionException("empty",
                 "XMLCipher unexpectedly not in UNWRAP_MODE or DECRYPT_MODE..."
             );
         }
@@ -1319,13 +1319,13 @@ public class XMLCipher {
         }
 
         if (null == key) {
-            log.error("Key unexpectedly null...");
+            throw new XMLEncryptionException("empty", "Key unexpectedly null...");
         }
         if (cipherMode != WRAP_MODE) {
-            log.debug("XMLCipher unexpectedly not in WRAP_MODE...");
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in WRAP_MODE...");
         }
         if (algorithm == null) {
-            throw new XMLEncryptionException("XMLCipher instance without transformation specified");
+            throw new XMLEncryptionException("empty", "XMLCipher instance without transformation specified");
         }
 
         contextDocument = doc;
@@ -1399,11 +1399,11 @@ public class XMLCipher {
         }
 
         if (cipherMode != UNWRAP_MODE && log.isDebugEnabled()) {
-            log.debug("XMLCipher unexpectedly not in UNWRAP_MODE...");
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in UNWRAP_MODE...");
         }
 
         if (algorithm == null) {
-            throw new XMLEncryptionException("Cannot decrypt a key without knowing the algorithm");
+            throw new XMLEncryptionException("empty", "Cannot decrypt a key without knowing the algorithm");
         }
 
         if (key == null) {
@@ -1431,7 +1431,7 @@ public class XMLCipher {
             }
             if (key == null) {
                 log.error("XMLCipher::decryptKey called without a KEK and cannot resolve");
-                throw new XMLEncryptionException("Unable to decrypt without a KEK");
+                throw new XMLEncryptionException("empty", "Unable to decrypt without a KEK");
             }
         }
 
@@ -1606,7 +1606,7 @@ public class XMLCipher {
         }
 
         if (cipherMode != DECRYPT_MODE) {
-            log.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
         byte[] octets = decryptToByteArray(element);
@@ -1644,7 +1644,7 @@ public class XMLCipher {
             ).item(0);
 
         if (null == e) {
-            throw new XMLEncryptionException("No EncryptedData child element.");
+            throw new XMLEncryptionException("empty", "No EncryptedData child element.");
         }
 
         return decryptElement(e);
@@ -1667,7 +1667,7 @@ public class XMLCipher {
         }
 
         if (cipherMode != DECRYPT_MODE) {
-            log.error("XMLCipher unexpectedly not in DECRYPT_MODE...");
+            throw new XMLEncryptionException("empty", "XMLCipher unexpectedly not in DECRYPT_MODE...");
         }
 
         EncryptedData encryptedData = factory.newEncryptedData(element);
@@ -1699,7 +1699,7 @@ public class XMLCipher {
                 log.error(
                     "XMLCipher::decryptElement called without a key and unable to resolve"
                 );
-                throw new XMLEncryptionException("encryption.nokey");
+                throw new XMLEncryptionException("empty", "encryption.nokey");
             }
         }
 
@@ -2272,7 +2272,6 @@ public class XMLCipher {
                 result.setKeyInfo(ki);
             }
 
-            // TODO: Implement
             Element encryptionPropertiesElement =
                 (Element) element.getElementsByTagNameNS(
                     EncryptionConstants.EncryptionSpecNS,
@@ -2337,8 +2336,8 @@ public class XMLCipher {
                     EncryptionConstants._TAG_KEYSIZE).item(0);
             if (null != keySizeElement) {
                 result.setKeySize(
-                    Integer.valueOf(
-                        keySizeElement.getFirstChild().getNodeValue()).intValue());
+                    Integer.parseInt(
+                        keySizeElement.getFirstChild().getNodeValue()));
             }
 
             Element oaepParamsElement =

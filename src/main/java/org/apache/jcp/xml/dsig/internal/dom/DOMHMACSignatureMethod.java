@@ -121,7 +121,7 @@ public abstract class DOMHMACSignatureMethod extends AbstractDOMSignatureMethod 
     SignatureMethodParameterSpec unmarshalParams(Element paramsElem)
         throws MarshalException
     {
-        outputLength = Integer.valueOf(textOfNode(paramsElem)).intValue();
+        outputLength = Integer.parseInt(textOfNode(paramsElem));
         outputLengthSet = true;
         if (log.isDebugEnabled()) {
             log.debug("unmarshalled outputLength: " + outputLength);

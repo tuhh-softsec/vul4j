@@ -33,10 +33,9 @@ import org.apache.xml.security.utils.Constants;
 
 public class HMACOutputLengthTest extends org.junit.Assert {
     
-    /** {@link org.apache.commons.logging} logging facility */
     static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger
-            (HMACOutputLengthTest.class.getName());
+            (HMACOutputLengthTest.class);
     
     private static DocumentBuilderFactory dbf = null;
 

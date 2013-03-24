@@ -120,15 +120,14 @@ public class Reference extends SignatureElementProxy {
      * will be added if necessary when generating the signature. See section
      * 3.1.1 of http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/ for more info.
      */
-    private static boolean useC14N11 = ((Boolean)
+    private static boolean useC14N11 =
         AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
-                return Boolean.valueOf(Boolean.getBoolean("org.apache.xml.security.useC14N11"));
+                return Boolean.getBoolean("org.apache.xml.security.useC14N11");
             }
-        })).booleanValue();
+        });
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static final org.slf4j.Logger log = 
+    private static final org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(Reference.class);
 
     private Manifest manifest;
@@ -478,7 +477,7 @@ public class Reference extends SignatureElementProxy {
             Transforms transforms = this.getTransforms();
 
             if (transforms != null) {
-                doTransforms: for (int i = 0; i < transforms.getLength(); i++) {
+                for (int i = 0; i < transforms.getLength(); i++) {
                     Transform t = transforms.item(i);
                     String uri = t.getURI();
 
@@ -486,7 +485,7 @@ public class Reference extends SignatureElementProxy {
                         || uri.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS) 
                         || uri.equals(Transforms.TRANSFORM_C14N_OMIT_COMMENTS) 
                         || uri.equals(Transforms.TRANSFORM_C14N_WITH_COMMENTS)) {
-                        break doTransforms;
+                        break;
                     }
 
                     output = t.performTransform(output, null);
@@ -523,14 +522,14 @@ public class Reference extends SignatureElementProxy {
             Transform c14nTransform = null;
 
             if (transforms != null) {
-                doTransforms: for (int i = 0; i < transforms.getLength(); i++) {
+                for (int i = 0; i < transforms.getLength(); i++) {
                     Transform t = transforms.item(i);
                     String uri = t.getURI();
 
                     if (uri.equals(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS)
                         || uri.equals(Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS)) {
                         c14nTransform = t;
-                        break doTransforms;
+                        break;
                     }
                 }
             }

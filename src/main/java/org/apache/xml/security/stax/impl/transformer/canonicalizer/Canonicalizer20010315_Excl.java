@@ -94,7 +94,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
             if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
                     || !resultNamespace.getNamespaceURI().equals(attributeNamespace.getNamespaceURI())) {
 
-                if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                if (utilizedNamespaces == Collections.<XMLSecNamespace>emptyList()) {
                     utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
                 }
                 utilizedNamespaces.add(attributeNamespace);
@@ -119,7 +119,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
                         || !resultNamespace.getNamespaceURI().equals(comparableNamespace.getNamespaceURI())
                         || (firstCall && propagateDefaultNamespace && !utilizedNamespaces.contains(comparableNamespace))) {
 
-                    if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                    if (utilizedNamespaces == Collections.<XMLSecNamespace>emptyList()) {
                         utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
                     }
                     utilizedNamespaces.add(comparableNamespace);
@@ -145,7 +145,7 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
         List<XMLSecAttribute> comparableAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
         for (int i = 0; i < comparableAttributes.size(); i++) {
             XMLSecAttribute comparableAttribute = comparableAttributes.get(i);
-            if (utilizedAttributes == (Object)Collections.emptyList()) {
+            if (utilizedAttributes == Collections.<XMLSecAttribute>emptyList()) {
                 utilizedAttributes = new ArrayList<XMLSecAttribute>(2);
             }
             utilizedAttributes.add(comparableAttribute);

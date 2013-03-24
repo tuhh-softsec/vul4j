@@ -120,7 +120,7 @@ public class CreateInteropExcC14NTest extends org.junit.Assert {
              fac.newDigestMethod(DigestMethod.SHA1, null),
              Collections.singletonList(fac.newTransform
                 (CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS, 
-                 (TransformParameterSpec) params)),
+                 params)),
              null, null));
 
         // create SignedInfo

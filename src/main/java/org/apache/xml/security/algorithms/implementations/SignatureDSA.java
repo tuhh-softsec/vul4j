@@ -37,8 +37,7 @@ import org.apache.xml.security.utils.Constants;
 
 public class SignatureDSA extends SignatureAlgorithmSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(SignatureDSA.class);
 
     /** Field URI */

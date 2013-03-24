@@ -63,9 +63,8 @@ import org.xml.sax.SAXException;
  */
 public class Canonicalizer20010315Test extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(Canonicalizer20010315Test.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(Canonicalizer20010315Test.class);
 
     static {
         org.apache.xml.security.Init.init();
@@ -635,7 +634,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
             new DSNamespaceContext(namespace);
         xPath.setNamespaceContext(namespaceContext);
 
-        NodeList nodes = (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
+        NodeList nodes = (NodeList)xPath.evaluate(xpath, doc, XPathConstants.NODESET);
         Canonicalizer c14n =
             Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
         byte c14nBytes[] = c14n.canonicalizeXPathNodeSet(nodes);
@@ -1014,7 +1013,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
         String xpath = 
             "(//*[local-name()='included'] | //@*[parent::node()[local-name()='included']])";
         NodeList nodes = 
-            (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
+            (NodeList)xPath.evaluate(xpath, doc, XPathConstants.NODESET);
 
         byte result[] = c14nizer.canonicalizeXPathNodeSet(nodes);
         byte defined[] = definedOutput.getBytes();
@@ -1079,7 +1078,7 @@ public class Canonicalizer20010315Test extends org.junit.Assert {
                 new DSNamespaceContext(namespaces);
             xPath.setNamespaceContext(namespaceContext);
 
-            nl = (NodeList)xPath.evaluate((String) xpath, doc, XPathConstants.NODESET);
+            nl = (NodeList)xPath.evaluate(xpath, doc, XPathConstants.NODESET);
 
             c14nBytes = c14n.canonicalizeXPathNodeSet(nl);
         }

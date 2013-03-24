@@ -31,8 +31,7 @@ import java.io.InputStream;
  */
 public class JavaUtils {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(JavaUtils.class);
 
     private JavaUtils() {
@@ -123,22 +122,16 @@ public class JavaUtils {
      * @throws IOException
      */
     public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
-        UnsyncByteArrayOutputStream baos = null;
-        
-        byte[] retBytes = null;
+        UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream();
         try {
-            baos = new UnsyncByteArrayOutputStream();
             byte buf[] = new byte[4 * 1024];
             int len;
-    
             while ((len = inputStream.read(buf)) > 0) {
                 baos.write(buf, 0, len);
             }
-            retBytes = baos.toByteArray();
+            return baos.toByteArray();
         } finally {
             baos.close();
         }
-
-        return retBytes;
     }
 }

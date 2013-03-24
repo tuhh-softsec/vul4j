@@ -76,8 +76,8 @@ public final class DOMReference extends DOMStructure
         AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
             public Boolean run() {
-                return Boolean.valueOf(Boolean.getBoolean
-                    ("com.sun.org.apache.xml.internal.security.useC14N11"));
+                return Boolean.getBoolean
+                    ("com.sun.org.apache.xml.internal.security.useC14N11");
             }
         });
 
@@ -196,7 +196,7 @@ public final class DOMReference extends DOMStructure
         Boolean secureValidation = (Boolean)
             context.getProperty("org.apache.jcp.xml.dsig.secureValidation");
         boolean secVal = false;
-        if (secureValidation != null && secureValidation.booleanValue()) {
+        if (secureValidation != null && secureValidation) {
             secVal = true;
         }
         
@@ -281,13 +281,13 @@ public final class DOMReference extends DOMStructure
 
     @Override
     public byte[] getDigestValue() {
-        return (digestValue == null ? null : (byte[])digestValue.clone());
+        return (digestValue == null ? null : digestValue.clone());
     }
 
     @Override
     public byte[] getCalculatedDigestValue() {
         return (calcDigestValue == null ? null 
-                                        : (byte[])calcDigestValue.clone());
+                                        : calcDigestValue.clone());
     }
 
     @Override
@@ -432,7 +432,7 @@ public final class DOMReference extends DOMStructure
         DigesterOutputStream dos;
         Boolean cache = (Boolean)
             context.getProperty("javax.xml.crypto.dsig.cacheReference");
-        if (cache != null && cache.booleanValue()) {
+        if (cache != null && cache) {
             this.derefData = copyDerefData(dereferencedData);
             dos = new DigesterOutputStream(md, true);
         } else {
@@ -461,7 +461,7 @@ public final class DOMReference extends DOMStructure
                     if (!c14n11) {
                         Boolean prop = (Boolean)context.getProperty
                             ("org.apache.xml.security.useC14N11");
-                        c14n11 = (prop != null && prop.booleanValue());
+                        c14n11 = (prop != null && prop);
                         if (c14n11) {
                             c14nalg = "http://www.w3.org/2006/12/xml-c14n11";
                         }
@@ -525,7 +525,7 @@ public final class DOMReference extends DOMStructure
                 }
             }
             os.flush();
-            if (cache != null && cache.booleanValue()) {
+            if (cache != null && cache) {
                 this.dis = dos.getInputStream();
             }
             return dos.getDigestValue();

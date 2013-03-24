@@ -19,9 +19,8 @@ import org.w3c.dom.Element;
  */
 public class SecretKeyResolver extends KeyResolverSpi
 {
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(SecretKeyResolver.class.getName());
+    private static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(SecretKeyResolver.class);
 
     private KeyStore keyStore;
     private char[] password;

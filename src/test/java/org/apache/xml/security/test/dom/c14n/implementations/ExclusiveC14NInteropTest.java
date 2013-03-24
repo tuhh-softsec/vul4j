@@ -34,9 +34,8 @@ import org.w3c.dom.Element;
  */
 public class ExclusiveC14NInteropTest extends InteropTestBase {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(ExclusiveC14NInteropTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(ExclusiveC14NInteropTest.class);
 
     static {
         org.apache.xml.security.Init.init();
@@ -142,7 +141,7 @@ public class ExclusiveC14NInteropTest extends InteropTestBase {
         log.debug("   signature.checkSignatureValue finished: " + verify);
 
         // if (!verify) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < signature.getSignedInfo().getLength(); i++) {
             boolean refVerify =
@@ -152,7 +151,8 @@ public class ExclusiveC14NInteropTest extends InteropTestBase {
             if (refVerify) {
                 log.debug("Reference " + i + " was OK");
             } else {
-                sb.append(i + " ");
+                sb.append(i);
+                sb.append(" ");
 
                 //JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.txt", signature.getSignedInfo().item(i).getContentsAfterTransformation().getBytes());
                 //JavaUtils.writeBytesToFilename(directory + "/c14n-" + i + ".apache.html", signature.getSignedInfo().item(i).getHTMLRepresentation().getBytes());

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 public abstract class Signature11ElementProxy extends ElementProxy {
     
     protected Signature11ElementProxy() {
-    };
+    }
     
     /**
      * Constructor Signature11ElementProxy

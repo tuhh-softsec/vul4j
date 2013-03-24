@@ -96,7 +96,7 @@ public class ClassLoaderTest extends org.junit.Assert {
         Method canonicalizationMethod = factoryClass.getDeclaredMethod
             ("newCanonicalizationMethod", 
                 new Class[]{String.class,methodParameterClass});
-        Object factory = factoryMethod.invoke(null, new Object[]{"DOM"});
+        Object factory = factoryMethod.invoke(null, "DOM");
         long start = System.currentTimeMillis();
         for (int i = 0; i < 100; i++) {
             canonicalizationMethod.invoke

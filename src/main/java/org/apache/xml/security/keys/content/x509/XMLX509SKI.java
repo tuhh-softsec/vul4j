@@ -36,8 +36,7 @@ import org.w3c.dom.Element;
  */
 public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataContent {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(XMLX509SKI.class);
 
     /**
@@ -109,7 +108,7 @@ public class XMLX509SKI extends SignatureElementProxy implements XMLX509DataCont
         throws XMLSecurityException {
 
         if (cert.getVersion() < 3) {
-            Object exArgs[] = { Integer.valueOf(cert.getVersion()) };
+            Object exArgs[] = { cert.getVersion() };
             throw new XMLSecurityException("certificate.noSki.lowVersion", exArgs);
         }
 

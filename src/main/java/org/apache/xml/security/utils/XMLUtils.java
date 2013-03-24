@@ -37,7 +37,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
 /**
@@ -50,18 +49,17 @@ public class XMLUtils {
     private static boolean ignoreLineBreaks =
         AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             public Boolean run() {
-                return Boolean.valueOf(Boolean.getBoolean
-                    ("org.apache.xml.security.ignoreLineBreaks"));
+                return Boolean.getBoolean
+                    ("org.apache.xml.security.ignoreLineBreaks");
             }
-        }).booleanValue();
+        });
     
     private static volatile String dsPrefix = "ds";
     private static volatile String ds11Prefix = "dsig11";
     private static volatile String xencPrefix = "xenc";
     private static volatile String xenc11Prefix = "xenc11";
     
-    /** {@link org.apache.commons.logging} logging facility */
-    private static final org.slf4j.Logger log = 
+    private static final org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(XMLUtils.class);
 
 
@@ -843,9 +841,9 @@ public class XMLUtils {
 
             return sb.toString();
         } else if (xpathnode.getNodeType() == Node.ATTRIBUTE_NODE) {
-            return ((Attr) xpathnode).getNodeValue();
+            return xpathnode.getNodeValue();
         } else if (xpathnode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            return ((ProcessingInstruction) xpathnode).getNodeValue();
+            return xpathnode.getNodeValue();
         }
 
         return null;

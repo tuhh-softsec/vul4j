@@ -54,8 +54,7 @@ public class Init {
     /** The namespace for CONF file **/
     public static final String CONF_NS = "http://www.xmlsecurity.org/NS/#configuration";
 
-    /** {@link org.apache.commons.logging} logging facility */
-    private static org.slf4j.Logger log = 
+    private static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger(Init.class);
 
     /** Field alreadyInitialized */
@@ -150,7 +149,6 @@ public class Init {
             KeyResolver.registerDefaultResolvers();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            ex.printStackTrace();
         }
     }
     
@@ -356,7 +354,6 @@ public class Init {
             }
         } catch (Exception e) {
             log.error("Bad: ", e);
-            e.printStackTrace();
         }
     }
 

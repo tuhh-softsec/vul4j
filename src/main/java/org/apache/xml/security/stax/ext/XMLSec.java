@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.ext;
 
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 
@@ -39,7 +40,11 @@ public class XMLSec {
     
     static {
         try {
-            Init.init(XMLSec.class.getClassLoader().getResource("security-config.xml").toURI());
+            URL resource = XMLSec.class.getClassLoader().getResource("security-config.xml");
+            if (resource == null) {
+                throw new RuntimeException("security-config.xml not found in classpath");
+            }
+            Init.init(resource.toURI());
         } catch (XMLSecurityException e) {
             throw new RuntimeException(e.getMessage(), e);
         } catch (URISyntaxException e) {

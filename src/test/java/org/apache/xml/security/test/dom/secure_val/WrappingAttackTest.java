@@ -32,9 +32,8 @@ import org.w3c.dom.Element;
  */
 public class WrappingAttackTest extends InteropTestBase {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(WrappingAttackTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(WrappingAttackTest.class);
 
     static {
         org.apache.xml.security.Init.init();

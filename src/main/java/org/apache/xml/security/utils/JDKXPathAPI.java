@@ -109,8 +109,7 @@ public class JDKXPathAPI implements XPathAPI {
             }
         }
         try {
-            Boolean result = (Boolean)xpathExpression.evaluate(contextNode, XPathConstants.BOOLEAN);
-            return result.booleanValue();
+            return (Boolean)xpathExpression.evaluate(contextNode, XPathConstants.BOOLEAN);
         } catch (XPathExpressionException ex) {
             throw new TransformerException("empty", ex);
         }

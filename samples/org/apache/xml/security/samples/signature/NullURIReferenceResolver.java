@@ -31,9 +31,8 @@ import org.w3c.dom.Attr;
  */
 public class NullURIReferenceResolver extends ResourceResolverSpi {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(NullURIReferenceResolver.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(NullURIReferenceResolver.class);
 
     /** Field _data[] */
     byte _data[] = null;

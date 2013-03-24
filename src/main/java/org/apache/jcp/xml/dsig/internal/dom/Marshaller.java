@@ -39,7 +39,6 @@ import javax.xml.crypto.dsig.keyinfo.X509IssuerSerial;
 
 import org.apache.xml.security.utils.Base64;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -176,7 +175,7 @@ class Marshaller {
         @Override
         public void marshalObject(XmlWriter xwriter, PGPData toMarshal, String dsPrefix,
                 XMLCryptoContext context) throws MarshalException {
-            Marshaller.marshalPGPData( xwriter, (PGPData) toMarshal, dsPrefix, context);
+            Marshaller.marshalPGPData( xwriter, toMarshal, dsPrefix, context);
         }
     };
 
@@ -294,7 +293,7 @@ class Marshaller {
                 xwriter.writeStartElement(node.getPrefix(), node.getLocalName(), node.getNamespaceURI());
 
                 // emit all the namespaces and attributes.
-                NamedNodeMap nnm = ((Element)node).getAttributes();
+                NamedNodeMap nnm = node.getAttributes();
                 for (int idx = 0 ; idx < nnm.getLength() ; idx++) {
                     Attr attr = (Attr) nnm.item(idx);
                     // is this a namespace node?

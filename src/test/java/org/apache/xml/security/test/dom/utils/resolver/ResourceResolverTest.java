@@ -32,10 +32,9 @@ import org.apache.xml.security.utils.resolver.ResourceResolver;
  */
 public class ResourceResolverTest extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
+    static org.slf4j.Logger log =
         org.slf4j.LoggerFactory.getLogger
-            (ResourceResolverTest.class.getName());
+            (ResourceResolverTest.class);
     
     static {
         org.apache.xml.security.Init.init();

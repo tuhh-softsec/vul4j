@@ -278,7 +278,7 @@ public class SignedInfo extends Manifest {
         }
 
         // make defensive copy
-        return (byte[]) this.c14nizedBytes.clone();
+        return this.c14nizedBytes.clone();
     }
 
     /**

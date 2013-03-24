@@ -30,9 +30,8 @@ import org.w3c.dom.Document;
 
 public class SignatureAlgorithmTest extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(SignatureAlgorithmTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(SignatureAlgorithmTest.class);
 
     static {
         org.apache.xml.security.Init.init();

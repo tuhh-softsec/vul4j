@@ -127,7 +127,7 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
         }
         this.keyId = keyId.clone();
         this.keyPacket = keyPacket == null ? null
-                                           : (byte[])keyPacket.clone();
+                                           : keyPacket.clone();
         if (keyPacket != null) {
             checkKeyPacket(keyPacket);
         }
@@ -171,12 +171,12 @@ public final class DOMPGPData extends BaseStructure implements PGPData {
 
     @Override
     public byte[] getKeyId() {
-        return (keyId == null ? null : (byte[])keyId.clone());
+        return (keyId == null ? null : keyId.clone());
     }
 
     @Override
     public byte[] getKeyPacket() {
-        return (keyPacket == null ? null : (byte[])keyPacket.clone());
+        return (keyPacket == null ? null : keyPacket.clone());
     }
 
     @Override

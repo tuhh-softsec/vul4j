@@ -73,9 +73,8 @@ public class BaltimoreEncTest extends org.junit.Assert {
     private boolean haveISOPadding;
     private boolean haveKeyWraps;
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(BaltimoreEncTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(BaltimoreEncTest.class);
 
     /**
      *  Constructor BaltimoreEncTest
@@ -101,7 +100,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         cardNumber = retrieveCCNumber(doc);
 
         // Test decrypt
-        testDecryptString = new String("top secret message\n");
+        testDecryptString = "top secret message\n";
 
         // Count the nodes in the document as a secondary test
         nodeCount = countNodes(doc);
@@ -112,7 +111,7 @@ public class BaltimoreEncTest extends org.junit.Assert {
         jedBytes = "abcdefghijklmnopqrstuvwxyz012345".getBytes("ASCII");
 
         // Certificate information
-        rsaCertSerialNumber = new String("1014918766910");
+        rsaCertSerialNumber = "1014918766910";
 
         // rsaKey
         filename = "src/test/resources/ie/baltimore/merlin-examples/merlin-xmlenc-five/rsa.p8";

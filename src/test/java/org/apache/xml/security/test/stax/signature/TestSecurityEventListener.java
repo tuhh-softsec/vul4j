@@ -38,7 +38,8 @@ public class TestSecurityEventListener implements SecurityEventListener {
         Assert.assertTrue("CorrelationID of SecurityEvent is empty: " + securityEvent.getSecurityEventType(), securityEvent.getCorrelationID().length() > 0);
         events.add(securityEvent);
     }
-    
+
+    @SuppressWarnings("unchecked")
     public <T> T getSecurityEvent(Event securityEvent) {
         for (SecurityEvent event : events) {
             if (event.getSecurityEventType() == securityEvent) {
@@ -47,7 +48,8 @@ public class TestSecurityEventListener implements SecurityEventListener {
         }
         return null;
     }
-    
+
+    @SuppressWarnings("unchecked")
     public <T> List<T> getSecurityEvents(Event securityEvent) {
         List<T> foundEvents = new ArrayList<T>();
         for (SecurityEvent event : events) {

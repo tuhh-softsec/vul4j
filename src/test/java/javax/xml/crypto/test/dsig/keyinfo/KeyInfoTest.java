@@ -69,7 +69,7 @@ public class KeyInfoTest extends org.junit.Assert {
                 for (int i = 0; i < content.length; i++) {
                     if (!(content[i] instanceof XMLStructure)) {
                         fail("KeyInfo element has the wrong type");
-                    };
+                    }
                 }
             } else {
                 try {

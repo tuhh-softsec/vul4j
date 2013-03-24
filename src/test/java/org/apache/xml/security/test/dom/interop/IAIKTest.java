@@ -33,9 +33,8 @@ import org.apache.xml.security.utils.resolver.implementations.ResolverAnonymous;
  */
 public class IAIKTest extends InteropTestBase {
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(IAIKTest.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(IAIKTest.class);
 
     /** Field gregorsDir */
     static String gregorsDir = "src/test/resources/at/iaik/ixsil/";

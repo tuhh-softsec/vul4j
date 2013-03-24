@@ -57,7 +57,7 @@ public class X509DataTest extends org.junit.Assert {
                     !(content[j] instanceof X509CRL) &&
                     !(content[j] instanceof XMLStructure)) {
                     fail("X509 element has the wrong type");
-                };
+                }
             }
         } else {
             li.add("any string");

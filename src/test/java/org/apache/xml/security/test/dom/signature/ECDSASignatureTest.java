@@ -51,9 +51,8 @@ import org.w3c.dom.Element;
  */
 public class ECDSASignatureTest extends org.junit.Assert {
 
-    /** {@link org.apache.commons.logging} logging facility */
     private static org.slf4j.Logger log =
-        org.slf4j.LoggerFactory.getLogger(ECDSASignatureTest.class.getName());
+        org.slf4j.LoggerFactory.getLogger(ECDSASignatureTest.class);
 
     private static final String BASEDIR = System.getProperty("basedir");
     private static final String SEP = System.getProperty("file.separator");
@@ -83,7 +82,7 @@ public class ECDSASignatureTest extends org.junit.Assert {
                 // BouncyCastle is not available so just return
                 return;
             } else {
-                Provider provider = (java.security.Provider)cons.newInstance(new Object[]{});
+                Provider provider = (java.security.Provider)cons.newInstance();
                 Security.insertProviderAt(provider, 1);
             }
         }

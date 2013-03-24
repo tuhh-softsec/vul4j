@@ -71,9 +71,8 @@ public class XMLEncryption11Test extends org.junit.Assert {
     private static int nodeCount = 0;
     private boolean haveISOPadding;
 
-    /** {@link org.apache.commons.logging} logging facility */
-    static org.slf4j.Logger log = 
-        org.slf4j.LoggerFactory.getLogger(XMLEncryption11Test.class.getName());
+    static org.slf4j.Logger log =
+        org.slf4j.LoggerFactory.getLogger(XMLEncryption11Test.class);
 
     /**
      *  Constructor XMLEncryption11Test
@@ -96,7 +95,7 @@ public class XMLEncryption11Test extends org.junit.Assert {
                 // BouncyCastle is not available so just return
                 return;
             } else {
-                Provider provider = (java.security.Provider)cons.newInstance(new Object[]{});
+                Provider provider = (java.security.Provider)cons.newInstance();
                 Security.insertProviderAt(provider, 2);
             }
         }
