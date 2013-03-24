@@ -69,6 +69,7 @@
 	<include name="curator-client-1.3.5-SNAPSHOT.jar"/>
 	<include name="curator-framework-1.3.5-SNAPSHOT.jar"/>
 	<include name="curator-recipes-1.3.5-SNAPSHOT.jar"/>
+	<include name="curator-x-discovery-1.3.5-SNAPSHOT.jar"/>
 	<include name="zookeeper-3.4.5.jar"/>
 	<include name="ezmorph-1.0.6.jar"/>	
  	<include name="json-lib-2.4-jdk15.jar"/>
