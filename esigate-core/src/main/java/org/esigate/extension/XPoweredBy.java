@@ -41,7 +41,7 @@ public class XPoweredBy implements Extension, IEventListener {
 	public boolean event(EventDefinition id, Event event) {
 
 		FragmentEvent e = (FragmentEvent) event;
-		e.httpResponse.addHeader("X-Powered-By", "ESIGate");
+		e.httpResponse.addHeader("X-Powered-By", "Esigate");
 
 		// Continue processing
 		return true;
