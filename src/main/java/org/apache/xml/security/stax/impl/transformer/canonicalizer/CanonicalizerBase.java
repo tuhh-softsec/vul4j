@@ -69,8 +69,8 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     private final C14NStack<XMLSecEvent> outputStack = new C14NStack<XMLSecEvent>();
     private boolean includeComments = false;
     private DocumentLevel currentDocumentLevel = DocumentLevel.NODE_BEFORE_DOCUMENT_ELEMENT;
-    private boolean firstCall = true;
-    private SortedSet<String> inclusiveNamespaces = null;
+
+    protected boolean firstCall = true;
 
     public CanonicalizerBase(boolean includeComments) {
         this.includeComments = includeComments;
@@ -79,7 +79,7 @@ public abstract class CanonicalizerBase extends TransformIdentity {
     @Override
     @SuppressWarnings("unchecked")
     public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
-        this.inclusiveNamespaces = prefixList2Set(list);
+        throw new UnsupportedOperationException("InclusiveNamespace-PrefixList not supported");
     }
 
     @Override
@@ -87,25 +87,6 @@ public abstract class CanonicalizerBase extends TransformIdentity {
         //we support only transformers which takes an InputStream otherwise we will break the C14N
         setOutputStream(new UnsynchronizedByteArrayOutputStream());
         super.setTransformer(transformer);
-    }
-
-    public static SortedSet<String> prefixList2Set(List<String> inclusiveNamespaces) {
-
-        if ((inclusiveNamespaces == null) || (inclusiveNamespaces.isEmpty())) {
-            return null;
-        }
-
-        final SortedSet<String> prefixes = new TreeSet<String>();
-
-        for (int i = 0; i < inclusiveNamespaces.size(); i++) {
-            final String s = inclusiveNamespaces.get(i).intern();
-            if ("#default".equals(s)) {
-                prefixes.add("");
-            } else {
-                prefixes.add(s);
-            }
-        }
-        return prefixes;
     }
 
     protected List<XMLSecNamespace> getCurrentUtilizedNamespaces(final XMLSecStartElement xmlSecStartElement,
@@ -277,28 +258,11 @@ public abstract class CanonicalizerBase extends TransformIdentity {
                         utilizedAttributes = new ArrayList<XMLSecAttribute>();
                         outputStack.peek().add(XMLSecEventFactory.createXMLSecNamespace(null, ""));
                         outputStack.push(Collections.<Comparable>emptyList());
-                        firstCall = false;
-
-                        if (this.inclusiveNamespaces != null) {
-                            final Iterator<String> iterator = this.inclusiveNamespaces.iterator();
-                            while (iterator.hasNext()) {
-                                final String prefix = iterator.next();
-                                final String ns = xmlSecStartElement.getNamespaceURI(prefix);
-                                //add default ns:
-                                if (ns == null && prefix != null && prefix.isEmpty()) {
-                                    final XMLSecNamespace comparableNamespace = XMLSecEventFactory.createXMLSecNamespace(prefix, "");
-                                    utilizedNamespaces.add(comparableNamespace);
-                                    outputStack.peek().add(comparableNamespace);
-                                } else if (ns != null) {
-                                    final XMLSecNamespace comparableNamespace = XMLSecEventFactory.createXMLSecNamespace(prefix, ns);
-                                    utilizedNamespaces.add(comparableNamespace);
-                                    outputStack.peek().add(comparableNamespace);
-                                }
-                            }
-                        }
 
                         utilizedNamespaces.addAll(getInitialUtilizedNamespaces(xmlSecStartElement, outputStack));
                         utilizedAttributes.addAll(getInitialUtilizedAttributes(xmlSecStartElement, outputStack));
+
+                        firstCall = false;
                     } else {
                         utilizedNamespaces = getCurrentUtilizedNamespaces(xmlSecStartElement, outputStack);
                         utilizedAttributes = getCurrentUtilizedAttributes(xmlSecStartElement, outputStack);

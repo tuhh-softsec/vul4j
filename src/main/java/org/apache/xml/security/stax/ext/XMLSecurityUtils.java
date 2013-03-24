@@ -115,7 +115,9 @@ public class XMLSecurityUtils {
         try {
             childTransformer = transformerClass.newInstance();
             if (methodParameter2 != null) {
-                childTransformer.setList((List<?>) methodParameter1);
+                if (methodParameter1 != null) {
+                    childTransformer.setList((List<?>) methodParameter1);
+                }
                 childTransformer.setOutputStream((OutputStream) methodParameter2);
             } else {
                 childTransformer.setTransformer((Transformer) methodParameter1);

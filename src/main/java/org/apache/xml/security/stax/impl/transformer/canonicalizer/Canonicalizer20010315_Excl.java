@@ -18,10 +18,8 @@
  */
 package org.apache.xml.security.stax.impl.transformer.canonicalizer;
 
-import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
-import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
-import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.stax.ext.stax.*;
 
 import java.util.*;
 
@@ -31,8 +29,40 @@ import java.util.*;
  */
 public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
 
+    protected ArrayList<String> inclusiveNamespaces = null;
+    protected boolean propagateDefaultNamespace = false;
+
     public Canonicalizer20010315_Excl(boolean includeComments) {
         super(includeComments);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setList(@SuppressWarnings("rawtypes") List list) throws XMLSecurityException {
+        this.inclusiveNamespaces = getPrefixList(list);
+    }
+
+    public void setPropagateDefaultNamespace(boolean propagateDefaultNamespace) {
+        this.propagateDefaultNamespace = propagateDefaultNamespace;
+    }
+
+    protected static ArrayList<String> getPrefixList(List<String> inclusiveNamespaces) {
+
+        if ((inclusiveNamespaces == null) || (inclusiveNamespaces.isEmpty())) {
+            return null;
+        }
+
+        final ArrayList<String> prefixes = new ArrayList<String>(inclusiveNamespaces.size());
+
+        for (int i = 0; i < inclusiveNamespaces.size(); i++) {
+            final String s = inclusiveNamespaces.get(i).intern();
+            if ("#default".equals(s)) {
+                prefixes.add("");
+            } else {
+                prefixes.add(s);
+            }
+        }
+        return prefixes;
     }
 
     @Override
@@ -69,6 +99,32 @@ public abstract class Canonicalizer20010315_Excl extends CanonicalizerBase {
                 }
                 utilizedNamespaces.add(attributeNamespace);
                 outputStack.peek().add(attributeNamespace);
+            }
+        }
+
+        if (this.inclusiveNamespaces != null) {
+            final Iterator<String> iterator = this.inclusiveNamespaces.iterator();
+            while (iterator.hasNext()) {
+                final String prefix = iterator.next();
+                String ns = xmlSecStartElement.getNamespaceURI(prefix);
+                if (ns == null && prefix.isEmpty()) {
+                    ns = "";
+                }
+
+                final XMLSecNamespace comparableNamespace = XMLSecEventFactory.createXMLSecNamespace(prefix, ns);
+
+                XMLSecNamespace resultNamespace = (XMLSecNamespace)outputStack.containsOnStack(comparableNamespace);
+                //resultNamespace means the prefix matched. so check the ns further
+                if (resultNamespace == null || resultNamespace.getNamespaceURI() == null
+                        || !resultNamespace.getNamespaceURI().equals(comparableNamespace.getNamespaceURI())
+                        || (firstCall && propagateDefaultNamespace && !utilizedNamespaces.contains(comparableNamespace))) {
+
+                    if (utilizedNamespaces == (Object)Collections.emptyList()) {
+                        utilizedNamespaces = new ArrayList<XMLSecNamespace>(2);
+                    }
+                    utilizedNamespaces.add(comparableNamespace);
+                    outputStack.peek().add(comparableNamespace);
+                }
             }
         }
 
