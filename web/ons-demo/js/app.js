@@ -235,7 +235,7 @@ function updateTopology(svg, model) {
 	// always on top
 	var labelRings = svg.selectAll('.labelRing').data(createRingsFromModel(model));
 
-	function labelRingEnter(data, i) {
+	function labelRingEnter(data) {
 		if (!data.length) {
 			return;
 		}
@@ -247,7 +247,7 @@ function updateTopology(svg, model) {
 			})
 			.enter().append("svg:g")
 			.classed('nolabel', true)
-			.attr("id", function (data, i) {
+			.attr("id", function (data) {
 				return data.dpid + '-label';
 			})
 			.attr("transform", function(data, i) {
@@ -256,10 +256,47 @@ function updateTopology(svg, model) {
 
 		// add the text nodes which show on mouse over
 		nodes.append("svg:text")
-				.text(function (data, i) {return data.dpid})
-				.attr("x", 0)
-				.attr("y", 0)
-				.attr("transform", function(data, i) {
+				.text(function (data) {return data.dpid})
+				.attr("x", function (data) {
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						if (data.className == 'edge') {
+							return - data.width*3 + 4;
+						} else {
+							return - data.width + 4;
+						}
+					} else {
+						if (data.className == 'edge') {
+							return data.width*3 + 4;
+						} else {
+							return data.width + 4;
+						}
+					}
+				})
+				.attr("y", function (data) {
+					var y;
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						if (data.className == 'edge') {
+							y = data.width*3/2 + 4;
+						} else {
+							y = data.width/2 + 4;
+						}
+					} else {
+						if (data.className == 'edge') {
+							y = data.width*3/2 + 4;
+						} else {
+							y = data.width/2 + 4;
+						}
+					}
+					return y - 6;
+				})
+				.attr("text-anchor", function (data) {
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						return "end";
+					} else {
+						return "start";
+					}
+				})
+				.attr("transform", function(data) {
 					var m = document.querySelector('#viewbox').getTransformToElement().inverse();
 					if (data.scale) {
 						m = m.scale(data.scale);
