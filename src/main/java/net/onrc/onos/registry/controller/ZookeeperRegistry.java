@@ -1,7 +1,6 @@
 package net.onrc.onos.registry.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,9 +15,6 @@ import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.restserver.IRestApiService;
 
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +33,10 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatchEvent;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchListener;
 import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
-import com.netflix.curator.utils.ZKPaths;
+import com.netflix.curator.x.discovery.ServiceCache;
+import com.netflix.curator.x.discovery.ServiceDiscovery;
+import com.netflix.curator.x.discovery.ServiceDiscoveryBuilder;
+import com.netflix.curator.x.discovery.ServiceInstance;
 
 /**
  * A registry service that uses Zookeeper. All data is stored in Zookeeper,
@@ -57,11 +56,12 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	private final String namespace = "onos";
 	private final String switchLatchesPath = "/switches";
-	private final String controllerPath = "/controllers";
+
+	private final String SERVICES_PATH = "/"; //i.e. the root of our namespace
+	private final String CONTROLLER_SERVICE_NAME = "controllers";
 	
 	protected CuratorFramework client;
 	
-	protected PathChildrenCache controllerCache;
 	protected PathChildrenCache switchCache;
 
 	protected ConcurrentHashMap<String, SwitchLeadershipData> switches;
@@ -96,7 +96,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 						HexString.toLong(dpid), latch.hasLeadership());
 			}
 			else {
-				log.debug("Latch for {} has changed", dpid);
+				log.debug("Latch for {} has changed: old latch {} - new latch {}", 
+						new Object[]{dpid, latch, swData.getLatch()});
 			}
 		}
 	}
@@ -123,26 +124,35 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			case CHILD_ADDED:
 			case CHILD_UPDATED:
 				//Check we have a PathChildrenCache for this child, add one if not
-				if (switchPathCaches.get(strSwitch) == null){
-					PathChildrenCache pc = new PathChildrenCache(client, 
-							event.getData().getPath(), true);
-					pc.start(StartMode.NORMAL);
-					switchPathCaches.put(strSwitch, pc);
+				synchronized (switchPathCaches){
+					if (switchPathCaches.get(strSwitch) == null){
+						PathChildrenCache pc = new PathChildrenCache(client, 
+								event.getData().getPath(), true);
+						pc.start(StartMode.NORMAL);
+						switchPathCaches.put(strSwitch, pc);
+					}
 				}
 				break;
 			case CHILD_REMOVED:
 				//Remove our PathChildrenCache for this child
-				PathChildrenCache pc = switchPathCaches.remove(strSwitch);
-				pc.close();
+				PathChildrenCache pc = null;
+				synchronized(switchPathCaches){
+					pc = switchPathCaches.remove(strSwitch);
+				}
+				if (pc != null){
+					pc.close();
+				}
 				break;
 			default:
-				//All other events are connection status events. We need to do anything
-				//as the path cache handles these on its own.
+				//All other events are connection status events. We don't need to 
+				//do anything as the path cache handles these on its own.
 				break;
 			}
 			
 		}
 	};
+	protected ServiceDiscovery<ControllerService> serviceDiscovery;
+	protected ServiceCache<ControllerService> serviceCache;
 
 	
 	@Override
@@ -206,6 +216,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 		LeaderLatch latch = swData.getLatch();
 		
+		latch.removeAllListeners();
+		
 		try {
 			latch.close();
 		} catch (IOException e) {
@@ -238,17 +250,13 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		log.debug("Getting all controllers");
 		
 		List<String> controllers = new ArrayList<String>();
-		for (ChildData data : controllerCache.getCurrentData()){
-
-			String d = null;
-			try {
-				d = new String(data.getData(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				throw new RegistryException("Error encoding string", e);
+		for (ServiceInstance<ControllerService> instance : serviceCache.getInstances()){
+			String id = instance.getPayload().getControllerId();
+			if (!controllers.contains(id)){
+				controllers.add(id);
 			}
-
-			controllers.add(d);
 		}
+
 		return controllers;
 	}
 
@@ -261,52 +269,20 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		
 		controllerId = id;
 		
-		byte bytes[] = id.getBytes(Charsets.UTF_8);
-		String path = ZKPaths.makePath(controllerPath, controllerId);
-		
-		log.info("Registering controller with id {}", id);
-		
 		try {
-			//We need to set a watch to recreate the node in the controller
-			//registry if it gets deleted - e.g. on Zookeeper connection loss.
-			Watcher watcher = new Watcher(){
-				@Override
-				public void process(WatchedEvent event) {
-					log.debug("got any watch event {} ", event);
-					
-					String path = ZKPaths.makePath(controllerPath, controllerId);
-					byte bytes[] = controllerId.getBytes(Charsets.UTF_8);
-					
-					try {
-						if (event.getType() == Event.EventType.NodeDeleted){
-							log.debug("got a node deleted event");
-							
-							
-							client.create().withMode(CreateMode.EPHEMERAL)
-								.forPath(path, bytes);
-						}
-					} catch (Exception e) {
-						log.warn("Error recreating controller node for {}: {}",
-								controllerId, e.getMessage());
-					} finally {
-						try {
-							client.checkExists().usingWatcher(this).forPath(path);
-						} catch (Exception e2){
-							log.warn("Error resetting watch for {}: {}", 
-									controllerId, e2.getMessage());
-						}
-					}
-				}
-			};
+			ServiceInstance<ControllerService> thisInstance = ServiceInstance.<ControllerService>builder()
+			        .name(CONTROLLER_SERVICE_NAME)
+			        .payload(new ControllerService(controllerId))
+			        //.port((int)(65535 * Math.random())) // in a real application, you'd use a common port
+			        //.uriSpec(uriSpec)
+			        .build();
 			
-			//Create ephemeral node in controller registry
-			//TODO Use protection
-			client.create().withMode(CreateMode.EPHEMERAL)
-					.forPath(path, bytes);
-			client.checkExists().usingWatcher(watcher).forPath(path);
+			serviceDiscovery.registerService(thisInstance);
 		} catch (Exception e) {
-			throw new RegistryException("Error contacting the Zookeeper service", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	
 	@Override
@@ -421,7 +397,8 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		restApi = context.getServiceImpl(IRestApiService.class);
 
 		switches = new ConcurrentHashMap<String, SwitchLeadershipData>();
-		switchPathCaches = new HashMap<String, PathChildrenCache>();
+		//switchPathCaches = new HashMap<String, PathChildrenCache>();
+		switchPathCaches = new ConcurrentHashMap<String, PathChildrenCache>();
 		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		client = CuratorFrameworkFactory.newClient(this.connectionString, 
@@ -431,12 +408,22 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		client = client.usingNamespace(namespace);
 
 		
-		controllerCache = new PathChildrenCache(client, controllerPath, true);
 		switchCache = new PathChildrenCache(client, switchLatchesPath, true);
 		switchCache.getListenable().addListener(switchPathCacheListener);
 		
+		//Build the service discovery object
+	    serviceDiscovery = ServiceDiscoveryBuilder.builder(ControllerService.class)
+	            .client(client).basePath(SERVICES_PATH).build();
+	    
+	    //We read the list of services very frequently (GUI periodically queries them)
+	    //so we'll cache them to cut down on Zookeeper queries.
+	    serviceCache = serviceDiscovery.serviceCacheBuilder()
+				.name(CONTROLLER_SERVICE_NAME).build();
+	    
+	    
 		try {
-			controllerCache.start(StartMode.BUILD_INITIAL_CACHE);
+			serviceDiscovery.start();
+			serviceCache.start();
 			
 			//Don't prime the cache, we want a notification for each child node in the path
 			switchCache.start(StartMode.NORMAL);
