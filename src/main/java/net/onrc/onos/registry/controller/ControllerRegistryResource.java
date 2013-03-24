@@ -3,6 +3,10 @@ package net.onrc.onos.registry.controller;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.restlet.Response;
+import org.restlet.data.Status;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
@@ -27,8 +31,13 @@ public class ControllerRegistryResource extends ServerResource {
 		
 		if (controllers == null){
 			controllers = new ArrayList<String>();
+			Response response = getResponse();
+			response.setStatus(Status.CLIENT_ERROR_UNPROCESSABLE_ENTITY);
+			Representation error = new StringRepresentation("Null data returned. Zookeeper connection may be down");
+			response.setEntity(error);
+			return null;
 		}
-		
+
 		return controllers;
 	}
 	
