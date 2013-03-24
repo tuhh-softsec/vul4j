@@ -1,5 +1,10 @@
 /*global d3*/
 
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
 
 var colors = [
 	'color1',
@@ -117,6 +122,10 @@ function createRingsFromModel(model) {
 
 		rings[2].angles[i] = rings[1].angles[index];
 	});
+
+
+
+
 
 	return rings;
 }
@@ -240,19 +249,21 @@ function updateTopology(svg, model) {
 
 
 	// do mouseover zoom on edge nodes
-	// function zoom(data, index) {
-	// 	var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-	// 		g.transition().duration(100).attr("r", rings[0].width*3);
-	// }
+	function zoom(data, index) {
+		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
+			g.transition().duration(100).attr("r", g.data()[0].width*3);
+			// TODO: this doesn't work because the data binding is by index
+//			d3.select(this.parentNode).moveToFront();
+	}
 
-	// svg.selectAll('.edge').on('mouseover', zoom);
-	// svg.selectAll('.edge').on('mousedown', zoom);
+	svg.selectAll('.edge').on('mouseover', zoom);
+	svg.selectAll('.edge').on('mousedown', zoom);
 
-	// function unzoom(data, index) {
-	// 	var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
-	// 		g.transition().duration(100).attr("r", rings[0].width);
-	// }
-	// svg.selectAll('.edge').on('mouseout', unzoom);
+	function unzoom(data, index) {
+		var g = d3.select(document.getElementById(data.switches[index].dpid)).select('circle');
+			g.transition().duration(100).attr("r", g.data()[0].width);
+	}
+	svg.selectAll('.edge').on('mouseout', unzoom);
 
 
 	// DRAW THE LINKS
@@ -352,7 +363,7 @@ function sync(svg) {
 	updateModel(function (newModel) {
 		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (!oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (true || !oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 			updateTopology(svg, newModel);
 		} else {
