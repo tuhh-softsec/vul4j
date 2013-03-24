@@ -29,12 +29,14 @@ public class ProxyingHttpClientBuilder extends CachingHttpClientBuilder {
 
 	@Override
 	protected ClientExecChain decorateMainExec(ClientExecChain mainExec) {
-		if (!useCache)
-			return mainExec;
 		ClientExecChain result = mainExec;
 		CacheAdapter cacheAdapter = new CacheAdapter();
 		cacheAdapter.init(properties);
 		result = cacheAdapter.wrapBackendHttpClient(eventManager, result);
+		
+		if (!useCache)
+			return result;
+		
 		result = super.decorateMainExec(result);
 		result = cacheAdapter.wrapCachingHttpClient(result);
 		return result;
