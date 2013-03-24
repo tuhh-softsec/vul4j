@@ -36,8 +36,6 @@ import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchEvent;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchListener;
 import com.netflix.curator.framework.recipes.leader.Participant;
-import com.netflix.curator.framework.state.ConnectionState;
-import com.netflix.curator.framework.state.ConnectionStateListener;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import com.netflix.curator.utils.ZKPaths;
 
@@ -73,17 +71,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	protected static final int sessionTimeout = 5000;
 	protected static final int connectionTimeout = 7000;
 	
-	//We can cache the connection state here whenever we get a connection state event.
-	//Not 100% accurate but it's good enough to decide whether we can return data
-	//via the REST API or not.
-	protected volatile ConnectionState connectionState = ConnectionState.LOST;
-	
-	protected ConnectionStateListener connectionStateListener = new ConnectionStateListener(){
-		@Override
-		public void stateChanged(CuratorFramework client, ConnectionState state) {
-			connectionState = state;
-		}
-	};
 
 	protected class SwitchLeaderListener implements LeaderLatchListener{
 		String dpid;
@@ -250,23 +237,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	public Collection<String> getAllControllers() throws RegistryException {
 		log.debug("Getting all controllers");
 		
-		//Rebuild the cache to make sure we have the latest data
-		//If we don't have ZK connection this will hang until we do. Undesirable.
-		//try {
-			//controllerCache.rebuild();
-		//} catch (Exception e1) {
-			//return null;
-		//}
-		ConnectionState currentConnectionState = connectionState;
-		//if (currentConnectionState != ConnectionState.CONNECTED && 
-			//	currentConnectionState != ConnectionState.RECONNECTED){
-		if (currentConnectionState == ConnectionState.LOST ||
-				currentConnectionState == ConnectionState.SUSPENDED){
-			return null;
-		}
-		
 		List<String> controllers = new ArrayList<String>();
-		
 		for (ChildData data : controllerCache.getCurrentData()){
 
 			String d = null;
@@ -283,7 +254,6 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 
 	@Override
 	public void registerController(String id) throws RegistryException {
-		//TODO this isn't replaced if we lose Zookeeper connection
 		if (controllerId != null) {
 			throw new RegistryException(
 					"Controller already registered with id " + controllerId);
@@ -456,7 +426,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
 		client = CuratorFrameworkFactory.newClient(this.connectionString, 
 				sessionTimeout, connectionTimeout, retryPolicy);
-		client.getConnectionStateListenable().addListener(connectionStateListener);
+		
 		client.start();
 		client = client.usingNamespace(namespace);
 
