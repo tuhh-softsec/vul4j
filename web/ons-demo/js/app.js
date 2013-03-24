@@ -260,9 +260,9 @@ function updateTopology(svg, model) {
 				.attr("x", function (data) {
 					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
 						if (data.className == 'edge') {
-							return - data.width*3 + 4;
+							return - data.width*3 - 4;
 						} else {
-							return - data.width + 4;
+							return - data.width - 4;
 						}
 					} else {
 						if (data.className == 'edge') {
