@@ -40,7 +40,6 @@ public class DriverConfiguration {
 	private final int fixMode;
 	private final Properties properties;
 	private final boolean preserveHost;
-	private final String filter;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
 	private final boolean isVisibleBaseURLEmpty;
 
@@ -48,7 +47,6 @@ public class DriverConfiguration {
 		this.instanceName = instanceName;
 		baseUrlRetrieveStrategy = getBaseUrlRetrieveSession(props);
 		uriEncoding = Parameters.URI_ENCODING.getValueString(props);
-		filter = Parameters.FILTER.getValueString(props);
 		preserveHost = Parameters.PRESERVE_HOST.getValueBoolean(props);
 		fixResources = Parameters.FIX_RESOURCES.getValueBoolean(props);
 		visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValueString(props);
@@ -90,9 +88,6 @@ public class DriverConfiguration {
 		return urlStrategy;
 	}
 
-	public String getFilter() {
-		return filter;
-	}
 
 	public int getFixMode() {
 		return fixMode;

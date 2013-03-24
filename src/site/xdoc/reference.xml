@@ -361,12 +361,6 @@ aggregated2.remoteUrlBase=http://application2/
                     <td>No</td>
                     <td>org.esigate.extension.FragmentLogging, org.esigate.extension.FetchLogging, org.esigate.authentication.RemoteUserAuthenticationHandler, org.esigate.extension.ResourceFixup, org.esigate.extension.XPoweredBy</td>
                 </tr> 
-				<tr>
-                    <td><strike>filter</strike></td>
-                    <td>Filters are now <b>deprecated</b> and no longer supported. You can get the exact same behavior by turning a filter into an extension.</td>
-                    <td>No</td>
-                    <td></td>
-                </tr>   
  				<tr>
 					<td>useCache</td>
 					<td>Use the cache</td>

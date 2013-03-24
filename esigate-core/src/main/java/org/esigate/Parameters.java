@@ -85,7 +85,6 @@ public interface Parameters {
 					+ "," + ResourceFixup.class.getName() + ","
 					+ XPoweredBy.class.getName() );
 
-	public static final Parameter FILTER = new Parameter("filter", null);
 
 	// Cache settings
 	public final static Parameter USE_CACHE = new Parameter("useCache", "true");
