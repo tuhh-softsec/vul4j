@@ -430,7 +430,7 @@ function sync(svg) {
 	updateModel(function (newModel) {
 		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (true || !oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (!oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 			updateTopology(svg, newModel);
 		} else {
