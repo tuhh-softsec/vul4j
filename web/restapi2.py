@@ -53,19 +53,15 @@ def return_file(filename="index.html"):
 
   return response
 
-## PROXY API (allows development where the webui is served from someplace other than the controller)##
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
+## PROXY API (allows development where the webui is served from someplace other than the ONOS_HOST)##
+#ONOS_HOST="http://gui3.onlab.us:8080"
+ONOS_HOST="http://localhost:8080" ;# for Amazon EC2
 
 @app.route("/wm/core/topology/switches/all/json")
+@app.route("/proxy/wm/core/topology/switches/all/json")
 def switches():
-  if request.args.get('proxy') == None:
-    host = ONOS_LOCAL_HOST
-  else:
-    host = ONOS_GUI3_HOST
-
   try:
-    command = "curl -s %s/wm/core/topology/switches/all/json" % (host)
+    command = "curl -s %s/wm/core/topology/switches/all/json" % (ONOS_HOST)
     print command
     result = os.popen(command).read()
   except:
@@ -76,14 +72,10 @@ def switches():
   return resp
 
 @app.route("/wm/core/topology/links/json")
+@app.route("/proxy/wm/core/topology/links/json")
 def links():
-  if request.args.get('proxy') == None:
-    host = ONOS_LOCAL_HOST
-  else:
-    host = ONOS_GUI3_HOST
-
   try:
-    command = "curl -s %s/wm/core/topology/links/json" % (host)
+    command = "curl -s %s/wm/core/topology/links/json" % (ONOS_HOST)
     print command
     result = os.popen(command).read()
   except:
@@ -94,14 +86,10 @@ def links():
   return resp
 
 @app.route("/wm/flow/getall/json")
+@app.route("/proxy/wm/flow/getall/json")
 def flows():
-  if request.args.get('proxy') == None:
-    host = ONOS_LOCAL_HOST
-  else:
-    host = ONOS_GUI3_HOST
-
   try:
-    command = "curl -s %s/wm/flow/getall/json" % (host)
+    command = "curl -s %s/wm/flow/getall/json" % (ONOS_HOST)
     print command
     result = os.popen(command).read()
   except:
@@ -112,14 +100,10 @@ def flows():
   return resp
 
 @app.route("/wm/registry/controllers/json")
+@app.route("/proxy/wm/registry/controllers/json")
 def registry_controllers():
-  if request.args.get('proxy') == None:
-    host = ONOS_LOCAL_HOST
-  else:
-    host = ONOS_GUI3_HOST
-
   try:
-    command = "curl -s %s/wm/registry/controllers/json" % (host)
+    command = "curl -s %s/wm/registry/controllers/json" % (ONOS_HOST)
     print command
     result = os.popen(command).read()
   except:
@@ -130,14 +114,10 @@ def registry_controllers():
   return resp
 
 @app.route("/wm/registry/switches/json")
+@app.route("/proxy/wm/registry/switches/json")
 def registry_switches():
-  if request.args.get('proxy') == None:
-    host = ONOS_LOCAL_HOST
-  else:
-    host = ONOS_GUI3_HOST
-
   try:
-    command = "curl -s %s/wm/registry/switches/json" % (host)
+    command = "curl -s %s/wm/registry/switches/json" % (ONOS_HOST)
     print command
     result = os.popen(command).read()
   except:

@@ -118,12 +118,10 @@ path {
 .color11-selected .color11,
 .color12-selected .color12  {
 	opacity: 1;
-	pointer-events: auto;
 }
 
 .color0 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #222;
 	background-color: #222;
 	color: #444;
@@ -131,7 +129,6 @@ path {
 
 .color1 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #EC0033;
 	background-color: #EC0033;
 }
@@ -144,42 +141,36 @@ path {
 
 .color3 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #3714B0;
 	background-color: #3714B0;
 }
 
 .color4 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #B12C49;
 	background-color: #B12C49;
 }
 
 .color5 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #402C84;
 	background-color: #402C84;
 }
 
 .color6 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #990021;
 	background-color: #990021;
 }
 
 .color7 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #990021;
 	background-color: ;
 }
 
 .color8 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #A67900;
 	background-color: #A67900;
 }
@@ -192,21 +183,18 @@ path {
 
 .color10 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #1F0772;
 	background-color: #1F0772;
 }
 
 .color11 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #F56E8B;
 	background-color: #F56E8B;
 }
 
 .color12 {
 	opacity: .2;
-	pointer-events: none;
 	fill: #6949D7;
 	background-color: #6949D7;
 }
