@@ -93,10 +93,31 @@ function updateTopology(svg, model) {
 		rings[1].angles[i] = (range.min + range.max)/2;
 	});
 
-	// arrange core switches at equal increments
+	// find the association between core switches and aggregation switches
+	var aggregationSwitchMap = {};
+	model.aggregationSwitches.forEach(function (s, i) {
+		aggregationSwitchMap[s.dpid] = i + 1;
+	});
+
+	var coreSwitchMap = {};
+	model.coreSwitches.forEach(function (s, i) {
+		coreSwitchMap[s.dpid] = i + 1;
+	});
+
+	var coreLinks = {};
+	model.links.forEach(function (l) {
+		if (aggregationSwitchMap[l['src-switch']] && coreSwitchMap[l['dst-switch']]) {
+			coreLinks[l['dst-switch']] = aggregationSwitchMap[l['src-switch']] - 1;
+		}
+	});
+
+
+
+	// put core switches next to linked aggregation switches
 	k = 360 / rings[2].switches.length;
 	rings[2].switches.forEach(function (s, i) {
-		rings[2].angles[i] = k * i;
+//		rings[2].angles[i] = k * i;
+		rings[2].angles[i] = rings[1].angles[coreLinks[s.dpid]];
 	});
 
 	function ringEnter(data, i) {
@@ -276,9 +297,18 @@ function sync(svg) {
 
 		// do it again in 1s
 		setTimeout(function () {
-			sync(svg)
+//			sync(svg)
 		}, 1000);
 	});
 }
 
-sync(createTopologyView());
+svg = createTopologyView();
+// workaround for Chrome v25 bug
+// if executed immediately, the view box transform logic doesn't work properly
+// fixed in Chrome v27
+setTimeout(function () {
+	// workaround for another Chrome v25 bug
+	// viewbox transform stuff doesn't work in combination with browser zoom
+	d3.select('#svg-container').style('zoom',  window.document.body.clientWidth/window.document.width);
+	sync(svg);
+}, 100);

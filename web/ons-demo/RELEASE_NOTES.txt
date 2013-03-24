@@ -17,3 +17,8 @@
 	2) if only the clicked controller is selected, selects all controllers again
 - Update configuration files to match test bed
 - Update sample JSON files from test bed
+
+** March 22, 2013 **
+- Workarounds for Chrome v25 rendering bugs
+- Fixed broken proxy functionality in restapi2.py
+- webui should now work when hosted from a different server than the controller (where it uses gui3.onlab.us:8080) and also when run from the same server (where it uses localhost:8080)
