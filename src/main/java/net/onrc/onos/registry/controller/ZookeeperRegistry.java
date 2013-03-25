@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ import com.netflix.curator.framework.recipes.cache.PathChildrenCacheListener;
 import com.netflix.curator.framework.recipes.leader.LeaderLatch;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchEvent;
 import com.netflix.curator.framework.recipes.leader.LeaderLatchListener;
-import com.netflix.curator.framework.recipes.leader.Participant;
 import com.netflix.curator.retry.ExponentialBackoffRetry;
 import com.netflix.curator.x.discovery.ServiceCache;
 import com.netflix.curator.x.discovery.ServiceDiscovery;
@@ -287,28 +287,32 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 	
 	@Override
 	public String getControllerForSwitch(long dpid) throws RegistryException {
-		// TODO work out synchronization
-		
 		String dpidStr = HexString.toHexString(dpid);
-
-		SwitchLeadershipData swData = switches.get(dpidStr);
-		//LeaderLatch latch = (switches.get(dpidStr) != null)?switches.get(dpidStr).getLatch():null;
 		
-		if (swData == null){
+		PathChildrenCache switchCache = switchPathCaches.get(dpidStr);
+		
+		if (switchCache == null){
 			log.warn("Tried to get controller for non-existent switch");
 			return null;
 		}
 		
-		LeaderLatch latch = swData.getLatch();
+		List<ChildData> sortedData = new ArrayList<ChildData>(switchCache.getCurrentData()); 
 		
-		Participant leader = null;
-		try {
-			leader = latch.getLeader();
-		} catch (Exception e) {
-			throw new RegistryException("Error contacting the Zookeeper service", e);
-		}
+		Collections.sort(
+				sortedData,
+				new Comparator<ChildData>(){
+					private String getSequenceNumber(String path){
+						return path.substring(path.lastIndexOf('-') + 1);
+					}
+					@Override
+					public int compare(ChildData lhs, ChildData rhs) {
+						return getSequenceNumber(lhs.getPath()).
+								compareTo(getSequenceNumber(rhs.getPath()));
+					}
+				}
+			);
 		
-		return leader.getId();
+		return new String(sortedData.get(0).getData(), Charsets.UTF_8);
 	}
 	
 	@Override
