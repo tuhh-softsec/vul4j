@@ -8,7 +8,8 @@ function toD3(results) {
 		flows: [],
 		controllers: results.controllers,
 		activeControllers: results.activeControllers,
-		links: results.links
+		links: results.links,
+		configuration: results.configuration
 	}
 
 	// sort the switches
@@ -35,7 +36,10 @@ function toD3(results) {
 	});
 
 	results.switches.forEach(function (s) {
-		s.controller = results.mapping[s.dpid][0].controllerId;
+		var mapping = results.mapping[s.dpid]
+		if (mapping) {
+			s.controller = mapping[0].controllerId;
+		}
 
 		if (coreSwitchDPIDs[s.dpid]) {
 			model.coreSwitches.push(s);

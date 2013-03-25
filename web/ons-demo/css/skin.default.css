@@ -29,7 +29,7 @@ body {
 	position: absolute;
 	bottom: 0px;
 	right: 0px;
-	font-size: 8px;
+	font-size: 12px;
 }
 
 #status.top span {
@@ -41,6 +41,11 @@ body {
 	background-color: lightgray;
 	color: black;
 	border: 1px solid white;
+}
+
+#arrow {
+	stroke: none;
+	fill: rgba(255, 255, 255, .35);
 }
 
 .header {
@@ -86,13 +91,13 @@ body {
 text {
 	stroke: none;
 	fill: white;
-	font-size: 12px;
+	font-size: 16px;
 	pointer-events: none;
 }
 
 path {
 	stroke: rgba(255, 255, 255, .25);
-	stroke-width: 1px;
+	stroke-width: 1.5px;
 }
 
 .aggregation {
@@ -104,7 +109,6 @@ path {
 	visibility: hidden
 }
 
-.color0-selected .color0,
 .color1-selected .color1,
 .color2-selected .color2,
 .color3-selected .color3,
@@ -121,12 +125,11 @@ path {
 	pointer-events: auto;
 }
 
-.color0 {
-	opacity: .2;
-	pointer-events: none;
-	fill: #222;
-	background-color: #222;
-	color: #444;
+.colorInactive {
+	opacity: 1;
+	fill: #444;
+	background-color: #444;
+	color: #222;
 }
 
 .color1 {
@@ -174,7 +177,7 @@ path {
 	opacity: .2;
 	pointer-events: none;
 	fill: #990021;
-	background-color: ;
+	background-color: #990021;
 }
 
 .color8 {
