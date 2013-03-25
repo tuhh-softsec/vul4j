@@ -1,5 +1,13 @@
 package net.floodlightcontroller.bgproute;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ArrayList;
@@ -18,6 +26,9 @@ import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.restclient.RestClient;
 
 import net.floodlightcontroller.linkdiscovery.ILinkDiscovery;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +41,10 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	protected ITopologyService topology;
 	
 	protected static Ptree ptree;
+	protected static String BGPdRestIp;
+	protected static String RouterId;
+	
+	
 	
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {
@@ -41,7 +56,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	@Override
 	public Map<Class<? extends IFloodlightService>, IFloodlightService> getServiceImpls() {
 		Map<Class<? extends IFloodlightService>, IFloodlightService> m = new HashMap<Class<? extends IFloodlightService>, IFloodlightService>();
-		m.put(IBgpRouteService.class, this); 
+		m.put(IBgpRouteService.class, this);
 		return m;
 	}
 
@@ -69,10 +84,22 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		
 		// Test.
 		//test();
+		  
 	}
 
 	public Ptree getPtree() {
 		return ptree;
+	}
+	public void  clearPtree() {
+		ptree = null;
+		ptree = new Ptree(32);
+		
+	}
+	public String getBGPdRestIp() {
+		return BGPdRestIp;
+	}
+	public String getRouterId() {
+		return RouterId;
 	}
 	
 	// Return nexthop address as byte array.
@@ -154,8 +181,113 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	
 	@Override
 	public void startUp(FloodlightModuleContext context) {
-		restApi.addRestletRoutable(new BgpRouteWebRoutable()); 
+		restApi.addRestletRoutable(new BgpRouteWebRoutable());
 		topology.addListener((ITopologyListener) this);
+		
+		 // get the BGPdRestIp and RouterId from transit-route-pusher.py
+  		File file = new File("/home/ubuntu/sdn/transit-route-pusher.py");  
+       
+        
+    try{  
+        BufferedReader input = new BufferedReader (new FileReader(file));  
+        String text; 
+        int is_BGPdRestIp=0;
+        int is_RouterId=0;
+        								                         
+        while((text = input.readLine()) != null && (is_BGPdRestIp == 0) || (is_RouterId == 0) ){  
+        					  
+        		if(is_BGPdRestIp == 1 && is_RouterId ==1)
+        		{break;}
+        		
+        				if(is_BGPdRestIp == 0 && text.contains("BGPdRestIp") ){
+		        				String[] temp =	text.split("\"");
+		        				BGPdRestIp = temp[1];
+		        				is_BGPdRestIp = 1;
+		        				
+        				
+            	}else if (is_RouterId == 0 && text.contains("RouterId") ){
+												
+		            	String[] temp =	text.split("\"");
+		    							RouterId = temp[1];
+		    							is_RouterId = 1;
+		    							
+    							
+									}
+        						
+        					}
+    
+                   
+    }  catch(Exception e){  
+       e.printStackTrace();
+           }  
+      
+		        
+			// automatically get the rib from bgpd at the ONOS initiation process.
+    String dest=RouterId;
+    String str="http://"+BGPdRestIp+"/wm/bgp/"+dest;
+	 		
+	          
+	try {
+	       	 
+				URL url = new URL(str);
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setRequestProperty("Accept", "application/json");
+		 
+				if (conn.getResponseCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : "
+							+ conn.getResponseCode());
+				}
+	
+			 BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream()))); 
+			 StringBuffer res = new StringBuffer();
+			 String line;
+			 while ((line = br.readLine()) != null) {
+				 	res.append(line);
+			 	}	   
+			 
+			 String res2=res.toString().replaceAll("\"", "'");
+			 JSONObject jsonObj = (JSONObject) JSONSerializer.toJSON(res2);  
+			 JSONArray rib_json_array = jsonObj.getJSONArray("rib");
+			 String router_id = jsonObj.getString("router-id");
+			       
+			 int size = rib_json_array.size();
+			 System.out.print("size:"+size+"\n");
+			 for (int j = 0; j < size; j++) {
+	        JSONObject second_json_object = rib_json_array.getJSONObject(j);
+	        String prefix = second_json_object.getString("prefix");
+	        String nexthop = second_json_object.getString("nexthop");
+	        
+	        //insert each rib entry into the local rib;
+	        String[] substring= prefix.split("/");
+	        String prefix1=substring[0];
+	        String mask1=substring[1];
+	        			
+						Prefix p = new Prefix(prefix1, Integer.valueOf(mask1));
+						PtreeNode node = ptree.acquire(p.getAddress(), p.masklen);
+						Rib rib = new Rib(router_id, nexthop, p.masklen);
+			
+						if (node.rib != null) {
+							node.rib = null;
+							ptree.delReference(node);
+						}
+						node.rib = rib;
+      
+			 }  
+			 br.close();
+			 conn.disconnect();
+
+			} catch (MalformedURLException e) {
+
+				e.printStackTrace();
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
+
+			}
+	
+
 	}
 
 	@Override

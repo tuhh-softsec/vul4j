@@ -8,21 +8,32 @@ body {
 
 .status {
 	padding: 1em;
-	border-right: 1px solid white;
 }
+
 
 .status:last-child {
 	border-right: none;
 }
 
 .status .static {
-	color: white;
+	color: #AAA;
 	padding: .25em;
 }
 
 .status .dynamic {
-	color: blue;
+	color: #FFF;
 	padding: .25em;
+}
+
+.status.bottom {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	font-size: 12px;
+}
+
+#status.top span {
+	font-size: 24px;
 }
 
 .button {
@@ -30,6 +41,11 @@ body {
 	background-color: lightgray;
 	color: black;
 	border: 1px solid white;
+}
+
+#arrow {
+	stroke: none;
+	fill: rgba(255, 255, 255, .35);
 }
 
 .header {
@@ -59,7 +75,6 @@ body {
 	padding: .25em;
 }
 
-
 #logo {
 	height: 50px;
 }
@@ -76,13 +91,13 @@ body {
 text {
 	stroke: none;
 	fill: white;
-	font-size: 12px;
+	font-size: 16px;
 	pointer-events: none;
 }
 
 path {
 	stroke: rgba(255, 255, 255, .25);
-	stroke-width: 1px;
+	stroke-width: 1.5px;
 }
 
 .aggregation {
@@ -94,68 +109,107 @@ path {
 	visibility: hidden
 }
 
-.color1, .color2, .color3, .color4, .color5, .color6, .color7, .color8, .color9, .color10, .color11, .color12  {
-	fill: rgba(255, 255, 255, .15);
-	background-color: rgba(255, 255, 255, .15);
+.color1-selected .color1,
+.color2-selected .color2,
+.color3-selected .color3,
+.color4-selected .color4,
+.color5-selected .color5,
+.color6-selected .color6,
+.color7-selected .color7,
+.color8-selected .color8,
+.color9-selected .color9,
+.color10-selected .color10,
+.color11-selected .color11,
+.color12-selected .color12  {
+	opacity: 1;
+	pointer-events: auto;
 }
 
+.colorInactive {
+	opacity: 1;
+	fill: #444;
+	background-color: #444;
+	color: #222;
+}
 
-.color1-selected .color1 {
+.color1 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #EC0033;
 	background-color: #EC0033;
 }
 
-.color2-selected .color2 {
+.color2 {
+	opacity: .2;
 	fill: #FFBA00;
 	background-color: #FFBA00;
 }
 
-.color3-selected .color3 {
+.color3 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #3714B0;
 	background-color: #3714B0;
 }
 
-.color4-selected .color4 {
+.color4 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #B12C49;
 	background-color: #B12C49;
 }
 
-.color5-selected .color5 {
+.color5 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #402C84;
 	background-color: #402C84;
 }
 
-.color6-selected .color6 {
+.color6 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #990021;
 	background-color: #990021;
 }
 
-.color7-selected .color7 {
+.color7 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #990021;
-	background-color: ;
+	background-color: #990021;
 }
 
-.color8-selected .color8 {
+.color8 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #A67900;
 	background-color: #A67900;
 }
 
-.color9-selected .color9 {
+.color9 {
+	opacity: .2;
 	fill: #F53D65;
 	background-color: #F53D65;
 }
 
-.color10-selected .color10 {
+.color10 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #1F0772;
 	background-color: #1F0772;
 }
 
-.color11-selected .color11 {
+.color11 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #F56E8B;
 	background-color: #F56E8B;
 }
 
-.color12-selected .color12 {
+.color12 {
+	opacity: .2;
+	pointer-events: none;
 	fill: #6949D7;
 	background-color: #6949D7;
 }

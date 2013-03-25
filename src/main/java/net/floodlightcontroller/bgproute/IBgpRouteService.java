@@ -8,4 +8,11 @@ public interface IBgpRouteService extends IFloodlightService {
     
     public Ptree getPtree();
     
+    public String getBGPdRestIp();
+    
+    public String getRouterId();
+    
+	  public void  clearPtree() ;
+       
+    
 }

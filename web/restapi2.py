@@ -53,6 +53,103 @@ def return_file(filename="index.html"):
 
   return response
 
+## PROXY API (allows development where the webui is served from someplace other than the controller)##
+ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
+ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
+
+@app.route("/wm/core/topology/switches/all/json")
+def switches():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/core/topology/switches/all/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/core/topology/links/json")
+def links():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/core/topology/links/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/flow/getall/json")
+def flows():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/flow/getall/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/registry/controllers/json")
+def registry_controllers():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/registry/controllers/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/registry/switches/json")
+def registry_switches():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/registry/switches/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+
+
+
 ## REST API ##
 #@app.route("/wm/topology/links/json")
 #def links():
@@ -253,7 +350,7 @@ def id_to_dpid(vertex):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host="0.0.0.0", port=9000)
+    app.run(threaded=True, host="0.0.0.0", port=9000)
 #  query_switch()
 #   query_links()
 #  devices()
