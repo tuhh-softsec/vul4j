@@ -312,6 +312,10 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 				}
 			);
 		
+		if (sortedData.size() == 0){
+			return null;
+		}
+		
 		return new String(sortedData.get(0).getData(), Charsets.UTF_8);
 	}
 	
