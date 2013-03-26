@@ -72,7 +72,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	public void addOrUpdateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
 		Vertex vportSrc = null, vportDst = null;
 	
-		log.debug("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
+		log.trace("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
 		
         try {
             // get source port vertex

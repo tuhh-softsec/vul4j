@@ -1230,9 +1230,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 removeLinkFromStorage(lt);
 
                 // remote link from network map
-                if (hasControl) {
-                	linkStore.update(lt, DM_OPERATION.DELETE);
-                }
+                linkStore.update(lt, DM_OPERATION.DELETE);
+
                 
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.

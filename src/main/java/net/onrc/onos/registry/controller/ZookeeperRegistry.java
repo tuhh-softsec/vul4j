@@ -223,6 +223,7 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 		} catch (IOException e) {
 			//I think it's OK not to do anything here. Either the node got 
 			//deleted correctly, or the connection went down and the node got deleted.
+			log.debug("releaseControl: caught IOException {}", dpidStr);
 		}
 	}
 
