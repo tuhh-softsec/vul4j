@@ -257,12 +257,26 @@ function gui(data_source){
 	    .text(function(d) { return d.name; });
 
 	circle.attr("fill", function(d) {
-	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else if (d.group == 4){return "orange";}
-	    else if (d.group == 1000){return "black";}
-	    else{ return "gray"; }
+               if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
+
 	});
 
 	path.attr("stroke", function(d) {
@@ -364,12 +378,25 @@ function gui(data_source){
 	})
 
 	circle.attr("fill", function(d) {
-	    ;	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else if (d.group == 4){return "orange";}
-	    else if (d.group == 1000){return "black";}
-	    else{ return "gray"; }
+                if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });
 	text.attr("transform", function(d) {

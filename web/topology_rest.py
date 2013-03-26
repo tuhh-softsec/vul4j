@@ -14,7 +14,8 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
-controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
+#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
+controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -41,6 +42,11 @@ def debug(txt):
 @app.route('/', methods=['GET'])
 @app.route('/<filename>', methods=['GET'])
 @app.route('/tpl/<filename>', methods=['GET'])
+@app.route('/ons-demo/<filename>', methods=['GET'])
+@app.route('/ons-demo/js/<filename>', methods=['GET'])
+@app.route('/ons-demo/css/<filename>', methods=['GET'])
+@app.route('/ons-demo/assets/<filename>', methods=['GET'])
+@app.route('/ons-demo/data/<filename>', methods=['GET'])
 def return_file(filename="index.html"):
   if request.path == "/":
     fullpath = "./index.html"
@@ -61,35 +67,100 @@ def return_file(filename="index.html"):
 
   return response
 
-init_topo1 = { 
-  "nodes" : [ 
-    {"name" : "sw0", "group" : 0},
-    {"name" : "sw1", "group" : 0},
-    {"name" : "sw2", "group" : 0},
-    {"name" : "sw3", "group" : 0},
-    {"name" : "sw4", "group" : 0},
-    {"name" : "sw5", "group" : 0},
-    {"name" : "host0", "group" : 1}
-    ],
-  "links" : [
-    {"source" :0, "target": 1},
-    {"source" :1, "target": 0},
-    {"source" :0, "target": 2},
-    {"source" :2, "target": 0},
-    {"source" :1, "target": 3},
-    {"source" :3, "target": 1},
-    {"source" :2, "target": 3},
-    {"source" :3, "target": 2},
-    {"source" :2, "target": 4},
-    {"source" :4, "target": 2},
-    {"source" :3, "target": 5},
-    {"source" :5, "target": 3},
-    {"source" :4, "target": 5},
-    {"source" :5, "target": 4},
-    {"source" :6, "target": 0},
-    {"source" :0, "target": 6}
-    ]
-}
+## PROXY API (allows development where the webui is served from someplace other than the controller)##
+ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
+ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
+
+@app.route("/wm/core/topology/switches/all/json")
+def switches():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/core/topology/switches/all/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/core/topology/links/json")
+def links():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/core/topology/links/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/flow/getall/json")
+def flows():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/flow/getall/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/registry/controllers/json")
+def registry_controllers():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/registry/controllers/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/wm/registry/switches/json")
+def registry_switches():
+  if request.args.get('proxy') == None:
+    host = ONOS_LOCAL_HOST
+  else:
+    host = ONOS_GUI3_HOST
+
+  try:
+    command = "curl -s %s/wm/registry/switches/json" % (host)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
 
 def node_id(switch_array, dpid):
   id = -1
@@ -100,6 +171,7 @@ def node_id(switch_array, dpid):
 
   return id
 
+## API for ON.Lab local GUI ##
 @app.route('/topology', methods=['GET'])
 def topology_for_gui():
   try:
@@ -125,15 +197,6 @@ def topology_for_gui():
       sw['name']=dpid
       sw['group']= -1
 
-#      if state == "ACTIVE":
-#        if dpid.split(":")[5] == "0a":
-#          sw['group']=1
-#        if dpid.split(":")[5] == "0b":
-#          sw['group']=2
-#        if dpid.split(":")[5] == "0c":
-#          sw['group']=3
-#        if dpid.split(":")[5] == "0d":
-#          sw['group']=4
       if state == "INACTIVE":
         sw['group']=0
       switches.append(sw)
@@ -408,7 +471,6 @@ def devices():
 
 #{"entityClass":"DefaultEntityClass","mac":["7c:d1:c3:e0:8c:a3"],"ipv4":["192.168.2.102","10.1.10.35"],"vlan":[],"attachmentPoint":[{"port":13,"switchDPID":"00:01:00:12:e2:78:32:44","errorStatus":null}],"lastSeen":1357333593496}
 
-
 ## return fake stat for now
 @app.route("/wm/core/switch/<switchId>/<statType>/json")
 def switch_stat(switchId, statType):
@@ -570,8 +632,6 @@ def controller_status():
   resp = Response(js, status=200, mimetype='application/json')
   pp.pprint(js)
   return resp
-
-
 
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-d":

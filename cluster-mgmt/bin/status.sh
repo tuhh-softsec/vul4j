@@ -1,8 +1,5 @@
 #! /bin/bash
-. $HOME/cluster-mgmt/func.sh
-
-basename="onosdevb"
-nr_nodes=4
+. $HOME/bin/func.sh
 
 onos status
 cassandra status

@@ -1,5 +1,5 @@
 #! /bin/bash
-. $HOME/cluster-mgmt/func.sh
+. $HOME/bin/func.sh
 
 onos stop
 cassandra cleandb

@@ -5,22 +5,22 @@ function controller_status(data_source){
 		{name:'onos12vpc', onos: 0, cassandra: 1}] */
 
     var barWidth = 100;
-    var width = (barWidth + 10) * 4
+    var width = (barWidth + 10) * 8
     var height = 50;
 
     var Servers = d3.select("#servers").
 	append("svg:svg").
-	attr("width", 800).
+	attr("width", 1280).
 	attr("height", 30);
 
     var ContStatus = d3.select("#onos-status").
 	append("svg:svg").
-	attr("width", 800).
+	attr("width", 1280).
 	attr("height", 50);
 
     var CassandraStatus = d3.select("#cassandra-status").
 	append("svg:svg").
-	attr("width", 800).
+	attr("width", 1280).
 	attr("height", 50);
 
     d3.json(data_source, draw);
@@ -32,7 +32,7 @@ function controller_status(data_source){
 	    },
 	    dataType: "json"
         });
-    }, 5000); 
+    }, 3000); 
 
     function draw(json){
 //	var data = json.data;
@@ -62,6 +62,14 @@ function controller_status(data_source){
 		    return "green"
 		}else if (index == 3){
 		    return "orange"
+		}else if (index == 4){
+		    return "cyan"
+		}else if (index == 5){
+		    return "magenta"
+		}else if (index == 6){
+		    return "yellow"
+		}else if (index == 7){
+		    return "purple"
 		}else{
 		    return "black"
 		}
@@ -84,6 +92,14 @@ function controller_status(data_source){
 		    return "green"
 		}else if (index == 3){
 		    return "orange"
+		}else if (index == 4){
+		    return "cyan"
+		}else if (index == 5){
+		    return "magenta"
+		}else if (index == 6){
+		    return "yellow"
+		}else if (index == 7){
+		    return "purple"
 		}else{
 		    return "black"
 		}
@@ -133,6 +149,14 @@ function controller_status(data_source){
 		    return "green"
 		}else if (index == 3){
 		    return "orange"
+		}else if (index == 4){
+		    return "cyan"
+		}else if (index == 5){
+		    return "magenta"
+		}else if (index == 6){
+		    return "yellow"
+		}else if (index == 7){
+		    return "purple"
 		}else{
 		    return "black"
 		}

@@ -58,9 +58,6 @@ case "$1" in
   stop)
     stop
     ;;
-  deldb)
-    deldb
-    ;;
   status)
     status
     ;;
