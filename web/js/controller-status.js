@@ -32,7 +32,7 @@ function controller_status(data_source){
 	    },
 	    dataType: "json"
         });
-    }, 5000); 
+    }, 3000); 
 
     function draw(json){
 //	var data = json.data;
