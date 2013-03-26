@@ -12,10 +12,9 @@ else
   exit
 fi
 
-export CLUSTER="./cluster.txt"
 dsh -g $basename 'uname -a'
 
-#dsh -g ${basename} 'cd ONOS/test-network/mininet; ./tunnel_onsdemo.sh start'
-#dsh -g ${basename} 'cd ONOS/test-network/mininet; ./tunnel_onsdemo.sh start'
+dsh -g ${basename} 'cd ONOS/test-network/mininet; ./tunnel_onsdemo.sh start'
+dsh -g ${basename} 'cd ONOS/test-network/mininet; ./tunnel_onsdemo.sh start'
 dsh -g ${basename} 'cd ONOS/test-network/mininet; sudo mn -c'
 dsh -g ${basename} 'cd ONOS/test-network/mininet; sudo ./onsdemo.py -n'

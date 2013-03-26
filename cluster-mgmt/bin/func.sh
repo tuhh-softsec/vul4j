@@ -93,17 +93,55 @@ cassandra () {
 onos () {
   case "$1" in
     start)
-      echo "Starting ONOS"
-      dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh start"
-      dsh -w ${basename}1 "cd $ONOS_DIR; ./start-rest.sh start"
+      if [ x$2 == "x" -o x$2 == "xall" ]; then
+        echo "Starting ONOS on all nodes"
+        dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh start"
+        dsh -w ${basename}1 "cd $ONOS_DIR; ./start-rest.sh start"
+      else
+        echo "Starting ONOS on ${basename}$2"
+        dsh -w ${basename}$2 "cd $ONOS_DIR; ./start-onos.sh start"
+      fi
       ;;
     stop)
-      echo "Stop ONOS"
-      dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh stop"
+      if [ x$2 == "x" -o x$2 == "xall" ]; then
+        echo "Stop ONOS on all nodes"
+        dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh stop"
+      else
+        echo "Stop ONOS on ${basename}$2"
+        dsh -w ${basename}$2 "cd $ONOS_DIR; ./start-onos.sh stop"
+      fi
       ;;
     status)
       echo "Checking ONOS Status"
       dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh status"
+      ;;
+  esac
+}
+switch () {
+  case "$1" in
+    local)
+      if [ x$2 == "x" -o x$2 == "xall" ]; then
+        echo "set all switches point to local controller"
+        dsh -g ${basename} "$ONOS_DIR/scripts/ctrl-local.sh"
+      else
+        dsh -w ${basename}$2 "$ONOS_DIR/scripts/ctrl-local.sh"
+      fi
+      ;;
+    all)
+      if [ x$2 == "x" -o x$2 == "xall" ]; then
+        echo "set all non-core switches point to all non-core controllers"
+        dsh -g ${basename} -x ${basename}1  "$ONOS_DIR/scripts/ctrl-ext.sh"
+      else
+        dsh -w ${basename}$2 "$ONOS_DIR/scripts/ctrl-ext.sh"
+      fi
+      ;;
+    none)
+      if [ x$2 == "x" -o x$2 == "xall" ]; then
+        echo "all non-core switches loose controller"
+        dsh -g ${basename} -x ${basename}1 "$ONOS_DIR/scripts/ctrl-none.sh"
+      else
+        dsh -w ${basename}$2 "$ONOS_DIR/scripts/ctrl-none.sh"
+      fi
       ;;
   esac
 }
