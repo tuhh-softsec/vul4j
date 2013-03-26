@@ -1,725 +1,35 @@
 [
     {
         "dataPath": {
-            "dstPort": {
+            "srcPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:01:01"
+                    "value": "00:00:00:00:00:00:06:02"
                 },
                 "port": {
-                    "value": 1
+                    "value": 4
                 }
             },
             "flowEntries": [
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
+                        "value": "00:00:00:00:00:00:06:02"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x19",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x31",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x35",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x55",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x59",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x61",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x65",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x7f",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x83",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0xa3",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
-                },
-                {
+                },                {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:03:00"
+                        "value": "00:00:00:00:00:00:06:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 21
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0xa4",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -727,64 +37,12 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:08:a2:08:f9:01"
+                        "value": "00:00:00:00:ba:5e:ba:13"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0xa5",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 4
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -792,64 +50,12 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:16:97:08:9a:46"
+                        "value": "00:00:00:00:ba:5e:ba:11"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 4
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0xa6",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -857,1144 +63,37 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
+                        "value": "00:00:00:00:00:00:02:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0xa7",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:01"
+                        "value": "00:00:00:00:00:00:02:02"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0xa8",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 }
             ],
-            "srcPort": {
-                "dpid": {
-                    "value": "00:00:00:00:00:00:03:01"
-                },
-                "port": {
-                    "value": 1
-                }
-            }
-        },
-        "flowId": {
-            "value": "0x2"
-        },
-        "installerId": {
-            "value": "host0301-host0101"
-        }
-    },
-    {
-        "dataPath": {
             "dstPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:03:01"
+                    "value": "00:00:00:00:00:00:02:02"
                 },
                 "port": {
-                    "value": 1
-                }
-            },
-            "flowEntries": [
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x24",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x38",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x3c",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x4a",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x4e",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x6e",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x72",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x7a",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x7e",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x9d",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x9e",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:16:97:08:9a:46"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x9f",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 4
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:08:a2:08:f9:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 4
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0xa0",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0xa1",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 21
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:01"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0xa2",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:01"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:01"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                }
-            ],
-            "srcPort": {
-                "dpid": {
-                    "value": "00:00:00:00:00:00:01:01"
-                },
-                "port": {
-                    "value": 1
+                    "value": 4
                 }
             }
         },
@@ -2002,795 +101,55 @@
             "value": "0x1"
         },
         "installerId": {
-            "value": "host0101-host0301"
+            "value": "1"
         }
     },
-    {
+
+
+{
         "dataPath": {
-            "dstPort": {
+            "srcPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:03:02"
+                    "value": "00:00:00:00:00:00:06:02"
                 },
                 "port": {
-                    "value": 1
+                    "value": 4
                 }
             },
             "flowEntries": [
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
+                        "value": "00:00:00:00:00:00:06:02"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x2b",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
-                },
-                {
+                },                {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
+                        "value": "00:00:00:00:00:00:06:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x43",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x44",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x5b",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x5c",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x73",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x74",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x8b",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x8c",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x91",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
+                        "value": "00:00:00:00:ba:5e:ba:13"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 51
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x92",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_ADD",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:16:97:08:9a:46"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x93",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 4
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -2800,62 +159,10 @@
                     "dpid": {
                         "value": "00:00:00:08:a2:08:f9:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 4
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x94",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -2863,64 +170,12 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:03:00"
+                        "value": "00:00:00:00:00:00:03:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x95",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 21
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -2928,76 +183,130 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:03:02"
+                        "value": "00:00:00:00:00:00:03:05"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x96",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 }
             ],
-            "srcPort": {
+            "dstPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:01:02"
+                    "value": "00:00:00:00:00:00:03:05"
                 },
                 "port": {
-                    "value": 1
+                    "value": 4
+                }
+            }
+        },
+        "flowId": {
+            "value": "0x2"
+        },
+        "installerId": {
+            "value": "1"
+        }
+    },
+
+{
+        "dataPath": {
+            "srcPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:07:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            },
+            "flowEntries": [
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:07:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:07:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:20:4e:7f:51:8a:35"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:16:97:08:9a:46"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:08:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:08:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                }
+            ],
+            "dstPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:08:02"
+                },
+                "port": {
+                    "value": 4
                 }
             }
         },
@@ -3005,665 +314,40 @@
             "value": "0x3"
         },
         "installerId": {
-            "value": "host0102-host0302"
+            "value": "1"
         }
     },
-    {
+{
         "dataPath": {
-            "dstPort": {
+            "srcPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:01:02"
+                    "value": "00:00:00:00:00:00:05:02"
                 },
                 "port": {
-                    "value": 1
+                    "value": 4
                 }
             },
             "flowEntries": [
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
+                        "value": "00:00:00:00:00:00:05:02"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x2a",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
-                },
-                {
+                },                {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
+                        "value": "00:00:00:00:00:00:05:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x41",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x42",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x53",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x54",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x6b",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x6c",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x89",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x8a",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
-                    "flowEntryUserState": "FE_USER_DELETE",
-                    "inPort": null,
-                    "outPort": null
-                },
-                {
-                    "dpid": {
-                        "value": "00:00:00:00:00:00:03:02"
-                    },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
-                    "flowEntryErrorState": null,
-                    "flowEntryId": "0x97",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 1
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -3671,64 +355,12 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:03:00"
+                        "value": "00:00:00:00:00:00:ba:12"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 21
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x98",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -3738,62 +370,10 @@
                     "dpid": {
                         "value": "00:00:00:08:a2:08:f9:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 2
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x99",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 4
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -3801,64 +381,12 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:16:97:08:9a:46"
+                        "value": "00:00:00:00:ba:5e:ba:11"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 4
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x9a",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 3
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
                     "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
@@ -3866,141 +394,37 @@
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:00"
+                        "value": "00:00:00:00:00:00:02:01"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 3
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x9b",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 51
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 },
                 {
                     "dpid": {
-                        "value": "00:00:00:00:00:00:01:02"
+                        "value": "00:00:00:00:00:00:02:15"
                     },
-                    "flowEntryActions": [
-                        {
-                            "actionEnqueue": null,
-                            "actionOutput": {
-                                "maxLen": 0,
-                                "port": {
-                                    "value": 1
-                                }
-                            },
-                            "actionSetEthernetDstAddr": null,
-                            "actionSetEthernetSrcAddr": null,
-                            "actionSetIPv4DstAddr": null,
-                            "actionSetIPv4SrcAddr": null,
-                            "actionSetIpToS": null,
-                            "actionSetTcpUdpDstPort": null,
-                            "actionSetTcpUdpSrcPort": null,
-                            "actionSetVlanId": null,
-                            "actionSetVlanPriority": null,
-                            "actionStripVlan": null,
-                            "actionType": "ACTION_OUTPUT"
-                        }
-                    ],
+                    "flowEntryActions": null,
                     "flowEntryErrorState": null,
-                    "flowEntryId": "0x9c",
-                    "flowEntryMatch": {
-                        "dstIPv4Net": null,
-                        "dstMac": {
-                            "value": "00:00:00:00:01:02"
-                        },
-                        "dstTcpUdpPort": null,
-                        "ethernetFrameType": null,
-                        "inPort": {
-                            "value": 2
-                        },
-                        "ipProto": null,
-                        "ipToS": null,
-                        "matchDstIPv4Net": false,
-                        "matchDstMac": true,
-                        "matchDstTcpUdpPort": false,
-                        "matchEthernetFrameType": false,
-                        "matchInPort": true,
-                        "matchIpProto": false,
-                        "matchIpToS": false,
-                        "matchSrcIPv4Net": false,
-                        "matchSrcMac": true,
-                        "matchSrcTcpUdpPort": false,
-                        "matchVlanId": false,
-                        "matchVlanPriority": false,
-                        "srcIPv4Net": null,
-                        "srcMac": {
-                            "value": "00:00:00:00:03:02"
-                        },
-                        "srcTcpUdpPort": null,
-                        "vlanId": null,
-                        "vlanPriority": null
-                    },
-                    "flowEntrySwitchState": "FE_SWITCH_NOT_UPDATED",
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
                     "flowEntryUserState": "FE_USER_ADD",
                     "inPort": null,
                     "outPort": null
                 }
             ],
-            "srcPort": {
+            "dstPort": {
                 "dpid": {
-                    "value": "00:00:00:00:00:00:03:02"
+                    "value": "00:00:00:00:00:00:02:15"
                 },
                 "port": {
-                    "value": 1
+                    "value": 4
                 }
             }
         },
@@ -4008,7 +432,8 @@
             "value": "0x4"
         },
         "installerId": {
-            "value": "host0302-host0102"
+            "value": "1"
         }
     }
+
 ]
