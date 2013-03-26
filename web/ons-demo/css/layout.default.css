@@ -33,15 +33,43 @@ body {
 }
 
 #selectedFlows {
-	height: 5em;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
 }
 
-/* tmp */
-#selectedFlows {
+.selectedFlow {
 	display: -webkit-box;
-	-webkit-box-align: center;
-	-webkit-box-pack: center;
 }
+
+#selectedFlowsHeader {
+	display: -webkit-box;
+}
+
+.flowIndex {
+	width: 1.5em;
+}
+
+.flowId {
+	width: 5em;
+}
+
+.srcDPID, .dstDPID {
+	width: 20em;
+}
+
+.iperf {
+	width: 100%;
+	-webkit-box-flex: 1.0;
+}
+
+.selectedFlow {
+	border-bottom: 1px solid white;
+}
+
+.selectedFlow:last-child {
+	border-bottom: none;
+}
+
 
 #controllers {
 	display: -webkit-box;

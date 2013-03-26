@@ -5,12 +5,12 @@ function toD3(results) {
 		edgeSwitches: [],
 		aggregationSwitches: [],
 		coreSwitches: [],
-		flows: [],
+		flows: results.flows,
 		controllers: results.controllers,
 		activeControllers: results.activeControllers,
 		links: results.links,
 		configuration: results.configuration
-	}
+	};
 
 	// sort the switches
 	results.switches.sort(function (a, b) {
@@ -91,28 +91,35 @@ if (params.proxy) {
 	urls = proxyURLs;
 }
 
-function makeRequest(url) {
-	return function (cb) {
-		d3.json(url, function (error, result) {
-			if (error) {
-				error = url + ' : ' + error.status;
-			}
+function makeRequest(key) {
+	var url = urls[key];
+	if (url) {
+		return function (cb) {
+			d3.json(url, function (error, result) {
+				if (error) {
+					error = url + ' : ' + error.status;
+				}
 
-			cb(error, result);
-		});
+				cb(error, result);
+			});
+		}
+	} else {
+		return function (cb) {
+			cb(null, []);
+		}
 	}
 }
 
 
 function updateModel(cb) {
 	async.parallel({
-	    links: makeRequest(urls.links),
-	    switches: makeRequest(urls.switches),
-	    controllers: makeRequest(urls.controllers),
-	    activeControllers: makeRequest(urls.activeControllers),
-	    mapping: makeRequest(urls.mapping),
-	    configuration: makeRequest(urls.configuration)
-//	    flows: makeRequest(urls.flows),
+	    links: makeRequest('links'),
+	    switches: makeRequest('switches'),
+	    controllers: makeRequest('controllers'),
+	    activeControllers: makeRequest('activeControllers'),
+	    mapping: makeRequest('mapping'),
+	    configuration: makeRequest('configuration'),
+	    flows: makeRequest('flows')
 	},
 	function(err, results) {
 		if (!err) {
