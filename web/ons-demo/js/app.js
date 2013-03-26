@@ -84,7 +84,7 @@ function drawFlows() {
 		});
 		return line(pts);
 	})
-	.attr('stroke-dasharray', '10, 10')
+	.attr('stroke-dasharray', '3, 10')
 	.append('svg:animate')
 	.attr('attributeName', 'stroke-dashoffset')
 	.attr('attributeType', 'xml')

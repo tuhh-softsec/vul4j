@@ -80,8 +80,8 @@ body {
 
 path.flow {
 	fill: none;
-	stroke-width: 3px;
-	stroke: white;
+	stroke-width: 2px;
+	stroke: rgba(255, 255, 255, .35);
 }
 
 #selectedFlowsHeader {
