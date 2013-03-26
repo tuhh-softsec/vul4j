@@ -17,9 +17,12 @@ for s in $switches; do
     if [  "x$dpid" == "x$1" ]; then
         if [ x$2 == "xup" ]; then
            sudo ovs-vsctl set-controller $s $url 
+           echo "$s up"
         elif [ x$2 == "xdown" ]; then
            sudo ovs-vsctl set-controller $s
+           echo "$s down"
         else
+           echo -n "$s controller: "
            sudo ovs-vsctl get-controller $s
         fi
     fi
