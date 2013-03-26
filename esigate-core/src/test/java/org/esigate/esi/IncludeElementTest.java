@@ -273,5 +273,14 @@ public class IncludeElementTest extends TestCase {
 		tested.render(request, page, out);
 		assertEquals("before -incl-page-start replacement incl-page-end- after", out.toString());
 	}
+	
+	public void testIncludeFragmentReplaceFragment() throws IOException, HttpErrorPage {
+		String page = "before <esi:include src='$(PROVIDER{mock})/fragment' fragment='toInclude'><esi:replace fragment='toReplace'>replacement</esi:replace></esi:include> after";
+		String includedPage = "-incl-page-start <esi:fragment name='toInclude'>begin include <esi:fragment name='toReplace'>content to replace</esi:fragment> end include</esi:fragment> incl-page-end-";
+		provider.addResource("/fragment", includedPage);
+		StringWriter out = new StringWriter();
+		tested.render(request, page, out);
+		assertEquals("before begin include replacement end include after", out.toString());
+	}
 
 }
