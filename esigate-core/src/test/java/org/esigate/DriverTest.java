@@ -46,6 +46,7 @@ import org.esigate.api.ContainerRequestMediator;
 import org.esigate.cookie.CookieManager;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.events.EventManager;
+import org.esigate.extension.DefaultCharset;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientHelper;
@@ -502,6 +503,33 @@ public class DriverTest extends TestCase {
 
 	}
 
+	
+	/**
+	 * This test ensure Fetch events are fired when cache is disabled. 
+	 * <p>
+	 * It uses {@link DefaultCharset} extension which processes the Contet-Type header on post-fetch events.
+	 * 
+	 * @throws Exception
+	 */
+	public void testBug185() throws Exception {
+		Properties properties = new Properties();
+		properties.put(Parameters.REMOTE_URL_BASE.name, "http://www.foo.com/");
+		properties.put(Parameters.EXTENSIONS.name, DefaultCharset.class.getName());
+		properties.put(Parameters.USE_CACHE.name, "false");
+
+		HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Not Modified");
+		response.addHeader("Content-Type", "text/html");
+
+		mockConnectionManager.setResponse(response);
+		Driver driver = createMockDriver(properties, mockConnectionManager);
+
+		// First request
+		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
+		driver.proxy("/foobar142-2/", request);
+		assertEquals(200, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertEquals("text/html; charset=ISO-8859-1", TestUtils.getResponse(request).getHeaders("Content-Type")[0].getValue());
+	}
+	
 	/**
 	 * 0000135: Special characters are lost when including a fragment with no
 	 * charset specified into UTF-8 page
