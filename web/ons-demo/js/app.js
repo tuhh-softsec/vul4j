@@ -36,7 +36,12 @@ colors.reverse();
 
 var controllerColorMap = {};
 
-
+function setPending(selection) {
+	selection.classed('pending', false);
+	setTimeout(function () {
+		selection.classed('pending', true);
+	})
+}
 
 function createTopologyView() {
 
@@ -391,17 +396,18 @@ updateTopology = function(svg, model) {
 	}
 
 	function doubleClickSwitch(data) {
+		var circle = d3.select(document.getElementById(data.dpid)).select('circle');
 		if (data.state == 'ACTIVE') {
 			var prompt = 'Deactivate ' + data.dpid + '?';
 			if (confirm(prompt)) {
-				d3.select(document.getElementById(data.dpid)).select('circle').classed('pending', true);
 				switchDown(data);
+				setPending(circle);
 			}
 		} else {
 			var prompt = 'Activate ' + data.dpid + '?';
 			if (confirm(prompt)) {
-				d3.select(document.getElementById(data.dpid)).select('circle').classed('pending', true);
 				switchUp(data);
+				setPending(circle);
 			}
 		}
 	}
@@ -501,6 +507,20 @@ updateTopology = function(svg, model) {
 			})
 		};
 
+		function removeLink(link) {
+			var path1 = document.getElementById(link['src-switch'] + '=>' + link['dst-switch']);
+			var path2 = document.getElementById(link['dst-switch'] + '=>' + link['src-switch']);
+
+			if (path1) {
+				setPending(d3.select(path1));
+			}
+			if (path2) {
+				setPending(d3.select(path2));
+			}
+
+			linkDown(link);
+		}
+
 
 		var highlighted = svg.selectAll('circle.highlight')[0];
 		if (highlighted.length == 2) {
@@ -528,14 +548,14 @@ updateTopology = function(svg, model) {
 				if (map && map[dstData.dpid]) {
 					var prompt = 'Remove link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
 					if (confirm(prompt)) {
-						linkDown(map[dstData.dpid]);
+						removeLink(map[dstData.dpid]);
 					}
 				} else {
 					map = linkMap[dstData.dpid];
 					if (map && map[srcData.dpid]) {
 						var prompt = 'Remove link between ' + dstData.dpid + ' and ' + srcData.dpid + '?';
 						if (confirm(prompt)) {
-							linkDown(map[srcData.dpid]);
+							removeLink(map[srcData.dpid]);
 						}
 					} else {
 						var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
@@ -642,29 +662,30 @@ updateTopology = function(svg, model) {
 	links.enter().append("svg:path")
 	.attr("class", "link");
 
-	links
+	links.attr('id', function (d) {
+			return d['src-switch'] + '=>' + d['dst-switch'];
+		})
 		.attr("d", function (d) {
+			var src = d3.select(document.getElementById(d['src-switch']));
+			var dst = d3.select(document.getElementById(d['dst-switch']));
 
-		var src = d3.select(document.getElementById(d['src-switch']));
-		var dst = d3.select(document.getElementById(d['dst-switch']));
+			var srcPt = document.querySelector('svg').createSVGPoint();
+			srcPt.x = src.attr('x');
+			srcPt.y = src.attr('y');
+			srcPt = srcPt.matrixTransform(src[0][0].getCTM());
 
-		var srcPt = document.querySelector('svg').createSVGPoint();
-		srcPt.x = src.attr('x');
-		srcPt.y = src.attr('y');
-		srcPt = srcPt.matrixTransform(src[0][0].getCTM());
+			var dstPt = document.querySelector('svg').createSVGPoint();
+			dstPt.x = dst.attr('x');
+			dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
+			dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
 
-		var dstPt = document.querySelector('svg').createSVGPoint();
-		dstPt.x = dst.attr('x');
-		dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
-		dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
+			var midPt = document.querySelector('svg').createSVGPoint();
+			midPt.x = (srcPt.x + dstPt.x)/2;
+			midPt.y = (srcPt.y + dstPt.y)/2;
 
-		var midPt = document.querySelector('svg').createSVGPoint();
-		midPt.x = (srcPt.x + dstPt.x)/2;
-		midPt.y = (srcPt.y + dstPt.y)/2;
-
-		return line([srcPt, midPt, dstPt]);
-	})
-	.attr("marker-mid", function(d) { return "url(#arrow)"; });
+			return line([srcPt, midPt, dstPt]);
+		})
+		.attr("marker-mid", function(d) { return "url(#arrow)"; });
 
 
 	// remove old links
