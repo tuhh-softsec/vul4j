@@ -128,6 +128,20 @@ path.flow {
 
 .controller {
 	padding: .25em;
+	padding-left: 2.5em;
+	position: relative;
+}
+
+.controllerEye {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 2em;
+	background-image: url('../assets/eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .25em center;
 }
 
 #logo {

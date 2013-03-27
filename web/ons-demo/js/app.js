@@ -578,23 +578,23 @@ updateTopology = function(svg, model) {
 						if (confirm(prompt)) {
 							var link1 = {
 								'src-switch': srcData.dpid,
-								'src-port': 0,
+								'src-port': 1,
 								'dst-switch': dstData.dpid,
-								'dst-port': 0,
+								'dst-port': 1,
 								pending: true
 							};
 							pendingLinks[makeLinkKey(link1)] = link1;
 							var link2 = {
 								'src-switch': dstData.dpid,
-								'src-port': 0,
+								'src-port': 1,
 								'dst-switch': srcData.dpid,
-								'dst-port': 0,
+								'dst-port': 1,
 								pending: true
 							};
 							pendingLinks[makeLinkKey(link2)] = link2;
 							updateTopology(svg, model);
 
-							linkUp(srcData, dstData);
+							linkUp(link1);
 
 							// remove the pending link after 10s
 							setTimeout(function () {
@@ -749,7 +749,9 @@ function updateControllers(model) {
 		})
 		.text(function (d) {
 			return d;
-		});
+		})
+		.append('div')
+		.attr('class', 'controllerEye');
 
 	controllers.attr('class', function (d) {
 			var color = 'colorInactive';
@@ -763,7 +765,23 @@ function updateControllers(model) {
 	// this should never be needed
 	// controllers.exit().remove();
 
-	controllers.on('click', function (c) {
+	controllers.on('dblclick', function (c) {
+		if (model.activeControllers.indexOf(c) != -1) {
+			var prompt = 'Dectivate ' + c + '?';
+			if (confirm(prompt)) {
+				controllerDown(c);
+				setPending(d3.select(this));
+			};
+		} else {
+			var prompt = 'Activate ' + c + '?';
+			if (confirm(prompt)) {
+				controllerUp(c);
+				setPending(d3.select(this));
+			};
+		}
+	});
+
+	controllers.select('.controllerEye').on('click', function (c) {
 		var allSelected = true;
 		for (var key in controllerColorMap) {
 			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {

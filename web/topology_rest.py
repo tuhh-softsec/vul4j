@@ -69,6 +69,8 @@ def return_file(filename="index.html"):
     response.headers["Content-type"] = "text/css"
   elif suffix == "png":
     response.headers["Content-type"] = "image/png"
+  elif suffix == "svg":
+    response.headers["Content-type"] = "image/svg+xml"
 
   return response
 
@@ -94,6 +96,19 @@ def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
 def proxy_switch_status_change(cmd, dpid):
   try:
     command = "curl -s %s/gui/switch/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, dpid)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/gui/controller/<cmd>/<controller_name>")
+def proxy_controller_status_change(cmd, controller_name):
+  try:
+    command = "curl -s %s/gui/controller/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, controller_name)
     print command
     result = os.popen(command).read()
   except:

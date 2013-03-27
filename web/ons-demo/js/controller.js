@@ -20,6 +20,10 @@ var controllerFunctions = {
 	s: function (cmd, s) {
 		var url = '/proxy/gui/switch/' + [cmd, s.dpid].join('/');
 		callURL(url);
+	},
+	c: function (cmd, c) {
+		var url = '/proxy/gui/controller/' + [cmd, c].join('/');
+		callURL(url);
 	}
 };
 
@@ -43,6 +47,14 @@ function switchUp(s) {
 
 function switchDown(s) {
 	controllerFunctions.s('down', s);
+}
+
+function controllerUp(c) {
+	controllerFunctions.c('up', c);
+}
+
+function controllerDown(c) {
+	controllerFunctions.c('down', c);
 }
 
 function createFlow(src, dst) {
