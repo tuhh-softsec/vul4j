@@ -18,6 +18,9 @@ RestPort=8080
 #DBName="onos-network-map"
 #controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
 controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
+core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+
+nr_flow=0
 
 DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
@@ -109,7 +112,7 @@ def links():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/flow/getall/json")
+@app.route("/wm/flow/getsummary/0/0/json")
 def flows():
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
@@ -117,7 +120,7 @@ def flows():
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/flow/getall/json" % (host)
+    command = "curl -s %s/wm/flow/getsummary/0/0/json" % (host)
     print command
     result = os.popen(command).read()
   except:
@@ -641,10 +644,10 @@ def controller_status_change(cmd, controller_name):
   stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
-    onos=os.popen(start_onos).read()
+    result=os.popen(start_onos).read()
     ret = "controller %s is up" % (controller_name)
   elif cmd == "down":
-    onos=os.popen(stop_onos).read()
+    result=os.popen(stop_onos).read()
     ret = "controller %s is down" % (controller_name)
 
   return ret
@@ -659,36 +662,101 @@ def switch_status_change(cmd, dpid):
 
   if cmd =="up" or cmd=="down":
     print "make dpid %s %s" % (dpid, cmd)
-    onos=os.popen(cmd_string).read()
-    onos=os.popen(get_status).read()
+    os.popen(cmd_string)
+    result=os.popen(get_status).read()
 
-  return onos
+  return result
 
-#* Switch Up/Down
-#http://localhost:9000/gui/switch/up/<dpid>
-#http://localhost:9000/gui/switch/down/<dpid>
 #* Link Up/Down
 #http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
 #http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
+
+@app.route("/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
+def link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
+  if src_dpid in core_switches:
+    host = controllers[0]
+  else:
+    hostid=int(src_dpid.split(':')[-2])
+    host = controllers[hostid-1]
+
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+  print cmd_string
+
+  if cmd =="up" or cmd=="down":
+    result=os.popen(cmd_string).read()
+
+  return result
+
 #* Create Flow
 #http://localhost:9000/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>
+#1 FOOBAR 00:00:00:00:00:00:01:01 1 00:00:00:00:00:00:01:0b 1 matchSrcMac 00:00:00:00:00:00 matchDstMac 00:01:00:00:00:00
+@app.route("/gui/addfow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
+def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
+  command =  "/home/ubuntu/ONOS/web/get_flow.py  all |grep FlowPath  |gawk '{print strtonum($4)}'| sort -n | tail -n 1"
+  print command
+  ret = os.popen(command).read()
+  if ret == "":
+    flow_nr=0
+  else:
+    flow_nr=int(ret)
+
+  flow_nr += 1
+  command = "/home/ubuntu/ONOS/web/add_flow.py %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  print command
+  errcode = os.popen(command).read()
+  return errcode
+
 #* Delete Flow
 #http://localhost:9000/gui/delflow/<flow_id>
+@app.route("/gui/delflow/<flow_id>")
+def del_flow(flow_id):
+  command = "/home/ubuntu/ONOS/web/delete_flow.py %s" % (flow_id)
+  print command
+  errcode = os.popen(command).read()
+  return errcode
+
 #* Start Iperf Througput
 #http://localhost:9000/gui/iperf/start/<flow_id>
+@app.route("/gui/iperf/start/<flow_id>")
+def iperf_start(flow_id):
+  command = "iperf -xCMSV -t30 -i1 -u -c 127.0.0.1 > iperf_%s.out &" % (flow_id)
+  print command
+  errcode = os.popen(command).read()
+  return errcode
+
+
 #* Get Iperf Throughput
 #http://localhost:9000/gui/iperf/rate/<flow_id>
+@app.route("/gui/iperf/rate/<flow_id>")
+def iperf_rate(flow_id):
+  try:
+    command = "curl -s http://%s:%s/iperf_%s.out" % (RestIP, 9000, flow_id)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
 
+  resp = Response(result, status=200, mimetype='text/html')
+  return resp
 
 
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
+#      add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
+#     link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)
+#     link_change("down", "00:00:20:4e:7f:51:8a:35", 1, "00:00:00:00:00:00:00:00", 1)
+#     link_change("up", "00:00:00:00:00:00:02:03", 1, "00:00:00:00:00:00:00:00", 1)
+#     link_change("down", "00:00:00:00:00:00:07:12", 1, "00:00:00:00:00:00:00:00", 1)
+
+
     print "-- query all switches --"
     query_switch()
     print "-- query topo --"
     topology_for_gui()
-#    print "-- query all links --"
-#    query_links()
+#    link_change(1,2,3,4)
+    print "-- query all links --"
+    query_links()
 #    print "-- query all devices --"
 #    devices()
   else:
