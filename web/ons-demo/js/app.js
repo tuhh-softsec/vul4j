@@ -394,11 +394,13 @@ updateTopology = function(svg, model) {
 		if (data.state == 'ACTIVE') {
 			var prompt = 'Deactivate ' + data.dpid + '?';
 			if (confirm(prompt)) {
+				d3.select(document.getElementById(data.dpid)).select('circle').classed('pending', true);
 				switchDown(data);
 			}
 		} else {
 			var prompt = 'Activate ' + data.dpid + '?';
 			if (confirm(prompt)) {
+				d3.select(document.getElementById(data.dpid)).select('circle').classed('pending', true);
 				switchUp(data);
 			}
 		}
@@ -464,11 +466,20 @@ updateTopology = function(svg, model) {
 			.data(data, function (data) {
 				return data.dpid;
 			});
-		nodes.select('circle').attr('class', function (data, i)  {
+		nodes.select('circle')
+			.each(function (data) {
+				// if there's a pending state changed and then the state changes, clear the pending class
+				var circle = d3.select(this);
+				if (data.state === 'ACTIVE' && circle.classed('inactive') ||
+					data.state === 'INACTIVE' && circle.classed('active')) {
+					circle.classed('pending', false);
+				}
+			})
+			.attr('class', function (data)  {
 				if (data.state === 'ACTIVE' && data.controller) {
-					return data.className + ' ' + controllerColorMap[data.controller];
+					return data.className + ' active ' + controllerColorMap[data.controller];
 				} else {
-					return data.className + ' ' + 'colorInactive';
+					return data.className + ' inactive ' + 'colorInactive';
 				}
 			});
 	}

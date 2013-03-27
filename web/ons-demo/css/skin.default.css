@@ -268,3 +268,22 @@ path {
 	fill: #6949D7;
 	background-color: #6949D7;
 }
+
+
+@-webkit-keyframes pending {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.5;
+	}
+}
+
+.pending {
+	-webkit-animation-name: pending;
+	-webkit-animation-duration: .5s;
+	-webkit-animation-direction: alternate;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-iteration-count: 10;
+}
+
