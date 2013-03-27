@@ -2,6 +2,7 @@ package org.esigate.servlet;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Properties;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
 
+import org.esigate.Driver;
+import org.esigate.DriverFactory;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -47,6 +50,12 @@ public class AggregatorServletTest {
 	@Test
 	public void testConfig() throws ServletException {
 		AggregatorServlet servlet = new AggregatorServlet();
+		
+		// Init driver before calling the servlet 
+		Properties p= 		new Properties();
+		p.setProperty("remoteUrlBase", "test");
+		DriverFactory.put("single", new Driver( "single", p));
+		
 		servlet.init(new TestServletConfig());
 		Assert.assertEquals("provider1",
 				servlet.getProviderMappings().get("sub.domain.com"));
