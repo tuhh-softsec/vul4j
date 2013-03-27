@@ -876,13 +876,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// the flows as appropriate.
 	//
 	ArrayList<FlowPath> allFlows = getAllFlows();
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
 	if (allFlows == null) {
 	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
-	    return null;
+	    return flowPaths;
 	}
 
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	for (FlowPath flow : allFlows) {
 	    //
 	    // TODO: String-based comparison is sub-optimal.
@@ -902,7 +902,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	if (flowPaths.isEmpty()) {
 	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: no FlowPaths found", installerId, dataPathEndpoints);
-	    flowPaths = null;
 	} else {
 	    log.debug("Get FlowPaths for installerId{} and dataPathEndpoints{}: FlowPaths are found", installerId, dataPathEndpoints);
 	}
@@ -925,14 +924,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// We should use the appropriate Titan/Gremlin query to filter-out
 	// the flows as appropriate.
 	//
-	ArrayList<FlowPath> allFlows = getAllFlows();
+    ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+    ArrayList<FlowPath> allFlows = getAllFlows();
 
 	if (allFlows == null) {
 	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
-	    return null;
+	    return flowPaths;
 	}
 
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	for (FlowPath flow : allFlows) {
 	    //
 	    // TODO: String-based comparison is sub-optimal.
@@ -950,7 +949,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	if (flowPaths.isEmpty()) {
 	    log.debug("Get FlowPaths for dataPathEndpoints{}: no FlowPaths found", dataPathEndpoints);
-	    flowPaths = null;
 	} else {
 	    log.debug("Get FlowPaths for dataPathEndpoints{}: FlowPaths are found", dataPathEndpoints);
 	}
@@ -974,16 +972,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// We should use the appropriate Titan/Gremlin query to filter-out
 		// the flows as appropriate.
 		//
-	    ArrayList<FlowPath> allFlows = getAllFlows();
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+    	
+    	ArrayList<FlowPath> allFlows = getAllFlows();
 	
 		if (allFlows == null) {
 		    log.debug("Get FlowPathsSummary for {} {}: no FlowPaths found", flowId, maxFlows);
-		    return null;
+		    return flowPaths;
 		}
 	
 		Collections.sort(allFlows);
 		
-		ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 		for (FlowPath flow : allFlows) {
 			
 			// start from desired flowId
@@ -1005,7 +1004,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	
 		if (flowPaths.isEmpty()) {
 		    log.debug("Get FlowPathsSummary {} {}: no FlowPaths found", flowId, maxFlows);
-		    flowPaths = null;
 		} else {
 		    log.debug("Get FlowPathsSummary for {} {}: FlowPaths were found", flowId, maxFlows);
 		}
@@ -1021,6 +1019,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public ArrayList<FlowPath> getAllFlows() {
 	Iterable<IFlowPath> flowPathsObj = null;
+	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
 	try {
 	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
@@ -1035,10 +1034,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
 	    conn.endTx(Transaction.COMMIT);
-	    return null;	// No Flows found
+	    return flowPaths;	// No Flows found
 	}
 
-	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 	for (IFlowPath flowObj : flowPathsObj) {
 	    //
 	    // Extract the Flow state
