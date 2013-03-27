@@ -136,6 +136,15 @@ public class AggregatorServlet extends HttpServlet {
 						.trim(mapping[1]));
 			}
 		}
+		
+		// Ensure Esigate is loaded immediately to prevent delay on first call.
+		// Using getDriver() instead of DriverFactory#configure() to prevent
+		// multiple configuration loading if several servlets are used
+		if (provider != null) {
+			getDriver(provider);
+		} else if (providerMappings != null && providerMappings.size() > 0) {
+			getDriver(providerMappings.get(0));
+		}
 	
 	}
 }

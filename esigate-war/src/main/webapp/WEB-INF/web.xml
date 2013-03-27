@@ -9,6 +9,7 @@
 			<param-name>provider</param-name>
 			<param-value>esigate</param-value>
 		</init-param>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>esigate</servlet-name>

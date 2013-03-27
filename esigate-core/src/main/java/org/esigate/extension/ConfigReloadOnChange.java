@@ -14,6 +14,13 @@ import org.slf4j.LoggerFactory;
  * This only works on configuration defined using "esigate.config" system
  * property.
  * <p>
+ * The polling frequency can be set by adding the following property to esigate configuration : 
+ * <code>
+ * &lt;driverid&gt;.configReloadDelay
+ * </code>
+ * <p>
+ * Default polling frequency is 5 seconds.
+ * <p>
  * This class is not intended to use in production.
  * 
  * @author Nicolas Richeton
@@ -64,6 +71,12 @@ public class ConfigReloadOnChange implements Extension {
 
 	public void init(Driver driver, Properties properties) {
 
+		// Do nothing if configuration is loaded from the classpath
+		if( configuration == null ){
+			LOG.warn("Cannot reload configuration from classpath. Please use -Desigate.config");
+			return;
+		}
+		
 		// Load configuration
 		String delayAsString = properties.getProperty(CONFIG_RELOAD_DELAY);
 		if (delayAsString != null) {
