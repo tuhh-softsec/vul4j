@@ -17,6 +17,7 @@ var line = d3.svg.line()
 var model;
 var svg, selectedFlowsView;
 var updateTopology;
+var pendingLinks = {};
 
 var colors = [
 	'color1',
@@ -309,9 +310,13 @@ function createRingsFromModel(model) {
 	return testRings;
 }
 
-function createLinkMap(model) {
+function makeLinkKey(link) {
+	return link['src-switch'] + '=>' + link['dst-switch'];
+}
+
+function createLinkMap(links) {
 	var linkMap = {};
-	model.links.forEach(function (link) {
+	links.forEach(function (link) {
 		var srcDPID = link['src-switch'];
 		var dstDPID = link['dst-switch'];
 
@@ -329,7 +334,18 @@ updateTopology = function(svg, model) {
 	// DRAW THE SWITCHES
 	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
 
-	var linkMap = createLinkMap(model);
+
+	var links = [];
+	model.links.forEach(function (link) {
+		links.push(link);
+		delete pendingLinks[makeLinkKey(link)]
+	})
+	var linkId;
+	for (linkId in pendingLinks) {
+		links.push(pendingLinks[linkId]);
+	}
+
+	var linkMap = createLinkMap(links);
 //	var flowMap = createFlowMap(model);
 
 	function mouseOverSwitch(data) {
@@ -560,7 +576,33 @@ updateTopology = function(svg, model) {
 					} else {
 						var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
 						if (confirm(prompt)) {
+							var link1 = {
+								'src-switch': srcData.dpid,
+								'src-port': 0,
+								'dst-switch': dstData.dpid,
+								'dst-port': 0,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link1)] = link1;
+							var link2 = {
+								'src-switch': dstData.dpid,
+								'src-port': 0,
+								'dst-switch': srcData.dpid,
+								'dst-port': 0,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link2)] = link2;
+							updateTopology(svg, model);
+
 							linkUp(srcData, dstData);
+
+							// remove the pending link after 10s
+							setTimeout(function () {
+								delete pendingLinks[makeLinkKey(link1)];
+								delete pendingLinks[makeLinkKey(link2)];
+
+								updateTopology(svg, model);
+							}, 10000);
 						}
 					}
 				}
@@ -654,7 +696,7 @@ updateTopology = function(svg, model) {
 	// DRAW THE LINKS
 
 	// key on link dpids since these will come/go during demo
-	var links = d3.select('svg').selectAll('.link').data(model.links, function (d) {
+	var links = d3.select('svg').selectAll('.link').data(links, function (d) {
 			return d['src-switch']+'->'+d['dst-switch'];
 	});
 
@@ -663,7 +705,7 @@ updateTopology = function(svg, model) {
 	.attr("class", "link");
 
 	links.attr('id', function (d) {
-			return d['src-switch'] + '=>' + d['dst-switch'];
+			return makeLinkKey(d);
 		})
 		.attr("d", function (d) {
 			var src = d3.select(document.getElementById(d['src-switch']));
@@ -685,7 +727,10 @@ updateTopology = function(svg, model) {
 
 			return line([srcPt, midPt, dstPt]);
 		})
-		.attr("marker-mid", function(d) { return "url(#arrow)"; });
+		.attr("marker-mid", function(d) { return "url(#arrow)"; })
+		.classed('pending', function (d) {
+			return d.pending;
+		});
 
 
 	// remove old links
