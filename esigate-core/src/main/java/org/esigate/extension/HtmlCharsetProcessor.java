@@ -10,7 +10,7 @@ import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
-import org.esigate.events.impl.EncodingEvent;
+import org.esigate.events.impl.ReadEntityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +27,23 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 
 	@Override
 	public boolean event(EventDefinition id, Event event) {
-		EncodingEvent encodingEvent = (EncodingEvent) event;
+		ReadEntityEvent readEntityEvent = (ReadEntityEvent) event;
 		Charset charset = null;
 
-		LOG.debug("Content mime type is {}", encodingEvent.mimeType);
+		LOG.debug("Content mime type is {}", readEntityEvent.mimeType);
 
 		// Detect on supported MIME types.
-		if ("text/html".equals(encodingEvent.mimeType)
-				|| "application/xhtml+xml".equals(encodingEvent.mimeType)) {
+		if ("text/html".equals(readEntityEvent.mimeType)
+				|| "application/xhtml+xml".equals(readEntityEvent.mimeType)) {
 			LOG.debug("Supported MIME type, parsing content");
 
-			Matcher m = PATTERN_META_HTML5.matcher(encodingEvent.entityContent);
+			Matcher m = PATTERN_META_HTML5.matcher(readEntityEvent.entityContent);
 			if (m.matches()) {
 				LOG.debug("Found HTML5 charset");
 				charset = Charset.forName(m.group(1));
 			}
 
-			m = PATTERN_META_HTML4_XHTML.matcher(encodingEvent.entityContent);
+			m = PATTERN_META_HTML4_XHTML.matcher(readEntityEvent.entityContent);
 			if (m.matches()) {
 				LOG.debug("Found HTML/XHTML charset");
 				charset = Charset.forName(m.group(1));
@@ -51,12 +51,12 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 		}
 
 		// If another charset was found, update String object
-		if (charset != null && !charset.equals(encodingEvent.charset)) {
-			LOG.debug("Changing charset fom {} to {}", encodingEvent.charset,
+		if (charset != null && !charset.equals(readEntityEvent.charset)) {
+			LOG.debug("Changing charset fom {} to {}", readEntityEvent.charset,
 					charset);
-			encodingEvent.charset = charset;
-			encodingEvent.entityContent = new String(encodingEvent.rawEntityContent,
-					encodingEvent.charset);
+			readEntityEvent.charset = charset;
+			readEntityEvent.entityContent = new String(readEntityEvent.rawEntityContent,
+					readEntityEvent.charset);
 		}
 
 		return true;
@@ -64,7 +64,7 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 
 	@Override
 	public void init(Driver driver, Properties properties) {
-		driver.getEventManager().register(EventManager.EVENT_ENCODING, this);
+		driver.getEventManager().register(EventManager.EVENT_READ_ENTITY, this);
 	}
 
 }

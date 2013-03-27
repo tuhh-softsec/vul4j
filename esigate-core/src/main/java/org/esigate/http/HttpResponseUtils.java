@@ -37,7 +37,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.esigate.HttpErrorPage;
 import org.esigate.events.EventManager;
-import org.esigate.events.impl.EncodingEvent;
+import org.esigate.events.impl.ReadEntityEvent;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +129,7 @@ public class HttpResponseUtils {
 			}
 			
 			try {
-				EncodingEvent event = new EncodingEvent();
+				ReadEntityEvent event = new ReadEntityEvent();
 				event.rawEntityContent = EntityUtils.toByteArray(httpEntity);
 
 				try {
@@ -152,7 +152,7 @@ public class HttpResponseUtils {
 
 				// Allow extensions to detect document encoding
 				if (eventManager != null) {
-					eventManager.fire(EventManager.EVENT_ENCODING, event);
+					eventManager.fire(EventManager.EVENT_READ_ENTITY, event);
 				}
 
 				// Return entityContent
