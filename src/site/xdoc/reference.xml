@@ -1838,10 +1838,10 @@ discardCookies=*
 						</ul>
 					</li>
 					<li>
-						Encoding event : response is read using the charset declared by HTTP headers.
+						Read entity event : response is read using the charset declared by HTTP headers.
 						
 						<ul>
-							<li>EVENT_ENCODING :  after reading response using the default encoding
+							<li>EVENT_READ_ENTITY :  after reading response using the default encoding
 							</li>
 						</ul>
 					</li>
