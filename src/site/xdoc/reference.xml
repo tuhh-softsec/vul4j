@@ -1910,7 +1910,7 @@ discardCookies=*
 					</tr>
 					<tr>
 						<td>org.esigate.extension.XPoweredBy</td>
-						<td>adds X-Powered-By: ESIGate in response.</td>
+						<td>adds <pre>X-Powered-By: Esigate</pre> in response.</td>
 						<td>Yes</td>
 						<td>4.0</td>
 					</tr>
@@ -1930,7 +1930,8 @@ discardCookies=*
 					<tr>
 						<td>org.esigate.extension.Esi</td>
 						<td>
-							This extension processes ESI directives, like : &lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/&gt;
+							This extension processes ESI directives, like : 
+							<pre>&lt;esi:include src="$(PROVIDER{cms})/news" fragment="news_1"/&gt;</pre>
 						</td>
 						<td>Yes</td>
 						<td>5.0</td>
@@ -1940,9 +1941,7 @@ discardCookies=*
 						<td>This
 							extension processes the old esigate directives based on html comments,
 							like :
-						
-							&lt;!--$includeblock$aggregated2$block.html$myblock$--&gt;
-						
+						<pre>&lt;!--$includeblock$aggregated2$block.html$myblock$--&gt;</pre>
 							<br />
 							see : http://www.esigate.org/html-comments.html for complete syntax.
 						</td>
@@ -1959,6 +1958,23 @@ discardCookies=*
 							property.
 							<br />
 							This extension is not intended to use in production.
+						</td>
+						<td>No</td>
+						<td>5.0</td>
+					</tr>
+					<tr>
+						<td>org.esigate.extension.ConfigReloadOnHup</td>
+						<td>
+						This extension reloads configuration when signal HUP is received. On POSIX
+						  systems, this signal is sent using : 
+						  <pre>kill -1 &lt;esigatepid&gt;</pre>
+						  <br/>
+						  This only works on configuration defined using "esigate.config" system
+						 property.
+						 <br/>
+						  This class relies on the sun.misc package and may not work on all JVM.
+						 
+												
 						</td>
 						<td>No</td>
 						<td>5.0</td>
