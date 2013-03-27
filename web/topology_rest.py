@@ -16,9 +16,10 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
-#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
-controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
-core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
+#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
+#core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
 
 nr_flow=0
 
@@ -75,8 +76,8 @@ def return_file(filename="index.html"):
   return response
 
 ## PROXY API (allows development where the webui is served from someplace other than the controller)##
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
+ONOS_GUI3_HOST="http://devb-gui.onlab.us:8080"
+ONOS_GUI3_CONTROL_HOST="http://devb-gui.onlab.us:8080"
 ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
 @app.route("/proxy/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
@@ -686,9 +687,11 @@ def controller_status_change(cmd, controller_name):
   stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
+    print start_onos
     result=os.popen(start_onos).read()
     ret = "controller %s is up" % (controller_name)
   elif cmd == "down":
+    print stop_onos
     result=os.popen(stop_onos).read()
     ret = "controller %s is down" % (controller_name)
 
@@ -698,8 +701,9 @@ def controller_status_change(cmd, controller_name):
 def switch_status_change(cmd, dpid):
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s %s'" % (dpid, cmd)
-  get_status="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s'" % (dpid)
+  host=controllers[0]
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+  get_status="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s'" % (host, dpid)
   print "cmd_string"
 
   if cmd =="up" or cmd=="down":
