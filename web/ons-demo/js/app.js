@@ -14,7 +14,10 @@ var line = d3.svg.line()
     	return d.y;
     });
 
+var model;
 var svg, selectedFlowsView;
+var updateTopology;
+var pendingLinks = {};
 
 var colors = [
 	'color1',
@@ -34,9 +37,21 @@ colors.reverse();
 
 var controllerColorMap = {};
 
-
+function setPending(selection) {
+	selection.classed('pending', false);
+	setTimeout(function () {
+		selection.classed('pending', true);
+	})
+}
 
 function createTopologyView() {
+
+	window.addEventListener('resize', function () {
+		// this is too slow. instead detect first resize event and hide the paths that have explicit matrix applied
+		// either that or is it possible to position the paths so they get the automatic transform as well?
+//		updateTopology(svg, model);
+	});
+
 	var svg = d3.select('#svg-container').append('svg:svg');
 
 	svg.append("svg:defs").append("svg:marker")
@@ -54,8 +69,6 @@ function createTopologyView() {
 }
 
 var selectedFlowsData = [
-	{selected: false, flow: null},
-	{selected: false, flow: null},
 	{selected: false, flow: null},
 	{selected: false, flow: null},
 	{selected: false, flow: null}
@@ -99,6 +112,8 @@ function drawFlows() {
 		}
 	})
 
+	// "marching ants"
+	// TODO: this will only be true if there's an iperf session running
 	flows.select('animate').attr('from', function (d) {
 		if (d.flow) {
 			if (d.selected) {
@@ -192,22 +207,28 @@ function toRadians (angle) {
   return angle * (Math.PI / 180);
 }
 
+var widths = {
+	edge: 6,
+	aggregation: 12,
+	core: 18
+}
+
 function createRingsFromModel(model) {
 	var rings = [{
 		radius: 3,
-		width: 6,
+		width: widths.edge,
 		switches: model.edgeSwitches,
 		className: 'edge',
 		angles: []
 	}, {
 		radius: 2.25,
-		width: 12,
+		width: widths.aggregation,
 		switches: model.aggregationSwitches,
 		className: 'aggregation',
 		angles: []
 	}, {
 		radius: 0.75,
-		width: 18,
+		width: widths.core,
 		switches: model.coreSwitches,
 		className: 'core',
 		angles: []
@@ -289,10 +310,123 @@ function createRingsFromModel(model) {
 	return testRings;
 }
 
-function updateTopology(svg, model) {
+function makeLinkKey(link) {
+	return link['src-switch'] + '=>' + link['dst-switch'];
+}
+
+function createLinkMap(links) {
+	var linkMap = {};
+	links.forEach(function (link) {
+		var srcDPID = link['src-switch'];
+		var dstDPID = link['dst-switch'];
+
+		var srcMap = linkMap[srcDPID] || {};
+
+		srcMap[dstDPID] = link;
+
+		linkMap[srcDPID]  = srcMap;
+	});
+	return linkMap;
+}
+
+updateTopology = function(svg, model) {
 
 	// DRAW THE SWITCHES
 	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
+
+
+	var links = [];
+	model.links.forEach(function (link) {
+		links.push(link);
+		delete pendingLinks[makeLinkKey(link)]
+	})
+	var linkId;
+	for (linkId in pendingLinks) {
+		links.push(pendingLinks[linkId]);
+	}
+
+	var linkMap = createLinkMap(links);
+//	var flowMap = createFlowMap(model);
+
+	function mouseOverSwitch(data) {
+		if (data.highlighted) {
+			return;
+		}
+
+		// only highlight valid link or flow destination by checking for class of existing highlighted circle
+		var highlighted = svg.selectAll('circle.highlight')[0];
+		if (highlighted.length == 1) {
+			var s = d3.select(highlighted[0]);
+			// only allow links
+			// 	edge->edge (flow)
+			//  aggregation->core
+			//	core->core
+			if (data.className == 'edge' && !s.classed('edge') ||
+				data.className == 'core' && !s.classed('core') && !s.classed('aggregation') ||
+				data.className == 'aggregation' && !s.classed('core')) {
+				return;
+			}
+
+			// don't highlight if there's already a link or flow
+			// var map = linkMap[data.dpid];
+			// console.log(map);
+			// console.log(s.data()[0].dpid);
+			// console.log(map[s.data()[0].dpid]);
+			// if (map && map[s.data()[0].dpid]) {
+			// 	return;
+			// }
+
+			// the second highlighted switch is the target for a link or flow
+			data.target = true;
+		}
+
+
+		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
+		var node = d3.select(document.getElementById(data.dpid));
+		node.select('circle').classed('highlight', true).transition().duration(100).attr("r", widths.core);
+		data.highlighted = true;
+		node.moveToFront();
+	}
+
+	function mouseOutSwitch(data) {
+		if (data.mouseDown)
+			return;
+
+		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
+		var node = d3.select(document.getElementById(data.dpid));
+		node.select('circle').classed('highlight', false).transition().duration(100).attr("r", widths[data.className]);
+		data.highlighted = false;
+		data.target = false;
+	}
+
+	function mouseDownSwitch(data) {
+		mouseOverSwitch(data);
+		data.mouseDown = true;
+	}
+
+	function mouseUpSwitch(data) {
+		if (data.mouseDown) {
+			data.mouseDown = false;
+			d3.event.stopPropagation();
+		}
+	}
+
+	function doubleClickSwitch(data) {
+		var circle = d3.select(document.getElementById(data.dpid)).select('circle');
+		if (data.state == 'ACTIVE') {
+			var prompt = 'Deactivate ' + data.dpid + '?';
+			if (confirm(prompt)) {
+				switchDown(data);
+				setPending(circle);
+			}
+		} else {
+			var prompt = 'Activate ' + data.dpid + '?';
+			if (confirm(prompt)) {
+				switchUp(data);
+				setPending(circle);
+			}
+		}
+	}
 
 	function ringEnter(data, i) {
 		if (!data.length) {
@@ -305,7 +439,6 @@ function updateTopology(svg, model) {
 				return data.dpid;
 			})
 			.enter().append("svg:g")
-			.classed('nolabel', true)
 			.attr("id", function (data, i) {
 				return data.dpid;
 			})
@@ -333,16 +466,15 @@ function updateTopology(svg, model) {
 			});
 
 		// setup the mouseover behaviors
-		function showLabel(data, index) {
-			d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
-		}
+		nodes.on('mouseover', mouseOverSwitch);
+		nodes.on('mouseout', mouseOutSwitch);
+		nodes.on('mouseup', mouseUpSwitch);
+		nodes.on('mousedown', mouseDownSwitch);
 
-		function hideLabel(data, index) {
-			d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
+		// only do switch up/down for core switches
+		if (i == 2) {
+			nodes.on('dblclick', doubleClickSwitch);
 		}
-
-		nodes.on('mouseover', showLabel);
-		nodes.on('mouseout', hideLabel);
 	}
 
 	// append switches
@@ -356,11 +488,20 @@ function updateTopology(svg, model) {
 			.data(data, function (data) {
 				return data.dpid;
 			});
-		nodes.select('circle').attr('class', function (data, i)  {
-				if (data.state === 'ACTIVE') {
-					return data.className + ' ' + controllerColorMap[data.controller];
+		nodes.select('circle')
+			.each(function (data) {
+				// if there's a pending state changed and then the state changes, clear the pending class
+				var circle = d3.select(this);
+				if (data.state === 'ACTIVE' && circle.classed('inactive') ||
+					data.state === 'INACTIVE' && circle.classed('active')) {
+					circle.classed('pending', false);
+				}
+			})
+			.attr('class', function (data)  {
+				if (data.state === 'ACTIVE' && data.controller) {
+					return data.className + ' active ' + controllerColorMap[data.controller];
 				} else {
-					return data.className + ' ' + 'colorInactive';
+					return data.className + ' inactive ' + 'colorInactive';
 				}
 			});
 	}
@@ -373,6 +514,106 @@ function updateTopology(svg, model) {
 	// This is done separately because SVG draws in node order and we want the labels
 	// always on top
 	var labelRings = svg.selectAll('.labelRing').data(createRingsFromModel(model));
+
+	d3.select(document.body).on('mouseup', function () {
+		function clearHighlight() {
+			svg.selectAll('circle').each(function (data) {
+				data.mouseDown = false;
+				mouseOutSwitch(data);
+			})
+		};
+
+		function removeLink(link) {
+			var path1 = document.getElementById(link['src-switch'] + '=>' + link['dst-switch']);
+			var path2 = document.getElementById(link['dst-switch'] + '=>' + link['src-switch']);
+
+			if (path1) {
+				setPending(d3.select(path1));
+			}
+			if (path2) {
+				setPending(d3.select(path2));
+			}
+
+			linkDown(link);
+		}
+
+
+		var highlighted = svg.selectAll('circle.highlight')[0];
+		if (highlighted.length == 2) {
+			var s1Data = d3.select(highlighted[0]).data()[0];
+			var s2Data = d3.select(highlighted[1]).data()[0];
+
+			var srcData, dstData;
+			if (s1Data.target) {
+				dstData = s1Data;
+				srcData = s2Data;
+			} else {
+				dstData = s2Data;
+				srcData = s1Data;
+			}
+
+			if (s1Data.className == 'edge' && s2Data.className == 'edge') {
+				var prompt = 'Create flow from ' + srcData.dpid + ' to ' + dstData.dpid + '?';
+				if (confirm(prompt)) {
+					alert('do create flow');
+				} else {
+					alert('do not create flow');
+				}
+			} else {
+				var map = linkMap[srcData.dpid];
+				if (map && map[dstData.dpid]) {
+					var prompt = 'Remove link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
+					if (confirm(prompt)) {
+						removeLink(map[dstData.dpid]);
+					}
+				} else {
+					map = linkMap[dstData.dpid];
+					if (map && map[srcData.dpid]) {
+						var prompt = 'Remove link between ' + dstData.dpid + ' and ' + srcData.dpid + '?';
+						if (confirm(prompt)) {
+							removeLink(map[srcData.dpid]);
+						}
+					} else {
+						var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
+						if (confirm(prompt)) {
+							var link1 = {
+								'src-switch': srcData.dpid,
+								'src-port': 1,
+								'dst-switch': dstData.dpid,
+								'dst-port': 1,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link1)] = link1;
+							var link2 = {
+								'src-switch': dstData.dpid,
+								'src-port': 1,
+								'dst-switch': srcData.dpid,
+								'dst-port': 1,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link2)] = link2;
+							updateTopology(svg, model);
+
+							linkUp(link1);
+
+							// remove the pending link after 10s
+							setTimeout(function () {
+								delete pendingLinks[makeLinkKey(link1)];
+								delete pendingLinks[makeLinkKey(link2)];
+
+								updateTopology(svg, model);
+							}, 10000);
+						}
+					}
+				}
+			}
+
+			clearHighlight();
+		} else {
+			clearHighlight();
+		}
+
+	});
 
 	function labelRingEnter(data) {
 		if (!data.length) {
@@ -391,7 +632,7 @@ function updateTopology(svg, model) {
 			})
 			.attr("transform", function(data, i) {
 				return "rotate(" + data.angle+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angle) + ")";
-			});
+			})
 
 		// add the text nodes which show on mouse over
 		nodes.append("svg:text")
@@ -448,61 +689,49 @@ function updateTopology(svg, model) {
 		.attr("class", "textRing")
 		.each(labelRingEnter);
 
-
 	// switches should not change during operation of the ui so no
 	// rings.exit()
-
-
-	// do mouseover zoom on edge nodes
-	function zoom(data, index) {
-		var g = d3.select(document.getElementById(data.dpid)).select('circle');
-			g.transition().duration(100).attr("r", data.width*3);
-			// TODO: this doesn't work because the data binding is by index
-			d3.select(this.parentNode).moveToFront();
-	}
-
-	svg.selectAll('.edge').on('mouseover', zoom);
-	svg.selectAll('.edge').on('mousedown', zoom);
-
-	function unzoom(data, index) {
-		var g = d3.select(document.getElementById(data.dpid)).select('circle');
-			g.transition().duration(100).attr("r", data.width);
-	}
-	svg.selectAll('.edge').on('mouseout', unzoom);
 
 
 	// DRAW THE LINKS
 
 	// key on link dpids since these will come/go during demo
-	var links = d3.select('svg').selectAll('.link').data(model.links, function (d) {
+	var links = d3.select('svg').selectAll('.link').data(links, function (d) {
 			return d['src-switch']+'->'+d['dst-switch'];
 	});
 
 	// add new links
 	links.enter().append("svg:path")
-	.attr("class", "link")
-	.attr("d", function (d) {
+	.attr("class", "link");
 
-		var src = d3.select(document.getElementById(d['src-switch']));
-		var dst = d3.select(document.getElementById(d['dst-switch']));
+	links.attr('id', function (d) {
+			return makeLinkKey(d);
+		})
+		.attr("d", function (d) {
+			var src = d3.select(document.getElementById(d['src-switch']));
+			var dst = d3.select(document.getElementById(d['dst-switch']));
 
-		var srcPt = document.querySelector('svg').createSVGPoint();
-		srcPt.x = src.attr('x');
-		srcPt.y = src.attr('y');
-		srcPt = srcPt.matrixTransform(src[0][0].getCTM());
+			var srcPt = document.querySelector('svg').createSVGPoint();
+			srcPt.x = src.attr('x');
+			srcPt.y = src.attr('y');
+			srcPt = srcPt.matrixTransform(src[0][0].getCTM());
 
-		var dstPt = document.querySelector('svg').createSVGPoint();
-		dstPt.x = dst.attr('x');
-		dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
-		dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
+			var dstPt = document.querySelector('svg').createSVGPoint();
+			dstPt.x = dst.attr('x');
+			dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
+			dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
 
-		var midPt = document.querySelector('svg').createSVGPoint();
-		midPt.x = (srcPt.x + dstPt.x)/2;
-		midPt.y = (srcPt.y + dstPt.y)/2;
+			var midPt = document.querySelector('svg').createSVGPoint();
+			midPt.x = (srcPt.x + dstPt.x)/2;
+			midPt.y = (srcPt.y + dstPt.y)/2;
 
-		return line([srcPt, midPt, dstPt]);
-	})
-	.attr("marker-mid", function(d) { return "url(#arrow)"; });
+			return line([srcPt, midPt, dstPt]);
+		})
+		.attr("marker-mid", function(d) { return "url(#arrow)"; })
+		.classed('pending', function (d) {
+			return d.pending;
+		});
+
 
 	// remove old links
 	links.exit().remove();
@@ -520,7 +749,9 @@ function updateControllers(model) {
 		})
 		.text(function (d) {
 			return d;
-		});
+		})
+		.append('div')
+		.attr('class', 'controllerEye');
 
 	controllers.attr('class', function (d) {
 			var color = 'colorInactive';
@@ -534,7 +765,23 @@ function updateControllers(model) {
 	// this should never be needed
 	// controllers.exit().remove();
 
-	controllers.on('click', function (c, index) {
+	controllers.on('dblclick', function (c) {
+		if (model.activeControllers.indexOf(c) != -1) {
+			var prompt = 'Dectivate ' + c + '?';
+			if (confirm(prompt)) {
+				controllerDown(c);
+				setPending(d3.select(this));
+			};
+		} else {
+			var prompt = 'Activate ' + c + '?';
+			if (confirm(prompt)) {
+				controllerUp(c);
+				setPending(d3.select(this));
+			};
+		}
+	});
+
+	controllers.select('.controllerEye').on('click', function (c) {
 		var allSelected = true;
 		for (var key in controllerColorMap) {
 			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {
@@ -555,20 +802,21 @@ function updateControllers(model) {
 		// var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
 		// d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
 	});
+
+
 }
 
-var oldModel;
 function sync(svg, selectedFlowsView) {
 	var d = Date.now();
 	updateModel(function (newModel) {
-		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
+//		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (!oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 
 	// fake flows right now
 	var i;
-	for (i = 0; i < newModel.flows.length; i+=1) {
+	for (i = 0; i < newModel.flows.length && i < selectedFlowsData.length; i+=1) {
 		var selected = selectedFlowsData[i] ? selectedFlowsData[i].selected : false;
 		selectedFlowsData[i].flow = newModel.flows[i];
 		selectedFlowsData[i].selected = selected;
@@ -577,11 +825,11 @@ function sync(svg, selectedFlowsView) {
 			updateFlowView(newModel);
 			updateTopology(svg, newModel);
 		} else {
-			console.log('no change');
+//			console.log('no change');
 		}
 		updateHeader(newModel);
 
-		oldModel = newModel;
+		model = newModel;
 
 		// do it again in 1s
 		setTimeout(function () {

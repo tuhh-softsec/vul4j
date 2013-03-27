@@ -1,3 +1,15 @@
+** March 27, 2013 **
+- click onos node "eye" icon to highlight switches associated with that controller
+- double click onos node else where to activate/deactivate
+- double click core switch to activate/deactivate
+- mouse down on switch, drag to other switch, mouse up to make link up/down
+	allowed links are
+		aggregation->core (link up/down)
+		core->core (link up/down)
+- pending states for links, switches and controllers after executing command
+	object pulses until state change or timeout (12s)
+- merge from upstream/master
+
 ** March 25, 2013 **
 - First pass at flow chooser
 	- Uses mock data
