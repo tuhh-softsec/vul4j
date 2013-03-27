@@ -14,7 +14,9 @@ var line = d3.svg.line()
     	return d.y;
     });
 
+var model;
 var svg, selectedFlowsView;
+var updateTopology;
 
 var colors = [
 	'color1',
@@ -37,6 +39,13 @@ var controllerColorMap = {};
 
 
 function createTopologyView() {
+
+	window.addEventListener('resize', function () {
+		// this is too slow. instead detect first resize event and hide the paths that have explicit matrix applied
+		// either that or is it possible to position the paths so they get the automatic transform as well?
+//		updateTopology(svg, model);
+	});
+
 	var svg = d3.select('#svg-container').append('svg:svg');
 
 	svg.append("svg:defs").append("svg:marker")
@@ -54,8 +63,6 @@ function createTopologyView() {
 }
 
 var selectedFlowsData = [
-	{selected: false, flow: null},
-	{selected: false, flow: null},
 	{selected: false, flow: null},
 	{selected: false, flow: null},
 	{selected: false, flow: null}
@@ -99,6 +106,8 @@ function drawFlows() {
 		}
 	})
 
+	// "marching ants"
+	// TODO: this will only be true if there's an iperf session running
 	flows.select('animate').attr('from', function (d) {
 		if (d.flow) {
 			if (d.selected) {
@@ -289,7 +298,7 @@ function createRingsFromModel(model) {
 	return testRings;
 }
 
-function updateTopology(svg, model) {
+updateTopology = function(svg, model) {
 
 	// DRAW THE SWITCHES
 	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
@@ -480,8 +489,10 @@ function updateTopology(svg, model) {
 
 	// add new links
 	links.enter().append("svg:path")
-	.attr("class", "link")
-	.attr("d", function (d) {
+	.attr("class", "link");
+
+	links
+		.attr("d", function (d) {
 
 		var src = d3.select(document.getElementById(d['src-switch']));
 		var dst = d3.select(document.getElementById(d['dst-switch']));
@@ -503,6 +514,7 @@ function updateTopology(svg, model) {
 		return line([srcPt, midPt, dstPt]);
 	})
 	.attr("marker-mid", function(d) { return "url(#arrow)"; });
+
 
 	// remove old links
 	links.exit().remove();
@@ -557,18 +569,17 @@ function updateControllers(model) {
 	});
 }
 
-var oldModel;
 function sync(svg, selectedFlowsView) {
 	var d = Date.now();
 	updateModel(function (newModel) {
 		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		if (!oldModel || JSON.stringify(oldModel) != JSON.stringify(newModel)) {
+		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
 
 	// fake flows right now
 	var i;
-	for (i = 0; i < newModel.flows.length; i+=1) {
+	for (i = 0; i < newModel.flows.length && i < selectedFlowsData.length; i+=1) {
 		var selected = selectedFlowsData[i] ? selectedFlowsData[i].selected : false;
 		selectedFlowsData[i].flow = newModel.flows[i];
 		selectedFlowsData[i].selected = selected;
@@ -581,7 +592,7 @@ function sync(svg, selectedFlowsView) {
 		}
 		updateHeader(newModel);
 
-		oldModel = newModel;
+		model = newModel;
 
 		// do it again in 1s
 		setTimeout(function () {

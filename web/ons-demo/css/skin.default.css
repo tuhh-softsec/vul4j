@@ -25,13 +25,6 @@ body {
 	padding: .25em;
 }
 
-.status.bottom {
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	font-size: 12px;
-}
-
 #status.top span {
 	font-size: 24px;
 }
@@ -40,7 +33,7 @@ body {
 	padding: 1em;
 	background-color: lightgray;
 	color: black;
-	border: 1px solid white;
+	border: 1px solid #AAA;
 }
 
 #arrow {
@@ -52,6 +45,27 @@ body {
 	height: 50px;
 }
 
+#topology {
+	border-top: 1px solid #AAA;
+}
+
+.selectedFlow {
+	border-bottom: 1px solid #AAA;
+}
+
+.selectedFlow:last-child {
+	border-bottom: none;
+}
+
+#lastUpdated {
+	padding-bottom: 0px;
+}
+
+#controllers .header {
+	-webkit-box-pack: center;
+	border-bottom: 1px solid #AAA;
+}
+
 
 #right .header {
 	font-size: 12px;
@@ -60,11 +74,11 @@ body {
 }
 
 #controllers, #selectedFlows {
-	border-top: 1px solid white;
+	border-top: 1px solid #AAA;
 }
 
 #selectedFlows {
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid #AAA;
 }
 
 .selectedFlow {
@@ -80,12 +94,12 @@ body {
 
 path.flow {
 	fill: none;
-	stroke-width: 2px;
+	stroke-width: 3px;
 	stroke: rgba(255, 255, 255, .35);
 }
 
 #selectedFlowsHeader {
-	border-top: 1px solid white;
+	border-top: 1px solid #AAA;
 }
 
 .flowIndex, .flowId, .srcDPID, .dstDPID, .iperf {
@@ -95,12 +109,12 @@ path.flow {
 }
 
 .flowIndex, .flowId, .srcDPID, .dstDPID {
-	border-right: 1px solid white;
+	border-right: 1px solid #AAA;
 }
 
 
 #controllers {
-	border-right: 1px solid white;
+	border-right: 1px solid #AAA;
 }
 
 .controller {

@@ -56,7 +56,7 @@ function toD3(results) {
 var urls = {
 	links: '/wm/core/topology/links/json',
 	switches: '/wm/core/topology/switches/all/json',
-	flows: '/wm/flow/getall/json',
+	flows: '/wm/flow/getsummary/0/0/json?proxy',
 	activeControllers: '/wm/registry/controllers/json',
 	controllers: 'data/controllers.json',
 	mapping: '/wm/registry/switches/json',
@@ -76,7 +76,7 @@ var mockURLs = {
 var proxyURLs = {
 	links: '/wm/core/topology/links/json?proxy',
 	switches: '/wm/core/topology/switches/all/json?proxy',
-	flows: '/wm/flow/getall/json?proxy',
+	flows: '/wm/flow/getsummary/0/0/json?proxy',
 	activeControllers: '/wm/registry/controllers/json?proxy',
 	controllers: 'data/controllers.json',
 	mapping: '/wm/registry/switches/json?proxy',
