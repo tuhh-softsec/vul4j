@@ -92,6 +92,15 @@ body {
 	background-color:#AAA;
 }
 
+circle.highlight {
+	stroke: rgba(255, 255, 255, .5);
+	stroke-width: 2px;
+}
+
+path {
+	pointer-events: none;
+}
+
 path.flow {
 	fill: none;
 	stroke-width: 3px;

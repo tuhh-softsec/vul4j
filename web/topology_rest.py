@@ -76,6 +76,21 @@ def return_file(filename="index.html"):
 ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
 ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
+@app.route("/proxy/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
+def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
+  try:
+    command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+
+
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
@@ -85,7 +100,7 @@ def switches():
 
   try:
     command = "curl -s %s/wm/core/topology/switches/all/json" % (host)
-    print command
+#    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
@@ -103,7 +118,7 @@ def links():
 
   try:
     command = "curl -s %s/wm/core/topology/links/json" % (host)
-    print command
+#    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
@@ -121,7 +136,7 @@ def flows():
 
   try:
     command = "curl -s %s/wm/flow/getsummary/0/0/json" % (host)
-    print command
+#    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
@@ -139,7 +154,7 @@ def registry_controllers():
 
   try:
     command = "curl -s %s/wm/registry/controllers/json" % (host)
-    print command
+#    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
@@ -157,7 +172,7 @@ def registry_switches():
 
   try:
     command = "curl -s %s/wm/registry/switches/json" % (host)
-    print command
+#    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
@@ -276,7 +291,7 @@ def topology_for_gui():
       if i < len(flowEntries) - 1:
         sdpid= flowEntries[i]['dpid']['value']
         ddpid = flowEntries[i+1]['dpid']['value']
-        path.append( (sdpid, ddpid))  
+        path.append( (sdpid, ddpid))
 
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
@@ -359,12 +374,12 @@ def shortest_path(v1, p1, v2, p2):
     parsedResult = []
 #    exit(1)
 
-  path = [];    
+  path = [];
   for i, v in enumerate(parsedResult):
     if i < len(parsedResult) - 1:
       sdpid= parsedResult[i]['switch']
       ddpid = parsedResult[i+1]['switch']
-      path.append( (sdpid, ddpid))  
+      path.append( (sdpid, ddpid))
 
   try:
     command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
@@ -488,7 +503,7 @@ def switch_stat(switchId, statType):
         ret = {}
         ret[switchId]=aggr
     else:
-        ret = {} 
+        ret = {}
 
     js = json.dumps(ret)
     resp = Response(js, status=200, mimetype='application/json')
@@ -543,8 +558,8 @@ def query_links():
   resp = Response(js, status=200, mimetype='application/json')
   return resp
 
-topo_less = { 
-  "nodes" : [ 
+topo_less = {
+  "nodes" : [
     {"name" : "00:a0", "group" : 1},
     {"name" : "00:a1", "group" : 1},
     {"name" : "00:a2", "group" : 1},
@@ -559,8 +574,8 @@ topo_less = {
     ]
 }
 
-topo_more = { 
-  "nodes" : [ 
+topo_more = {
+  "nodes" : [
     {"name" : "00:a3", "group" : 2},
     {"name" : "00:a0", "group" : 1},
     {"name" : "00:a1", "group" : 1},
