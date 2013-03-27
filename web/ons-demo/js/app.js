@@ -349,9 +349,14 @@ updateTopology = function(svg, model) {
 //	var flowMap = createFlowMap(model);
 
 	function mouseOverSwitch(data) {
+
+		d3.event.preventDefault();
+
 		if (data.highlighted) {
 			return;
 		}
+
+
 
 		// only highlight valid link or flow destination by checking for class of existing highlighted circle
 		var highlighted = svg.selectAll('circle.highlight')[0];
@@ -402,12 +407,27 @@ updateTopology = function(svg, model) {
 	function mouseDownSwitch(data) {
 		mouseOverSwitch(data);
 		data.mouseDown = true;
+		d3.select('#topology').classed('linking', true);
+
+		if (data.className === 'core') {
+			d3.selectAll('.edge').classed('nodrop', true);
+		}
+		if (data.className === 'edge') {
+			d3.selectAll('.core').classed('nodrop', true);
+			d3.selectAll('.aggregation').classed('nodrop', true);
+		}
+		if (data.className === 'aggregation') {
+			d3.selectAll('.edge').classed('nodrop', true);
+			d3.selectAll('.aggregation').classed('nodrop', true);
+		}
 	}
 
 	function mouseUpSwitch(data) {
 		if (data.mouseDown) {
 			data.mouseDown = false;
+			d3.select('#topology').classed('linking', false);
 			d3.event.stopPropagation();
+			d3.selectAll('.nodrop').classed('nodrop', false);
 		}
 	}
 
@@ -519,9 +539,12 @@ updateTopology = function(svg, model) {
 		function clearHighlight() {
 			svg.selectAll('circle').each(function (data) {
 				data.mouseDown = false;
+				d3.select('#topology').classed('linking', false);
 				mouseOutSwitch(data);
 			})
 		};
+
+		d3.selectAll('.nodrop').classed('nodrop', false);
 
 		function removeLink(link) {
 			var path1 = document.getElementById(link['src-switch'] + '=>' + link['dst-switch']);
@@ -840,6 +863,7 @@ function sync(svg, selectedFlowsView) {
 
 svg = createTopologyView();
 selectedFlowsView = createFlowView();
+
 // workaround for Chrome v25 bug
 // if executed immediately, the view box transform logic doesn't work properly
 // fixed in Chrome v27

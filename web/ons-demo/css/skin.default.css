@@ -6,6 +6,14 @@ body {
 	margin: 0px;
 }
 
+#topology.linking {
+	cursor: crosshair;
+}
+
+.nodrop {
+	cursor: not-allowed;
+}
+
 .status {
 	padding: 1em;
 }
