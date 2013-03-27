@@ -74,12 +74,13 @@ def return_file(filename="index.html"):
 
 ## PROXY API (allows development where the webui is served from someplace other than the controller)##
 ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
+ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
 ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
 @app.route("/proxy/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
 def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   try:
-    command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
+    command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
     print command
     result = os.popen(command).read()
   except:
@@ -89,7 +90,18 @@ def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/proxy/gui/switch/<cmd>/<dpid>")
+def proxy_switch_status_change(cmd, dpid):
+  try:
+    command = "curl -s %s/gui/switch/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, dpid)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
 
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
 
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
@@ -118,7 +130,7 @@ def links():
 
   try:
     command = "curl -s %s/wm/core/topology/links/json" % (host)
-#    print command
+    print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"

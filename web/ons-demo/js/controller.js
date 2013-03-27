@@ -1,13 +1,27 @@
-var controllerFunctions = {
-	link: function (cmd, src, dst) {
-		var url = '/proxy/gui/link/' + [cmd, src.dpid, 1, dst.dpid, 1].join('/');
-		d3.json(url, function (error, result) {		
-			if (error) {
-				alert(url + ' : ' + error.status);
-			}
-		});
-	}
+/*global d3*/
+
+function callURL(url) {
+	d3.text(url, function (error, result) {
+		if (error) {
+			alert(url + ' : ' + error.status);
+		} else {
+			console.log(result);
+		}
+	});
 }
+
+
+var controllerFunctions = {
+	l: function (cmd, link) {
+		var url = '/proxy/gui/link/' + [cmd, link['src-switch'], link['src-port'], link['dst-switch'], link['dst-port']].join('/');
+		callURL(url);
+
+	},
+	s: function (cmd, s) {
+		var url = '/proxy/gui/switch/' + [cmd, s.dpid].join('/');
+		callURL(url);
+	}
+};
 
 
 // if (parseURLParameters().mock) {
@@ -15,12 +29,20 @@ var controllerFunctions = {
 // }
 
 
-function linkUp(src, dst) {
-	controllerFunctions.link('up', src, dst);
+function linkUp(link) {
+	controllerFunctions.l('up', link);
 }
 
-function linkDown(src, dst) {
-	controllerFunctions.link('down', src, dst);
+function linkDown(link) {
+	controllerFunctions.l('down', link);
+}
+
+function switchUp(s) {
+	controllerFunctions.s('up', s);
+}
+
+function switchDown(s) {
+	controllerFunctions.s('down', s);
 }
 
 function createFlow(src, dst) {

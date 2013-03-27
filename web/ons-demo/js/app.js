@@ -311,13 +311,10 @@ function createLinkMap(model) {
 		var dstDPID = link['dst-switch'];
 
 		var srcMap = linkMap[srcDPID] || {};
-		var dstMap = linkMap[dstDPID] || {};
 
-		srcMap[dstDPID] = true;
-		dstMap[srcDPID] = true;
+		srcMap[dstDPID] = link;
 
 		linkMap[srcDPID]  = srcMap;
-		linkMap[dstDPID]  = dstMap;
 	});
 	return linkMap;
 }
@@ -330,7 +327,7 @@ updateTopology = function(svg, model) {
 	var linkMap = createLinkMap(model);
 //	var flowMap = createFlowMap(model);
 
-	function mouseOver(data) {
+	function mouseOverSwitch(data) {
 		if (data.highlighted) {
 			return;
 		}
@@ -370,7 +367,7 @@ updateTopology = function(svg, model) {
 		node.moveToFront();
 	}
 
-	function mouseOut(data) {
+	function mouseOutSwitch(data) {
 		if (data.mouseDown)
 			return;
 
@@ -381,9 +378,30 @@ updateTopology = function(svg, model) {
 		data.target = false;
 	}
 
-	function mouseDown(data) {
-		mouseOver(data);
+	function mouseDownSwitch(data) {
+		mouseOverSwitch(data);
 		data.mouseDown = true;
+	}
+
+	function mouseUpSwitch(data) {
+		if (data.mouseDown) {
+			data.mouseDown = false;
+			d3.event.stopPropagation();
+		}
+	}
+
+	function doubleClickSwitch(data) {
+		if (data.state == 'ACTIVE') {
+			var prompt = 'Deactivate ' + data.dpid + '?';
+			if (confirm(prompt)) {
+				switchDown(data);
+			}
+		} else {
+			var prompt = 'Activate ' + data.dpid + '?';
+			if (confirm(prompt)) {
+				switchUp(data);
+			}
+		}
 	}
 
 	function ringEnter(data, i) {
@@ -424,9 +442,15 @@ updateTopology = function(svg, model) {
 			});
 
 		// setup the mouseover behaviors
-		nodes.on('mouseover', mouseOver);
-		nodes.on('mouseout', mouseOut);
-		nodes.on('mousedown', mouseDown)
+		nodes.on('mouseover', mouseOverSwitch);
+		nodes.on('mouseout', mouseOutSwitch);
+		nodes.on('mouseup', mouseUpSwitch);
+		nodes.on('mousedown', mouseDownSwitch);
+
+		// only do switch up/down for core switches
+		if (i == 2) {
+			nodes.on('dblclick', doubleClickSwitch);
+		}
 	}
 
 	// append switches
@@ -441,7 +465,7 @@ updateTopology = function(svg, model) {
 				return data.dpid;
 			});
 		nodes.select('circle').attr('class', function (data, i)  {
-				if (data.state === 'ACTIVE') {
+				if (data.state === 'ACTIVE' && data.controller) {
 					return data.className + ' ' + controllerColorMap[data.controller];
 				} else {
 					return data.className + ' ' + 'colorInactive';
@@ -462,7 +486,7 @@ updateTopology = function(svg, model) {
 		function clearHighlight() {
 			svg.selectAll('circle').each(function (data) {
 				data.mouseDown = false;
-				mouseOut(data);
+				mouseOutSwitch(data);
 			})
 		};
 
@@ -493,12 +517,20 @@ updateTopology = function(svg, model) {
 				if (map && map[dstData.dpid]) {
 					var prompt = 'Remove link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
 					if (confirm(prompt)) {
-						linkDown(srcData, dstData);
+						linkDown(map[dstData.dpid]);
 					}
 				} else {
-					var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
-					if (confirm(prompt)) {
-						linkUp(srcData, dstData);
+					map = linkMap[dstData.dpid];
+					if (map && map[srcData.dpid]) {
+						var prompt = 'Remove link between ' + dstData.dpid + ' and ' + srcData.dpid + '?';
+						if (confirm(prompt)) {
+							linkDown(map[srcData.dpid]);
+						}
+					} else {
+						var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
+						if (confirm(prompt)) {
+							linkUp(srcData, dstData);
+						}
 					}
 				}
 			}
@@ -654,7 +686,7 @@ function updateControllers(model) {
 	// this should never be needed
 	// controllers.exit().remove();
 
-	controllers.on('click', function (c, index) {
+	controllers.on('click', function (c) {
 		var allSelected = true;
 		for (var key in controllerColorMap) {
 			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {
@@ -675,6 +707,8 @@ function updateControllers(model) {
 		// var selected = d3.select(document.body).classed(controllerColorMap[c] + '-selected');
 		// d3.select(document.body).classed(controllerColorMap[c] + '-selected', !selected);
 	});
+
+
 }
 
 function sync(svg, selectedFlowsView) {
