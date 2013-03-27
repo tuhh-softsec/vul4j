@@ -1099,12 +1099,29 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	// Extract the Flow state
 	//
-	flowPath.setFlowId(new FlowId(flowObj.getFlowId()));
-	flowPath.setInstallerId(new CallerId(flowObj.getInstallerId()));
-	flowPath.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
-	flowPath.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
-	flowPath.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
-	flowPath.dataPath().dstPort().setPort(new Port(flowObj.getDstPort()));
+	String flowIdStr = flowObj.getFlowId();
+	String installerIdStr = flowObj.getInstallerId();
+	String srcSwitchStr = flowObj.getSrcSwitch();
+	Short srcPortStr = flowObj.getSrcPort();
+	String dstSwitchStr = flowObj.getDstSwitch();
+	Short dstPortStr = flowObj.getDstPort();
+
+	if ((flowIdStr == null) ||
+	    (installerIdStr == null) ||
+	    (srcSwitchStr == null) ||
+	    (srcPortStr == null) ||
+	    (dstSwitchStr == null) ||
+	    (dstPortStr == null)) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    return null;
+	}
+
+	flowPath.setFlowId(new FlowId(flowIdStr));
+	flowPath.setInstallerId(new CallerId(installerIdStr));
+	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
+	flowPath.dataPath().srcPort().setPort(new Port(srcPortStr));
+	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
+	flowPath.dataPath().dstPort().setPort(new Port(dstPortStr));
 
 	//
 	// Extract all Flow Entries
@@ -1112,8 +1129,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    FlowEntry flowEntry = new FlowEntry();
-	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryObj.getFlowEntryId()));
-	    flowEntry.setDpid(new Dpid(flowEntryObj.getSwitchDpid()));
+	    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	    String switchDpidStr = flowEntryObj.getSwitchDpid();
+	    String userState = flowEntryObj.getUserState();
+	    String switchState = flowEntryObj.getSwitchState();
+
+	    if ((flowEntryIdStr == null) ||
+		(switchDpidStr == null) ||
+		(userState == null) ||
+		(switchState == null)) {
+		// TODO: A work-around, becauuse of some bogus database objects
+		continue;
+	    }
+	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
+	    flowEntry.setDpid(new Dpid(switchDpidStr));
 
 	    //
 	    // Extract the match conditions
@@ -1150,10 +1179,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		actions.add(action);
 	    }
 	    flowEntry.setFlowEntryActions(actions);
-
-	    String userState = flowEntryObj.getUserState();
 	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
-	    String switchState = flowEntryObj.getSwitchState();
 	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	    //
 	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
