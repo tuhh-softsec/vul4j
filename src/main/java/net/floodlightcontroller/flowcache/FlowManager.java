@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -255,44 +256,54 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
-		// log.debug("Reading Flow Entries from the Network Map...");
 		if (floodlightProvider == null) {
 		    log.debug("FloodlightProvider service not found!");
 		    return;
 		}
 
-		Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
-
-		Map<Long, IFlowEntry> myFlowEntries = new TreeMap<Long, IFlowEntry>();
+		Map<Long, IOFSwitch> mySwitches =
+		    floodlightProvider.getSwitches();
+		Map<Long, IFlowEntry> myFlowEntries =
+		    new TreeMap<Long, IFlowEntry>();
+		LinkedList<IFlowEntry> deleteFlowEntries =
+		    new LinkedList<IFlowEntry>();
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
+		// that need to be undated into the switches.
 		//
-		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
+		Iterable<IFlowEntry> allFlowEntries =
+		    conn.utils().getAllFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
-		    FlowEntryId flowEntryId =
-			new FlowEntryId(flowEntryObj.getFlowEntryId());
+		    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
+		    String dpidStr = flowEntryObj.getSwitchDpid();
+		    if ((flowEntryIdStr == null) ||
+			(userState == null) ||
+			(switchState == null) ||
+			(dpidStr == null)) {
+			log.debug("IGNORING Flow Entry entry with null fields");
+			continue;
+		    }
+		    FlowEntryId flowEntryId = new FlowEntryId(flowEntryIdStr);
+		    Dpid dpid = new Dpid(dpidStr);
 
-		    /**
-		    log.debug("Found Flow Entry {}: {}",
+		    /*
+		    log.debug("Found Flow Entry Id = {} {}",
 			      flowEntryId.toString(),
-			      "User State: " + userState +
+			      "DPID = " + dpid.toString() +
+			      " User State: " + userState +
 			      " Switch State: " + switchState);
-		     */
-		    
-		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED")) {
-			// Ignore the entry: nothing to do
-			continue;
-		    }
+		    */
 
-		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
+		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED"))
+			continue;	// Ignore the entry: nothing to do
+
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
-		    if (mySwitch == null) {
-			log.debug("Flow Entry ignored: not my switch (FlowEntryId = {} DPID = {})", flowEntryId.toString(), dpid.toString());
-			continue;
-		    }
+		    if (mySwitch == null)
+			continue;	// Ignore the entry: not my switch
+
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
 		}
 
@@ -323,10 +334,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
-		    if (mySwitch == null) {
-			log.debug("Flow Entry ignored: not my switch");
-			continue;
-		    }
+		    if (mySwitch == null)
+			continue;		// Shouldn't happen
 
 		    //
 		    // Create the Open Flow Flow Modification Entry to push
@@ -421,34 +430,51 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    try {
 			messageDamper.write(mySwitch, fm, null);
 			mySwitch.flush();
+			//
+			// TODO: We should use the OpenFlow Barrier mechanism
+			// to check for errors, and update the SwitchState
+			// for a flow entry after the Barrier message is
+			// is received.
+			//
 			flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
 			if (userState.equals("FE_USER_DELETE")) {
-			    // Delete the entry
-			    IFlowPath flowObj = null;
-			    flowObj = conn.utils().getFlowPathByFlowEntry(conn,
-					flowEntryObj);
-			    if (flowObj != null)
-				log.debug("Found FlowPath to be deleted");
-			    else
-				log.debug("Did not find FlowPath to be deleted");
-			    flowObj.removeFlowEntry(flowEntryObj);
-			    conn.utils().removeFlowEntry(conn, flowEntryObj);
-
-			    // Test whether the last flow entry
-			    Iterable<IFlowEntry> tmpflowEntries =
-				flowObj.getFlowEntries();
-			    boolean found = false;
-			    for (IFlowEntry tmpflowEntryObj : tmpflowEntries) {
-				found = true;
-				break;
-			    }
-			    if (! found) {
-				// Remove the Flow Path as well
-				conn.utils().removeFlowPath(conn, flowObj);
-			    }
+			    // An entry that needs to be deleted.
+			    deleteFlowEntries.add(flowEntryObj);
 			}
 		    } catch (IOException e) {
 			log.error("Failure writing flow mod from network map", e);
+		    }
+		}
+
+		//
+		// Delete all entries marked for deletion
+		//
+		// TODO: We should use the OpenFlow Barrier mechanism
+		// to check for errors, and delete the Flow Entries after the
+		// Barrier message is received.
+		//
+		while (! deleteFlowEntries.isEmpty()) {
+		    IFlowEntry flowEntryObj = deleteFlowEntries.poll();
+		    IFlowPath flowObj =
+			conn.utils().getFlowPathByFlowEntry(conn, flowEntryObj);
+		    if (flowObj == null) {
+			log.debug("Did not find FlowPath to be deleted");
+			continue;
+		    }
+		    flowObj.removeFlowEntry(flowEntryObj);
+		    conn.utils().removeFlowEntry(conn, flowEntryObj);
+
+		    // Test whether the last flow entry
+		    Iterable<IFlowEntry> tmpflowEntries =
+			flowObj.getFlowEntries();
+		    boolean found = false;
+		    for (IFlowEntry tmpflowEntryObj : tmpflowEntries) {
+			found = true;
+			break;
+		    }
+		    if (! found) {
+			// Remove the Flow Path as well
+			conn.utils().removeFlowPath(conn, flowObj);
 		    }
 		}
 		conn.endTx(Transaction.COMMIT);
@@ -594,7 +620,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		      flowPath.flowId().toString());
 	}
 	if (flowObj == null) {
-	    conn.endTx(Transaction.COMMIT);
+	    log.error(":addFlow FlowId:{} failed: Flow object not created",
+		      flowPath.flowId().toString());
+	    conn.endTx(Transaction.ROLLBACK);
 	    return false;
 	}
 
@@ -645,7 +673,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			  flowEntry.flowEntryId().toString());
 	    }
 	    if (flowEntryObj == null) {
-		conn.endTx(Transaction.COMMIT);
+		log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
+		      flowEntry.flowEntryId().toString());
+		conn.endTx(Transaction.ROLLBACK);
 		return false;
 	    }
 

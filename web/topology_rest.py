@@ -8,6 +8,8 @@ import argparse
 import io
 import time
 
+import re
+
 from flask import Flask, json, Response, render_template, make_response, request
 
 ## Global Var ##
@@ -632,6 +634,52 @@ def controller_status():
   resp = Response(js, status=200, mimetype='application/json')
   pp.pprint(js)
   return resp
+
+@app.route("/gui/controller/<cmd>/<controller_name>")
+def controller_status_change(cmd, controller_name):
+  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
+  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+
+  if cmd == "up":
+    onos=os.popen(start_onos).read()
+    ret = "controller %s is up" % (controller_name)
+  elif cmd == "down":
+    onos=os.popen(stop_onos).read()
+    ret = "controller %s is down" % (controller_name)
+
+  return ret
+
+@app.route("/gui/switch/<cmd>/<dpid>")
+def switch_status_change(cmd, dpid):
+  r = re.compile(':')
+  dpid = re.sub(r, '', dpid)
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s %s'" % (dpid, cmd)
+  get_status="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s'" % (dpid)
+  print "cmd_string"
+
+  if cmd =="up" or cmd=="down":
+    print "make dpid %s %s" % (dpid, cmd)
+    onos=os.popen(cmd_string).read()
+    onos=os.popen(get_status).read()
+
+  return onos
+
+#* Switch Up/Down
+#http://localhost:9000/gui/switch/up/<dpid>
+#http://localhost:9000/gui/switch/down/<dpid>
+#* Link Up/Down
+#http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
+#http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
+#* Create Flow
+#http://localhost:9000/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>
+#* Delete Flow
+#http://localhost:9000/gui/delflow/<flow_id>
+#* Start Iperf Througput
+#http://localhost:9000/gui/iperf/start/<flow_id>
+#* Get Iperf Throughput
+#http://localhost:9000/gui/iperf/rate/<flow_id>
+
+
 
 if __name__ == "__main__":
   if len(sys.argv) > 1 and sys.argv[1] == "-d":

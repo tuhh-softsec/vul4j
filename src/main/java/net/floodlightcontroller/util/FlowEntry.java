@@ -13,6 +13,7 @@ import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.IPv4;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -22,6 +23,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * support multiple in-ports and multiple out-ports.
  */
 public class FlowEntry {
+	private FlowId flowId;                  //FlowID of flowEntry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private ArrayList<FlowEntryAction> flowEntryActions; // The Flow Entry Actions
@@ -327,4 +329,19 @@ public class FlowEntry {
 
 	return ret;
     }
+
+	/**
+	 * @return the flowId
+	 */
+    @JsonIgnore
+	public FlowId getFlowId() {
+		return flowId;
+	}
+
+	/**
+	 * @param flowId the flowId to set
+	 */
+	public void setFlowId(FlowId flowId) {
+		this.flowId = flowId;
+	}
 }
