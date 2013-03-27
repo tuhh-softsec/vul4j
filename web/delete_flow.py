@@ -45,7 +45,12 @@ def delete_flow_path(flow_id):
 
 if __name__ == "__main__":
   usage_msg = "Delete flow state from the ONOS Network Map and the switches\n"
-  usage_msg = usage_msg + "Usage: %s <begin-flow-id> [<end-flow-id>]\n" % (sys.argv[0])
+  usage_msg = usage_msg + "Usage: %s <begin-flow-id> <end-flow-id>\n" % (sys.argv[0])
+  usage_msg = usage_msg + "       %s <flow-id>\n" % (sys.argv[0])
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    Arguments:\n"
+  usage_msg = usage_msg + "        <begin-flow-id> <end-flow-id>      Delete all flows in the flow ID range\n"
+  usage_msg = usage_msg + "        <flow-id>                          Delete a single flow with the flow ID\n"
 
   # app.debug = False;
 

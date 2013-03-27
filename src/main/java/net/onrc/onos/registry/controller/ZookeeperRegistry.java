@@ -297,6 +297,17 @@ public class ZookeeperRegistry implements IFloodlightModule, IControllerRegistry
 			return null;
 		}
 		
+		try {
+			//We've seen issues with these caches get stuck out of date, so we'll have to
+			//force them to refresh before each read. This slows down the method as it
+			//blocks on a Zookeeper query, however at the moment only the cleanup thread
+			//uses this and that isn't particularly time-sensitive.
+			switchCache.rebuild();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		List<ChildData> sortedData = new ArrayList<ChildData>(switchCache.getCurrentData()); 
 		
 		Collections.sort(

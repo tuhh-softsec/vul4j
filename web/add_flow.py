@@ -372,6 +372,7 @@ def compute_flow_path(parsed_args, data_path):
 
 if __name__ == "__main__":
   usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
+  usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Flags:\n"
   usage_msg = usage_msg + "        -m              Monitor and maintain the installed shortest path(s)\n"
   usage_msg = usage_msg + "        -f <filename>   Read the flow(s) to install from a file\n"
