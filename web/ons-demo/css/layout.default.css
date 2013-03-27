@@ -4,6 +4,13 @@ html, body {
 
 body {
 	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-user-select: none;
+}
+
+#columns {
+	display: -webkit-box;
+	-webkit-box-flex: 1.0;
 }
 
 .header {
@@ -39,6 +46,7 @@ body {
 
 .selectedFlow {
 	display: -webkit-box;
+	-webkit-user-select: auto;
 }
 
 #selectedFlowsHeader {
@@ -62,24 +70,11 @@ body {
 	-webkit-box-flex: 1.0;
 }
 
-.selectedFlow {
-	border-bottom: 1px solid white;
-}
-
-.selectedFlow:last-child {
-	border-bottom: none;
-}
-
-
 #controllers {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 }
 
-#controllers .header {
-	-webkit-box-pack: center;
-	border-bottom: 1px solid white;
-}
 
 #controllerList {
 	display: -webkit-box;

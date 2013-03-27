@@ -39,7 +39,16 @@ def debug(txt):
 
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s <begin-flow-id> <end-flow-id>\n" % (sys.argv[0])
+  usage_msg = "Generate a number of flows by using a pre-defined template.\n"
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "NOTE: This script is work-in-progress. Currently all flows are within same\n"
+  usage_msg = usage_msg + "pair of switch ports and contain auto-generated MAC-based matching conditions.\n"
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "Usage: %s <begin-flow-id> <end-flow-id>\n" % (sys.argv[0])
+  usage_msg = usage_msg + "\n"
+  usage_msg = usage_msg + "    The output should be saved to a file, and the flows should be installed\n"
+  usage_msg = usage_msg + "    by using the command './add_flow.py -f filename'\n"
+
 
   # app.debug = False;
 

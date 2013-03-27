@@ -25,13 +25,6 @@ body {
 	padding: .25em;
 }
 
-.status.bottom {
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	font-size: 12px;
-}
-
 #status.top span {
 	font-size: 24px;
 }
@@ -40,7 +33,7 @@ body {
 	padding: 1em;
 	background-color: lightgray;
 	color: black;
-	border: 1px solid white;
+	border: 1px solid #AAA;
 }
 
 #arrow {
@@ -52,6 +45,27 @@ body {
 	height: 50px;
 }
 
+#topology {
+	border-top: 1px solid #AAA;
+}
+
+.selectedFlow {
+	border-bottom: 1px solid #AAA;
+}
+
+.selectedFlow:last-child {
+	border-bottom: none;
+}
+
+#lastUpdated {
+	padding-bottom: 0px;
+}
+
+#controllers .header {
+	-webkit-box-pack: center;
+	border-bottom: 1px solid #AAA;
+}
+
 
 #right .header {
 	font-size: 12px;
@@ -60,11 +74,11 @@ body {
 }
 
 #controllers, #selectedFlows {
-	border-top: 1px solid white;
+	border-top: 1px solid #AAA;
 }
 
 #selectedFlows {
-	border-bottom: 1px solid white;
+	border-bottom: 1px solid #AAA;
 }
 
 .selectedFlow {
@@ -78,14 +92,23 @@ body {
 	background-color:#AAA;
 }
 
+circle.highlight {
+	stroke: rgba(255, 255, 255, .5);
+	stroke-width: 2px;
+}
+
+path {
+	pointer-events: none;
+}
+
 path.flow {
 	fill: none;
-	stroke-width: 2px;
+	stroke-width: 3px;
 	stroke: rgba(255, 255, 255, .35);
 }
 
 #selectedFlowsHeader {
-	border-top: 1px solid white;
+	border-top: 1px solid #AAA;
 }
 
 .flowIndex, .flowId, .srcDPID, .dstDPID, .iperf {
@@ -95,16 +118,30 @@ path.flow {
 }
 
 .flowIndex, .flowId, .srcDPID, .dstDPID {
-	border-right: 1px solid white;
+	border-right: 1px solid #AAA;
 }
 
 
 #controllers {
-	border-right: 1px solid white;
+	border-right: 1px solid #AAA;
 }
 
 .controller {
 	padding: .25em;
+	padding-left: 2.5em;
+	position: relative;
+}
+
+.controllerEye {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 2em;
+	background-image: url('../assets/eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .25em center;
 }
 
 #logo {
@@ -245,3 +282,22 @@ path {
 	fill: #6949D7;
 	background-color: #6949D7;
 }
+
+
+@-webkit-keyframes pending {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.5;
+	}
+}
+
+.pending {
+	-webkit-animation-name: pending;
+	-webkit-animation-duration: .5s;
+	-webkit-animation-direction: alternate;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-iteration-count: 24;
+}
+
