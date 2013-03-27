@@ -82,4 +82,21 @@ public interface IFlowService extends IFloodlightService {
      * @return the Flow Paths if found, otherwise null.
      */
     ArrayList<FlowPath> getAllFlows();
+
+    /**
+     * Add and maintain a shortest-path flow.
+     *
+     * NOTE: The Flow Path does NOT contain all flow entries.
+     * Instead, it contains a single dummy flow entry that is used to
+     * store the matching condition(s).
+     * That entry is replaced by the appropriate entries from the
+     * internally performed shortest-path computation.
+     *
+     * @param flowPath the Flow Path with the endpoints and the match
+     * conditions to install.
+     * @param flowId the return-by-reference Flow ID as assigned internally.
+     * @return true on success, otherwise false.
+     */
+    public boolean addAndMaintainShortestPathFlow(FlowPath flowPath,
+						  FlowId flowId);
 }
