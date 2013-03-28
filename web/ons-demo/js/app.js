@@ -24,13 +24,10 @@ var colors = [
 	'color2',
 	'color3',
 	'color4',
-	'color5',
-	'color6',
 	'color7',
 	'color8',
 	'color9',
-	'color10',
-	'color11',
+//	'color11',
 	'color12'
 ];
 colors.reverse();
@@ -49,7 +46,7 @@ function createTopologyView() {
 	window.addEventListener('resize', function () {
 		// this is too slow. instead detect first resize event and hide the paths that have explicit matrix applied
 		// either that or is it possible to position the paths so they get the automatic transform as well?
-//		updateTopology(svg, model);
+//		updateTopology();
 	});
 
 	var svg = d3.select('#svg-container').append('svg:svg');
@@ -120,7 +117,7 @@ function showFlowChooser() {
 				selectedFlows = selectedFlows.slice(0, 3);
 
 				updateSelectedFlows();
-				updateTopology(svg, model);
+				updateTopology();
 			});
 
 		row.append('div')
@@ -343,12 +340,8 @@ function createLinkMap(links) {
 	return linkMap;
 }
 
-updateTopology = function(svg, model) {
-
-	// DRAW THE SWITCHES
-	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
-
-
+// removes links from the pending list that are now in the model
+function reconcilePendingLinks(model) {
 	var links = [];
 	model.links.forEach(function (link) {
 		links.push(link);
@@ -358,7 +351,15 @@ updateTopology = function(svg, model) {
 	for (linkId in pendingLinks) {
 		links.push(pendingLinks[linkId]);
 	}
+	return links
+}
 
+updateTopology = function() {
+
+	// DRAW THE SWITCHES
+	var rings = svg.selectAll('.ring').data(createRingsFromModel(model));
+
+	var links = reconcilePendingLinks(model);
 	var linkMap = createLinkMap(links);
 //	var flowMap = createFlowMap(model);
 
@@ -366,11 +367,11 @@ updateTopology = function(svg, model) {
 
 		d3.event.preventDefault();
 
+		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
+
 		if (data.highlighted) {
 			return;
 		}
-
-
 
 		// only highlight valid link or flow destination by checking for class of existing highlighted circle
 		var highlighted = svg.selectAll('.highlight')[0];
@@ -399,8 +400,6 @@ updateTopology = function(svg, model) {
 			data.target = true;
 		}
 
-
-		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
 		var node = d3.select(document.getElementById(data.dpid));
 		node.classed('highlight', true).select('circle').transition().duration(100).attr("r", widths.core);
 		data.highlighted = true;
@@ -408,10 +407,11 @@ updateTopology = function(svg, model) {
 	}
 
 	function mouseOutSwitch(data) {
+		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
+
 		if (data.mouseDown)
 			return;
 
-		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
 		var node = d3.select(document.getElementById(data.dpid));
 		node.classed('highlight', false).select('circle').transition().duration(100).attr("r", widths[data.className]);
 		data.highlighted = false;
@@ -687,16 +687,16 @@ updateTopology = function(svg, model) {
 								pending: true
 							};
 							pendingLinks[makeLinkKey(link2)] = link2;
-							updateTopology(svg, model);
+							updateTopology();
 
 							linkUp(link1);
 
-							// remove the pending link after 10s
+							// remove the pending links after 10s
 							setTimeout(function () {
 								delete pendingLinks[makeLinkKey(link1)];
 								delete pendingLinks[makeLinkKey(link2)];
 
-								updateTopology(svg, model);
+								updateTopology();
 							}, 10000);
 						}
 					}
@@ -835,7 +835,7 @@ updateTopology = function(svg, model) {
 	drawFlows();
 }
 
-function updateControllers(model) {
+function updateControllers() {
 	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
 	controllers.enter().append('div')
 		.each(function (c) {
@@ -906,16 +906,21 @@ function sync(svg) {
 	updateModel(function (newModel) {
 //		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
+		var modelChanged = false;
 		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
-			updateControllers(newModel);
-			updateSelectedFlows();
-			updateTopology(svg, newModel);
+			modelChanged = true;
+			model = newModel;
 		} else {
 //			console.log('no change');
 		}
-		updateHeader(newModel);
 
-		model = newModel;
+		if (modelChanged) {
+			updateControllers();
+			updateSelectedFlows();
+			updateTopology();
+		}
+
+		updateHeader(newModel);
 
 		// do it again in 1s
 		setTimeout(function () {
