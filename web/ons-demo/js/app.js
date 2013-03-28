@@ -216,9 +216,19 @@ function updateSelectedFlows() {
 }
 
 function selectFlow(flow) {
-	selectedFlows.unshift(flow);
-	selectedFlows = selectedFlows.slice(0, 3);
-	updateSelectedFlows();
+	var flowKey = makeFlowKey(flow);
+	var alreadySelected = false;
+	selectedFlows.forEach(function (f) {
+		if (f && makeFlowKey(f) === flowKey) {
+			alreadySelected = true;
+		}
+	});
+
+	if (!alreadySelected) {
+		selectedFlows.unshift(flow);
+		selectedFlows = selectedFlows.slice(0, 3);
+		updateSelectedFlows();
+	}
 }
 
 function deselectFlow(flow) {
