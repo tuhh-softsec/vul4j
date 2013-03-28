@@ -18,16 +18,17 @@ src_dpid="dpid:"`echo $1 | sed s'/://g'`
 src_port=$2
 cmd=$3
 
-#sudo ovs-ofctl show sw02.01 | grep addr > link.in
-#cat link.in | awk -v p=$src_port 'BEGIN {pat="^ "p"\("}
-#$0 ~ pat {w=match ($0, /\(.*\)/); if (w) print substr($0, RSTART+1, RLENGTH-2)}'
-#exit
-
 for s in $switches; do
     dpid=`sudo ovs-ofctl  show  $s |grep dpid | awk '{print $4}'`
     if [  "x$dpid" == "x$src_dpid" ]; then
-        intf=`sudo ovs-ofctl show $s |grep addr | awk -v p=$src_port 'BEGIN {pat="^ "p"\("}
-	$0 ~ pat {w=match ($0, /\(.*\)/); if (w) print substr($0, RSTART+1, RLENGTH-2)}'`
+
+#       intf=`sudo ovs-ofctl show $s |grep addr | awk -v p=$src_port 'BEGIN {pat="^ "p"\("}
+#	$0 ~ pat {w=match ($0, /\(.*\)/); if (w) print substr($0, RSTART+1, RLENGTH-2)}'`
+
+        sudo ovs-ofctl show $s |grep addr | sed 's/[\(\)]/,/g'>/tmp/baz.out
+	intf=`cat /tmp/baz.out | awk -v p=$src_port 'BEGIN {pat="^ "p","}
+	$0 ~ pat {w=match($0, /,.*,/); if (w) print substr($0, RSTART+1, RLENGTH-2)}'`
+
 	if [ x$intf != "x" ]; then
 	        if [ x$cmd == "xup" ]; then
 		    echo "sudo ifconfig ${intf}  up"
