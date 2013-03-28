@@ -721,12 +721,40 @@ def switch_status_change(cmd, dpid):
 
   return result
 
-#* Link Up/Down
+#* Link Up
 #http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
-#http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
+@app.route("/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
+def link_up(src_dpid, src_port, dst_dpid, dst_port):
 
+  cmd = 'up'
+  result=""
+
+  for dpid in (src_dpid, dst_dpid): 
+    if dpid in core_switches:
+      host = controllers[0]
+      src_ports = [1, 2, 3, 4, 5]
+    else:
+      hostid=int(src_dpid.split(':')[-2])
+      host = controllers[hostid-1]
+      if hostid == 2 :
+        src_ports = [51]
+      else :
+        src_ports = [26]
+
+    for port in src_ports :
+      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+      print cmd_string
+      res=os.popen(cmd_string).read()
+      result = result + ' ' + res
+
+  return result
+
+
+#* Link Down
+#http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
 @app.route("/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
-def link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
+def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
+
   if src_dpid in core_switches:
     host = controllers[0]
   else:
@@ -736,8 +764,7 @@ def link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
   print cmd_string
 
-  if cmd =="up" or cmd=="down":
-    result=os.popen(cmd_string).read()
+  result=os.popen(cmd_string).read()
 
   return result
 
