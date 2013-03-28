@@ -97,7 +97,7 @@ function drawFlows() {
 		});
 		return line(pts);
 	})
-	.attr('stroke-dasharray', '3, 10')
+	.attr('stroke-dasharray', '4, 10')
 	.append('svg:animate')
 	.attr('attributeName', 'stroke-dashoffset')
 	.attr('attributeType', 'xml')
@@ -359,9 +359,9 @@ updateTopology = function(svg, model) {
 
 
 		// only highlight valid link or flow destination by checking for class of existing highlighted circle
-		var highlighted = svg.selectAll('circle.highlight')[0];
+		var highlighted = svg.selectAll('.highlight')[0];
 		if (highlighted.length == 1) {
-			var s = d3.select(highlighted[0]);
+			var s = d3.select(highlighted[0]).select('circle');
 			// only allow links
 			// 	edge->edge (flow)
 			//  aggregation->core
@@ -388,7 +388,7 @@ updateTopology = function(svg, model) {
 
 		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', false);
 		var node = d3.select(document.getElementById(data.dpid));
-		node.select('circle').classed('highlight', true).transition().duration(100).attr("r", widths.core);
+		node.classed('highlight', true).select('circle').transition().duration(100).attr("r", widths.core);
 		data.highlighted = true;
 		node.moveToFront();
 	}
@@ -399,7 +399,7 @@ updateTopology = function(svg, model) {
 
 		d3.select(document.getElementById(data.dpid + '-label')).classed('nolabel', true);
 		var node = d3.select(document.getElementById(data.dpid));
-		node.select('circle').classed('highlight', false).transition().duration(100).attr("r", widths[data.className]);
+		node.classed('highlight', false).select('circle').transition().duration(100).attr("r", widths[data.className]);
 		data.highlighted = false;
 		data.target = false;
 	}
@@ -408,6 +408,21 @@ updateTopology = function(svg, model) {
 		mouseOverSwitch(data);
 		data.mouseDown = true;
 		d3.select('#topology').classed('linking', true);
+
+		d3.select('svg')
+			.append('svg:path')
+			.attr('id', 'linkVector')
+			.attr('d', function () {
+				var s = d3.select(document.getElementById(data.dpid));
+
+				var pt = document.querySelector('svg').createSVGPoint();
+				pt.x = s.attr('x');
+				pt.y = s.attr('y');
+				pt = pt.matrixTransform(s[0][0].getCTM());
+
+				return line([pt, pt]);
+			});
+
 
 		if (data.className === 'core') {
 			d3.selectAll('.edge').classed('nodrop', true);
@@ -426,6 +441,7 @@ updateTopology = function(svg, model) {
 		if (data.mouseDown) {
 			data.mouseDown = false;
 			d3.select('#topology').classed('linking', false);
+			mouseup
 			d3.event.stopPropagation();
 			d3.selectAll('.nodrop').classed('nodrop', false);
 		}
@@ -535,13 +551,56 @@ updateTopology = function(svg, model) {
 	// always on top
 	var labelRings = svg.selectAll('.labelRing').data(createRingsFromModel(model));
 
+	d3.select(document.body).on('mousemove', function () {
+		if (!d3.select('#topology').classed('linking')) {
+			return;
+		}
+		var linkVector = document.getElementById('linkVector');
+		if (!linkVector) {
+			return;
+		}
+		linkVector = d3.select(linkVector);
+
+		var highlighted = svg.selectAll('.highlight')[0];
+		var s1 = null, s2 = null;
+		if (highlighted.length > 1) {
+			var s1 = d3.select(highlighted[0]);
+			var s2 = d3.select(highlighted[1]);
+
+		} else if (highlighted.length > 0) {
+			var s1 = d3.select(highlighted[0]);
+		}
+		var src = s1;
+		if (s2 && !s2.data()[0].target) {
+			src = s2;
+		}
+		if (src) {
+			linkVector.attr('d', function () {
+					var srcPt = document.querySelector('svg').createSVGPoint();
+					srcPt.x = src.attr('x');
+					srcPt.y = src.attr('y');
+					srcPt = srcPt.matrixTransform(src[0][0].getCTM());
+
+					var svg = document.getElementById('topology');
+					var mouse = d3.mouse(viewbox);
+					var dstPt = document.querySelector('svg').createSVGPoint();
+					dstPt.x = mouse[0];
+					dstPt.y = mouse[1];
+					dstPt = dstPt.matrixTransform(viewbox.getCTM());
+
+					return line([srcPt, dstPt]);
+				});
+		}
+	});
+
 	d3.select(document.body).on('mouseup', function () {
 		function clearHighlight() {
 			svg.selectAll('circle').each(function (data) {
 				data.mouseDown = false;
 				d3.select('#topology').classed('linking', false);
 				mouseOutSwitch(data);
-			})
+			});
+			d3.select('#linkVector').remove();
 		};
 
 		d3.selectAll('.nodrop').classed('nodrop', false);
@@ -561,10 +620,10 @@ updateTopology = function(svg, model) {
 		}
 
 
-		var highlighted = svg.selectAll('circle.highlight')[0];
+		var highlighted = svg.selectAll('.highlight')[0];
 		if (highlighted.length == 2) {
-			var s1Data = d3.select(highlighted[0]).data()[0];
-			var s2Data = d3.select(highlighted[1]).data()[0];
+			var s1Data = highlighted[0].__data__;
+			var s2Data = highlighted[1].__data__;
 
 			var srcData, dstData;
 			if (s1Data.target) {
@@ -741,7 +800,7 @@ updateTopology = function(svg, model) {
 
 			var dstPt = document.querySelector('svg').createSVGPoint();
 			dstPt.x = dst.attr('x');
-			dstPt.y = dst.attr('y'); // tmp: make up and down links distinguishable
+			dstPt.y = dst.attr('y');
 			dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
 
 			var midPt = document.querySelector('svg').createSVGPoint();
