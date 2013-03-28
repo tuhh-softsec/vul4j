@@ -114,7 +114,7 @@ function showFlowChooser() {
 		var row = d3.select(this);
 
 		row.append('div')
-			.classed('eye', true).
+			.classed('black-eye', true).
 			on('click', function () {
 				selectedFlows.unshift(d);
 				selectedFlows = selectedFlows.slice(0, 3);
@@ -847,7 +847,7 @@ function updateControllers(model) {
 			return d;
 		})
 		.append('div')
-		.attr('class', 'eye');
+		.attr('class', 'black-eye');
 
 	controllers.attr('class', function (d) {
 			var color = 'colorInactive';
@@ -877,7 +877,7 @@ function updateControllers(model) {
 		}
 	});
 
-	controllers.select('.eye').on('click', function (c) {
+	controllers.select('.black-eye').on('click', function (c) {
 		var allSelected = true;
 		for (var key in controllerColorMap) {
 			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {

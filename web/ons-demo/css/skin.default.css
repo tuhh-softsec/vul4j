@@ -146,7 +146,9 @@ path.flow {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
+	width: 3em;
 }
+
 
 .srcDPID, .dstDPID {
 	width: 12em;
@@ -168,13 +170,22 @@ path.flow {
 	position: relative;
 }
 
-.eye {
+.black-eye {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	height: 100%;
 	width: 2.25em;
-	background-image: url('../assets/eye.svg');
+	background-image: url('../assets/black-eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .25em center;
+}
+
+.white-eye {
+	height: 100%;
+	width: 2.25em;
+	background-image: url('../assets/white-eye.svg');
 	background-size: auto 100%;
 	background-repeat: no-repeat;
 	background-position: .25em center;

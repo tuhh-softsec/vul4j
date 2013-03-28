@@ -58,6 +58,12 @@ body {
 	position: relative;
 }
 
+#showFlowChooser {
+	position: relative;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+}
+
 .selectedFlow .srcDPID, .selectedFlow .dstDPID {
 	-webkit-user-select: auto;
 }
@@ -66,12 +72,6 @@ body {
 	display: -webkit-box;
 	height: 1.5em;
 }
-
-
-.flowId {
-	width: 5em;
-}
-
 
 .iperf {
 	width: 100%;
