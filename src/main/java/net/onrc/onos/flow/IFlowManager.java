@@ -38,7 +38,7 @@ public interface IFlowManager {
      * @param port the port to match.
      * @return the list of flows that are going out from the port.
      */
-    public Iterable<FlowPath> getFlows(IPortObject port);
+    public Iterable<FlowPath> getOutFlows(IPortObject port);
 
     /**
      * Reconcile all flows on inactive port (src port of link which might be

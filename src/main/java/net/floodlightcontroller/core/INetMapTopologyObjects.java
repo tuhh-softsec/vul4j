@@ -302,5 +302,7 @@ public interface IFlowEntry extends IBaseObject {
 		@Adjacency(label="switch")
 		public void setOutPort(IPortObject port);
 		
+		@Adjacency(label="flow")
+		public IFlowPath getFlowPath();
 	}
 }
