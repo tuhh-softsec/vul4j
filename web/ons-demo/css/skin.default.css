@@ -155,8 +155,12 @@ path.flow {
 }
 
 
-.flowId, .srcDPID, .dstDPID {
+.srcDPID, .dstDPID {
 	border-right: 1px solid #AAA;
+}
+
+.srcDPID {
+	border-left: 1px solid #AAA;
 }
 
 

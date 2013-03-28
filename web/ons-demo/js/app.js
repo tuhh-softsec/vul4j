@@ -18,6 +18,7 @@ var model;
 var svg;
 var updateTopology;
 var pendingLinks = {};
+var pendingFlows = {};
 
 var colors = [
 	'color1',
@@ -67,11 +68,9 @@ function createTopologyView() {
 
 var selectedFlows = [null, null, null];
 
-function drawFlows() {
+function updateSelectedFlowsTopology() {
 	// DRAW THE FLOWS
-	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows, function (d) {
-		return d ? d.flowId.value : null;
-	});
+	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows);
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
@@ -85,25 +84,157 @@ function drawFlows() {
 
 
 	flows.attr('d', function (d) {
-		if (!d) {
-			return;
-		}
-		var pts = [];
-		d.dataPath.flowEntries.forEach(function (flowEntry) {
-			var s = d3.select(document.getElementById(flowEntry.dpid.value));
-			var pt = document.querySelector('svg').createSVGPoint();
-			pt.x = s.attr('x');
-			pt.y = s.attr('y');
-			pt = pt.matrixTransform(s[0][0].getCTM());
-			pts.push(pt);
+			if (!d) {
+				return;
+			}
+			var pts = [];
+			if (d.pending) {
+				// create a temporary vector to indicate the pending flow
+				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
+				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
+
+				var pt1 = document.querySelector('svg').createSVGPoint();
+				pt1.x = s1.attr('x');
+				pt1.y = s1.attr('y');
+				pt1 = pt1.matrixTransform(s1[0][0].getCTM());
+				pts.push(pt1);
+
+				var pt2 = document.querySelector('svg').createSVGPoint();
+				pt2.x = s2.attr('x');
+				pt2.y = s2.attr('y');
+				pt2 = pt2.matrixTransform(s2[0][0].getCTM());
+				pts.push(pt2);
+
+			} else {
+				d.dataPath.flowEntries.forEach(function (flowEntry) {
+					var s = d3.select(document.getElementById(flowEntry.dpid.value));
+					// s[0] is null if the flow entry refers to a non-existent switch
+					if (s[0][0]) {
+						var pt = document.querySelector('svg').createSVGPoint();
+						pt.x = s.attr('x');
+						pt.y = s.attr('y');
+						pt = pt.matrixTransform(s[0][0].getCTM());
+						pts.push(pt);
+					} else {
+						console.log('flow refers to non-existent switch: ' + flowEntry.dpid.value);
+					}
+				});
+			}
+			return line(pts);
+		})
+		.classed('pending', function (d) {
+			return d && d.pending
 		});
-		return line(pts);
-	})
 
 	// "marching ants"
 	flows.select('animate').attr('from', 500);
 
+}
+
+function updateSelectedFlowsTable() {
+	function rowEnter(d) {
+		var row = d3.select(this);
+		row.append('div').classed('flowId', true);
+		row.append('div').classed('srcDPID', true);
+		row.append('div').classed('dstDPID', true);
+		row.append('div').classed('iperf', true);
+	}
+
+	function rowUpdate(d) {
+		var row = d3.select(this);
+		row.select('.flowId')
+			.text(function (d) {
+				if (d) {
+					if (d.flowId) {
+						return d.flowId.value;
+					} else {
+						return '0x--';
+					}
+				}
+			})
+			.classed('pending', d && d.pending);
+
+		row.select('.srcDPID')
+			.text(function (d) {
+				if (d) {
+					return d.dataPath.srcPort.dpid.value;
+				}
+			});
+
+		row.select('.dstDPID')
+			.text(function (d) {
+				if (d) {
+					return d.dataPath.dstPort.dpid.value;
+				}
+			});
+	}
+
+	var flows = d3.select('#selectedFlows')
+		.selectAll('.selectedFlow')
+		.data(selectedFlows);
+
+	flows.enter()
+		.append('div')
+		.classed('selectedFlow', true)
+		.each(rowEnter);
+
+	flows.each(rowUpdate);
+
 	flows.exit().remove();
+}
+
+function updateSelectedFlows() {
+	// make sure that all of the selected flows are either
+	// 1) valid (meaning they are in the latest list of flows)
+	// 2) pending
+	if (model) {
+		var flowMap = {};
+		model.flows.forEach(function (flow) {
+			flowMap[makeFlowKey(flow)] = flow;
+		});
+
+		var newSelectedFlows = [];
+		selectedFlows.forEach(function (flow) {
+			if (flow) {
+				if (flow.pending) {
+					newSelectedFlows.push(flow);
+				} else {
+					var liveFlow = flowMap[makeFlowKey(flow)];
+					if (liveFlow) {
+						newSelectedFlows.push(liveFlow);
+					}
+				}
+			} else {
+				newSelectedFlows.push(null);
+			}
+		});
+		selectedFlows = newSelectedFlows;
+	}
+
+	updateSelectedFlowsTable();
+	updateSelectedFlowsTopology();
+}
+
+function selectFlow(flow) {
+	selectedFlows.unshift(flow);
+	selectedFlows = selectedFlows.slice(0, 3);
+	updateSelectedFlows();
+}
+
+function deselectFlow(flow) {
+	var flowKey = makeFlowKey(flow);
+	var newSelectedFlows = [];
+	selectedFlows.forEach(function (flow) {
+		if (!flow || flowKey !== makeFlowKey(flow)) {
+			newSelectedFlows.push(flow);
+		}
+	});
+	selectedFlows = newSelectedFlows;
+	while (selectedFlows.length < 3) {
+		selectedFlows.push(null);
+	}
+
+	updateSelectedFlows();
 }
 
 function showFlowChooser() {
@@ -113,11 +244,7 @@ function showFlowChooser() {
 		row.append('div')
 			.classed('black-eye', true).
 			on('click', function () {
-				selectedFlows.unshift(d);
-				selectedFlows = selectedFlows.slice(0, 3);
-
-				updateSelectedFlows();
-				updateTopology();
+				selectFlow(d);
 			});
 
 		row.append('div')
@@ -159,54 +286,7 @@ function showFlowChooser() {
 	}, 0);
 }
 
-function updateSelectedFlows() {
-	function rowEnter(d) {
-		var row = d3.select(this);
-		row.append('div').classed('flowId', true);
-		row.append('div').classed('srcDPID', true);
-		row.append('div').classed('dstDPID', true);
-		row.append('div').classed('iperf', true);
-	}
 
-	function rowUpdate(d) {
-		var row = d3.select(this);
-		row.select('.flowId')
-			.text(function (d) {
-				if (d) {
-					return d.flowId.value;
-				}
-			});
-
-		row.select('.srcDPID')
-			.text(function (d) {
-				if (d) {
-					return d.dataPath.srcPort.dpid.value;
-				}
-			});
-
-		row.select('.dstDPID')
-			.text(function (d) {
-				if (d) {
-					return d.dataPath.dstPort.dpid.value;
-				}
-			});
-	}
-
-	var flows = d3.select('#selectedFlows')
-		.selectAll('.selectedFlow')
-		.data(selectedFlows);
-
-	flows.enter()
-		.append('div')
-		.classed('selectedFlow', true)
-		.each(rowEnter);
-
-	flows.each(rowUpdate);
-
-	flows.exit().remove();
-
-	return flows;
-}
 
 function updateHeader(model) {
 	d3.select('#lastUpdate').text(new Date());
@@ -325,6 +405,10 @@ function makeLinkKey(link) {
 	return link['src-switch'] + '=>' + link['dst-switch'];
 }
 
+function makeFlowKey(flow) {
+	return flow.dataPath.srcPort.dpid.value + '=>' + flow.dataPath.dstPort.dpid.value;
+}
+
 function createLinkMap(links) {
 	var linkMap = {};
 	links.forEach(function (link) {
@@ -361,7 +445,6 @@ updateTopology = function() {
 
 	var links = reconcilePendingLinks(model);
 	var linkMap = createLinkMap(links);
-//	var flowMap = createFlowMap(model);
 
 	function mouseOverSwitch(data) {
 
@@ -650,9 +733,29 @@ updateTopology = function() {
 			if (s1Data.className == 'edge' && s2Data.className == 'edge') {
 				var prompt = 'Create flow from ' + srcData.dpid + ' to ' + dstData.dpid + '?';
 				if (confirm(prompt)) {
-					alert('do create flow');
-				} else {
-					alert('do not create flow');
+					addFlow(srcData, dstData);
+
+					var flow = {
+						dataPath: {
+							srcPort: {
+								dpid: {
+									value: srcData.dpid
+								}
+							},
+							dstPort: {
+								dpid: {
+									value: dstData.dpid
+								}
+							}
+						},
+						pending: true
+					};
+
+					selectFlow(flow);
+
+					setTimeout(function () {
+						deselectFlow(flow);
+					}, 10000);
 				}
 			} else {
 				var map = linkMap[srcData.dpid];
@@ -830,9 +933,6 @@ updateTopology = function() {
 
 	// remove old links
 	links.exit().remove();
-
-
-	drawFlows();
 }
 
 function updateControllers() {

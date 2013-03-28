@@ -12,55 +12,58 @@ function callURL(url) {
 
 
 var controllerFunctions = {
-	l: function (cmd, link) {
+	linkCmd: function (cmd, link) {
 		var url = '/proxy/gui/link/' + [cmd, link['src-switch'], link['src-port'], link['dst-switch'], link['dst-port']].join('/');
 		callURL(url);
 
 	},
-	s: function (cmd, s) {
+	switchCmd: function (cmd, s) {
 		var url = '/proxy/gui/switch/' + [cmd, s.dpid].join('/');
 		callURL(url);
 	},
-	c: function (cmd, c) {
+	ctrlCmd: function (cmd, c) {
 		var url = '/proxy/gui/controller/' + [cmd, c].join('/');
 		callURL(url);
+	},
+	addFlowCmd: function (src, dst) {
+		alert('add flow')
+	},
+	delFlowCmd: function (flow) {
+		alert('delete flow')
 	}
 };
 
-
-// if (parseURLParameters().mock) {
-// 	urls = mockURLs;
-// }
-
+// http://gui3.onlab.us:8081/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>
+// http://gui3.onlab.us:8081/gui/delflow/<flow_id>
 
 function linkUp(link) {
-	controllerFunctions.l('up', link);
+	controllerFunctions.linkCmd('up', link);
 }
 
 function linkDown(link) {
-	controllerFunctions.l('down', link);
+	controllerFunctions.linkCmd('down', link);
 }
 
 function switchUp(s) {
-	controllerFunctions.s('up', s);
+	controllerFunctions.switchCmd('up', s);
 }
 
 function switchDown(s) {
-	controllerFunctions.s('down', s);
+	controllerFunctions.switchCmd('down', s);
 }
 
 function controllerUp(c) {
-	controllerFunctions.c('up', c);
+	controllerFunctions.ctrlCmd('up', c);
 }
 
 function controllerDown(c) {
-	controllerFunctions.c('down', c);
+	controllerFunctions.ctrlCmd('down', c);
 }
 
-function createFlow(src, dst) {
-
+function addFlow(src, dst) {
+	controllerFunctions.addFlowCmd(src, dst);
 }
 
-function deleteFlow(src, dst) {
-
+function deleteFlow(flow) {
+	controllerFunctions.delFlowCmd(flow);
 }
