@@ -27,6 +27,8 @@ public class FlowEntryMatch {
 
 	/**
 	 * Constructor for a given value to match.
+	 *
+	 * @param value the value to match.
 	 */
 	public Field(T value) {
 	    this.value = value;
@@ -85,6 +87,38 @@ public class FlowEntryMatch {
      * Default constructor.
      */
     public FlowEntryMatch() {
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the object to copy from.
+     */
+    public FlowEntryMatch(FlowEntryMatch other) {
+	if ((other.inPort != null) && other.inPort.enabled())
+	    this.enableInPort(other.inPort.value());
+	if ((other.srcMac != null) && other.srcMac.enabled())
+	    this.enableSrcMac(other.srcMac.value());
+	if ((other.dstMac != null) && other.dstMac.enabled())
+	    this.enableDstMac(other.dstMac.value());
+	if ((other.vlanId != null) && other.vlanId.enabled())
+	    this.enableVlanId(other.vlanId.value());
+	if ((other.vlanPriority != null) && other.vlanPriority.enabled())
+	    this.enableVlanPriority(other.vlanPriority.value());
+	if ((other.ethernetFrameType != null) && other.ethernetFrameType.enabled())
+	    this.enableEthernetFrameType(other.ethernetFrameType.value());
+	if ((other.ipToS != null) && other.ipToS.enabled())
+	    this.enableIpToS(other.ipToS.value());
+	if ((other.ipProto != null) && other.ipProto.enabled())
+	    this.enableIpProto(other.ipProto.value());
+	if ((other.srcIPv4Net != null) && other.srcIPv4Net.enabled())
+	    this.enableSrcIPv4Net(other.srcIPv4Net.value());
+	if ((other.dstIPv4Net != null) && other.dstIPv4Net.enabled())
+	    this.enableDstIPv4Net(other.dstIPv4Net.value());
+	if ((other.srcTcpUdpPort != null) && other.srcTcpUdpPort.enabled())
+	    this.enableSrcTcpUdpPort(other.srcTcpUdpPort.value());
+	if ((other.dstTcpUdpPort != null) && other.dstTcpUdpPort.enabled())
+	    this.enableDstTcpUdpPort(other.dstTcpUdpPort.value());
     }
 
     /**

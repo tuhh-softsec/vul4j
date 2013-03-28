@@ -16,9 +16,22 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 #DBName="onos-network-map"
-#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4"]
+
+## Uncomment the desired block based on your testbed environment
+
+# Settings for running on production
 controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
 core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
+ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
+
+# Settings for running on dev testbed. Replace dev
+#controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
+#core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
+#ONOS_GUI3_HOST="http://devb-gui.onlab.us:8080"
+#ONOS_GUI3_CONTROL_HOST="http://devb-gui.onlab.us:8080"
+
+ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
 nr_flow=0
 
@@ -74,10 +87,6 @@ def return_file(filename="index.html"):
 
   return response
 
-## PROXY API (allows development where the webui is served from someplace other than the controller)##
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
-ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
 
 @app.route("/proxy/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
 def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
@@ -686,9 +695,11 @@ def controller_status_change(cmd, controller_name):
   stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
+    print start_onos
     result=os.popen(start_onos).read()
     ret = "controller %s is up" % (controller_name)
   elif cmd == "down":
+    print stop_onos
     result=os.popen(stop_onos).read()
     ret = "controller %s is down" % (controller_name)
 
@@ -698,8 +709,9 @@ def controller_status_change(cmd, controller_name):
 def switch_status_change(cmd, dpid):
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s %s'" % (dpid, cmd)
-  get_status="ssh -i ~/.ssh/onlabkey.pem onosgui1 'cd ONOS/scripts; ./switch.sh %s'" % (dpid)
+  host=controllers[0]
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+  get_status="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s'" % (host, dpid)
   print "cmd_string"
 
   if cmd =="up" or cmd=="down":
@@ -709,12 +721,40 @@ def switch_status_change(cmd, dpid):
 
   return result
 
-#* Link Up/Down
+#* Link Up
 #http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
-#http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
+@app.route("/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
+def link_up(src_dpid, src_port, dst_dpid, dst_port):
 
+  cmd = 'up'
+  result=""
+
+  for dpid in (src_dpid, dst_dpid): 
+    if dpid in core_switches:
+      host = controllers[0]
+      src_ports = [1, 2, 3, 4, 5]
+    else:
+      hostid=int(src_dpid.split(':')[-2])
+      host = controllers[hostid-1]
+      if hostid == 2 :
+        src_ports = [51]
+      else :
+        src_ports = [26]
+
+    for port in src_ports :
+      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+      print cmd_string
+      res=os.popen(cmd_string).read()
+      result = result + ' ' + res
+
+  return result
+
+
+#* Link Down
+#http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
 @app.route("/gui/link/<cmd>/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
-def link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
+def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
+
   if src_dpid in core_switches:
     host = controllers[0]
   else:
@@ -724,8 +764,7 @@ def link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
   print cmd_string
 
-  if cmd =="up" or cmd=="down":
-    result=os.popen(cmd_string).read()
+  result=os.popen(cmd_string).read()
 
   return result
 
@@ -758,10 +797,10 @@ def del_flow(flow_id):
   return errcode
 
 #* Start Iperf Througput
-#http://localhost:9000/gui/iperf/start/<flow_id>
-@app.route("/gui/iperf/start/<flow_id>")
-def iperf_start(flow_id):
-  command = "iperf -xCMSV -t30 -i1 -u -c 127.0.0.1 > iperf_%s.out &" % (flow_id)
+#http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
+@app.route("/gui/iperf/start/<flow_id>/<duration>")
+def iperf_start(flow_id,duration):
+  command = "iperf -xCMSV -t%d -i 0.5 -y c -u -c 127.0.0.1 > iperf_%s.out 2>/dev/null &" % (duration, flow_id)
   print command
   errcode = os.popen(command).read()
   return errcode
