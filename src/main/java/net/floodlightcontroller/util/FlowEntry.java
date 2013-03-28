@@ -23,7 +23,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * support multiple in-ports and multiple out-ports.
  */
 public class FlowEntry {
-	private FlowId flowId;                  //FlowID of flowEntry
+    private FlowId flowId;			// FlowID of flowEntry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
     private ArrayList<FlowEntryAction> flowEntryActions; // The Flow Entry Actions
@@ -124,6 +124,22 @@ public class FlowEntry {
 
 	flowEntryUserState = FlowEntryUserState.FE_USER_UNKNOWN;
 	flowEntrySwitchState = FlowEntrySwitchState.FE_SWITCH_UNKNOWN;
+    }
+
+    /**
+     * Get the Flow ID.
+     * @return the Flow ID.
+     */
+    @JsonIgnore
+    public FlowId getFlowId() { return flowId; }
+
+    /**
+     * Set the Flow ID.
+     *
+     * @param flowId the Flow ID to set.
+     */
+    public void setFlowId(FlowId flowId) {
+	this.flowId = flowId;
     }
 
     /**
@@ -329,19 +345,4 @@ public class FlowEntry {
 
 	return ret;
     }
-
-	/**
-	 * @return the flowId
-	 */
-    @JsonIgnore
-	public FlowId getFlowId() {
-		return flowId;
-	}
-
-	/**
-	 * @param flowId the flowId to set
-	 */
-	public void setFlowId(FlowId flowId) {
-		this.flowId = flowId;
-	}
 }
