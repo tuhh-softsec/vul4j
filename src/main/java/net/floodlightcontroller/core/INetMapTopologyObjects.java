@@ -299,7 +299,7 @@ public interface IFlowEntry extends IBaseObject {
 		@Adjacency(label="outport")
 		public IPortObject getOutPort();
 		
-		@Adjacency(label="switch")
+		@Adjacency(label="outport")
 		public void setOutPort(IPortObject port);
 		
 	}
