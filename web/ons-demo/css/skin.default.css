@@ -61,6 +61,10 @@ body {
 	border-bottom: 1px solid #AAA;
 }
 
+.selectedFlow:hover {
+	background-color: #333;
+}
+
 .selectedFlow:last-child {
 	border-bottom: none;
 }
@@ -130,6 +134,11 @@ path.flow {
 	fill: none;
 	stroke-width: 5px;
 	stroke: rgba(255, 255, 255, .35);
+}
+
+path.flow.highlight {
+	stroke-width: 6px;
+	stroke: rgba(255, 255, 255, .75);
 }
 
 #selectedFlowsHeader {

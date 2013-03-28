@@ -122,6 +122,11 @@ function updateSelectedFlowsTopology() {
 			}
 			return line(pts);
 		})
+		.attr('id', function (d) {
+			if (d) {
+				return makeFlowKey(d);
+			}
+		})
 		.classed('pending', function (d) {
 			return d && d.pending
 		});
@@ -138,6 +143,19 @@ function updateSelectedFlowsTable() {
 		row.append('div').classed('srcDPID', true);
 		row.append('div').classed('dstDPID', true);
 		row.append('div').classed('iperf', true);
+
+		row.on('mouseover', function (d) {
+			if (d) {
+				var path = document.getElementById(makeFlowKey(d));
+				d3.select(path).classed('highlight', true);
+			}
+		});
+		row.on('mouseout', function (d) {
+			if (d) {
+				var path = document.getElementById(makeFlowKey(d));
+				d3.select(path).classed('highlight', false);
+			}
+		})
 	}
 
 	function rowUpdate(d) {
