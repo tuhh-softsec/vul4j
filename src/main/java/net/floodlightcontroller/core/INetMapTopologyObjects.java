@@ -54,6 +54,10 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonIgnore
 		@GremlinGroovy("_().out('on').out('host')")
 		public Iterable<IDeviceObject> getDevices();
+		
+		@JsonIgnore
+		@Incidence(label="switch",direction = Direction.IN)
+		public Iterable<IFlowEntry> getFlowEntries();
 	}
 	
 	public interface IPortObject extends IBaseObject{
@@ -93,6 +97,14 @@ public interface ISwitchObject extends IBaseObject{
 		
 		@Adjacency(label="host")
 		public void removeDevice(final IDeviceObject device);
+		
+		@JsonIgnore
+		@Incidence(label="inport",direction = Direction.IN)
+		public Iterable<IFlowEntry> getInFlowEntries();
+		
+		@JsonIgnore
+		@Incidence(label="outport",direction = Direction.IN)
+		public Iterable<IFlowEntry> getOutFlowEntries();
 		
 //		@JsonIgnore
 //		@Adjacency(label="link")
@@ -187,6 +199,10 @@ public interface IFlowPath extends IBaseObject {
 
 		@Adjacency(label="flow", direction=Direction.IN)
 		public void removeFlowEntry(final IFlowEntry flowEntry);
+		
+		@JsonIgnore
+		@GremlinGroovy("_().in('flow').out('switch')")
+		public Iterable<IDeviceObject> getSwitches();
 	}
 
 public interface IFlowEntry extends IBaseObject {
@@ -267,5 +283,24 @@ public interface IFlowEntry extends IBaseObject {
 
 		@Property("actionOutput")
 		public void setActionOutput(Short actionOutput);
+		
+		@Adjacency(label="switch")
+		public ISwitchObject getSwitch();
+		
+		@Adjacency(label="switch")
+		public void setSwitch(ISwitchObject sw);
+		
+		@Adjacency(label="inport")
+		public IPortObject getInPort();
+		
+		@Adjacency(label="inport")
+		public void setInPort(IPortObject port);
+		
+		@Adjacency(label="outport")
+		public IPortObject getOutPort();
+		
+		@Adjacency(label="switch")
+		public void setOutPort(IPortObject port);
+		
 	}
 }

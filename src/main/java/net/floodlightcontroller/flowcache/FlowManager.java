@@ -22,6 +22,8 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.INetMapStorage;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
@@ -702,23 +704,39 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    // - flowEntry.matchDstMac()
 	    // - flowEntry.actionOutput()
 	    //
+	    ISwitchObject sw = conn.utils().searchSwitch(conn,flowEntry.dpid().toString());
 	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    if (flowEntry.flowEntryMatch().matchInPort())
-		flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
-	    if (flowEntry.flowEntryMatch().matchEthernetFrameType())
-		flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
-	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net())
-		flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
-	    if (flowEntry.flowEntryMatch().matchDstIPv4Net())
-		flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
-	    if (flowEntry.flowEntryMatch().matchSrcMac())
-		flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
-	    if (flowEntry.flowEntryMatch().matchDstMac())
-		flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	    
+	    flowEntryObj.setSwitch(sw);
+	    if (flowEntry.flowEntryMatch().matchInPort()) {
+	    	IPortObject inport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
+	    			flowEntry.flowEntryMatch().inPort().value());
+	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    	flowEntryObj.setInPort(inport);
+	    }
+	    if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
+	    	flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
+	    	flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
+	    	flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchSrcMac()) {
+	    	flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	    }
+	    if (flowEntry.flowEntryMatch().matchDstMac()) {
+	    	flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	    }
 
 	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
-		if (fa.actionOutput() != null)
-		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+	    	if (fa.actionOutput() != null) {
+	    		IPortObject outport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
+	    									fa.actionOutput().port().value());
+	    		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+	    		flowEntryObj.setOutPort(outport);
+	    	}
 	    }
 	    // TODO: Hacks with hard-coded state names!
 	    if (found)
