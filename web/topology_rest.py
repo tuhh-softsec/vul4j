@@ -127,6 +127,19 @@ def proxy_controller_status_change(cmd, controller_name):
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/proxy/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
+def proxy_add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
+  try:
+    command = "curl -s %s/gui/addflow/%s/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
@@ -729,7 +742,7 @@ def link_up(src_dpid, src_port, dst_dpid, dst_port):
   cmd = 'up'
   result=""
 
-  for dpid in (src_dpid, dst_dpid): 
+  for dpid in (src_dpid, dst_dpid):
     if dpid in core_switches:
       host = controllers[0]
       src_ports = [1, 2, 3, 4, 5]

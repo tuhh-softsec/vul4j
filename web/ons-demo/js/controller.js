@@ -10,6 +10,11 @@ function callURL(url) {
 	});
 }
 
+function MAC(dpid) {
+	var cmps = dpid.split(':');
+	var MAC = '00:00:c0:a8:' + [cmps[6], cmps[7]].join(':');
+	return MAC;
+}
 
 var controllerFunctions = {
 	linkCmd: function (cmd, link) {
@@ -26,7 +31,8 @@ var controllerFunctions = {
 		callURL(url);
 	},
 	addFlowCmd: function (src, dst) {
-		alert('add flow')
+		var url = '/proxy/gui/addflow/' + [src.dpid, 1, dst.dpid, 1, MAC(src.dpid), MAC(dst.dpid)].join('/');
+		callURL(url);
 	},
 	delFlowCmd: function (flow) {
 		alert('delete flow')
