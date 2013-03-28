@@ -33,7 +33,7 @@ public class FlowManagerImpl implements IFlowManager {
 		Iterable<IFlowEntry> flowEntries = port.getOutFlowEntries();
 
 		for(IFlowEntry fe: flowEntries) {
-			IFlowPath flow = fe.get();
+			IFlowPath flow = fe.getFlow();
 			FlowPath flowPath = new FlowPath(flow);
 			flowPaths.add(flowPath);
 		}
@@ -74,7 +74,7 @@ public class FlowManagerImpl implements IFlowManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+/*
 	@Override
 	public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
 			FlowEntry flowEntry) {
@@ -87,7 +87,7 @@ public class FlowManagerImpl implements IFlowManager {
 		// TODO Auto-generated method stub
 
 	}
-
+*/
 	@Override
 	public boolean installRemoteFlowEntry(FlowEntry entry) {
 		// TODO Auto-generated method stub
@@ -98,6 +98,18 @@ public class FlowManagerImpl implements IFlowManager {
 	public void removeRemoteFlowEntry(FlowEntry entry) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
