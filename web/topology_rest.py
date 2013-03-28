@@ -771,7 +771,7 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
 #* Create Flow
 #http://localhost:9000/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>
 #1 FOOBAR 00:00:00:00:00:00:01:01 1 00:00:00:00:00:00:01:0b 1 matchSrcMac 00:00:00:00:00:00 matchDstMac 00:01:00:00:00:00
-@app.route("/gui/addfow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
+@app.route("/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
 def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   command =  "/home/ubuntu/ONOS/web/get_flow.py  all |grep FlowPath  |gawk '{print strtonum($4)}'| sort -n | tail -n 1"
   print command
