@@ -50,6 +50,7 @@ import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.flow.IFlowManager;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -64,12 +65,13 @@ import org.openflow.protocol.action.OFActionOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
+public class FlowManager implements IFloodlightModule, IFlowService, IFlowManager, INetMapStorage {
 
     public GraphDBConnection conn;
 
     protected IRestApiService restApi;
     protected IFloodlightProviderService floodlightProvider;
+    protected ITopoRouteService topoRouteService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -144,8 +146,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    return;
 		}
 
-		ITopoRouteService topoRouteService =
-		    context.getServiceImpl(ITopoRouteService.class);
 		if (topoRouteService == null) {
 		    log.debug("Topology Route Service not found");
 		    return;
@@ -312,7 +312,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		// Process my Flow Entries
 		//
-		Boolean processed_measurement_flow = false;
+		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
 		    IFlowEntry flowEntryObj = entry.getValue();
 		    // Code for measurement purpose
@@ -339,6 +339,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (mySwitch == null)
 			continue;		// Shouldn't happen
 
+		    // TODO: PAVPAVPAV: FROM HERE...
 		    //
 		    // Create the Open Flow Flow Modification Entry to push
 		    //
@@ -446,6 +447,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    } catch (IOException e) {
 			log.error("Failure writing flow mod from network map", e);
 		    }
+		    // TODO: XXX: PAVPAVPAV: TO HERE.
+		    // TODO: XXX: PAVPAVPAV: Update the flowEntryObj
+		    // to "FE_SWITCH_UPDATED" in the new (refactored) code.
 		}
 
 		//
@@ -542,6 +546,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Collection<Class<? extends IFloodlightService>> l =
 	    new ArrayList<Class<? extends IFloodlightService>>();
 	l.add(IFloodlightProviderService.class);
+	l.add(ITopoRouteService.class);
 	l.add(IRestApiService.class);
         return l;
     }
@@ -551,6 +556,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	throws FloodlightModuleException {
 	this.context = context;
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
+	topoRouteService = context.getServiceImpl(ITopoRouteService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
 					    EnumSet.of(OFType.FLOW_MOD),
@@ -1174,5 +1180,397 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 
 	return flowPath;
+    }
+
+    /**
+     * Add and maintain a shortest-path flow.
+     *
+     * NOTE: The Flow Path does NOT contain all flow entries.
+     * Instead, it contains a single dummy flow entry that is used to
+     * store the matching condition(s).
+     * That entry is replaced by the appropriate entries from the
+     * internally performed shortest-path computation.
+     *
+     * @param flowPath the Flow Path with the endpoints and the match
+     * conditions to install.
+     * @param flowId the return-by-reference Flow ID as assigned internally.
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean addAndMaintainShortestPathFlow(FlowPath flowPath,
+						  FlowId flowId) {
+	//
+	// Do the shortest path computation
+	//
+	DataPath dataPath =
+	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
+					     flowPath.dataPath().dstPort());
+	if (dataPath == null)
+	    return false;
+
+	FlowEntryMatch userFlowEntryMatch = null;
+	if (! flowPath.dataPath().flowEntries().isEmpty()) {
+	    userFlowEntryMatch = flowPath.dataPath().flowEntries().get(0).flowEntryMatch();
+	}
+
+	//
+	// Set the incoming port matching and the outgoing port output
+	// actions for each flow entry.
+	//
+	for (FlowEntry flowEntry : dataPath.flowEntries()) {
+	    // Set the incoming port matching
+	    FlowEntryMatch flowEntryMatch = null;
+	    if (userFlowEntryMatch != null)
+		flowEntryMatch = new FlowEntryMatch(userFlowEntryMatch);
+	    else
+		flowEntryMatch = new FlowEntryMatch();
+	    flowEntry.setFlowEntryMatch(flowEntryMatch);
+	    flowEntryMatch.enableInPort(flowEntry.inPort());
+
+	    // Set the outgoing port output action
+	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
+	    if (flowEntryActions == null) {
+		flowEntryActions = new ArrayList<FlowEntryAction>();
+		flowEntry.setFlowEntryActions(flowEntryActions);
+	    }
+	    FlowEntryAction flowEntryAction = new FlowEntryAction();
+	    flowEntryAction.setActionOutput(flowEntry.outPort());
+	    flowEntryActions.add(flowEntryAction);
+	}
+
+	//
+	// Prepare the computed Flow Path
+	//
+	FlowPath resultFlowPath = new FlowPath();
+	resultFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
+	resultFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	resultFlowPath.setDataPath(dataPath);
+
+	boolean returnValue = addFlow(resultFlowPath, flowId);
+
+	// TODO: Mark the flow for maintenance purpose
+
+	return (returnValue);
+    }
+
+    /**
+     * Create a Flow from port to port.
+     *
+     * TODO: We don't need it for now.
+     *
+     * @param src_port the source port.
+     * @param dest_port the destination port.
+     */
+    public void createFlow(IPortObject src_port, IPortObject dest_port) {
+	// TODO: We don't need it for now.
+    }
+
+    /**
+     * Get all Flows matching a source and a destination port.
+     *
+     * TODO: Pankaj might be implementing it later.
+     *
+     * @param src_port the source port to match.
+     * @param dest_port the destination port to match.
+     * @return all flows matching the source and the destination port.
+     */
+    public Iterable<FlowPath> getFlows(IPortObject src_port,
+				       IPortObject dest_port) {
+	// TODO: Pankaj might be implementing it later.
+	return null;
+    }
+
+    /**
+     * Get all Flows going out from a port.
+     *
+     * TODO: We need it now: Pankaj
+     *
+     * @param port the port to match.
+     * @return the list of flows that are going out from the port.
+     */
+    public Iterable<FlowPath> getFlows(IPortObject port) {
+	// TODO: We need it now: Pankaj
+	return null;
+    }
+
+    /**
+     * Reconcile all flows on inactive port (src port of link which might be
+     * broken).
+     *
+     * TODO: We need it now: Pavlin
+     *
+     * @param src_port the port that has become inactive.
+     */
+    public void reconcileFlows(IPortObject src_port) {
+	// TODO: We need it now: Pavlin
+
+	// TODO: It should call installFlowEntry() as appropriate.
+    }
+
+    /**
+     * Reconcile all flows between a source and a destination port.
+     *
+     * TODO: We don't need it for now.
+     *
+     * @param src_port the source port.
+     * @param dest_port the destination port.
+     */
+    public void reconcileFlow(IPortObject src_port, IPortObject dest_port) {
+	// TODO: We don't need it for now.
+    }
+
+    /**
+     * Compute the shortest path between a source and a destination ports.
+     *
+     * @param src_port the source port.
+     * @param dest_port the destination port.
+     * @return the computed shortest path between the source and the
+     * destination ports. The flow entries in the path itself would
+     * contain the incoming port matching and the outgoing port output
+     * actions set. However, the path itself will NOT have the Flow ID,
+     * Installer ID, and any additional matching conditions for the
+     * flow entries (e.g., source or destination MAC address, etc).
+     */
+    public FlowPath computeFlowPath(IPortObject src_port,
+				    IPortObject dest_port) {
+	//
+	// Prepare the arguments
+	//
+	String dpidStr = src_port.getSwitch().getDPID();
+	Dpid srcDpid = new Dpid(dpidStr);
+	Port srcPort = new Port(src_port.getNumber());
+
+	dpidStr = dest_port.getSwitch().getDPID();
+	Dpid dstDpid = new Dpid(dpidStr);
+	Port dstPort = new Port(dest_port.getNumber());
+
+	SwitchPort src = new SwitchPort(srcDpid, srcPort);
+	SwitchPort dst = new SwitchPort(dstDpid, dstPort);
+
+	//
+	// Do the shortest path computation
+	//
+	DataPath dataPath = topoRouteService.getShortestPath(src, dst);
+	if (dataPath == null)
+	    return null;
+
+	//
+	// Set the incoming port matching and the outgoing port output
+	// actions for each flow entry.
+	//
+	for (FlowEntry flowEntry : dataPath.flowEntries()) {
+	    // Set the incoming port matching
+	    FlowEntryMatch flowEntryMatch = flowEntry.flowEntryMatch();
+	    if (flowEntryMatch == null) {
+		flowEntryMatch = new FlowEntryMatch();
+		flowEntry.setFlowEntryMatch(flowEntryMatch);
+	    }
+	    flowEntryMatch.enableInPort(flowEntry.inPort());
+
+	    // Set the outgoing port output action
+	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
+	    if (flowEntryActions == null) {
+		flowEntryActions = new ArrayList<FlowEntryAction>();
+		flowEntry.setFlowEntryActions(flowEntryActions);
+	    }
+	    FlowEntryAction flowEntryAction = new FlowEntryAction();
+	    flowEntryAction.setActionOutput(flowEntry.outPort());
+	    flowEntryActions.add(flowEntryAction);
+	}
+
+	//
+	// Prepare the return result
+	//
+	FlowPath flowPath = new FlowPath();
+	flowPath.setDataPath(dataPath);
+
+	return flowPath;
+    }
+
+    /**
+     * Get all Flow Entries of a Flow.
+     *
+     * @param flow the flow whose flow entries should be returned.
+     * @return the flow entries of the flow.
+     */
+    public Iterable<FlowEntry> getFlowEntries(FlowPath flow) {
+	return flow.dataPath().flowEntries();
+    }
+
+    /**
+     * Install a Flow Entry on a switch.
+     *
+     * @param mySwitches the DPID-to-Switch mapping for the switches
+     * controlled by this controller.
+     * @param flowEntry the flow entry to install.
+     * @return true on success, otherwise false.
+     */
+    public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
+				    FlowEntry flowEntry) {
+	IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+	if (mySwitch == null) {
+	    // Not my switch
+	    return (installRemoteFlowEntry(flowEntry));
+	}
+
+	//
+	// Create the OpenFlow Flow Modification Entry to push
+	//
+	OFFlowMod fm = (OFFlowMod) floodlightProvider.getOFMessageFactory()
+	    .getMessage(OFType.FLOW_MOD);
+	long cookie = flowEntry.flowEntryId().value();
+
+	short flowModCommand = OFFlowMod.OFPFC_ADD;
+	if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_ADD) {
+	    flowModCommand = OFFlowMod.OFPFC_ADD;
+	} else if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_MODIFY) {
+	    flowModCommand = OFFlowMod.OFPFC_MODIFY_STRICT;
+	} else if (flowEntry.flowEntryUserState() == FlowEntryUserState.FE_USER_DELETE) {
+	    flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
+	} else {
+	    // Unknown user state. Ignore the entry
+	    log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
+		      flowEntry.flowEntryId().toString(),
+		      flowEntry.flowEntryUserState());
+	    return false;
+	}
+
+	//
+	// Fetch the match conditions
+	//
+	OFMatch match = new OFMatch();
+	match.setWildcards(OFMatch.OFPFW_ALL);
+	Port matchInPort = flowEntry.flowEntryMatch().inPort();
+	if (matchInPort != null) {
+	    match.setInputPort(matchInPort.value());
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
+	}
+	Short matchEthernetFrameType =
+	    flowEntry.flowEntryMatch().ethernetFrameType();
+	if (matchEthernetFrameType != null) {
+	    match.setDataLayerType(matchEthernetFrameType);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	}
+	IPv4Net matchSrcIPv4Net = flowEntry.flowEntryMatch().srcIPv4Net();
+	if (matchSrcIPv4Net != null) {
+	    match.setFromCIDR(matchSrcIPv4Net.toString(), OFMatch.STR_NW_SRC);
+	}
+	IPv4Net matchDstIPv4Net = flowEntry.flowEntryMatch().dstIPv4Net();
+	if (matchDstIPv4Net != null) {
+	    match.setFromCIDR(matchDstIPv4Net.toString(), OFMatch.STR_NW_DST);
+	}
+	MACAddress matchSrcMac = flowEntry.flowEntryMatch().srcMac();
+	if (matchSrcMac != null) {
+	    match.setDataLayerSource(matchSrcMac.toString());
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	}
+	MACAddress matchDstMac = flowEntry.flowEntryMatch().dstMac();
+	if (matchDstMac != null) {
+	    match.setDataLayerDestination(matchDstMac.toString());
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	}
+
+	//
+	// Fetch the actions
+	//
+	// TODO: For now we support only the "OUTPUT" actions.
+	//
+	fm.setOutPort(OFPort.OFPP_NONE.getValue());
+	List<OFAction> actions = new ArrayList<OFAction>();
+	ArrayList<FlowEntryAction> flowEntryActions =
+	    flowEntry.flowEntryActions();
+	for (FlowEntryAction flowEntryAction : flowEntryActions) {
+	    FlowEntryAction.ActionOutput actionOutput =
+		flowEntryAction.actionOutput();
+	    if (actionOutput != null) {
+		short actionOutputPort = actionOutput.port().value();
+		OFActionOutput action = new OFActionOutput();
+		// XXX: The max length is hard-coded for now
+		action.setMaxLength((short)0xffff);
+		action.setPort(actionOutputPort);
+		actions.add(action);
+		if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+		    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+		    fm.setOutPort(actionOutputPort);
+		}
+	    }
+	}
+
+	fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
+	    .setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
+	    .setPriority(PRIORITY_DEFAULT)
+	    .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+	    .setCookie(cookie)
+	    .setCommand(flowModCommand)
+	    .setMatch(match)
+	    .setActions(actions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+
+	//
+	// TODO: Set the following flag
+	// fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
+	// See method ForwardingBase::pushRoute()
+	//
+
+	//
+	// Write the message to the switch
+	//
+	try {
+	    messageDamper.write(mySwitch, fm, null);
+	    mySwitch.flush();
+	} catch (IOException e) {
+	    log.error("Failure writing flow mod from network map", e);
+	    return false;
+	}
+	return true;
+    }
+
+    /**
+     * Remove a Flow Entry from a switch.
+     *
+     * TODO: We need it now: Pavlin
+     * - Remove only for local switches
+     * - It will call the removeRemoteFlowEntry() for remote switches.
+     * - To be called by reconcileFlow()
+     *
+     * @param entry the flow entry to remove.
+     */
+    public void removeFlowEntry(FlowEntry entry) {
+	// TODO: We need it now: Pavlin
+	//  - Remove only for local switches
+	//  - It will call the removeRemoteFlowEntry() for remote switches.
+	//  - To be called by reconcileFlow()
+    }
+
+    /**
+     * Install a Flow Entry on a remote controller.
+     *
+     * TODO: We need it now: Jono
+     * - For now it will make a REST call to the remote controller.
+     * - Internally, it needs to know the name of the remote controller.
+     *
+     * @param entry the flow entry to install.
+     * @return true on success, otherwise false.
+     */
+    public boolean installRemoteFlowEntry(FlowEntry entry) {
+	// TODO: We need it now: Jono
+	//  - For now it will make a REST call to the remote controller.
+	//  - Internally, it needs to know the name of the remote controller.
+	return true;
+    }
+
+    /**
+     * Remove a flow entry on a remote controller.
+     *
+     * TODO: We need it now: Jono
+     * - For now it will make a REST call to the remote controller.
+     * - Internally, it needs to know the name of the remote controller.
+     *
+     * @param entry the flow entry to remove.
+     */
+    public void removeRemoteFlowEntry(FlowEntry entry) {
+	// TODO: We need it now: Jono
+	//  - For now it will make a REST call to the remote controller.
+	//  - Internally, it needs to know the name of the remote controller.
     }
 }
