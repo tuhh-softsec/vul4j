@@ -10,6 +10,7 @@ import net.floodlightcontroller.util.FlowId;
 
 public interface IDBUtils {	
 	public ISwitchObject searchSwitch(GraphDBConnection conn, String dpid);
+	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid);
 	public Iterable<ISwitchObject> getActiveSwitches(GraphDBConnection conn);
 	public Iterable<ISwitchObject> getAllSwitches(GraphDBConnection conn);
 	public Iterable<ISwitchObject> getInactiveSwitches(GraphDBConnection conn);
