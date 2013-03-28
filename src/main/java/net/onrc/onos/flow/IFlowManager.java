@@ -63,20 +63,20 @@ public interface IFlowManager {
     /**
      * Compute the shortest path between a source and a destination ports.
      *
-     * TODO: We need it now: Pavlin
-     *
      * @param src_port the source port.
      * @param dest_port the destination port.
      * @return the computed shortest path between the source and the
-     * destination ports.
+     * destination ports. The flow entries in the path itself would
+     * contain the incoming port matching and the outgoing port output
+     * actions set. However, the path itself will NOT have the Flow ID,
+     * Installer ID, and any additional matching conditions for the
+     * flow entries (e.g., source or destination MAC address, etc).
      */
     public FlowPath computeFlowPath(IPortObject src_port,
 				    IPortObject dest_port);
 
     /**
      * Get all Flow Entries of a Flow.
-     *
-     * TODO: We need it now: Pavlin
      *
      * @param flow the flow whose flow entries should be returned.
      * @return the flow entries of the flow.
@@ -85,11 +85,6 @@ public interface IFlowManager {
 
     /**
      * Install a Flow Entry on a switch.
-     *
-     * TODO: We need it now: Pavlin
-     * - Install only for local switches
-     * - It will call the installRemoteFlowEntry() for remote switches.
-     * - To be called by reconcileFlow()
      *
      * @param mySwitches the DPID-to-Switch mapping for the switches
      * controlled by this controller.
@@ -102,14 +97,13 @@ public interface IFlowManager {
     /**
      * Remove a Flow Entry from a switch.
      *
-     * TODO: We need it now: Pavlin
-     * - Remove only for local switches
-     * - It will call the removeRemoteFlowEntry() for remote switches.
-     * - To be called by reconcileFlow()
-     *
-     * @param entry the flow entry to remove.
+     * @param mySwitches the DPID-to-Switch mapping for the switches
+     * controlled by this controller.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeFlowEntry(FlowEntry entry);
+    public boolean removeFlowEntry(Map<Long, IOFSwitch> mySwitches,
+				   FlowEntry flowEntry);
 
     /**
      * Install a Flow Entry on a remote controller.
@@ -118,19 +112,16 @@ public interface IFlowManager {
      * - For now it will make a REST call to the remote controller.
      * - Internally, it needs to know the name of the remote controller.
      *
-     * @param entry the flow entry to install.
+     * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installRemoteFlowEntry(FlowEntry entry);
+    public boolean installRemoteFlowEntry(FlowEntry flowEntry);
 
     /**
      * Remove a flow entry on a remote controller.
      *
-     * TODO: We need it now: Jono
-     * - For now it will make a REST call to the remote controller.
-     * - Internally, it needs to know the name of the remote controller.
-     *
-     * @param entry the flow entry to remove.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeRemoteFlowEntry(FlowEntry entry);        
+    public boolean removeRemoteFlowEntry(FlowEntry flowEntry);
 }

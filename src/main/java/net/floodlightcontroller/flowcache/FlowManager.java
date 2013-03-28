@@ -710,13 +710,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    // - flowEntry.matchDstMac()
 	    // - flowEntry.actionOutput()
 	    //
-	    ISwitchObject sw = conn.utils().searchSwitch(conn,flowEntry.dpid().toString());
+	    ISwitchObject sw =
+		conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
 	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    
 	    flowEntryObj.setSwitch(sw);
 	    if (flowEntry.flowEntryMatch().matchInPort()) {
-	    	IPortObject inport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    			flowEntry.flowEntryMatch().inPort().value());
+	    	IPortObject inport =
+		    conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+					    flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setInPort(inport);
 	    }
@@ -738,10 +739,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
 	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
 	    	if (fa.actionOutput() != null) {
-	    		IPortObject outport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    									fa.actionOutput().port().value());
-	    		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
-	    		flowEntryObj.setOutPort(outport);
+		    IPortObject outport =
+			conn.utils().searchPort(conn,
+						flowEntry.dpid().toString(),
+						fa.actionOutput().port().value());
+		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		    flowEntryObj.setOutPort(outport);
 	    	}
 	    }
 	    // TODO: Hacks with hard-coded state names!
@@ -1287,6 +1290,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param src_port the source port.
      * @param dest_port the destination port.
      */
+    @Override
     public void createFlow(IPortObject src_port, IPortObject dest_port) {
 	// TODO: We don't need it for now.
     }
@@ -1300,6 +1304,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param dest_port the destination port to match.
      * @return all flows matching the source and the destination port.
      */
+    @Override
     public Iterable<FlowPath> getFlows(IPortObject src_port,
 				       IPortObject dest_port) {
 	// TODO: Pankaj might be implementing it later.
@@ -1314,6 +1319,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param port the port to match.
      * @return the list of flows that are going out from the port.
      */
+    @Override
     public Iterable<FlowPath> getFlows(IPortObject port) {
 	// TODO: We need it now: Pankaj
 	return null;
@@ -1327,6 +1333,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      *
      * @param src_port the port that has become inactive.
      */
+    @Override
     public void reconcileFlows(IPortObject src_port) {
 	// TODO: We need it now: Pavlin
 
@@ -1341,6 +1348,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param src_port the source port.
      * @param dest_port the destination port.
      */
+    @Override
     public void reconcileFlow(IPortObject src_port, IPortObject dest_port) {
 	// TODO: We don't need it for now.
     }
@@ -1357,6 +1365,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * Installer ID, and any additional matching conditions for the
      * flow entries (e.g., source or destination MAC address, etc).
      */
+    @Override
     public FlowPath computeFlowPath(IPortObject src_port,
 				    IPortObject dest_port) {
 	//
@@ -1419,6 +1428,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flow the flow whose flow entries should be returned.
      * @return the flow entries of the flow.
      */
+    @Override
     public Iterable<FlowEntry> getFlowEntries(FlowPath flow) {
 	return flow.dataPath().flowEntries();
     }
@@ -1431,6 +1441,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
+    @Override
     public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
 				    FlowEntry flowEntry) {
 	IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
@@ -1554,18 +1565,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a Flow Entry from a switch.
      *
-     * TODO: We need it now: Pavlin
-     * - Remove only for local switches
-     * - It will call the removeRemoteFlowEntry() for remote switches.
-     * - To be called by reconcileFlow()
-     *
-     * @param entry the flow entry to remove.
+     * @param mySwitches the DPID-to-Switch mapping for the switches
+     * controlled by this controller.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeFlowEntry(FlowEntry entry) {
-	// TODO: We need it now: Pavlin
-	//  - Remove only for local switches
-	//  - It will call the removeRemoteFlowEntry() for remote switches.
-	//  - To be called by reconcileFlow()
+    @Override
+    public boolean removeFlowEntry(Map<Long, IOFSwitch> mySwitches,
+				    FlowEntry flowEntry) {
+	//
+	// The installFlowEntry() method implements both installation
+	// and removal of flow entries.
+	//
+	return (installFlowEntry(mySwitches, flowEntry));
     }
 
     /**
@@ -1575,10 +1587,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * - For now it will make a REST call to the remote controller.
      * - Internally, it needs to know the name of the remote controller.
      *
-     * @param entry the flow entry to install.
+     * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installRemoteFlowEntry(FlowEntry entry) {
+    @Override
+    public boolean installRemoteFlowEntry(FlowEntry flowEntry) {
 	// TODO: We need it now: Jono
 	//  - For now it will make a REST call to the remote controller.
 	//  - Internally, it needs to know the name of the remote controller.
@@ -1588,15 +1601,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a flow entry on a remote controller.
      *
-     * TODO: We need it now: Jono
-     * - For now it will make a REST call to the remote controller.
-     * - Internally, it needs to know the name of the remote controller.
-     *
-     * @param entry the flow entry to remove.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeRemoteFlowEntry(FlowEntry entry) {
-	// TODO: We need it now: Jono
-	//  - For now it will make a REST call to the remote controller.
-	//  - Internally, it needs to know the name of the remote controller.
+    @Override
+    public boolean removeRemoteFlowEntry(FlowEntry flowEntry) {
+	//
+	// The installRemoteFlowEntry() method implements both installation
+	// and removal of flow entries.
+	//
+	return (installRemoteFlowEntry(flowEntry));
     }
 }
