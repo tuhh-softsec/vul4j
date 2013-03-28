@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -695,7 +696,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    flowEntryObj.setType("flow_entry");
 
 	    // 
-	    // Set the Flow Entry attributes:
+	    // Set the Flow Entry Edges and attributes:
+	    // - Switch edge
+	    // - InPort edge
+	    // - OutPort edge
+	    //
 	    // - flowEntry.flowEntryMatch()
 	    // - flowEntry.flowEntryActions()
 	    // - flowEntry.dpid()
@@ -710,13 +715,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    // - flowEntry.matchDstMac()
 	    // - flowEntry.actionOutput()
 	    //
-	    ISwitchObject sw = conn.utils().searchSwitch(conn,flowEntry.dpid().toString());
+	    ISwitchObject sw =
+		conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
 	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    
 	    flowEntryObj.setSwitch(sw);
 	    if (flowEntry.flowEntryMatch().matchInPort()) {
-	    	IPortObject inport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    			flowEntry.flowEntryMatch().inPort().value());
+	    	IPortObject inport =
+		    conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+					    flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setInPort(inport);
 	    }
@@ -738,10 +744,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
 	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
 	    	if (fa.actionOutput() != null) {
-	    		IPortObject outport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    									fa.actionOutput().port().value());
-	    		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
-	    		flowEntryObj.setOutPort(outport);
+		    IPortObject outport =
+			conn.utils().searchPort(conn,
+						flowEntry.dpid().toString(),
+						fa.actionOutput().port().value());
+		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		    flowEntryObj.setOutPort(outport);
 	    	}
 	    }
 	    // TODO: Hacks with hard-coded state names!
@@ -751,18 +759,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		flowEntryObj.setUserState("FE_USER_ADD");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	    // and FlowEntryErrorState.
+	    // TODO: Take care of the FlowEntryErrorState.
 	    //
 
 	    // Flow Entries edges:
 	    //   Flow
-	    //   NextFE
-	    //   InPort
-	    //   OutPort
-	    //   Switch
-	    if (! found)
+	    //   NextFE (TODO)
+	    if (! found) {
 		flowObj.addFlowEntry(flowEntryObj);
+		flowEntryObj.setFlow(flowObj);
+	    }
 	}
 	conn.endTx(Transaction.COMMIT);
 
@@ -1116,12 +1122,29 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	// Extract the Flow state
 	//
-	flowPath.setFlowId(new FlowId(flowObj.getFlowId()));
-	flowPath.setInstallerId(new CallerId(flowObj.getInstallerId()));
-	flowPath.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
-	flowPath.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
-	flowPath.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
-	flowPath.dataPath().dstPort().setPort(new Port(flowObj.getDstPort()));
+	String flowIdStr = flowObj.getFlowId();
+	String installerIdStr = flowObj.getInstallerId();
+	String srcSwitchStr = flowObj.getSrcSwitch();
+	Short srcPortStr = flowObj.getSrcPort();
+	String dstSwitchStr = flowObj.getDstSwitch();
+	Short dstPortStr = flowObj.getDstPort();
+
+	if ((flowIdStr == null) ||
+	    (installerIdStr == null) ||
+	    (srcSwitchStr == null) ||
+	    (srcPortStr == null) ||
+	    (dstSwitchStr == null) ||
+	    (dstPortStr == null)) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    return null;
+	}
+
+	flowPath.setFlowId(new FlowId(flowIdStr));
+	flowPath.setInstallerId(new CallerId(installerIdStr));
+	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
+	flowPath.dataPath().srcPort().setPort(new Port(srcPortStr));
+	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
+	flowPath.dataPath().dstPort().setPort(new Port(dstPortStr));
 
 	//
 	// Extract all Flow Entries
@@ -1129,8 +1152,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    FlowEntry flowEntry = new FlowEntry();
-	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryObj.getFlowEntryId()));
-	    flowEntry.setDpid(new Dpid(flowEntryObj.getSwitchDpid()));
+	    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	    String switchDpidStr = flowEntryObj.getSwitchDpid();
+	    String userState = flowEntryObj.getUserState();
+	    String switchState = flowEntryObj.getSwitchState();
+
+	    if ((flowEntryIdStr == null) ||
+		(switchDpidStr == null) ||
+		(userState == null) ||
+		(switchState == null)) {
+		// TODO: A work-around, becauuse of some bogus database objects
+		continue;
+	    }
+	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
+	    flowEntry.setDpid(new Dpid(switchDpidStr));
 
 	    //
 	    // Extract the match conditions
@@ -1167,10 +1202,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		actions.add(action);
 	    }
 	    flowEntry.setFlowEntryActions(actions);
-
-	    String userState = flowEntryObj.getUserState();
 	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
-	    String switchState = flowEntryObj.getSwitchState();
 	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
 	    //
 	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
@@ -1185,7 +1217,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Add and maintain a shortest-path flow.
      *
-     * NOTE: The Flow Path does NOT contain all flow entries.
+     * NOTE: The Flow Path argument does NOT contain all flow entries.
      * Instead, it contains a single dummy flow entry that is used to
      * store the matching condition(s).
      * That entry is replaced by the appropriate entries from the
@@ -1193,12 +1225,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      *
      * @param flowPath the Flow Path with the endpoints and the match
      * conditions to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @return true on success, otherwise false.
+     * @return the added shortest-path flow on success, otherwise null.
      */
     @Override
-    public boolean addAndMaintainShortestPathFlow(FlowPath flowPath,
-						  FlowId flowId) {
+    public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
 	//
 	// Do the shortest path computation
 	//
@@ -1206,7 +1236,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
 					     flowPath.dataPath().dstPort());
 	if (dataPath == null)
-	    return false;
+	    return null;
 
 	FlowEntryMatch userFlowEntryMatch = null;
 	if (! flowPath.dataPath().flowEntries().isEmpty()) {
@@ -1241,16 +1271,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	// Prepare the computed Flow Path
 	//
-	FlowPath resultFlowPath = new FlowPath();
-	resultFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
-	resultFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
-	resultFlowPath.setDataPath(dataPath);
+	FlowPath computedFlowPath = new FlowPath();
+	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
+	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setDataPath(dataPath);
 
-	boolean returnValue = addFlow(resultFlowPath, flowId);
+	FlowId flowId = new FlowId();
+	if (! addFlow(computedFlowPath, flowId))
+	    return null;
 
 	// TODO: Mark the flow for maintenance purpose
 
-	return (returnValue);
+	return (computedFlowPath);
     }
 
     /**
@@ -1261,6 +1293,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param src_port the source port.
      * @param dest_port the destination port.
      */
+    @Override
     public void createFlow(IPortObject src_port, IPortObject dest_port) {
 	// TODO: We don't need it for now.
     }
@@ -1274,6 +1307,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param dest_port the destination port to match.
      * @return all flows matching the source and the destination port.
      */
+    @Override
     public Iterable<FlowPath> getFlows(IPortObject src_port,
 				       IPortObject dest_port) {
 	// TODO: Pankaj might be implementing it later.
@@ -1288,23 +1322,123 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param port the port to match.
      * @return the list of flows that are going out from the port.
      */
+    @Override
     public Iterable<FlowPath> getFlows(IPortObject port) {
 	// TODO: We need it now: Pankaj
 	return null;
     }
 
     /**
-     * Reconcile all flows on inactive port (src port of link which might be
-     * broken).
+     * Reconcile all flows on inactive switch port.
      *
-     * TODO: We need it now: Pavlin
-     *
-     * @param src_port the port that has become inactive.
+     * @param portObject the port that has become inactive.
      */
-    public void reconcileFlows(IPortObject src_port) {
-	// TODO: We need it now: Pavlin
+    @Override
+    public void reconcileFlows(IPortObject portObject) {
+	Iterable<IFlowEntry> inFlowEntries = portObject.getInFlowEntries();
+	Iterable<IFlowEntry> outFlowEntries = portObject.getOutFlowEntries();
 
-	// TODO: It should call installFlowEntry() as appropriate.
+	//
+	// Collect all affected Flow IDs from the affected flow entries
+	//
+	HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
+	for (IFlowEntry flowEntryObj: inFlowEntries) {
+	    IFlowPath flowObj = flowEntryObj.getFlow();
+	    if (flowObj != null)
+		flowObjSet.add(flowObj);
+	}
+	for (IFlowEntry flowEntryObj: outFlowEntries) {
+	    IFlowPath flowObj = flowEntryObj.getFlow();
+	    if (flowObj != null)
+		flowObjSet.add(flowObj);
+	}
+	// conn.endTx(Transaction.COMMIT);
+
+	//
+	// Remove the old Flow Entries, and add the new Flow Entries
+	//
+	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
+	for (IFlowPath flowObj : flowObjSet) {
+	    FlowPath flowPath = extractFlowPath(flowObj);
+	    if (flowPath == null)
+		continue;
+
+	    //
+	    // Remove my Flow Entries from the Network MAP
+	    //
+	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    for (IFlowEntry flowEntryObj : flowEntries) {
+		String dpidStr = flowEntryObj.getSwitchDpid();
+		if (dpidStr == null)
+		    continue;
+		Dpid dpid = new Dpid(dpidStr);
+		IOFSwitch mySwitch = mySwitches.get(dpid.value());
+		if (mySwitch == null)
+		    continue;		// Ignore the entry: not my switch
+		flowObj.removeFlowEntry(flowEntryObj);
+		conn.utils().removeFlowEntry(conn, flowEntryObj);
+	    }
+
+	    //
+	    // Delete the flow entries from the switches
+	    //
+	    for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
+		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		} else {
+		    installFlowEntry(mySwitch, flowEntry);
+		}
+	    }
+
+	    //
+	    // Calculate the new shortest path and install it in the
+	    // Network MAP.
+	    //
+	    FlowPath addedFlowPath = addAndMaintainShortestPathFlow(flowPath);
+	    if (addedFlowPath == null) {
+		log.error("Cannot add Shortest Path Flow from {} to {}: path not found?",
+			  flowPath.dataPath().srcPort().toString(),
+			  flowPath.dataPath().dstPort().toString());
+		continue;
+	    }
+
+	    //
+	    // Add the flow entries to the switches
+	    //
+	    for (FlowEntry flowEntry : addedFlowPath.dataPath().flowEntries()) {
+		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		    continue;
+		}
+
+		IFlowEntry flowEntryObj =
+		    conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId());
+		if (flowEntryObj == null) {
+		    //
+		    // TODO: Remove the "new Object[] wrapper in the statement
+		    // below after the SLF4J logger is upgraded to
+		    // Version 1.7.5
+		    //
+		    log.error("Cannot add Flow Entry to switch {} for Path Flow from {} to {} : Flow Entry not in the Network MAP",
+			      new Object[] {
+				  flowEntry.dpid(),
+				  flowPath.dataPath().srcPort(),
+				  flowPath.dataPath().dstPort()
+			      });
+		    continue;
+		}
+		// Update the Flow Entry Switch State in the Network MAP
+		if (installFlowEntry(mySwitch, flowEntry)) {
+		    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+		}
+	    }
+	}
     }
 
     /**
@@ -1315,6 +1449,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param src_port the source port.
      * @param dest_port the destination port.
      */
+    @Override
     public void reconcileFlow(IPortObject src_port, IPortObject dest_port) {
 	// TODO: We don't need it for now.
     }
@@ -1331,6 +1466,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * Installer ID, and any additional matching conditions for the
      * flow entries (e.g., source or destination MAC address, etc).
      */
+    @Override
     public FlowPath computeFlowPath(IPortObject src_port,
 				    IPortObject dest_port) {
 	//
@@ -1393,6 +1529,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flow the flow whose flow entries should be returned.
      * @return the flow entries of the flow.
      */
+    @Override
     public Iterable<FlowEntry> getFlowEntries(FlowPath flow) {
 	return flow.dataPath().flowEntries();
     }
@@ -1400,19 +1537,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Install a Flow Entry on a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to install the Flow Entry into.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry) {
-	IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-	if (mySwitch == null) {
-	    // Not my switch
-	    return (installRemoteFlowEntry(flowEntry));
-	}
-
+    @Override
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
 	//
 	// Create the OpenFlow Flow Modification Entry to push
 	//
@@ -1528,18 +1658,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a Flow Entry from a switch.
      *
-     * TODO: We need it now: Pavlin
-     * - Remove only for local switches
-     * - It will call the removeRemoteFlowEntry() for remote switches.
-     * - To be called by reconcileFlow()
-     *
-     * @param entry the flow entry to remove.
+     * @param mySwitch the switch to remove the Flow Entry from.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeFlowEntry(FlowEntry entry) {
-	// TODO: We need it now: Pavlin
-	//  - Remove only for local switches
-	//  - It will call the removeRemoteFlowEntry() for remote switches.
-	//  - To be called by reconcileFlow()
+    @Override
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+	//
+	// The installFlowEntry() method implements both installation
+	// and removal of flow entries.
+	//
+	return (installFlowEntry(mySwitch, flowEntry));
     }
 
     /**
@@ -1549,10 +1678,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * - For now it will make a REST call to the remote controller.
      * - Internally, it needs to know the name of the remote controller.
      *
-     * @param entry the flow entry to install.
+     * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installRemoteFlowEntry(FlowEntry entry) {
+    @Override
+    public boolean installRemoteFlowEntry(FlowEntry flowEntry) {
 	// TODO: We need it now: Jono
 	//  - For now it will make a REST call to the remote controller.
 	//  - Internally, it needs to know the name of the remote controller.
@@ -1562,15 +1692,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a flow entry on a remote controller.
      *
-     * TODO: We need it now: Jono
-     * - For now it will make a REST call to the remote controller.
-     * - Internally, it needs to know the name of the remote controller.
-     *
-     * @param entry the flow entry to remove.
+     * @param flowEntry the flow entry to remove.
+     * @return true on success, otherwise false.
      */
-    public void removeRemoteFlowEntry(FlowEntry entry) {
-	// TODO: We need it now: Jono
-	//  - For now it will make a REST call to the remote controller.
-	//  - Internally, it needs to know the name of the remote controller.
+    @Override
+    public boolean removeRemoteFlowEntry(FlowEntry flowEntry) {
+	//
+	// The installRemoteFlowEntry() method implements both installation
+	// and removal of flow entries.
+	//
+	return (installRemoteFlowEntry(flowEntry));
     }
 }

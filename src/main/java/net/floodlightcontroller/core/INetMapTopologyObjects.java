@@ -283,26 +283,29 @@ public interface IFlowEntry extends IBaseObject {
 
 		@Property("actionOutput")
 		public void setActionOutput(Short actionOutput);
-		
+
+		@Adjacency(label="flow")
+		public IFlowPath getFlow();
+
+		@Adjacency(label="flow")
+		public void setFlow(IFlowPath flow);
+
 		@Adjacency(label="switch")
 		public ISwitchObject getSwitch();
-		
+
 		@Adjacency(label="switch")
 		public void setSwitch(ISwitchObject sw);
-		
+
 		@Adjacency(label="inport")
 		public IPortObject getInPort();
-		
+
 		@Adjacency(label="inport")
 		public void setInPort(IPortObject port);
-		
+
 		@Adjacency(label="outport")
 		public IPortObject getOutPort();
-		
-		@Adjacency(label="switch")
+
+		@Adjacency(label="outport")
 		public void setOutPort(IPortObject port);
-		
-		@Adjacency(label="flow")
-		public IFlowPath getFlowPath();
 	}
 }

@@ -52,10 +52,12 @@ public class AddShortestPathFlowResource extends ServerResource {
 
 	// Process the request
 	if (flowPath != null) {
-	    if (flowService.addAndMaintainShortestPathFlow(flowPath, result)
-		!= true) {
+	    FlowPath addedFlowPath =
+		flowService.addAndMaintainShortestPathFlow(flowPath);
+	    if (addedFlowPath == null)
 		result = new FlowId();		// Error: Return empty Flow Id
-	    }
+	    else
+		result = addedFlowPath.flowId();
 	}
 
         return result;
