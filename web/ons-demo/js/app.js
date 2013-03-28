@@ -455,7 +455,6 @@ updateTopology = function(svg, model) {
 		if (data.mouseDown) {
 			data.mouseDown = false;
 			d3.select('#topology').classed('linking', false);
-			mouseup
 			d3.event.stopPropagation();
 			d3.selectAll('.nodrop').classed('nodrop', false);
 		}
