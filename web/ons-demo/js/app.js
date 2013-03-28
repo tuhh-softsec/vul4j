@@ -128,7 +128,7 @@ function updateSelectedFlowsTopology() {
 			}
 		})
 		.classed('pending', function (d) {
-			return d && d.pending
+			return d && (d.createPending || d.deletePending);
 		});
 
 	// "marching ants"
@@ -166,11 +166,11 @@ function updateSelectedFlowsTable() {
 				var prompt = 'Delete flow ' + d.flowId.value + '?';
 				if (confirm(prompt)) {
 					deleteFlow(d);
-					d.pending = true;
+					d.deletePending = true;
 					updateSelectedFlows();
 
 					setTimeout(function () {
-						d.pending = false;
+						d.deletePending = false;
 						updateSelectedFlows();
 					}, pendingTimeout)
 				};
@@ -187,7 +187,7 @@ function updateSelectedFlowsTable() {
 					}
 				}
 			})
-			.classed('pending', d && d.pending);
+			.classed('pending', d && (d.deletePending || d.createPending));
 
 		row.select('.srcDPID')
 			.text(function (d) {
@@ -234,7 +234,8 @@ function updateSelectedFlows() {
 				var liveFlow = flowMap[makeFlowKey(flow)];
 				if (liveFlow) {
 					newSelectedFlows.push(liveFlow);
-				} else if (flow.pending) {
+					liveFlow.deletePending = flow.deletePending;
+				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				}
 			} else {
@@ -267,13 +268,13 @@ function selectFlow(flow) {
 	}
 }
 
-function deselectFlow(flow, ifPending) {
+function deselectFlow(flow, ifCreatePending) {
 	var flowKey = makeFlowKey(flow);
 	var newSelectedFlows = [];
 	selectedFlows.forEach(function (flow) {
 		if (!flow ||
 				flowKey !== makeFlowKey(flow) ||
-				flowKey === makeFlowKey(flow) && ifPending && !flow.pending ) {
+				flowKey === makeFlowKey(flow) && ifCreatePending && !flow.createPending ) {
 			newSelectedFlows.push(flow);
 		}
 	});
@@ -285,7 +286,7 @@ function deselectFlow(flow, ifPending) {
 	updateSelectedFlows();
 }
 
-function deselectFlowIfPending(flow) {
+function deselectFlowIfCreatePending(flow) {
 	deselectFlow(flow, true);
 }
 
@@ -800,13 +801,13 @@ updateTopology = function() {
 								}
 							}
 						},
-						pending: true
+						createPending: true
 					};
 
 					selectFlow(flow);
 
 					setTimeout(function () {
-						deselectFlowIfPending(flow);
+						deselectFlowIfCreatePending(flow);
 					}, pendingTimeout);
 				}
 			} else {
