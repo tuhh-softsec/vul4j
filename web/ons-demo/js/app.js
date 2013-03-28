@@ -15,7 +15,7 @@ var line = d3.svg.line()
     });
 
 var model;
-var svg, selectedFlowsView;
+var svg;
 var updateTopology;
 var pendingLinks = {};
 
@@ -68,26 +68,31 @@ function createTopologyView() {
 			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
 }
 
-var selectedFlowsData = [
-	{selected: false, flow: null},
-	{selected: false, flow: null},
-	{selected: false, flow: null}
-];
+var selectedFlows = [null, null, null];
 
 function drawFlows() {
 	// DRAW THE FLOWS
-	var flows = d3.select('svg').selectAll('.flow').data(selectedFlowsData, function (d) {
-		return d.flow ? d.flow.flowId.value : null;
+	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows, function (d) {
+		return d ? d.flowId.value : null;
 	});
 
-	flows.enter().append("svg:path")
-	.attr('class', 'flow')
-	.attr('d', function (d) {
-		if (!d.flow) {
+	flows.enter().append("svg:path").attr('class', 'flow')
+		.attr('stroke-dasharray', '4, 10')
+		.append('svg:animate')
+		.attr('attributeName', 'stroke-dashoffset')
+		.attr('attributeType', 'xml')
+		.attr('from', '500')
+		.attr('to', '-500')
+		.attr('dur', '20s')
+		.attr('repeatCount', 'indefinite');
+
+
+	flows.attr('d', function (d) {
+		if (!d) {
 			return;
 		}
 		var pts = [];
-		d.flow.dataPath.flowEntries.forEach(function (flowEntry) {
+		d.dataPath.flowEntries.forEach(function (flowEntry) {
 			var s = d3.select(document.getElementById(flowEntry.dpid.value));
 			var pt = document.querySelector('svg').createSVGPoint();
 			pt.x = s.attr('x');
@@ -97,102 +102,111 @@ function drawFlows() {
 		});
 		return line(pts);
 	})
-	.attr('stroke-dasharray', '4, 10')
-	.append('svg:animate')
-	.attr('attributeName', 'stroke-dashoffset')
-	.attr('attributeType', 'xml')
-	.attr('from', '500')
-	.attr('to', '-500')
-	.attr('dur', '20s')
-	.attr('repeatCount', 'indefinite');
-
-	flows.style('visibility', function (d) {
-		if (d) {
-			return d.selected ? '' : 'hidden';
-		}
-	})
 
 	// "marching ants"
-	// TODO: this will only be true if there's an iperf session running
-	flows.select('animate').attr('from', function (d) {
-		if (d.flow) {
-			if (d.selected) {
-				return '500';
-			} else {
-				return '-500';
-			}
-		}
-	});
+	flows.select('animate').attr('from', 500);
+
+	flows.exit().remove();
 }
 
-function updateFlowView() {
-	selectedFlowsView.data(selectedFlowsData);
-
-	selectedFlowsView.classed('selected', function (d) {
-		if (d.flow) {
-			return d.selected;
-		}
-	});
-
-	selectedFlowsView.select('.flowId')
-		.text(function (d) {
-			if (d.flow) {
-				return d.flow.flowId.value;
-			}
-		});
-
-	selectedFlowsView.select('.srcDPID')
-		.text(function (d) {
-			if (d.flow) {
-				return d.flow.dataPath.srcPort.dpid.value;
-			}
-		});
-
-	selectedFlowsView.select('.dstDPID')
-		.text(function (d) {
-			if (d.flow) {
-				return d.flow.dataPath.dstPort.dpid.value;
-			}
-		});
-}
-
-function createFlowView() {
-	function rowEnter(d, i) {
+function showFlowChooser() {
+	function rowEnter(d) {
 		var row = d3.select(this);
 
-		row.on('click', function () {
-			selectedFlowsData[i].selected = !selectedFlowsData[i].selected;
-			updateFlowView();
-			drawFlows();
-		});
-
 		row.append('div')
-			.classed('flowIndex', true)
-			.text(function () {
-				return i+1;
+			.classed('eye', true).
+			on('click', function () {
+				selectedFlows.unshift(d);
+				selectedFlows = selectedFlows.slice(0, 3);
+
+				updateSelectedFlows();
+				updateTopology(svg, model);
 			});
 
 		row.append('div')
-			.classed('flowId', true);
+			.classed('flowId', true)
+			.text(function (d) {
+				return d.flowId.value;
+			});
 
 		row.append('div')
-			.classed('srcDPID', true);
+			.classed('srcDPID', true)
+			.text(function (d) {
+				return d.dataPath.srcPort.dpid.value;
+			});
+
 
 		row.append('div')
-			.classed('dstDPID', true);
+			.classed('dstDPID', true)
+			.text(function (d) {
+				return d.dataPath.dstPort.dpid.value;
+			});
 
-		row.append('div')
-			.classed('iperf', true);
 	}
 
-	var flows = d3.select('#selectedFlows')
+	var flows = d3.select('#flowChooser')
+		.append('div')
+		.style('pointer-events', 'auto')
 		.selectAll('.selectedFlow')
-		.data(selectedFlowsData)
+		.data(model.flows)
 		.enter()
 		.append('div')
 		.classed('selectedFlow', true)
 		.each(rowEnter);
 
+	setTimeout(function () {
+		d3.select(document.body).on('click', function () {
+			d3.select('#flowChooser').html('');
+			d3.select(document.body).on('click', null);
+		});
+	}, 0);
+}
+
+function updateSelectedFlows() {
+	function rowEnter(d) {
+		var row = d3.select(this);
+		row.append('div').classed('flowId', true);
+		row.append('div').classed('srcDPID', true);
+		row.append('div').classed('dstDPID', true);
+		row.append('div').classed('iperf', true);
+	}
+
+	function rowUpdate(d) {
+		var row = d3.select(this);
+		row.select('.flowId')
+			.text(function (d) {
+				if (d) {
+					return d.flowId.value;
+				}
+			});
+
+		row.select('.srcDPID')
+			.text(function (d) {
+				if (d) {
+					return d.dataPath.srcPort.dpid.value;
+				}
+			});
+
+		row.select('.dstDPID')
+			.text(function (d) {
+				if (d) {
+					return d.dataPath.dstPort.dpid.value;
+				}
+			});
+	}
+
+	var flows = d3.select('#selectedFlows')
+		.selectAll('.selectedFlow')
+		.data(selectedFlows);
+
+	flows.enter()
+		.append('div')
+		.classed('selectedFlow', true)
+		.each(rowEnter);
+
+	flows.each(rowUpdate);
+
+	flows.exit().remove();
 
 	return flows;
 }
@@ -833,7 +847,7 @@ function updateControllers(model) {
 			return d;
 		})
 		.append('div')
-		.attr('class', 'controllerEye');
+		.attr('class', 'eye');
 
 	controllers.attr('class', function (d) {
 			var color = 'colorInactive';
@@ -863,7 +877,7 @@ function updateControllers(model) {
 		}
 	});
 
-	controllers.select('.controllerEye').on('click', function (c) {
+	controllers.select('.eye').on('click', function (c) {
 		var allSelected = true;
 		for (var key in controllerColorMap) {
 			if (!d3.select(document.body).classed(controllerColorMap[key] + '-selected')) {
@@ -888,23 +902,14 @@ function updateControllers(model) {
 
 }
 
-function sync(svg, selectedFlowsView) {
+function sync(svg) {
 	var d = Date.now();
 	updateModel(function (newModel) {
 //		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
 		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
 			updateControllers(newModel);
-
-	// fake flows right now
-	var i;
-	for (i = 0; i < newModel.flows.length && i < selectedFlowsData.length; i+=1) {
-		var selected = selectedFlowsData[i] ? selectedFlowsData[i].selected : false;
-		selectedFlowsData[i].flow = newModel.flows[i];
-		selectedFlowsData[i].selected = selected;
-	}
-
-			updateFlowView(newModel);
+			updateSelectedFlows();
 			updateTopology(svg, newModel);
 		} else {
 //			console.log('no change');
@@ -921,7 +926,12 @@ function sync(svg, selectedFlowsView) {
 }
 
 svg = createTopologyView();
-selectedFlowsView = createFlowView();
+updateSelectedFlows();
+
+d3.select('#showFlowChooser').on('click', function () {
+	showFlowChooser();
+});
+
 
 // workaround for Chrome v25 bug
 // if executed immediately, the view box transform logic doesn't work properly
@@ -931,5 +941,5 @@ setTimeout(function () {
 	// viewbox transform stuff doesn't work in combination with browser zoom
 	// also works in Chrome v27
 	d3.select('#svg-container').style('zoom',  window.document.body.clientWidth/window.document.width);
-	sync(svg, selectedFlowsView);
+	sync(svg);
 }, 100);

@@ -44,26 +44,34 @@ body {
 	-webkit-box-orient: vertical;
 }
 
+#flowChooser {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	display: -webkit-box;
+	overflow: scroll;
+}
+
 .selectedFlow {
 	display: -webkit-box;
+	position: relative;
+}
+
+.selectedFlow .srcDPID, .selectedFlow .dstDPID {
 	-webkit-user-select: auto;
 }
 
 #selectedFlowsHeader {
 	display: -webkit-box;
+	height: 1.5em;
 }
 
-.flowIndex {
-	width: 1.5em;
-}
 
 .flowId {
 	width: 5em;
 }
 
-.srcDPID, .dstDPID {
-	width: 20em;
-}
 
 .iperf {
 	width: 100%;

@@ -95,6 +95,16 @@ body {
 	background-color: black;
 }
 
+#flowChooser .selectedFlow {
+	background-color: rgba(255, 255, 255, .75);
+	color: black;
+}
+
+#flowChooser .flowId {
+	padding-left: 2em;
+}
+
+
 .selectedFlow.selected {
 	color: black;
 	background-color:#AAA;
@@ -126,13 +136,24 @@ path.flow {
 	border-top: 1px solid #AAA;
 }
 
-.flowIndex, .flowId, .srcDPID, .dstDPID, .iperf {
+#flowChooser {
+	pointer-events: none;
+	background-color: rgba(0, 0, 0, .25);
+}
+
+
+.flowId, .srcDPID, .dstDPID, .iperf {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
 }
 
-.flowIndex, .flowId, .srcDPID, .dstDPID {
+.srcDPID, .dstDPID {
+	width: 12em;
+}
+
+
+.flowId, .srcDPID, .dstDPID {
 	border-right: 1px solid #AAA;
 }
 
@@ -147,12 +168,12 @@ path.flow {
 	position: relative;
 }
 
-.controllerEye {
+.eye {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	height: 100%;
-	width: 2em;
+	width: 2.25em;
 	background-image: url('../assets/eye.svg');
 	background-size: auto 100%;
 	background-repeat: no-repeat;
