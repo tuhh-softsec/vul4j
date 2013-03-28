@@ -710,13 +710,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    // - flowEntry.matchDstMac()
 	    // - flowEntry.actionOutput()
 	    //
-	    ISwitchObject sw = conn.utils().searchSwitch(conn,flowEntry.dpid().toString());
+	    ISwitchObject sw =
+		conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
 	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    
 	    flowEntryObj.setSwitch(sw);
 	    if (flowEntry.flowEntryMatch().matchInPort()) {
-	    	IPortObject inport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    			flowEntry.flowEntryMatch().inPort().value());
+	    	IPortObject inport =
+		    conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+					    flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    	flowEntryObj.setInPort(inport);
 	    }
@@ -738,10 +739,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
 	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
 	    	if (fa.actionOutput() != null) {
-	    		IPortObject outport = conn.utils().searchPort(conn,flowEntry.dpid().toString(),
-	    									fa.actionOutput().port().value());
-	    		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
-	    		flowEntryObj.setOutPort(outport);
+		    IPortObject outport =
+			conn.utils().searchPort(conn,
+						flowEntry.dpid().toString(),
+						fa.actionOutput().port().value());
+		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		    flowEntryObj.setOutPort(outport);
 	    	}
 	    }
 	    // TODO: Hacks with hard-coded state names!
