@@ -231,13 +231,11 @@ function updateSelectedFlows() {
 		var newSelectedFlows = [];
 		selectedFlows.forEach(function (flow) {
 			if (flow) {
-				if (flow.pending) {
+				var liveFlow = flowMap[makeFlowKey(flow)];
+				if (liveFlow) {
+					newSelectedFlows.push(liveFlow);
+				} else if (flow.pending) {
 					newSelectedFlows.push(flow);
-				} else {
-					var liveFlow = flowMap[makeFlowKey(flow)];
-					if (liveFlow) {
-						newSelectedFlows.push(liveFlow);
-					}
 				}
 			} else {
 				newSelectedFlows.push(null);
@@ -269,11 +267,13 @@ function selectFlow(flow) {
 	}
 }
 
-function deselectFlow(flow) {
+function deselectFlow(flow, ifPending) {
 	var flowKey = makeFlowKey(flow);
 	var newSelectedFlows = [];
 	selectedFlows.forEach(function (flow) {
-		if (!flow || flowKey !== makeFlowKey(flow)) {
+		if (!flow ||
+				flowKey !== makeFlowKey(flow) ||
+				flowKey === makeFlowKey(flow) && ifPending && !flow.pending ) {
 			newSelectedFlows.push(flow);
 		}
 	});
@@ -283,6 +283,10 @@ function deselectFlow(flow) {
 	}
 
 	updateSelectedFlows();
+}
+
+function deselectFlowIfPending(flow) {
+	deselectFlow(flow, true);
 }
 
 function showFlowChooser() {
@@ -802,7 +806,7 @@ updateTopology = function() {
 					selectFlow(flow);
 
 					setTimeout(function () {
-						deselectFlow(flow);
+						deselectFlowIfPending(flow);
 					}, pendingTimeout);
 				}
 			} else {
