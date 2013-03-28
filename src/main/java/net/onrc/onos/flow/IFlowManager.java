@@ -83,24 +83,20 @@ public interface IFlowManager {
     /**
      * Install a Flow Entry on a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to install the Flow Entry into.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry);
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry);
 
     /**
      * Remove a Flow Entry from a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to remove the Flow Entry from.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    public boolean removeFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				   FlowEntry flowEntry);
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry);
 
     /**
      * Install a Flow Entry on a remote controller.

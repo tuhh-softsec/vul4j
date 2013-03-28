@@ -1384,7 +1384,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    //
 	    for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
 		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
-		installFlowEntry(mySwitches, flowEntry);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		} else {
+		    installFlowEntry(mySwitch, flowEntry);
+		}
 	    }
 
 	    //
@@ -1393,7 +1399,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    //
 	    FlowPath addedFlowPath = addAndMaintainShortestPathFlow(flowPath);
 	    if (addedFlowPath == null) {
-		log.error("Cannot add Shortest Path Flow from {} to {}",
+		log.error("Cannot add Shortest Path Flow from {} to {}: path not found?",
 			  flowPath.dataPath().srcPort().toString(),
 			  flowPath.dataPath().dstPort().toString());
 		continue;
@@ -1404,7 +1410,33 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    //
 	    for (FlowEntry flowEntry : addedFlowPath.dataPath().flowEntries()) {
 		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
-		installFlowEntry(mySwitches, flowEntry);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		    continue;
+		}
+
+		IFlowEntry flowEntryObj =
+		    conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId());
+		if (flowEntryObj == null) {
+		    //
+		    // TODO: Remove the "new Object[] wrapper in the statement
+		    // below after the SLF4J logger is upgraded to
+		    // Version 1.7.5
+		    //
+		    log.error("Cannot add Flow Entry to switch {} for Path Flow from {} to {} : Flow Entry not in the Network MAP",
+			      new Object[] {
+				  flowEntry.dpid(),
+				  flowPath.dataPath().srcPort(),
+				  flowPath.dataPath().dstPort()
+			      });
+		    continue;
+		}
+		// Update the Flow Entry Switch State in the Network MAP
+		if (installFlowEntry(mySwitch, flowEntry)) {
+		    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+		}
 	    }
 	}
     }
@@ -1505,20 +1537,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Install a Flow Entry on a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to install the Flow Entry into.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry) {
-	IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-	if (mySwitch == null) {
-	    // Not my switch
-	    return (installRemoteFlowEntry(flowEntry));
-	}
-
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
 	//
 	// Create the OpenFlow Flow Modification Entry to push
 	//
@@ -1634,19 +1658,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a Flow Entry from a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to remove the Flow Entry from.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean removeFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry) {
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
 	//
 	// The installFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
-	return (installFlowEntry(mySwitches, flowEntry));
+	return (installFlowEntry(mySwitch, flowEntry));
     }
 
     /**
