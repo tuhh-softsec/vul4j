@@ -523,7 +523,22 @@ public class DriverTest extends TestCase {
 		mockConnectionManager.setResponse(response);
 		Driver driver = createMockDriver(properties, mockConnectionManager);
 
-		// First request
+		// Request
+		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
+		driver.proxy("/foobar142-2/", request);
+		assertEquals(200, TestUtils.getResponse(request).getStatusLine().getStatusCode());
+		assertEquals("text/html; charset=ISO-8859-1", TestUtils.getResponse(request).getHeaders("Content-Type")[0].getValue());
+		
+		
+		// Same test with cache enabled
+		properties.put(Parameters.USE_CACHE.name, "true");
+		 response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Not Modified");
+		response.addHeader("Content-Type", "text/html");
+
+		mockConnectionManager.setResponse(response);
+		 driver = createMockDriver(properties, mockConnectionManager);
+
+		// Request
 		request = TestUtils.createRequest("http://www.bar142-2.com/foobar142-2/");
 		driver.proxy("/foobar142-2/", request);
 		assertEquals(200, TestUtils.getResponse(request).getStatusLine().getStatusCode());
