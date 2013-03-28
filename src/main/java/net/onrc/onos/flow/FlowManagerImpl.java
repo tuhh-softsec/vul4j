@@ -74,20 +74,8 @@ public class FlowManagerImpl implements IFlowManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-/*
-	@Override
-	public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
-			FlowEntry flowEntry) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	@Override
-	public void removeFlowEntry(FlowEntry entry) {
-		// TODO Auto-generated method stub
 
-	}
-*/
 	@Override
 	public boolean installRemoteFlowEntry(FlowEntry entry) {
 		// TODO Auto-generated method stub
@@ -95,7 +83,8 @@ public class FlowManagerImpl implements IFlowManager {
 	}
 
 	@Override
-	public void removeRemoteFlowEntry(FlowEntry entry) {
+	public boolean removeRemoteFlowEntry(FlowEntry entry) {
+		return false;
 		// TODO Auto-generated method stub
 
 	}

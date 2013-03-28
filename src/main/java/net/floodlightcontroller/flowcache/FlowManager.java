@@ -1323,7 +1323,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @return the list of flows that are going out from the port.
      */
     @Override
-    public Iterable<FlowPath> getFlows(IPortObject port) {
+    public Iterable<FlowPath> getOutFlows(IPortObject port) {
 	// TODO: We need it now: Pankaj
 	return null;
     }
