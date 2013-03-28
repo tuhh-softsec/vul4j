@@ -12,3 +12,13 @@ function parseURLParameters() {
 
 	return parameters;
 }
+
+function findLink(model, dpid) {
+	var links = [];
+	model.links.forEach(function (link) {
+		if (link['src-switch'] == dpid || link['dst-switch'] == dpid) {
+			links.push(link);
+		}
+	});
+	return links;
+}

@@ -6,6 +6,14 @@ body {
 	margin: 0px;
 }
 
+#topology.linking {
+	cursor: crosshair;
+}
+
+.nodrop {
+	cursor: not-allowed;
+}
+
 .status {
 	padding: 1em;
 }
@@ -87,14 +95,31 @@ body {
 	background-color: black;
 }
 
+#flowChooser .selectedFlow {
+	background-color: rgba(255, 255, 255, .75);
+	color: black;
+}
+
+#flowChooser .flowId {
+	padding-left: 2em;
+}
+
+
 .selectedFlow.selected {
 	color: black;
 	background-color:#AAA;
 }
 
-circle.highlight {
+.highlight circle {
 	stroke: rgba(255, 255, 255, .5);
 	stroke-width: 2px;
+}
+
+#linkVector {
+	fill: none;
+	stroke-width: 1px;
+	stroke: rgba(255, 255, 255, .75);
+	pointer-events: none;
 }
 
 path {
@@ -103,7 +128,7 @@ path {
 
 path.flow {
 	fill: none;
-	stroke-width: 3px;
+	stroke-width: 5px;
 	stroke: rgba(255, 255, 255, .35);
 }
 
@@ -111,13 +136,26 @@ path.flow {
 	border-top: 1px solid #AAA;
 }
 
-.flowIndex, .flowId, .srcDPID, .dstDPID, .iperf {
+#flowChooser {
+	pointer-events: none;
+	background-color: rgba(0, 0, 0, .25);
+}
+
+
+.flowId, .srcDPID, .dstDPID, .iperf {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
+	width: 3em;
 }
 
-.flowIndex, .flowId, .srcDPID, .dstDPID {
+
+.srcDPID, .dstDPID {
+	width: 12em;
+}
+
+
+.flowId, .srcDPID, .dstDPID {
 	border-right: 1px solid #AAA;
 }
 
@@ -132,13 +170,22 @@ path.flow {
 	position: relative;
 }
 
-.controllerEye {
+.black-eye {
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	height: 100%;
-	width: 2em;
-	background-image: url('../assets/eye.svg');
+	width: 2.25em;
+	background-image: url('../assets/black-eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .25em center;
+}
+
+.white-eye {
+	height: 100%;
+	width: 2.25em;
+	background-image: url('../assets/white-eye.svg');
 	background-size: auto 100%;
 	background-repeat: no-repeat;
 	background-position: .25em center;
@@ -202,14 +249,14 @@ path {
 }
 
 .color1 {
-	opacity: .2;
+	opacity: .15;
 	pointer-events: none;
 	fill: #EC0033;
 	background-color: #EC0033;
 }
 
 .color2 {
-	opacity: .2;
+	opacity: .15;
 	fill: #FFBA00;
 	background-color: #FFBA00;
 }
