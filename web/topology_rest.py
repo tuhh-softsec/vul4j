@@ -770,10 +770,10 @@ def del_flow(flow_id):
   return errcode
 
 #* Start Iperf Througput
-#http://localhost:9000/gui/iperf/start/<flow_id>
-@app.route("/gui/iperf/start/<flow_id>")
-def iperf_start(flow_id):
-  command = "iperf -xCMSV -t30 -i1 -u -c 127.0.0.1 > iperf_%s.out &" % (flow_id)
+#http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
+@app.route("/gui/iperf/start/<flow_id>/<duration>")
+def iperf_start(flow_id,duration):
+  command = "iperf -xCMSV -t%d -i 0.5 -y c -u -c 127.0.0.1 > iperf_%s.out 2>/dev/null &" % (duration, flow_id)
   print command
   errcode = os.popen(command).read()
   return errcode
