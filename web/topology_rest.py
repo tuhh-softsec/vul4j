@@ -140,6 +140,18 @@ def proxy_add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/proxy/gui/delflow/<flow_id>")
+def proxy_del_flow(flow_id):
+  try:
+    command = "curl -s %s/gui/delflow/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:

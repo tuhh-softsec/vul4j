@@ -35,12 +35,10 @@ var controllerFunctions = {
 		callURL(url);
 	},
 	delFlowCmd: function (flow) {
-		alert('delete flow')
+		var url = '/proxy/gui/delflow/' + flow.flowId.value;
+		callURL(url);
 	}
 };
-
-// http://gui3.onlab.us:8081/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>
-// http://gui3.onlab.us:8081/gui/delflow/<flow_id>
 
 function linkUp(link) {
 	controllerFunctions.linkCmd('up', link);

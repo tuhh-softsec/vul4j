@@ -18,7 +18,9 @@ var model;
 var svg;
 var updateTopology;
 var pendingLinks = {};
-var pendingFlows = {};
+var selectedFlows = [];
+
+var pendingTimeout = 10000;
 
 var colors = [
 	'color1',
@@ -66,8 +68,6 @@ function createTopologyView() {
 			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
 }
 
-var selectedFlows = [null, null, null];
-
 function updateSelectedFlowsTopology() {
 	// DRAW THE FLOWS
 	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows);
@@ -88,7 +88,7 @@ function updateSelectedFlowsTopology() {
 				return;
 			}
 			var pts = [];
-			if (d.pending) {
+			if (!d.dataPath.flowEntries) {
 				// create a temporary vector to indicate the pending flow
 				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
 				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
@@ -139,6 +139,7 @@ function updateSelectedFlowsTopology() {
 function updateSelectedFlowsTable() {
 	function rowEnter(d) {
 		var row = d3.select(this);
+		row.append('div').classed('deleteFlow', true);
 		row.append('div').classed('flowId', true);
 		row.append('div').classed('srcDPID', true);
 		row.append('div').classed('dstDPID', true);
@@ -160,6 +161,22 @@ function updateSelectedFlowsTable() {
 
 	function rowUpdate(d) {
 		var row = d3.select(this);
+		row.select('.deleteFlow').on('click', function () {
+			if (d) {
+				var prompt = 'Delete flow ' + d.flowId.value + '?';
+				if (confirm(prompt)) {
+					deleteFlow(d);
+					d.pending = true;
+					updateSelectedFlows();
+
+					setTimeout(function () {
+						d.pending = false;
+						updateSelectedFlows();
+					}, pendingTimeout)
+				};
+			}
+		});
+
 		row.select('.flowId')
 			.text(function (d) {
 				if (d) {
@@ -227,6 +244,9 @@ function updateSelectedFlows() {
 			}
 		});
 		selectedFlows = newSelectedFlows;
+	}
+	while (selectedFlows.length < 3) {
+		selectedFlows.push(null);
 	}
 
 	updateSelectedFlowsTable();
@@ -783,7 +803,7 @@ updateTopology = function() {
 
 					setTimeout(function () {
 						deselectFlow(flow);
-					}, 10000);
+					}, pendingTimeout);
 				}
 			} else {
 				var map = linkMap[srcData.dpid];
@@ -828,7 +848,7 @@ updateTopology = function() {
 								delete pendingLinks[makeLinkKey(link2)];
 
 								updateTopology();
-							}, 10000);
+							}, pendingTimeout);
 						}
 					}
 				}

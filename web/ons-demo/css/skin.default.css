@@ -151,7 +151,7 @@ path.flow.highlight {
 }
 
 
-.flowId, .srcDPID, .dstDPID, .iperf {
+.flowId, .srcDPID, .dstDPID, .iperf, #deleteFlow, .deleteFlow {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
@@ -164,7 +164,7 @@ path.flow.highlight {
 }
 
 
-.srcDPID, .dstDPID {
+.srcDPID, .dstDPID, .deleteFlow, #deleteFlow {
 	border-right: 1px solid #AAA;
 }
 
@@ -202,6 +202,14 @@ path.flow.highlight {
 	background-size: auto 100%;
 	background-repeat: no-repeat;
 	background-position: .25em center;
+}
+
+.deleteFlow {
+	height: 100%;
+	background-image: url('../assets/delete.svg');
+	background-size: auto 150%;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 #logo {
