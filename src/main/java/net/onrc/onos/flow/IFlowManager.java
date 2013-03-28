@@ -41,14 +41,11 @@ public interface IFlowManager {
     public Iterable<FlowPath> getFlows(IPortObject port);
 
     /**
-     * Reconcile all flows on inactive port (src port of link which might be
-     * broken).
+     * Reconcile all flows on inactive switch port.
      *
-     * TODO: We need it now: Pavlin
-     *
-     * @param src_port the port that has become inactive.
+     * @param portObject the port that has become inactive.
      */
-    public void reconcileFlows(IPortObject src_port);
+    public void reconcileFlows(IPortObject portObject);
 
     /**
      * Reconcile all flows between a source and a destination port.

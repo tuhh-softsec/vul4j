@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -695,7 +696,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    flowEntryObj.setType("flow_entry");
 
 	    // 
-	    // Set the Flow Entry attributes:
+	    // Set the Flow Entry Edges and attributes:
+	    // - Switch edge
+	    // - InPort edge
+	    // - OutPort edge
+	    //
 	    // - flowEntry.flowEntryMatch()
 	    // - flowEntry.flowEntryActions()
 	    // - flowEntry.dpid()
@@ -754,18 +759,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		flowEntryObj.setUserState("FE_USER_ADD");
 	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
 	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	    // and FlowEntryErrorState.
+	    // TODO: Take care of the FlowEntryErrorState.
 	    //
 
 	    // Flow Entries edges:
 	    //   Flow
-	    //   NextFE
-	    //   InPort
-	    //   OutPort
-	    //   Switch
-	    if (! found)
+	    //   NextFE (TODO)
+	    if (! found) {
 		flowObj.addFlowEntry(flowEntryObj);
+		flowEntryObj.setFlow(flowObj);
+	    }
 	}
 	conn.endTx(Transaction.COMMIT);
 
@@ -1214,7 +1217,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Add and maintain a shortest-path flow.
      *
-     * NOTE: The Flow Path does NOT contain all flow entries.
+     * NOTE: The Flow Path argument does NOT contain all flow entries.
      * Instead, it contains a single dummy flow entry that is used to
      * store the matching condition(s).
      * That entry is replaced by the appropriate entries from the
@@ -1222,12 +1225,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      *
      * @param flowPath the Flow Path with the endpoints and the match
      * conditions to install.
-     * @param flowId the return-by-reference Flow ID as assigned internally.
-     * @return true on success, otherwise false.
+     * @return the added shortest-path flow on success, otherwise null.
      */
     @Override
-    public boolean addAndMaintainShortestPathFlow(FlowPath flowPath,
-						  FlowId flowId) {
+    public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
 	//
 	// Do the shortest path computation
 	//
@@ -1235,7 +1236,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
 					     flowPath.dataPath().dstPort());
 	if (dataPath == null)
-	    return false;
+	    return null;
 
 	FlowEntryMatch userFlowEntryMatch = null;
 	if (! flowPath.dataPath().flowEntries().isEmpty()) {
@@ -1270,16 +1271,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	// Prepare the computed Flow Path
 	//
-	FlowPath resultFlowPath = new FlowPath();
-	resultFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
-	resultFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
-	resultFlowPath.setDataPath(dataPath);
+	FlowPath computedFlowPath = new FlowPath();
+	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
+	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setDataPath(dataPath);
 
-	boolean returnValue = addFlow(resultFlowPath, flowId);
+	FlowId flowId = new FlowId();
+	if (! addFlow(computedFlowPath, flowId))
+	    return null;
 
 	// TODO: Mark the flow for maintenance purpose
 
-	return (returnValue);
+	return (computedFlowPath);
     }
 
     /**
@@ -1326,18 +1329,84 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     }
 
     /**
-     * Reconcile all flows on inactive port (src port of link which might be
-     * broken).
+     * Reconcile all flows on inactive switch port.
      *
-     * TODO: We need it now: Pavlin
-     *
-     * @param src_port the port that has become inactive.
+     * @param portObject the port that has become inactive.
      */
     @Override
-    public void reconcileFlows(IPortObject src_port) {
-	// TODO: We need it now: Pavlin
+    public void reconcileFlows(IPortObject portObject) {
+	Iterable<IFlowEntry> inFlowEntries = portObject.getInFlowEntries();
+	Iterable<IFlowEntry> outFlowEntries = portObject.getOutFlowEntries();
 
-	// TODO: It should call installFlowEntry() as appropriate.
+	//
+	// Collect all affected Flow IDs from the affected flow entries
+	//
+	HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
+	for (IFlowEntry flowEntryObj: inFlowEntries) {
+	    IFlowPath flowObj = flowEntryObj.getFlow();
+	    if (flowObj != null)
+		flowObjSet.add(flowObj);
+	}
+	for (IFlowEntry flowEntryObj: outFlowEntries) {
+	    IFlowPath flowObj = flowEntryObj.getFlow();
+	    if (flowObj != null)
+		flowObjSet.add(flowObj);
+	}
+	// conn.endTx(Transaction.COMMIT);
+
+	//
+	// Remove the old Flow Entries, and add the new Flow Entries
+	//
+	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
+	for (IFlowPath flowObj : flowObjSet) {
+	    FlowPath flowPath = extractFlowPath(flowObj);
+	    if (flowPath == null)
+		continue;
+
+	    //
+	    // Remove my Flow Entries from the Network MAP
+	    //
+	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    for (IFlowEntry flowEntryObj : flowEntries) {
+		String dpidStr = flowEntryObj.getSwitchDpid();
+		if (dpidStr == null)
+		    continue;
+		Dpid dpid = new Dpid(dpidStr);
+		IOFSwitch mySwitch = mySwitches.get(dpid.value());
+		if (mySwitch == null)
+		    continue;		// Ignore the entry: not my switch
+		flowObj.removeFlowEntry(flowEntryObj);
+		conn.utils().removeFlowEntry(conn, flowEntryObj);
+	    }
+
+	    //
+	    // Delete the flow entries from the switches
+	    //
+	    for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
+		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
+		installFlowEntry(mySwitches, flowEntry);
+	    }
+
+	    //
+	    // Calculate the new shortest path and install it in the
+	    // Network MAP.
+	    //
+	    FlowPath addedFlowPath = addAndMaintainShortestPathFlow(flowPath);
+	    if (addedFlowPath == null) {
+		log.error("Cannot add Shortest Path Flow from {} to {}",
+			  flowPath.dataPath().srcPort().toString(),
+			  flowPath.dataPath().dstPort().toString());
+		continue;
+	    }
+
+	    //
+	    // Add the flow entries to the switches
+	    //
+	    for (FlowEntry flowEntry : addedFlowPath.dataPath().flowEntries()) {
+		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
+		installFlowEntry(mySwitches, flowEntry);
+	    }
+	}
     }
 
     /**
