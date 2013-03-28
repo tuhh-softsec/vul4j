@@ -1,5 +1,9 @@
 package net.floodlightcontroller.util;
 
+import java.util.ArrayList;
+
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.FlowId;
@@ -19,6 +23,75 @@ public class FlowPath implements Comparable<FlowPath> {
      */
     public FlowPath() {
 	dataPath = new DataPath();
+    }
+    
+    /**
+     * Constructor to instantiate from object in Network Map
+     */
+    public FlowPath(IFlowPath flowObj) {
+    	dataPath = new DataPath();
+    	this.setFlowId(new FlowId(flowObj.getFlowId()));
+    	this.setInstallerId(new CallerId(flowObj.getInstallerId()));
+    	this.dataPath().srcPort().setDpid(new Dpid(flowObj.getSrcSwitch()));
+    	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
+    	this.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
+    	this.dataPath().dstPort().setPort(new Port(flowObj.getDstPort()));
+
+    	//
+    	// Extract all Flow Entries
+    	//
+    	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+    	for (IFlowEntry flowEntryObj : flowEntries) {
+    	    FlowEntry flowEntry = new FlowEntry();
+    	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryObj.getFlowEntryId()));
+    	    flowEntry.setDpid(new Dpid(flowEntryObj.getSwitchDpid()));
+
+    	    //
+    	    // Extract the match conditions
+    	    //
+    	    FlowEntryMatch match = new FlowEntryMatch();
+    	    Short matchInPort = flowEntryObj.getMatchInPort();
+    	    if (matchInPort != null)
+    		match.enableInPort(new Port(matchInPort));
+    	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
+    	    if (matchSrcMac != null)
+    		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+    	    String matchDstMac = flowEntryObj.getMatchDstMac();
+    	    if (matchDstMac != null)
+    		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    flowEntry.setFlowEntryMatch(match);
+
+    	    //
+    	    // Extract the actions
+    	    //
+    	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+    	    Short actionOutputPort = flowEntryObj.getActionOutput();
+    	    if (actionOutputPort != null) {
+    		FlowEntryAction action = new FlowEntryAction();
+    		action.setActionOutput(new Port(actionOutputPort));
+    		actions.add(action);
+    	    }
+    	    flowEntry.setFlowEntryActions(actions);
+
+    	    String userState = flowEntryObj.getUserState();
+    	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
+    	    String switchState = flowEntryObj.getSwitchState();
+    	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
+    	    //
+    	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
+    	    // and FlowEntryErrorState.
+    	    //
+    	    this.dataPath().flowEntries().add(flowEntry);
+    	}
     }
 
     /**
