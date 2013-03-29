@@ -3,12 +3,6 @@ package net.onrc.onos.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.frames.FramedVertexIterable;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -17,6 +11,13 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowId;
+
+import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
+import com.tinkerpop.frames.FramedGraph;
+import com.tinkerpop.frames.FramedVertexIterable;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBUtils implements IDBUtils {
 	
@@ -58,7 +59,7 @@ public class GraphDBUtils implements IDBUtils {
 		GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
 		pipe.start(sw.asVertex());
 	    pipe.out("on").has("number", number);
-	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IPortObject.class);
+	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
 	    return r.iterator().hasNext() ? r.iterator().next() : null;		
 	}
 
@@ -78,8 +79,9 @@ public class GraphDBUtils implements IDBUtils {
 	
 	@Override
 	public void removePort(GraphDBConnection conn, IPortObject port) {
-		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		fg.removeVertex(port.asVertex());		
+//		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+		EventGraph<TitanGraph> eg = conn.getEventGraph();
+		eg.removeVertex(port.asVertex());		
 	}
 
 	@Override
@@ -125,7 +127,7 @@ public class GraphDBUtils implements IDBUtils {
 		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
 		pipe.start(flowEntry.asVertex());
 		pipe.out("flow");
-		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IFlowPath.class);
+		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), (Iterable) pipe, IFlowPath.class);
 		return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 
