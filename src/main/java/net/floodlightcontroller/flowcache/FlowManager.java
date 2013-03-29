@@ -270,76 +270,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		LinkedList<IFlowEntry> deleteFlowEntries =
 		    new LinkedList<IFlowEntry>();
 
-		//
-		// Fetch and recompute the Shortest Path for those
-		// Flow Paths this controller is responsible for.
-		//
-
-		/*
-		 * TODO: For now, the computation of the reconciliation is
-		 * commented-out.
-		 */
-		/*
-		topoRouteService.prepareShortestPathTopo();
-		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
-		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
-		for (IFlowPath flowPathObj : allFlowPaths) {
-		    if (flowPathObj == null)
-			continue;
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
-			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
-			continue;	// No need to maintain this flow
-
-		    // Fetch the fields needed to recompute the shortest path
-		    String flowIdStr = flowPathObj.getFlowId();
-		    String srcDpidStr = flowPathObj.getSrcSwitch();
-		    Short srcPortShort = flowPathObj.getSrcPort();
-		    String dstDpidStr = flowPathObj.getDstSwitch();
-		    Short dstPortShort = flowPathObj.getDstPort();
-		    if ((flowIdStr == null) ||
-			(srcDpidStr == null) ||
-			(srcPortShort == null) ||
-			(dstDpidStr == null) ||
-			(dstPortShort == null)) {
-			log.debug("IGNORING Flow Path entry with null fields");
-			continue;
-		    }
-
-		    FlowId flowId = new FlowId(flowIdStr);
-		    Dpid srcDpid = new Dpid(srcDpidStr);
-		    Port srcPort = new Port(srcPortShort);
-		    Dpid dstDpid = new Dpid(dstDpidStr);
-		    Port dstPort = new Port(dstPortShort);
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
-							     dstSwitchPort);
-		    String newDataPathSummaryStr = dataPath.dataPathSummary();
-		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
-			continue;	// Nothing changed
-
-		    //
-		    // Use the source DPID as a heuristic to decide
-		    // which controller is responsible for maintaining the
-		    // shortest path.
-		    // NOTE: This heuristic is error-prone: if the switch
-		    // goes away and no controller is responsible for that
-		    // switch, then the original Flow Path is not cleaned-up
-		    //
-		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
-		    if (mySwitch == null)
-			continue;	// Ignore: not my responsibility
-
-		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
-			      flowId.toString());
-		    flowObjSet.add(flowPathObj);
-		}
-		reconcileFlows(flowObjSet);
-		topoRouteService.dropShortestPathTopo();
-		*/
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
@@ -554,6 +484,80 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			conn.utils().removeFlowPath(conn, flowObj);
 		    }
 		}
+
+
+		//
+		// Fetch and recompute the Shortest Path for those
+		// Flow Paths this controller is responsible for.
+		//
+
+		/*
+		 * TODO: For now, the computation of the reconciliation is
+		 * commented-out.
+		 */
+		/*
+		topoRouteService.prepareShortestPathTopo();
+		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
+		for (IFlowPath flowPathObj : allFlowPaths) {
+		    if (flowPathObj == null)
+			continue;
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
+		    if (dataPathSummaryStr == null)
+			continue;	// Could be invalid entry?
+		    if (dataPathSummaryStr.isEmpty())
+			continue;	// No need to maintain this flow
+
+		    // Fetch the fields needed to recompute the shortest path
+		    String flowIdStr = flowPathObj.getFlowId();
+		    String srcDpidStr = flowPathObj.getSrcSwitch();
+		    Short srcPortShort = flowPathObj.getSrcPort();
+		    String dstDpidStr = flowPathObj.getDstSwitch();
+		    Short dstPortShort = flowPathObj.getDstPort();
+		    if ((flowIdStr == null) ||
+			(srcDpidStr == null) ||
+			(srcPortShort == null) ||
+			(dstDpidStr == null) ||
+			(dstPortShort == null)) {
+			log.debug("IGNORING Flow Path entry with null fields");
+			continue;
+		    }
+
+		    FlowId flowId = new FlowId(flowIdStr);
+		    Dpid srcDpid = new Dpid(srcDpidStr);
+		    Port srcPort = new Port(srcPortShort);
+		    Dpid dstDpid = new Dpid(dstDpidStr);
+		    Port dstPort = new Port(dstPortShort);
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    DataPath dataPath =
+			topoRouteService.getTopoShortestPath(srcSwitchPort,
+							     dstSwitchPort);
+		    String newDataPathSummaryStr = dataPath.dataPathSummary();
+		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
+			continue;	// Nothing changed
+
+		    //
+		    // Use the source DPID as a heuristic to decide
+		    // which controller is responsible for maintaining the
+		    // shortest path.
+		    // NOTE: This heuristic is error-prone: if the switch
+		    // goes away and no controller is responsible for that
+		    // switch, then the original Flow Path is not cleaned-up
+		    //
+		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
+		    if (mySwitch == null)
+			continue;	// Ignore: not my responsibility
+
+		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
+			      flowId.toString());
+		    flowObjSet.add(flowPathObj);
+		}
+		reconcileFlows(flowObjSet);
+		topoRouteService.dropShortestPathTopo();
+		*/
+
+
 		conn.endTx(Transaction.COMMIT);
 
 		if (processed_measurement_flow) {
