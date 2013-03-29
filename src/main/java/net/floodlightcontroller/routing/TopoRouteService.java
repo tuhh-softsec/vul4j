@@ -13,6 +13,7 @@ import java.util.Set;
 
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -23,14 +24,12 @@ import net.floodlightcontroller.util.FlowEntry;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thinkaurelius.titan.core.TitanFactory;
-import com.thinkaurelius.titan.core.TitanGraph;
-import com.thinkaurelius.titan.core.TitanTransaction;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
@@ -194,17 +193,15 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      */
     
     public void prepareShortestPathTopo() {
-	TitanGraph titanGraph = TitanFactory.open("/tmp/cassandra.titan");
-	TitanTransaction titanTransaction = titanGraph.startTransaction();
 	shortestPathTopo = new HashMap<Long, Node>();
 
 	//
 	// Fetch the relevant info from the Switch and Port vertices
 	// from the Titan Graph.
 	//
-	Iterable<Vertex> nodes = titanTransaction.getVertices("type", "switch");
-	for (Vertex nodeVertex : nodes) {
-	
+	Iterable<ISwitchObject> nodes = conn.utils().getActiveSwitches(conn);
+	for (ISwitchObject switchObj : nodes) {
+	    Vertex nodeVertex = switchObj.asVertex();
 	    //
 	    // The Switch info
 	    //
@@ -245,6 +242,11 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		    // The neighbor Switch info
 		    //
 		    for (Vertex neighborVertex : neighborPortVertex.getVertices(Direction.IN, "on")) {
+			// Ignore inactive switches
+			String state = neighborVertex.getProperty("state").toString();
+			if (! state.equals(SwitchState.ACTIVE.toString()))
+			    continue;
+
 			String neighborDpid = neighborVertex.getProperty("dpid").toString();
 			long neighborId = HexString.toLong(neighborDpid);
 			Node neighbor = shortestPathTopo.get(neighborId);
@@ -257,8 +259,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		}
 	    }
 	}
-
-	titanTransaction.stopTransaction(Conclusion.SUCCESS);
+	conn.endTx(Transaction.COMMIT);
     }
 
     /**
@@ -409,12 +410,17 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	result_data_path.setSrcPort(src);
 	result_data_path.setDstPort(dest);
 
-	TitanGraph titanGraph = TitanFactory.open("/tmp/cassandra.titan");
-	TitanTransaction titanTransaction = titanGraph.startTransaction();
-
 	String dpid_src = src.dpid().toString();
 	String dpid_dest = dest.dpid().toString();
 
+	// Get the source and destination switches
+	ISwitchObject srcSwitch =
+	    conn.utils().searchActiveSwitch(conn, dpid_src);
+	ISwitchObject destSwitch =
+	    conn.utils().searchActiveSwitch(conn, dpid_dest);
+	if (srcSwitch == null || destSwitch == null) {
+	    return null;
+	}
 
 	//
 	// Test whether we are computing a path from/to the same DPID.
@@ -426,21 +432,9 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    flowEntry.setInPort(src.port());
 	    flowEntry.setOutPort(dest.port());
 	    result_data_path.flowEntries().add(flowEntry);
-	    titanTransaction.stopTransaction(Conclusion.SUCCESS);
-	    // titanTransaction.shutdown();
+	    conn.endTx(Transaction.COMMIT);
 	    return result_data_path;
 	}
-
-
-	// Get the source vertex
-
-	ISwitchObject srcSwitch = conn.utils().searchSwitch(conn, dpid_src);
-	ISwitchObject destSwitch = conn.utils().searchSwitch(conn, dpid_dest);
-
-	if (srcSwitch == null || destSwitch == null) {
-		return null;
-	}
-
 
 	Vertex v_src = srcSwitch.asVertex();	
 	Vertex v_dest = destSwitch.asVertex();
@@ -464,6 +458,11 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    for (Vertex parentPort : nextVertex.getVertices(Direction.OUT, "on")) {
 		for (Vertex childPort : parentPort.getVertices(Direction.OUT, "link")) {
 		    for (Vertex child : childPort.getVertices(Direction.IN, "on")) {
+			// Ignore inactive switches
+			String state = child.getProperty("state").toString();
+			if (! state.equals(SwitchState.ACTIVE.toString()))
+			    continue;
+
 			if (! visitedSet.contains(child)) {
 			    previousVertexMap.put(parentPort, nextVertex);
 			    previousVertexMap.put(childPort, parentPort);
@@ -487,7 +486,6 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    previousVertex = currentVertex;
 	}
 	Collections.reverse(resultPath);
-
 
 
 	//
@@ -553,8 +551,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    result_data_path.flowEntries().add(flowEntry);
 	}
 
-	titanTransaction.stopTransaction(Conclusion.SUCCESS);
-	// titanTransaction.shutdown();
+	conn.endTx(Transaction.COMMIT);
 	if (result_data_path.flowEntries().size() > 0)
 	    return result_data_path;
 

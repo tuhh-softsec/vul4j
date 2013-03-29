@@ -45,6 +45,16 @@ public class GraphDBUtils implements IDBUtils {
 	}
 
 	@Override
+	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
+	    ISwitchObject sw = searchSwitch(conn, dpid);
+	    if ((sw != null) &&
+		sw.getState().equals(SwitchState.ACTIVE.toString())) {
+		return sw;
+	    }
+	    return null;
+	}
+
+	@Override
 	public IDeviceObject searchDevice(GraphDBConnection conn, String macAddr) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
