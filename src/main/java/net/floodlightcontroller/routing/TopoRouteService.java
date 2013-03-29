@@ -368,7 +368,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	Port outPort;
 	for (Node.Link link: resultPath) {
 	    // Setup the outgoing port, and add the Flow Entry
-	    outPort = new Port(link.neighborPort);
+	    outPort = new Port(link.myPort);
 
 	    FlowEntry flowEntry = new FlowEntry();
 	    flowEntry.setDpid(new Dpid(link.me.nodeId));
