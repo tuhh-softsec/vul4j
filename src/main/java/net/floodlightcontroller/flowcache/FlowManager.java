@@ -340,7 +340,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    if (mySwitch == null)
 			continue;		// Shouldn't happen
 
-		    // TODO: PAVPAVPAV: FROM HERE...
 		    //
 		    // Create the Open Flow Flow Modification Entry to push
 		    //
@@ -448,9 +447,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    } catch (IOException e) {
 			log.error("Failure writing flow mod from network map", e);
 		    }
-		    // TODO: XXX: PAVPAVPAV: TO HERE.
-		    // TODO: XXX: PAVPAVPAV: Update the flowEntryObj
-		    // to "FE_SWITCH_UPDATED" in the new (refactored) code.
 		}
 
 		//
@@ -495,7 +491,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		 * TODO: For now, the computation of the reconciliation is
 		 * commented-out.
 		 */
-		/*
 		topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
@@ -530,6 +525,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    Port dstPort = new Port(dstPortShort);
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    //
+		    // NOTE: Using here the regular getShortestPath() method
+		    // won't work here, because that method calls internally
+		    //  "conn.endTx(Transaction.COMMIT)", and that will
+		    // invalidate all handlers to the Titan database.
+		    // If we want to experiment with calling here
+		    // getShortestPath(), we need to refactor that code
+		    // to avoid closing the transaction.
+		    //
 		    DataPath dataPath =
 			topoRouteService.getTopoShortestPath(srcSwitchPort,
 							     dstSwitchPort);
@@ -555,7 +559,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		}
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
-		*/
 
 
 		conn.endTx(Transaction.COMMIT);
