@@ -193,6 +193,12 @@ public interface IFlowPath extends IBaseObject {
 		@Property("dst_port")
 		public void setDstPort(Short dstPort);
 
+		@Property("data_path_summary")
+		public String getDataPathSummary();
+
+		@Property("data_path_summary")
+		public void setDataPathSummary(String dataPathSummary);
+
 		@Adjacency(label="flow", direction=Direction.IN)
 		public Iterable<IFlowEntry> getFlowEntries();
 

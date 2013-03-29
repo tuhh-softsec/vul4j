@@ -79,6 +79,37 @@ public class DataPath {
     }
 
     /**
+     * Get a string with the summary of the shortest-path data path
+     * computation.
+     *
+     * NOTE: This method assumes the DataPath was created by
+     * using FlowManager::getShortestPath() so the inPort and outPort
+     * of the Flow Entries are set.
+     * NOTE: This method is a temporary solution and will be removed
+     * in the future.
+     *
+     * @return a string with the summary of the shortest-path
+     * data path computation if valid, otherwise the string "X".
+     * If the shortest-path was valid, The string has the following form:
+     * inPort/dpid/outPort;inPort/dpid/outPort;...
+     */
+    public String dataPathSummary() {
+	String resultStr = new String();
+	if (this.flowEntries != null) {
+	    for (FlowEntry flowEntry : this.flowEntries) {
+		// The data path summary string
+		resultStr = resultStr +
+		    flowEntry.inPort().toString() + "/"
+		    + flowEntry.dpid().toString() + "/" +
+		    flowEntry.outPort().toString() + ";";
+	    }
+	}
+	if (resultStr.isEmpty())
+	    resultStr = "X";		// Invalid shortest-path
+	return resultStr;
+    }
+
+    /**
      * Convert the data path to a string.
      *
      * The string has the following form:

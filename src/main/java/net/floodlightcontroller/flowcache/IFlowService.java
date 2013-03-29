@@ -20,9 +20,12 @@ public interface IFlowService extends IFloodlightService {
      *
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
+     * @param dataPathSummaryStr the data path summary string if the added
+     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
-    boolean addFlow(FlowPath flowPath, FlowId flowId);
+    boolean addFlow(FlowPath flowPath, FlowId flowId,
+		    String dataPathSummaryStr);
 
     /**
      * Delete a previously added flow.
