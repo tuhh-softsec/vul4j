@@ -1,4 +1,16 @@
 ** March 28, 2013 **
+- add and delete flow implemented
+- to add flow
+	- mouse down in src edge switch
+	- drag to dst edge switch
+	- release/confirm to create flow
+- to delete flow
+	- select flow in flow chooser
+	- click "close" button in flow table
+	- confirm
+- same "pending" style as other actions
+
+** March 28, 2013 **
 - basic flow chooser
 	- click in "eye" to show full list
 	- click on "eye" in full list to monitor that flow in the top slot (and show the flow in topology)
