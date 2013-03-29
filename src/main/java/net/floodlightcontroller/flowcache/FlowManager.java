@@ -1185,7 +1185,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    // Extract the Flow state
 	    //
 	    FlowPath flowPath = extractFlowPath(flowObj);
-	    flowPaths.add(flowPath);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
 	}
 
 	conn.endTx(Transaction.COMMIT);
