@@ -96,7 +96,7 @@ function stop {
   pids="$flpid $tdpid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
-      sudo kill -KILL $p
+      kill -KILL $p
       echo "Killed existing prosess (pid: $p)"
     fi
   done
