@@ -10,57 +10,64 @@ function callURL(url) {
 	});
 }
 
+function MAC(dpid) {
+	var cmps = dpid.split(':');
+	var MAC = '00:00:c0:a8:' + [cmps[6], cmps[7]].join(':');
+	return MAC;
+}
 
 var controllerFunctions = {
-	l: function (cmd, link) {
+	linkCmd: function (cmd, link) {
 		var url = '/proxy/gui/link/' + [cmd, link['src-switch'], link['src-port'], link['dst-switch'], link['dst-port']].join('/');
 		callURL(url);
 
 	},
-	s: function (cmd, s) {
+	switchCmd: function (cmd, s) {
 		var url = '/proxy/gui/switch/' + [cmd, s.dpid].join('/');
 		callURL(url);
 	},
-	c: function (cmd, c) {
+	ctrlCmd: function (cmd, c) {
 		var url = '/proxy/gui/controller/' + [cmd, c].join('/');
+		callURL(url);
+	},
+	addFlowCmd: function (src, dst) {
+		var url = '/proxy/gui/addflow/' + [src.dpid, 1, dst.dpid, 1, MAC(src.dpid), MAC(dst.dpid)].join('/');
+		callURL(url);
+	},
+	delFlowCmd: function (flow) {
+		var url = '/proxy/gui/delflow/' + flow.flowId.value;
 		callURL(url);
 	}
 };
 
-
-// if (parseURLParameters().mock) {
-// 	urls = mockURLs;
-// }
-
-
 function linkUp(link) {
-	controllerFunctions.l('up', link);
+	controllerFunctions.linkCmd('up', link);
 }
 
 function linkDown(link) {
-	controllerFunctions.l('down', link);
+	controllerFunctions.linkCmd('down', link);
 }
 
 function switchUp(s) {
-	controllerFunctions.s('up', s);
+	controllerFunctions.switchCmd('up', s);
 }
 
 function switchDown(s) {
-	controllerFunctions.s('down', s);
+	controllerFunctions.switchCmd('down', s);
 }
 
 function controllerUp(c) {
-	controllerFunctions.c('up', c);
+	controllerFunctions.ctrlCmd('up', c);
 }
 
 function controllerDown(c) {
-	controllerFunctions.c('down', c);
+	controllerFunctions.ctrlCmd('down', c);
 }
 
-function createFlow(src, dst) {
-
+function addFlow(src, dst) {
+	controllerFunctions.addFlowCmd(src, dst);
 }
 
-function deleteFlow(src, dst) {
-
+function deleteFlow(flow) {
+	controllerFunctions.delFlowCmd(flow);
 }
