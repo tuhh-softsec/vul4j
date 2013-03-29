@@ -1124,7 +1124,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    return flowPaths;
 		}
 	
-//		Collections.sort(allFlows);
+		Collections.sort(allFlows);
 		
 		for (FlowPath flow : allFlows) {
 			
