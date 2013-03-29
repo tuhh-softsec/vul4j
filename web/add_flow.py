@@ -21,6 +21,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ControllerIP = "127.0.0.1"
 ControllerPort = 8080
 MonitoringEnabled = False
+MonitoringByOnos = False
 ReadFromFile = ""
 
 DEBUG=0
@@ -83,6 +84,20 @@ def add_flow_path(flow_path):
   try:
     command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add/json" % (flow_path_json, ControllerIP, ControllerPort)
     debug("add_flow_path %s" % command)
+    result = os.popen(command).read()
+    debug("result %s" % result)
+    # parsedResult = json.loads(result)
+    # debug("parsed %s" % parsedResult)
+  except:
+    log_error("Controller IF has issue")
+    exit(1)
+
+def add_shortest_path_flow(flow_path):
+  flow_path_json = json.dumps(flow_path)
+
+  try:
+    command = "curl -s -H 'Content-Type: application/json' -d '%s' http://%s:%s/wm/flow/add-shortest-path/json" % (flow_path_json, ControllerIP, ControllerPort)
+    debug("add_shortest_path_flow %s" % command)
     result = os.popen(command).read()
     debug("result %s" % result)
     # parsedResult = json.loads(result)
@@ -366,17 +381,97 @@ def compute_flow_path(parsed_args, data_path):
 
   flow_path['dataPath'] = my_data_path
   debug("Flow Path: %s" % flow_path)
+  return flow_path
 
-  add_flow_path(flow_path)
+def exec_monitoring_by_onos(parsed_args):
+  idx = 0
+  while idx < len(parsed_args):
+    data_path = {}
+    src_dpid = {}
+    src_port = {}
+    dst_dpid = {}
+    dst_port = {}
+    src_switch_port = {}
+    dst_switch_port = {}
+    flow_entry = {}
+    flow_entries = []
+
+    src_dpid['value'] = parsed_args[idx]['my_src_dpid']
+    src_port['value'] = parsed_args[idx]['my_src_port']
+    dst_dpid['value'] = parsed_args[idx]['my_dst_dpid']
+    dst_port['value'] = parsed_args[idx]['my_dst_port']
+    src_switch_port['dpid'] = src_dpid
+    src_switch_port['port'] = src_port
+    dst_switch_port['dpid'] = dst_dpid
+    dst_switch_port['port'] = dst_port
+    match = parsed_args[idx]['match']
+    flow_entry['flowEntryMatch'] = match
+    flow_entries.append(flow_entry)
+
+    data_path['srcPort'] = copy.deepcopy(src_switch_port)
+    data_path['dstPort'] = copy.deepcopy(dst_switch_port)
+    data_path['flowEntries'] = copy.deepcopy(flow_entries)
+
+    #
+    # XXX: Explicitly disable the InPort matching, and
+    # the Output action, because they get in the way
+    # during the compute_flow_path() processing.
+    #
+    parsed_args[idx]['matchInPortEnabled'] = False
+    parsed_args[idx]['actionOutputEnabled'] = False
+
+    flow_path = compute_flow_path(parsed_args[idx], data_path)
+    add_shortest_path_flow(flow_path)
+
+    idx = idx + 1
+
+
+def exec_processing_by_script(parsed_args):
+  #
+  # Initialization
+  #
+  last_data_paths = []
+  idx = 0
+  while idx < len(parsed_args):
+    last_data_path = []
+    last_data_paths.append(copy.deepcopy(last_data_path))
+    idx = idx + 1
+
+  #
+  # Do the work: install and/or periodically monitor each flow
+  #
+  while True:
+    idx = 0
+    while idx < len(parsed_args):
+      last_data_path = last_data_paths[idx]
+      my_flow_id = parsed_args[idx]['my_flow_id']
+      data_path = compute_data_path(parsed_args[idx])
+      if data_path != last_data_path:
+	print_data_path(data_path)
+	if len(last_data_path) > 0:
+	  delete_flow_path(my_flow_id)
+	if len(data_path) > 0:
+	  flow_path = compute_flow_path(parsed_args[idx], data_path)
+	  add_flow_path(flow_path)
+	last_data_paths[idx] = copy.deepcopy(data_path)
+      idx = idx + 1
+
+    if MonitoringEnabled != True:
+      break
+    time.sleep(1)
 
 
 if __name__ == "__main__":
   usage_msg = "Usage: %s [Flags] <flow-id> <installer-id> <src-dpid> <src-port> <dest-dpid> <dest-port> [Match Conditions] [Actions]\n" % (sys.argv[0])
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Flags:\n"
-  usage_msg = usage_msg + "        -m              Monitor and maintain the installed shortest path(s)\n"
-  usage_msg = usage_msg + "        -f <filename>   Read the flow(s) to install from a file\n"
-  usage_msg = usage_msg + "                        File format: one line per flow starting with <flow-id>\n"
+  usage_msg = usage_msg + "        -m [monitorname]  Monitor and maintain the installed shortest path(s)\n"
+  usage_msg = usage_msg + "                          If 'monitorname' is specified and is set to 'ONOS'\n"
+  usage_msg = usage_msg + "                          ((case insensitive), then the flow generation and\n"
+  usage_msg = usage_msg + "                          maintanenance is done by ONOS itself.\n"
+  usage_msg = usage_msg + "                          Otherwise, it is done by this script.\n"
+  usage_msg = usage_msg + "        -f <filename>     Read the flow(s) to install from a file\n"
+  usage_msg = usage_msg + "                          File format: one line per flow starting with <flow-id>\n"
   usage_msg = usage_msg + "\n"
   usage_msg = usage_msg + "    Match Conditions:\n"
   usage_msg = usage_msg + "        matchInPort <True|False> (default to True)\n"
@@ -427,6 +522,11 @@ if __name__ == "__main__":
     idx = idx + 1
     if arg1 == "-m":
       MonitoringEnabled = True
+      if idx < len(sys.argv):
+	arg2 = sys.argv[idx]
+	if arg2.lower() == "onos":
+	  MonitoringByOnos = True
+	  idx = idx + 1
       start_argv_index = idx
     elif arg1 == "-f":
       if idx >= len(sys.argv):
@@ -476,24 +576,8 @@ if __name__ == "__main__":
     idx = idx + 1
 
   #
-  # Do the work: install and/or periodically monitor each flow
-  #
-  while True:
-    idx = 0
-    while idx < len(parsed_args):
-      last_data_path = last_data_paths[idx]
-      my_flow_id = parsed_args[idx]['my_flow_id']
-      data_path = compute_data_path(parsed_args[idx])
-      if data_path != last_data_path:
-	print_data_path(data_path)
-	if len(last_data_path) > 0:
-	  delete_flow_path(my_flow_id)
-	if len(data_path) > 0:
-	  flow_path = compute_flow_path(parsed_args[idx], data_path)
-	  add_flow_path(flow_path)
-	last_data_paths[idx] = copy.deepcopy(data_path)
-      idx = idx + 1
+  if MonitoringByOnos == True:
+    exec_monitoring_by_onos(parsed_args)
+  else:
+    exec_processing_by_script(parsed_args)
 
-    if MonitoringEnabled != True:
-      break
-    time.sleep(1)

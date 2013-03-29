@@ -263,13 +263,83 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    log.debug("FloodlightProvider service not found!");
 		    return;
 		}
-
 		Map<Long, IOFSwitch> mySwitches =
 		    floodlightProvider.getSwitches();
 		Map<Long, IFlowEntry> myFlowEntries =
 		    new TreeMap<Long, IFlowEntry>();
 		LinkedList<IFlowEntry> deleteFlowEntries =
 		    new LinkedList<IFlowEntry>();
+
+		//
+		// Fetch and recompute the Shortest Path for those
+		// Flow Paths this controller is responsible for.
+		//
+
+		/*
+		 * TODO: For now, the computation of the reconciliation is
+		 * commented-out.
+		 */
+		/*
+		topoRouteService.prepareShortestPathTopo();
+		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
+		for (IFlowPath flowPathObj : allFlowPaths) {
+		    if (flowPathObj == null)
+			continue;
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
+		    if (dataPathSummaryStr == null)
+			continue;	// Could be invalid entry?
+		    if (dataPathSummaryStr.isEmpty())
+			continue;	// No need to maintain this flow
+
+		    // Fetch the fields needed to recompute the shortest path
+		    String flowIdStr = flowPathObj.getFlowId();
+		    String srcDpidStr = flowPathObj.getSrcSwitch();
+		    Short srcPortShort = flowPathObj.getSrcPort();
+		    String dstDpidStr = flowPathObj.getDstSwitch();
+		    Short dstPortShort = flowPathObj.getDstPort();
+		    if ((flowIdStr == null) ||
+			(srcDpidStr == null) ||
+			(srcPortShort == null) ||
+			(dstDpidStr == null) ||
+			(dstPortShort == null)) {
+			log.debug("IGNORING Flow Path entry with null fields");
+			continue;
+		    }
+
+		    FlowId flowId = new FlowId(flowIdStr);
+		    Dpid srcDpid = new Dpid(srcDpidStr);
+		    Port srcPort = new Port(srcPortShort);
+		    Dpid dstDpid = new Dpid(dstDpidStr);
+		    Port dstPort = new Port(dstPortShort);
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    DataPath dataPath =
+			topoRouteService.getTopoShortestPath(srcSwitchPort,
+							     dstSwitchPort);
+		    String newDataPathSummaryStr = dataPath.dataPathSummary();
+		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
+			continue;	// Nothing changed
+
+		    //
+		    // Use the source DPID as a heuristic to decide
+		    // which controller is responsible for maintaining the
+		    // shortest path.
+		    // NOTE: This heuristic is error-prone: if the switch
+		    // goes away and no controller is responsible for that
+		    // switch, then the original Flow Path is not cleaned-up
+		    //
+		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
+		    if (mySwitch == null)
+			continue;	// Ignore: not my responsibility
+
+		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
+			      flowId.toString());
+		    flowObjSet.add(flowPathObj);
+		}
+		reconcileFlows(flowObjSet);
+		topoRouteService.dropShortestPathTopo();
+		*/
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
@@ -593,10 +663,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      *
      * @param flowPath the Flow Path to install.
      * @param flowId the return-by-reference Flow ID as assigned internally.
+     * @param dataPathSummaryStr the data path summary string if the added
+     * flow will be maintained internally, otherwise null.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean addFlow(FlowPath flowPath, FlowId flowId) {
+    public boolean addFlow(FlowPath flowPath, FlowId flowId,
+			   String dataPathSummaryStr) {
 	if (flowPath.flowId().value() == measurementFlowId) {
 	    modifiedMeasurementFlowTime = System.nanoTime();
 	}
@@ -653,6 +726,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
 	flowObj.setDstPort(flowPath.dataPath().dstPort().port().value());
+
+	if (dataPathSummaryStr != null) {
+	    flowObj.setDataPathSummary(dataPathSummaryStr);
+	} else {
+	    flowObj.setDataPathSummary("");
+	}
 
 	// Flow edges:
 	//   HeadFE
@@ -1125,16 +1204,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	String flowIdStr = flowObj.getFlowId();
 	String installerIdStr = flowObj.getInstallerId();
 	String srcSwitchStr = flowObj.getSrcSwitch();
-	Short srcPortStr = flowObj.getSrcPort();
+	Short srcPortShort = flowObj.getSrcPort();
 	String dstSwitchStr = flowObj.getDstSwitch();
-	Short dstPortStr = flowObj.getDstPort();
+	Short dstPortShort = flowObj.getDstPort();
 
 	if ((flowIdStr == null) ||
 	    (installerIdStr == null) ||
 	    (srcSwitchStr == null) ||
-	    (srcPortStr == null) ||
+	    (srcPortShort == null) ||
 	    (dstSwitchStr == null) ||
-	    (dstPortStr == null)) {
+	    (dstPortShort == null)) {
 	    // TODO: A work-around, becauuse of some bogus database objects
 	    return null;
 	}
@@ -1142,9 +1221,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
-	flowPath.dataPath().srcPort().setPort(new Port(srcPortStr));
+	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
-	flowPath.dataPath().dstPort().setPort(new Port(dstPortStr));
+	flowPath.dataPath().dstPort().setPort(new Port(dstPortShort));
 
 	//
 	// Extract all Flow Entries
@@ -1229,6 +1308,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      */
     @Override
     public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
+	String dataPathSummaryStr = null;
+
 	//
 	// Do the shortest path computation
 	//
@@ -1242,6 +1323,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	if (! flowPath.dataPath().flowEntries().isEmpty()) {
 	    userFlowEntryMatch = flowPath.dataPath().flowEntries().get(0).flowEntryMatch();
 	}
+
+	// Compute the Data Path summary
+	dataPathSummaryStr = dataPath.dataPathSummary();
 
 	//
 	// Set the incoming port matching and the outgoing port output
@@ -1277,7 +1361,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	computedFlowPath.setDataPath(dataPath);
 
 	FlowId flowId = new FlowId();
-	if (! addFlow(computedFlowPath, flowId))
+	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
 	    return null;
 
 	// TODO: Mark the flow for maintenance purpose
@@ -1323,7 +1407,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @return the list of flows that are going out from the port.
      */
     @Override
-    public Iterable<FlowPath> getFlows(IPortObject port) {
+    public Iterable<FlowPath> getOutFlows(IPortObject port) {
 	// TODO: We need it now: Pankaj
 	return null;
     }
@@ -1352,21 +1436,37 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    if (flowObj != null)
 		flowObjSet.add(flowObj);
 	}
-	// conn.endTx(Transaction.COMMIT);
+
+	// Reconcile the affected flows
+	reconcileFlows(flowObjSet);
+    }
+
+    /**
+     * Reconcile all flows in a set.
+     *
+     * @param flowObjSet the set of flows that need to be reconciliated.
+     */
+    public void reconcileFlows(Iterable<IFlowPath> flowObjSet) {
+	if (! flowObjSet.iterator().hasNext())
+	    return;
 
 	//
 	// Remove the old Flow Entries, and add the new Flow Entries
 	//
+
 	Map<Long, IOFSwitch> mySwitches = floodlightProvider.getSwitches();
+	LinkedList<FlowPath> flowPaths = new LinkedList<FlowPath>();
 	for (IFlowPath flowObj : flowObjSet) {
 	    FlowPath flowPath = extractFlowPath(flowObj);
 	    if (flowPath == null)
 		continue;
+	    flowPaths.add(flowPath);
 
 	    //
 	    // Remove my Flow Entries from the Network MAP
 	    //
 	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
+	    LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
 	    for (IFlowEntry flowEntryObj : flowEntries) {
 		String dpidStr = flowEntryObj.getSwitchDpid();
 		if (dpidStr == null)
@@ -1375,16 +1475,27 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		if (mySwitch == null)
 		    continue;		// Ignore the entry: not my switch
+		deleteFlowEntries.add(flowEntryObj);
+	    }
+	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
 		flowObj.removeFlowEntry(flowEntryObj);
 		conn.utils().removeFlowEntry(conn, flowEntryObj);
 	    }
+	}
 
+	for (FlowPath flowPath : flowPaths) {
 	    //
 	    // Delete the flow entries from the switches
 	    //
 	    for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
 		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_DELETE);
-		installFlowEntry(mySwitches, flowEntry);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		} else {
+		    installFlowEntry(mySwitch, flowEntry);
+		}
 	    }
 
 	    //
@@ -1393,7 +1504,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    //
 	    FlowPath addedFlowPath = addAndMaintainShortestPathFlow(flowPath);
 	    if (addedFlowPath == null) {
-		log.error("Cannot add Shortest Path Flow from {} to {}",
+		log.error("Cannot add Shortest Path Flow from {} to {}: path not found?",
 			  flowPath.dataPath().srcPort().toString(),
 			  flowPath.dataPath().dstPort().toString());
 		continue;
@@ -1404,7 +1515,33 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    //
 	    for (FlowEntry flowEntry : addedFlowPath.dataPath().flowEntries()) {
 		flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
-		installFlowEntry(mySwitches, flowEntry);
+		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
+		if (mySwitch == null) {
+		    // Not my switch
+		    installRemoteFlowEntry(flowEntry);
+		    continue;
+		}
+
+		IFlowEntry flowEntryObj =
+		    conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId());
+		if (flowEntryObj == null) {
+		    //
+		    // TODO: Remove the "new Object[] wrapper in the statement
+		    // below after the SLF4J logger is upgraded to
+		    // Version 1.7.5
+		    //
+		    log.error("Cannot add Flow Entry to switch {} for Path Flow from {} to {} : Flow Entry not in the Network MAP",
+			      new Object[] {
+				  flowEntry.dpid(),
+				  flowPath.dataPath().srcPort(),
+				  flowPath.dataPath().dstPort()
+			      });
+		    continue;
+		}
+		// Update the Flow Entry Switch State in the Network MAP
+		if (installFlowEntry(mySwitch, flowEntry)) {
+		    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+		}
 	    }
 	}
     }
@@ -1505,20 +1642,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Install a Flow Entry on a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to install the Flow Entry into.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean installFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry) {
-	IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-	if (mySwitch == null) {
-	    // Not my switch
-	    return (installRemoteFlowEntry(flowEntry));
-	}
-
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
 	//
 	// Create the OpenFlow Flow Modification Entry to push
 	//
@@ -1634,19 +1763,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a Flow Entry from a switch.
      *
-     * @param mySwitches the DPID-to-Switch mapping for the switches
-     * controlled by this controller.
+     * @param mySwitch the switch to remove the Flow Entry from.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean removeFlowEntry(Map<Long, IOFSwitch> mySwitches,
-				    FlowEntry flowEntry) {
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
 	//
 	// The installFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
-	return (installFlowEntry(mySwitches, flowEntry));
+	return (installFlowEntry(mySwitch, flowEntry));
     }
 
     /**
