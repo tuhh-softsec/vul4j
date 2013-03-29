@@ -1041,14 +1041,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    return flowPaths;
 		}
 	
-		Collections.sort(allFlows);
+//		Collections.sort(allFlows);
 		
 		for (FlowPath flow : allFlows) {
 			
 			// start from desired flowId
-			if (flow.flowId().value() < flowId.value()) {
-				continue;
-			}
+			//if (flow.flowId().value() < flowId.value()) {
+			//	continue;
+			//}
 			
 			// Summarize by making null flow entry fields that are not relevant to report
 			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
