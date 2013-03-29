@@ -86,8 +86,7 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonIgnore
 		@Incidence(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
-		
-		
+				
 		@JsonProperty("devices")
 		@Adjacency(label="host")
 		public Iterable<IDeviceObject> getDevices();
@@ -105,6 +104,9 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonIgnore
 		@Incidence(label="outport",direction = Direction.IN)
 		public Iterable<IFlowEntry> getOutFlowEntries();
+		
+		@Adjacency(label="link")
+		public void removeLink(final IPortObject dest_port);
 		
 //		@JsonIgnore
 //		@Adjacency(label="link")
