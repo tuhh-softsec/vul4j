@@ -282,6 +282,22 @@ public class Driver {
 		return config;
 	}
 
+	/** 
+	 * Get current HTTP Client.
+	 * 
+	 *  <p>
+	 * This method is not intended to get a WRITE access to the HTTP Client configuration.
+	 * <p>
+	 * For the
+	 * time being, changing HTTP Client configuration after getting access through
+	 * this method is <b>UNSUPPORTED</b> and <b>SHOULD NOT</b> be used.
+	 * 
+	 * @return current HttpClient
+	 */
+	public HttpClientHelper getHttpClientHelper() {
+		return httpClientHelper;
+	}
+	
 	/**
 	 * Check whether the given content-type value corresponds to "parsable"
 	 * text.
