@@ -1324,8 +1324,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	DataPath dataPath =
 	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
 					     flowPath.dataPath().dstPort());
-	if (dataPath == null)
-	    return null;
+	if (dataPath == null) {
+	    // We need the DataPath to populate the Network MAP
+	    dataPath = new DataPath();
+	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	    dataPath.setDstPort(flowPath.dataPath().dstPort());
+	}
 
 	FlowEntryMatch userFlowEntryMatch = null;
 	if (! flowPath.dataPath().flowEntries().isEmpty()) {
@@ -1471,7 +1475,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    flowPaths.add(flowPath);
 
 	    //
-	    // Remove my Flow Entries from the Network MAP
+	    // Remove the Flow Entries from the Network MAP
 	    //
 	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	    LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
@@ -1480,9 +1484,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		if (dpidStr == null)
 		    continue;
 		Dpid dpid = new Dpid(dpidStr);
+		/*
 		IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		if (mySwitch == null)
 		    continue;		// Ignore the entry: not my switch
+		*/
 		deleteFlowEntries.add(flowEntryObj);
 	    }
 	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
