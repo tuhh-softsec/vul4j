@@ -203,6 +203,7 @@ def flows():
     print "REST IF has issue"
     exit
 
+    
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
@@ -759,7 +760,7 @@ def link_up(src_dpid, src_port, dst_dpid, dst_port):
       host = controllers[0]
       src_ports = [1, 2, 3, 4, 5]
     else:
-      hostid=int(src_dpid.split(':')[-2])
+      hostid=int(dpid.split(':')[-2])
       host = controllers[hostid-1]
       if hostid == 2 :
         src_ports = [51]
@@ -807,7 +808,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
     flow_nr=int(ret)
 
   flow_nr += 1
-  command = "/home/ubuntu/ONOS/web/add_flow.py %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command = "/home/ubuntu/ONOS/web/add_flow.py -m %d %s %s %s %s %s matchSrcMac %s matchDstMac %s > /dev/null 2>&1 & " % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   print command
   errcode = os.popen(command).read()
   return errcode
@@ -825,7 +826,7 @@ def del_flow(flow_id):
 #http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
 @app.route("/gui/iperf/start/<flow_id>/<duration>")
 def iperf_start(flow_id,duration):
-  command = "iperf -xCMSV -t%d -i 0.5 -y c -u -c 127.0.0.1 > iperf_%s.out 2>/dev/null &" % (duration, flow_id)
+  command = "iperf -t%d -i0.1 -yJ -o iperf_%s.out -c 127.0.0.1 &" % (duration, flow_id)
   print command
   errcode = os.popen(command).read()
   return errcode
