@@ -29,6 +29,7 @@ cat template/cassandra.yaml |\
 ## /etc/hosts ##
 cat template/hosts $hosts_file >  common/hosts
 
+
 ## .ssh/known_hosts ##
 ssh-keyscan -H -t rsa github.com > common/known_hosts
 ssh-keyscan -H -t rsa onosnat >> common/known_hosts
@@ -36,8 +37,8 @@ for n in `seq 1 $NR_NODES`; do
   ssh-keyscan -H -t rsa ${basename}${n}
 done >> common/known_hosts
 
-echo "GROUP: $basename" > cluster.txt
-cat $hosts_file | awk '{print $2}' >> cluster.txt
+echo "GROUP: $basename" > bin/cluster.txt
+cat $hosts_file | awk '{print $2}' >> bin/cluster.txt
 
 
 ## Creating shell script to login each node ##
