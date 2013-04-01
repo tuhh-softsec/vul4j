@@ -808,7 +808,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
     flow_nr=int(ret)
 
   flow_nr += 1
-  command = "/home/ubuntu/ONOS/web/add_flow.py -m %d %s %s %s %s %s matchSrcMac %s matchDstMac %s > /dev/null 2>&1 & " % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command = "/home/ubuntu/ONOS/web/add_flow.py %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   print command
   errcode = os.popen(command).read()
   return errcode
@@ -826,10 +826,37 @@ def del_flow(flow_id):
 #http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
 @app.route("/gui/iperf/start/<flow_id>/<duration>")
 def iperf_start(flow_id,duration):
-  command = "iperf -t%d -i0.1 -yJ -o iperf_%s.out -c 127.0.0.1 &" % (duration, flow_id)
+  try:
+    command = "curl -s http://%s:%s/wm/flow/get/%s/json\"" % (RESTIP, 9000, flow_id)
+    print command
+    result = os.popen(command).read()
+    if len(result) == 0:
+      print "No Flow found"
+      return;
+    parsedResult = json.load(result)
+  except:
+    print "REST IF has issue"
+    exit
+
+  flowId = parsedResult['flowId']['value']
+  src_dpid = parsedResult['dataPath']['srcPort']['dpid']['value']
+  src_port = parsedResult['dataPath']['srcPort']['port']['value']
+  dst_dpid = parsedResult['dataPath']['dstPort']['dpid']['value']
+  dst_port = parsedResult['dataPath']['dstPort']['port']['value']
+  print "FlowPath: (flowId = %s src = %s/%s dst = %s/%s" % (flowId, src_dpid, src_port, dst_dpid, dst_port)
+
+  if src_dpid in core_switches:
+      host = controllers[0]
+  else:
+      hostid=int(src_dpid.split(':')[-2])
+      host = controllers[hostid-1]
+
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %s %s %s %s'" % (host, src_dpid, src_port, dst_dpid, dst_port)
+  print cmd_string
+  command = "/home/ubuntu/ONOS/web/scripts/iperf -t%s -i0.1 -yJ -o /tmp/iperf_%s.out -c 127.0.0.1 &" % (duration, flow_id)
   print command
-  errcode = os.popen(command).read()
-  return errcode
+
+  return 
 
 
 #* Get Iperf Throughput
@@ -837,14 +864,15 @@ def iperf_start(flow_id,duration):
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
   try:
-    command = "curl -s http://%s:%s/iperf_%s.out" % (RestIP, 9000, flow_id)
+    command = "head -1 /home/ubuntu/ONOS/web/iperf.out"
     print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
     exit
 
-  resp = Response(result, status=200, mimetype='text/html')
+  js = json.dumps(result)
+  resp = Response(js, status=200, mimetype='application/json')
   return resp
 
 
