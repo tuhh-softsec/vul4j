@@ -871,8 +871,7 @@ def iperf_rate(flow_id):
     print "REST IF has issue"
     exit
 
-  js = json.dumps(result)
-  resp = Response(js, status=200, mimetype='application/json')
+  resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 
