@@ -20,6 +20,7 @@ package org.apache.xml.security.test.stax;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import org.apache.xml.security.stax.ext.InputProcessorChain;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.HashSet;
@@ -98,7 +98,7 @@ public class InputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorPhase1() {
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new SecurityContextImpl());
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new InboundSecurityContextImpl());
 
         AbstractInputProcessor inputProcessor1 = new AbstractInputProcessor() {
         };
@@ -119,7 +119,7 @@ public class InputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorPhase2() {
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new SecurityContextImpl());
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new InboundSecurityContextImpl());
 
         AbstractInputProcessor inputProcessor1 = new AbstractInputProcessor() {
         };
@@ -159,7 +159,7 @@ public class InputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorBefore1() {
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new SecurityContextImpl());
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new InboundSecurityContextImpl());
 
         AbstractInputProcessor inputProcessor1 = new AbstractInputProcessor() {
         };
@@ -202,7 +202,7 @@ public class InputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorAfter1() {
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new SecurityContextImpl());
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new InboundSecurityContextImpl());
 
         AbstractInputProcessor inputProcessor1 = new AbstractInputProcessor() {
         };
@@ -245,7 +245,7 @@ public class InputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorBeforeAndAfter1() {
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new SecurityContextImpl());
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(new InboundSecurityContextImpl());
 
         AbstractInputProcessor inputProcessor1 = new AbstractInputProcessor() {
         };

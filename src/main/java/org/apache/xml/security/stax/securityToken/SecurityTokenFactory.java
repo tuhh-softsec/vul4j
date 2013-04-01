@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.xml.security.stax.impl.securityToken;
+package org.apache.xml.security.stax.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.KeyInfoType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.ConfigurationProperties;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 
 /**
@@ -44,7 +43,8 @@ public abstract class SecurityTokenFactory {
 
             try {
                 @SuppressWarnings("unchecked")
-                Class<SecurityTokenFactory> securityTokenFactoryClass = (Class<SecurityTokenFactory>) SecurityTokenFactory.class.getClassLoader().loadClass(stf);
+                Class<SecurityTokenFactory> securityTokenFactoryClass =
+                        (Class<SecurityTokenFactory>) SecurityTokenFactory.class.getClassLoader().loadClass(stf);
                 securityTokenFactory = securityTokenFactoryClass.newInstance();
             } catch (ClassNotFoundException e) {
                 throw new XMLSecurityException("algorithm.ClassDoesNotExist", new Object[]{stf}, e);
@@ -57,8 +57,8 @@ public abstract class SecurityTokenFactory {
         return securityTokenFactory;
     }
 
-    public abstract SecurityToken getSecurityToken(KeyInfoType keyInfoType,
-                                                   SecurityToken.KeyInfoUsage keyInfoUsage,
-                                                   XMLSecurityProperties securityProperties,
-                                                   SecurityContext securityContext) throws XMLSecurityException;
+    public abstract InboundSecurityToken getSecurityToken(
+            KeyInfoType keyInfoType, SecurityTokenConstants.KeyUsage keyUsage,
+            XMLSecurityProperties securityProperties, InboundSecurityContext inboundSecurityContext)
+            throws XMLSecurityException;
 }

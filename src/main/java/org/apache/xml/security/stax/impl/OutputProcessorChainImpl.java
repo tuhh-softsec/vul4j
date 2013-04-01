@@ -46,24 +46,24 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
     private int curPos = 0;
     private XMLSecStartElement parentXmlSecStartElement;
 
-    private final SecurityContext securityContext;
+    private final OutboundSecurityContext outboundSecurityContext;
     private final DocumentContextImpl documentContext;
 
-    public OutputProcessorChainImpl(SecurityContext securityContext) {
-        this(securityContext, 0);
+    public OutputProcessorChainImpl(OutboundSecurityContext outboundSecurityContext) {
+        this(outboundSecurityContext, 0);
     }
 
-    public OutputProcessorChainImpl(SecurityContext securityContext, int startPos) {
-        this(securityContext, new DocumentContextImpl(), startPos, new ArrayList<OutputProcessor>(20));
+    public OutputProcessorChainImpl(OutboundSecurityContext outboundSecurityContext, int startPos) {
+        this(outboundSecurityContext, new DocumentContextImpl(), startPos, new ArrayList<OutputProcessor>(20));
     }
 
-    public OutputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContext) {
-        this(securityContext, documentContext, 0, new ArrayList<OutputProcessor>(20));
+    public OutputProcessorChainImpl(OutboundSecurityContext outboundSecurityContext, DocumentContextImpl documentContext) {
+        this(outboundSecurityContext, documentContext, 0, new ArrayList<OutputProcessor>(20));
     }
 
-    protected OutputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl,
+    protected OutputProcessorChainImpl(OutboundSecurityContext outboundSecurityContext, DocumentContextImpl documentContextImpl,
                                        int startPos, List<OutputProcessor> outputProcessors) {
-        this.securityContext = securityContext;
+        this.outboundSecurityContext = outboundSecurityContext;
         this.curPos = this.startPos = startPos;
         documentContext = documentContextImpl;
         this.outputProcessors = outputProcessors;
@@ -75,8 +75,8 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
     }
 
     @Override
-    public SecurityContext getSecurityContext() {
-        return this.securityContext;
+    public OutboundSecurityContext getSecurityContext() {
+        return this.outboundSecurityContext;
     }
 
     @Override
@@ -235,7 +235,7 @@ public class OutputProcessorChainImpl implements OutputProcessorChain {
         //we don't clone the processor-list to get updates in the sublist too!
         OutputProcessorChainImpl outputProcessorChain;
         try {
-            outputProcessorChain = new OutputProcessorChainImpl(securityContext, documentContext.clone(),
+            outputProcessorChain = new OutputProcessorChainImpl(outboundSecurityContext, documentContext.clone(),
                     outputProcessors.indexOf(outputProcessor) + 1, this.outputProcessors);
         } catch (CloneNotSupportedException e) {
             throw new XMLSecurityException(e);

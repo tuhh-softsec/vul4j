@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
 import org.apache.xml.security.stax.impl.XMLSecurityStreamReader;
 import org.apache.xml.security.stax.impl.processor.input.LogInputProcessor;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
@@ -86,7 +86,6 @@ public class InboundXMLSec {
      * @param xmlStreamReader The original XMLStreamReader
      * @return A new XMLStreamReader which does transparently the security processing.
      * @throws XMLStreamException  thrown when a streaming error occurs
-     * @throws WSSecurityException thrown when a Security failure occurs
      */
     public XMLStreamReader processInMessage(XMLStreamReader xmlStreamReader) throws XMLStreamException {
         return processInMessage(xmlStreamReader, null, null);
@@ -109,7 +108,6 @@ public class InboundXMLSec {
      * @param securityEventListener A SecurityEventListener to receive security-relevant events.
      * @return A new XMLStreamReader which does transparently the security processing.
      * @throws XMLStreamException  thrown when a streaming error occurs
-     * @throws WSSecurityException thrown when a Security failure occurs
      */
     public XMLStreamReader processInMessage(
             XMLStreamReader xmlStreamReader, List<SecurityEvent> requestSecurityEvents, 
@@ -119,11 +117,11 @@ public class InboundXMLSec {
             requestSecurityEvents = Collections.emptyList();
         }
         
-        final SecurityContextImpl securityContextImpl = new SecurityContextImpl();
-        securityContextImpl.putList(SecurityEvent.class, requestSecurityEvents);
-        securityContextImpl.addSecurityEventListener(securityEventListener);
+        final InboundSecurityContextImpl inboundSecurityContext = new InboundSecurityContextImpl();
+        inboundSecurityContext.putList(SecurityEvent.class, requestSecurityEvents);
+        inboundSecurityContext.addSecurityEventListener(securityEventListener);
 
-        securityContextImpl.put(XMLSecurityConstants.XMLINPUTFACTORY, xmlInputFactory);
+        inboundSecurityContext.put(XMLSecurityConstants.XMLINPUTFACTORY, xmlInputFactory);
 
         DocumentContextImpl documentContext = new DocumentContextImpl();
         documentContext.setEncoding(xmlStreamReader.getEncoding() != null ? xmlStreamReader.getEncoding() : "UTF-8");
@@ -133,7 +131,7 @@ public class InboundXMLSec {
             documentContext.setBaseURI(location.getSystemId());
         }
         
-        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContextImpl, documentContext);
+        InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(inboundSecurityContext, documentContext);
         inputProcessorChain.addProcessor(new XMLEventReaderInputProcessor(securityProperties, xmlStreamReader));
 
         List<InputProcessor> additionalInputProcessors = securityProperties.getInputProcessorList();

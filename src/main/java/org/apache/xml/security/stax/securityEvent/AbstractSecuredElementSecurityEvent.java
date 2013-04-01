@@ -18,8 +18,9 @@
  */
 package org.apache.xml.security.stax.securityEvent;
 
-import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.securityToken.SecurityToken;
 
 import java.util.List;
 
@@ -34,11 +35,15 @@ public abstract class AbstractSecuredElementSecurityEvent extends AbstractElemen
     private SecurityToken securityToken;
     private List<XMLSecurityConstants.ContentType> protectionOrder;
 
-    public AbstractSecuredElementSecurityEvent(SecurityEventConstants.Event securityEventType, SecurityToken securityToken, List<XMLSecurityConstants.ContentType> protectionOrder) {
+    public AbstractSecuredElementSecurityEvent(
+            SecurityEventConstants.Event securityEventType, SecurityToken securityToken,
+            List<XMLSecurityConstants.ContentType> protectionOrder) {
         this(securityEventType, securityToken, protectionOrder, false, false);
     }
 
-    public AbstractSecuredElementSecurityEvent(SecurityEventConstants.Event securityEventType, SecurityToken securityToken, List<XMLSecurityConstants.ContentType> protectionOrder, boolean signed, boolean encrypted) {
+    public AbstractSecuredElementSecurityEvent(
+            SecurityEventConstants.Event securityEventType, SecurityToken securityToken,
+            List<XMLSecurityConstants.ContentType> protectionOrder, boolean signed, boolean encrypted) {
         super(securityEventType);
         this.securityToken = securityToken;
         this.protectionOrder = protectionOrder;
@@ -50,7 +55,7 @@ public abstract class AbstractSecuredElementSecurityEvent extends AbstractElemen
         return securityToken;
     }
 
-    public void setSecurityToken(SecurityToken securityToken) {
+    public void setSecurityToken(InboundSecurityToken securityToken) {
         this.securityToken = securityToken;
     }
 

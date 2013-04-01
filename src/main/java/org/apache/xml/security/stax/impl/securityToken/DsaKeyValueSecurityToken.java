@@ -20,8 +20,8 @@ package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig.DSAKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -38,9 +38,9 @@ public class DsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private DSAKeyValueType dsaKeyValueType;
 
-    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, SecurityContext securityContext,
-                                    XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
-        super(securityContext, null, keyIdentifierType);
+    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, InboundSecurityContext inboundSecurityContext,
+                                    SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
+        super(inboundSecurityContext, null, keyIdentifier);
         this.dsaKeyValueType = dsaKeyValueType;
     }
 
@@ -74,7 +74,7 @@ public class DsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
     }
 
     @Override
-    public XMLSecurityConstants.TokenType getTokenType() {
-        return XMLSecurityConstants.KeyValueToken;
+    public SecurityTokenConstants.TokenType getTokenType() {
+        return SecurityTokenConstants.KeyValueToken;
     }
 }

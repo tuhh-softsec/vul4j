@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -28,7 +29,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
-import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 
 import javax.crypto.Cipher;
@@ -68,8 +69,10 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                 SecurePart securePart = securePartMatches(xmlSecStartElement, outputProcessorChain, XMLSecurityConstants.ENCRYPTION_PARTS);
                 if (securePart != null) {
                     logger.debug("Matched encryptionPart for encryption");
-                    String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
-                    SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
+                    String tokenId = outputProcessorChain.getSecurityContext().get(
+                            XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
+                    SecurityTokenProvider<OutboundSecurityToken> securityTokenProvider =
+                            outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
                     final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
 
                     EncryptionPartDef encryptionPartDef = new EncryptionPartDef();
@@ -214,8 +217,10 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                                 cipher.init(Cipher.WRAP_MODE, secretKey, algorithmParameterSpec);
                             }
 
-                            String tokenId = outputProcessorChain.getSecurityContext().get(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
-                            SecurityTokenProvider securityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
+                            String tokenId = outputProcessorChain.getSecurityContext().get(
+                                    XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION);
+                            SecurityTokenProvider<OutboundSecurityToken> securityTokenProvider =
+                                    outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
 
                             final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
                             Key sessionKey =

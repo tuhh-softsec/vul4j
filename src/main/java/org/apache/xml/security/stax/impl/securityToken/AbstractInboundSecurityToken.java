@@ -19,9 +19,10 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 
@@ -40,29 +41,29 @@ import java.util.*;
  * @author $Author: coheigea $
  * @version $Revision: 1359731 $ $Date: 2012-07-10 16:39:40 +0100 (Tue, 10 Jul 2012) $
  */
-public abstract class AbstractInboundSecurityToken implements SecurityToken {
+public abstract class AbstractInboundSecurityToken implements InboundSecurityToken {
 
     //prevent recursive key references
     private boolean invoked = false;
 
-    private SecurityContext securityContext;
+    private InboundSecurityContext inboundSecurityContext;
     private final String id;
     private List<QName> elementPath;
     private XMLSecEvent xmlSecEvent;
-    private XMLSecurityConstants.KeyIdentifierType keyIdentifierType;
-    private final List<SecurityToken> wrappedTokens = new ArrayList<SecurityToken>();
-    private SecurityToken keyWrappingToken;
-    private final List<TokenUsage> tokenUsages = new ArrayList<TokenUsage>();
+    private SecurityTokenConstants.KeyIdentifier keyIdentifier;
+    private final List<InboundSecurityToken> wrappedTokens = new ArrayList<InboundSecurityToken>();
+    private InboundSecurityToken keyWrappingToken;
+    private final List<SecurityTokenConstants.TokenUsage> tokenUsages = new ArrayList<SecurityTokenConstants.TokenUsage>();
     private final Map<String, Key> keyTable = new Hashtable<String, Key>();
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
     private boolean asymmetric = false;
 
-    public AbstractInboundSecurityToken(SecurityContext securityContext, String id,
-                                        XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
-        this.securityContext = securityContext;
+    public AbstractInboundSecurityToken(InboundSecurityContext inboundSecurityContext, String id,
+                                        SecurityTokenConstants.KeyIdentifier keyIdentifier) {
+        this.inboundSecurityContext = inboundSecurityContext;
         this.id = id;
-        this.keyIdentifierType = keyIdentifierType;
+        this.keyIdentifier = keyIdentifier;
     }
 
     private void testAndSetInvocation() throws XMLSecurityException {
@@ -76,8 +77,8 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         invoked = false;
     }
 
-    public XMLSecurityConstants.KeyIdentifierType getKeyIdentifierType() {
-        return keyIdentifierType;
+    public SecurityTokenConstants.KeyIdentifier getKeyIdentifier() {
+        return keyIdentifier;
     }
 
     @Override
@@ -125,7 +126,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         return Collections.unmodifiableMap(keyTable);
     }
 
-    protected Key getKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+    protected Key getKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
                          String correlationID) throws XMLSecurityException {
         if (algorithmURI == null) {
             return null;
@@ -139,17 +140,17 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     }
 
     @Override
-    public final Key getSecretKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+    public final Key getSecretKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
                                   String correlationID) throws XMLSecurityException {
         if (correlationID == null) {
             throw new IllegalArgumentException("correlationID must not be null");
         }
         testAndSetInvocation();
-        Key key = getKey(algorithmURI, keyUsage, correlationID);
-        if (key != null && this.securityContext != null) {
+        Key key = getKey(algorithmURI, algorithmUsage, correlationID);
+        if (key != null && this.inboundSecurityContext != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
-            algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(algorithmUsage);
             algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
             if (key instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) key).getModulus().bitLength());
@@ -162,7 +163,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
             } else {
                 throw new XMLSecurityException("java.security.UnknownKeyType", key.getClass().getName());
             }
-            this.securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+            this.inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
         }
         unsetInvocation();
         return key;
@@ -185,23 +186,23 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
         return this.publicKey;
     }
 
-    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+    protected PublicKey getPubKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
                                   String correlationID) throws XMLSecurityException {
         return getPublicKey();
     }
 
     @Override
-    public final PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.KeyUsage keyUsage,
+    public final PublicKey getPublicKey(String algorithmURI, XMLSecurityConstants.AlgorithmUsage algorithmUsage,
                                         String correlationID) throws XMLSecurityException {
         if (correlationID == null) {
             throw new IllegalArgumentException("correlationID must not be null");
         }
         testAndSetInvocation();
-        PublicKey publicKey = getPubKey(algorithmURI, keyUsage, correlationID);
-        if (publicKey != null && this.securityContext != null) {
+        PublicKey publicKey = getPubKey(algorithmURI, algorithmUsage, correlationID);
+        if (publicKey != null && this.inboundSecurityContext != null) {
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithmURI);
-            algorithmSuiteSecurityEvent.setKeyUsage(keyUsage);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(algorithmUsage);
             algorithmSuiteSecurityEvent.setCorrelationID(correlationID);
             if (publicKey instanceof RSAKey) {
                 algorithmSuiteSecurityEvent.setKeyLength(((RSAKey) publicKey).getModulus().bitLength());
@@ -212,7 +213,7 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
             } else {
                 throw new XMLSecurityException("java.security.UnknownKeyType", publicKey.getClass().getName());
             }
-            securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+            inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
         }
         unsetInvocation();
         return publicKey;
@@ -232,17 +233,17 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     }
 
     @Override
-    public List<SecurityToken> getWrappedTokens() {
+    public List<InboundSecurityToken> getWrappedTokens() {
         return Collections.unmodifiableList(wrappedTokens);
     }
 
     @Override
-    public void addWrappedToken(SecurityToken securityToken) {
-        wrappedTokens.add(securityToken);
+    public void addWrappedToken(InboundSecurityToken inboundSecurityToken) {
+        wrappedTokens.add(inboundSecurityToken);
     }
 
     @Override
-    public void addTokenUsage(TokenUsage tokenUsage) throws XMLSecurityException {
+    public void addTokenUsage(SecurityTokenConstants.TokenUsage tokenUsage) throws XMLSecurityException {
         testAndSetInvocation();
         if (!this.tokenUsages.contains(tokenUsage)) {
             this.tokenUsages.add(tokenUsage);
@@ -254,16 +255,16 @@ public abstract class AbstractInboundSecurityToken implements SecurityToken {
     }
 
     @Override
-    public List<TokenUsage> getTokenUsages() {
+    public List<SecurityTokenConstants.TokenUsage> getTokenUsages() {
         return tokenUsages;
     }
 
     @Override
-    public SecurityToken getKeyWrappingToken() throws XMLSecurityException {
+    public InboundSecurityToken getKeyWrappingToken() throws XMLSecurityException {
         return keyWrappingToken;
     }
 
-    public void setKeyWrappingToken(SecurityToken keyWrappingToken) {
+    public void setKeyWrappingToken(InboundSecurityToken keyWrappingToken) {
         this.keyWrappingToken = keyWrappingToken;
     }
 }

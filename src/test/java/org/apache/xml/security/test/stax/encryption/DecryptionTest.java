@@ -63,6 +63,7 @@ import org.apache.xml.security.stax.securityEvent.EncryptedElementSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.dom.DSNamespaceContext;
 import org.apache.xml.security.test.stax.signature.TestSecurityEventListener;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
@@ -148,7 +149,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO , "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo , "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
     }
@@ -204,7 +205,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
     }
@@ -261,7 +262,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc", null);
     }
@@ -321,7 +322,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkMultipleEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                 securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", null);
     }
@@ -386,7 +387,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
+                SecurityTokenConstants.KeyIdentifier_EncryptedKey,
                 "http://www.w3.org/2001/04/xmlenc#aes128-cbc");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
@@ -455,7 +456,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
+                SecurityTokenConstants.KeyIdentifier_EncryptedKey,
                 "http://www.w3.org/2001/04/xmlenc#aes256-cbc");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc",
@@ -524,7 +525,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedContentSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY,
+                SecurityTokenConstants.KeyIdentifier_EncryptedKey,
                 "http://www.w3.org/2001/04/xmlenc#aes192-cbc");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes192-cbc",
@@ -584,7 +585,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
     }
@@ -644,7 +645,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes128-cbc", "");
     }
@@ -706,7 +707,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes192-cbc", "");
     }
@@ -770,7 +771,7 @@ public class DecryptionTest extends org.junit.Assert {
         // Check the SecurityEvents
         checkEncryptedElementSecurityEvents(securityEventListener);
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#aes256-cbc", "");
     }
@@ -829,7 +830,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
     }
@@ -894,7 +895,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
     }
@@ -959,7 +960,7 @@ public class DecryptionTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkEncryptionToken(securityEventListener, null, secretKey,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO, "");
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo, "");
         checkEncryptionMethod(
                   securityEventListener, "http://www.w3.org/2001/04/xmlenc#tripledes-cbc", "");
     }
@@ -1073,15 +1074,15 @@ public class DecryptionTest extends org.junit.Assert {
     protected void checkEncryptionToken(
             TestSecurityEventListener securityEventListener,
             X509Certificate cert, Key key,
-            XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType,
+            SecurityTokenConstants.KeyIdentifier keyIdentifier,
             String algorithm) throws XMLSecurityException {
-        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
+        if (SecurityTokenConstants.KeyIdentifier_NoKeyInfo.equals(keyIdentifier)) {
             DefaultTokenSecurityEvent tokenEvent =
                     (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
             Key processedKey = tokenEvent.getSecurityToken().getSecretKey().values().iterator().next();
             assertEquals(processedKey, key);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.ENCRYPTED_KEY) {
+        } else if (SecurityTokenConstants.KeyIdentifier_EncryptedKey.equals(keyIdentifier)) {
             EncryptedKeyTokenSecurityEvent tokenEvent =
                     (EncryptedKeyTokenSecurityEvent) securityEventListener.getSecurityEvent(
                             SecurityEventConstants.EncryptedKeyToken);
@@ -1104,11 +1105,11 @@ public class DecryptionTest extends org.junit.Assert {
         boolean matchedKeywrapAlgorithm = false;
         for (SecurityEvent event : algorithmEvents) {
             AlgorithmSuiteSecurityEvent algorithmEvent = (AlgorithmSuiteSecurityEvent) event;
-            if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Enc) {
+            if (XMLSecurityConstants.Enc.equals(algorithmEvent.getAlgorithmUsage())) {
                 assertEquals(encryptionAlgorithm, algorithmEvent.getAlgorithmURI());
                 matchedEncryptionAlgorithm = true;
-            } else if (algorithmEvent.getKeyUsage() == XMLSecurityConstants.Sym_Key_Wrap
-                || algorithmEvent.getKeyUsage() == XMLSecurityConstants.Asym_Key_Wrap) {
+            } else if (XMLSecurityConstants.Sym_Key_Wrap.equals(algorithmEvent.getAlgorithmUsage())
+                || XMLSecurityConstants.Asym_Key_Wrap.equals(algorithmEvent.getAlgorithmUsage())) {
                 assertEquals(keywrapAlgorithm, algorithmEvent.getAlgorithmURI());
                 matchedKeywrapAlgorithm = true;
             }

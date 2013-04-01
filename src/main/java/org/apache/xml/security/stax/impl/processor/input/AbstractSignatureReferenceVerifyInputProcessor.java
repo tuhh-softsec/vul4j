@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xml.security.binding.excc14n.InclusiveNamespaces;
@@ -68,18 +69,18 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             Boolean.valueOf(ConfigurationProperties.getProperty("AllowNotSameDocumentReferences"));
 
     private final SignatureType signatureType;
-    private final SecurityToken securityToken;
+    private final InboundSecurityToken inboundSecurityToken;
     private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> sameDocumentReferences;
     private final ArrayList<KeyValue<ResourceResolver, ReferenceType>> externalReferences;
     private final ArrayList<ReferenceType> processedReferences;
 
     public AbstractSignatureReferenceVerifyInputProcessor(
             InputProcessorChain inputProcessorChain,
-            SignatureType signatureType, SecurityToken securityToken,
+            SignatureType signatureType, InboundSecurityToken inboundSecurityToken,
             XMLSecurityProperties securityProperties) throws XMLSecurityException {
         super(securityProperties);
         this.signatureType = signatureType;
-        this.securityToken = securityToken;
+        this.inboundSecurityToken = inboundSecurityToken;
 
         List<ReferenceType> referencesTypeList = signatureType.getSignedInfo().getReference();
         if (referencesTypeList.size() > maximumAllowedReferencesPerManifest) {
@@ -131,8 +132,8 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         return processedReferences;
     }
 
-    public SecurityToken getSecurityToken() {
-        return securityToken;
+    public InboundSecurityToken getInboundSecurityToken() {
+        return inboundSecurityToken;
     }
 
     @Override
@@ -262,7 +263,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
         compareDigest(digestOutputStream.getDigestValue(), referenceType);
     }
 
-    protected DigestOutputStream createMessageDigestOutputStream(ReferenceType referenceType, SecurityContext securityContext)
+    protected DigestOutputStream createMessageDigestOutputStream(ReferenceType referenceType, InboundSecurityContext inboundSecurityContext)
             throws XMLSecurityException {
 
         String digestMethodAlgorithm = referenceType.getDigestMethod().getAlgorithm();
@@ -274,9 +275,9 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
         algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
-        algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.Dig);
+        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.Dig);
         algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
-        securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+        inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
         MessageDigest messageDigest;
         try {
@@ -304,7 +305,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(XMLSecurityConstants.NS_C14N_OMIT_COMMENTS);
-            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
             algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 
@@ -343,7 +344,7 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
 
             AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
             algorithmSuiteSecurityEvent.setAlgorithmURI(algorithm);
-            algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+            algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
             algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
             inputProcessorChain.getSecurityContext().registerSecurityEvent(algorithmSuiteSecurityEvent);
 

@@ -18,26 +18,26 @@
  */
 package org.apache.xml.security.stax.securityEvent;
 
-import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityToken;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants.Event;
 
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
-public abstract class TokenSecurityEvent extends SecurityEvent {
+public abstract class TokenSecurityEvent<T extends SecurityToken> extends SecurityEvent {
 
-    private SecurityToken securityToken;
+    private T securityToken;
 
     public TokenSecurityEvent(Event securityEventType) {
         super(securityEventType);
     }
 
-    public SecurityToken getSecurityToken() {
+    public T getSecurityToken() {
         return securityToken;
     }
 
-    public void setSecurityToken(SecurityToken securityToken) {
+    public void setSecurityToken(T securityToken) {
         this.securityToken = securityToken;
     }
 }

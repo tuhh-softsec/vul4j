@@ -24,6 +24,7 @@ import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.SignedInfoType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
@@ -72,15 +73,15 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
         if (signatureType.getId() == null) {
             signatureType.setId(IDGenerator.generateID(null));
         }
-        SecurityToken securityToken = verifySignedInfo(inputProcessorChain, securityProperties, signatureType, eventQueue, index);
-        addSignatureReferenceInputProcessorToChain(inputProcessorChain, securityProperties, signatureType, securityToken);
+        InboundSecurityToken inboundSecurityToken = verifySignedInfo(inputProcessorChain, securityProperties, signatureType, eventQueue, index);
+        addSignatureReferenceInputProcessorToChain(inputProcessorChain, securityProperties, signatureType, inboundSecurityToken);
     }
 
     protected abstract void addSignatureReferenceInputProcessorToChain(
             InputProcessorChain inputProcessorChain, XMLSecurityProperties securityProperties,
-            SignatureType signatureType, SecurityToken securityToken) throws XMLSecurityException;
+            SignatureType signatureType, InboundSecurityToken inboundSecurityToken) throws XMLSecurityException;
 
-    protected SecurityToken verifySignedInfo(InputProcessorChain inputProcessorChain, XMLSecurityProperties securityProperties,
+    protected InboundSecurityToken verifySignedInfo(InputProcessorChain inputProcessorChain, XMLSecurityProperties securityProperties,
                                              SignatureType signatureType, Deque<XMLSecEvent> eventDeque, int index)
             throws XMLSecurityException {
 
@@ -138,7 +139,7 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
             throw new XMLSecurityException(e);
         }
         signatureVerifier.doFinal();
-        return signatureVerifier.getSecurityToken();
+        return signatureVerifier.getInboundSecurityToken();
     }
 
     protected Deque<XMLSecEvent> reparseSignedInfo(InputProcessorChain inputProcessorChain, XMLSecurityProperties securityProperties,
@@ -255,40 +256,40 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
     public abstract class SignatureVerifier {
 
         private final SignatureType signatureType;
-        private final SecurityToken securityToken;
+        private final InboundSecurityToken inboundSecurityToken;
 
         private SignerOutputStream signerOutputStream;
         private OutputStream bufferedSignerOutputStream;
         private Transformer transformer;
 
-        public SignatureVerifier(SignatureType signatureType, SecurityContext securityContext,
+        public SignatureVerifier(SignatureType signatureType, InboundSecurityContext inboundSecurityContext,
                                  XMLSecurityProperties securityProperties) throws XMLSecurityException {
             this.signatureType = signatureType;
 
-            SecurityToken securityToken =
-                retrieveSecurityToken(signatureType, securityProperties, securityContext);
-            this.securityToken = securityToken;
+            InboundSecurityToken inboundSecurityToken =
+                retrieveSecurityToken(signatureType, securityProperties, inboundSecurityContext);
+            this.inboundSecurityToken = inboundSecurityToken;
 
-            createSignatureAlgorithm(securityToken, signatureType);
+            createSignatureAlgorithm(inboundSecurityToken, signatureType);
         }
         
-        protected abstract SecurityToken retrieveSecurityToken(SignatureType signatureType,
+        protected abstract InboundSecurityToken retrieveSecurityToken(SignatureType signatureType,
                                                  XMLSecurityProperties securityProperties,
-                                                 SecurityContext securityContext) throws XMLSecurityException;
+                                                 InboundSecurityContext inboundSecurityContext) throws XMLSecurityException;
 
-        public SecurityToken getSecurityToken() {
-            return securityToken;
+        public InboundSecurityToken getInboundSecurityToken() {
+            return inboundSecurityToken;
         }
 
-        protected void createSignatureAlgorithm(SecurityToken securityToken, SignatureType signatureType)
+        protected void createSignatureAlgorithm(InboundSecurityToken inboundSecurityToken, SignatureType signatureType)
                 throws XMLSecurityException {
 
             Key verifyKey;
             final String algorithmURI = signatureType.getSignedInfo().getSignatureMethod().getAlgorithm();
-            if (securityToken.isAsymmetric()) {
-                verifyKey = securityToken.getPublicKey(algorithmURI, XMLSecurityConstants.Asym_Sig, signatureType.getId());
+            if (inboundSecurityToken.isAsymmetric()) {
+                verifyKey = inboundSecurityToken.getPublicKey(algorithmURI, XMLSecurityConstants.Asym_Sig, signatureType.getId());
             } else {
-                verifyKey = securityToken.getSecretKey(
+                verifyKey = inboundSecurityToken.getSecretKey(
                         algorithmURI, XMLSecurityConstants.Sym_Sig, signatureType.getId());
             }
 

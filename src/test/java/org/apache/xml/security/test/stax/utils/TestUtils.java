@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.test.stax.utils;
 
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
 import org.apache.xml.security.stax.impl.processor.input.AbstractSignatureReferenceVerifyInputProcessor;
 import org.apache.xml.security.stax.impl.processor.input.XMLEventReaderInputProcessor;
 
@@ -85,7 +85,7 @@ public class TestUtils {
     }
 
     public static void switchAllowMD5Algorithm(Boolean value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = SecurityContextImpl.class.getDeclaredField("allowMD5Algorithm");
+        Field field = InboundSecurityContextImpl.class.getDeclaredField("allowMD5Algorithm");
         field.setAccessible(true);
 
         Field modifiersField = Field.class.getDeclaredField("modifiers");

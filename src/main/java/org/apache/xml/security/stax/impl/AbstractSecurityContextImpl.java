@@ -19,51 +19,31 @@
 package org.apache.xml.security.stax.impl;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.config.ConfigurationProperties;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityTokenProvider;
-import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
 
 import java.util.*;
 
 /**
- * Concrete security context implementation
- *
- * @author $Author$
- * @version $Revision$ $Date$
+ * @author $Author: $
+ * @version $Revision: $ $Date: $
  */
-public class SecurityContextImpl implements SecurityContext {
-
-    private static final Boolean allowMD5Algorithm = Boolean.valueOf(ConfigurationProperties.getProperty("AllowMD5Algorithm"));
-    private final Map<String, SecurityTokenProvider> securityTokenProviders = new HashMap<String, SecurityTokenProvider>();
-
+public class AbstractSecurityContextImpl {
     @SuppressWarnings("unchecked")
     private final Map content = Collections.synchronizedMap(new HashMap());
     private final List<SecurityEventListener> securityEventListeners = new ArrayList<SecurityEventListener>(2);
 
-    @Override
     public void addSecurityEventListener(SecurityEventListener securityEventListener) {
         if (securityEventListener != null) {
             this.securityEventListeners.add(securityEventListener);
         }
     }
 
-    @Override
     public synchronized void registerSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
         forwardSecurityEvent(securityEvent);
     }
 
     protected void forwardSecurityEvent(SecurityEvent securityEvent) throws XMLSecurityException {
-        if (!allowMD5Algorithm && SecurityEventConstants.AlgorithmSuite.equals(securityEvent.getSecurityEventType())) {
-            AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = (AlgorithmSuiteSecurityEvent)securityEvent;
-            if (algorithmSuiteSecurityEvent.getAlgorithmURI().contains("md5") ||
-                    algorithmSuiteSecurityEvent.getAlgorithmURI().contains("MD5")) {
-                throw new XMLSecurityException("secureProcessing.AllowMD5Algorithm");
-            }
-        }
         for (int i = 0; i < securityEventListeners.size(); i++) {
             SecurityEventListener securityEventListener = securityEventListeners.get(i);
             securityEventListener.registerSecurityEvent(securityEvent);
@@ -71,25 +51,21 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> void put(String key, T value) {
         content.put(key, value);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T get(String key) {
         return (T) content.get(key);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> T remove(String key) {
         return (T) content.remove(key);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T extends List> void putList(Object key, T value) {
         if (value == null) {
             return;
@@ -103,7 +79,6 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> void putAsList(Object key, T value) {
         List<T> entry = (List<T>) content.get(key);
         if (entry == null) {
@@ -114,13 +89,11 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T> List<T> getAsList(Object key) {
         return (List<T>) content.get(key);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T, U> void putAsMap(Object key, T mapKey, U mapValue) {
         Map<T, U> entry = (Map<T, U>) content.get(key);
         if (entry == null) {
@@ -131,26 +104,7 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public <T, U> Map<T, U> getAsMap(Object key) {
         return (Map<T, U>) content.get(key);
-    }
-
-    @Override
-    public void registerSecurityTokenProvider(String id, SecurityTokenProvider securityTokenProvider) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id must not be null");
-        }
-        securityTokenProviders.put(id, securityTokenProvider);
-    }
-
-    @Override
-    public SecurityTokenProvider getSecurityTokenProvider(String id) {
-        return securityTokenProviders.get(id);
-    }
-
-    @Override
-    public List<SecurityTokenProvider> getRegisteredSecurityTokenProviders() {
-        return new ArrayList<SecurityTokenProvider>(securityTokenProviders.values());
     }
 }

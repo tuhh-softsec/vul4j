@@ -19,7 +19,8 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.security.Key;
 import java.security.PublicKey;
@@ -33,7 +34,7 @@ import java.util.*;
 public class GenericOutboundSecurityToken implements OutboundSecurityToken {
 
     private String id;
-    private XMLSecurityConstants.TokenType tokenType;
+    private SecurityTokenConstants.TokenType tokenType;
     private Object processor;
     private final List<OutboundSecurityToken> wrappedTokens = new ArrayList<OutboundSecurityToken>();
     private OutboundSecurityToken keyWrappingToken;
@@ -41,17 +42,17 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
 
-    public GenericOutboundSecurityToken(String id, XMLSecurityConstants.TokenType tokenType, Key key, X509Certificate[] x509Certificates) {
+    public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key, X509Certificate[] x509Certificates) {
         this(id, tokenType, key);
         this.x509Certificates = x509Certificates;
     }
 
-    public GenericOutboundSecurityToken(String id, XMLSecurityConstants.TokenType tokenType, Key key) {
+    public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType, Key key) {
         this(id, tokenType);
         setSecretKey("", key);
     }
 
-    public GenericOutboundSecurityToken(String id, XMLSecurityConstants.TokenType tokenType) {
+    public GenericOutboundSecurityToken(String id, SecurityTokenConstants.TokenType tokenType) {
         this.id = id;
         this.tokenType = tokenType;
     }
@@ -128,7 +129,7 @@ public class GenericOutboundSecurityToken implements OutboundSecurityToken {
     }
 
     @Override
-    public XMLSecurityConstants.TokenType getTokenType() {
+    public SecurityTokenConstants.TokenType getTokenType() {
         return tokenType;
     }
 }

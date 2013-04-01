@@ -19,6 +19,7 @@
 package org.apache.xml.security.test.stax.signature;
 
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -675,7 +676,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_KeyValue);
         
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -719,7 +720,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Ski);
         properties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         
         // Set the key up
@@ -764,7 +765,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Certificate);
         
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");
@@ -808,7 +809,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509SubjectName);
         
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");

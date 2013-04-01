@@ -58,9 +58,9 @@ public interface InputProcessorChain extends ProcessorChain {
     /**
      * The actual processed document's security context
      *
-     * @return The SecurityContext
+     * @return The InboundSecurityContext
      */
-    SecurityContext getSecurityContext();
+    InboundSecurityContext getSecurityContext();
 
     /**
      * The actual processed document's document context

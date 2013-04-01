@@ -20,19 +20,11 @@ package org.apache.xml.security.stax.impl.processor.input;
 
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.InputProcessorChain;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.SecurityToken;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityProperties;
-import org.apache.xml.security.stax.impl.securityToken.SecurityTokenFactory;
-import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.KeyValueTokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.TokenSecurityEvent;
-import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
+import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
+import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
+import org.apache.xml.security.stax.securityEvent.*;
 
 /**
  * An input handler for XML Signature.
@@ -44,70 +36,55 @@ public class XMLSignatureInputHandler extends AbstractSignatureInputHandler {
                                                      final XMLSecurityProperties securityProperties,
                                                      final SignatureType signatureType) throws XMLSecurityException {
 
-        final SecurityContext securityContext = inputProcessorChain.getSecurityContext();
+        final InboundSecurityContext inboundSecurityContext = inputProcessorChain.getSecurityContext();
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
         algorithmSuiteSecurityEvent.setAlgorithmURI(signatureType.getSignedInfo().getCanonicalizationMethod().getAlgorithm());
-        algorithmSuiteSecurityEvent.setKeyUsage(XMLSecurityConstants.C14n);
+        algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.C14n);
         algorithmSuiteSecurityEvent.setCorrelationID(signatureType.getId());
-        securityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
+        inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
         SignatureValueSecurityEvent signatureValueSecurityEvent = new SignatureValueSecurityEvent();
         signatureValueSecurityEvent.setSignatureValue(signatureType.getSignatureValue().getValue());
         signatureValueSecurityEvent.setCorrelationID(signatureType.getId());
-        securityContext.registerSecurityEvent(signatureValueSecurityEvent);
+        inboundSecurityContext.registerSecurityEvent(signatureValueSecurityEvent);
 
-        return new XMLSignatureVerifier(signatureType, securityContext, securityProperties);
+        return new XMLSignatureVerifier(signatureType, inboundSecurityContext, securityProperties);
     }
 
     @Override
-    protected void addSignatureReferenceInputProcessorToChain(InputProcessorChain inputProcessorChain,
-                                                              XMLSecurityProperties securityProperties,
-                                                              SignatureType signatureType, SecurityToken securityToken) throws XMLSecurityException {
+    protected void addSignatureReferenceInputProcessorToChain(
+            InputProcessorChain inputProcessorChain, XMLSecurityProperties securityProperties,
+            SignatureType signatureType, InboundSecurityToken inboundSecurityToken) throws XMLSecurityException {
         //add processors to verify references
-        inputProcessorChain.addProcessor(new XMLSignatureReferenceVerifyInputProcessor(inputProcessorChain, signatureType, securityToken, securityProperties));
+        inputProcessorChain.addProcessor(
+                new XMLSignatureReferenceVerifyInputProcessor(
+                        inputProcessorChain, signatureType, inboundSecurityToken, securityProperties));
     }
     
     public class XMLSignatureVerifier extends SignatureVerifier {
         
-        public XMLSignatureVerifier(SignatureType signatureType, SecurityContext securityContext,
+        public XMLSignatureVerifier(SignatureType signatureType, InboundSecurityContext inboundSecurityContext,
                                     XMLSecurityProperties securityProperties) throws XMLSecurityException {
-            super(signatureType, securityContext, securityProperties);
+            super(signatureType, inboundSecurityContext, securityProperties);
         }
 
         @Override
-        protected SecurityToken retrieveSecurityToken(SignatureType signatureType,
-                                                      XMLSecurityProperties securityProperties,
-                                                      SecurityContext securityContext) throws XMLSecurityException {
+        protected InboundSecurityToken retrieveSecurityToken(
+                SignatureType signatureType, XMLSecurityProperties securityProperties,
+                InboundSecurityContext inboundSecurityContext) throws XMLSecurityException {
 
-            SecurityToken securityToken = SecurityTokenFactory.getInstance().getSecurityToken(signatureType.getKeyInfo(),
-                    SecurityToken.KeyInfoUsage.SIGNATURE_VERIFICATION, securityProperties, securityContext);
+            InboundSecurityToken inboundSecurityToken = SecurityTokenFactory.getInstance().getSecurityToken(signatureType.getKeyInfo(),
+                    SecurityTokenConstants.KeyUsage_Signature_Verification, securityProperties, inboundSecurityContext);
 
-            securityToken.verify();
+            inboundSecurityToken.verify();
 
-            //we have to emit a TokenSecurityEvent here too since it could be an embedded token
-            securityToken.addTokenUsage(SecurityToken.TokenUsage.Signature);
-            XMLSecurityConstants.TokenType tokenType = securityToken.getTokenType();
-            TokenSecurityEvent tokenSecurityEvent = null;
-            if (tokenType == XMLSecurityConstants.X509V1Token
-                    || tokenType == XMLSecurityConstants.X509V3Token
-                    || tokenType == XMLSecurityConstants.X509Pkcs7Token
-                    || tokenType == XMLSecurityConstants.X509PkiPathV1Token) {
-                tokenSecurityEvent = new X509TokenSecurityEvent();
-            } else if (tokenType == XMLSecurityConstants.KeyValueToken) {
-                tokenSecurityEvent = new KeyValueTokenSecurityEvent();
-            } else if (tokenType == XMLSecurityConstants.KeyNameToken) {
-                tokenSecurityEvent = new KeyNameTokenSecurityEvent();
-            } else if (tokenType == XMLSecurityConstants.DefaultToken) {
-                tokenSecurityEvent = new DefaultTokenSecurityEvent();
-            } else {
-                throw new XMLSecurityException("stax.unsupportedToken", tokenType);
-            }
-            tokenSecurityEvent.setSecurityToken(securityToken);
-            tokenSecurityEvent.setCorrelationID(signatureType.getId());
-            securityContext.registerSecurityEvent(tokenSecurityEvent);
+            inboundSecurityToken.addTokenUsage(SecurityTokenConstants.TokenUsage_Signature);
 
-            return securityToken;
+            TokenSecurityEvent tokenSecurityEvent = XMLSecurityUtils.createTokenSecurityEvent(inboundSecurityToken, signatureType.getId());
+            inboundSecurityContext.registerSecurityEvent(tokenSecurityEvent);
+
+            return inboundSecurityToken;
         }
     }
 }

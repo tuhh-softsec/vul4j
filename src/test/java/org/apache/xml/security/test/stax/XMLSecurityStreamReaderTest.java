@@ -30,7 +30,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
 import org.apache.xml.security.stax.impl.DocumentContextImpl;
 import org.apache.xml.security.stax.impl.InputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
 import org.apache.xml.security.stax.impl.XMLSecurityStreamReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -62,7 +62,7 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
     public void testPassThroughDocumentEvents() throws Exception {
         XMLSecurityProperties securityProperties = new XMLSecurityProperties();
         securityProperties.setSkipDocumentEvents(false);
-        SecurityContextImpl securityContext = new SecurityContextImpl();
+        InboundSecurityContextImpl securityContext = new InboundSecurityContextImpl();
         InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContext);
         inputProcessorChain.addProcessor(new EventReaderProcessor());
         XMLSecurityStreamReader xmlSecurityStreamReader = new XMLSecurityStreamReader(inputProcessorChain, securityProperties);
@@ -74,7 +74,7 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
     public void testSkipThroughDocumentEvents() throws Exception {
         XMLSecurityProperties securityProperties = new XMLSecurityProperties();
         securityProperties.setSkipDocumentEvents(true);
-        SecurityContextImpl securityContext = new SecurityContextImpl();
+        InboundSecurityContextImpl securityContext = new InboundSecurityContextImpl();
         InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContext);
         inputProcessorChain.addProcessor(new EventReaderProcessor());
         XMLSecurityStreamReader xmlSecurityStreamReader = new XMLSecurityStreamReader(inputProcessorChain, securityProperties);
@@ -85,7 +85,7 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
     @Test
     public void testIdentityTransformSource() throws Exception {
         XMLSecurityProperties securityProperties = new XMLSecurityProperties();
-        SecurityContextImpl securityContext = new SecurityContextImpl();
+        InboundSecurityContextImpl securityContext = new InboundSecurityContextImpl();
         InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContext);
         inputProcessorChain.addProcessor(new EventReaderProcessor());
         XMLSecurityStreamReader xmlSecurityStreamReader = new XMLSecurityStreamReader(inputProcessorChain, securityProperties);
@@ -100,7 +100,7 @@ public class XMLSecurityStreamReaderTest extends org.junit.Assert {
     @Test
     public void testCorrectness() throws Exception {
         XMLSecurityProperties securityProperties = new XMLSecurityProperties();
-        SecurityContextImpl securityContext = new SecurityContextImpl();
+        InboundSecurityContextImpl securityContext = new InboundSecurityContextImpl();
         DocumentContextImpl documentContext = new DocumentContextImpl();
         documentContext.setEncoding("UTF-8");
         InputProcessorChainImpl inputProcessorChain = new InputProcessorChainImpl(securityContext, documentContext);

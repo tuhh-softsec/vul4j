@@ -18,11 +18,14 @@
  */
 package org.apache.xml.security.stax.securityEvent;
 
+import org.apache.xml.security.stax.ext.ComparableType;
+
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
 public class SecurityEventConstants {
+
     public static final Event SignatureValue = new Event("SignatureValue");
     public static final Event SignedElement = new Event("SignedElement");
     public static final Event KeyValueToken = new Event("KeyValueToken");
@@ -34,39 +37,9 @@ public class SecurityEventConstants {
     public static final Event EncryptedElement = new Event("EncryptedElement");
     public static final Event EncryptedKeyToken = new Event("EncryptedKeyToken");
 
-    public static class Event implements Comparable<Event> {
-        private final String name;
-
+    public static class Event extends ComparableType<Event> {
         public Event(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof Event) {
-                Event otherEvent = (Event) obj;
-                if (this.toString().equals(otherEvent.toString())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        @Override
-        public int hashCode() {
-            return name != null ? name.hashCode() : 0;
-        }
-
-        @Override
-        public int compareTo(Event o) {
-            return this.toString().compareTo(o.toString());
+            super(name);
         }
     }
 }

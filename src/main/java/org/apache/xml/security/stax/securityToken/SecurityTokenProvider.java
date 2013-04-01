@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.xml.security.stax.ext;
+package org.apache.xml.security.stax.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
@@ -26,7 +26,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
  * @author $Author$
  * @version $Revision$ $Date$
  */
-public interface SecurityTokenProvider {
+public interface SecurityTokenProvider<T> {
 
     /**
      * Returns the represented SecurityToken of this object
@@ -34,7 +34,7 @@ public interface SecurityTokenProvider {
      * @return The SecurityToken
      * @throws XMLSecurityException if the token couldn't be loaded
      */
-    <T> T getSecurityToken() throws XMLSecurityException;
+    T getSecurityToken() throws XMLSecurityException;
 
     String getId();
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
+
 import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class XMLSecurityProperties {
     private Key signatureKey;
     private X509Certificate[] signatureCerts;
     private boolean addExcC14NInclusivePrefixes = false;
-    private XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType;
+    private SecurityTokenConstants.KeyIdentifier signatureKeyIdentifier;
     private boolean useSingleCert = true;
 
     private Key signatureVerificationKey;
@@ -89,17 +91,17 @@ public class XMLSecurityProperties {
         this.signatureKey = xmlSecurityProperties.signatureKey;
         this.signatureCerts = xmlSecurityProperties.signatureCerts;
         this.addExcC14NInclusivePrefixes = xmlSecurityProperties.addExcC14NInclusivePrefixes;
-        this.signatureKeyIdentifierType = xmlSecurityProperties.signatureKeyIdentifierType;
+        this.signatureKeyIdentifier = xmlSecurityProperties.signatureKeyIdentifier;
         this.useSingleCert = xmlSecurityProperties.useSingleCert;
         this.signatureVerificationKey = xmlSecurityProperties.signatureVerificationKey;
     }
 
-    public XMLSecurityConstants.KeyIdentifierType getSignatureKeyIdentifierType() {
-        return signatureKeyIdentifierType;
+    public SecurityTokenConstants.KeyIdentifier getSignatureKeyIdentifier() {
+        return signatureKeyIdentifier;
     }
 
-    public void setSignatureKeyIdentifierType(XMLSecurityConstants.KeyIdentifierType signatureKeyIdentifierType) {
-        this.signatureKeyIdentifierType = signatureKeyIdentifierType;
+    public void setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier signatureKeyIdentifier) {
+        this.signatureKeyIdentifier = signatureKeyIdentifier;
     }
 
     /**

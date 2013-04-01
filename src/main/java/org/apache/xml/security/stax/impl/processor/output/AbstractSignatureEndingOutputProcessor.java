@@ -21,13 +21,14 @@ package org.apache.xml.security.stax.impl.processor.output;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
 import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithmFactory;
-import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.SignerOutputStream;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
@@ -98,11 +99,13 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
 
         List<XMLSecAttribute> attributes = new ArrayList<XMLSecAttribute>(1);
         attributes.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, IDGenerator.generateID(null)));
-        XMLSecStartElement signatureElement = createStartElementAndOutputAsEvent(subOutputProcessorChain, XMLSecurityConstants.TAG_dsig_Signature, true, attributes);
+        XMLSecStartElement signatureElement = createStartElementAndOutputAsEvent(subOutputProcessorChain,
+                XMLSecurityConstants.TAG_dsig_Signature, true, attributes);
 
         SignatureAlgorithm signatureAlgorithm;
         try {
-            signatureAlgorithm = SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(getSecurityProperties().getSignatureAlgorithm());
+            signatureAlgorithm = SignatureAlgorithmFactory.getInstance().getSignatureAlgorithm(
+                    getSecurityProperties().getSignatureAlgorithm());
         } catch (NoSuchAlgorithmException e) {
             throw new XMLSecurityException(e);
         } catch (NoSuchProviderException e) {
@@ -113,7 +116,8 @@ public abstract class AbstractSignatureEndingOutputProcessor extends AbstractBuf
         if (tokenId == null) {
             throw new XMLSecurityException("stax.keyNotFound");
         }
-        SecurityTokenProvider wrappingSecurityTokenProvider = outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
+        SecurityTokenProvider<OutboundSecurityToken> wrappingSecurityTokenProvider =
+                outputProcessorChain.getSecurityContext().getSecurityTokenProvider(tokenId);
         if (wrappingSecurityTokenProvider == null) {
             throw new XMLSecurityException("stax.keyNotFound");
         }

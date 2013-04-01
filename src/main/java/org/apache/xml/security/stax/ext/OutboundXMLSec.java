@@ -30,15 +30,14 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
-import org.apache.xml.security.stax.impl.DocumentContextImpl;
-import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
-import org.apache.xml.security.stax.impl.XMLSecurityStreamWriter;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
+import org.apache.xml.security.stax.securityToken.SecurityTokenProvider;
+import org.apache.xml.security.stax.impl.*;
 import org.apache.xml.security.stax.impl.processor.output.FinalOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLEncryptOutputProcessor;
 import org.apache.xml.security.stax.impl.processor.output.XMLSignatureOutputProcessor;
 import org.apache.xml.security.stax.impl.securityToken.GenericOutboundSecurityToken;
-import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 
 /**
@@ -81,19 +80,19 @@ public class OutboundXMLSec {
     }
 
     private XMLStreamWriter processOutMessage(Object output, String encoding) throws XMLSecurityException {
-        final SecurityContextImpl securityContextImpl = new SecurityContextImpl();
+        final OutboundSecurityContextImpl outboundSecurityContext = new OutboundSecurityContextImpl();
         final DocumentContextImpl documentContext = new DocumentContextImpl();
         documentContext.setEncoding(encoding);
 
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(securityContextImpl, documentContext);
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(outboundSecurityContext, documentContext);
 
         for (int i = 0; i < securityProperties.getOutAction().length; i++) {
             XMLSecurityConstants.Action action = securityProperties.getOutAction()[i];
-            if (action.equals(XMLSecurityConstants.SIGNATURE)) {
+            if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 XMLSignatureOutputProcessor signatureOutputProcessor = new XMLSignatureOutputProcessor();
                 initializeOutputProcessor(outputProcessorChain, signatureOutputProcessor, action);
                 
-                configureSignatureKeys(securityContextImpl);
+                configureSignatureKeys(outboundSecurityContext);
                 List<SecurePart> signatureParts = securityProperties.getSignatureSecureParts();
                 for (int j = 0; j < signatureParts.size(); j++) {
                     SecurePart securePart = signatureParts.get(j);
@@ -111,11 +110,11 @@ public class OutboundXMLSec {
                         );
                     }
                 }
-            } else if (action.equals(XMLSecurityConstants.ENCRYPT)) {
+            } else if (XMLSecurityConstants.ENCRYPT.equals(action)) {
                 XMLEncryptOutputProcessor encryptOutputProcessor = new XMLEncryptOutputProcessor();
                 initializeOutputProcessor(outputProcessorChain, encryptOutputProcessor, action);
                 
-                configureEncryptionKeys(securityContextImpl);
+                configureEncryptionKeys(outboundSecurityContext);
                 List<SecurePart> encryptionParts = securityProperties.getEncryptionSecureParts();
                 for (int j = 0; j < encryptionParts.size(); j++) {
                     SecurePart securePart = encryptionParts.get(j);
@@ -156,7 +155,7 @@ public class OutboundXMLSec {
         outputProcessor.init(outputProcessorChain);
     }
     
-    private void configureSignatureKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
+    private void configureSignatureKeys(final OutboundSecurityContextImpl outboundSecurityContext) throws XMLSecurityException {
         Key key = securityProperties.getSignatureKey();
         X509Certificate[] x509Certificates = securityProperties.getSignatureCerts();
         if (key instanceof PrivateKey && (x509Certificates == null || x509Certificates.length == 0)) {
@@ -164,11 +163,12 @@ public class OutboundXMLSec {
         }
 
         final String securityTokenid = IDGenerator.generateID("SIG");
-        final OutboundSecurityToken securityToken = new GenericOutboundSecurityToken(securityTokenid, XMLSecurityConstants.DefaultToken, key, x509Certificates);
+        final OutboundSecurityToken securityToken =
+                new GenericOutboundSecurityToken(securityTokenid, SecurityTokenConstants.DefaultToken, key, x509Certificates);
 
-        final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
+        final SecurityTokenProvider<OutboundSecurityToken> securityTokenProvider =
+                new SecurityTokenProvider<OutboundSecurityToken>() {
 
-            @SuppressWarnings("unchecked")
             @Override
             public OutboundSecurityToken getSecurityToken() throws XMLSecurityException {
                 return securityToken;
@@ -179,12 +179,12 @@ public class OutboundXMLSec {
                 return securityTokenid;
             }
         };
-        securityContextImpl.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
+        outboundSecurityContext.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
         
-        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE, securityTokenid);
+        outboundSecurityContext.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_SIGNATURE, securityTokenid);
     }
     
-    private void configureEncryptionKeys(final SecurityContextImpl securityContextImpl) throws XMLSecurityException {
+    private void configureEncryptionKeys(final OutboundSecurityContextImpl outboundSecurityContext) throws XMLSecurityException {
         // Sort out transport keys / key wrapping keys first.
         Key transportKey = securityProperties.getEncryptionTransportKey();
         X509Certificate transportCert = securityProperties.getEncryptionUseThisCertificate();
@@ -194,7 +194,7 @@ public class OutboundXMLSec {
         }
 
         final OutboundSecurityToken transportSecurityToken =
-                new GenericOutboundSecurityToken("", XMLSecurityConstants.DefaultToken, transportKey, transportCerts);
+                new GenericOutboundSecurityToken("", SecurityTokenConstants.DefaultToken, transportKey, transportCerts);
         
         // Now sort out the session key
         Key key = securityProperties.getEncryptionKey();
@@ -223,12 +223,13 @@ public class OutboundXMLSec {
         }
 
         final String securityTokenid = IDGenerator.generateID(null);
-        final GenericOutboundSecurityToken securityToken = new GenericOutboundSecurityToken(securityTokenid, XMLSecurityConstants.DefaultToken, key);
+        final GenericOutboundSecurityToken securityToken =
+                new GenericOutboundSecurityToken(securityTokenid, SecurityTokenConstants.DefaultToken, key);
         securityToken.setKeyWrappingToken(transportSecurityToken);
 
-        final SecurityTokenProvider securityTokenProvider = new SecurityTokenProvider() {
+        final SecurityTokenProvider<OutboundSecurityToken> securityTokenProvider =
+                new SecurityTokenProvider<OutboundSecurityToken>() {
 
-            @SuppressWarnings("unchecked")
             @Override
             public OutboundSecurityToken getSecurityToken() throws XMLSecurityException {
                 return securityToken;
@@ -239,7 +240,7 @@ public class OutboundXMLSec {
                 return securityTokenid;
             }
         };
-        securityContextImpl.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
-        securityContextImpl.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, securityTokenid);
+        outboundSecurityContext.registerSecurityTokenProvider(securityTokenid, securityTokenProvider);
+        outboundSecurityContext.put(XMLSecurityConstants.PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION, securityTokenid);
     }
 }

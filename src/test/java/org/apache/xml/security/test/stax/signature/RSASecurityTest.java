@@ -43,6 +43,7 @@ import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
 import org.junit.Before;
@@ -110,7 +111,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, null, getPublicKey(),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
     
     // See SANTUARIO-320
@@ -147,7 +148,7 @@ public class RSASecurityTest extends AbstractSignatureVerificationTest {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, null, getPublicKey(),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
     
     

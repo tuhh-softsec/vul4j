@@ -22,6 +22,7 @@ import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
@@ -145,7 +146,7 @@ public abstract class AbstractPerformanceTest {
                 XMLSecurityConstants.SIGNATURE
         };
         xmlSecurityProperties.setOutAction(actions);
-        xmlSecurityProperties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE);
+        xmlSecurityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Certificate);
 
         xmlSecurityProperties.setSignatureKey(key);
         xmlSecurityProperties.setSignatureCerts(new X509Certificate[]{cert});

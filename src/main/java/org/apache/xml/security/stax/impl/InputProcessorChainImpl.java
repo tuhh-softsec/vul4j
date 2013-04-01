@@ -43,24 +43,24 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     private int startPos = 0;
     private int curPos = 0;
 
-    private final SecurityContext securityContext;
+    private final InboundSecurityContext inboundSecurityContext;
     private final DocumentContextImpl documentContext;
 
-    public InputProcessorChainImpl(SecurityContext securityContext) {
-        this(securityContext, 0);
+    public InputProcessorChainImpl(InboundSecurityContext inboundSecurityContext) {
+        this(inboundSecurityContext, 0);
     }
 
-    public InputProcessorChainImpl(SecurityContext securityContext, int startPos) {
-        this(securityContext, new DocumentContextImpl(), startPos, new ArrayList<InputProcessor>(20));
+    public InputProcessorChainImpl(InboundSecurityContext inboundSecurityContext, int startPos) {
+        this(inboundSecurityContext, new DocumentContextImpl(), startPos, new ArrayList<InputProcessor>(20));
     }
 
-    public InputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContext) {
-        this(securityContext, documentContext, 0, new ArrayList<InputProcessor>(20));
+    public InputProcessorChainImpl(InboundSecurityContext inboundSecurityContext, DocumentContextImpl documentContext) {
+        this(inboundSecurityContext, documentContext, 0, new ArrayList<InputProcessor>(20));
     }
 
-    protected InputProcessorChainImpl(SecurityContext securityContext, DocumentContextImpl documentContextImpl,
+    protected InputProcessorChainImpl(InboundSecurityContext inboundSecurityContext, DocumentContextImpl documentContextImpl,
                                       int startPos, List<InputProcessor> inputProcessors) {
-        this.securityContext = securityContext;
+        this.inboundSecurityContext = inboundSecurityContext;
         this.curPos = this.startPos = startPos;
         this.documentContext = documentContextImpl;
         this.inputProcessors = inputProcessors;
@@ -72,8 +72,8 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     }
 
     @Override
-    public SecurityContext getSecurityContext() {
-        return this.securityContext;
+    public InboundSecurityContext getSecurityContext() {
+        return this.inboundSecurityContext;
     }
 
     @Override
@@ -202,7 +202,7 @@ public class InputProcessorChainImpl implements InputProcessorChain {
     public InputProcessorChain createSubChain(InputProcessor inputProcessor) throws XMLStreamException, XMLSecurityException {
         InputProcessorChainImpl inputProcessorChain;
         try {
-            inputProcessorChain = new InputProcessorChainImpl(securityContext, documentContext.clone(),
+            inputProcessorChain = new InputProcessorChainImpl(inboundSecurityContext, documentContext.clone(),
                     inputProcessors.indexOf(inputProcessor) + 1, new ArrayList<InputProcessor>(this.inputProcessors));
         } catch (CloneNotSupportedException e) {
             throw new XMLSecurityException(e);

@@ -27,6 +27,9 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
+import org.apache.xml.security.stax.securityEvent.*;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -272,6 +275,50 @@ public class XMLSecurityUtils {
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SubjectName);
         
         abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data);
+    }
+
+    public static void createX509IssuerSerialStructure(AbstractOutputProcessor abstractOutputProcessor,
+            OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates)
+            throws XMLStreamException, XMLSecurityException {
+
+        abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data, true, null);
+        abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerSerial, false, null);
+        abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerName, false, null);
+        abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, x509Certificates[0].getIssuerX500Principal().getName());
+        abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerName);
+        abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SerialNumber, false, null);
+        abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, x509Certificates[0].getSerialNumber().toString());
+        abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509SerialNumber);
+        abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509IssuerSerial);
+        abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig_X509Data);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TokenSecurityEvent<? extends InboundSecurityToken> createTokenSecurityEvent(
+            final InboundSecurityToken inboundSecurityToken, String correlationID) throws XMLSecurityException {
+
+        SecurityTokenConstants.TokenType tokenType = inboundSecurityToken.getTokenType();
+
+        TokenSecurityEvent tokenSecurityEvent = null;
+        if (SecurityTokenConstants.X509V1Token.equals(tokenType)
+                || SecurityTokenConstants.X509V3Token.equals(tokenType)
+                || SecurityTokenConstants.X509Pkcs7Token.equals(tokenType)
+                || SecurityTokenConstants.X509PkiPathV1Token.equals(tokenType)) {
+            tokenSecurityEvent = new X509TokenSecurityEvent();
+        } else if (SecurityTokenConstants.KeyValueToken.equals(tokenType)) {
+            tokenSecurityEvent = new KeyValueTokenSecurityEvent();
+        } else if (SecurityTokenConstants.KeyNameToken.equals(tokenType)) {
+            tokenSecurityEvent = new KeyNameTokenSecurityEvent();
+        } else if (SecurityTokenConstants.DefaultToken.equals(tokenType)) {
+            tokenSecurityEvent = new DefaultTokenSecurityEvent();
+        } else if (SecurityTokenConstants.EncryptedKeyToken.equals(tokenType)) {
+            tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
+        } else {
+            throw new XMLSecurityException("stax.unsupportedToken", tokenType);
+        }
+        tokenSecurityEvent.setSecurityToken(inboundSecurityToken);
+        tokenSecurityEvent.setCorrelationID(correlationID);
+        return tokenSecurityEvent;
     }
 
     public static Set<String> getExcC14NInclusiveNamespacePrefixes(XMLSecStartElement xmlSecStartElement, boolean excludeVisible) {

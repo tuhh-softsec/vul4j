@@ -32,7 +32,7 @@ public class AlgorithmSuiteSecurityEvent extends SecurityEvent {
 
     private int keyLength;
     private String algorithmURI;
-    private XMLSecurityConstants.KeyUsage keyUsage;
+    private XMLSecurityConstants.AlgorithmUsage algorithmUsage;
 
     public AlgorithmSuiteSecurityEvent() {
         super(SecurityEventConstants.AlgorithmSuite);
@@ -54,11 +54,11 @@ public class AlgorithmSuiteSecurityEvent extends SecurityEvent {
         this.algorithmURI = algorithmURI;
     }
 
-    public XMLSecurityConstants.KeyUsage getKeyUsage() {
-        return keyUsage;
+    public XMLSecurityConstants.AlgorithmUsage getAlgorithmUsage() {
+        return algorithmUsage;
     }
 
-    public void setKeyUsage(XMLSecurityConstants.KeyUsage keyUsage) {
-        this.keyUsage = keyUsage;
+    public void setAlgorithmUsage(XMLSecurityConstants.AlgorithmUsage algorithmUsage) {
+        this.algorithmUsage = algorithmUsage;
     }
 }

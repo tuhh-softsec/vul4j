@@ -34,8 +34,9 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.algorithms.SignatureAlgorithm;
-import org.apache.xml.security.stax.impl.securityToken.OutboundSecurityToken;
+import org.apache.xml.security.stax.securityToken.OutboundSecurityToken;
 import org.apache.xml.security.stax.securityEvent.SignatureValueSecurityEvent;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 /**
  * An EndingOutputProcessor for XML Signature.
@@ -95,26 +96,25 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
             OutboundSecurityToken securityToken,
             boolean useSingleCertificate)
             throws XMLStreamException, XMLSecurityException {
-        XMLSecurityConstants.KeyIdentifierType keyIdentifierType = getSecurityProperties().getSignatureKeyIdentifierType();
+        SecurityTokenConstants.KeyIdentifier keyIdentifier = getSecurityProperties().getSignatureKeyIdentifier();
 
         X509Certificate[] x509Certificates = securityToken.getX509Certificates();
         if (x509Certificates == null) {
             return;
         }
         
-        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
+        if (keyIdentifier == null || SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
+            XMLSecurityUtils.createX509IssuerSerialStructure(this, outputProcessorChain, x509Certificates);
+        } else if (SecurityTokenConstants.KeyIdentifier_KeyValue.equals(keyIdentifier)) {
             XMLSecurityUtils.createKeyValueTokenStructure(this, outputProcessorChain, x509Certificates);
-        } else if (keyIdentifierType == null 
-                || keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
-            createX509IssuerSerialStructure(outputProcessorChain, x509Certificates);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_SKI) {
+        } else if (SecurityTokenConstants.KeyIdentifier_X509Ski.equals(keyIdentifier)) {
             XMLSecurityUtils.createX509SubjectKeyIdentifierStructure(this, outputProcessorChain, x509Certificates);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_CERTIFICATE) {
+        } else if (SecurityTokenConstants.KeyIdentifier_X509Certificate.equals(keyIdentifier)) {
             XMLSecurityUtils.createX509CertificateStructure(this, outputProcessorChain, x509Certificates);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
+        } else if (SecurityTokenConstants.KeyIdentifier_X509SubjectName.equals(keyIdentifier)) {
             XMLSecurityUtils.createX509SubjectNameStructure(this, outputProcessorChain, x509Certificates);
         } else {
-            throw new XMLSecurityException("stax.unsupportedToken", keyIdentifierType);
+            throw new XMLSecurityException("stax.unsupportedToken", keyIdentifier);
         }
     }
 

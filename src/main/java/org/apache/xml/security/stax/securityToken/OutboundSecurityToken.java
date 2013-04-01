@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.xml.security.stax.impl.securityToken;
+package org.apache.xml.security.stax.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
 import java.security.Key;
 import java.security.PublicKey;
@@ -55,10 +54,9 @@ public interface OutboundSecurityToken {
     Key getSecretKey(String algorithmURI) throws XMLSecurityException;
 
     /**
-     * Returns the public key if one exist for this token type
-     *
-     * @return The Public-Key for asymmetric algorithms
-     * @throws XMLSecurityException if the key can't be loaded
+     * Returns the public key if one exists and already initialized, null otherwise
+     * @return
+     * @throws org.apache.xml.security.exceptions.XMLSecurityException
      */
     PublicKey getPublicKey() throws XMLSecurityException;
 
@@ -66,10 +64,9 @@ public interface OutboundSecurityToken {
      * Returns the certificate chain if one exists for this token type
      *
      * @return The certificate chain
-     * @throws XMLSecurityException if the certificates can't be retrieved
+     * @throws org.apache.xml.security.exceptions.XMLSecurityException if the certificates can't be retrieved
      */
     X509Certificate[] getX509Certificates() throws XMLSecurityException;
-
 
     /**
      * Returns the key wrapping token
@@ -82,10 +79,5 @@ public interface OutboundSecurityToken {
 
     void addWrappedToken(OutboundSecurityToken securityToken);
 
-    /**
-     * Returns the KeyIdentifierType
-     *
-     * @return the KeyIdentifierType
-     */
-    XMLSecurityConstants.TokenType getTokenType();
+    SecurityTokenConstants.TokenType getTokenType();
 }

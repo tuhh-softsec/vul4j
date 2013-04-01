@@ -57,6 +57,7 @@ import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.TestUtils;
 import org.apache.xml.security.test.stax.utils.XMLSecEventAllocator;
@@ -140,8 +141,7 @@ public class IAIKTest extends org.junit.Assert {
         StAX2DOM.readDoc(documentBuilderFactory.newDocumentBuilder(), securityStreamReader);
         
         // Check the SecurityEvents
-        checkSignatureToken(securityEventListener, key,
-                              XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+        checkSignatureToken(securityEventListener, key, SecurityTokenConstants.KeyIdentifier_NoKeyInfo);
     }
     
     @Test
@@ -210,7 +210,7 @@ public class IAIKTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA"),
-                              XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                              SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
     
     @Test
@@ -242,7 +242,7 @@ public class IAIKTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }    
     
     // See SANTUARIO-322
@@ -276,7 +276,7 @@ public class IAIKTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }    
     
     // See SANTUARIO-322
@@ -310,7 +310,7 @@ public class IAIKTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }    
     
     @Test
@@ -346,7 +346,7 @@ public class IAIKTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA"),
-                            XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                            SecurityTokenConstants.KeyIdentifier_KeyValue);
     }    
     
     private static PublicKey getPublicKey(String algo) 
@@ -370,17 +370,17 @@ public class IAIKTest extends org.junit.Assert {
     private void checkSignatureToken(
         TestSecurityEventListener securityEventListener,
         Key key,
-        XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
+        SecurityTokenConstants.KeyIdentifier keyIdentifier
     ) throws XMLSecurityException {
-        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
+        if (SecurityTokenConstants.KeyIdentifier_KeyValue.equals(keyIdentifier)) {
 
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
+        } else if (SecurityTokenConstants.KeyIdentifier_NoKeyInfo.equals(keyIdentifier)) {
             DefaultTokenSecurityEvent tokenEvent = 
                 (DefaultTokenSecurityEvent)securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
             Key processedKey = tokenEvent.getSecurityToken().getSecretKey().values().iterator().next();
             assertEquals(processedKey, key);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
+        } else if (SecurityTokenConstants.KeyIdentifier_KeyName.equals(keyIdentifier)) {
             KeyNameTokenSecurityEvent tokenEvent = 
                 (KeyNameTokenSecurityEvent)securityEventListener.getSecurityEvent(SecurityEventConstants.KeyNameToken);
             assertNotNull(tokenEvent);
@@ -388,19 +388,17 @@ public class IAIKTest extends org.junit.Assert {
             assertEquals(processedKey, key);
             assertNotNull(((KeyNameSecurityToken)tokenEvent.getSecurityToken()).getKeyName());
         } else {
-            X509TokenSecurityEvent tokenEvent = 
+            X509TokenSecurityEvent tokenEvent =
                 (X509TokenSecurityEvent)securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
             assertNotNull(tokenEvent);
             X509SecurityToken x509SecurityToken = 
                 (X509SecurityToken)tokenEvent.getSecurityToken();
             assertNotNull(x509SecurityToken);
-            if (keyIdentifierType == 
-                XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
+            if (SecurityTokenConstants.KeyIdentifier_X509SubjectName.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509SubjectNameSecurityToken)x509SecurityToken).getSubjectName());
-            } else if (keyIdentifierType == 
-                XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
+            } else if (SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getIssuerName());

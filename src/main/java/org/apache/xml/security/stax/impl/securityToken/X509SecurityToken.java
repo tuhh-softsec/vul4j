@@ -19,8 +19,8 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 /**
  * @author $Author: coheigea $
@@ -28,11 +28,11 @@ import org.apache.xml.security.stax.ext.XMLSecurityConstants;
  */
 public class X509SecurityToken extends AbstractInboundSecurityToken {
 
-    private final XMLSecurityConstants.TokenType tokenType;
+    private final SecurityTokenConstants.TokenType tokenType;
 
-    protected X509SecurityToken(XMLSecurityConstants.TokenType tokenType, SecurityContext securityContext,
-                                String id, XMLSecurityConstants.KeyIdentifierType keyIdentifierType) {
-        super(securityContext, id, keyIdentifierType);
+    protected X509SecurityToken(SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext,
+                                String id, SecurityTokenConstants.KeyIdentifier keyIdentifier) {
+        super(inboundSecurityContext, id, keyIdentifier);
         this.tokenType = tokenType;
     }
 
@@ -42,7 +42,7 @@ public class X509SecurityToken extends AbstractInboundSecurityToken {
     }
 
     @Override
-    public XMLSecurityConstants.TokenType getTokenType() {
+    public SecurityTokenConstants.TokenType getTokenType() {
         return tokenType;
     }
 }

@@ -287,144 +287,24 @@ public class XMLSecurityConstants {
 
     public static final Action SIGNATURE = new Action("SIGNATURE");
     public static final Action ENCRYPT = new Action("ENCRYPT");
-    
-    public interface KeyIdentifierType {
-        
-    }
-    
-    public enum XMLKeyIdentifierType implements KeyIdentifierType {
-        KEY_VALUE,
-        KEY_NAME,
-        X509_ISSUER_SERIAL,
-        X509_SKI,
-        X509_CERTIFICATE,
-        X509_SUBJECT_NAME,
-        NO_KEY_INFO,
-        ENCRYPTED_KEY
-    }
 
-    public static class Action implements Comparable<Action> {
-        private final String name;
-
-        protected Action(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof Action) {
-                Action otherAction = (Action) obj;
-                if (this.toString().equals(otherAction.toString())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return name != null ? name.hashCode() : 0;
-        }
-
-        @Override
-        public int compareTo(Action o) {
-            return this.toString().compareTo(o.toString());
+    public static class Action extends ComparableType<Action> {
+        public Action(String name) {
+            super(name);
         }
     }
 
-    public static final KeyUsage Sym_Key_Wrap = new KeyUsage("Sym_Key_Wrap");
-    public static final KeyUsage Asym_Key_Wrap = new KeyUsage("Asym_Key_Wrap");
-    public static final KeyUsage Sym_Sig = new KeyUsage("Sym_Sig");
-    public static final KeyUsage Asym_Sig = new KeyUsage("Asym_Sig");
-    public static final KeyUsage Enc = new KeyUsage("Enc");
-    public static final KeyUsage Dig = new KeyUsage("Dig");
-    public static final KeyUsage C14n = new KeyUsage("C14n");
+    public static final AlgorithmUsage Sym_Key_Wrap = new AlgorithmUsage("Sym_Key_Wrap");
+    public static final AlgorithmUsage Asym_Key_Wrap = new AlgorithmUsage("Asym_Key_Wrap");
+    public static final AlgorithmUsage Sym_Sig = new AlgorithmUsage("Sym_Sig");
+    public static final AlgorithmUsage Asym_Sig = new AlgorithmUsage("Asym_Sig");
+    public static final AlgorithmUsage Enc = new AlgorithmUsage("Enc");
+    public static final AlgorithmUsage Dig = new AlgorithmUsage("Dig");
+    public static final AlgorithmUsage C14n = new AlgorithmUsage("C14n");
 
-    public static class KeyUsage implements Comparable<KeyUsage> {
-        private final String name;
-
-        public KeyUsage(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof KeyUsage) {
-                KeyUsage otherKeyUsage = (KeyUsage) obj;
-                if (this.toString().equals(otherKeyUsage.toString())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return name != null ? name.hashCode() : 0;
-        }
-
-        @Override
-        public int compareTo(KeyUsage o) {
-            return this.toString().compareTo(o.toString());
-        }
-    }
-
-    public static final TokenType EncryptedKeyToken = new TokenType("EncryptedKeyToken");
-    public static final TokenType X509V3Token = new TokenType("X509V3Token");
-    public static final TokenType X509V1Token = new TokenType("X509V1Token");
-    public static final TokenType X509Pkcs7Token = new TokenType("X509Pkcs7Token");
-    public static final TokenType X509PkiPathV1Token = new TokenType("X509PkiPathV1Token");
-    public static final TokenType KeyValueToken = new TokenType("KeyValueToken");
-    public static final TokenType KeyNameToken = new TokenType("KeyNameToken");
-    public static final TokenType DefaultToken = new TokenType("DefaultToken");
-    
-    public static class TokenType implements Comparable<TokenType> {
-        private final String name;
-
-        public TokenType(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj instanceof TokenType) {
-                TokenType otherTokenType = (TokenType) obj;
-                if (this.toString().equals(otherTokenType.toString())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            return name != null ? name.hashCode() : 0;
-        }
-
-        @Override
-        public int compareTo(TokenType o) {
-            return this.toString().compareTo(o.toString());
+    public static class AlgorithmUsage extends ComparableType<AlgorithmUsage> {
+        public AlgorithmUsage(String name) {
+            super(name);
         }
     }
 

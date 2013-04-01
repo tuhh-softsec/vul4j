@@ -18,7 +18,7 @@
  */
 package org.apache.xml.security.stax.securityEvent;
 
-import org.apache.xml.security.stax.ext.SecurityToken;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 
 import java.util.List;
@@ -29,7 +29,9 @@ import java.util.List;
  */
 public class SignedElementSecurityEvent extends AbstractSecuredElementSecurityEvent {
 
-    public SignedElementSecurityEvent(SecurityToken securityToken, boolean signed, List<XMLSecurityConstants.ContentType> protectionOrder) {
-        super(SecurityEventConstants.SignedElement, securityToken, protectionOrder, signed, false);
+    public SignedElementSecurityEvent(
+            InboundSecurityToken inboundSecurityToken, boolean signed,
+            List<XMLSecurityConstants.ContentType> protectionOrder) {
+        super(SecurityEventConstants.SignedElement, inboundSecurityToken, protectionOrder, signed, false);
     }
 }

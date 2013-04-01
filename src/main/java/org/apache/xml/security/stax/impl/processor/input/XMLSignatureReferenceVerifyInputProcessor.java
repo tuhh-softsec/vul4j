@@ -26,8 +26,8 @@ import org.apache.xml.security.binding.xmldsig.ReferenceType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.DocumentContext;
+import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.ext.InputProcessorChain;
-import org.apache.xml.security.stax.ext.SecurityToken;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
@@ -38,10 +38,10 @@ import org.apache.xml.security.stax.securityEvent.SignedElementSecurityEvent;
 public class XMLSignatureReferenceVerifyInputProcessor extends AbstractSignatureReferenceVerifyInputProcessor {
 
     public XMLSignatureReferenceVerifyInputProcessor(
-            InputProcessorChain inputProcessorChain, SignatureType signatureType, SecurityToken securityToken,
+            InputProcessorChain inputProcessorChain, SignatureType signatureType, InboundSecurityToken inboundSecurityToken,
             XMLSecurityProperties securityProperties) throws XMLSecurityException {
 
-        super(inputProcessorChain, signatureType, securityToken, securityProperties);
+        super(inputProcessorChain, signatureType, inboundSecurityToken, securityProperties);
         this.addAfterProcessor(XMLSignatureReferenceVerifyInputProcessor.class.getName());
     }
     
@@ -51,7 +51,7 @@ public class XMLSignatureReferenceVerifyInputProcessor extends AbstractSignature
             ReferenceType referenceType) throws XMLSecurityException {
         final DocumentContext documentContext = inputProcessorChain.getDocumentContext();
         SignedElementSecurityEvent signedElementSecurityEvent =
-                new SignedElementSecurityEvent(getSecurityToken(), true, documentContext.getProtectionOrder());
+                new SignedElementSecurityEvent(getInboundSecurityToken(), true, documentContext.getProtectionOrder());
         signedElementSecurityEvent.setElementPath(elementPath);
         signedElementSecurityEvent.setXmlSecEvent(xmlSecEvent);
         signedElementSecurityEvent.setCorrelationID(referenceType.getId());

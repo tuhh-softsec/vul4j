@@ -20,6 +20,8 @@ package org.apache.xml.security.test.stax;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
+import org.apache.xml.security.stax.impl.OutboundSecurityContextImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +30,6 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
 import org.apache.xml.security.stax.impl.XMLSecurityStreamWriter;
 
 import javax.xml.namespace.NamespaceContext;
@@ -54,7 +55,7 @@ public class XMLSecurityStreamWriterTest extends org.junit.Assert {
     @Test
     public void testIdentityTransformResult() throws Exception {
         StringWriter securityStringWriter = new StringWriter();
-        SecurityContextImpl securityContext = new SecurityContextImpl();
+        OutboundSecurityContextImpl securityContext = new OutboundSecurityContextImpl();
         OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(securityContext);
         outputProcessorChain.addProcessor(new EventWriterProcessor(securityStringWriter));
         XMLSecurityStreamWriter xmlSecurityStreamWriter = new XMLSecurityStreamWriter(outputProcessorChain);

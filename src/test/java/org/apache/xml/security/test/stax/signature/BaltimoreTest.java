@@ -61,6 +61,7 @@ import org.apache.xml.security.stax.securityEvent.DefaultTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.KeyNameTokenSecurityEvent;
 import org.apache.xml.security.stax.securityEvent.SecurityEventConstants;
 import org.apache.xml.security.stax.securityEvent.X509TokenSecurityEvent;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.HttpRequestRedirectorProxy;
 import org.apache.xml.security.test.stax.utils.StAX2DOM;
 import org.apache.xml.security.test.stax.utils.TestUtils;
@@ -158,7 +159,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, key,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo);
     }
 
     @Test
@@ -228,7 +229,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -260,7 +261,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -292,7 +293,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -324,7 +325,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA", 15),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     // See SANTUARIO-319
@@ -372,7 +373,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                    SecurityTokenConstants.KeyIdentifier_KeyValue);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -425,7 +426,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, getPublicKey("DSA", 15),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                    SecurityTokenConstants.KeyIdentifier_KeyValue);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -466,7 +467,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, key,
-                XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO);
+                SecurityTokenConstants.KeyIdentifier_NoKeyInfo);
     }
 
     @Test
@@ -540,7 +541,7 @@ public class BaltimoreTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 23),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -576,7 +577,7 @@ public class BaltimoreTest extends org.junit.Assert {
         
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 23),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -608,7 +609,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("DSA", 23),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     @Test
@@ -640,7 +641,7 @@ public class BaltimoreTest extends org.junit.Assert {
 
         // Check the SecurityEvents
         checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
-                XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                SecurityTokenConstants.KeyIdentifier_KeyValue);
     }
 
     // See Santuario-319
@@ -689,7 +690,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                    SecurityTokenConstants.KeyIdentifier_KeyValue);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -742,7 +743,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, getPublicKey("RSA", 23),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE);
+                    SecurityTokenConstants.KeyIdentifier_KeyValue);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -800,7 +801,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
+                    SecurityTokenConstants.KeyIdentifier_KeyName);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -996,7 +997,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+                    SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1106,7 +1107,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+                    SecurityTokenConstants.KeyIdentifier_X509SubjectName);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1189,7 +1190,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME);
+                    SecurityTokenConstants.KeyIdentifier_KeyName);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1385,7 +1386,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+                    SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1495,7 +1496,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME);
+                    SecurityTokenConstants.KeyIdentifier_X509SubjectName);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1536,17 +1537,17 @@ public class BaltimoreTest extends org.junit.Assert {
     private void checkSignatureToken(
             TestSecurityEventListener securityEventListener,
             Key key,
-            XMLSecurityConstants.XMLKeyIdentifierType keyIdentifierType
+            SecurityTokenConstants.KeyIdentifier keyIdentifier
     ) throws XMLSecurityException {
-        if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_VALUE) {
+        if (SecurityTokenConstants.KeyIdentifier_KeyValue.equals(keyIdentifier)) {
 
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.NO_KEY_INFO) {
+        } else if (SecurityTokenConstants.KeyIdentifier_NoKeyInfo.equals(keyIdentifier)) {
             DefaultTokenSecurityEvent tokenEvent =
                     (DefaultTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.DefaultToken);
             assertNotNull(tokenEvent);
             Key processedKey = tokenEvent.getSecurityToken().getSecretKey().values().iterator().next();
             assertEquals(processedKey, key);
-        } else if (keyIdentifierType == XMLSecurityConstants.XMLKeyIdentifierType.KEY_NAME) {
+        } else if (SecurityTokenConstants.KeyIdentifier_KeyName.equals(keyIdentifier)) {
             KeyNameTokenSecurityEvent tokenEvent =
                     (KeyNameTokenSecurityEvent) securityEventListener.getSecurityEvent(SecurityEventConstants.KeyNameToken);
             assertNotNull(tokenEvent);
@@ -1565,13 +1566,11 @@ public class BaltimoreTest extends org.junit.Assert {
             X509SecurityToken x509SecurityToken =
                     (X509SecurityToken) tokenEvent.getSecurityToken();
             assertNotNull(x509SecurityToken);
-            if (keyIdentifierType ==
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_SUBJECT_NAME) {
+            if (SecurityTokenConstants.KeyIdentifier_X509SubjectName.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509SubjectNameSecurityToken) x509SecurityToken).getSubjectName());
-            } else if (keyIdentifierType ==
-                    XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL) {
+            } else if (SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getIssuerName());

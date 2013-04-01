@@ -20,9 +20,9 @@ package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -39,10 +39,10 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
     private ECKeyValueType ecKeyValueType;
 
     public ECKeyValueSecurityToken(
-            ECKeyValueType ecKeyValueType, SecurityContext securityContext,
-            XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
+            ECKeyValueType ecKeyValueType, InboundSecurityContext inboundSecurityContext,
+            SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
 
-        super(securityContext, null, keyIdentifierType);
+        super(inboundSecurityContext, null, keyIdentifier);
 
         if (ecKeyValueType.getECParameters() != null) {
             throw new XMLSecurityException("stax.ecParametersNotSupported");
@@ -111,7 +111,7 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
     }
 
     @Override
-    public XMLSecurityConstants.TokenType getTokenType() {
-        return XMLSecurityConstants.KeyValueToken;
+    public SecurityTokenConstants.TokenType getTokenType() {
+        return SecurityTokenConstants.KeyValueToken;
     }
 }

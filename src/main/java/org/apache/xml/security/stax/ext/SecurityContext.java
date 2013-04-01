@@ -18,19 +18,16 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
+
 import java.util.List;
 import java.util.Map;
 
-import org.apache.xml.security.stax.securityEvent.SecurityEventListener;
-
 /**
- * The document security context
- *
- * @author $Author$
- * @version $Revision$ $Date$
+ * @author $Author: $
+ * @version $Revision: $ $Date: $
  */
 public interface SecurityContext extends SecurityEventListener {
-
     <T> void put(String key, T value);
 
     <T> T get(String key);
@@ -47,28 +44,6 @@ public interface SecurityContext extends SecurityEventListener {
 
     <T, U> Map<T, U> getAsMap(Object key);
 
-    /**
-     * Register a new SecurityTokenProvider.
-     *
-     * @param id                    A unique id
-     * @param securityTokenProvider The actual SecurityTokenProvider to register.
-     */
-    void registerSecurityTokenProvider(String id, SecurityTokenProvider securityTokenProvider);
-
-    /**
-     * Returns a registered SecurityTokenProvider with the given id or null if not found
-     *
-     * @param id The SecurityTokenProvider's id
-     * @return The SecurityTokenProvider
-     */
-    SecurityTokenProvider getSecurityTokenProvider(String id);
-
-    /**
-     * Returns all currently registered SecurityTokenProvider's
-     * @return All registered SecurityTokenProvider's
-     */
-    List<SecurityTokenProvider> getRegisteredSecurityTokenProviders();
-    
     /**
      * Registers a SecurityEventListener to receive Security-Events
      *

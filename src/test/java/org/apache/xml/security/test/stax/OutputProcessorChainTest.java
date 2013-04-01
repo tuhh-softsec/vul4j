@@ -20,6 +20,8 @@ package org.apache.xml.security.test.stax;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.impl.InboundSecurityContextImpl;
+import org.apache.xml.security.stax.impl.OutboundSecurityContextImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,6 @@ import org.junit.Test;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 import org.apache.xml.security.stax.impl.OutputProcessorChainImpl;
-import org.apache.xml.security.stax.impl.SecurityContextImpl;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.HashSet;
@@ -102,7 +103,7 @@ public class OutputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorPhase1() {
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new SecurityContextImpl());
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new OutboundSecurityContextImpl());
 
         AbstractOutputProcessor outputProcessor1 = new AbstractOutputProcessor() {
         };
@@ -123,7 +124,7 @@ public class OutputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorPhase2() {
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new SecurityContextImpl());
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new OutboundSecurityContextImpl());
 
         AbstractOutputProcessor outputProcessor1 = new AbstractOutputProcessor() {
         };
@@ -163,7 +164,7 @@ public class OutputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorBefore1() {
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new SecurityContextImpl());
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new OutboundSecurityContextImpl());
 
         AbstractOutputProcessor outputProcessor1 = new AbstractOutputProcessor() {
         };
@@ -206,7 +207,7 @@ public class OutputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorAfter1() {
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new SecurityContextImpl());
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new OutboundSecurityContextImpl());
 
         AbstractOutputProcessor outputProcessor1 = new AbstractOutputProcessor() {
         };
@@ -249,7 +250,7 @@ public class OutputProcessorChainTest extends org.junit.Assert {
 
     @Test
     public void testAddProcessorBeforeAndAfter1() {
-        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new SecurityContextImpl());
+        OutputProcessorChainImpl outputProcessorChain = new OutputProcessorChainImpl(new OutboundSecurityContextImpl());
 
         AbstractOutputProcessor outputProcessor1 = new AbstractOutputProcessor() {
         };

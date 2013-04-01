@@ -27,6 +27,7 @@ import javax.crypto.SecretKey;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 /**
  * This is the central class of the streaming XML-security framework.<br/>
@@ -105,7 +106,7 @@ public class XMLSec {
 
         for (int i = 0; i < securityProperties.getOutAction().length; i++) {
             XMLSecurityConstants.Action action = securityProperties.getOutAction()[i];
-            if (action.equals(XMLSecurityConstants.SIGNATURE)) {
+            if (XMLSecurityConstants.SIGNATURE.equals(action)) {
                 if (securityProperties.getSignatureAlgorithm() == null) {
                     if (securityProperties.getSignatureKey() instanceof RSAPrivateKey) {
                         securityProperties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
@@ -121,10 +122,10 @@ public class XMLSec {
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
                     securityProperties.setSignatureCanonicalizationAlgorithm(XMLSecurityConstants.NS_C14N_EXCL_OMIT_COMMENTS);
                 }
-                if (securityProperties.getSignatureKeyIdentifierType() == null) {
-                    securityProperties.setSignatureKeyIdentifierType(XMLSecurityConstants.XMLKeyIdentifierType.X509_ISSUER_SERIAL);
+                if (securityProperties.getSignatureKeyIdentifier() == null) {
+                    securityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
                 }
-            } else if (action.equals(XMLSecurityConstants.ENCRYPT)) {
+            } else if (XMLSecurityConstants.ENCRYPT.equals(action)) {
                 if (securityProperties.getEncryptionKeyTransportAlgorithm() == null) {
                     //@see http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/Overview.html#rsa-1_5 :
                     //"RSA-OAEP is RECOMMENDED for the transport of AES keys"

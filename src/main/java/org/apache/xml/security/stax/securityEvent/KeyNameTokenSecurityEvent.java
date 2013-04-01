@@ -19,11 +19,13 @@
 package org.apache.xml.security.stax.securityEvent;
 
 
+import org.apache.xml.security.stax.securityToken.SecurityToken;
+
 /**
  * @author $Author: coheigea $
  * @version $Revision: 1354898 $ $Date: 2012-06-28 11:19:02 +0100 (Thu, 28 Jun 2012) $
  */
-public class KeyNameTokenSecurityEvent extends TokenSecurityEvent {
+public class KeyNameTokenSecurityEvent extends TokenSecurityEvent<SecurityToken> {
 
     public KeyNameTokenSecurityEvent() {
         super(SecurityEventConstants.KeyNameToken);

@@ -19,8 +19,8 @@
 package org.apache.xml.security.stax.impl.securityToken;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.SecurityContext;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 
 /**
@@ -31,15 +31,15 @@ public class KeyNameSecurityToken extends AbstractInboundSecurityToken {
 
     private String keyName;
 
-    public KeyNameSecurityToken(String keyName, SecurityContext securityContext,
-                                XMLSecurityConstants.KeyIdentifierType keyIdentifierType) throws XMLSecurityException {
-        super(securityContext, null, keyIdentifierType);
+    public KeyNameSecurityToken(String keyName, InboundSecurityContext inboundSecurityContext,
+                                SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
+        super(inboundSecurityContext, null, keyIdentifier);
         this.keyName = keyName;
     }
 
     @Override
-    public XMLSecurityConstants.TokenType getTokenType() {
-        return XMLSecurityConstants.KeyNameToken;
+    public SecurityTokenConstants.TokenType getTokenType() {
+        return SecurityTokenConstants.KeyNameToken;
     }
 
     public String getKeyName() {
