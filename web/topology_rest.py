@@ -853,7 +853,7 @@ def iperf_start(flow_id,duration):
 
   cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %s %s %s %s'" % (host, src_dpid, src_port, dst_dpid, dst_port)
   print cmd_string
-  command = "/home/ubuntu/ONOS/web/scripts/iperf -t%s -i0.1 -yJ -o /tmp/iperf_%s.out -c 127.0.0.1 &" % (duration, flow_id)
+  command = "/home/ubuntu/ONOS/scripts/iperf -t0 -i0.1 -yJ -k15 -o /tmp/iperf.out -c 127.0.0.1 &"
   print command
 
   return 
@@ -864,7 +864,7 @@ def iperf_start(flow_id,duration):
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
   try:
-    command = "head -1 /home/ubuntu/ONOS/web/iperf.out"
+    command = "head -1 /tmp/iperf.out"
     print command
     result = os.popen(command).read()
   except:
