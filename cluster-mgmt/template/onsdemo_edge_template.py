@@ -125,8 +125,8 @@ def sdnnet(opt):
         host[i].defaultIntf().setMAC('00:00:%02x:%02x:%02x:%02x' % (192,168,NWID,(int(i)+1))) 
 
     for i in range (NR_NODES):
-       for n in range (1,8):
-         for h in range (25):
+       for n in range (2,9):
+         for h in range (1,26):
            host[i].setARP('192.168.%d.%d' % (n, (int(h)+1)), '00:00:%02x:%02x:%02x:%02x' % (192,168,n,(int(h)+1))) 
 
     root = []
