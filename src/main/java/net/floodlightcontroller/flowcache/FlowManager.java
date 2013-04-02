@@ -3,14 +3,15 @@ package net.floodlightcontroller.flowcache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
-import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -87,7 +88,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
     public static final short PRIORITY_DEFAULT = 100;
 
-    private static long nextFlowEntryId = 1;
+    // Flow Entry ID generation state
+    private static Random randomGenerator = new Random();
+    private static int nextFlowEntryIdPrefix = 0;
+    private static int nextFlowEntryIdSuffix = 0;
+    private static long nextFlowEntryId = 0;
+
     private static long measurementFlowId = 100000;
     private static String measurementFlowIdStr = "0x186a0";	// 100000
     private long modifiedMeasurementFlowTime = 0;
@@ -644,22 +650,30 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	this.init(conf);
     }
 
+    private long getNextFlowEntryId() {
+	//
+	// Generate the next Flow Entry ID.
+	// NOTE: For now, the higher 32 bits are random, and
+	// the lower 32 bits are sequential.
+	// In the future, we need a better allocation mechanism.
+	//
+	if ((nextFlowEntryIdSuffix & 0xffffffffL) == 0xffffffffL) {
+	    nextFlowEntryIdPrefix = randomGenerator.nextInt();
+	    nextFlowEntryIdSuffix = 0;
+	} else {
+	    nextFlowEntryIdSuffix++;
+	}
+	long result = (long)nextFlowEntryIdPrefix << 32;
+	result = result | (0xffffffffL & nextFlowEntryIdSuffix);
+	return result;
+    }
+
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
 
-	//
-	// Extract all flow entries and assign the next Flow Entry ID
-	// to be larger than the largest Flow Entry ID
-	//
-	Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
-	for (IFlowEntry flowEntryObj : allFlowEntries) {
-	    FlowEntryId flowEntryId =
-		new FlowEntryId(flowEntryObj.getFlowEntryId());
-	    if (flowEntryId.value() >= nextFlowEntryId)
-		nextFlowEntryId = flowEntryId.value() + 1;
-	}
-	conn.endTx(Transaction.COMMIT);
+	// Initialize the Flow Entry ID generator
+	nextFlowEntryIdPrefix = randomGenerator.nextInt();
     }
 
     /**
@@ -687,7 +701,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	// TODO: This needs to be redesigned!
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    long id = nextFlowEntryId++;
+	    long id = getNextFlowEntryId();
 	    flowEntry.setFlowEntryId(new FlowEntryId(id));
 	}
 
