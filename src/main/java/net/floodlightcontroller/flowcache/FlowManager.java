@@ -543,6 +543,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    DataPath dataPath =
 			topoRouteService.getTopoShortestPath(srcSwitchPort,
 							     dstSwitchPort);
+		    if (dataPath == null) {
+			// We need the DataPath to compare the paths
+			dataPath = new DataPath();
+			dataPath.setSrcPort(srcSwitchPort);
+			dataPath.setDstPort(dstSwitchPort);
+		    }
+
 		    String newDataPathSummaryStr = dataPath.dataPathSummary();
 		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
 			continue;	// Nothing changed
