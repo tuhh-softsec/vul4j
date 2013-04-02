@@ -13,5 +13,6 @@ for c in $controller; do
 done
 echo $url
 for s in $switches; do
+    echo -n "$s : "
     sudo ovs-ofctl  show  $s |grep dpid
 done
