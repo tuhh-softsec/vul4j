@@ -95,8 +95,8 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 				if (controller == null) {
 					log.debug("request Control to set inactive sw {}", HexString.toHexString(dpid));
 					registryService.requestControl(dpid, new SwitchCleanup());
-				} else {
-					log.debug("sw {} is controlled by controller: {}",HexString.toHexString(dpid),controller);
+				//} else {
+				//	log.debug("sw {} is controlled by controller: {}",HexString.toHexString(dpid),controller);
 				}
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
