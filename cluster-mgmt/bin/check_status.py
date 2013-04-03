@@ -3,12 +3,13 @@ import json
 import os
 
 urls="http://localhost:8080/wm/core/topology/switches/all/json http://localhost:8080/wm/core/topology/links/json http://localhost:8080/wm/registry/controllers/json http://localhost:8080/wm/registry/switches/json"
-RestIP="onosdevz1"
+RestIP=os.environ.get("ONOS_CLUSTER_BASENAME")+"1"
 RestPort="8080"
 
 core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
 correct_nr_switch=[6,50,25,25,25,25,25,25]
 correct_intra_link=[16, 98, 48, 48, 48, 48, 48, 48]
+
 
 #nr_links=(switch[1]+switch[2]+switch[3]+switch[4]+switch[5]+switch[6]+switch[7]+len(switch)-1+8)*2
 nr_links= (49 + 24 * 6 + 7 + 8) * 2
@@ -69,6 +70,7 @@ def check_link():
 
   print "link: total %d links (correct : %d)" % (len(parsedResult), nr_links)
   intra = []
+  interlink=0
   for r in range(8):
     intra.append(0)
 
@@ -87,10 +89,15 @@ def check_link():
     dst_swid =int(s['dst-switch'].split(':')[-1], 16)
     if src_nw == dst_nw:
       intra[src_nw - 1] = intra[src_nw - 1] + 1 
+    else:
+      inter += 1
 
   for r in range(8):
     if intra[r] != correct_intra_link[r]:
       print "link fail: network %d should have %d intra links but has %d" % (r+1, correct_intra_link[r], intra[r])
+
+  if interlink != 14:
+      print "link fail: There should be %d intra links (uni-directional) but %d" % (14, interlink)
 
 def check_mastership():
   url = "http://%s:%s/wm/registry/switches/json" % (RestIP, RestPort)
