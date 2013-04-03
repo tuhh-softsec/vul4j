@@ -83,6 +83,10 @@ cassandra () {
       echo "Removing all data in db"
       dsh -w ${basename}1 "cd $ONOS_DIR; ./scripts/cleanup-cassandra.sh"
       ;;
+    checkdb)
+      echo "Check DB Status"
+      dsh -w ${basename}1 "cd $ONOS_DIR; ./scripts/check-db-status.sh"
+      ;;
     status)
       echo "Checking Cassandra Status"
       dsh -w ${basename}1 "cd $ONOS_DIR; ./start-cassandra.sh status"
