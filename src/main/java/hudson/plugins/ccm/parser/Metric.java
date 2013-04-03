@@ -58,7 +58,9 @@ public class Metric {
 	 * The file name (e.g.:\ascx\request\open\form.ascx.cs).
 	 */
 	private String file;
-
+  private int startLineNumber;
+  private int endLineNumber;
+  
 	public Metric() {
 		super();
 	}
@@ -102,6 +104,21 @@ public class Metric {
 
 	public void setFile(String file) {
 		this.file = file;
+	}
+
+	public int getStartLineNumber() {
+		return startLineNumber;
+	}
+
+	public void setStartLineNumber(int startLineNumber) {
+		this.startLineNumber = startLineNumber;
+	}
+	public int getEndLineNumber() {
+		return endLineNumber;
+	}
+
+	public void setEndLineNumber(int endLineNumber) {
+		this.endLineNumber = endLineNumber;
 	}
 
 }
