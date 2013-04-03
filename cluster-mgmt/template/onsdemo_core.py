@@ -51,12 +51,12 @@ class SDNTopo( Topo ):
 
     def __init__( self, *args, **kwargs ):
         Topo.__init__( self, *args, **kwargs )
-        sw1 = self.addSwitch('sw1', dpid='0000001697089a46')
-        sw2 = self.addSwitch('sw2', dpid='00000000ba5eba11')
-        sw3 = self.addSwitch('sw3', dpid='00000008a208f901')
-        sw4 = self.addSwitch('sw4', dpid='000000000000ba12')
-        sw5 = self.addSwitch('sw5', dpid='00000000ba5eba13')
-        sw6 = self.addSwitch('sw6', dpid='0000204e7f518a35')
+        sw1 = self.addSwitch('sw1', dpid='0000000000000101')
+        sw2 = self.addSwitch('sw2', dpid='0000000000000102')
+        sw3 = self.addSwitch('sw3', dpid='0000000000000103')
+        sw4 = self.addSwitch('sw4', dpid='0000000000000104')
+        sw5 = self.addSwitch('sw5', dpid='0000000000000105')
+        sw6 = self.addSwitch('sw6', dpid='0000000000000106')
 
         host1 = self.addHost( 'host1' )
         host2 = self.addHost( 'host2' )
