@@ -77,26 +77,32 @@ public class FlowManagerImpl implements IFlowManager {
 
 
 	@Override
-	public boolean installRemoteFlowEntry(FlowEntry entry) {
+	public boolean installRemoteFlowEntry(FlowPath flowPath,
+					      FlowEntry entry) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean removeRemoteFlowEntry(FlowEntry entry) {
+	public boolean removeRemoteFlowEntry(FlowPath flowPath,
+					     FlowEntry entry) {
 		return false;
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+	public boolean installFlowEntry(IOFSwitch mySwitch,
+					FlowPath flowPath,
+					FlowEntry flowEntry) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+	public boolean removeFlowEntry(IOFSwitch mySwitch,
+				       FlowPath flowPath,
+				       FlowEntry flowEntry) {
 		// TODO Auto-generated method stub
 		return false;
 	}
