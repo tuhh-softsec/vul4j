@@ -2,7 +2,7 @@
 import sys
 import os
 
-hosts=['onosdevz1', 'onosdevz2', 'onosdevz3', 'onosdevz4', 'onosdevz5', 'onosdevz6', 'onosdevz7', 'onosdevz8']
+hosts=['onosgui1', 'onosgui2', 'onosgui3', 'onosgui4', 'onosgui5', 'onosgui6', 'onosgui7', 'onosgui8']
 filename = sys.argv[1]
 
 f = open(filename, 'r')
@@ -16,7 +16,8 @@ for line in f:
     src_hostid=int(src_dpid.split(':')[-1], 16)
     dst_hostid=int(dst_dpid.split(':')[-1], 16)
 #    cmd="ssh %s \'ssh -o StrictHostKeyChecking=no 1.1.%d.1 ping -c 10 -W 1 192.168.%d.%d\' > /tmp/ping.%d 2>&1 &" % (hosts[src_nwid-1], src_hostid, dst_nwid, dst_hostid,fid)
-    cmd="ssh %s \'ssh -o StrictHostKeyChecking=no 1.1.%d.1 arp 192.168.%d.%d; ping -c 10 -W 1 192.168.%d.%d\' > /tmp/ping.%d 2>&1 &" % (hosts[src_nwid-1], src_hostid, dst_nwid, dst_hostid, dst_nwid, dst_hostid,fid)
+#    cmd="ssh %s \'ssh -o StrictHostKeyChecking=no 1.1.%d.1 arp 193.168.%d.%d; ping -c 10 -W 1 192.168.%d.%d\' > /tmp/ping.%d 2>&1 &" % (hosts[src_nwid-1], src_hostid, dst_nwid, dst_hostid, dst_nwid, dst_hostid,fid)
+    cmd="ssh %s \'ssh -o StrictHostKeyChecking=no 1.1.%d.1 ping -c 10 -W 1 192.168.%d.%d\' > /tmp/ping.%d 2>&1 &" % (hosts[src_nwid-1], src_hostid, dst_nwid, dst_hostid,fid)
     print cmd
     result = os.popen(cmd).read()
 
