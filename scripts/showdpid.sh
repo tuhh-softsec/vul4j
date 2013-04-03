@@ -1,6 +1,7 @@
 #! /bin/bash
 controller=""
-switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
+#switches=`ifconfig -a | grep sw |grep -v eth | awk '{print $1}'`
+switches=`sudo ovs-vsctl list-br`
 
 function host2ip (){
    ip=`grep $1 /etc/hosts |grep -v "ip6"|  awk '{print $1}'`
