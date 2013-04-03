@@ -219,6 +219,8 @@ public class FlowEntry {
     /**
      * Get the Switch incoming port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @return the Switch incoming port.
      */
     @JsonProperty("inPort")
@@ -226,6 +228,8 @@ public class FlowEntry {
 
     /**
      * Set the Switch incoming port.
+     *
+     * Used only when the entry is used to return Shortest Path computation.
      *
      * @param inPort the Switch incoming port to set.
      */
@@ -237,6 +241,8 @@ public class FlowEntry {
     /**
      * Get the Switch outgoing port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @return the Switch outgoing port.
      */
     @JsonProperty("outPort")
@@ -244,6 +250,8 @@ public class FlowEntry {
 
     /**
      * Set the Switch outgoing port.
+     *
+     * Used only when the entry is used to return Shortest Path computation.
      *
      * @param outPort the Switch outgoing port to set.
      */

@@ -51,12 +51,12 @@ class SDNTopo( Topo ):
 
     def __init__( self, *args, **kwargs ):
         Topo.__init__( self, *args, **kwargs )
-        sw1 = self.addSwitch('sw1', dpid='00:00:00:16:97:08:9a:46')
-        sw2 = self.addSwitch('sw2', dpid='00:00:00:00:ba:5e:ba:11')
-        sw3 = self.addSwitch('sw3', dpid='00:00:00:08:a2:08:f9:01')
-        sw4 = self.addSwitch('sw4', dpid='00:00:00:00:00:00:ba:12')
-        sw5 = self.addSwitch('sw5', dpid='00:00:00:00:ba:5e:ba:13')
-        sw6 = self.addSwitch('sw6', dpid='00:00:20:4e:7f:51:8a:35')
+        sw1 = self.addSwitch('sw1', dpid='0000001697089a46')
+        sw2 = self.addSwitch('sw2', dpid='00000000ba5eba11')
+        sw3 = self.addSwitch('sw3', dpid='00000008a208f901')
+        sw4 = self.addSwitch('sw4', dpid='000000000000ba12')
+        sw5 = self.addSwitch('sw5', dpid='00000000ba5eba13')
+        sw6 = self.addSwitch('sw6', dpid='0000204e7f518a35')
 
         host1 = self.addHost( 'host1' )
         host2 = self.addHost( 'host2' )
@@ -88,6 +88,7 @@ class SDNTopo( Topo ):
         self.addLink( sw3, sw6 )
         self.addLink( sw4, sw5 )
         self.addLink( sw5, sw6 )
+        self.addLink( sw4, sw6 )
 
         self.addLink( root1, host1 )
         self.addLink( root2, host2 )
