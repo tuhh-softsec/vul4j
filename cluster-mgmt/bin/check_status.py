@@ -90,7 +90,7 @@ def check_link():
     if src_nw == dst_nw:
       intra[src_nw - 1] = intra[src_nw - 1] + 1 
     else:
-      inter += 1
+      interlink += 1
 
   for r in range(8):
     if intra[r] != correct_intra_link[r]:
