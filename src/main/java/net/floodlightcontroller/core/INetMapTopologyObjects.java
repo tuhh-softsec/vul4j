@@ -77,7 +77,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void setDesc(String s);
 		
 		@JsonIgnore
-		@Property("port_sate")
+		@Property("port_state")
 		public Integer getPortState();
 		
 		@Property("port_state")
@@ -210,7 +210,7 @@ public interface IFlowPath extends IBaseObject {
 		
 		@JsonIgnore
 		@GremlinGroovy("_().in('flow').out('switch')")
-		public Iterable<IDeviceObject> getSwitches();
+		public Iterable<ISwitchObject> getSwitches();
 	}
 
 public interface IFlowEntry extends IBaseObject {
