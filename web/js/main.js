@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-var hackBase = "http://localhost:9000"; // put a URL here to access a different REST server
+var hackBase = "http://vm-ubuntu:9000"; // put a URL here to access a different REST server
 
 var AppRouter = Backbone.Router.extend({
 
