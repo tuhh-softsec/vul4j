@@ -34,6 +34,8 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.LocalTopologyEventListener;
 
 public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		ILinkDiscoveryListener, IFloodlightModule {
@@ -43,6 +45,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected static Logger log;
 	protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
+	protected GraphDBConnection conn;
 	
 	protected static final String DBConfigFile = "dbconf";
 	protected static final String CleanupEnabled = "EnableCleanup";
@@ -198,6 +201,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
+		conn = GraphDBConnection.getInstance(conf);
 		
 		log = LoggerFactory.getLogger(OnosPublisher.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
@@ -221,6 +225,9 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		String cleanupNeeded = configMap.get(CleanupEnabled);
 
 		deviceService.addListener(this);
+		
+		log.debug("Adding EventListener");
+		conn.addEventListener(new LocalTopologyEventListener(conn));
 	       // Setup the Cleanup task. 
 		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
