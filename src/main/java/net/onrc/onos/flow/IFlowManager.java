@@ -84,19 +84,23 @@ public interface IFlowManager {
      * Install a Flow Entry on a switch.
      *
      * @param mySwitch the switch to install the Flow Entry into.
+     * @param flowPath the flow path for the flow entry to install.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry);
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+				    FlowEntry flowEntry);
 
     /**
      * Remove a Flow Entry from a switch.
      *
      * @param mySwitch the switch to remove the Flow Entry from.
+     * @param flowPath the flow path for the flow entry to remove.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry);
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+				   FlowEntry flowEntry);
 
     /**
      * Install a Flow Entry on a remote controller.
@@ -105,16 +109,20 @@ public interface IFlowManager {
      * - For now it will make a REST call to the remote controller.
      * - Internally, it needs to know the name of the remote controller.
      *
+     * @param flowPath the flow path for the flow entry to install.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    public boolean installRemoteFlowEntry(FlowEntry flowEntry);
+    public boolean installRemoteFlowEntry(FlowPath flowPath,
+					  FlowEntry flowEntry);
 
     /**
      * Remove a flow entry on a remote controller.
      *
+     * @param flowPath the flow path for the flow entry to remove.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    public boolean removeRemoteFlowEntry(FlowEntry flowEntry);
+    public boolean removeRemoteFlowEntry(FlowPath flowPath,
+					 FlowEntry flowEntry);
 }

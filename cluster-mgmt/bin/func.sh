@@ -96,7 +96,7 @@ onos () {
       if [ x$2 == "x" -o x$2 == "xall" ]; then
         echo "Starting ONOS on all nodes"
         dsh -g ${basename} "cd $ONOS_DIR; ./start-onos.sh start"
-        dsh -w ${basename}1 "cd $ONOS_DIR; ./start-rest.sh start"
+        dsh -g ${basename} "cd $ONOS_DIR; ./start-rest.sh start"
       else
         echo "Starting ONOS on ${basename}$2"
         dsh -w ${basename}$2 "cd $ONOS_DIR; ./start-onos.sh start"
@@ -130,9 +130,9 @@ switch () {
     all)
       if [ x$2 == "x" -o x$2 == "xall" ]; then
         echo "set all non-core switches point to all non-core controllers"
-        dsh -g ${basename} -x ${basename}1  "$ONOS_DIR/scripts/ctrl-ext.sh"
+        dsh -g ${basename} -x ${basename}1  "$ONOS_DIR/scripts/ctrl-add-ext.sh"
       else
-        dsh -w ${basename}$2 "$ONOS_DIR/scripts/ctrl-ext.sh"
+        dsh -w ${basename}$2 "$ONOS_DIR/scripts/ctrl-add-ext.sh"
       fi
       ;;
     none)

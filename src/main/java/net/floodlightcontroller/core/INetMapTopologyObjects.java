@@ -207,6 +207,36 @@ public interface IFlowPath extends IBaseObject {
 
 		@Adjacency(label="flow", direction=Direction.IN)
 		public void removeFlowEntry(final IFlowEntry flowEntry);
+
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType();
+
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
+
+		@Property("matchSrcMac")
+		public String getMatchSrcMac();
+
+		@Property("matchSrcMac")
+		public void setMatchSrcMac(String matchSrcMac);
+
+		@Property("matchDstMac")
+		public String getMatchDstMac();
+
+		@Property("matchDstMac")
+		public void setMatchDstMac(String matchDstMac);
+
+		@Property("matchSrcIPv4Net")
+		public String getMatchSrcIPv4Net();
+
+		@Property("matchSrcIPv4Net")
+		public void setMatchSrcIPv4Net(String matchSrcIPv4Net);
+
+		@Property("matchDstIPv4Net")
+		public String getMatchDstIPv4Net();
+
+		@Property("matchDstIPv4Net")
+		public void setMatchDstIPv4Net(String matchDstIPv4Net);
 		
 		@JsonIgnore
 		@GremlinGroovy("_().in('flow').out('switch')")

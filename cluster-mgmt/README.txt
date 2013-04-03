@@ -11,7 +11,7 @@ export RCMD_CMD_ARGS="-i $HOME/.ssh/onlabkey.pem"
 export RCMD_USER=ubuntu
 export RCP_CMD="scp -i $HOME/.ssh/onlabkey.pem -o StrictHostKeyChecking=no"
 export FANOUT=64
-export CLUSTER="$HOME/cluster-mgmt/cluster.txt"
+export CLUSTER="$HOME/bin/cluster.txt"
 
 ### Set the proper value ##
 export ONOS_CLUSTER_BASENAME="onosdevx"

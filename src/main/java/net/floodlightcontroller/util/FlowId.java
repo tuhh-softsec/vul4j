@@ -1,5 +1,7 @@
 package net.floodlightcontroller.util;
 
+import java.math.BigInteger;
+
 import net.floodlightcontroller.util.serializers.FlowIdDeserializer;
 import net.floodlightcontroller.util.serializers.FlowIdSerializer;
 
@@ -37,7 +39,17 @@ public class FlowId {
      * @param value the value to use.
      */
     public FlowId(String value) {
-	this.value = Long.decode(value);
+	//
+	// Use the help of BigInteger to parse strings representing
+	// large unsigned hex long values.
+	//
+	char c = 0;
+	if (value.length() > 2)
+	    c = value.charAt(1);
+	if ((c == 'x') || (c == 'X'))
+	    this.value = new BigInteger(value.substring(2), 16).longValue();
+	else
+	    this.value = Long.decode(value);
     }
 
     /**

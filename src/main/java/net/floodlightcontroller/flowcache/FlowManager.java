@@ -3,14 +3,15 @@ package net.floodlightcontroller.flowcache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
-import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -87,7 +88,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     public static final short FLOWMOD_DEFAULT_HARD_TIMEOUT = 0;	// infinite
     public static final short PRIORITY_DEFAULT = 100;
 
-    private static long nextFlowEntryId = 1;
+    // Flow Entry ID generation state
+    private static Random randomGenerator = new Random();
+    private static int nextFlowEntryIdPrefix = 0;
+    private static int nextFlowEntryIdSuffix = 0;
+    private static long nextFlowEntryId = 0;
+
     private static long measurementFlowId = 100000;
     private static String measurementFlowIdStr = "0x186a0";	// 100000
     private long modifiedMeasurementFlowTime = 0;
@@ -270,80 +276,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		LinkedList<IFlowEntry> deleteFlowEntries =
 		    new LinkedList<IFlowEntry>();
 
-		//
-		// Fetch and recompute the Shortest Path for those
-		// Flow Paths this controller is responsible for.
-		//
-
-		/*
-		 * TODO: For now, the computation of the reconciliation is
-		 * commented-out.
-		 */
-		/*
-		topoRouteService.prepareShortestPathTopo();
-		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
-		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
-		for (IFlowPath flowPathObj : allFlowPaths) {
-		    if (flowPathObj == null)
-			continue;
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
-			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
-			continue;	// No need to maintain this flow
-
-		    // Fetch the fields needed to recompute the shortest path
-		    String flowIdStr = flowPathObj.getFlowId();
-		    String srcDpidStr = flowPathObj.getSrcSwitch();
-		    Short srcPortShort = flowPathObj.getSrcPort();
-		    String dstDpidStr = flowPathObj.getDstSwitch();
-		    Short dstPortShort = flowPathObj.getDstPort();
-		    if ((flowIdStr == null) ||
-			(srcDpidStr == null) ||
-			(srcPortShort == null) ||
-			(dstDpidStr == null) ||
-			(dstPortShort == null)) {
-			log.debug("IGNORING Flow Path entry with null fields");
-			continue;
-		    }
-
-		    FlowId flowId = new FlowId(flowIdStr);
-		    Dpid srcDpid = new Dpid(srcDpidStr);
-		    Port srcPort = new Port(srcPortShort);
-		    Dpid dstDpid = new Dpid(dstDpidStr);
-		    Port dstPort = new Port(dstPortShort);
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
-							     dstSwitchPort);
-		    String newDataPathSummaryStr = dataPath.dataPathSummary();
-		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
-			continue;	// Nothing changed
-
-		    //
-		    // Use the source DPID as a heuristic to decide
-		    // which controller is responsible for maintaining the
-		    // shortest path.
-		    // NOTE: This heuristic is error-prone: if the switch
-		    // goes away and no controller is responsible for that
-		    // switch, then the original Flow Path is not cleaned-up
-		    //
-		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
-		    if (mySwitch == null)
-			continue;	// Ignore: not my responsibility
-
-		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
-			      flowId.toString());
-		    flowObjSet.add(flowPathObj);
-		}
-		reconcileFlows(flowObjSet);
-		topoRouteService.dropShortestPathTopo();
-		*/
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
-		// that need to be undated into the switches.
+		// that need to be updated into the switches.
 		//
 		Iterable<IFlowEntry> allFlowEntries =
 		    conn.utils().getAllFlowEntries(conn);
@@ -386,13 +322,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
 		    IFlowEntry flowEntryObj = entry.getValue();
+		    IFlowPath flowObj =
+			conn.utils().getFlowPathByFlowEntry(conn,
+							    flowEntryObj);
+		    if (flowObj == null)
+			continue;		// Should NOT happen
+
 		    // Code for measurement purpose
 		    {
-			IFlowPath flowObj =
-			    conn.utils().getFlowPathByFlowEntry(conn,
-								flowEntryObj);
-			if ((flowObj != null) &&
-			    flowObj.getFlowId().equals(measurementFlowIdStr)) {
+			if (flowObj.getFlowId().equals(measurementFlowIdStr)) {
 			    processed_measurement_flow = true;
 			}
 		    }
@@ -410,7 +348,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    if (mySwitch == null)
 			continue;		// Shouldn't happen
 
-		    // TODO: PAVPAVPAV: FROM HERE...
 		    //
 		    // Create the Open Flow Flow Modification Entry to push
 		    //
@@ -434,34 +371,54 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    }
 
 		    //
-		    // Fetch the match conditions
+		    // Fetch the match conditions.
+		    //
+		    // NOTE: The Flow matching conditions common for all
+		    // Flow Entries are used ONLY if a Flow Entry does NOT
+		    // have the corresponding matching condition set.
 		    //
 		    OFMatch match = new OFMatch();
 		    match.setWildcards(OFMatch.OFPFW_ALL);
+		    //
 		    Short matchInPort = flowEntryObj.getMatchInPort();
 		    if (matchInPort != null) {
 			match.setInputPort(matchInPort);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
 		    }
+		    //
 		    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+		    if (matchEthernetFrameType == null)
+			matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
 		    if (matchEthernetFrameType != null) {
 			match.setDataLayerType(matchEthernetFrameType);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 		    }
+		    //
 		    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+		    if (matchSrcIPv4Net == null)
+			matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
 		    if (matchSrcIPv4Net != null) {
 			match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
 		    }
+		    //
 		    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+		    if (matchDstIPv4Net == null)
+			matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
 		    if (matchDstIPv4Net != null) {
 			match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
 		    }
+		    //
 		    String matchSrcMac = flowEntryObj.getMatchSrcMac();
+		    if (matchSrcMac == null)
+			matchSrcMac = flowObj.getMatchSrcMac();
 		    if (matchSrcMac != null) {
 			match.setDataLayerSource(matchSrcMac);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
 		    }
+		    //
 		    String matchDstMac = flowEntryObj.getMatchDstMac();
+		    if (matchDstMac == null)
+			matchDstMac = flowObj.getMatchDstMac();
 		    if (matchDstMac != null) {
 			match.setDataLayerDestination(matchDstMac);
 			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
@@ -518,9 +475,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    } catch (IOException e) {
 			log.error("Failure writing flow mod from network map", e);
 		    }
-		    // TODO: XXX: PAVPAVPAV: TO HERE.
-		    // TODO: XXX: PAVPAVPAV: Update the flowEntryObj
-		    // to "FE_SWITCH_UPDATED" in the new (refactored) code.
 		}
 
 		//
@@ -554,6 +508,94 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			conn.utils().removeFlowPath(conn, flowObj);
 		    }
 		}
+
+
+		//
+		// Fetch and recompute the Shortest Path for those
+		// Flow Paths this controller is responsible for.
+		//
+
+		/*
+		 * TODO: For now, the computation of the reconciliation is
+		 * commented-out.
+		 */
+		topoRouteService.prepareShortestPathTopo();
+		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
+		for (IFlowPath flowPathObj : allFlowPaths) {
+		    if (flowPathObj == null)
+			continue;
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
+		    if (dataPathSummaryStr == null)
+			continue;	// Could be invalid entry?
+		    if (dataPathSummaryStr.isEmpty())
+			continue;	// No need to maintain this flow
+
+		    // Fetch the fields needed to recompute the shortest path
+		    String flowIdStr = flowPathObj.getFlowId();
+		    String srcDpidStr = flowPathObj.getSrcSwitch();
+		    Short srcPortShort = flowPathObj.getSrcPort();
+		    String dstDpidStr = flowPathObj.getDstSwitch();
+		    Short dstPortShort = flowPathObj.getDstPort();
+		    if ((flowIdStr == null) ||
+			(srcDpidStr == null) ||
+			(srcPortShort == null) ||
+			(dstDpidStr == null) ||
+			(dstPortShort == null)) {
+			log.debug("IGNORING Flow Path entry with null fields");
+			continue;
+		    }
+
+		    FlowId flowId = new FlowId(flowIdStr);
+		    Dpid srcDpid = new Dpid(srcDpidStr);
+		    Port srcPort = new Port(srcPortShort);
+		    Dpid dstDpid = new Dpid(dstDpidStr);
+		    Port dstPort = new Port(dstPortShort);
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+		    //
+		    // NOTE: Using here the regular getShortestPath() method
+		    // won't work here, because that method calls internally
+		    //  "conn.endTx(Transaction.COMMIT)", and that will
+		    // invalidate all handlers to the Titan database.
+		    // If we want to experiment with calling here
+		    // getShortestPath(), we need to refactor that code
+		    // to avoid closing the transaction.
+		    //
+		    DataPath dataPath =
+			topoRouteService.getTopoShortestPath(srcSwitchPort,
+							     dstSwitchPort);
+		    if (dataPath == null) {
+			// We need the DataPath to compare the paths
+			dataPath = new DataPath();
+			dataPath.setSrcPort(srcSwitchPort);
+			dataPath.setDstPort(dstSwitchPort);
+		    }
+
+		    String newDataPathSummaryStr = dataPath.dataPathSummary();
+		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
+			continue;	// Nothing changed
+
+		    //
+		    // Use the source DPID as a heuristic to decide
+		    // which controller is responsible for maintaining the
+		    // shortest path.
+		    // NOTE: This heuristic is error-prone: if the switch
+		    // goes away and no controller is responsible for that
+		    // switch, then the original Flow Path is not cleaned-up
+		    //
+		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
+		    if (mySwitch == null)
+			continue;	// Ignore: not my responsibility
+
+		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
+			      flowId.toString());
+		    flowObjSet.add(flowPathObj);
+		}
+		reconcileFlows(flowObjSet);
+		topoRouteService.dropShortestPathTopo();
+
+
 		conn.endTx(Transaction.COMMIT);
 
 		if (processed_measurement_flow) {
@@ -637,22 +679,30 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	this.init(conf);
     }
 
+    private long getNextFlowEntryId() {
+	//
+	// Generate the next Flow Entry ID.
+	// NOTE: For now, the higher 32 bits are random, and
+	// the lower 32 bits are sequential.
+	// In the future, we need a better allocation mechanism.
+	//
+	if ((nextFlowEntryIdSuffix & 0xffffffffL) == 0xffffffffL) {
+	    nextFlowEntryIdPrefix = randomGenerator.nextInt();
+	    nextFlowEntryIdSuffix = 0;
+	} else {
+	    nextFlowEntryIdSuffix++;
+	}
+	long result = (long)nextFlowEntryIdPrefix << 32;
+	result = result | (0xffffffffL & nextFlowEntryIdSuffix);
+	return result;
+    }
+
     @Override
     public void startUp(FloodlightModuleContext context) {
 	restApi.addRestletRoutable(new FlowWebRoutable());
 
-	//
-	// Extract all flow entries and assign the next Flow Entry ID
-	// to be larger than the largest Flow Entry ID
-	//
-	Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
-	for (IFlowEntry flowEntryObj : allFlowEntries) {
-	    FlowEntryId flowEntryId =
-		new FlowEntryId(flowEntryObj.getFlowEntryId());
-	    if (flowEntryId.value() >= nextFlowEntryId)
-		nextFlowEntryId = flowEntryId.value() + 1;
-	}
-	conn.endTx(Transaction.COMMIT);
+	// Initialize the Flow Entry ID generator
+	nextFlowEntryIdPrefix = randomGenerator.nextInt();
     }
 
     /**
@@ -680,7 +730,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	// TODO: This needs to be redesigned!
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    long id = nextFlowEntryId++;
+	    long id = getNextFlowEntryId();
 	    flowEntry.setFlowEntryId(new FlowEntryId(id));
 	}
 
@@ -720,12 +770,32 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	// - flowPath.installerId()
 	// - flowPath.dataPath().srcPort()
 	// - flowPath.dataPath().dstPort()
+	// - flowPath.matchEthernetFrameType()
+	// - flowPath.matchSrcIPv4Net()
+	// - flowPath.matchDstIPv4Net()
+	// - flowPath.matchSrcMac()
+	// - flowPath.matchDstMac()
 	//
 	flowObj.setInstallerId(flowPath.installerId().toString());
 	flowObj.setSrcSwitch(flowPath.dataPath().srcPort().dpid().toString());
 	flowObj.setSrcPort(flowPath.dataPath().srcPort().port().value());
 	flowObj.setDstSwitch(flowPath.dataPath().dstPort().dpid().toString());
 	flowObj.setDstPort(flowPath.dataPath().dstPort().port().value());
+	if (flowPath.flowEntryMatch().matchEthernetFrameType()) {
+	    flowObj.setMatchEthernetFrameType(flowPath.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowPath.flowEntryMatch().matchSrcIPv4Net()) {
+	    flowObj.setMatchSrcIPv4Net(flowPath.flowEntryMatch().srcIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstIPv4Net()) {
+	    flowObj.setMatchDstIPv4Net(flowPath.flowEntryMatch().dstIPv4Net().toString());
+	}
+	if (flowPath.flowEntryMatch().matchSrcMac()) {
+	    flowObj.setMatchSrcMac(flowPath.flowEntryMatch().srcMac().toString());
+	}
+	if (flowPath.flowEntryMatch().matchDstMac()) {
+	    flowObj.setMatchDstMac(flowPath.flowEntryMatch().dstMac().toString());
+	}
 
 	if (dataPathSummaryStr != null) {
 	    flowObj.setDataPathSummary(dataPathSummaryStr);
@@ -1120,9 +1190,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    return flowPaths;
 		}
 	
-//		Collections.sort(allFlows);
+		Collections.sort(allFlows);
 		
 		for (FlowPath flow : allFlows) {
+		    flow.setFlowEntryMatch(null);
 			
 			// start from desired flowId
 			//if (flow.flowId().value() < flowId.value()) {
@@ -1181,7 +1252,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    // Extract the Flow state
 	    //
 	    FlowPath flowPath = extractFlowPath(flowObj);
-	    flowPaths.add(flowPath);
+	    if (flowPath != null)
+		flowPaths.add(flowPath);
 	}
 
 	conn.endTx(Transaction.COMMIT);
@@ -1224,6 +1296,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	flowPath.dataPath().srcPort().setPort(new Port(srcPortShort));
 	flowPath.dataPath().dstPort().setDpid(new Dpid(dstSwitchStr));
 	flowPath.dataPath().dstPort().setPort(new Port(dstPortShort));
+	//
+	// Extract the match conditions common for all Flow Entries
+	//
+	{
+	    FlowEntryMatch match = new FlowEntryMatch();
+	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+	    if (matchEthernetFrameType != null)
+		match.enableEthernetFrameType(matchEthernetFrameType);
+	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+	    if (matchSrcIPv4Net != null)
+		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+	    if (matchDstIPv4Net != null)
+		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	    String matchSrcMac = flowObj.getMatchSrcMac();
+	    if (matchSrcMac != null)
+		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	    String matchDstMac = flowObj.getMatchDstMac();
+	    if (matchDstMac != null)
+		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	    flowPath.setFlowEntryMatch(match);
+	}
 
 	//
 	// Extract all Flow Entries
@@ -1296,11 +1390,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Add and maintain a shortest-path flow.
      *
-     * NOTE: The Flow Path argument does NOT contain all flow entries.
-     * Instead, it contains a single dummy flow entry that is used to
-     * store the matching condition(s).
-     * That entry is replaced by the appropriate entries from the
-     * internally performed shortest-path computation.
+     * NOTE: The Flow Path argument does NOT contain flow entries.
      *
      * @param flowPath the Flow Path with the endpoints and the match
      * conditions to install.
@@ -1316,12 +1406,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	DataPath dataPath =
 	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
 					     flowPath.dataPath().dstPort());
-	if (dataPath == null)
-	    return null;
-
-	FlowEntryMatch userFlowEntryMatch = null;
-	if (! flowPath.dataPath().flowEntries().isEmpty()) {
-	    userFlowEntryMatch = flowPath.dataPath().flowEntries().get(0).flowEntryMatch();
+	if (dataPath == null) {
+	    // We need the DataPath to populate the Network MAP
+	    dataPath = new DataPath();
+	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	    dataPath.setDstPort(flowPath.dataPath().dstPort());
 	}
 
 	// Compute the Data Path summary
@@ -1333,11 +1422,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	for (FlowEntry flowEntry : dataPath.flowEntries()) {
 	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = null;
-	    if (userFlowEntryMatch != null)
-		flowEntryMatch = new FlowEntryMatch(userFlowEntryMatch);
-	    else
-		flowEntryMatch = new FlowEntryMatch();
+	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
 	    flowEntry.setFlowEntryMatch(flowEntryMatch);
 	    flowEntryMatch.enableInPort(flowEntry.inPort());
 
@@ -1359,6 +1444,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
 	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
 	computedFlowPath.setDataPath(dataPath);
+	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
 
 	FlowId flowId = new FlowId();
 	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
@@ -1463,7 +1549,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    flowPaths.add(flowPath);
 
 	    //
-	    // Remove my Flow Entries from the Network MAP
+	    // Remove the Flow Entries from the Network MAP
 	    //
 	    Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	    LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
@@ -1472,9 +1558,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		if (dpidStr == null)
 		    continue;
 		Dpid dpid = new Dpid(dpidStr);
+		/*
 		IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		if (mySwitch == null)
 		    continue;		// Ignore the entry: not my switch
+		*/
 		deleteFlowEntries.add(flowEntryObj);
 	    }
 	    for (IFlowEntry flowEntryObj : deleteFlowEntries) {
@@ -1492,9 +1580,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 		if (mySwitch == null) {
 		    // Not my switch
-		    installRemoteFlowEntry(flowEntry);
+		    installRemoteFlowEntry(flowPath, flowEntry);
 		} else {
-		    installFlowEntry(mySwitch, flowEntry);
+		    installFlowEntry(mySwitch, flowPath, flowEntry);
 		}
 	    }
 
@@ -1518,7 +1606,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
 		if (mySwitch == null) {
 		    // Not my switch
-		    installRemoteFlowEntry(flowEntry);
+		    installRemoteFlowEntry(addedFlowPath, flowEntry);
 		    continue;
 		}
 
@@ -1539,7 +1627,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    continue;
 		}
 		// Update the Flow Entry Switch State in the Network MAP
-		if (installFlowEntry(mySwitch, flowEntry)) {
+		if (installFlowEntry(mySwitch, addedFlowPath, flowEntry)) {
 		    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
 		}
 	    }
@@ -1643,11 +1731,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * Install a Flow Entry on a switch.
      *
      * @param mySwitch the switch to install the Flow Entry into.
+     * @param flowPath the flow path for the flow entry to install.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean installFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+    public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+				    FlowEntry flowEntry) {
 	//
 	// Create the OpenFlow Flow Modification Entry to push
 	//
@@ -1671,35 +1761,67 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	}
 
 	//
-	// Fetch the match conditions
+	// Fetch the match conditions.
+	//
+	// NOTE: The Flow matching conditions common for all Flow Entries are
+	// used ONLY if a Flow Entry does NOT have the corresponding matching
+	// condition set.
 	//
 	OFMatch match = new OFMatch();
 	match.setWildcards(OFMatch.OFPFW_ALL);
-	Port matchInPort = flowEntry.flowEntryMatch().inPort();
+	FlowEntryMatch flowPathMatch = flowPath.flowEntryMatch();
+	FlowEntryMatch flowEntryMatch = flowEntry.flowEntryMatch();
+
+	// Match the Incoming Port
+	Port matchInPort = flowEntryMatch.inPort();
 	if (matchInPort != null) {
 	    match.setInputPort(matchInPort.value());
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
 	}
-	Short matchEthernetFrameType =
-	    flowEntry.flowEntryMatch().ethernetFrameType();
+
+	// Match the Ethernet Frame Type
+	Short matchEthernetFrameType = flowEntryMatch.ethernetFrameType();
+	if ((matchEthernetFrameType == null) && (flowPathMatch != null)) {
+	    matchEthernetFrameType = flowPathMatch.ethernetFrameType();
+	}
 	if (matchEthernetFrameType != null) {
 	    match.setDataLayerType(matchEthernetFrameType);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	}
-	IPv4Net matchSrcIPv4Net = flowEntry.flowEntryMatch().srcIPv4Net();
+
+	// Match the Source IPv4 Network prefix
+	IPv4Net matchSrcIPv4Net = flowEntryMatch.srcIPv4Net();
+	if ((matchSrcIPv4Net == null) && (flowPathMatch != null)) {
+	    matchSrcIPv4Net = flowPathMatch.srcIPv4Net();
+	}
 	if (matchSrcIPv4Net != null) {
 	    match.setFromCIDR(matchSrcIPv4Net.toString(), OFMatch.STR_NW_SRC);
 	}
-	IPv4Net matchDstIPv4Net = flowEntry.flowEntryMatch().dstIPv4Net();
+
+	// Natch the Destination IPv4 Network prefix
+	IPv4Net matchDstIPv4Net = flowEntryMatch.dstIPv4Net();
+	if ((matchDstIPv4Net == null) && (flowPathMatch != null)) {
+	    matchDstIPv4Net = flowPathMatch.dstIPv4Net();
+	}
 	if (matchDstIPv4Net != null) {
 	    match.setFromCIDR(matchDstIPv4Net.toString(), OFMatch.STR_NW_DST);
 	}
-	MACAddress matchSrcMac = flowEntry.flowEntryMatch().srcMac();
+
+	// Match the Source MAC address
+	MACAddress matchSrcMac = flowEntryMatch.srcMac();
+	if ((matchSrcMac == null) && (flowPathMatch != null)) {
+	    matchSrcMac = flowPathMatch.srcMac();
+	}
 	if (matchSrcMac != null) {
 	    match.setDataLayerSource(matchSrcMac.toString());
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
 	}
-	MACAddress matchDstMac = flowEntry.flowEntryMatch().dstMac();
+
+	// Match the Destination MAC address
+	MACAddress matchDstMac = flowEntryMatch.dstMac();
+	if ((matchDstMac == null) && (flowPathMatch != null)) {
+	    matchDstMac = flowPathMatch.dstMac();
+	}
 	if (matchDstMac != null) {
 	    match.setDataLayerDestination(matchDstMac.toString());
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
@@ -1764,16 +1886,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * Remove a Flow Entry from a switch.
      *
      * @param mySwitch the switch to remove the Flow Entry from.
+     * @param flowPath the flow path for the flow entry to remove.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowEntry flowEntry) {
+    public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
+				   FlowEntry flowEntry) {
 	//
 	// The installFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
-	return (installFlowEntry(mySwitch, flowEntry));
+	return (installFlowEntry(mySwitch, flowPath, flowEntry));
     }
 
     /**
@@ -1783,11 +1907,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * - For now it will make a REST call to the remote controller.
      * - Internally, it needs to know the name of the remote controller.
      *
+     * @param flowPath the flow path for the flow entry to install.
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean installRemoteFlowEntry(FlowEntry flowEntry) {
+    public boolean installRemoteFlowEntry(FlowPath flowPath,
+					  FlowEntry flowEntry) {
 	// TODO: We need it now: Jono
 	//  - For now it will make a REST call to the remote controller.
 	//  - Internally, it needs to know the name of the remote controller.
@@ -1797,15 +1923,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     /**
      * Remove a flow entry on a remote controller.
      *
+     * @param flowPath the flow path for the flow entry to remove.
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
     @Override
-    public boolean removeRemoteFlowEntry(FlowEntry flowEntry) {
+    public boolean removeRemoteFlowEntry(FlowPath flowPath,
+					 FlowEntry flowEntry) {
 	//
 	// The installRemoteFlowEntry() method implements both installation
 	// and removal of flow entries.
 	//
-	return (installRemoteFlowEntry(flowEntry));
+	return (installRemoteFlowEntry(flowPath, flowEntry));
     }
 }

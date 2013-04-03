@@ -15,12 +15,6 @@ else
   exit
 fi
 
-if [ ! -f ./cluster.txt ]; then
-  echo "Cannot find cluster.txt"
-  exit
-fi
-
-export CLUSTER="./cluster.txt"
 dsh -g $basename 'uname -a'
 
 echo "Stopping Services"

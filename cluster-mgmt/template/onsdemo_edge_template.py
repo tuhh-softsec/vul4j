@@ -91,6 +91,16 @@ def startsshds ( hosts ):
     for h in hosts:
         startsshd( h )
 
+def startiperf( host ):
+    host.cmd( '/usr/bin/iperf', '-sD' )
+
+def startiperfs ( hosts ):
+    for h in hosts:
+        startiperf( h )
+
+def stopiperf( ):
+    quietRun( "pkill -9 iperf" )
+
 def stopsshd( ):
     "Stop *all* sshd processes with a custom banner"
     info( '*** Shutting down stale sshd/Banner processes ',
@@ -125,7 +135,7 @@ def sdnnet(opt):
         host[i].defaultIntf().setMAC('00:00:%02x:%02x:%02x:%02x' % (192,168,NWID,(int(i)+1))) 
 
     for i in range (NR_NODES):
-       for n in range (1,8):
+       for n in range (2,9):
          for h in range (25):
            host[i].setARP('192.168.%d.%d' % (n, (int(h)+1)), '00:00:%02x:%02x:%02x:%02x' % (192,168,n,(int(h)+1))) 
 
@@ -138,7 +148,9 @@ def sdnnet(opt):
         root[i].intf('root%d-eth0' % (int(i)+1)).setIP('1.1.%d.2/24' % (int(i)+1))
 
     stopsshd ()
+    stopiperf ()
     startsshds ( host )
+    startiperfs ( host )
 
     if opt=="cli":
         CLI(net)

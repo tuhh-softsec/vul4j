@@ -42,6 +42,61 @@ def print_flow_path(parsedResult):
   dstPort = parsedResult['dataPath']['dstPort']['port']['value']
 
   print "FlowPath: (flowId = %s installerId = %s src = %s/%s dst = %s/%s)" % (flowId, installerId, srcSwitch, srcPort, dstSwitch, dstPort)
+  match = parsedResult['flowEntryMatch'];
+  #
+  # Print the common conditions
+  #
+  if match == None:
+    print "   Match: %s" % (match)
+  else:
+    # inPort = match['inPort']
+    # matchInPort = match['matchInPort']
+    srcMac = match['srcMac']
+    matchSrcMac = match['matchSrcMac']
+    dstMac = match['dstMac']
+    matchDstMac = match['matchDstMac']
+    vlanId = match['vlanId']
+    matchVlanId = match['matchVlanId']
+    vlanPriority = match['vlanPriority']
+    matchVlanPriority = match['matchVlanPriority']
+    ethernetFrameType = match['ethernetFrameType']
+    matchEthernetFrameType = match['matchEthernetFrameType']
+    ipToS = match['ipToS']
+    matchIpToS = match['matchIpToS']
+    ipProto = match['ipProto']
+    matchIpProto = match['matchIpProto']
+    srcIPv4Net = match['srcIPv4Net']
+    matchSrcIPv4Net = match['matchSrcIPv4Net']
+    dstIPv4Net = match['dstIPv4Net']
+    matchDstIPv4Net = match['matchDstIPv4Net']
+    srcTcpUdpPort = match['srcTcpUdpPort']
+    matchSrcTcpUdpPort = match['matchSrcTcpUdpPort']
+    dstTcpUdpPort = match['dstTcpUdpPort']
+    matchDstTcpUdpPort = match['matchDstTcpUdpPort']
+    # if matchInPort == True:
+    #  print "    inPort: %s" % inPort['value']
+    if matchSrcMac == True:
+      print "    srcMac: %s" % srcMac['value']
+    if matchDstMac == True:
+      print "    dstMac: %s" % dstMac['value']
+    if matchVlanId == True:
+      print "    vlanId: %s" % vlanId
+    if matchVlanPriority == True:
+      print "    vlanPriority: %s" % vlanPriority
+    if matchEthernetFrameType == True:
+      print "    ethernetFrameType: %s" % hex(ethernetFrameType)
+    if matchIpToS == True:
+      print "    ipToS: %s" % ipToS
+    if matchIpProto == True:
+      print "    ipProto: %s" % ipProto
+    if matchSrcIPv4Net == True:
+      print "    srcIPv4Net: %s" % srcIPv4Net['value']
+    if matchDstIPv4Net == True:
+      print "    dstIPv4Net: %s" % dstIPv4Net['value']
+    if matchSrcTcpUdpPort == True:
+      print "    srcTcpUdpPort: %s" % srcTcpUdpPort
+    if matchDstTcpUdpPort == True:
+      print "    dstTcpUdpPort: %s" % dstTcpUdpPort
 
   for f in parsedResult['dataPath']['flowEntries']:
     flowEntryId = f['flowEntryId']

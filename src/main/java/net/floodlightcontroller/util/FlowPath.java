@@ -6,6 +6,7 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
+import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.FlowId;
 
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -17,6 +18,8 @@ public class FlowPath implements Comparable<FlowPath> {
     private FlowId flowId;		// The Flow ID
     private CallerId installerId;	// The Caller ID of the path installer
     private DataPath dataPath;		// The data path
+    private FlowEntryMatch flowEntryMatch; // Common Flow Entry Match for all
+					// Flow Entries
 
     /**
      * Default constructor.
@@ -24,7 +27,7 @@ public class FlowPath implements Comparable<FlowPath> {
     public FlowPath() {
 	dataPath = new DataPath();
     }
-    
+
     /**
      * Constructor to instantiate from object in Network Map
      */
@@ -36,6 +39,28 @@ public class FlowPath implements Comparable<FlowPath> {
     	this.dataPath().srcPort().setPort(new Port(flowObj.getSrcPort()));
     	this.dataPath().dstPort().setDpid(new Dpid(flowObj.getDstSwitch()));
     	this.dataPath().dstPort().setPort(new Port(flowObj.getDstPort()));
+	//
+	// Extract the match conditions that are common for all Flow Entries
+	//
+	{
+    	    FlowEntryMatch match = new FlowEntryMatch();
+    	    Short matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+    	    if (matchEthernetFrameType != null)
+    		match.enableEthernetFrameType(matchEthernetFrameType);
+    	    String matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+    	    if (matchSrcIPv4Net != null)
+    		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+    	    String matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+    	    if (matchDstIPv4Net != null)
+    		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+    	    String matchSrcMac = flowObj.getMatchSrcMac();
+    	    if (matchSrcMac != null)
+    		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+    	    String matchDstMac = flowObj.getMatchDstMac();
+    	    if (matchDstMac != null)
+    		match.enableDstMac(MACAddress.valueOf(matchDstMac));
+    	    this.setFlowEntryMatch(match);
+	}
 
     	//
     	// Extract all Flow Entries
@@ -149,6 +174,25 @@ public class FlowPath implements Comparable<FlowPath> {
     }
 
     /**
+     * Get the flow path's match conditions common for all Flow Entries.
+     *
+     * @return the flow path's match conditions common for all Flow Entries.
+     */
+    @JsonProperty("flowEntryMatch")
+    public FlowEntryMatch flowEntryMatch() { return flowEntryMatch; }
+
+    /**
+     * Set the flow path's match conditions common for all Flow Entries.
+     *
+     * @param flowEntryMatch the flow path's match conditions common for all
+     * Flow Entries.
+     */
+    @JsonProperty("flowEntryMatch")
+    public void setFlowEntryMatch(FlowEntryMatch flowEntryMatch) {
+	this.flowEntryMatch = flowEntryMatch;
+    }
+
+    /**
      * Convert the flow path to a string.
      *
      * The string has the following form:
@@ -160,7 +204,10 @@ public class FlowPath implements Comparable<FlowPath> {
     public String toString() {
 	String ret = "[flowId=" + this.flowId.toString();
 	ret += " installerId=" + this.installerId.toString();
-	ret += " dataPath=" + this.dataPath.toString();
+	if (dataPath != null)
+	    ret += " dataPath=" + this.dataPath.toString();
+	if (flowEntryMatch != null)
+	    ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
 	ret += "]";
 	return ret;
     }

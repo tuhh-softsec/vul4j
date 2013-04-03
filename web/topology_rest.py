@@ -57,6 +57,7 @@ def debug(txt):
 @app.route('/js/views/<filename>', methods=['GET'])
 @app.route('/js/<filename>', methods=['GET'])
 @app.route('/lib/<filename>', methods=['GET'])
+@app.route('/log/<filename>', methods=['GET'])
 @app.route('/', methods=['GET'])
 @app.route('/<filename>', methods=['GET'])
 @app.route('/tpl/<filename>', methods=['GET'])
@@ -203,6 +204,7 @@ def flows():
     print "REST IF has issue"
     exit
 
+    
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
@@ -759,7 +761,7 @@ def link_up(src_dpid, src_port, dst_dpid, dst_port):
       host = controllers[0]
       src_ports = [1, 2, 3, 4, 5]
     else:
-      hostid=int(src_dpid.split(':')[-2])
+      hostid=int(dpid.split(':')[-2])
       host = controllers[hostid-1]
       if hostid == 2 :
         src_ports = [51]
@@ -807,7 +809,7 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
     flow_nr=int(ret)
 
   flow_nr += 1
-  command = "/home/ubuntu/ONOS/web/add_flow.py %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   print command
   errcode = os.popen(command).read()
   return errcode
@@ -823,27 +825,79 @@ def del_flow(flow_id):
 
 #* Start Iperf Througput
 #http://localhost:9000/gui/iperf/start/<flow_id>/<duration>
-@app.route("/gui/iperf/start/<flow_id>/<duration>")
-def iperf_start(flow_id,duration):
-  command = "iperf -xCMSV -t%d -i 0.5 -y c -u -c 127.0.0.1 > iperf_%s.out 2>/dev/null &" % (duration, flow_id)
-  print command
-  errcode = os.popen(command).read()
-  return errcode
+@app.route("/gui/iperf/start/<flow_id>/<duration>/<samples>")
+def iperf_start(flow_id,duration,samples):
+  try:
+    command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
+    print command
+    result = os.popen(command).read()
+    if len(result) == 0:
+      print "No Flow found"
+      return;
+  except:
+    print "REST IF has issue"
+    exit
 
+  parsedResult = json.loads(result)
+
+  flowId = int(parsedResult['flowId']['value'], 16)
+  src_dpid = parsedResult['dataPath']['srcPort']['dpid']['value']
+  src_port = parsedResult['dataPath']['srcPort']['port']['value']
+  dst_dpid = parsedResult['dataPath']['dstPort']['dpid']['value']
+  dst_port = parsedResult['dataPath']['dstPort']['port']['value']
+#  print "FlowPath: (flowId = %s src = %s/%s dst = %s/%s" % (flowId, src_dpid, src_port, dst_dpid, dst_port)
+
+  if src_dpid in core_switches:
+      host = controllers[0]
+  else:
+      hostid=int(src_dpid.split(':')[-2])
+      host = controllers[hostid-1]
+
+#  ./runiperf.sh 2 00:00:00:00:00:00:02:02 1 00:00:00:00:00:00:03:02 1 100 15
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s %s %s'" % (host, flowId, src_dpid, src_port, dst_dpid, dst_port, duration, samples)
+  print cmd_string
+  os.popen(cmd_string)
+
+  return 
 
 #* Get Iperf Throughput
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
   try:
-    command = "curl -s http://%s:%s/iperf_%s.out" % (RestIP, 9000, flow_id)
+    command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
+    print command
+    result = os.popen(command).read()
+    if len(result) == 0:
+      print "No Flow found"
+      return;
+  except:
+    print "REST IF has issue"
+    exit
+
+  parsedResult = json.loads(result)
+
+  flowId = int(parsedResult['flowId']['value'], 16)
+  src_dpid = parsedResult['dataPath']['srcPort']['dpid']['value']
+  src_port = parsedResult['dataPath']['srcPort']['port']['value']
+  dst_dpid = parsedResult['dataPath']['dstPort']['dpid']['value']
+  dst_port = parsedResult['dataPath']['dstPort']['port']['value']
+
+  if src_dpid in core_switches:
+      host = controllers[0]
+  else:
+      hostid=int(src_dpid.split(':')[-2])
+      host = controllers[hostid-1]
+
+  try:
+    command = "curl -s http://%s:%s/log/iperf_%s.out" % (host, 9000, flow_id)
     print command
     result = os.popen(command).read()
   except:
     print "REST IF has issue"
     exit
 
-  resp = Response(result, status=200, mimetype='text/html')
+  resp = Response(result, status=200, mimetype='application/json')
   return resp
 
 
@@ -854,17 +908,17 @@ if __name__ == "__main__":
 #     link_change("down", "00:00:20:4e:7f:51:8a:35", 1, "00:00:00:00:00:00:00:00", 1)
 #     link_change("up", "00:00:00:00:00:00:02:03", 1, "00:00:00:00:00:00:00:00", 1)
 #     link_change("down", "00:00:00:00:00:00:07:12", 1, "00:00:00:00:00:00:00:00", 1)
-
-
-    print "-- query all switches --"
-    query_switch()
-    print "-- query topo --"
-    topology_for_gui()
+#    print "-- query all switches --"
+#    query_switch()
+#    print "-- query topo --"
+#    topology_for_gui()
 #    link_change(1,2,3,4)
     print "-- query all links --"
-    query_links()
+#    query_links()
 #    print "-- query all devices --"
 #    devices()
+    iperf_start(1,10,15)
+    iperf_rate(1)
   else:
     app.debug = True
     app.run(threaded=True, host="0.0.0.0", port=9000)

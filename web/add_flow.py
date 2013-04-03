@@ -340,6 +340,9 @@ def compute_flow_path(parsed_args, data_path):
   flow_path['flowId'] = flow_id
   flow_path['installerId'] = installer_id
 
+  if (len(match) > 0):
+    flow_path['flowEntryMatch'] = copy.deepcopy(match)
+
   #
   # Add the match conditions to each flow entry
   #
@@ -393,7 +396,6 @@ def exec_monitoring_by_onos(parsed_args):
     dst_port = {}
     src_switch_port = {}
     dst_switch_port = {}
-    flow_entry = {}
     flow_entries = []
 
     src_dpid['value'] = parsed_args[idx]['my_src_dpid']
@@ -404,9 +406,6 @@ def exec_monitoring_by_onos(parsed_args):
     src_switch_port['port'] = src_port
     dst_switch_port['dpid'] = dst_dpid
     dst_switch_port['port'] = dst_port
-    match = parsed_args[idx]['match']
-    flow_entry['flowEntryMatch'] = match
-    flow_entries.append(flow_entry)
 
     data_path['srcPort'] = copy.deepcopy(src_switch_port)
     data_path['dstPort'] = copy.deepcopy(dst_switch_port)
