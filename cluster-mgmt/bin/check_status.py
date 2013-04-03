@@ -13,41 +13,60 @@ correct_intra_link=[16, 98, 48, 48, 48, 48, 48, 48]
 #nr_links=(switch[1]+switch[2]+switch[3]+switch[4]+switch[5]+switch[6]+switch[7]+len(switch)-1+8)*2
 nr_links= (49 + 24 * 6 + 7 + 8) * 2
 
-def check_switch():
+def get_json(url):
+  print url
   try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/switches/all/json\'" % (RestIP, RestPort)
-    print command
+    command = "curl -s %s" % (url)
     result = os.popen(command).read()
+    parsedResult = json.loads(result)
   except:
-    print "REST IF has issue"
-    exit
+    print "REST IF %s has issue" % command
+    parsedResult = ""
 
-  parsedResult = json.loads(result)
+  if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
+    print "REST %s returned code %s" % (command, parsedResult['code'])
+    parsedResult = ""
+
+  return parsedResult 
+
+def check_switch():
+  url="http://%s:%s/wm/core/topology/switches/all/json" % (RestIP, RestPort)
+  parsedResult = get_json(url)
+
+  if parsedResult == "":
+    return
+
   print "switch: total %d switches" % len(parsedResult)
   cnt = []
+  active = []
   for r in range(8):
     cnt.append(0)
+    active.append(0)
   for s in parsedResult:
-    nw =int(s['dpid'].split(':')[-2], 16)
-    if nw >= 2 and nw <=8:
-      cnt[nw-1] = cnt[nw-1] + 1
+    if s['dpid'] in core_switches:
+      nw_index = 0
     else:
-      cnt[0] = cnt[0] + 1
+      nw_index =int(s['dpid'].split(':')[-2], 16) - 1
+    cnt[nw_index] += 1
+
+    if s['state']  == "ACTIVE":
+      active[nw_index] += 1
+
   for r in range(8):
-    print "switch: network %d %d switches" % (r+1, cnt[r])
+    print "switch: network %d : %d switches %d active" % (r+1, cnt[r], active[r])
     if correct_nr_switch[r] != cnt[r]:
       print "switch fail: network %d should have %d switches but has %d" % (r+1, correct_nr_switch[r], cnt[r])
-      break
+
+    if correct_nr_switch[r] != active[r]:
+      print "switch fail: network %d should have %d active switches but has %d" % (r+1, correct_nr_switch[r], active[r])
 
 def check_link():
-  try:
-    command = "curl -s \'http://%s:%s/wm/core/topology/links/json\'" % (RestIP, RestPort)
-    print command
-    result = os.popen(command).read()
-  except:
-    print "REST IF has issue"
-    exit
-  parsedResult = json.loads(result)
+  url = "http://%s:%s/wm/core/topology/links/json" % (RestIP, RestPort)
+  parsedResult = get_json(url)
+
+  if parsedResult == "":
+    return
+
   print "link: total %d links (correct : %d)" % (len(parsedResult), nr_links)
   intra = []
   for r in range(8):
@@ -74,14 +93,12 @@ def check_link():
       print "link fail: network %d should have %d intra links but has %d" % (r+1, correct_intra_link[r], intra[r])
 
 def check_mastership():
-  try:
-    command = "curl -s \'http://%s:%s/wm/registry/switches/json\'" % (RestIP, RestPort)
-    print command
-    result = os.popen(command).read()
-  except:
-    print "REST IF has issue"
-    exit
-  parsedResult = json.loads(result)
+  url = "http://%s:%s/wm/registry/switches/json" % (RestIP, RestPort)
+  parsedResult = get_json(url)
+
+  if parsedResult == "":
+    return
+
   for s in parsedResult:
     #print s,len(s),s[0]['controllerId']
     ctrl=parsedResult[s][0]['controllerId']
@@ -96,15 +113,12 @@ def check_mastership():
       print "ownership fail: switch %s is owened by %s" % (s, ctrl)
 
 def check_controllers():
-  try:
-    command = "curl -s \'http://%s:%s/wm/registry/controllers/json\'" % (RestIP, RestPort)
-    print command
-    result = os.popen(command).read()
-  except:
-    print "REST IF has issue"
-    exit
+  url = "http://%s:%s/wm/registry/controllers/json" % (RestIP, RestPort)
+  parsedResult = get_json(url)
 
-  parsedResult = json.loads(result)
+  if parsedResult == "":
+    return
+
   unique=list(set(parsedResult))
   if len(unique) != 8:
     print "controller fail: there are %d controllers" % (len(parsedResult))
