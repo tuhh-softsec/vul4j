@@ -183,13 +183,13 @@ IFloodlightModule, IInfoProvider, IHAListener {
     // Link discovery task details.
     protected SingletonTask discoveryTask;
     protected final int DISCOVERY_TASK_INTERVAL = 1; 
-    protected final int LINK_TIMEOUT = 5; // decreased timeout as part of LLDP process from 35 secs
-    protected final int LLDP_TO_ALL_INTERVAL = 2 ; //decreased from 15 seconds.
+    protected final int LINK_TIMEOUT = 35; // original 35 secs, aggressive 5 secs
+    protected final int LLDP_TO_ALL_INTERVAL = 15 ; //original 15 seconds, aggressive 2 secs.
     protected long lldpClock = 0;
     // This value is intentionally kept higher than LLDP_TO_ALL_INTERVAL.
     // If we want to identify link failures faster, we could decrease this
     // value to a small number, say 1 or 2 sec.
-    protected final int LLDP_TO_KNOWN_INTERVAL= 2; // LLDP frequency for known links from 20 secs
+    protected final int LLDP_TO_KNOWN_INTERVAL= 20; // LLDP frequency for known links
 
     protected LLDPTLV controllerTLV;
     protected ReentrantReadWriteLock lock;
