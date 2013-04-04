@@ -170,6 +170,10 @@ function updateSelectedFlowsTable() {
 	function rowUpdate(d) {
 		var row = d3.select(this);
 		row.select('.deleteFlow').on('click', function () {
+			selectedFlows[selectedFlows.indexOf(d)] = null;
+			updateSelectedFlows();
+		});
+		row.on('dblclick', function () {
 			if (d) {
 				var prompt = 'Delete flow ' + d.flowId.value + '?';
 				if (confirm(prompt)) {
@@ -246,8 +250,6 @@ function updateSelectedFlows() {
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				}
-			} else {
-				newSelectedFlows.push(null);
 			}
 		});
 		selectedFlows = newSelectedFlows;
