@@ -115,6 +115,12 @@ public class StandaloneRegistry implements IFloodlightModule,
 			String controllerId) {
 		throw new RuntimeException("Not yet implemented");
 	}
+	
+	@Override
+	public IdBlock allocateUniqueIdBlock(){
+		//XXX Not exactly unique...
+		return new IdBlock(0L, 0x10000000L, 0x10000000L);
+	}
 
 	@Override
 	public Collection<Class<? extends IFloodlightService>> getModuleServices() {

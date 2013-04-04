@@ -32,13 +32,12 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.flowcache.web.FlowWebRoutable;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
-import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.DataPathEndpoints;
+import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntry;
 import net.floodlightcontroller.util.FlowEntryAction;
 import net.floodlightcontroller.util.FlowEntryId;
@@ -53,6 +52,8 @@ import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.flow.IFlowManager;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.IdBlock;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -63,7 +64,6 @@ import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +74,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     protected IRestApiService restApi;
     protected IFloodlightProviderService floodlightProvider;
     protected ITopoRouteService topoRouteService;
+    protected IControllerRegistryService registryService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -112,6 +113,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     private BlockingQueue<Runnable> shortestPathQueue = new LinkedBlockingQueue<Runnable>();
     private ThreadPoolExecutor shortestPathExecutor =
 	new ThreadPoolExecutor(10, 10, 5, TimeUnit.SECONDS, shortestPathQueue);
+    
+    protected IdBlock idBlock = null;
+    protected long nextId = 0;
 
     class ShortestPathTask implements Runnable {
 	private int hint;
@@ -656,11 +660,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     @Override
     public Collection<Class<? extends IFloodlightService>> 
                                                     getModuleDependencies() {
-	Collection<Class<? extends IFloodlightService>> l =
-	    new ArrayList<Class<? extends IFloodlightService>>();
-	l.add(IFloodlightProviderService.class);
-	l.add(ITopoRouteService.class);
-	l.add(IRestApiService.class);
+		Collection<Class<? extends IFloodlightService>> l =
+		    new ArrayList<Class<? extends IFloodlightService>>();
+		l.add(IFloodlightProviderService.class);
+		l.add(ITopoRouteService.class);
+		l.add(IRestApiService.class);
+		l.add(IControllerRegistryService.class);
         return l;
     }
 
@@ -671,6 +676,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	floodlightProvider = context.getServiceImpl(IFloodlightProviderService.class);
 	topoRouteService = context.getServiceImpl(ITopoRouteService.class);
 	restApi = context.getServiceImpl(IRestApiService.class);
+	registryService = context.getServiceImpl(IControllerRegistryService.class);
 	messageDamper = new OFMessageDamper(OFMESSAGE_DAMPER_CAPACITY,
 					    EnumSet.of(OFType.FLOW_MOD),
 					    OFMESSAGE_DAMPER_TIMEOUT);
@@ -699,10 +705,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
     @Override
     public void startUp(FloodlightModuleContext context) {
-	restApi.addRestletRoutable(new FlowWebRoutable());
-
-	// Initialize the Flow Entry ID generator
-	nextFlowEntryIdPrefix = randomGenerator.nextInt();
+		restApi.addRestletRoutable(new FlowWebRoutable());
+	
+		// Initialize the Flow Entry ID generator
+		nextFlowEntryIdPrefix = randomGenerator.nextInt();
+		
+		idBlock = registryService.allocateUniqueIdBlock();
+		if (idBlock != null){
+			log.debug("ID block allocated: {}", idBlock);
+		}
+		else{
+			log.error("Null ID block allocated by registry");
+		}
     }
 
     /**
