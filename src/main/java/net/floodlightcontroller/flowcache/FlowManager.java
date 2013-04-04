@@ -265,6 +265,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
+		long startTime = System.nanoTime();
+		int counterAllFlowEntries = 0;
+		int counterMyNotUpdatedFlowEntries = 0;
+		int counterAllFlowPaths = 0;
+		int counterMyFlowPaths = 0;
+
 		if (floodlightProvider == null) {
 		    log.debug("FloodlightProvider service not found!");
 		    return;
@@ -284,6 +290,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		Iterable<IFlowEntry> allFlowEntries =
 		    conn.utils().getAllFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
+		    counterAllFlowEntries++;
 		    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
@@ -321,6 +328,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		//
 		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
+		    counterMyNotUpdatedFlowEntries++;
 		    IFlowEntry flowEntryObj = entry.getValue();
 		    IFlowPath flowObj =
 			conn.utils().getFlowPathByFlowEntry(conn,
@@ -523,6 +531,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
 		for (IFlowPath flowPathObj : allFlowPaths) {
+		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
 			continue;
 		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
@@ -591,6 +600,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
 			      flowId.toString());
 		    flowObjSet.add(flowPathObj);
+		    counterMyFlowPaths++;
 		}
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
@@ -604,6 +614,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			(double)estimatedTime / 1000000000 + " sec";
 		    log.debug(logMsg);
 		}
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counterAllFlowPaths * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " + counterAllFlowEntries + " MyNotUpdatedFlowEntries: " + counterMyNotUpdatedFlowEntries + " AllFlowPaths: " + counterAllFlowPaths + " MyFlowPaths: " + counterMyFlowPaths + " in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " paths/s";
+		log.debug(logMsg);
 	    }
 	};
 
