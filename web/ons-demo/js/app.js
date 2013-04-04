@@ -96,7 +96,7 @@ function updateSelectedFlowsTopology() {
 				return;
 			}
 			var pts = [];
-			if (!d.dataPath.flowEntries) {
+			if (!d.dataPath.flowEntries || !d.dataPath.flowEntries.length) {
 				// create a temporary vector to indicate the pending flow
 				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
 				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
