@@ -174,11 +174,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			continue;		// Should NOT happen
 
 		    // Code for measurement purpose
+		    // TODO: Commented-out for now
+		    /*
 		    {
 			if (flowObj.getFlowId().equals(measurementFlowIdStr)) {
 			    processed_measurement_flow = true;
 			}
 		    }
+		    */
 
 		    //
 		    // TODO: Eliminate the re-fetching of flowEntryId,
@@ -564,9 +567,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId,
 			   String dataPathSummaryStr) {
+	/*
+	 * TODO: Commented-out for now
 	if (flowPath.flowId().value() == measurementFlowId) {
 	    modifiedMeasurementFlowTime = System.nanoTime();
 	}
+	*/
 
 	//
 	// Assign the FlowEntry IDs
@@ -781,9 +787,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	/*
+	 * TODO: Commented-out for now
 	if (flowId.value() == measurementFlowId) {
 	    modifiedMeasurementFlowTime = System.nanoTime();
 	}
+	*/
 
 	IFlowPath flowObj = null;
 	//
