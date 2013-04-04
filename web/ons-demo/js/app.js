@@ -184,9 +184,14 @@ function updateSelectedFlowsTable() {
 				return makeSelectedFlowKey(d);
 			}
 		});
+
+		if (d && !d.iperfData) {
+			row.select('.iperfdata')
+				.attr('d', 'M0,0');
+		}
+
 		row.select('.deleteFlow').on('click', function () {
-			selectedFlows[selectedFlows.indexOf(d)] = null;
-			updateSelectedFlows();
+			deselectFlow(d);
 		});
 		row.on('dblclick', function () {
 			if (d) {
@@ -253,32 +258,61 @@ function startIPerfForFlow(flow) {
 	var interval = 100; // ms. this is defined by the server
 	var updateRate = 1000; // ms
 
+	function makePoints() {
+		var pts = [];
+		var i;
+		for (i=0; i < 100; ++i) {
+			var sample = flow.iperfData.samples[i];
+			var height = 32 * sample/50000000;
+			if (height > 32)
+				height = 32;
+			pts.push({
+				x: i * 10,
+				y: 32 - height
+			})
+		}
+		return pts;
+	}
+
 	if (flow.flowId) {
 		console.log('starting iperf for: ' + flow.flowId.value);
 		startIPerf(flow, duration, updateRate/interval);
-		flow.iperfInterval = setInterval(function () {
+		flow.iperfDisplayInterval = setInterval(function () {
+			if (flow.iperfData) {
+				if (flow.iperfData.samples.length < 100) {
+					var repeatValue = flow.iperfData.samples[flow.iperfData.samples.length-1];
+					while (flow.iperfData.samples.length < 100) {
+						flow.iperfData.samples.push(repeatValue);
+					}
+				}
+				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
+				iperfPath.attr('d', line(makePoints()));
+				flow.iperfData.samples.shift();
+			}
+
+
+		}, interval);
+		flow.iperfFetchInterval = setInterval(function () {
 			getIPerfData(flow, function (data) {
 				try {
+					if (!flow.iperfData) {
+						flow.iperfData = {
+							samples: []
+						};
+						var i;
+						for (i = 0; i < 100; ++i) {
+							flow.iperfData.samples.push(0);
+						}
+					}
+
 					var iperfData = JSON.parse(data);
 					// if the data is fresh
-					if (flow.iperfData && iperfData.timeStamp != flow.iperfData.timestamp) {
-						var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
-						var pts = [];
-						var i;
-						for (i = 0; i < iperfData.samples.length; i += 1) {
-							var sample = iperfData.samples[i];
-							var height = 32 * sample/100000000;
-							if (height > 32)
-								height = 32;
-							pts.push({
-								x: i * 1000/(iperfData.samples.length-1),
-								y: height
-							})
-						}
-						iperfPath.attr('d', line(pts));
-
+					if (iperfData.timestamp != flow.iperfData.timestamp) {
+						iperfData.samples.forEach(function (s) {
+							flow.iperfData.samples.push(s);
+						});
 					}
-					flow.iperfData = iperfData;
+					flow.iperfData.timestamp = iperfData.timestamp;
 				} catch (e) {
 					console.log('bad iperf data: ' + data);
 				}
@@ -305,7 +339,8 @@ function updateSelectedFlows() {
 				if (liveFlow) {
 					newSelectedFlows.push(liveFlow);
 					liveFlow.deletePending = flow.deletePending;
-					liveFlow.iperfInterval = flow.iperfInterval;
+					liveFlow.iperfFetchInterval = flow.iperfFetchInterval;
+					liveFlow.iperfDisplayInterval = flow.iperfDisplayInterval;
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				}
@@ -314,7 +349,7 @@ function updateSelectedFlows() {
 		selectedFlows = newSelectedFlows;
 	}
 	selectedFlows.forEach(function (flow) {
-		if (!flow.iperfInterval) {
+		if (!flow.iperfFetchInterval) {
 			startIPerfForFlow(flow);
 		}
 	});
@@ -351,9 +386,10 @@ function deselectFlow(flow, ifCreatePending) {
 				flowKey === makeFlowKey(flow) && ifCreatePending && !flow.createPending ) {
 			newSelectedFlows.push(flow);
 		} else {
-			if (flow && flow.iperfInterval) {
+			if (flow && flow.iperfFetchInterval) {
 				console.log('clearing iperf interval for: ' + flow.flowId.value);
-				clearInterval(flow.iperfInterval);
+				clearInterval(flow.iperfFetchInterval);
+				clearInterval(flow.iperfDisplayInterval);
 			}
 		}
 	});
@@ -1137,6 +1173,7 @@ function updateControllers() {
 
 }
 
+var modelString;
 function sync(svg) {
 	var d = Date.now();
 	updateModel(function (newModel) {
@@ -1144,9 +1181,11 @@ function sync(svg) {
 
 		if (newModel) {
 			var modelChanged = false;
-			if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
+			var newModelString = JSON.stringify(newModel);
+			if (!modelString || newModelString != modelString) {
 				modelChanged = true;
 				model = newModel;
+				modelString = newModelString;
 			} else {
 	//			console.log('no change');
 			}
