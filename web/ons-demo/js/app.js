@@ -153,6 +153,16 @@ function updateSelectedFlowsTable() {
 		row.append('div').classed('dstDPID', true);
 		row.append('div').classed('iperf', true);
 
+		row.select('.iperf')
+			.append('div')
+			.attr('class', 'iperf-container')
+			.append('svg:svg')
+			.attr('viewBox', '0 0 1000 32')
+			.attr('preserveAspectRatio', 'none')
+			.append('svg:g')
+			.append('svg:path')
+			.attr('class', 'iperfdata');
+
 		row.on('mouseover', function (d) {
 			if (d) {
 				var path = document.getElementById(makeFlowKey(d));
@@ -164,11 +174,16 @@ function updateSelectedFlowsTable() {
 				var path = document.getElementById(makeFlowKey(d));
 				d3.select(path).classed('highlight', false);
 			}
-		})
+		});
 	}
 
 	function rowUpdate(d) {
 		var row = d3.select(this);
+		row.attr('id', function (d) {
+			if (d) {
+				return makeSelectedFlowKey(d);
+			}
+		});
 		row.select('.deleteFlow').on('click', function () {
 			selectedFlows[selectedFlows.indexOf(d)] = null;
 			updateSelectedFlows();
@@ -234,7 +249,7 @@ function updateSelectedFlowsTable() {
 
 // TODO: cancel the interval when the flow is desel
 function startIPerfForFlow(flow) {
-	var duration = 10; // seconds
+	var duration = 10000; // seconds
 	var interval = 100; // ms. this is defined by the server
 	var updateRate = 1000; // ms
 
@@ -243,9 +258,33 @@ function startIPerfForFlow(flow) {
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfInterval = setInterval(function () {
 			getIPerfData(flow, function (data) {
-				console.log(data);
+				try {
+					var iperfData = JSON.parse(data);
+					// if the data is fresh
+					if (flow.iperfData && iperfData.timeStamp != flow.iperfData.timestamp) {
+						var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
+						var pts = [];
+						var i;
+						for (i = 0; i < iperfData.samples.length; i += 1) {
+							var sample = iperfData.samples[i];
+							var height = 32 * sample/100000000;
+							if (height > 32)
+								height = 32;
+							pts.push({
+								x: i * 1000/(iperfData.samples.length-1),
+								y: height
+							})
+						}
+						iperfPath.attr('d', line(pts));
+
+					}
+					flow.iperfData = iperfData;
+				} catch (e) {
+					console.log('bad iperf data: ' + data);
+				}
+//				console.log(data);
 			});
-		});
+		}, updateRate);
 	}
 }
 
@@ -500,6 +539,10 @@ function makeLinkKey(link) {
 
 function makeFlowKey(flow) {
 	return flow.dataPath.srcPort.dpid.value + '=>' + flow.dataPath.dstPort.dpid.value;
+}
+
+function makeSelectedFlowKey(flow) {
+	return 'S' + makeFlowKey(flow);
 }
 
 function createLinkMap(links) {

@@ -76,6 +76,15 @@ body {
 .iperf {
 	width: 100%;
 	-webkit-box-flex: 1.0;
+	position: relative;
+	display: -webkit-box;
+}
+
+.iperf-container {
+	position: absolute;
+	top: 0px;
+	height: 100%;
+	width: 100%;
 }
 
 #controllers {

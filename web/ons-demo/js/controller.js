@@ -8,7 +8,7 @@ function callURL(url, cb) {
 			if (cb) {
 				cb(result);
 			}
-			console.log(result);
+//			console.log(result);
 		}
 	});
 }
@@ -43,7 +43,7 @@ var controllerFunctions = {
 	},
 	startIPerfCmd: function (flow, duration, numSamples) {
 		var flowId = parseInt(flow.flowId.value, 16);
-		var url = '/proxy/guid/iperf/start/' + [flowId, duration, numSamples].join('/');
+		var url = '/proxy/gui/iperf/start/' + [flowId, duration, numSamples].join('/');
 		callURL(url)
 	},
 	getIPerfDataCmd: function (flow, cb) {
