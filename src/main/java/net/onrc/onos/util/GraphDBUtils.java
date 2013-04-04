@@ -57,11 +57,12 @@ public class GraphDBUtils implements IDBUtils {
 	@Override
 	public IPortObject searchPort(GraphDBConnection conn, String dpid, short number) {
 		ISwitchObject sw = searchSwitch(conn, dpid);
-		GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
+		return sw != null ? sw.getPort(number): null;
+	/*	GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
 		pipe.start(sw.asVertex());
 	    pipe.out("on").has("number", number);
 	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
-	    return r.iterator().hasNext() ? r.iterator().next() : null;		
+	    return r.iterator().hasNext() ? r.iterator().next() : null;		*/
 	}
 
 	@Override

@@ -42,7 +42,8 @@ public interface ISwitchObject extends IBaseObject{
 		@Adjacency(label="on")
 		public Iterable<IPortObject> getPorts();
 		
-		@Adjacency(label="on")
+		@JsonIgnore
+		@GremlinGroovy("_().out('on').has('number',portnum)")
 		public IPortObject getPort(final short port_num);
 		
 		@Adjacency(label="on")

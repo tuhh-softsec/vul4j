@@ -192,15 +192,15 @@ def links():
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
-@app.route("/wm/flow/getsummary/0/0/json")
-def flows():
+@app.route("/wm/flow/getsummary/<start>/<range>/json")
+def flows(start, range):
   if request.args.get('proxy') == None:
     host = ONOS_LOCAL_HOST
   else:
     host = ONOS_GUI3_HOST
 
   try:
-    command = "curl -s %s/wm/flow/getsummary/0/0/json" % (host)
+    command = "curl -s %s/wm/flow/getsummary/%s/%s/json" % (host, start, range)
 #    print command
     result = os.popen(command).read()
   except:
@@ -813,9 +813,11 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
 
   flow_nr += 1
   command = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command1 = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", dst_dpid, dst_port, src_dpid, src_port, dstMAC, srcMAC)
   print command
   errcode = os.popen(command).read()
-  return errcode
+  errcode1 = os.popen(command1).read()
+  return errcode+" "+errcode1
 
 #* Delete Flow
 #http://localhost:9000/gui/delflow/<flow_id>
@@ -861,7 +863,7 @@ def iperf_start(flow_id,duration,samples):
   print cmd_string
   os.popen(cmd_string)
 
-  return 
+  return cmd_string
 
 #* Get Iperf Throughput
 #http://localhost:9000/gui/iperf/rate/<flow_id>

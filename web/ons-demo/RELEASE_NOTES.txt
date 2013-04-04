@@ -1,3 +1,11 @@
+** April 4, 2013 **
+Fix issues:
+	305 - "close x" now unselects flow. double click to delete a flow
+	323 - gui now recovers on timeout errors and polls again
+	324 - fixed problem with added flows not displaying
+	325 - fixed logic displaying flows in topology view
+
+
 ** March 28, 2013 **
 - add and delete flow implemented
 - to add flow

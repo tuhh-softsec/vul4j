@@ -126,7 +126,8 @@ function updateModel(cb) {
 			var model = toD3(results);
 			cb(model);
 		} else {
-			alert(JSON.stringify(err));
+			console.log(JSON.stringify(err));
+			cb(null);
 		}
 	});
 }
