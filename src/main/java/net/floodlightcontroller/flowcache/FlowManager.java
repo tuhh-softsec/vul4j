@@ -265,6 +265,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
+		long startTime = System.nanoTime();
+		int counterAllFlowEntries = 0;
+		int counterMyNotUpdatedFlowEntries = 0;
+		int counterAllFlowPaths = 0;
+		int counterMyFlowPaths = 0;
+
 		if (floodlightProvider == null) {
 		    log.debug("FloodlightProvider service not found!");
 		    return;
@@ -284,6 +290,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		Iterable<IFlowEntry> allFlowEntries =
 		    conn.utils().getAllFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
+		    counterAllFlowEntries++;
 		    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
 		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
@@ -316,11 +323,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
 		}
 
+		log.debug("MEASUREMENT: Found {} My Flow Entries NOT_UPDATED",
+			  myFlowEntries.size());
+
 		//
 		// Process my Flow Entries
 		//
 		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
+		    counterMyNotUpdatedFlowEntries++;
 		    IFlowEntry flowEntryObj = entry.getValue();
 		    IFlowPath flowObj =
 			conn.utils().getFlowPathByFlowEntry(conn,
@@ -477,6 +488,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    }
 		}
 
+		log.debug("MEASUREMENT: Found {} Flow Entries to delete",
+			  deleteFlowEntries.size());
+
 		//
 		// Delete all entries marked for deletion
 		//
@@ -514,15 +528,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-
-		/*
-		 * TODO: For now, the computation of the reconciliation is
-		 * commented-out.
-		 */
 		topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
 		for (IFlowPath flowPathObj : allFlowPaths) {
+		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
 			continue;
 		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
@@ -553,6 +563,21 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    Port dstPort = new Port(dstPortShort);
 		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
 		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
+
+		    //
+		    // Use the source DPID as a heuristic to decide
+		    // which controller is responsible for maintaining the
+		    // shortest path.
+		    // NOTE: This heuristic is error-prone: if the switch
+		    // goes away and no controller is responsible for that
+		    // switch, then the original Flow Path is not cleaned-up
+		    //
+		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
+		    if (mySwitch == null)
+			continue;	// Ignore: not my responsibility
+
+		    counterMyFlowPaths++;
+
 		    //
 		    // NOTE: Using here the regular getShortestPath() method
 		    // won't work here, because that method calls internally
@@ -576,22 +601,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
 			continue;	// Nothing changed
 
-		    //
-		    // Use the source DPID as a heuristic to decide
-		    // which controller is responsible for maintaining the
-		    // shortest path.
-		    // NOTE: This heuristic is error-prone: if the switch
-		    // goes away and no controller is responsible for that
-		    // switch, then the original Flow Path is not cleaned-up
-		    //
-		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
-		    if (mySwitch == null)
-			continue;	// Ignore: not my responsibility
-
 		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
 			      flowId.toString());
 		    flowObjSet.add(flowPathObj);
 		}
+		log.debug("MEASUREMENT: Found {} Flows to reconcile",
+			  flowObjSet.size());
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
 
@@ -604,6 +619,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			(double)estimatedTime / 1000000000 + " sec";
 		    log.debug(logMsg);
 		}
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = (estimatedTime > 0)? ((double)counterAllFlowPaths * 1000000000) / estimatedTime: 0.0;
+		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " + counterAllFlowEntries + " MyNotUpdatedFlowEntries: " + counterMyNotUpdatedFlowEntries + " AllFlowPaths: " + counterAllFlowPaths + " MyFlowPaths: " + counterMyFlowPaths + " in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " paths/s";
+		log.debug(logMsg);
 	    }
 	};
 
