@@ -20,7 +20,7 @@ var updateTopology;
 var pendingLinks = {};
 var selectedFlows = [];
 
-var pendingTimeout = 10000;
+var pendingTimeout = 30000;
 
 var colors = [
 	'color1',
@@ -70,7 +70,14 @@ function createTopologyView() {
 
 function updateSelectedFlowsTopology() {
 	// DRAW THE FLOWS
-	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows);
+	var topologyFlows = [];
+	selectedFlows.forEach(function (flow) {
+		if (flow) {
+			topologyFlows.push(flow);
+		}
+	});
+
+	var flows = d3.select('svg').selectAll('.flow').data(topologyFlows);
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
@@ -82,6 +89,7 @@ function updateSelectedFlowsTopology() {
 		.attr('dur', '20s')
 		.attr('repeatCount', 'indefinite');
 
+	flows.exit().remove();
 
 	flows.attr('d', function (d) {
 			if (!d) {
