@@ -199,7 +199,9 @@ function updateSelectedFlowsTable() {
 					}
 				}
 			})
-			.classed('pending', d && (d.deletePending || d.createPending));
+			.classed('pending', function (d) {
+				return d && (d.createPending || d.deletePending);
+			});
 
 		row.select('.srcDPID')
 			.text(function (d) {
