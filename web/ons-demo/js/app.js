@@ -1059,21 +1059,23 @@ function sync(svg) {
 	updateModel(function (newModel) {
 //		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		var modelChanged = false;
-		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
-			modelChanged = true;
-			model = newModel;
-		} else {
-//			console.log('no change');
-		}
+		if (newModel) {
+			var modelChanged = false;
+			if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
+				modelChanged = true;
+				model = newModel;
+			} else {
+	//			console.log('no change');
+			}
 
-		if (modelChanged) {
-			updateControllers();
-			updateSelectedFlows();
-			updateTopology();
-		}
+			if (modelChanged) {
+				updateControllers();
+				updateSelectedFlows();
+				updateTopology();
+			}
 
-		updateHeader(newModel);
+			updateHeader(newModel);
+		}
 
 		// do it again in 1s
 		setTimeout(function () {
