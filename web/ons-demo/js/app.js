@@ -232,6 +232,23 @@ function updateSelectedFlowsTable() {
 	flows.exit().remove();
 }
 
+// TODO: cancel the interval when the flow is desel
+function startIPerfForFlow(flow) {
+	var duration = 10; // seconds
+	var interval = 100; // ms. this is defined by the server
+	var updateRate = 1000; // ms
+
+	if (flow.flowId) {
+		console.log('starting iperf for: ' + flow.flowId.value);
+		startIPerf(flow, duration, updateRate/interval);
+		flow.iperfInterval = setInterval(function () {
+			getIPerfData(flow, function (data) {
+				console.log(data);
+			});
+		});
+	}
+}
+
 function updateSelectedFlows() {
 	// make sure that all of the selected flows are either
 	// 1) valid (meaning they are in the latest list of flows)
@@ -249,6 +266,7 @@ function updateSelectedFlows() {
 				if (liveFlow) {
 					newSelectedFlows.push(liveFlow);
 					liveFlow.deletePending = flow.deletePending;
+					liveFlow.iperfInterval = flow.iperfInterval;
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				}
@@ -256,6 +274,11 @@ function updateSelectedFlows() {
 		});
 		selectedFlows = newSelectedFlows;
 	}
+	selectedFlows.forEach(function (flow) {
+		if (!flow.iperfInterval) {
+			startIPerfForFlow(flow);
+		}
+	});
 	while (selectedFlows.length < 3) {
 		selectedFlows.push(null);
 	}
@@ -288,6 +311,11 @@ function deselectFlow(flow, ifCreatePending) {
 				flowKey !== makeFlowKey(flow) ||
 				flowKey === makeFlowKey(flow) && ifCreatePending && !flow.createPending ) {
 			newSelectedFlows.push(flow);
+		} else {
+			if (flow && flow.iperfInterval) {
+				console.log('clearing iperf interval for: ' + flow.flowId.value);
+				clearInterval(flow.iperfInterval);
+			}
 		}
 	});
 	selectedFlows = newSelectedFlows;
