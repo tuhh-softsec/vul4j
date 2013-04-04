@@ -323,6 +323,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
 		}
 
+		log.debug("MEASUREMENT: Found {} My Flow Entries NOT_UPDATED",
+			  myFlowEntries.size());
+
 		//
 		// Process my Flow Entries
 		//
@@ -485,6 +488,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    }
 		}
 
+		log.debug("MEASUREMENT: Found {} Flow Entries to delete",
+			  deleteFlowEntries.size());
+
 		//
 		// Delete all entries marked for deletion
 		//
@@ -522,11 +528,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-
-		/*
-		 * TODO: For now, the computation of the reconciliation is
-		 * commented-out.
-		 */
 		topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
@@ -604,6 +605,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			      flowId.toString());
 		    flowObjSet.add(flowPathObj);
 		}
+		log.debug("MEASUREMENT: Found {} Flow Entries to reconcile",
+			  flowObjSet.size());
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
 
