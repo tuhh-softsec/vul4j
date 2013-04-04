@@ -20,7 +20,7 @@ var updateTopology;
 var pendingLinks = {};
 var selectedFlows = [];
 
-var pendingTimeout = 10000;
+var pendingTimeout = 30000;
 
 var colors = [
 	'color1',
@@ -70,7 +70,14 @@ function createTopologyView() {
 
 function updateSelectedFlowsTopology() {
 	// DRAW THE FLOWS
-	var flows = d3.select('svg').selectAll('.flow').data(selectedFlows);
+	var topologyFlows = [];
+	selectedFlows.forEach(function (flow) {
+		if (flow) {
+			topologyFlows.push(flow);
+		}
+	});
+
+	var flows = d3.select('svg').selectAll('.flow').data(topologyFlows);
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
@@ -82,13 +89,14 @@ function updateSelectedFlowsTopology() {
 		.attr('dur', '20s')
 		.attr('repeatCount', 'indefinite');
 
+	flows.exit().remove();
 
 	flows.attr('d', function (d) {
 			if (!d) {
 				return;
 			}
 			var pts = [];
-			if (!d.dataPath.flowEntries) {
+			if (!d.dataPath.flowEntries || !d.dataPath.flowEntries.length) {
 				// create a temporary vector to indicate the pending flow
 				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
 				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
@@ -162,6 +170,10 @@ function updateSelectedFlowsTable() {
 	function rowUpdate(d) {
 		var row = d3.select(this);
 		row.select('.deleteFlow').on('click', function () {
+			selectedFlows[selectedFlows.indexOf(d)] = null;
+			updateSelectedFlows();
+		});
+		row.on('dblclick', function () {
 			if (d) {
 				var prompt = 'Delete flow ' + d.flowId.value + '?';
 				if (confirm(prompt)) {
@@ -187,7 +199,9 @@ function updateSelectedFlowsTable() {
 					}
 				}
 			})
-			.classed('pending', d && (d.deletePending || d.createPending));
+			.classed('pending', function (d) {
+				return d && (d.createPending || d.deletePending);
+			});
 
 		row.select('.srcDPID')
 			.text(function (d) {
@@ -238,8 +252,6 @@ function updateSelectedFlows() {
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				}
-			} else {
-				newSelectedFlows.push(null);
 			}
 		});
 		selectedFlows = newSelectedFlows;
@@ -1059,21 +1071,23 @@ function sync(svg) {
 	updateModel(function (newModel) {
 //		console.log('Update time: ' + (Date.now() - d)/1000 + 's');
 
-		var modelChanged = false;
-		if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
-			modelChanged = true;
-			model = newModel;
-		} else {
-//			console.log('no change');
-		}
+		if (newModel) {
+			var modelChanged = false;
+			if (!model || JSON.stringify(model) != JSON.stringify(newModel)) {
+				modelChanged = true;
+				model = newModel;
+			} else {
+	//			console.log('no change');
+			}
 
-		if (modelChanged) {
-			updateControllers();
-			updateSelectedFlows();
-			updateTopology();
-		}
+			if (modelChanged) {
+				updateControllers();
+				updateSelectedFlows();
+				updateTopology();
+			}
 
-		updateHeader(newModel);
+			updateHeader(newModel);
+		}
 
 		// do it again in 1s
 		setTimeout(function () {
