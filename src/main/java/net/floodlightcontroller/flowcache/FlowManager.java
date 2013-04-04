@@ -605,7 +605,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			      flowId.toString());
 		    flowObjSet.add(flowPathObj);
 		}
-		log.debug("MEASUREMENT: Found {} Flow Entries to reconcile",
+		log.debug("MEASUREMENT: Found {} Flows to reconcile",
 			  flowObjSet.size());
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
