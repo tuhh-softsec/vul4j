@@ -20,7 +20,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ControllerIP="127.0.0.1"
 ControllerPort=8080
 
-DEBUG=0
+DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)

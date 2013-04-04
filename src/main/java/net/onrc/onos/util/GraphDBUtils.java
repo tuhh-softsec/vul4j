@@ -15,8 +15,9 @@ import net.floodlightcontroller.util.FlowId;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
+import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.frames.FramedVertexIterable;
+import com.tinkerpop.frames.structures.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBUtils implements IDBUtils {
@@ -42,16 +43,6 @@ public class GraphDBUtils implements IDBUtils {
 		return fg.getVertices("dpid",dpid).iterator().hasNext() ? 
 				fg.getVertices("dpid",dpid,ISwitchObject.class).iterator().next() : null;
     			
-	}
-
-	@Override
-	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
-	    ISwitchObject sw = searchSwitch(conn, dpid);
-	    if ((sw != null) &&
-		sw.getState().equals(SwitchState.ACTIVE.toString())) {
-		return sw;
-	    }
-	    return null;
 	}
 
 	@Override
@@ -89,9 +80,9 @@ public class GraphDBUtils implements IDBUtils {
 	
 	@Override
 	public void removePort(GraphDBConnection conn, IPortObject port) {
-//		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		EventGraph<TitanGraph> eg = conn.getEventGraph();
-		eg.removeVertex(port.asVertex());		
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+//		EventGraph<TitanGraph> eg = conn.getEventGraph();
+		fg.removeVertex(port.asVertex());		
 	}
 
 	@Override
@@ -212,5 +203,11 @@ public class GraphDBUtils implements IDBUtils {
 			}
 		}
 		return inactiveSwitches;
+	}
+
+	@Override
+	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

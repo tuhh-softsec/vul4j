@@ -27,7 +27,8 @@ public class TestDatabaseManager {
 	
 	public static TitanGraph getTestDatabase(){
 		//return TitanFactory.open(testDbLocation);
-		return TitanFactory.openInMemoryGraph();
+//		return TitanFactory.openInMemoryGraph();
+		return TitanFactory.open(testDbLocation);
 	}
 	
 	public static void populateTestData(TitanGraph titanGraph){

@@ -20,10 +20,9 @@ RestPort=8080
 ## Uncomment the desired block based on your testbed environment
 
 # Settings for running on production
-controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
 core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
+ONOS_GUI3_HOST="http://localhost:9000"
+ONOS_GUI3_CONTROL_HOST="http://localhost:9000"
 
 # Settings for running on dev testbed. Replace dev
 #controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
@@ -32,6 +31,10 @@ ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
 #ONOS_GUI3_CONTROL_HOST="http://devb-gui.onlab.us:8080"
 
 ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
+controllers=["Berde-MBP.local"]
+#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
+#core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
 
 nr_flow=0
 
@@ -699,7 +702,7 @@ def controller_status2():
 
 @app.route("/controller_status")
 def controller_status():
-  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
+  onos_check="sh ~/src/ONOS/start-onos.sh status | awk '{print $1}'"
   #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
 
   cont_status=[]
@@ -718,8 +721,8 @@ def controller_status():
 
 @app.route("/gui/controller/<cmd>/<controller_name>")
 def controller_status_change(cmd, controller_name):
-  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
-  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+  start_onos="~/src/ONOS/start-onos.sh start" % (controller_name)
+  stop_onos="~/src/ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
     print start_onos
@@ -737,8 +740,8 @@ def switch_status_change(cmd, dpid):
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
   host=controllers[0]
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
-  get_status="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s'" % (host, dpid)
+  cmd_string="'cd ~/src/ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+  get_status="'cd ~/src/ONOS/scripts; ./switch.sh %s'" % (host, dpid)
   print "cmd_string"
 
   if cmd =="up" or cmd=="down":
