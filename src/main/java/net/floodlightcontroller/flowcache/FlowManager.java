@@ -102,166 +102,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
-    private final ScheduledExecutorService measureShortestPathScheduler =
-	Executors.newScheduledThreadPool(1);
-    private final ScheduledExecutorService measureMapReaderScheduler =
-	Executors.newScheduledThreadPool(1);
     private final ScheduledExecutorService mapReaderScheduler =
 	Executors.newScheduledThreadPool(1);
-
-    private BlockingQueue<Runnable> shortestPathQueue = new LinkedBlockingQueue<Runnable>();
-    private ThreadPoolExecutor shortestPathExecutor =
-	new ThreadPoolExecutor(10, 10, 5, TimeUnit.SECONDS, shortestPathQueue);
-
-    class ShortestPathTask implements Runnable {
-	private int hint;
-	private ITopoRouteService topoRouteService;
-	private ArrayList<DataPath> dpList;
-
-	public ShortestPathTask(int hint,
-				ITopoRouteService topoRouteService,
-				ArrayList<DataPath> dpList) {
-	    this.hint = hint;
-	    this.topoRouteService = topoRouteService;
-	    this.dpList = dpList;
-	}
-
-	@Override
-	public void run() {
-	    /*
-	    String logMsg = "MEASUREMENT: Running Thread hint " + this.hint;
-	    log.debug(logMsg);
-	    long startTime = System.nanoTime();
-	    */
-	    for (DataPath dp : this.dpList) {
-		topoRouteService.getTopoShortestPath(dp.srcPort(), dp.dstPort());
-	    }
-	    /*
-	    long estimatedTime = System.nanoTime() - startTime;
-	    double rate = (estimatedTime > 0)? ((double)dpList.size() * 1000000000) / estimatedTime: 0.0;
-	    logMsg = "MEASUREMENT: Computed Thread hint " + hint + ": " + dpList.size() + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
-	    log.debug(logMsg);
-	    */
-	}
-    }
-
-    final Runnable measureShortestPath = new Runnable() {
-	    public void run() {
-		log.debug("Recomputing Shortest Paths from the Network Map Flows...");
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-
-		if (topoRouteService == null) {
-		    log.debug("Topology Route Service not found");
-		    return;
-		}
-
-		int leftoverQueueSize = shortestPathExecutor.getQueue().size();
-		if (leftoverQueueSize > 0) {
-		    String logMsg = "MEASUREMENT: Leftover Shortest Path Queue Size: " + leftoverQueueSize;
-		    log.debug(logMsg);
-		    return;
-		}
-		log.debug("MEASUREMENT: Beginning Shortest Path Computation");
-
-		//
-		// Recompute the Shortest Paths for all Flows
-		//
-		int counter = 0;
-		int hint = 0;
-		ArrayList<DataPath> dpList = new ArrayList<DataPath>();
-		long startTime = System.nanoTime();
-
-		topoRouteService.prepareShortestPathTopo();
-
-		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
-		for (IFlowPath flowPathObj : allFlowPaths) {
-		    FlowId flowId = new FlowId(flowPathObj.getFlowId());
-
-		    // log.debug("Found Path {}", flowId.toString());
-		    Dpid srcDpid = new Dpid(flowPathObj.getSrcSwitch());
-		    Port srcPort = new Port(flowPathObj.getSrcPort());
-		    Dpid dstDpid = new Dpid(flowPathObj.getDstSwitch());
-		    Port dstPort = new Port(flowPathObj.getDstPort());
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-
-		    /*
-		    DataPath dp = new DataPath();
-		    dp.setSrcPort(srcSwitchPort);
-		    dp.setDstPort(dstSwitchPort);
-		    dpList.add(dp);
-		    if ((dpList.size() % 10) == 0) {
-			shortestPathExecutor.execute(
-				new ShortestPathTask(hint, topoRouteService,
-						     dpList));
-			dpList = new ArrayList<DataPath>();
-			hint++;
-		    }
-		    */
-
-		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
-							     dstSwitchPort);
-		    counter++;
-		}
-		if (dpList.size() > 0) {
-		    shortestPathExecutor.execute(
-			new ShortestPathTask(hint, topoRouteService,
-					     dpList));
-		}
-
-		/*
-		// Wait for all tasks to finish
-		try {
-		    while (shortestPathExecutor.getQueue().size() > 0) {
-			Thread.sleep(100);
-		    }
-		} catch (InterruptedException ex) {
-		    log.debug("MEASUREMENT: Shortest Path Computation interrupted");
-		}
-		*/
-
-		conn.endTx(Transaction.COMMIT);
-		topoRouteService.dropShortestPathTopo();
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Computed " + counter + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
-		log.debug(logMsg);
-	    }
-	};
-
-    final Runnable measureMapReader = new Runnable() {
-	    public void run() {
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-
-		//
-		// Fetch all Flow Entries
-		//
-		int counter = 0;
-		long startTime = System.nanoTime();
-		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
-		for (IFlowEntry flowEntryObj : allFlowEntries) {
-		    counter++;
-		    FlowEntryId flowEntryId =
-			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
-		}
-		conn.endTx(Transaction.COMMIT);
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Fetched " + counter + " flow entries in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " entries/s";
-		log.debug(logMsg);
-	    }
-	};
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
@@ -304,14 +146,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    }
 		    FlowEntryId flowEntryId = new FlowEntryId(flowEntryIdStr);
 		    Dpid dpid = new Dpid(dpidStr);
-
-		    /*
-		    log.debug("Found Flow Entry Id = {} {}",
-			      flowEntryId.toString(),
-			      "DPID = " + dpid.toString() +
-			      " User State: " + userState +
-			      " Switch State: " + switchState);
-		    */
 
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED"))
 			continue;	// Ignore the entry: nothing to do
@@ -626,16 +460,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		log.debug(logMsg);
 	    }
 	};
-
-    /*
-    final ScheduledFuture<?> measureShortestPathHandle =
-	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
-    */
-
-    /*
-    final ScheduledFuture<?> measureMapReaderHandle =
-	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
-    */
 
     final ScheduledFuture<?> mapReaderHandle =
 	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
