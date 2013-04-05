@@ -96,7 +96,7 @@ function updateSelectedFlowsTopology() {
 				return;
 			}
 			var pts = [];
-			if (!d.dataPath.flowEntries || !d.dataPath.flowEntries.length) {
+			if (!d.dataPath.flowEntries) {
 				// create a temporary vector to indicate the pending flow
 				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
 				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
@@ -128,7 +128,11 @@ function updateSelectedFlowsTopology() {
 					}
 				});
 			}
-			return line(pts);
+			if (pts.length) {
+				return line(pts);
+			} else {
+				return "M0,0";
+			}
 		})
 		.attr('id', function (d) {
 			if (d) {
@@ -185,7 +189,7 @@ function updateSelectedFlowsTable() {
 			}
 		});
 
-		if (d && !d.iperfData) {
+		if (!d || !hasIPerf(d)) {
 			row.select('.iperfdata')
 				.attr('d', 'M0,0');
 		}
@@ -256,7 +260,7 @@ function updateSelectedFlowsTable() {
 function startIPerfForFlow(flow) {
 	var duration = 10000; // seconds
 	var interval = 100; // ms. this is defined by the server
-	var updateRate = 1000; // ms
+	var updateRate = 2000; // ms
 
 	function makePoints() {
 		var pts = [];
@@ -267,7 +271,7 @@ function startIPerfForFlow(flow) {
 			if (height > 32)
 				height = 32;
 			pts.push({
-				x: i * 10,
+				x: i * 1000/99,
 				y: 32 - height
 			})
 		}
@@ -279,11 +283,8 @@ function startIPerfForFlow(flow) {
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
-				if (flow.iperfData.samples.length < 100) {
-					var repeatValue = flow.iperfData.samples[flow.iperfData.samples.length-1];
-					while (flow.iperfData.samples.length < 100) {
-						flow.iperfData.samples.push(repeatValue);
-					}
+				while (flow.iperfData.samples.length < 100) {
+					flow.iperfData.samples.push(0);
 				}
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
 				iperfPath.attr('d', line(makePoints()));
@@ -307,7 +308,7 @@ function startIPerfForFlow(flow) {
 
 					var iperfData = JSON.parse(data);
 					// if the data is fresh
-					if (iperfData.timestamp != flow.iperfData.timestamp) {
+					if (flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp) {
 						iperfData.samples.forEach(function (s) {
 							flow.iperfData.samples.push(s);
 						});
@@ -318,7 +319,7 @@ function startIPerfForFlow(flow) {
 				}
 //				console.log(data);
 			});
-		}, updateRate);
+		}, updateRate/2); // over sample to avoid gaps
 	}
 }
 
@@ -343,13 +344,15 @@ function updateSelectedFlows() {
 					liveFlow.iperfDisplayInterval = flow.iperfDisplayInterval;
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
+				} else if (hasIPerf(flow)) {
+					clearIPerf(flow);
 				}
 			}
 		});
 		selectedFlows = newSelectedFlows;
 	}
 	selectedFlows.forEach(function (flow) {
-		if (!flow.iperfFetchInterval) {
+		if (!hasIPerf(flow)) {
 			startIPerfForFlow(flow);
 		}
 	});
@@ -377,6 +380,19 @@ function selectFlow(flow) {
 	}
 }
 
+function hasIPerf(flow) {
+	return flow && flow.iperfFetchInterval;
+}
+
+function clearIPerf(flow) {
+	console.log('clearing iperf interval for: ' + flow.flowId.value);
+	clearInterval(flow.iperfFetchInterval);
+	delete flow.iperfFetchInterval;
+	clearInterval(flow.iperfDisplayInterval);
+	delete flow.iperfDisplayInterval;
+	delete flow.iperfData;
+}
+
 function deselectFlow(flow, ifCreatePending) {
 	var flowKey = makeFlowKey(flow);
 	var newSelectedFlows = [];
@@ -386,10 +402,8 @@ function deselectFlow(flow, ifCreatePending) {
 				flowKey === makeFlowKey(flow) && ifCreatePending && !flow.createPending ) {
 			newSelectedFlows.push(flow);
 		} else {
-			if (flow && flow.iperfFetchInterval) {
-				console.log('clearing iperf interval for: ' + flow.flowId.value);
-				clearInterval(flow.iperfFetchInterval);
-				clearInterval(flow.iperfDisplayInterval);
+			if (hasIPerf(flow)) {
+				clearIPerf(flow);
 			}
 		}
 	});
