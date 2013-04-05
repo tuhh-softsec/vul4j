@@ -261,17 +261,18 @@ function startIPerfForFlow(flow) {
 	var duration = 10000; // seconds
 	var interval = 100; // ms. this is defined by the server
 	var updateRate = 2000; // ms
+	var pointsToDisplay = 1000;
 
 	function makePoints() {
 		var pts = [];
 		var i;
-		for (i=0; i < 100; ++i) {
+		for (i=0; i < pointsToDisplay; ++i) {
 			var sample = flow.iperfData.samples[i];
 			var height = 32 * sample/50000000;
 			if (height > 32)
 				height = 32;
 			pts.push({
-				x: i * 1000/99,
+				x: i * 1000/(pointsToDisplay-1),
 				y: 32 - height
 			})
 		}
@@ -283,7 +284,7 @@ function startIPerfForFlow(flow) {
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
-				while (flow.iperfData.samples.length < 100) {
+				while (flow.iperfData.samples.length < pointsToDisplay) {
 					flow.iperfData.samples.push(0);
 				}
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
@@ -301,7 +302,7 @@ function startIPerfForFlow(flow) {
 							samples: []
 						};
 						var i;
-						for (i = 0; i < 100; ++i) {
+						for (i = 0; i < pointsToDisplay; ++i) {
 							flow.iperfData.samples.push(0);
 						}
 					}
