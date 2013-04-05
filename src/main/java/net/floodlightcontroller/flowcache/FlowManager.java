@@ -1121,8 +1121,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @return the extracted Flow Path State.
      */
     private FlowPath extractFlowPath(IFlowPath flowObj) {
-	FlowPath flowPath = new FlowPath();
-
 	//
 	// Extract the Flow state
 	//
@@ -1143,6 +1141,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    return null;
 	}
 
+	FlowPath flowPath = new FlowPath();
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
@@ -1177,67 +1176,81 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	for (IFlowEntry flowEntryObj : flowEntries) {
-	    FlowEntry flowEntry = new FlowEntry();
-	    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
-	    String switchDpidStr = flowEntryObj.getSwitchDpid();
-	    String userState = flowEntryObj.getUserState();
-	    String switchState = flowEntryObj.getSwitchState();
-
-	    if ((flowEntryIdStr == null) ||
-		(switchDpidStr == null) ||
-		(userState == null) ||
-		(switchState == null)) {
-		// TODO: A work-around, becauuse of some bogus database objects
+	    FlowEntry flowEntry = extractFlowEntry(flowEntryObj);
+	    if (flowEntry == null)
 		continue;
-	    }
-	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
-	    flowEntry.setDpid(new Dpid(switchDpidStr));
-
-	    //
-	    // Extract the match conditions
-	    //
-	    FlowEntryMatch match = new FlowEntryMatch();
-	    Short matchInPort = flowEntryObj.getMatchInPort();
-	    if (matchInPort != null)
-		match.enableInPort(new Port(matchInPort));
-	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-	    if (matchEthernetFrameType != null)
-		match.enableEthernetFrameType(matchEthernetFrameType);
-	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-	    if (matchSrcIPv4Net != null)
-		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-	    if (matchDstIPv4Net != null)
-		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
-	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
-	    if (matchSrcMac != null)
-		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
-	    String matchDstMac = flowEntryObj.getMatchDstMac();
-	    if (matchDstMac != null)
-		match.enableDstMac(MACAddress.valueOf(matchDstMac));
-	    flowEntry.setFlowEntryMatch(match);
-
-	    //
-	    // Extract the actions
-	    //
-	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-	    Short actionOutputPort = flowEntryObj.getActionOutput();
-	    if (actionOutputPort != null) {
-		FlowEntryAction action = new FlowEntryAction();
-		action.setActionOutput(new Port(actionOutputPort));
-		actions.add(action);
-	    }
-	    flowEntry.setFlowEntryActions(actions);
-	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
-	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	    // and FlowEntryErrorState.
-	    //
 	    flowPath.dataPath().flowEntries().add(flowEntry);
 	}
 
 	return flowPath;
+    }
+
+    /**
+     * Extract Flow Entry State from a Titan Database Object @ref IFlowEntry.
+     *
+     * @param flowEntryObj the object to extract the Flow Entry State from.
+     * @return the extracted Flow Entry State.
+     */
+    private FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
+	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	String switchDpidStr = flowEntryObj.getSwitchDpid();
+	String userState = flowEntryObj.getUserState();
+	String switchState = flowEntryObj.getSwitchState();
+
+	if ((flowEntryIdStr == null) ||
+	    (switchDpidStr == null) ||
+	    (userState == null) ||
+	    (switchState == null)) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    return null;
+	}
+
+	FlowEntry flowEntry = new FlowEntry();
+	flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
+	flowEntry.setDpid(new Dpid(switchDpidStr));
+
+	//
+	// Extract the match conditions
+	//
+	FlowEntryMatch match = new FlowEntryMatch();
+	Short matchInPort = flowEntryObj.getMatchInPort();
+	if (matchInPort != null)
+	    match.enableInPort(new Port(matchInPort));
+	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType != null)
+	    match.enableEthernetFrameType(matchEthernetFrameType);
+	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net != null)
+	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net != null)
+	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	if (matchSrcMac != null)
+	    match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	String matchDstMac = flowEntryObj.getMatchDstMac();
+	if (matchDstMac != null)
+	    match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	flowEntry.setFlowEntryMatch(match);
+
+	//
+	// Extract the actions
+	//
+	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+	Short actionOutputPort = flowEntryObj.getActionOutput();
+	if (actionOutputPort != null) {
+	    FlowEntryAction action = new FlowEntryAction();
+	    action.setActionOutput(new Port(actionOutputPort));
+	    actions.add(action);
+	}
+	flowEntry.setFlowEntryActions(actions);
+	flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
+	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
+	//
+	// TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
+	// and FlowEntryErrorState.
+	//
+	return flowEntry;
     }
 
     /**
