@@ -52,7 +52,6 @@ import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
-import net.onrc.onos.flow.IFlowManager;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -67,7 +66,7 @@ import org.openflow.protocol.action.OFActionOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowManager implements IFloodlightModule, IFlowService, IFlowManager, INetMapStorage {
+public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
     public GraphDBConnection conn;
 
@@ -1322,78 +1321,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     }
 
     /**
-     * Create a Flow from port to port.
-     *
-     * TODO: We don't need it for now.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
-     */
-    @Override
-    public void createFlow(IPortObject src_port, IPortObject dest_port) {
-	// TODO: We don't need it for now.
-    }
-
-    /**
-     * Get all Flows matching a source and a destination port.
-     *
-     * TODO: Pankaj might be implementing it later.
-     *
-     * @param src_port the source port to match.
-     * @param dest_port the destination port to match.
-     * @return all flows matching the source and the destination port.
-     */
-    @Override
-    public Iterable<FlowPath> getFlows(IPortObject src_port,
-				       IPortObject dest_port) {
-	// TODO: Pankaj might be implementing it later.
-	return null;
-    }
-
-    /**
-     * Get all Flows going out from a port.
-     *
-     * TODO: We need it now: Pankaj
-     *
-     * @param port the port to match.
-     * @return the list of flows that are going out from the port.
-     */
-    @Override
-    public Iterable<FlowPath> getOutFlows(IPortObject port) {
-	// TODO: We need it now: Pankaj
-	return null;
-    }
-
-    /**
-     * Reconcile all flows on inactive switch port.
-     *
-     * @param portObject the port that has become inactive.
-     */
-    @Override
-    public void reconcileFlows(IPortObject portObject) {
-	Iterable<IFlowEntry> inFlowEntries = portObject.getInFlowEntries();
-	Iterable<IFlowEntry> outFlowEntries = portObject.getOutFlowEntries();
-
-	//
-	// Collect all affected Flow IDs from the affected flow entries
-	//
-	HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
-	for (IFlowEntry flowEntryObj: inFlowEntries) {
-	    IFlowPath flowObj = flowEntryObj.getFlow();
-	    if (flowObj != null)
-		flowObjSet.add(flowObj);
-	}
-	for (IFlowEntry flowEntryObj: outFlowEntries) {
-	    IFlowPath flowObj = flowEntryObj.getFlow();
-	    if (flowObj != null)
-		flowObjSet.add(flowObj);
-	}
-
-	// Reconcile the affected flows
-	reconcileFlows(flowObjSet);
-    }
-
-    /**
      * Reconcile all flows in a set.
      *
      * @param flowObjSet the set of flows that need to be reconciliated.
@@ -1501,99 +1428,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     }
 
     /**
-     * Reconcile all flows between a source and a destination port.
-     *
-     * TODO: We don't need it for now.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
-     */
-    @Override
-    public void reconcileFlow(IPortObject src_port, IPortObject dest_port) {
-	// TODO: We don't need it for now.
-    }
-
-    /**
-     * Compute the shortest path between a source and a destination ports.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
-     * @return the computed shortest path between the source and the
-     * destination ports. The flow entries in the path itself would
-     * contain the incoming port matching and the outgoing port output
-     * actions set. However, the path itself will NOT have the Flow ID,
-     * Installer ID, and any additional matching conditions for the
-     * flow entries (e.g., source or destination MAC address, etc).
-     */
-    @Override
-    public FlowPath computeFlowPath(IPortObject src_port,
-				    IPortObject dest_port) {
-	//
-	// Prepare the arguments
-	//
-	String dpidStr = src_port.getSwitch().getDPID();
-	Dpid srcDpid = new Dpid(dpidStr);
-	Port srcPort = new Port(src_port.getNumber());
-
-	dpidStr = dest_port.getSwitch().getDPID();
-	Dpid dstDpid = new Dpid(dpidStr);
-	Port dstPort = new Port(dest_port.getNumber());
-
-	SwitchPort src = new SwitchPort(srcDpid, srcPort);
-	SwitchPort dst = new SwitchPort(dstDpid, dstPort);
-
-	//
-	// Do the shortest path computation
-	//
-	DataPath dataPath = topoRouteService.getShortestPath(src, dst);
-	if (dataPath == null)
-	    return null;
-
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	for (FlowEntry flowEntry : dataPath.flowEntries()) {
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = flowEntry.flowEntryMatch();
-	    if (flowEntryMatch == null) {
-		flowEntryMatch = new FlowEntryMatch();
-		flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    }
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
-	}
-
-	//
-	// Prepare the return result
-	//
-	FlowPath flowPath = new FlowPath();
-	flowPath.setDataPath(dataPath);
-
-	return flowPath;
-    }
-
-    /**
-     * Get all Flow Entries of a Flow.
-     *
-     * @param flow the flow whose flow entries should be returned.
-     * @return the flow entries of the flow.
-     */
-    @Override
-    public Iterable<FlowEntry> getFlowEntries(FlowPath flow) {
-	return flow.dataPath().flowEntries();
-    }
-
-    /**
      * Install a Flow Entry on a switch.
      *
      * @param mySwitch the switch to install the Flow Entry into.
@@ -1601,7 +1435,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
 	//
@@ -1756,7 +1589,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				   FlowEntry flowEntry) {
 	//
@@ -1777,7 +1609,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean installRemoteFlowEntry(FlowPath flowPath,
 					  FlowEntry flowEntry) {
 	// TODO: We need it now: Jono
@@ -1793,7 +1624,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean removeRemoteFlowEntry(FlowPath flowPath,
 					 FlowEntry flowEntry) {
 	//
