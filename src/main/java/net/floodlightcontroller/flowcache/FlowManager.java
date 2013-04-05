@@ -439,16 +439,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 	*/
 
-	//
-	// Assign the FlowEntry IDs
-	// Right now every new flow entry gets a new flow entry ID
-	// TODO: This needs to be redesigned!
-	//
-	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    long id = getNextFlowEntryId();
-	    flowEntry.setFlowEntryId(new FlowEntryId(id));
-	}
-
 	IFlowPath flowObj = null;
 	try {
 	    if ((flowObj = conn.utils().searchFlowPath(conn, flowPath.flowId()))
@@ -527,111 +517,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    IFlowEntry flowEntryObj = null;
-	    boolean found = false;
-	    try {
-		if ((flowEntryObj = conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId())) != null) {
-		    log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
-			      flowEntry.flowEntryId().toString());
-		    found = true;
-		} else {
-		    flowEntryObj = conn.utils().newFlowEntry(conn);
-		    log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
-			      flowEntry.flowEntryId().toString());
-		}
-	    } catch (Exception e) {
-		// TODO: handle exceptions
-		conn.endTx(Transaction.ROLLBACK);
-		log.error(":addFlow FlowEntryId:{} failed",
-			  flowEntry.flowEntryId().toString());
-	    }
-	    if (flowEntryObj == null) {
-		log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
-		      flowEntry.flowEntryId().toString());
+	    if (addFlowEntry(flowObj, flowEntry) != true) {
 		conn.endTx(Transaction.ROLLBACK);
 		return false;
-	    }
-
-	    //
-	    // Set the Flow Entry key:
-	    // - flowEntry.flowEntryId()
-	    //
-	    flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
-	    flowEntryObj.setType("flow_entry");
-
-	    // 
-	    // Set the Flow Entry Edges and attributes:
-	    // - Switch edge
-	    // - InPort edge
-	    // - OutPort edge
-	    //
-	    // - flowEntry.flowEntryMatch()
-	    // - flowEntry.flowEntryActions()
-	    // - flowEntry.dpid()
-	    // - flowEntry.flowEntryUserState()
-	    // - flowEntry.flowEntrySwitchState()
-	    // - flowEntry.flowEntryErrorState()
-	    // - flowEntry.matchInPort()
-	    // - flowEntry.matchEthernetFrameType()
-	    // - flowEntry.matchSrcIPv4Net()
-	    // - flowEntry.matchDstIPv4Net()
-	    // - flowEntry.matchSrcMac()
-	    // - flowEntry.matchDstMac()
-	    // - flowEntry.actionOutput()
-	    //
-	    ISwitchObject sw =
-		conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
-	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    flowEntryObj.setSwitch(sw);
-	    if (flowEntry.flowEntryMatch().matchInPort()) {
-	    	IPortObject inport =
-		    conn.utils().searchPort(conn, flowEntry.dpid().toString(),
-					    flowEntry.flowEntryMatch().inPort().value());
-	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
-	    	flowEntryObj.setInPort(inport);
-	    }
-	    if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
-	    	flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
-	    }
-	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
-	    	flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
-	    	flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchSrcMac()) {
-	    	flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchDstMac()) {
-	    	flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
-	    }
-
-	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
-	    	if (fa.actionOutput() != null) {
-		    IPortObject outport =
-			conn.utils().searchPort(conn,
-						flowEntry.dpid().toString(),
-						fa.actionOutput().port().value());
-		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
-		    flowEntryObj.setOutPort(outport);
-	    	}
-	    }
-	    // TODO: Hacks with hard-coded state names!
-	    if (found)
-		flowEntryObj.setUserState("FE_USER_MODIFY");
-	    else
-		flowEntryObj.setUserState("FE_USER_ADD");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	    //
-	    // TODO: Take care of the FlowEntryErrorState.
-	    //
-
-	    // Flow Entries edges:
-	    //   Flow
-	    //   NextFE (TODO)
-	    if (! found) {
-		flowObj.addFlowEntry(flowEntryObj);
-		flowEntryObj.setFlow(flowObj);
 	    }
 	}
 	conn.endTx(Transaction.COMMIT);
@@ -640,6 +528,135 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// TODO: We need a proper Flow ID allocation mechanism.
 	//
 	flowId.setValue(flowPath.flowId().value());
+
+	return true;
+    }
+
+    /**
+     * Add a flow entry to the Network MAP.
+     *
+     * @param flowObj the corresponding Flow Path object for the Flow Entry.
+     * @param flowEntry the Flow Entry to install.
+     * @return true on success, otherwise false.
+     */
+    private boolean addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
+	// Flow edges
+	//   HeadFE (TODO)
+
+	//
+	// Assign the FlowEntry ID.
+	//
+	if ((flowEntry.flowEntryId() == null) ||
+	    (flowEntry.flowEntryId().value() == 0)) {
+	    long id = getNextFlowEntryId();
+	    flowEntry.setFlowEntryId(new FlowEntryId(id));
+	}
+
+	IFlowEntry flowEntryObj = null;
+	boolean found = false;
+	try {
+	    if ((flowEntryObj =
+		 conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId())) != null) {
+		log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
+			  flowEntry.flowEntryId().toString());
+		found = true;
+	    } else {
+		flowEntryObj = conn.utils().newFlowEntry(conn);
+		log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
+			  flowEntry.flowEntryId().toString());
+	    }
+	} catch (Exception e) {
+	    log.error(":addFlow FlowEntryId:{} failed",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+	if (flowEntryObj == null) {
+	    log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+
+	//
+	// Set the Flow Entry key:
+	// - flowEntry.flowEntryId()
+	//
+	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
+	flowEntryObj.setType("flow_entry");
+
+	// 
+	// Set the Flow Entry Edges and attributes:
+	// - Switch edge
+	// - InPort edge
+	// - OutPort edge
+	//
+	// - flowEntry.flowEntryMatch()
+	// - flowEntry.flowEntryActions()
+	// - flowEntry.dpid()
+	// - flowEntry.flowEntryUserState()
+	// - flowEntry.flowEntrySwitchState()
+	// - flowEntry.flowEntryErrorState()
+	// - flowEntry.matchInPort()
+	// - flowEntry.matchEthernetFrameType()
+	// - flowEntry.matchSrcIPv4Net()
+	// - flowEntry.matchDstIPv4Net()
+	// - flowEntry.matchSrcMac()
+	// - flowEntry.matchDstMac()
+	// - flowEntry.actionOutput()
+	//
+	ISwitchObject sw =
+	    conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
+	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
+	flowEntryObj.setSwitch(sw);
+	if (flowEntry.flowEntryMatch().matchInPort()) {
+	    IPortObject inport =
+		conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+					flowEntry.flowEntryMatch().inPort().value());
+	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    flowEntryObj.setInPort(inport);
+	}
+	if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
+	    flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
+	    flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
+	    flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchSrcMac()) {
+	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchDstMac()) {
+	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	}
+
+	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
+	    if (fa.actionOutput() != null) {
+		IPortObject outport =
+		    conn.utils().searchPort(conn,
+					    flowEntry.dpid().toString(),
+					    fa.actionOutput().port().value());
+		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		flowEntryObj.setOutPort(outport);
+	    }
+	}
+	// TODO: Hacks with hard-coded state names!
+	if (found)
+	    flowEntryObj.setUserState("FE_USER_MODIFY");
+	else
+	    flowEntryObj.setUserState("FE_USER_ADD");
+	flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
+	//
+	// TODO: Take care of the FlowEntryErrorState.
+	//
+
+	// Flow Entries edges:
+	//   Flow
+	//   NextFE (TODO)
+	if (! found) {
+	    flowObj.addFlowEntry(flowEntryObj);
+	    flowEntryObj.setFlow(flowObj);
+	}
 
 	return true;
     }
