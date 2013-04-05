@@ -279,7 +279,7 @@ function startIPerfForFlow(flow) {
 	}
 
 	if (flow.flowId) {
-		console.log('starting iperf for: ' + flow.flowId.value);
+		console.log('starting iperf for: ' + flow.flowId);
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
@@ -385,7 +385,7 @@ function hasIPerf(flow) {
 }
 
 function clearIPerf(flow) {
-	console.log('clearing iperf interval for: ' + flow.flowId.value);
+	console.log('clearing iperf interval for: ' + flow.flowId);
 	clearInterval(flow.iperfFetchInterval);
 	delete flow.iperfFetchInterval;
 	clearInterval(flow.iperfDisplayInterval);
