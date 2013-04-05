@@ -153,6 +153,34 @@ def proxy_del_flow(flow_id):
 
   resp = Response(result, status=200, mimetype='application/json')
   return resp
+
+@app.route("/proxy/gui/iperf/start/<flow_id>/<duration>/<samples>")
+def proxy_iperf_start(flow_id,duration,samples):
+  try:
+    command = "curl -s %s/gui/iperf/start/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id, duration, samples)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/gui/iperf/rate/<flow_id>")
+def proxy_iperf_rate(flow_id):
+  try:
+    command = "curl -s %s/gui/iperf/rate/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
@@ -204,7 +232,7 @@ def flows(start, range):
     print "REST IF has issue"
     exit
 
-    
+
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
