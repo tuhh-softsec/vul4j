@@ -212,7 +212,6 @@ def pick_host():
   return "http://" + host + ":8080"
 
 ## Switch ##
-=======
 @app.route("/wm/core/topology/switches/all/json")
 def switches():
   if request.args.get('proxy') == None:
@@ -818,11 +817,14 @@ def iperf_rate(flow_id):
     print command
     result = os.popen(command).read()
   except:
-    
     exit
 
-  resp = Response(result, status=200, mimetype='application/json')
-  return resp
+  if len(result) == 0:
+    resp = Response(result, status=400, mimetype='text/html')
+    return "no iperf file found (flowid %s)" % flow_id;
+  else:
+    resp = Response(result, status=200, mimetype='application/json')
+    return resp
 
 
 if __name__ == "__main__":
