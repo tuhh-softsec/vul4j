@@ -52,7 +52,6 @@ import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.OFMessageDamper;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
-import net.onrc.onos.flow.IFlowManager;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -67,7 +66,7 @@ import org.openflow.protocol.action.OFActionOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowManager implements IFloodlightModule, IFlowService, IFlowManager, INetMapStorage {
+public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
     public GraphDBConnection conn;
 
@@ -102,166 +101,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
-    private final ScheduledExecutorService measureShortestPathScheduler =
-	Executors.newScheduledThreadPool(1);
-    private final ScheduledExecutorService measureMapReaderScheduler =
-	Executors.newScheduledThreadPool(1);
     private final ScheduledExecutorService mapReaderScheduler =
 	Executors.newScheduledThreadPool(1);
-
-    private BlockingQueue<Runnable> shortestPathQueue = new LinkedBlockingQueue<Runnable>();
-    private ThreadPoolExecutor shortestPathExecutor =
-	new ThreadPoolExecutor(10, 10, 5, TimeUnit.SECONDS, shortestPathQueue);
-
-    class ShortestPathTask implements Runnable {
-	private int hint;
-	private ITopoRouteService topoRouteService;
-	private ArrayList<DataPath> dpList;
-
-	public ShortestPathTask(int hint,
-				ITopoRouteService topoRouteService,
-				ArrayList<DataPath> dpList) {
-	    this.hint = hint;
-	    this.topoRouteService = topoRouteService;
-	    this.dpList = dpList;
-	}
-
-	@Override
-	public void run() {
-	    /*
-	    String logMsg = "MEASUREMENT: Running Thread hint " + this.hint;
-	    log.debug(logMsg);
-	    long startTime = System.nanoTime();
-	    */
-	    for (DataPath dp : this.dpList) {
-		topoRouteService.getTopoShortestPath(dp.srcPort(), dp.dstPort());
-	    }
-	    /*
-	    long estimatedTime = System.nanoTime() - startTime;
-	    double rate = (estimatedTime > 0)? ((double)dpList.size() * 1000000000) / estimatedTime: 0.0;
-	    logMsg = "MEASUREMENT: Computed Thread hint " + hint + ": " + dpList.size() + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
-	    log.debug(logMsg);
-	    */
-	}
-    }
-
-    final Runnable measureShortestPath = new Runnable() {
-	    public void run() {
-		log.debug("Recomputing Shortest Paths from the Network Map Flows...");
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-
-		if (topoRouteService == null) {
-		    log.debug("Topology Route Service not found");
-		    return;
-		}
-
-		int leftoverQueueSize = shortestPathExecutor.getQueue().size();
-		if (leftoverQueueSize > 0) {
-		    String logMsg = "MEASUREMENT: Leftover Shortest Path Queue Size: " + leftoverQueueSize;
-		    log.debug(logMsg);
-		    return;
-		}
-		log.debug("MEASUREMENT: Beginning Shortest Path Computation");
-
-		//
-		// Recompute the Shortest Paths for all Flows
-		//
-		int counter = 0;
-		int hint = 0;
-		ArrayList<DataPath> dpList = new ArrayList<DataPath>();
-		long startTime = System.nanoTime();
-
-		topoRouteService.prepareShortestPathTopo();
-
-		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
-		for (IFlowPath flowPathObj : allFlowPaths) {
-		    FlowId flowId = new FlowId(flowPathObj.getFlowId());
-
-		    // log.debug("Found Path {}", flowId.toString());
-		    Dpid srcDpid = new Dpid(flowPathObj.getSrcSwitch());
-		    Port srcPort = new Port(flowPathObj.getSrcPort());
-		    Dpid dstDpid = new Dpid(flowPathObj.getDstSwitch());
-		    Port dstPort = new Port(flowPathObj.getDstPort());
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-
-		    /*
-		    DataPath dp = new DataPath();
-		    dp.setSrcPort(srcSwitchPort);
-		    dp.setDstPort(dstSwitchPort);
-		    dpList.add(dp);
-		    if ((dpList.size() % 10) == 0) {
-			shortestPathExecutor.execute(
-				new ShortestPathTask(hint, topoRouteService,
-						     dpList));
-			dpList = new ArrayList<DataPath>();
-			hint++;
-		    }
-		    */
-
-		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
-							     dstSwitchPort);
-		    counter++;
-		}
-		if (dpList.size() > 0) {
-		    shortestPathExecutor.execute(
-			new ShortestPathTask(hint, topoRouteService,
-					     dpList));
-		}
-
-		/*
-		// Wait for all tasks to finish
-		try {
-		    while (shortestPathExecutor.getQueue().size() > 0) {
-			Thread.sleep(100);
-		    }
-		} catch (InterruptedException ex) {
-		    log.debug("MEASUREMENT: Shortest Path Computation interrupted");
-		}
-		*/
-
-		conn.endTx(Transaction.COMMIT);
-		topoRouteService.dropShortestPathTopo();
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Computed " + counter + " shortest paths in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " flows/s";
-		log.debug(logMsg);
-	    }
-	};
-
-    final Runnable measureMapReader = new Runnable() {
-	    public void run() {
-		if (floodlightProvider == null) {
-		    log.debug("FloodlightProvider service not found!");
-		    return;
-		}
-
-		//
-		// Fetch all Flow Entries
-		//
-		int counter = 0;
-		long startTime = System.nanoTime();
-		Iterable<IFlowEntry> allFlowEntries = conn.utils().getAllFlowEntries(conn);
-		for (IFlowEntry flowEntryObj : allFlowEntries) {
-		    counter++;
-		    FlowEntryId flowEntryId =
-			new FlowEntryId(flowEntryObj.getFlowEntryId());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
-		}
-		conn.endTx(Transaction.COMMIT);
-
-		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counter * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Fetched " + counter + " flow entries in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " entries/s";
-		log.debug(logMsg);
-	    }
-	};
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
@@ -305,14 +146,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    FlowEntryId flowEntryId = new FlowEntryId(flowEntryIdStr);
 		    Dpid dpid = new Dpid(dpidStr);
 
-		    /*
-		    log.debug("Found Flow Entry Id = {} {}",
-			      flowEntryId.toString(),
-			      "DPID = " + dpid.toString() +
-			      " User State: " + userState +
-			      " Switch State: " + switchState);
-		    */
-
 		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED"))
 			continue;	// Ignore the entry: nothing to do
 
@@ -321,10 +154,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			continue;	// Ignore the entry: not my switch
 
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
+		    if (userState.equals("FE_USER_DELETE")) {
+			// An entry that needs to be deleted.
+			deleteFlowEntries.add(flowEntryObj);
+		    }
 		}
 
+		log.debug("MEASUREMENT: Found {} My Flow Entries NOT_UPDATED",
+			  myFlowEntries.size());
+
 		//
-		// Process my Flow Entries
+		// Process my Flow Entries in the Flow Entry ID order
 		//
 		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
@@ -337,156 +177,28 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			continue;		// Should NOT happen
 
 		    // Code for measurement purpose
+		    // TODO: Commented-out for now
+		    /*
 		    {
 			if (flowObj.getFlowId().equals(measurementFlowIdStr)) {
 			    processed_measurement_flow = true;
 			}
 		    }
+		    */
 
-		    //
-		    // TODO: Eliminate the re-fetching of flowEntryId,
-		    // userState, switchState, and dpid from the flowEntryObj.
-		    //
-		    FlowEntryId flowEntryId =
-			new FlowEntryId(flowEntryObj.getFlowEntryId());
 		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null)
 			continue;		// Shouldn't happen
-
-		    //
-		    // Create the Open Flow Flow Modification Entry to push
-		    //
-		    OFFlowMod fm =
-			(OFFlowMod) floodlightProvider.getOFMessageFactory()
-			.getMessage(OFType.FLOW_MOD);
-		    long cookie = flowEntryId.value();
-
-		    short flowModCommand = OFFlowMod.OFPFC_ADD;
-		    if (userState.equals("FE_USER_ADD")) {
-			flowModCommand = OFFlowMod.OFPFC_ADD;
-		    } else if (userState.equals("FE_USER_MODIFY")) {
-			flowModCommand = OFFlowMod.OFPFC_MODIFY_STRICT;
-		    } else if (userState.equals("FE_USER_DELETE")) {
-			flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
-		    } else {
-			// Unknown user state. Ignore the entry
-			log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
-				  flowEntryId.toString(), userState);
-			continue;
-		    }
-
-		    //
-		    // Fetch the match conditions.
-		    //
-		    // NOTE: The Flow matching conditions common for all
-		    // Flow Entries are used ONLY if a Flow Entry does NOT
-		    // have the corresponding matching condition set.
-		    //
-		    OFMatch match = new OFMatch();
-		    match.setWildcards(OFMatch.OFPFW_ALL);
-		    //
-		    Short matchInPort = flowEntryObj.getMatchInPort();
-		    if (matchInPort != null) {
-			match.setInputPort(matchInPort);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
-		    }
-		    //
-		    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-		    if (matchEthernetFrameType == null)
-			matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-		    if (matchEthernetFrameType != null) {
-			match.setDataLayerType(matchEthernetFrameType);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
-		    }
-		    //
-		    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-		    if (matchSrcIPv4Net == null)
-			matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-		    if (matchSrcIPv4Net != null) {
-			match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
-		    }
-		    //
-		    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-		    if (matchDstIPv4Net == null)
-			matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-		    if (matchDstIPv4Net != null) {
-			match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
-		    }
-		    //
-		    String matchSrcMac = flowEntryObj.getMatchSrcMac();
-		    if (matchSrcMac == null)
-			matchSrcMac = flowObj.getMatchSrcMac();
-		    if (matchSrcMac != null) {
-			match.setDataLayerSource(matchSrcMac);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
-		    }
-		    //
-		    String matchDstMac = flowEntryObj.getMatchDstMac();
-		    if (matchDstMac == null)
-			matchDstMac = flowObj.getMatchDstMac();
-		    if (matchDstMac != null) {
-			match.setDataLayerDestination(matchDstMac);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
-		    }
-
-		    //
-		    // Fetch the actions
-		    //
-		    List<OFAction> actions = new ArrayList<OFAction>();
-		    Short actionOutputPort = flowEntryObj.getActionOutput();
-		    if (actionOutputPort != null) {
-			OFActionOutput action = new OFActionOutput();
-			// XXX: The max length is hard-coded for now
-			action.setMaxLength((short)0xffff);
-			action.setPort(actionOutputPort);
-			actions.add(action);
-		    }
-
-		    fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
-			.setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
-			.setPriority(PRIORITY_DEFAULT)
-			.setBufferId(OFPacketOut.BUFFER_ID_NONE)
-			.setCookie(cookie)
-			.setCommand(flowModCommand)
-			.setMatch(match)
-			.setActions(actions)
-			.setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
-		    fm.setOutPort(OFPort.OFPP_NONE.getValue());
-		    if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
-			(flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
-			if (actionOutputPort != null)
-			    fm.setOutPort(actionOutputPort);
-		    }
-
-		    //
-		    // TODO: Set the following flag
-		    // fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
-		    // See method ForwardingBase::pushRoute()
-		    //
-		    try {
-			messageDamper.write(mySwitch, fm, null);
-			mySwitch.flush();
-			//
-			// TODO: We should use the OpenFlow Barrier mechanism
-			// to check for errors, and update the SwitchState
-			// for a flow entry after the Barrier message is
-			// is received.
-			//
-			flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
-			if (userState.equals("FE_USER_DELETE")) {
-			    // An entry that needs to be deleted.
-			    deleteFlowEntries.add(flowEntryObj);
-			}
-		    } catch (IOException e) {
-			log.error("Failure writing flow mod from network map", e);
-		    }
+		    installFlowEntry(mySwitch, flowObj, flowEntryObj);
 		}
 
+		log.debug("MEASUREMENT: Found {} Flow Entries to delete",
+			  deleteFlowEntries.size());
+
 		//
-		// Delete all entries marked for deletion
+		// Delete all entries marked for deletion from the
+		// Network MAP.
 		//
 		// TODO: We should use the OpenFlow Barrier mechanism
 		// to check for errors, and delete the Flow Entries after the
@@ -502,19 +214,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		    }
 		    flowObj.removeFlowEntry(flowEntryObj);
 		    conn.utils().removeFlowEntry(conn, flowEntryObj);
-
-		    // Test whether the last flow entry
-		    Iterable<IFlowEntry> tmpflowEntries =
-			flowObj.getFlowEntries();
-		    boolean found = false;
-		    for (IFlowEntry tmpflowEntryObj : tmpflowEntries) {
-			found = true;
-			break;
-		    }
-		    if (! found) {
-			// Remove the Flow Path as well
-			conn.utils().removeFlowPath(conn, flowObj);
-		    }
 		}
 
 
@@ -522,11 +221,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-
-		/*
-		 * TODO: For now, the computation of the reconciliation is
-		 * commented-out.
-		 */
 		topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
@@ -604,6 +298,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 			      flowId.toString());
 		    flowObjSet.add(flowPathObj);
 		}
+		log.debug("MEASUREMENT: Found {} Flows to reconcile",
+			  flowObjSet.size());
 		reconcileFlows(flowObjSet);
 		topoRouteService.dropShortestPathTopo();
 
@@ -611,28 +307,27 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		conn.endTx(Transaction.COMMIT);
 
 		if (processed_measurement_flow) {
-		    long estimatedTime = System.nanoTime() - modifiedMeasurementFlowTime;
+		    long estimatedTime =
+			System.nanoTime() - modifiedMeasurementFlowTime;
 		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
 			(double)estimatedTime / 1000000000 + " sec";
 		    log.debug(logMsg);
 		}
 
 		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counterAllFlowPaths * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " + counterAllFlowEntries + " MyNotUpdatedFlowEntries: " + counterMyNotUpdatedFlowEntries + " AllFlowPaths: " + counterAllFlowPaths + " MyFlowPaths: " + counterMyFlowPaths + " in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " paths/s";
+		double rate = 0.0;
+		if (estimatedTime > 0)
+		    rate = ((double)counterAllFlowPaths * 1000000000) / estimatedTime;
+		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " +
+		    counterAllFlowEntries + " MyNotUpdatedFlowEntries: " +
+		    counterMyNotUpdatedFlowEntries + " AllFlowPaths: " +
+		    counterAllFlowPaths + " MyFlowPaths: " +
+		    counterMyFlowPaths + " in " +
+		    (double)estimatedTime / 1000000000 + " sec: " +
+		    rate + " paths/s";
 		log.debug(logMsg);
 	    }
 	};
-
-    /*
-    final ScheduledFuture<?> measureShortestPathHandle =
-	measureShortestPathScheduler.scheduleAtFixedRate(measureShortestPath, 10, 10, TimeUnit.SECONDS);
-    */
-
-    /*
-    final ScheduledFuture<?> measureMapReaderHandle =
-	measureMapReaderScheduler.scheduleAtFixedRate(measureMapReader, 10, 10, TimeUnit.SECONDS);
-    */
 
     final ScheduledFuture<?> mapReaderHandle =
 	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
@@ -737,19 +432,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     @Override
     public boolean addFlow(FlowPath flowPath, FlowId flowId,
 			   String dataPathSummaryStr) {
+	/*
+	 * TODO: Commented-out for now
 	if (flowPath.flowId().value() == measurementFlowId) {
 	    modifiedMeasurementFlowTime = System.nanoTime();
 	}
-
-	//
-	// Assign the FlowEntry IDs
-	// Right now every new flow entry gets a new flow entry ID
-	// TODO: This needs to be redesigned!
-	//
-	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    long id = getNextFlowEntryId();
-	    flowEntry.setFlowEntryId(new FlowEntryId(id));
-	}
+	*/
 
 	IFlowPath flowObj = null;
 	try {
@@ -829,111 +517,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	// flowPath.dataPath().flowEntries()
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
-	    IFlowEntry flowEntryObj = null;
-	    boolean found = false;
-	    try {
-		if ((flowEntryObj = conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId())) != null) {
-		    log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
-			      flowEntry.flowEntryId().toString());
-		    found = true;
-		} else {
-		    flowEntryObj = conn.utils().newFlowEntry(conn);
-		    log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
-			      flowEntry.flowEntryId().toString());
-		}
-	    } catch (Exception e) {
-		// TODO: handle exceptions
-		conn.endTx(Transaction.ROLLBACK);
-		log.error(":addFlow FlowEntryId:{} failed",
-			  flowEntry.flowEntryId().toString());
-	    }
-	    if (flowEntryObj == null) {
-		log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
-		      flowEntry.flowEntryId().toString());
+	    if (addFlowEntry(flowObj, flowEntry) != true) {
 		conn.endTx(Transaction.ROLLBACK);
 		return false;
-	    }
-
-	    //
-	    // Set the Flow Entry key:
-	    // - flowEntry.flowEntryId()
-	    //
-	    flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
-	    flowEntryObj.setType("flow_entry");
-
-	    // 
-	    // Set the Flow Entry Edges and attributes:
-	    // - Switch edge
-	    // - InPort edge
-	    // - OutPort edge
-	    //
-	    // - flowEntry.flowEntryMatch()
-	    // - flowEntry.flowEntryActions()
-	    // - flowEntry.dpid()
-	    // - flowEntry.flowEntryUserState()
-	    // - flowEntry.flowEntrySwitchState()
-	    // - flowEntry.flowEntryErrorState()
-	    // - flowEntry.matchInPort()
-	    // - flowEntry.matchEthernetFrameType()
-	    // - flowEntry.matchSrcIPv4Net()
-	    // - flowEntry.matchDstIPv4Net()
-	    // - flowEntry.matchSrcMac()
-	    // - flowEntry.matchDstMac()
-	    // - flowEntry.actionOutput()
-	    //
-	    ISwitchObject sw =
-		conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
-	    flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
-	    flowEntryObj.setSwitch(sw);
-	    if (flowEntry.flowEntryMatch().matchInPort()) {
-	    	IPortObject inport =
-		    conn.utils().searchPort(conn, flowEntry.dpid().toString(),
-					    flowEntry.flowEntryMatch().inPort().value());
-	    	flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
-	    	flowEntryObj.setInPort(inport);
-	    }
-	    if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
-	    	flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
-	    }
-	    if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
-	    	flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
-	    	flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchSrcMac()) {
-	    	flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
-	    }
-	    if (flowEntry.flowEntryMatch().matchDstMac()) {
-	    	flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
-	    }
-
-	    for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
-	    	if (fa.actionOutput() != null) {
-		    IPortObject outport =
-			conn.utils().searchPort(conn,
-						flowEntry.dpid().toString(),
-						fa.actionOutput().port().value());
-		    flowEntryObj.setActionOutput(fa.actionOutput().port().value());
-		    flowEntryObj.setOutPort(outport);
-	    	}
-	    }
-	    // TODO: Hacks with hard-coded state names!
-	    if (found)
-		flowEntryObj.setUserState("FE_USER_MODIFY");
-	    else
-		flowEntryObj.setUserState("FE_USER_ADD");
-	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	    //
-	    // TODO: Take care of the FlowEntryErrorState.
-	    //
-
-	    // Flow Entries edges:
-	    //   Flow
-	    //   NextFE (TODO)
-	    if (! found) {
-		flowObj.addFlowEntry(flowEntryObj);
-		flowEntryObj.setFlow(flowObj);
 	    }
 	}
 	conn.endTx(Transaction.COMMIT);
@@ -947,6 +533,135 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     }
 
     /**
+     * Add a flow entry to the Network MAP.
+     *
+     * @param flowObj the corresponding Flow Path object for the Flow Entry.
+     * @param flowEntry the Flow Entry to install.
+     * @return true on success, otherwise false.
+     */
+    private boolean addFlowEntry(IFlowPath flowObj, FlowEntry flowEntry) {
+	// Flow edges
+	//   HeadFE (TODO)
+
+	//
+	// Assign the FlowEntry ID.
+	//
+	if ((flowEntry.flowEntryId() == null) ||
+	    (flowEntry.flowEntryId().value() == 0)) {
+	    long id = getNextFlowEntryId();
+	    flowEntry.setFlowEntryId(new FlowEntryId(id));
+	}
+
+	IFlowEntry flowEntryObj = null;
+	boolean found = false;
+	try {
+	    if ((flowEntryObj =
+		 conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId())) != null) {
+		log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
+			  flowEntry.flowEntryId().toString());
+		found = true;
+	    } else {
+		flowEntryObj = conn.utils().newFlowEntry(conn);
+		log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
+			  flowEntry.flowEntryId().toString());
+	    }
+	} catch (Exception e) {
+	    log.error(":addFlow FlowEntryId:{} failed",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+	if (flowEntryObj == null) {
+	    log.error(":addFlow FlowEntryId:{} failed: FlowEntry object not created",
+		      flowEntry.flowEntryId().toString());
+	    return false;
+	}
+
+	//
+	// Set the Flow Entry key:
+	// - flowEntry.flowEntryId()
+	//
+	flowEntryObj.setFlowEntryId(flowEntry.flowEntryId().toString());
+	flowEntryObj.setType("flow_entry");
+
+	// 
+	// Set the Flow Entry Edges and attributes:
+	// - Switch edge
+	// - InPort edge
+	// - OutPort edge
+	//
+	// - flowEntry.flowEntryMatch()
+	// - flowEntry.flowEntryActions()
+	// - flowEntry.dpid()
+	// - flowEntry.flowEntryUserState()
+	// - flowEntry.flowEntrySwitchState()
+	// - flowEntry.flowEntryErrorState()
+	// - flowEntry.matchInPort()
+	// - flowEntry.matchEthernetFrameType()
+	// - flowEntry.matchSrcIPv4Net()
+	// - flowEntry.matchDstIPv4Net()
+	// - flowEntry.matchSrcMac()
+	// - flowEntry.matchDstMac()
+	// - flowEntry.actionOutput()
+	//
+	ISwitchObject sw =
+	    conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
+	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
+	flowEntryObj.setSwitch(sw);
+	if (flowEntry.flowEntryMatch().matchInPort()) {
+	    IPortObject inport =
+		conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+					flowEntry.flowEntryMatch().inPort().value());
+	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
+	    flowEntryObj.setInPort(inport);
+	}
+	if (flowEntry.flowEntryMatch().matchEthernetFrameType()) {
+	    flowEntryObj.setMatchEthernetFrameType(flowEntry.flowEntryMatch().ethernetFrameType());
+	}
+	if (flowEntry.flowEntryMatch().matchSrcIPv4Net()) {
+	    flowEntryObj.setMatchSrcIPv4Net(flowEntry.flowEntryMatch().srcIPv4Net().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchDstIPv4Net()) {
+	    flowEntryObj.setMatchDstIPv4Net(flowEntry.flowEntryMatch().dstIPv4Net().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchSrcMac()) {
+	    flowEntryObj.setMatchSrcMac(flowEntry.flowEntryMatch().srcMac().toString());
+	}
+	if (flowEntry.flowEntryMatch().matchDstMac()) {
+	    flowEntryObj.setMatchDstMac(flowEntry.flowEntryMatch().dstMac().toString());
+	}
+
+	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
+	    if (fa.actionOutput() != null) {
+		IPortObject outport =
+		    conn.utils().searchPort(conn,
+					    flowEntry.dpid().toString(),
+					    fa.actionOutput().port().value());
+		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
+		flowEntryObj.setOutPort(outport);
+	    }
+	}
+	// TODO: Hacks with hard-coded state names!
+	if (found)
+	    flowEntryObj.setUserState("FE_USER_MODIFY");
+	else
+	    flowEntryObj.setUserState("FE_USER_ADD");
+	flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
+	//
+	// TODO: Take care of the FlowEntryErrorState.
+	//
+
+	// Flow Entries edges:
+	//   Flow
+	//   NextFE (TODO)
+	if (! found) {
+	    flowObj.addFlowEntry(flowEntryObj);
+	    flowEntryObj.setFlow(flowObj);
+	}
+
+	return true;
+    }
+
+    /**
      * Delete a previously added flow.
      *
      * @param flowId the Flow ID of the flow to delete.
@@ -954,9 +669,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      */
     @Override
     public boolean deleteFlow(FlowId flowId) {
+	/*
+	 * TODO: Commented-out for now
 	if (flowId.value() == measurementFlowId) {
 	    modifiedMeasurementFlowTime = System.nanoTime();
 	}
+	*/
 
 	IFlowPath flowObj = null;
 	//
@@ -1212,10 +930,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 		for (FlowPath flow : allFlows) {
 		    flow.setFlowEntryMatch(null);
 			
-			// start from desired flowId
-			//if (flow.flowId().value() < flowId.value()) {
-			//	continue;
-			//}
+		    // start from desired flowId
+		    if (flow.flowId().value() < flowId.value()) {
+			continue;
+		    }
 			
 			// Summarize by making null flow entry fields that are not relevant to report
 			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
@@ -1285,8 +1003,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @return the extracted Flow Path State.
      */
     private FlowPath extractFlowPath(IFlowPath flowObj) {
-	FlowPath flowPath = new FlowPath();
-
 	//
 	// Extract the Flow state
 	//
@@ -1307,6 +1023,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	    return null;
 	}
 
+	FlowPath flowPath = new FlowPath();
 	flowPath.setFlowId(new FlowId(flowIdStr));
 	flowPath.setInstallerId(new CallerId(installerIdStr));
 	flowPath.dataPath().srcPort().setDpid(new Dpid(srcSwitchStr));
@@ -1341,67 +1058,81 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	for (IFlowEntry flowEntryObj : flowEntries) {
-	    FlowEntry flowEntry = new FlowEntry();
-	    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
-	    String switchDpidStr = flowEntryObj.getSwitchDpid();
-	    String userState = flowEntryObj.getUserState();
-	    String switchState = flowEntryObj.getSwitchState();
-
-	    if ((flowEntryIdStr == null) ||
-		(switchDpidStr == null) ||
-		(userState == null) ||
-		(switchState == null)) {
-		// TODO: A work-around, becauuse of some bogus database objects
+	    FlowEntry flowEntry = extractFlowEntry(flowEntryObj);
+	    if (flowEntry == null)
 		continue;
-	    }
-	    flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
-	    flowEntry.setDpid(new Dpid(switchDpidStr));
-
-	    //
-	    // Extract the match conditions
-	    //
-	    FlowEntryMatch match = new FlowEntryMatch();
-	    Short matchInPort = flowEntryObj.getMatchInPort();
-	    if (matchInPort != null)
-		match.enableInPort(new Port(matchInPort));
-	    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-	    if (matchEthernetFrameType != null)
-		match.enableEthernetFrameType(matchEthernetFrameType);
-	    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-	    if (matchSrcIPv4Net != null)
-		match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
-	    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-	    if (matchDstIPv4Net != null)
-		match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
-	    String matchSrcMac = flowEntryObj.getMatchSrcMac();
-	    if (matchSrcMac != null)
-		match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
-	    String matchDstMac = flowEntryObj.getMatchDstMac();
-	    if (matchDstMac != null)
-		match.enableDstMac(MACAddress.valueOf(matchDstMac));
-	    flowEntry.setFlowEntryMatch(match);
-
-	    //
-	    // Extract the actions
-	    //
-	    ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
-	    Short actionOutputPort = flowEntryObj.getActionOutput();
-	    if (actionOutputPort != null) {
-		FlowEntryAction action = new FlowEntryAction();
-		action.setActionOutput(new Port(actionOutputPort));
-		actions.add(action);
-	    }
-	    flowEntry.setFlowEntryActions(actions);
-	    flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
-	    flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
-	    //
-	    // TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
-	    // and FlowEntryErrorState.
-	    //
 	    flowPath.dataPath().flowEntries().add(flowEntry);
 	}
 
 	return flowPath;
+    }
+
+    /**
+     * Extract Flow Entry State from a Titan Database Object @ref IFlowEntry.
+     *
+     * @param flowEntryObj the object to extract the Flow Entry State from.
+     * @return the extracted Flow Entry State.
+     */
+    private FlowEntry extractFlowEntry(IFlowEntry flowEntryObj) {
+	String flowEntryIdStr = flowEntryObj.getFlowEntryId();
+	String switchDpidStr = flowEntryObj.getSwitchDpid();
+	String userState = flowEntryObj.getUserState();
+	String switchState = flowEntryObj.getSwitchState();
+
+	if ((flowEntryIdStr == null) ||
+	    (switchDpidStr == null) ||
+	    (userState == null) ||
+	    (switchState == null)) {
+	    // TODO: A work-around, becauuse of some bogus database objects
+	    return null;
+	}
+
+	FlowEntry flowEntry = new FlowEntry();
+	flowEntry.setFlowEntryId(new FlowEntryId(flowEntryIdStr));
+	flowEntry.setDpid(new Dpid(switchDpidStr));
+
+	//
+	// Extract the match conditions
+	//
+	FlowEntryMatch match = new FlowEntryMatch();
+	Short matchInPort = flowEntryObj.getMatchInPort();
+	if (matchInPort != null)
+	    match.enableInPort(new Port(matchInPort));
+	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType != null)
+	    match.enableEthernetFrameType(matchEthernetFrameType);
+	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net != null)
+	    match.enableSrcIPv4Net(new IPv4Net(matchSrcIPv4Net));
+	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net != null)
+	    match.enableDstIPv4Net(new IPv4Net(matchDstIPv4Net));
+	String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	if (matchSrcMac != null)
+	    match.enableSrcMac(MACAddress.valueOf(matchSrcMac));
+	String matchDstMac = flowEntryObj.getMatchDstMac();
+	if (matchDstMac != null)
+	    match.enableDstMac(MACAddress.valueOf(matchDstMac));
+	flowEntry.setFlowEntryMatch(match);
+
+	//
+	// Extract the actions
+	//
+	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+	Short actionOutputPort = flowEntryObj.getActionOutput();
+	if (actionOutputPort != null) {
+	    FlowEntryAction action = new FlowEntryAction();
+	    action.setActionOutput(new Port(actionOutputPort));
+	    actions.add(action);
+	}
+	flowEntry.setFlowEntryActions(actions);
+	flowEntry.setFlowEntryUserState(FlowEntryUserState.valueOf(userState));
+	flowEntry.setFlowEntrySwitchState(FlowEntrySwitchState.valueOf(switchState));
+	//
+	// TODO: Take care of the FlowEntryMatch, FlowEntryAction set,
+	// and FlowEntryErrorState.
+	//
+	return flowEntry;
     }
 
     /**
@@ -1470,78 +1201,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	// TODO: Mark the flow for maintenance purpose
 
 	return (computedFlowPath);
-    }
-
-    /**
-     * Create a Flow from port to port.
-     *
-     * TODO: We don't need it for now.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
-     */
-    @Override
-    public void createFlow(IPortObject src_port, IPortObject dest_port) {
-	// TODO: We don't need it for now.
-    }
-
-    /**
-     * Get all Flows matching a source and a destination port.
-     *
-     * TODO: Pankaj might be implementing it later.
-     *
-     * @param src_port the source port to match.
-     * @param dest_port the destination port to match.
-     * @return all flows matching the source and the destination port.
-     */
-    @Override
-    public Iterable<FlowPath> getFlows(IPortObject src_port,
-				       IPortObject dest_port) {
-	// TODO: Pankaj might be implementing it later.
-	return null;
-    }
-
-    /**
-     * Get all Flows going out from a port.
-     *
-     * TODO: We need it now: Pankaj
-     *
-     * @param port the port to match.
-     * @return the list of flows that are going out from the port.
-     */
-    @Override
-    public Iterable<FlowPath> getOutFlows(IPortObject port) {
-	// TODO: We need it now: Pankaj
-	return null;
-    }
-
-    /**
-     * Reconcile all flows on inactive switch port.
-     *
-     * @param portObject the port that has become inactive.
-     */
-    @Override
-    public void reconcileFlows(IPortObject portObject) {
-	Iterable<IFlowEntry> inFlowEntries = portObject.getInFlowEntries();
-	Iterable<IFlowEntry> outFlowEntries = portObject.getOutFlowEntries();
-
-	//
-	// Collect all affected Flow IDs from the affected flow entries
-	//
-	HashSet<IFlowPath> flowObjSet = new HashSet<IFlowPath>();
-	for (IFlowEntry flowEntryObj: inFlowEntries) {
-	    IFlowPath flowObj = flowEntryObj.getFlow();
-	    if (flowObj != null)
-		flowObjSet.add(flowObj);
-	}
-	for (IFlowEntry flowEntryObj: outFlowEntries) {
-	    IFlowPath flowObj = flowEntryObj.getFlow();
-	    if (flowObj != null)
-		flowObjSet.add(flowObj);
-	}
-
-	// Reconcile the affected flows
-	reconcileFlows(flowObjSet);
     }
 
     /**
@@ -1652,96 +1311,156 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
     }
 
     /**
-     * Reconcile all flows between a source and a destination port.
+     * Install a Flow Entry on a switch.
      *
-     * TODO: We don't need it for now.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
+     * @param mySwitch the switch to install the Flow Entry into.
+     * @param flowObj the flow path object for the flow entry to install.
+     * @param flowEntryObj the flow entry object to install.
+     * @return true on success, otherwise false.
      */
-    @Override
-    public void reconcileFlow(IPortObject src_port, IPortObject dest_port) {
-	// TODO: We don't need it for now.
-    }
-
-    /**
-     * Compute the shortest path between a source and a destination ports.
-     *
-     * @param src_port the source port.
-     * @param dest_port the destination port.
-     * @return the computed shortest path between the source and the
-     * destination ports. The flow entries in the path itself would
-     * contain the incoming port matching and the outgoing port output
-     * actions set. However, the path itself will NOT have the Flow ID,
-     * Installer ID, and any additional matching conditions for the
-     * flow entries (e.g., source or destination MAC address, etc).
-     */
-    @Override
-    public FlowPath computeFlowPath(IPortObject src_port,
-				    IPortObject dest_port) {
-	//
-	// Prepare the arguments
-	//
-	String dpidStr = src_port.getSwitch().getDPID();
-	Dpid srcDpid = new Dpid(dpidStr);
-	Port srcPort = new Port(src_port.getNumber());
-
-	dpidStr = dest_port.getSwitch().getDPID();
-	Dpid dstDpid = new Dpid(dpidStr);
-	Port dstPort = new Port(dest_port.getNumber());
-
-	SwitchPort src = new SwitchPort(srcDpid, srcPort);
-	SwitchPort dst = new SwitchPort(dstDpid, dstPort);
+    public boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
+				    IFlowEntry flowEntryObj) {
+	FlowEntryId flowEntryId =
+	    new FlowEntryId(flowEntryObj.getFlowEntryId());
+	String userState = flowEntryObj.getUserState();
 
 	//
-	// Do the shortest path computation
+	// Create the Open Flow Flow Modification Entry to push
 	//
-	DataPath dataPath = topoRouteService.getShortestPath(src, dst);
-	if (dataPath == null)
-	    return null;
+	OFFlowMod fm = (OFFlowMod) floodlightProvider.getOFMessageFactory()
+	    .getMessage(OFType.FLOW_MOD);
+	long cookie = flowEntryId.value();
 
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	for (FlowEntry flowEntry : dataPath.flowEntries()) {
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = flowEntry.flowEntryMatch();
-	    if (flowEntryMatch == null) {
-		flowEntryMatch = new FlowEntryMatch();
-		flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    }
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
+	short flowModCommand = OFFlowMod.OFPFC_ADD;
+	if (userState.equals("FE_USER_ADD")) {
+	    flowModCommand = OFFlowMod.OFPFC_ADD;
+	} else if (userState.equals("FE_USER_MODIFY")) {
+	    flowModCommand = OFFlowMod.OFPFC_MODIFY_STRICT;
+	} else if (userState.equals("FE_USER_DELETE")) {
+	    flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
+	} else {
+	    // Unknown user state. Ignore the entry
+	    log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
+		      flowEntryId.toString(), userState);
+	    return false;
 	}
 
 	//
-	// Prepare the return result
+	// Fetch the match conditions.
 	//
-	FlowPath flowPath = new FlowPath();
-	flowPath.setDataPath(dataPath);
+	// NOTE: The Flow matching conditions common for all Flow Entries are
+	// used ONLY if a Flow Entry does NOT have the corresponding matching
+	// condition set.
+	//
+	OFMatch match = new OFMatch();
+	match.setWildcards(OFMatch.OFPFW_ALL);
 
-	return flowPath;
-    }
+	// Match the Incoming Port
+	Short matchInPort = flowEntryObj.getMatchInPort();
+	if (matchInPort != null) {
+	    match.setInputPort(matchInPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
+	}
 
-    /**
-     * Get all Flow Entries of a Flow.
-     *
-     * @param flow the flow whose flow entries should be returned.
-     * @return the flow entries of the flow.
-     */
-    @Override
-    public Iterable<FlowEntry> getFlowEntries(FlowPath flow) {
-	return flow.dataPath().flowEntries();
+	// Match the Ethernet Frame Type
+	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType == null)
+	    matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType != null) {
+	    match.setDataLayerType(matchEthernetFrameType);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	}
+
+	// Match the Source IPv4 Network prefix
+	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net == null)
+	    matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net != null) {
+	    match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
+	}
+
+	// Natch the Destination IPv4 Network prefix
+	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net == null)
+	    matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net != null) {
+	    match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
+	}
+
+	// Match the Source MAC address
+	String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	if (matchSrcMac == null)
+	    matchSrcMac = flowObj.getMatchSrcMac();
+	if (matchSrcMac != null) {
+	    match.setDataLayerSource(matchSrcMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	}
+
+	// Match the Destination MAC address
+	String matchDstMac = flowEntryObj.getMatchDstMac();
+	if (matchDstMac == null)
+	    matchDstMac = flowObj.getMatchDstMac();
+	if (matchDstMac != null) {
+	    match.setDataLayerDestination(matchDstMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	}
+
+	//
+	// Fetch the actions
+	//
+	// TODO: For now we support only the "OUTPUT" actions.
+	//
+	List<OFAction> actions = new ArrayList<OFAction>();
+	Short actionOutputPort = flowEntryObj.getActionOutput();
+	if (actionOutputPort != null) {
+	    OFActionOutput action = new OFActionOutput();
+	    // XXX: The max length is hard-coded for now
+	    action.setMaxLength((short)0xffff);
+	    action.setPort(actionOutputPort);
+	    actions.add(action);
+	}
+
+	fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
+	    .setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
+	    .setPriority(PRIORITY_DEFAULT)
+	    .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+	    .setCookie(cookie)
+	    .setCommand(flowModCommand)
+	    .setMatch(match)
+	    .setActions(actions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	fm.setOutPort(OFPort.OFPP_NONE.getValue());
+	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+	    if (actionOutputPort != null)
+		fm.setOutPort(actionOutputPort);
+	}
+
+	//
+	// TODO: Set the following flag
+	// fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
+	// See method ForwardingBase::pushRoute()
+	//
+
+	//
+	// Write the message to the switch
+	//
+	try {
+	    messageDamper.write(mySwitch, fm, null);
+	    mySwitch.flush();
+	    //
+	    // TODO: We should use the OpenFlow Barrier mechanism
+	    // to check for errors, and update the SwitchState
+	    // for a flow entry after the Barrier message is
+	    // is received.
+	    //
+	    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+	} catch (IOException e) {
+	    log.error("Failure writing flow mod from network map", e);
+	    return false;
+	}
+
+	return true;
     }
 
     /**
@@ -1752,7 +1471,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean installFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				    FlowEntry flowEntry) {
 	//
@@ -1892,6 +1610,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
 	try {
 	    messageDamper.write(mySwitch, fm, null);
 	    mySwitch.flush();
+	    //
+	    // TODO: We should use the OpenFlow Barrier mechanism
+	    // to check for errors, and update the SwitchState
+	    // for a flow entry after the Barrier message is
+	    // is received.
+	    //
+	    // TODO: The FlowEntry Object in Titan should be set
+	    // to FE_SWITCH_UPDATED.
+	    //
 	} catch (IOException e) {
 	    log.error("Failure writing flow mod from network map", e);
 	    return false;
@@ -1907,7 +1634,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean removeFlowEntry(IOFSwitch mySwitch, FlowPath flowPath,
 				   FlowEntry flowEntry) {
 	//
@@ -1928,7 +1654,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to install.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean installRemoteFlowEntry(FlowPath flowPath,
 					  FlowEntry flowEntry) {
 	// TODO: We need it now: Jono
@@ -1944,7 +1669,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, IFlowManage
      * @param flowEntry the flow entry to remove.
      * @return true on success, otherwise false.
      */
-    @Override
     public boolean removeRemoteFlowEntry(FlowPath flowPath,
 					 FlowEntry flowEntry) {
 	//
