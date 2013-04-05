@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Change this accordingly
-ONOSDIR=${HOME}/src/ONOS
+ONOSDIR=${HOME}/ONOS
 script_name="topology_rest.py"
 
 #######################
