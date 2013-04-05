@@ -913,10 +913,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		for (FlowPath flow : allFlows) {
 		    flow.setFlowEntryMatch(null);
 			
-			// start from desired flowId
-			//if (flow.flowId().value() < flowId.value()) {
-			//	continue;
-			//}
+		    // start from desired flowId
+		    if (flow.flowId().value() < flowId.value()) {
+			continue;
+		    }
 			
 			// Summarize by making null flow entry fields that are not relevant to report
 			for (FlowEntry flowEntry : flow.dataPath().flowEntries()) {
