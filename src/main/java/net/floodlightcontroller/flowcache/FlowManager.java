@@ -214,19 +214,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		    flowObj.removeFlowEntry(flowEntryObj);
 		    conn.utils().removeFlowEntry(conn, flowEntryObj);
-
-		    // Test whether the last flow entry
-		    Iterable<IFlowEntry> tmpFlowEntries =
-			flowObj.getFlowEntries();
-		    boolean found = false;
-		    for (IFlowEntry tmpFlowEntryObj : tmpFlowEntries) {
-			found = true;
-			break;
-		    }
-		    if (! found) {
-			// Remove the Flow Path as well
-			conn.utils().removeFlowPath(conn, flowObj);
-		    }
 		}
 
 
