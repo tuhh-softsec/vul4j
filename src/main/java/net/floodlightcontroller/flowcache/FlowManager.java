@@ -154,6 +154,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			continue;	// Ignore the entry: not my switch
 
 		    myFlowEntries.put(flowEntryId.value(), flowEntryObj);
+		    if (userState.equals("FE_USER_DELETE")) {
+			// An entry that needs to be deleted.
+			deleteFlowEntries.add(flowEntryObj);
+		    }
 		}
 
 		log.debug("MEASUREMENT: Found {} My Flow Entries NOT_UPDATED",
@@ -182,146 +186,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    }
 		    */
 
-		    //
-		    // TODO: Eliminate the re-fetching of flowEntryId,
-		    // userState, switchState, and dpid from the flowEntryObj.
-		    //
-		    FlowEntryId flowEntryId =
-			new FlowEntryId(flowEntryObj.getFlowEntryId());
 		    Dpid dpid = new Dpid(flowEntryObj.getSwitchDpid());
-		    String userState = flowEntryObj.getUserState();
-		    String switchState = flowEntryObj.getSwitchState();
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null)
 			continue;		// Shouldn't happen
-
-		    //
-		    // Create the Open Flow Flow Modification Entry to push
-		    //
-		    OFFlowMod fm =
-			(OFFlowMod) floodlightProvider.getOFMessageFactory()
-			.getMessage(OFType.FLOW_MOD);
-		    long cookie = flowEntryId.value();
-
-		    short flowModCommand = OFFlowMod.OFPFC_ADD;
-		    if (userState.equals("FE_USER_ADD")) {
-			flowModCommand = OFFlowMod.OFPFC_ADD;
-		    } else if (userState.equals("FE_USER_MODIFY")) {
-			flowModCommand = OFFlowMod.OFPFC_MODIFY_STRICT;
-		    } else if (userState.equals("FE_USER_DELETE")) {
-			flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
-		    } else {
-			// Unknown user state. Ignore the entry
-			log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
-				  flowEntryId.toString(), userState);
-			continue;
-		    }
-
-		    //
-		    // Fetch the match conditions.
-		    //
-		    // NOTE: The Flow matching conditions common for all
-		    // Flow Entries are used ONLY if a Flow Entry does NOT
-		    // have the corresponding matching condition set.
-		    //
-		    OFMatch match = new OFMatch();
-		    match.setWildcards(OFMatch.OFPFW_ALL);
-		    //
-		    Short matchInPort = flowEntryObj.getMatchInPort();
-		    if (matchInPort != null) {
-			match.setInputPort(matchInPort);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
-		    }
-		    //
-		    Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
-		    if (matchEthernetFrameType == null)
-			matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
-		    if (matchEthernetFrameType != null) {
-			match.setDataLayerType(matchEthernetFrameType);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
-		    }
-		    //
-		    String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
-		    if (matchSrcIPv4Net == null)
-			matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
-		    if (matchSrcIPv4Net != null) {
-			match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
-		    }
-		    //
-		    String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
-		    if (matchDstIPv4Net == null)
-			matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
-		    if (matchDstIPv4Net != null) {
-			match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
-		    }
-		    //
-		    String matchSrcMac = flowEntryObj.getMatchSrcMac();
-		    if (matchSrcMac == null)
-			matchSrcMac = flowObj.getMatchSrcMac();
-		    if (matchSrcMac != null) {
-			match.setDataLayerSource(matchSrcMac);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
-		    }
-		    //
-		    String matchDstMac = flowEntryObj.getMatchDstMac();
-		    if (matchDstMac == null)
-			matchDstMac = flowObj.getMatchDstMac();
-		    if (matchDstMac != null) {
-			match.setDataLayerDestination(matchDstMac);
-			match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
-		    }
-
-		    //
-		    // Fetch the actions
-		    //
-		    List<OFAction> actions = new ArrayList<OFAction>();
-		    Short actionOutputPort = flowEntryObj.getActionOutput();
-		    if (actionOutputPort != null) {
-			OFActionOutput action = new OFActionOutput();
-			// XXX: The max length is hard-coded for now
-			action.setMaxLength((short)0xffff);
-			action.setPort(actionOutputPort);
-			actions.add(action);
-		    }
-
-		    fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
-			.setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
-			.setPriority(PRIORITY_DEFAULT)
-			.setBufferId(OFPacketOut.BUFFER_ID_NONE)
-			.setCookie(cookie)
-			.setCommand(flowModCommand)
-			.setMatch(match)
-			.setActions(actions)
-			.setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
-		    fm.setOutPort(OFPort.OFPP_NONE.getValue());
-		    if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
-			(flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
-			if (actionOutputPort != null)
-			    fm.setOutPort(actionOutputPort);
-		    }
-
-		    //
-		    // TODO: Set the following flag
-		    // fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
-		    // See method ForwardingBase::pushRoute()
-		    //
-		    try {
-			messageDamper.write(mySwitch, fm, null);
-			mySwitch.flush();
-			//
-			// TODO: We should use the OpenFlow Barrier mechanism
-			// to check for errors, and update the SwitchState
-			// for a flow entry after the Barrier message is
-			// is received.
-			//
-			flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
-			if (userState.equals("FE_USER_DELETE")) {
-			    // An entry that needs to be deleted.
-			    deleteFlowEntries.add(flowEntryObj);
-			}
-		    } catch (IOException e) {
-			log.error("Failure writing flow mod from network map", e);
-		    }
+		    installFlowEntry(mySwitch, flowObj, flowEntryObj);
 		}
 
 		log.debug("MEASUREMENT: Found {} Flow Entries to delete",
@@ -1434,6 +1303,147 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 	    }
 	}
+    }
+
+    /**
+     * Install a Flow Entry on a switch.
+     *
+     * @param mySwitch the switch to install the Flow Entry into.
+     * @param flowObj the flow path object for the flow entry to install.
+     * @param flowEntryObj the flow entry object to install.
+     * @return true on success, otherwise false.
+     */
+    public boolean installFlowEntry(IOFSwitch mySwitch, IFlowPath flowObj,
+				    IFlowEntry flowEntryObj) {
+	FlowEntryId flowEntryId =
+	    new FlowEntryId(flowEntryObj.getFlowEntryId());
+	String userState = flowEntryObj.getUserState();
+	String switchState = flowEntryObj.getSwitchState();
+
+	//
+	// Create the Open Flow Flow Modification Entry to push
+	//
+	OFFlowMod fm = (OFFlowMod) floodlightProvider.getOFMessageFactory()
+	    .getMessage(OFType.FLOW_MOD);
+	long cookie = flowEntryId.value();
+
+	short flowModCommand = OFFlowMod.OFPFC_ADD;
+	if (userState.equals("FE_USER_ADD")) {
+	    flowModCommand = OFFlowMod.OFPFC_ADD;
+	} else if (userState.equals("FE_USER_MODIFY")) {
+	    flowModCommand = OFFlowMod.OFPFC_MODIFY_STRICT;
+	} else if (userState.equals("FE_USER_DELETE")) {
+	    flowModCommand = OFFlowMod.OFPFC_DELETE_STRICT;
+	} else {
+	    // Unknown user state. Ignore the entry
+	    log.debug("Flow Entry ignored (FlowEntryId = {}): unknown user state {}",
+		      flowEntryId.toString(), userState);
+	    return false;
+	}
+
+	//
+	// Fetch the match conditions.
+	//
+	// NOTE: The Flow matching conditions common for all
+	// Flow Entries are used ONLY if a Flow Entry does NOT
+	// have the corresponding matching condition set.
+	//
+	OFMatch match = new OFMatch();
+	match.setWildcards(OFMatch.OFPFW_ALL);
+	//
+	Short matchInPort = flowEntryObj.getMatchInPort();
+	if (matchInPort != null) {
+	    match.setInputPort(matchInPort);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
+	}
+	//
+	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType == null)
+	    matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
+	if (matchEthernetFrameType != null) {
+	    match.setDataLayerType(matchEthernetFrameType);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
+	}
+	//
+	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net == null)
+	    matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
+	if (matchSrcIPv4Net != null) {
+	    match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
+	}
+	//
+	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net == null)
+	    matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
+	if (matchDstIPv4Net != null) {
+	    match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
+	}
+	//
+	String matchSrcMac = flowEntryObj.getMatchSrcMac();
+	if (matchSrcMac == null)
+	    matchSrcMac = flowObj.getMatchSrcMac();
+	if (matchSrcMac != null) {
+	    match.setDataLayerSource(matchSrcMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	}
+	//
+	String matchDstMac = flowEntryObj.getMatchDstMac();
+	if (matchDstMac == null)
+	    matchDstMac = flowObj.getMatchDstMac();
+	if (matchDstMac != null) {
+	    match.setDataLayerDestination(matchDstMac);
+	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+	}
+
+	//
+	// Fetch the actions
+	//
+	List<OFAction> actions = new ArrayList<OFAction>();
+	Short actionOutputPort = flowEntryObj.getActionOutput();
+	if (actionOutputPort != null) {
+	    OFActionOutput action = new OFActionOutput();
+	    // XXX: The max length is hard-coded for now
+	    action.setMaxLength((short)0xffff);
+	    action.setPort(actionOutputPort);
+	    actions.add(action);
+	}
+
+	fm.setIdleTimeout(FLOWMOD_DEFAULT_IDLE_TIMEOUT)
+	    .setHardTimeout(FLOWMOD_DEFAULT_HARD_TIMEOUT)
+	    .setPriority(PRIORITY_DEFAULT)
+	    .setBufferId(OFPacketOut.BUFFER_ID_NONE)
+	    .setCookie(cookie)
+	    .setCommand(flowModCommand)
+	    .setMatch(match)
+	    .setActions(actions)
+	    .setLengthU(OFFlowMod.MINIMUM_LENGTH+OFActionOutput.MINIMUM_LENGTH);
+	fm.setOutPort(OFPort.OFPP_NONE.getValue());
+	if ((flowModCommand == OFFlowMod.OFPFC_DELETE) ||
+	    (flowModCommand == OFFlowMod.OFPFC_DELETE_STRICT)) {
+	    if (actionOutputPort != null)
+		fm.setOutPort(actionOutputPort);
+	}
+
+	//
+	// TODO: Set the following flag
+	// fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
+	// See method ForwardingBase::pushRoute()
+	//
+	try {
+	    messageDamper.write(mySwitch, fm, null);
+	    mySwitch.flush();
+	    //
+	    // TODO: We should use the OpenFlow Barrier mechanism
+	    // to check for errors, and update the SwitchState
+	    // for a flow entry after the Barrier message is
+	    // is received.
+	    //
+	    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+	} catch (IOException e) {
+	    log.error("Failure writing flow mod from network map", e);
+	}
+
+	return true;
     }
 
     /**
