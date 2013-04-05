@@ -19,18 +19,18 @@ RestPort=8080
 
 ## Uncomment the desired block based on your testbed environment
 # Settings for running on production
-controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
-core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
+#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
+#core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+#ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
+#ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
 
 # Settings for running on dev testbed. Replace dev
 #controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
-#controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
-#core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
+controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
+core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
 
-#ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
-#ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
+ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
+ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
 
 LB=True #; True or False
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
@@ -71,6 +71,13 @@ def return_file(filename="index.html"):
   else:
     fullpath = str(request.path)[1:]
 
+  try: 
+    open(fullpath)
+  except:
+    response = make_response("Cannot find a file: %s" % (fullpath), 500)
+    response.headers["Content-type"] = "text/html"
+    return response
+
   response = make_response(open(fullpath).read())
   suffix = fullpath.split(".")[-1]
 
@@ -92,6 +99,19 @@ def return_file(filename="index.html"):
 def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   try:
     command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/gui/switchctrl/<cmd>")
+def proxy_switch_controller_setting(cmd):
+  try:
+    command = "curl -s %s/gui/switchctrl/%s" % (ONOS_GUI3_CONTROL_HOST, cmd)
     print command
     result = os.popen(command).read()
   except:
@@ -647,13 +667,27 @@ def controller_status_change(cmd, controller_name):
   elif cmd == "down":
     result=os.popen(stop_onos).read()
     ret = "controller %s is down" % (controller_name)
-  elif cmd == "local":
-    ret = "Switch local"
-  elif cmd == "ext":
-    ret = "Switch external"
-
 
   return ret
+
+@app.route("/gui/switchctrl/<cmd>")
+def switch_controller_setting(cmd):
+  if cmd =="local":
+    print "All aggr switches connects to local controller only"
+    result=""
+    for i in range(0, len(controllers)): 
+      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
+      result += os.popen(cmd_string).read()
+  elif cmd =="all":
+    print "All aggr switches connects to all controllers except for core controller"
+    result=""
+    for i in range(0, len(controllers)): 
+      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+      result += os.popen(cmd_string).read()
+
+  return result
+
+
 
 @app.route("/gui/switch/<cmd>/<dpid>")
 def switch_status_change(cmd, dpid):
@@ -765,6 +799,7 @@ def iperf_start(flow_id,duration,samples):
 
   parsedResult = json.loads(result)
 
+#  flowId = int(parsedResult['flowId']['value'], 16)
   flowId = int(parsedResult['flowId']['value'], 16)
   src_dpid = parsedResult['dataPath']['srcPort']['dpid']['value']
   src_port = parsedResult['dataPath']['srcPort']['port']['value']
