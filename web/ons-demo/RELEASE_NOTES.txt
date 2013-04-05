@@ -1,4 +1,8 @@
 ** April 4, 2013 **
+- denser iperf display
+- don't pop alert on command error response. just log it
+
+** April 4, 2013 **
 iperf display implemented
 - scaled to 50,000,000
 - update rate is every 2s
