@@ -450,15 +450,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		conn.endTx(Transaction.COMMIT);
 
 		if (processed_measurement_flow) {
-		    long estimatedTime = System.nanoTime() - modifiedMeasurementFlowTime;
+		    long estimatedTime =
+			System.nanoTime() - modifiedMeasurementFlowTime;
 		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
 			(double)estimatedTime / 1000000000 + " sec";
 		    log.debug(logMsg);
 		}
 
 		long estimatedTime = System.nanoTime() - startTime;
-		double rate = (estimatedTime > 0)? ((double)counterAllFlowPaths * 1000000000) / estimatedTime: 0.0;
-		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " + counterAllFlowEntries + " MyNotUpdatedFlowEntries: " + counterMyNotUpdatedFlowEntries + " AllFlowPaths: " + counterAllFlowPaths + " MyFlowPaths: " + counterMyFlowPaths + " in " + (double)estimatedTime / 1000000000 + " sec: " + rate + " paths/s";
+		double rate = 0.0;
+		if (estimatedTime > 0)
+		    rate = ((double)counterAllFlowPaths * 1000000000) / estimatedTime;
+		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " +
+		    counterAllFlowEntries + " MyNotUpdatedFlowEntries: " +
+		    counterMyNotUpdatedFlowEntries + " AllFlowPaths: " +
+		    counterAllFlowPaths + " MyFlowPaths: " +
+		    counterMyFlowPaths + " in " +
+		    (double)estimatedTime / 1000000000 + " sec: " +
+		    rate + " paths/s";
 		log.debug(logMsg);
 	    }
 	};
