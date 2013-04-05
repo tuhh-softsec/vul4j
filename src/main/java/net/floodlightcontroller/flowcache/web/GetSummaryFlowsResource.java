@@ -2,9 +2,10 @@ package net.floodlightcontroller.flowcache.web;
 
 import java.util.ArrayList;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.flowcache.IFlowService;
-import net.floodlightcontroller.util.FlowPath;
 import net.floodlightcontroller.util.FlowId;
+import net.floodlightcontroller.util.FlowPath;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
@@ -15,8 +16,8 @@ public class GetSummaryFlowsResource extends ServerResource {
     protected static Logger log = LoggerFactory.getLogger(GetSummaryFlowsResource.class);
 
     @Get("json")
-    public ArrayList<FlowPath> retrieve() {
-    	ArrayList<FlowPath> result = null;
+    public ArrayList<IFlowPath> retrieve() {
+    	ArrayList<IFlowPath> result = null;
     	
     	FlowId flowId;
     	int maxFlows = 0;

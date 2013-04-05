@@ -1,11 +1,14 @@
 /*global d3*/
 
-function callURL(url) {
+function callURL(url, cb) {
 	d3.text(url, function (error, result) {
 		if (error) {
-			alert(url + ' : ' + error.status);
+			console.log(url + ' : ' + error.status);
 		} else {
-			console.log(result);
+			if (cb) {
+				cb(result);
+			}
+//			console.log(result);
 		}
 	});
 }
@@ -35,8 +38,18 @@ var controllerFunctions = {
 		callURL(url);
 	},
 	delFlowCmd: function (flow) {
-		var url = '/proxy/gui/delflow/' + flow.flowId.value;
+		var url = '/proxy/gui/delflow/' + flow.flowId;
 		callURL(url);
+	},
+	startIPerfCmd: function (flow, duration, numSamples) {
+		var flowId = parseInt(flow.flowId, 16);
+		var url = '/proxy/gui/iperf/start/' + [flowId, duration, numSamples].join('/');
+		callURL(url)
+	},
+	getIPerfDataCmd: function (flow, cb) {
+		var flowId = parseInt(flow.flowId, 16);
+		var url = '/proxy/gui/iperf/rate/' + flowId;
+		callURL(url, cb);
 	}
 };
 
@@ -70,4 +83,12 @@ function addFlow(src, dst) {
 
 function deleteFlow(flow) {
 	controllerFunctions.delFlowCmd(flow);
+}
+
+function startIPerf(flow, duration, numSamples) {
+	controllerFunctions.startIPerfCmd(flow, duration, numSamples);
+}
+
+function getIPerfData(flow, cb) {
+	controllerFunctions.getIPerfDataCmd(flow, cb);
 }

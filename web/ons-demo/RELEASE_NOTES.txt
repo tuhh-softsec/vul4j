@@ -1,10 +1,23 @@
 ** April 4, 2013 **
+- denser iperf display
+- don't pop alert on command error response. just log it
+
+** April 4, 2013 **
+iperf display implemented
+- scaled to 50,000,000
+- update rate is every 2s
+- the display does not draw until receiving 2 buffers of data (this way if there is a stale buffer it doesn't get displayed)
+- duration is 10000 seconds. seems like there is no need for a button to restart?
+- displaying 10s data
+- if the data underruns (either because the server response is too slow or because the iperf data stops being updated) the display draws 0s
+- seeing the data stall a lot (timestamp and end-time remain the same through many fetches)
+
+** April 4, 2013 **
 Fix issues:
 	305 - "close x" now unselects flow. double click to delete a flow
 	323 - gui now recovers on timeout errors and polls again
 	324 - fixed problem with added flows not displaying
 	325 - fixed logic displaying flows in topology view
-
 
 ** March 28, 2013 **
 - add and delete flow implemented

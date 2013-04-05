@@ -1,7 +1,10 @@
 package net.floodlightcontroller.core;
 
+import net.floodlightcontroller.flowcache.web.DatapathSummarySerializer;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.frames.Adjacency;
@@ -158,48 +161,57 @@ public interface ISwitchObject extends IBaseObject{
 	}
 
 public interface IFlowPath extends IBaseObject {
+		@JsonProperty("flowId")
 		@Property("flow_id")
 		public String getFlowId();
 
 		@Property("flow_id")
 		public void setFlowId(String flowId);
 
+		@JsonProperty("installerId")
 		@Property("installer_id")
 		public String getInstallerId();
 
 		@Property("installer_id")
 		public void setInstallerId(String installerId);
 
+		@JsonProperty("srcDpid")
 		@Property("src_switch")
 		public String getSrcSwitch();
 
 		@Property("src_switch")
 		public void setSrcSwitch(String srcSwitch);
 
+		@JsonProperty("srcPort")
 		@Property("src_port")
 		public Short getSrcPort();
 
 		@Property("src_port")
 		public void setSrcPort(Short srcPort);
 
+		@JsonProperty("dstDpid")
 		@Property("dst_switch")
 		public String getDstSwitch();
 
 		@Property("dst_switch")
 		public void setDstSwitch(String dstSwitch);
 
+		@JsonProperty("dstPort")
 		@Property("dst_port")
 		public Short getDstPort();
 
 		@Property("dst_port")
 		public void setDstPort(Short dstPort);
 
+		@JsonProperty("dataPath")
+		@JsonSerialize(using=DatapathSummarySerializer.class)
 		@Property("data_path_summary")
 		public String getDataPathSummary();
 
 		@Property("data_path_summary")
 		public void setDataPathSummary(String dataPathSummary);
 
+		@JsonIgnore
 		@Adjacency(label="flow", direction=Direction.IN)
 		public Iterable<IFlowEntry> getFlowEntries();
 
@@ -209,30 +221,35 @@ public interface IFlowPath extends IBaseObject {
 		@Adjacency(label="flow", direction=Direction.IN)
 		public void removeFlowEntry(final IFlowEntry flowEntry);
 
+		@JsonIgnore
 		@Property("matchEthernetFrameType")
 		public Short getMatchEthernetFrameType();
 
 		@Property("matchEthernetFrameType")
 		public void setMatchEthernetFrameType(Short matchEthernetFrameType);
 
+		@JsonIgnore
 		@Property("matchSrcMac")
 		public String getMatchSrcMac();
 
 		@Property("matchSrcMac")
 		public void setMatchSrcMac(String matchSrcMac);
 
+		@JsonIgnore
 		@Property("matchDstMac")
 		public String getMatchDstMac();
 
 		@Property("matchDstMac")
 		public void setMatchDstMac(String matchDstMac);
 
+		@JsonIgnore
 		@Property("matchSrcIPv4Net")
 		public String getMatchSrcIPv4Net();
 
 		@Property("matchSrcIPv4Net")
 		public void setMatchSrcIPv4Net(String matchSrcIPv4Net);
 
+		@JsonIgnore
 		@Property("matchDstIPv4Net")
 		public String getMatchDstIPv4Net();
 
@@ -242,6 +259,10 @@ public interface IFlowPath extends IBaseObject {
 		@JsonIgnore
 		@GremlinGroovy("_().in('flow').out('switch')")
 		public Iterable<ISwitchObject> getSwitches();
+		
+		@JsonIgnore
+		@Property("state")
+		public String getState();
 	}
 
 public interface IFlowEntry extends IBaseObject {
