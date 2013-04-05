@@ -647,6 +647,11 @@ def controller_status_change(cmd, controller_name):
   elif cmd == "down":
     result=os.popen(stop_onos).read()
     ret = "controller %s is down" % (controller_name)
+  elif cmd == "local":
+    ret = "Switch local"
+  elif cmd == "ext":
+    ret = "Switch external"
+
 
   return ret
 
