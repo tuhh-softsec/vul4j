@@ -36,6 +36,7 @@ import com.tinkerpop.pipes.transform.PathPipe;
 public class LinkStorageImpl implements ILinkStorage {
 	public TitanGraph graph;
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
+	protected String conf;
 
 	@Override
 	public void update(Link link, DM_OPERATION op) {
@@ -76,7 +77,8 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 	
 	public void addOrUpdateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
-		Vertex vportSrc = null, vportDst = null;
+		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
+		IPortObject vportSrc = null, vportDst = null;
 	
 		log.trace("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
 		
@@ -84,18 +86,19 @@ public class LinkStorageImpl implements ILinkStorage {
             // get source port vertex
         	String dpid = HexString.toHexString(lt.getSrc());
         	short port = lt.getSrcPort();
-        	vportSrc = getPortVertex(dpid, port);
+        	vportSrc = conn.utils().searchPort(conn, dpid, port);
             
             // get dest port vertex
             dpid = HexString.toHexString(lt.getDst());
             port = lt.getDstPort();
-            vportDst = getPortVertex(dpid, port);
+            vportDst = conn.utils().searchPort(conn, dpid, port);
                         
             if (vportSrc != null && vportDst != null) {
+         	
             	
             	// check if the link exists
             	List<Vertex> currLinks = new ArrayList<Vertex>();
-            	for (Vertex V : vportSrc.query().direction(Direction.OUT).labels("link").vertices()) {
+            	for (Vertex V : vportSrc.asVertex().query().direction(Direction.OUT).labels("link").vertices()) {
             		currLinks.add(V);
             	}
             	
@@ -106,7 +109,7 @@ public class LinkStorageImpl implements ILinkStorage {
             					new Object[]{op, lt, vportSrc, vportDst});
             		}
             	} else {
-            		graph.addEdge(null, vportSrc, vportDst, "link");
+            		graph.addEdge(null, vportSrc.asVertex(), vportDst.asVertex(), "link");
             		graph.stopTransaction(Conclusion.SUCCESS);
             		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
@@ -134,7 +137,7 @@ public class LinkStorageImpl implements ILinkStorage {
 
 	@Override
 	public void deleteLink(Link lt) {
-		GraphDBConnection conn = GraphDBConnection.getInstance("");
+		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		IPortObject vportSrc = null, vportDst = null;
 		int count = 0;
 		
@@ -164,7 +167,7 @@ public class LinkStorageImpl implements ILinkStorage {
          			}
          		}*/
          		vportSrc.removeLink(vportDst);
-        		conn.endTx(Transaction.COMMIT, GenerateEvent.TRUE);
+        		conn.endTx(Transaction.COMMIT);
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
             			lt, vportSrc, vportDst});
             	
@@ -204,7 +207,8 @@ public class LinkStorageImpl implements ILinkStorage {
 	public void init(String conf) {
 		//TODO extract the DB location from properties
 	
-        graph = TitanFactory.open(conf);
+		this.conf = conf;
+        graph = TitanFactory.open(this.conf);
         
         // FIXME: These keys are not needed for Links but we better create it before using it as per titan
         Set<String> s = graph.getIndexedKeys(Vertex.class);

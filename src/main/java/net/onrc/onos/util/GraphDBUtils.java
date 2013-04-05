@@ -14,10 +14,8 @@ import net.floodlightcontroller.util.FlowId;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
-import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.frames.structures.FramedVertexIterable;
+import com.tinkerpop.frames.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBUtils implements IDBUtils {
@@ -57,7 +55,19 @@ public class GraphDBUtils implements IDBUtils {
 	@Override
 	public IPortObject searchPort(GraphDBConnection conn, String dpid, short number) {
 		ISwitchObject sw = searchSwitch(conn, dpid);
-		return sw != null ? sw.getPort(number): null;
+		if (sw != null) {
+			
+			IPortObject port = null;
+			try {
+				port = sw.getPort(number);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return port;
+		}
+		return null;
 	/*	GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
 		pipe.start(sw.asVertex());
 	    pipe.out("on").has("number", number);

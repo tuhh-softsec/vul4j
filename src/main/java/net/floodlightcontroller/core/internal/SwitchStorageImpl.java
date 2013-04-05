@@ -178,7 +178,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             		log.info("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
             		sw.removePort(p);
             		conn.utils().removePort(conn, p);
-            		conn.endTx(Transaction.COMMIT,GenerateEvent.TRUE);
+            		conn.endTx(Transaction.COMMIT);
             	}
             }
 		} catch (Exception e) {

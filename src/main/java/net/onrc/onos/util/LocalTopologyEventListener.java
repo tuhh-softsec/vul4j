@@ -88,15 +88,13 @@ public class LocalTopologyEventListener implements LocalGraphChangedListener {
 
 
 	@Override
-	public void edgePropertyChanged(Edge arg0, String arg1, Object arg2,
-			Object arg3) {
+	public void edgePropertyChanged(Edge arg0, String arg1, Object arg2) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void vertexPropertyChanged(Vertex arg0, String arg1, Object arg2,
-			Object arg3) {
+	public void vertexPropertyChanged(Vertex arg0, String arg1, Object arg2) {
 		// TODO Auto-generated method stub
 		
 	}

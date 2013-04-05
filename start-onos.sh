@@ -91,7 +91,7 @@ EOF_LOGBACK
 
 function stop {
   # Kill the existing processes
-  flpid=`ps -edalf |grep java |grep logback.xml | awk '{print $4}'`
+  flpid=`jps -l |grep net.floodlightcontroller.core.Main | awk '{print $1}'`
   tdpid=`ps -edalf |grep tcpdump |grep ${PCAP_LOG} | awk '{print $4}'`
   pids="$flpid $tdpid"
   for p in ${pids}; do
