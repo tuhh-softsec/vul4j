@@ -219,7 +219,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    Iterable<IFlowEntry> tmpFlowEntries =
 			flowObj.getFlowEntries();
 		    boolean found = false;
-		    for (IFlowEntry tmpFlowEntryObj : tmpflowEntries) {
+		    for (IFlowEntry tmpFlowEntryObj : tmpFlowEntries) {
 			found = true;
 			break;
 		    }
