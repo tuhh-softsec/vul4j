@@ -145,6 +145,12 @@ path.flow.highlight {
 	border-top: 1px solid #AAA;
 }
 
+path.iperfdata {
+	fill: none;
+	stroke-width: 2px;
+	stroke: rgba(255, 255, 255, .75);
+}
+
 #flowChooser {
 	pointer-events: none;
 	background-color: rgba(0, 0, 0, .25);
