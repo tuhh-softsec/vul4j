@@ -3,6 +3,8 @@ package net.floodlightcontroller.flowcache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,8 +59,10 @@ import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
+import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
@@ -916,10 +920,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
-    	
-    	
-    	
-		//
+
 		// TODO: The implementation below is not optimal:
 		// We fetch all flows, and then return only the subset that match
 		// the query conditions.
@@ -929,6 +930,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     	//ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	
     	ArrayList<IFlowPath> flowPathsWithoutFlowEntries = getAllFlowsWithoutFlowEntries();
+    	
+    	Collections.sort(flowPathsWithoutFlowEntries, 
+    			new Comparator<IFlowPath>(){
+					@Override
+					public int compare(IFlowPath first, IFlowPath second) {
+						// TODO Auto-generated method stub
+						long result = new FlowId(first.getFlowId()).value()
+								- new FlowId(second.getFlowId()).value();
+						if (result > 0) return 1;
+						else if (result < 0) return -1;
+						else return 0;
+					}
+    			}
+    	);
     	
     	return flowPathsWithoutFlowEntries;
     	

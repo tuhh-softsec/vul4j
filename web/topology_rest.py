@@ -17,39 +17,24 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 
-## Uncomment the desired block based on your testbed environment
-# Settings for running on production
-<<<<<<< HEAD
-core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-ONOS_GUI3_HOST="http://localhost:9000"
-ONOS_GUI3_CONTROL_HOST="http://localhost:9000"
-=======
-#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
-#core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-#ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-#ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
->>>>>>> ecee79b1df12c337cba14cbc9e3660741ae72441
-
-# Settings for running on dev testbed. Replace dev
-#controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
-controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
-core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
-
-<<<<<<< HEAD
-ONOS_LOCAL_HOST="http://localhost:8080" ;# for Amazon EC2
-controllers=["Berde-MBP.local"]
-#controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
-#core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
-=======
-ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
->>>>>>> ecee79b1df12c337cba14cbc9e3660741ae72441
-
 LB=True #; True or False
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
-
+TESTBED="sw"
 DEBUG=1
+
+if (TESTBED == "hw"): 
+  # Settings for running on hardware testbed
+  controllers=["ONOS1", "ONOS2", "ONOS3", "ONOS4", "ONOS5", "ONOS6", "ONOS7", "ONOS8"]
+  core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:01:00:16:97:08:9a:46"]
+  ONOS_GUI3_HOST="http://10.128.4.11:9000"
+  ONOS_GUI3_CONTROL_HOST="http://10.128.4.11:9000"
+else:
+  # Settings for running on software testbed
+  controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
+#  core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
+  core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
+  ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
+  ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
 
 pp = pprint.PrettyPrinter(indent=4)
 app = Flask(__name__)
@@ -653,13 +638,15 @@ def query_links():
 
 @app.route("/controller_status")
 def controller_status():
-  onos_check="sh ~/src/ONOS/start-onos.sh status | awk '{print $1}'"
+#  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
+  onos_check="cd; onos status %s | grep %s | awk '{print $2}'"
   #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
 
   cont_status=[]
   for i in controllers:
     status={}
     onos=os.popen(onos_check % i).read()[:-1]
+    onos=os.popen(onos_check % (i, i.lower())).read()[:-1]
     status["name"]=i
     status["onos"]=onos
     status["cassandra"]=0
@@ -672,8 +659,10 @@ def controller_status():
 ### Command ###
 @app.route("/gui/controller/<cmd>/<controller_name>")
 def controller_status_change(cmd, controller_name):
-  start_onos="~/src/ONOS/start-onos.sh start" % (controller_name)
-  stop_onos="~/src/ONOS/start-onos.sh stop" % (controller_name)
+#  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
+#  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+  start_onos="cd; onos start %s" % (controller_name[-1:])
+  stop_onos="cd; onos stop %s" % (controller_name[-1:])
 
   if cmd == "up":
     result=os.popen(start_onos).read()
@@ -689,14 +678,22 @@ def switch_controller_setting(cmd):
   if cmd =="local":
     print "All aggr switches connects to local controller only"
     result=""
-    for i in range(0, len(controllers)): 
-      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
+    if (TESTBED == "sw"):
+      for i in range(0, len(controllers)): 
+        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
+        result += os.popen(cmd_string).read()
+    else:
+      cmd_string="cd; switch local"
       result += os.popen(cmd_string).read()
   elif cmd =="all":
     print "All aggr switches connects to all controllers except for core controller"
     result=""
-    for i in range(0, len(controllers)): 
-      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+    if (TESTBED == "sw"):
+      for i in range(0, len(controllers)): 
+        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+        result += os.popen(cmd_string).read()
+    else:    
+      cmd_string="cd; switch all"
       result += os.popen(cmd_string).read()
 
   return result
@@ -705,11 +702,15 @@ def switch_controller_setting(cmd):
 
 @app.route("/gui/switch/<cmd>/<dpid>")
 def switch_status_change(cmd, dpid):
+  result = ""
+  if (TESTBED == "hw"):
+    return result
+
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
   host=controllers[0]
-  cmd_string="'cd ~/src/ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
-  get_status="'cd ~/src/ONOS/scripts; ./switch.sh %s'" % (host, dpid)
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s %s'" % (host, dpid, cmd)
+  get_status="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./switch.sh %s'" % (host, dpid)
   print "cmd_string"
 
   if cmd =="up" or cmd=="down":
@@ -723,6 +724,16 @@ def switch_status_change(cmd, dpid):
 #http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
 @app.route("/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
 def link_up(src_dpid, src_port, dst_dpid, dst_port):
+  result = ""
+
+  if (TESTBED == "sw"): 
+    result = link_up_sw(src_dpid, src_port, dst_dpid, dst_port)
+  else:
+    result = link_up_hw(src_dpid, src_port, dst_dpid, dst_port)
+  return result
+
+# Link up on software testbed
+def link_up_sw(src_dpid, src_port, dst_dpid, dst_port):
 
   cmd = 'up'
   result=""
@@ -747,6 +758,81 @@ def link_up(src_dpid, src_port, dst_dpid, dst_port):
 
   return result
 
+# Link up on hardware testbed
+def link_up_hw(src_dpid, src_port, dst_dpid, dst_port):
+
+	port1 = src_port
+	port2 = dst_port
+	if src_dpid == "00:00:00:00:ba:5e:ba:11":
+		if dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 24
+			port2 = 24
+		elif dst_dpid == "00:01:00:16:97:08:9a:46":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:00:00:ba:5e:ba:13":
+                if dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:00:00:00:00:ba:12":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:13":
+			port1 = 23
+			port2 = 23
+                elif dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 24
+			port2 = 21
+	elif src_dpid == "00:01:00:16:97:08:9a:46":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:11":
+			port1 = 23
+			port2 = 23
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 24
+			port2 = 24
+	elif src_dpid == "00:00:00:08:a2:08:f9:01":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:11":
+			port1 = 24
+			port2 = 24
+                elif dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:20:4e:7f:51:8a:35":
+                if dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 21
+			port2 = 24
+                elif dst_dpid == "00:00:00:00:ba:5e:ba:13":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:01:00:16:97:08:9a:46":
+			port1 = 24
+			port2 = 24
+                elif dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 23
+			port2 = 23
+
+	cmd = 'up'
+	result=""
+	host = controllers[0]
+	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (src_dpid, port1, cmd)
+	print cmd_string
+	res=os.popen(cmd_string).read()
+	result = result + ' ' + res
+	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (dst_dpid, port2, cmd)
+	print cmd_string
+	res=os.popen(cmd_string).read()
+	result = result + ' ' + res
+
+
+	return result
+
 
 #* Link Down
 #http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
@@ -759,7 +845,10 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
     hostid=int(src_dpid.split(':')[-2])
     host = controllers[hostid-1]
 
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+  if (TESTBED == "sw"):
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+  else:
+    cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( src_dpid, src_port, cmd)
   print cmd_string
 
   result=os.popen(cmd_string).read()

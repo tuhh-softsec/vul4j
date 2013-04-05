@@ -144,10 +144,18 @@ public class GraphDBUtils implements IDBUtils {
 	}
 
 	@Override
-        public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn) {
+    public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		Iterable<IFlowPath> flowPaths = fg.getVertices("type", "flow", IFlowPath.class);
 		
-		return fg.getVertices("type", "flow", IFlowPath.class);
+		List<IFlowPath> nonNullFlows = new ArrayList<IFlowPath>();
+
+		for (IFlowPath fp: flowPaths) {
+			if (fp.getFlowId() != null) {
+				nonNullFlows.add(fp);
+			}
+		}
+		return nonNullFlows;
 	}
 
 	@Override
