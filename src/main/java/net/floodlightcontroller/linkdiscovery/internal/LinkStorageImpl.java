@@ -94,8 +94,7 @@ public class LinkStorageImpl implements ILinkStorage {
             vportDst = conn.utils().searchPort(conn, dpid, port);
                         
             if (vportSrc != null && vportDst != null) {
-         	
-            	
+         	       	
             	// check if the link exists
             	List<IPortObject> currLinks = new ArrayList<IPortObject>();
             	Iterable<IPortObject> currPorts = vportSrc.getLinkedPorts();
@@ -111,13 +110,13 @@ public class LinkStorageImpl implements ILinkStorage {
             					new Object[]{op, lt, vportSrc, vportDst});
             		}
             	} else {
-            		graph.addEdge(null, vportSrc.asVertex(), vportDst.asVertex(), "link");
-            		graph.stopTransaction(Conclusion.SUCCESS);
+            		conn.getFramedGraph().addEdge(null, vportSrc.asVertex(), vportDst.asVertex(), "link");
+            		conn.endTx(Transaction.COMMIT);
             		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
             } else {
             	log.error("addOrUpdateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
-            	graph.stopTransaction(Conclusion.FAILURE);
+            	conn.endTx(Transaction.ROLLBACK);
             }
         } catch (TitanException e) {
             /*

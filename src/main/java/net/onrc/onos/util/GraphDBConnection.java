@@ -5,16 +5,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.minlog.Log;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.TransactionalGraph;
-import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
-import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
+import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
-import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalIndexableGraph;
-import com.tinkerpop.blueprints.util.wrappers.event.listener.GraphChangedListener;
 import com.tinkerpop.frames.FramedGraph;
 
 public class GraphDBConnection {
@@ -85,7 +81,7 @@ public class GraphDBConnection {
 		   return utils;
 	   }
 	   
-	   protected FramedGraph<TitanGraph> getFramedGraph() {
+	   public FramedGraph<TitanGraph> getFramedGraph() {
 	   
 		   	if (isValid()) {
 		   		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
@@ -121,12 +117,17 @@ public class GraphDBConnection {
 	   }
 	   
 	   public void endTx(Transaction tx) {
-		   switch (tx) {
-		   case COMMIT:
-			   graph.stopTransaction(Conclusion.SUCCESS);
-		   case ROLLBACK:
-			   graph.stopTransaction(Conclusion.FAILURE);
-		   }
+		   try {
+			switch (tx) {
+			   case COMMIT:
+				   graph.stopTransaction(Conclusion.SUCCESS);
+			   case ROLLBACK:
+				   graph.stopTransaction(Conclusion.FAILURE);
+			   }
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	   }
 	   
 	   public void endTx(TransactionHandle tr, Transaction tx) {
