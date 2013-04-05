@@ -97,8 +97,10 @@ public class LinkStorageImpl implements ILinkStorage {
          	
             	
             	// check if the link exists
-            	List<Vertex> currLinks = new ArrayList<Vertex>();
-            	for (Vertex V : vportSrc.asVertex().query().direction(Direction.OUT).labels("link").vertices()) {
+            	List<IPortObject> currLinks = new ArrayList<IPortObject>();
+            	Iterable<IPortObject> currPorts = vportSrc.getLinkedPorts();
+            	
+            	for (IPortObject V : currPorts) {
             		currLinks.add(V);
             	}
             	
