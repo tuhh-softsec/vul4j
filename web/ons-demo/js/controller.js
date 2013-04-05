@@ -35,7 +35,7 @@ var controllerFunctions = {
 		callURL(url);
 	},
 	delFlowCmd: function (flow) {
-		var url = '/proxy/gui/delflow/' + flow.flowId.value;
+		var url = '/proxy/gui/delflow/' + flow.flowId;
 		callURL(url);
 	}
 };
