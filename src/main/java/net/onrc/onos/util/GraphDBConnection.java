@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.esotericsoftware.minlog.Log;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
@@ -24,6 +25,12 @@ public class GraphDBConnection {
 	public enum GenerateEvent {
 		TRUE,
 		FALSE
+	}
+	class TransactionHandle {
+		protected TransactionalGraph tr;
+		public void create() {
+			tr = graph.startTransaction();			
+		}
 	}
 	protected static Logger log = LoggerFactory.getLogger(GraphDBConnection.class);
 	private static GraphDBConnection singleton = new GraphDBConnection( );
@@ -110,16 +117,34 @@ public class GraphDBConnection {
 	   
 	   public void startTx() {
 		   
+		   
 	   }
 	   
 	   public void endTx(Transaction tx) {
 		   switch (tx) {
 		   case COMMIT:
-			   eg.stopTransaction(Conclusion.SUCCESS);
+			   graph.stopTransaction(Conclusion.SUCCESS);
 		   case ROLLBACK:
-			   eg.stopTransaction(Conclusion.FAILURE);
+			   graph.stopTransaction(Conclusion.FAILURE);
 		   }
 	   }
+	   
+	   public void endTx(TransactionHandle tr, Transaction tx) {
+		   switch (tx) {
+		   case COMMIT:
+			   if (tr != null && tr.tr != null) {
+				   tr.tr.stopTransaction(Conclusion.SUCCESS);
+			   } else {
+				   graph.stopTransaction(Conclusion.SUCCESS);
+			   }
+		   case ROLLBACK:
+			   if (tr != null && tr.tr != null) {
+				   tr.tr.stopTransaction(Conclusion.FAILURE);
+			   } else {
+				   graph.stopTransaction(Conclusion.FAILURE);
+			   }
+		   }
+	   }   
 	   
 	   public void endTx(Transaction tx, GenerateEvent fire) {
 
