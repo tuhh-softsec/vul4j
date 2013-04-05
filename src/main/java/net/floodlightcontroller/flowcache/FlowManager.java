@@ -3,7 +3,6 @@ package net.floodlightcontroller.flowcache;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,12 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
@@ -32,13 +28,12 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.flowcache.web.FlowWebRoutable;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
-import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.DataPathEndpoints;
+import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntry;
 import net.floodlightcontroller.util.FlowEntryAction;
 import net.floodlightcontroller.util.FlowEntryId;
@@ -62,7 +57,6 @@ import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -908,7 +902,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      * @return the Flow Paths if found, otherwise null.
      */
     @Override
-    public ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
+    public ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows) {
+    	
+    	
+    	
 		//
 		// TODO: The implementation below is not optimal:
 		// We fetch all flows, and then return only the subset that match
@@ -916,10 +913,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// We should use the appropriate Titan/Gremlin query to filter-out
 		// the flows as appropriate.
 		//
-    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+    	//ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
     	
+    	ArrayList<IFlowPath> flowPathsWithoutFlowEntries = getAllFlowsWithoutFlowEntries();
+    	
+    	return flowPathsWithoutFlowEntries;
+    	
+    	/*
     	ArrayList<FlowPath> allFlows = getAllFlows();
-	
+
 		if (allFlows == null) {
 		    log.debug("Get FlowPathsSummary for {} {}: no FlowPaths found", flowId, maxFlows);
 		    return flowPaths;
@@ -954,6 +956,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		}
 	
 		return flowPaths;
+		*/
     }
     
     /**
@@ -994,6 +997,45 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	conn.endTx(Transaction.COMMIT);
 
 	return flowPaths;
+    }
+    
+    public ArrayList<IFlowPath> getAllFlowsWithoutFlowEntries(){
+    	Iterable<IFlowPath> flowPathsObj = null;
+    	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
+    	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
+
+    	try {
+    	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
+    		log.debug("Get all FlowPaths: found FlowPaths");
+    	    } else {
+    		log.debug("Get all FlowPaths: no FlowPaths found");
+    	    }
+    	} catch (Exception e) {
+    	    // TODO: handle exceptions
+    	    conn.endTx(Transaction.ROLLBACK);
+    	    log.error(":getAllFlowPaths failed");
+    	}
+    	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
+    	    return new ArrayList<IFlowPath>();	// No Flows found
+    	}
+    	
+    	for (IFlowPath flowObj : flowPathsObj){
+    		flowPathsObjArray.add(flowObj);
+    	}
+    	/*
+    	for (IFlowPath flowObj : flowPathsObj) {
+    	    //
+    	    // Extract the Flow state
+    	    //
+    	    FlowPath flowPath = extractFlowPath(flowObj);
+    	    if (flowPath != null)
+    		flowPaths.add(flowPath);
+    	}
+    	*/
+
+    	//conn.endTx(Transaction.COMMIT);
+
+    	return flowPathsObjArray;
     }
 
     /**
