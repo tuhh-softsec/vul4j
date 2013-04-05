@@ -3,7 +3,7 @@
 function callURL(url, cb) {
 	d3.text(url, function (error, result) {
 		if (error) {
-			alert(url + ' : ' + error.status);
+			console.log(url + ' : ' + error.status);
 		} else {
 			if (cb) {
 				cb(result);
