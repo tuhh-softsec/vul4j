@@ -164,7 +164,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			  myFlowEntries.size());
 
 		//
-		// Process my Flow Entries
+		// Process my Flow Entries in the Flow Entry ID order
 		//
 		boolean processed_measurement_flow = false;
 		for (Map.Entry<Long, IFlowEntry> entry : myFlowEntries.entrySet()) {
@@ -197,7 +197,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			  deleteFlowEntries.size());
 
 		//
-		// Delete all entries marked for deletion
+		// Delete all entries marked for deletion from the
+		// Network MAP.
 		//
 		// TODO: We should use the OpenFlow Barrier mechanism
 		// to check for errors, and delete the Flow Entries after the
@@ -215,10 +216,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowEntry(conn, flowEntryObj);
 
 		    // Test whether the last flow entry
-		    Iterable<IFlowEntry> tmpflowEntries =
+		    Iterable<IFlowEntry> tmpFlowEntries =
 			flowObj.getFlowEntries();
 		    boolean found = false;
-		    for (IFlowEntry tmpflowEntryObj : tmpflowEntries) {
+		    for (IFlowEntry tmpFlowEntryObj : tmpflowEntries) {
 			found = true;
 			break;
 		    }
@@ -1318,7 +1319,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	FlowEntryId flowEntryId =
 	    new FlowEntryId(flowEntryObj.getFlowEntryId());
 	String userState = flowEntryObj.getUserState();
-	String switchState = flowEntryObj.getSwitchState();
 
 	//
 	// Create the Open Flow Flow Modification Entry to push
@@ -1344,19 +1344,21 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Fetch the match conditions.
 	//
-	// NOTE: The Flow matching conditions common for all
-	// Flow Entries are used ONLY if a Flow Entry does NOT
-	// have the corresponding matching condition set.
+	// NOTE: The Flow matching conditions common for all Flow Entries are
+	// used ONLY if a Flow Entry does NOT have the corresponding matching
+	// condition set.
 	//
 	OFMatch match = new OFMatch();
 	match.setWildcards(OFMatch.OFPFW_ALL);
-	//
+
+	// Match the Incoming Port
 	Short matchInPort = flowEntryObj.getMatchInPort();
 	if (matchInPort != null) {
 	    match.setInputPort(matchInPort);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_IN_PORT);
 	}
-	//
+
+	// Match the Ethernet Frame Type
 	Short matchEthernetFrameType = flowEntryObj.getMatchEthernetFrameType();
 	if (matchEthernetFrameType == null)
 	    matchEthernetFrameType = flowObj.getMatchEthernetFrameType();
@@ -1364,21 +1366,24 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setDataLayerType(matchEthernetFrameType);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	}
-	//
+
+	// Match the Source IPv4 Network prefix
 	String matchSrcIPv4Net = flowEntryObj.getMatchSrcIPv4Net();
 	if (matchSrcIPv4Net == null)
 	    matchSrcIPv4Net = flowObj.getMatchSrcIPv4Net();
 	if (matchSrcIPv4Net != null) {
 	    match.setFromCIDR(matchSrcIPv4Net, OFMatch.STR_NW_SRC);
 	}
-	//
+
+	// Natch the Destination IPv4 Network prefix
 	String matchDstIPv4Net = flowEntryObj.getMatchDstIPv4Net();
 	if (matchDstIPv4Net == null)
 	    matchDstIPv4Net = flowObj.getMatchDstIPv4Net();
 	if (matchDstIPv4Net != null) {
 	    match.setFromCIDR(matchDstIPv4Net, OFMatch.STR_NW_DST);
 	}
-	//
+
+	// Match the Source MAC address
 	String matchSrcMac = flowEntryObj.getMatchSrcMac();
 	if (matchSrcMac == null)
 	    matchSrcMac = flowObj.getMatchSrcMac();
@@ -1386,7 +1391,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    match.setDataLayerSource(matchSrcMac);
 	    match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
 	}
-	//
+
+	// Match the Destination MAC address
 	String matchDstMac = flowEntryObj.getMatchDstMac();
 	if (matchDstMac == null)
 	    matchDstMac = flowObj.getMatchDstMac();
@@ -1397,6 +1403,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	//
 	// Fetch the actions
+	//
+	// TODO: For now we support only the "OUTPUT" actions.
 	//
 	List<OFAction> actions = new ArrayList<OFAction>();
 	Short actionOutputPort = flowEntryObj.getActionOutput();
@@ -1429,6 +1437,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// fm.setFlags(OFFlowMod.OFPFF_SEND_FLOW_REM);
 	// See method ForwardingBase::pushRoute()
 	//
+
+	//
+	// Write the message to the switch
+	//
 	try {
 	    messageDamper.write(mySwitch, fm, null);
 	    mySwitch.flush();
@@ -1441,6 +1453,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
 	} catch (IOException e) {
 	    log.error("Failure writing flow mod from network map", e);
+	    return false;
 	}
 
 	return true;
@@ -1593,6 +1606,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	try {
 	    messageDamper.write(mySwitch, fm, null);
 	    mySwitch.flush();
+	    //
+	    // TODO: We should use the OpenFlow Barrier mechanism
+	    // to check for errors, and update the SwitchState
+	    // for a flow entry after the Barrier message is
+	    // is received.
+	    //
+	    // TODO: The FlowEntry Object in Titan should be set
+	    // to FE_SWITCH_UPDATED.
+	    //
 	} catch (IOException e) {
 	    log.error("Failure writing flow mod from network map", e);
 	    return false;
