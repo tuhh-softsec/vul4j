@@ -188,15 +188,12 @@ def get_json(url):
     command = "curl -s %s" % (url)
     result = os.popen(command).read()
     parsedResult = json.loads(result)    
+    if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
+      print "REST %s returned code %s" % (command, parsedResult['code'])
+      code=500
   except:
     print "REST IF %s has issue" % command
     result = ""
-
-  if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
-    print "REST %s returned code %s" % (command, parsedResult['code'])
-    code=500
-
-  if result == "":
     code = 500
 
   return (code, result)
