@@ -17,9 +17,9 @@ from flask import Flask, json, Response, render_template, make_response, request
 RestIP="localhost"
 RestPort=8080
 
-LB=True #; True or False
+LB=False #; True or False
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
-TESTBED="sw"
+TESTBED="hw"
 DEBUG=1
 
 if (TESTBED == "hw"): 
@@ -848,7 +848,10 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
   if (TESTBED == "sw"):
     cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
   else:
-    cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( src_dpid, src_port, cmd)
+    if ( src_dpid == "00:00:00:08:a2:08:f9:01" ):
+      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( dst_dpid, dst_port, cmd)
+    else:
+      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( src_dpid, src_port, cmd)
   print cmd_string
 
   result=os.popen(cmd_string).read()
@@ -927,6 +930,9 @@ def iperf_start(flow_id,duration,samples):
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
+  if (TESTBED == "hw"):
+    return "{}"
+
   try:
     command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
