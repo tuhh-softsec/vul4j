@@ -6,6 +6,7 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.GenerateEvent;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import org.openflow.protocol.OFPhysicalPort;
@@ -15,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SwitchStorageImpl implements ISwitchStorage {
-	public GraphDBConnection conn;
+	protected GraphDBConnection conn;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	@Override
@@ -182,6 +183,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (Exception e) {
              // TODO: handle exceptions
+			e.printStackTrace();
 			conn.endTx(Transaction.ROLLBACK);
 			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
