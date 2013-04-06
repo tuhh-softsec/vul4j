@@ -905,7 +905,6 @@ def iperf_start(flow_id,duration,samples):
 
   parsedResult = json.loads(result)
 
-#  flowId = int(parsedResult['flowId']['value'], 16)
   flowId = int(parsedResult['flowId']['value'], 16)
   src_dpid = parsedResult['dataPath']['srcPort']['dpid']['value']
   src_port = parsedResult['dataPath']['srcPort']['port']['value']
@@ -914,13 +913,25 @@ def iperf_start(flow_id,duration,samples):
 #  print "FlowPath: (flowId = %s src = %s/%s dst = %s/%s" % (flowId, src_dpid, src_port, dst_dpid, dst_port)
 
   if src_dpid in core_switches:
-      host = controllers[0]
+      src_host = controllers[0]
   else:
       hostid=int(src_dpid.split(':')[-2])
-      host = controllers[hostid-1]
+      src_host = controllers[hostid-1]
 
-#  ./runiperf.sh 2 00:00:00:00:00:00:02:02 1 00:00:00:00:00:00:03:02 1 100 15
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s %s %s'" % (host, flowId, src_dpid, src_port, dst_dpid, dst_port, duration, samples)
+  if dst_dpid in core_switches:
+      dst_host = controllers[0]
+  else:
+      hostid=int(dst_dpid.split(':')[-2])
+      dst_host = controllers[hostid-1]
+
+# /runiperf.sh <flowid> <src_dpid> <dst_dpid> svr|client <proto>/<duration>/<interval>/<samples>
+  protocol="udp"
+  interval=0.1
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (dst_host, flowId, src_dpid, dst_dpid, "svr", protocol, duration, interval, samples)
+  print cmd_string
+  os.popen(cmd_string)
+
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (src_host, flowId, src_dpid, dst_dpid, "client", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
 
@@ -952,14 +963,14 @@ def iperf_rate(flow_id):
   dst_dpid = parsedResult['dataPath']['dstPort']['dpid']['value']
   dst_port = parsedResult['dataPath']['dstPort']['port']['value']
 
-  if src_dpid in core_switches:
+  if dst_dpid in core_switches:
       host = controllers[0]
   else:
-      hostid=int(src_dpid.split(':')[-2])
+      hostid=int(dst_dpid.split(':')[-2])
       host = controllers[hostid-1]
 
   try:
-    command = "curl -s http://%s:%s/log/iperf_%s.out" % (host, 9000, flow_id)
+    command = "curl -s http://%s:%s/log/iperfsvr_%s.out" % (host, 9000, flow_id)
     print command
     result = os.popen(command).read()
   except:

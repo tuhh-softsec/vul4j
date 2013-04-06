@@ -268,9 +268,9 @@ function startIPerfForFlow(flow) {
 		var i;
 		for (i=0; i < pointsToDisplay; ++i) {
 			var sample = flow.iperfData.samples[i];
-			var height = 32 * sample/50000000;
-			if (height > 32)
-				height = 32;
+			var height = 30 * sample/1000000;
+			if (height > 30)
+				height = 30;
 			pts.push({
 				x: i * 1000/(pointsToDisplay-1),
 				y: 32 - height
