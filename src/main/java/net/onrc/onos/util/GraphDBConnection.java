@@ -167,7 +167,7 @@ public class GraphDBConnection {
 	   }
 	   
 	   public void close() {
-		   graph.shutdown();
+//		   graph.shutdown();
 	   }
 	   
 }
