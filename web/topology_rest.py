@@ -927,6 +927,9 @@ def iperf_start(flow_id,duration,samples):
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
+  if (TESTBED == "hw"):
+    return ""
+
   try:
     command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
