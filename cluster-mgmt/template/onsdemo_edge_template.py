@@ -92,7 +92,7 @@ def startsshds ( hosts ):
         startsshd( h )
 
 def startiperf( host ):
-    host.cmd( '/usr/bin/iperf', '-sD' )
+    host.cmd( '/usr/bin/iperf', '-s &' )
 
 def startiperfs ( hosts ):
     for h in hosts:
