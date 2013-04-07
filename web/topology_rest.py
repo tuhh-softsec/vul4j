@@ -13,28 +13,25 @@ import re
 
 from flask import Flask, json, Response, render_template, make_response, request
 
+
+CONFIG_FILE=os.getenv("HOME") + "/ONOS/web/config.json"
+
 ## Global Var for ON.Lab local REST ##
 RestIP="localhost"
 RestPort=8080
-
-LB=False #; True or False
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
-TESTBED="hw"
 DEBUG=1
 
-if (TESTBED == "hw"): 
-  # Settings for running on hardware testbed
-  controllers=["ONOS1", "ONOS2", "ONOS3", "ONOS4", "ONOS5", "ONOS6", "ONOS7", "ONOS8"]
-  core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:01:00:16:97:08:9a:46"]
-  ONOS_GUI3_HOST="http://10.128.4.11:9000"
-  ONOS_GUI3_CONTROL_HOST="http://10.128.4.11:9000"
-else:
-  # Settings for running on software testbed
-  controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
-#  core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-  core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
-  ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
-  ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
+def read_config():
+  global LB, controllers, core_switches, ONOS_GUI3_HOST, ONOS_GUI3_CONTROL_HOST
+  f = open(CONFIG_FILE)
+  conf = json.load(f)
+  LB = conf['LB']
+  controllers = conf['controllers']
+  core_switcehs=conf['core_switches']
+  ONOS_GUI3_HOST=conf['ONOS_GUI3_HOST']
+  ONOS_GUI3_CONTROL_HOST=conf['ONOS_GUI3_CONTROL_HOST']
+  f.close()
 
 pp = pprint.PrettyPrinter(indent=4)
 app = Flask(__name__)
@@ -986,6 +983,7 @@ def iperf_rate(flow_id):
 
 if __name__ == "__main__":
   random.seed()
+  read_config()
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
 #      add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
 #     link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)

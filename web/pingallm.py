@@ -3,12 +3,20 @@ import sys
 import time
 import os
 import re
+import json
 
-hosts=['onosdevz1', 'onosdevz2', 'onosdevz3', 'onosdevz4', 'onosdevz5', 'onosdevz6', 'onosdevz7', 'onosdevz8']
 ping_cnt=3
 wait1=ping_cnt
 wait2=10
 
+CONFIG_FILE=os.getenv("HOME") + "/ONOS/web/config.json"
+
+def read_config():
+  global controllers
+  f = open(CONFIG_FILE)
+  conf = json.load(f)
+  controllers = conf['controllers']
+  f.close()
 
 def do_pingall():
 
@@ -20,8 +28,8 @@ def do_pingall():
   nr_ping = 0
   for line in f:
     if line[0] != "#":
-#      logfile="/tmp/ping.pid%d.%d" % (pid, fid)
       fid=int(line.strip().split()[0])
+#      logfile="/tmp/ping.pid%d.%d" % (pid, fid)
       logfile="/tmp/ping.%d" % (fid)
       src_dpid=line.strip().split()[2]
       dst_dpid=line.strip().split()[4]
@@ -31,8 +39,8 @@ def do_pingall():
       dst_hostid=int(dst_dpid.split(':')[-1], 16)
       cmd="echo \"Pingall flow %d : 192.168.%d.%d -> 192.168.%d.%d\" > %s" % (fid, src_nwid, src_hostid, dst_nwid, dst_hostid,logfile)
       os.popen(cmd)
-      cmd="ssh %s \'${HOME}/ONOS/test-network/mininet/mrun host%d \'ping -c %d -W 1 192.168.%d.%d\'\' >> %s 2>&1 &" % (hosts[src_nwid-1], src_hostid, ping_cnt, dst_nwid, dst_hostid,logfile)
-    #    print cmd
+      cmd="ssh %s \'${HOME}/ONOS/test-network/mininet/mrun host%d \'ping -c %d -W 1 192.168.%d.%d\'\' >> %s 2>&1 &" % (controllers[src_nwid-1], src_hostid, ping_cnt, dst_nwid, dst_hostid,logfile)
+      print cmd
       result = os.popen(cmd).read()
       time.sleep(0.2)
       nr_ping = nr_ping + 1
@@ -72,6 +80,7 @@ def report(nr_ping, nr_done):
         print "flow # %d %s : %s" % (i+1, flow_desc, result)
 
 if __name__ == "__main__":
+  read_config()
   nr_ping=do_pingall()
   nr_done=wait_ping_finish(nr_ping)
   report(nr_ping, nr_done)
