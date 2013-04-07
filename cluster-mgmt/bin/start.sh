@@ -16,4 +16,5 @@ if [ $db_status != 1 ];then
   exit
 fi
 onos start
-dsh -g $basename 'cd ONOS; ./ctrl-local.sh'
+switch local
+#dsh -g $basename 'cd ONOS; ./ctrl-local.sh'
