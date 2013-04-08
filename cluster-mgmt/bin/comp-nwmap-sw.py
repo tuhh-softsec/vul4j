@@ -24,7 +24,7 @@ def dump_network_map(filename):
   cmd="curl -s %s" % url
   f=open(filename, 'w')
   try:
-    result=os.popen(cmd).read()
+    result=json.loads(os.popen(cmd).read())
   except:
     print "REST has issue"
     sys.exit(1)
@@ -39,9 +39,15 @@ def make_key(*kargs):
   return key[:-1]
 
 def fdb_nmap(filename):
-  json_flow = json.load(open(filename, 'r'))
+  f=open(filename, 'r')
+  json_flow = json.load(f)
   nr_flow_entries = 0
   fdb_nmap={}
+  ## XXX should be better way to ditect empty list ##
+  if json_flow == "[]":
+    print "nmap contained %d flow entries" % nr_flow_entries
+    return fdb_nmap
+
   for flow in json_flow:
     fid = flow['flowId']['value']
     dl_src = flow['flowEntryMatch']['srcMac']['value'].lower()
