@@ -5,13 +5,13 @@ ZK_DIR='/home/ubuntu/zookeeper-3.4.5'
 ZK_LIB='/var/lib/zookeeper'
 CASSANDRA_LIB='/var/lib/cassandra'
 
-if [ $# == 2 ]; then
-  NR_NODES=$1
-  basename=$2
-else
-  echo "$0 nr_nodes basename"
+if [ x$ONOS_CLUSTER_BASENAME == "x" -o x$ONOS_CLUSTER_NR_NODES == "x" ]; then
+  echo "set environment variable ONOS_CLUSTER_BASENAME and ONOS_CLUSTER_NR_NODES"
   exit
 fi
+
+basename=$ONOS_CLUSTER_BASENAME
+NR_NODES=$ONOS_CLUSTER_NR_NODES
 
 dsh -g $basename 'uname -a'
 

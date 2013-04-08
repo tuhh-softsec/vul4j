@@ -7,13 +7,13 @@ CASSANDRA_LIB='/var/lib/cassandra'
 
 SSH_COPY="authorized_keys  id_rsa  id_rsa.pub  known_hosts  onlab-gui.pem  onlabkey.pem"
 
-if [ $# == 2 ]; then
-  NR_NODES=$1
-  basename=$2
-else
-  echo "$0 nr_nodes basename"
+if [ x$ONOS_CLUSTER_BASENAME == "x" -o x$ONOS_CLUSTER_NR_NODES == "x" ]; then
+  echo "set environment variable ONOS_CLUSTER_BASENAME and ONOS_CLUSTER_NR_NODES"
   exit
 fi
+
+basename=$ONOS_CLUSTER_BASENAME
+NR_NODES=$ONOS_CLUSTER_NR_NODES
 
 dsh -g $basename 'uname -a'
 
@@ -55,9 +55,9 @@ dsh -g $basename "cd $ZK_LIB; sudo ln -s $ZK_DIR/conf/myid"
 
 dsh -g $basename 'sudo hostname `cat /etc/hostname`'
 
-for n in `seq 2 $NR_NODES`; do
-  pcp -w ${basename}${n} ${basename}${n}/onsdemo_edge.py 'ONOS/test-network/mininet'
-  pcp -w ${basename}${n} ${basename}${n}/tunnel_onos_edge.sh 'ONOS/test-network/mininet'
-done
-pcp -w ${basename}1 ${basename}1/tunnel_onos_core.sh 'ONOS/test-network/mininet'
-pcp -w ${basename}1 ${basename}1/onsdemo_core.py 'ONOS/test-network/mininet'
+#for n in `seq 2 $NR_NODES`; do
+#  pcp -w ${basename}${n} ${basename}${n}/onsdemo_edge.py 'ONOS/test-network/mininet'
+#  pcp -w ${basename}${n} ${basename}${n}/tunnel_onos_edge.sh 'ONOS/test-network/mininet'
+#done
+#pcp -w ${basename}1 ${basename}1/tunnel_onos_core.sh 'ONOS/test-network/mininet'
+#pcp -w ${basename}1 ${basename}1/onsdemo_core.py 'ONOS/test-network/mininet'
