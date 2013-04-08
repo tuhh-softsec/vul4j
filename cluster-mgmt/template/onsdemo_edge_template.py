@@ -148,9 +148,9 @@ def sdnnet(opt):
         root[i].intf('root%d-eth0' % (int(i)+1)).setIP('1.1.%d.2/24' % (int(i)+1))
 
     stopsshd ()
-    stopiperf ()
+#    stopiperf ()
     startsshds ( host )
-    startiperfs ( host )
+#    startiperfs ( host )
 
     if opt=="cli":
         CLI(net)
