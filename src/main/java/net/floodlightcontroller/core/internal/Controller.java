@@ -2215,9 +2215,11 @@ public class Controller implements IFloodlightProviderService,
         this.roleChanger = new RoleChanger();
         
 		String conf = configParams.get("dbconf");
-		if (conf == null) {
+		if (conf == null || conf.isEmpty()) {
 			conf = "/tmp/cassandra.titan";
+			log.debug("did not get DB config setting using default {}", conf);
 		}
+		log.debug("setting DB config {}", conf);
 		this.swStore = new SwitchStorageImpl();
 		this.swStore.init(conf);
 		

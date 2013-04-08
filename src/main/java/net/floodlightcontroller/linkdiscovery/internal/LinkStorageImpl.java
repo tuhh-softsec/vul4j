@@ -5,12 +5,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.floodlightcontroller.core.internal.TopoSwitchServiceImpl;
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.GenerateEvent;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -23,6 +27,8 @@ import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.util.wrappers.event.EventGraph;
+import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.transform.PathPipe;
@@ -30,6 +36,7 @@ import com.tinkerpop.pipes.transform.PathPipe;
 public class LinkStorageImpl implements ILinkStorage {
 	public TitanGraph graph;
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
+	protected String conf;
 
 	@Override
 	public void update(Link link, DM_OPERATION op) {
@@ -70,7 +77,8 @@ public class LinkStorageImpl implements ILinkStorage {
 	}
 	
 	public void addOrUpdateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
-		Vertex vportSrc = null, vportDst = null;
+		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
+		IPortObject vportSrc = null, vportDst = null;
 	
 		log.trace("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
 		
@@ -78,18 +86,20 @@ public class LinkStorageImpl implements ILinkStorage {
             // get source port vertex
         	String dpid = HexString.toHexString(lt.getSrc());
         	short port = lt.getSrcPort();
-        	vportSrc = getPortVertex(dpid, port);
+        	vportSrc = conn.utils().searchPort(conn, dpid, port);
             
             // get dest port vertex
             dpid = HexString.toHexString(lt.getDst());
             port = lt.getDstPort();
-            vportDst = getPortVertex(dpid, port);
+            vportDst = conn.utils().searchPort(conn, dpid, port);
                         
             if (vportSrc != null && vportDst != null) {
-            	
+         	       	
             	// check if the link exists
-            	List<Vertex> currLinks = new ArrayList<Vertex>();
-            	for (Vertex V : vportSrc.query().direction(Direction.OUT).labels("link").vertices()) {
+            	List<IPortObject> currLinks = new ArrayList<IPortObject>();
+            	Iterable<IPortObject> currPorts = vportSrc.getLinkedPorts();
+            	
+            	for (IPortObject V : currPorts) {
             		currLinks.add(V);
             	}
             	
@@ -100,13 +110,13 @@ public class LinkStorageImpl implements ILinkStorage {
             					new Object[]{op, lt, vportSrc, vportDst});
             		}
             	} else {
-            		graph.addEdge(null, vportSrc, vportDst, "link");
-            		graph.stopTransaction(Conclusion.SUCCESS);
+            		conn.getFramedGraph().addEdge(null, vportSrc.asVertex(), vportDst.asVertex(), "link");
+            		conn.endTx(Transaction.COMMIT);
             		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
             } else {
             	log.error("addOrUpdateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
-            	graph.stopTransaction(Conclusion.FAILURE);
+            	conn.endTx(Transaction.ROLLBACK);
             }
         } catch (TitanException e) {
             /*
@@ -128,7 +138,8 @@ public class LinkStorageImpl implements ILinkStorage {
 
 	@Override
 	public void deleteLink(Link lt) {
-		Vertex vportSrc = null, vportDst = null;
+		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
+		IPortObject vportSrc = null, vportDst = null;
 		int count = 0;
 		
 		log.debug("deleteLink(): {}", lt);
@@ -137,29 +148,33 @@ public class LinkStorageImpl implements ILinkStorage {
             // get source port vertex
          	String dpid = HexString.toHexString(lt.getSrc());
          	short port = lt.getSrcPort();
-         	vportSrc = getPortVertex(dpid, port);
+         	vportSrc = conn.utils().searchPort(conn, dpid, port);
             
             // get dst port vertex
          	dpid = HexString.toHexString(lt.getDst());
          	port = lt.getDstPort();
-         	vportDst = getPortVertex(dpid, port);
+         	vportDst = conn.utils().searchPort(conn, dpid, port);
+     		// FIXME: This needs to remove all edges
+         	// FIXME: Events will only be generated on singleton graph object (GraphDBConnection)
          	
          	if (vportSrc != null && vportDst != null) {
-         		for (Edge e : vportSrc.getEdges(Direction.OUT)) {
+
+   /*      		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
          			log.debug("deleteLink(): {} in {} out {}", 
          					new Object[]{e.getLabel(), e.getVertex(Direction.IN), e.getVertex(Direction.OUT)});
          			if (e.getLabel().equals("link") && e.getVertex(Direction.IN).equals(vportDst)) {
          				graph.removeEdge(e);
          				count++;
          			}
-         		}
-        		graph.stopTransaction(Conclusion.SUCCESS);
-            	log.debug("deleteLink(): deleted {} edges {} src {} dst {}", new Object[]{
-            			count, lt, vportSrc, vportDst});
+         		}*/
+         		vportSrc.removeLink(vportDst);
+        		conn.endTx(Transaction.COMMIT);
+            	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
+            			lt, vportSrc, vportDst});
             	
             } else {
             	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
-            	graph.stopTransaction(Conclusion.FAILURE);
+            	conn.endTx(Transaction.ROLLBACK);
             }
          	
         } catch (TitanException e) {
@@ -193,7 +208,8 @@ public class LinkStorageImpl implements ILinkStorage {
 	public void init(String conf) {
 		//TODO extract the DB location from properties
 	
-        graph = TitanFactory.open(conf);
+		this.conf = conf;
+        graph = TitanFactory.open(this.conf);
         
         // FIXME: These keys are not needed for Links but we better create it before using it as per titan
         Set<String> s = graph.getIndexedKeys(Vertex.class);

@@ -2,6 +2,7 @@ package net.floodlightcontroller.flowcache;
 
 import java.util.ArrayList;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPathEndpoints;
@@ -77,7 +78,7 @@ public interface IFlowService extends IFloodlightService {
      * @param maxFlows: number of flows to return
      * @return the Flow Paths if found, otherwise null.
      */
-    ArrayList<FlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
+    ArrayList<IFlowPath> getAllFlowsSummary(FlowId flowId, int maxFlows);
     
     /**
      * Get all installed flows by all installers.

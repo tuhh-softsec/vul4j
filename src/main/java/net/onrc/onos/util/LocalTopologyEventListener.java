@@ -1,10 +1,6 @@
 package net.onrc.onos.util;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.linkdiscovery.internal.TopoLinkServiceImpl;
-import net.floodlightcontroller.util.FlowPath;
 import net.onrc.onos.flow.FlowManagerImpl;
 import net.onrc.onos.flow.IFlowManager;
 
@@ -15,12 +11,15 @@ import com.thinkaurelius.titan.core.TitanEdge;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.blueprints.util.wrappers.event.listener.GraphChangedListener;
 
-public class LocalTopologyEventListener implements GraphChangedListener {
+public class LocalTopologyEventListener implements LocalGraphChangedListener {
 	
 	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
-	protected static GraphDBConnection conn = GraphDBConnection.getInstance("");
+	protected static GraphDBConnection conn;
+	
+	public LocalTopologyEventListener(GraphDBConnection conn) {
+		LocalTopologyEventListener.conn = conn;		
+	}
 
 	@Override
 	public void edgeAdded(Edge arg0) {
@@ -28,11 +27,6 @@ public class LocalTopologyEventListener implements GraphChangedListener {
 		// Convert this Event into NetMapEvent (LinkAdded, FlowEntryEnabled, HostAttached, PortEnabled)
 	}
 
-	@Override
-	public void edgePropertyChanged(Edge arg0, String arg1, Object arg2) {
-		// TODO Auto-generated method stub
-        // Generate State change events on edges too
-	}
 
 	@Override
 	public void edgePropertyRemoved(Edge arg0, String arg1, Object arg2) {
@@ -71,22 +65,38 @@ public class LocalTopologyEventListener implements GraphChangedListener {
 	}
 
 	@Override
-	public void vertexPropertyChanged(Vertex arg0, String arg1, Object arg2) {
-		// TODO Auto-generated method stub
-		
-
-	}
-
-	@Override
 	public void vertexPropertyRemoved(Vertex arg0, String arg1, Object arg2) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void vertexRemoved(Vertex arg0) {
+	public void vertexRemoved(Vertex vertex) {
 		// TODO Auto-generated method stub
+		// Generate NetMapEvents 
+		String type = (String) vertex.getProperty("type");
+		log.debug("TopologyEvents: Received vertex removed event: {}",vertex.toString());
+		if (type.equals("port")) {
+			// port is removed...lets fire reconcile here directly for now
+			
+			IPortObject src_port = conn.getFramedGraph().frame(vertex, IPortObject.class);
+			log.debug("TopologyEvents: Port removed: {}:{}",src_port.getSwitch().getDPID(),src_port.getNumber());
+			IFlowManager manager = new FlowManagerImpl();
+			manager.reconcileFlows(src_port);			
+		}
+	}
 
+
+	@Override
+	public void edgePropertyChanged(Edge arg0, String arg1, Object arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void vertexPropertyChanged(Vertex arg0, String arg1, Object arg2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

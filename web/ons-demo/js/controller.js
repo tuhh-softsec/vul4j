@@ -38,16 +38,16 @@ var controllerFunctions = {
 		callURL(url);
 	},
 	delFlowCmd: function (flow) {
-		var url = '/proxy/gui/delflow/' + flow.flowId.value;
+		var url = '/proxy/gui/delflow/' + flow.flowId;
 		callURL(url);
 	},
 	startIPerfCmd: function (flow, duration, numSamples) {
-		var flowId = parseInt(flow.flowId.value, 16);
+		var flowId = parseInt(flow.flowId, 16);
 		var url = '/proxy/gui/iperf/start/' + [flowId, duration, numSamples].join('/');
 		callURL(url)
 	},
 	getIPerfDataCmd: function (flow, cb) {
-		var flowId = parseInt(flow.flowId.value, 16);
+		var flowId = parseInt(flow.flowId, 16);
 		var url = '/proxy/gui/iperf/rate/' + flowId;
 		callURL(url, cb);
 	}

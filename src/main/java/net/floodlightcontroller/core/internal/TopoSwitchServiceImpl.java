@@ -28,21 +28,21 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
-		conn = GraphDBConnection.getInstance("");
+		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
 		return conn.utils().getActiveSwitches(conn);
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
-		conn = GraphDBConnection.getInstance("");
+		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
 		return conn.utils().getAllSwitches(conn);
 	}
 
 	@Override
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
-		conn = GraphDBConnection.getInstance("");
+		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
 		return conn.utils().getInactiveSwitches(conn);
 	}
 

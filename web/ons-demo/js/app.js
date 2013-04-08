@@ -98,8 +98,8 @@ function updateSelectedFlowsTopology() {
 			var pts = [];
 			if (!d.dataPath.flowEntries) {
 				// create a temporary vector to indicate the pending flow
-				var s1 = d3.select(document.getElementById(d.dataPath.srcPort.dpid.value));
-				var s2 = d3.select(document.getElementById(d.dataPath.dstPort.dpid.value));
+				var s1 = d3.select(document.getElementById(d.srcDpid));
+				var s2 = d3.select(document.getElementById(d.dstDpid));
 
 				var pt1 = document.querySelector('svg').createSVGPoint();
 				pt1.x = s1.attr('x');
@@ -199,7 +199,7 @@ function updateSelectedFlowsTable() {
 		});
 		row.on('dblclick', function () {
 			if (d) {
-				var prompt = 'Delete flow ' + d.flowId.value + '?';
+				var prompt = 'Delete flow ' + d.flowId + '?';
 				if (confirm(prompt)) {
 					deleteFlow(d);
 					d.deletePending = true;
@@ -217,7 +217,7 @@ function updateSelectedFlowsTable() {
 			.text(function (d) {
 				if (d) {
 					if (d.flowId) {
-						return d.flowId.value;
+						return d.flowId;
 					} else {
 						return '0x--';
 					}
@@ -230,14 +230,14 @@ function updateSelectedFlowsTable() {
 		row.select('.srcDPID')
 			.text(function (d) {
 				if (d) {
-					return d.dataPath.srcPort.dpid.value;
+					return d.srcDpid;
 				}
 			});
 
 		row.select('.dstDPID')
 			.text(function (d) {
 				if (d) {
-					return d.dataPath.dstPort.dpid.value;
+					return d.dstDpid;
 				}
 			});
 	}
@@ -268,9 +268,9 @@ function startIPerfForFlow(flow) {
 		var i;
 		for (i=0; i < pointsToDisplay; ++i) {
 			var sample = flow.iperfData.samples[i];
-			var height = 32 * sample/50000000;
-			if (height > 32)
-				height = 32;
+			var height = 30 * sample/1000000;
+			if (height > 30)
+				height = 30;
 			pts.push({
 				x: i * 1000/(pointsToDisplay-1),
 				y: 32 - height
@@ -280,7 +280,7 @@ function startIPerfForFlow(flow) {
 	}
 
 	if (flow.flowId) {
-		console.log('starting iperf for: ' + flow.flowId.value);
+		console.log('starting iperf for: ' + flow.flowId);
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
@@ -389,7 +389,7 @@ function hasIPerf(flow) {
 }
 
 function clearIPerf(flow) {
-	console.log('clearing iperf interval for: ' + flow.flowId.value);
+	console.log('clearing iperf interval for: ' + flow.flowId);
 	clearInterval(flow.iperfFetchInterval);
 	delete flow.iperfFetchInterval;
 	clearInterval(flow.iperfDisplayInterval);
@@ -436,20 +436,20 @@ function showFlowChooser() {
 		row.append('div')
 			.classed('flowId', true)
 			.text(function (d) {
-				return d.flowId.value;
+				return d.flowId;
 			});
 
 		row.append('div')
 			.classed('srcDPID', true)
 			.text(function (d) {
-				return d.dataPath.srcPort.dpid.value;
+				return d.srcDpid;
 			});
 
 
 		row.append('div')
 			.classed('dstDPID', true)
 			.text(function (d) {
-				return d.dataPath.dstPort.dpid.value;
+				return d.dstDpid;
 			});
 
 	}
@@ -592,7 +592,7 @@ function makeLinkKey(link) {
 }
 
 function makeFlowKey(flow) {
-	return flow.dataPath.srcPort.dpid.value + '=>' + flow.dataPath.dstPort.dpid.value;
+	return flow.srcDpid + '=>' + flow.dstDpid;
 }
 
 function makeSelectedFlowKey(flow) {
@@ -938,6 +938,8 @@ updateTopology = function() {
 								}
 							}
 						},
+					        srcDpid: srcData.dpid,
+					        dstDpid: dstData.dpid,
 						createPending: true
 					};
 

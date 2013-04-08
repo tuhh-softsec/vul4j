@@ -13,29 +13,26 @@ import re
 
 from flask import Flask, json, Response, render_template, make_response, request
 
+
+CONFIG_FILE=os.getenv("HOME") + "/ONOS/web/config.json"
+
 ## Global Var for ON.Lab local REST ##
 RestIP="localhost"
 RestPort=8080
-
-## Uncomment the desired block based on your testbed environment
-# Settings for running on production
-controllers=["onosgui1", "onosgui2", "onosgui3", "onosgui4", "onosgui5", "onosgui6", "onosgui7", "onosgui8"]
-core_switches=["00:00:00:00:ba:5e:ba:11", "00:00:00:00:00:00:ba:12", "00:00:20:4e:7f:51:8a:35", "00:00:00:00:ba:5e:ba:13", "00:00:00:08:a2:08:f9:01", "00:00:00:16:97:08:9a:46"]
-ONOS_GUI3_HOST="http://gui3.onlab.us:8080"
-ONOS_GUI3_CONTROL_HOST="http://gui3.onlab.us:8081"
-
-# Settings for running on dev testbed. Replace dev
-#controllers=["onosdevb1", "onosdevb2", "onosdevb3", "onosdevb4"]
-#controllers=["onosdevt1", "onosdevt2", "onosdevt3", "onosdevt4", "onosdevt5", "onosdevt6", "onosdevt7", "onosdevt8"]
-#core_switches=["00:00:00:00:00:00:01:01", "00:00:00:00:00:00:01:02", "00:00:00:00:00:00:01:03", "00:00:00:00:00:00:01:04", "00:00:00:00:00:00:01:05", "00:00:00:00:00:00:01:06"]
-
-#ONOS_GUI3_HOST="http://devt-gui.onlab.us:8080"
-#ONOS_GUI3_CONTROL_HOST="http://devt-gui.onlab.us:8080"
-
-LB=True #; True or False
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
-
 DEBUG=1
+
+def read_config():
+  global LB, TESTBED, controllers, core_switches, ONOS_GUI3_HOST, ONOS_GUI3_CONTROL_HOST
+  f = open(CONFIG_FILE)
+  conf = json.load(f)
+  LB = conf['LB']
+  TESTBED = conf['TESTBED']
+  controllers = conf['controllers']
+  core_switches=conf['core_switches']
+  ONOS_GUI3_HOST=conf['ONOS_GUI3_HOST']
+  ONOS_GUI3_CONTROL_HOST=conf['ONOS_GUI3_CONTROL_HOST']
+  f.close()
 
 pp = pprint.PrettyPrinter(indent=4)
 app = Flask(__name__)
@@ -71,6 +68,13 @@ def return_file(filename="index.html"):
   else:
     fullpath = str(request.path)[1:]
 
+  try: 
+    open(fullpath)
+  except:
+    response = make_response("Cannot find a file: %s" % (fullpath), 500)
+    response.headers["Content-type"] = "text/html"
+    return response
+
   response = make_response(open(fullpath).read())
   suffix = fullpath.split(".")[-1]
 
@@ -92,6 +96,19 @@ def return_file(filename="index.html"):
 def proxy_link_change(cmd, src_dpid, src_port, dst_dpid, dst_port):
   try:
     command = "curl -s %s/gui/link/%s/%s/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, cmd, src_dpid, src_port, dst_dpid, dst_port)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/gui/switchctrl/<cmd>")
+def proxy_switch_controller_setting(cmd):
+  try:
+    command = "curl -s %s/gui/switchctrl/%s" % (ONOS_GUI3_CONTROL_HOST, cmd)
     print command
     result = os.popen(command).read()
   except:
@@ -188,15 +205,12 @@ def get_json(url):
     command = "curl -s %s" % (url)
     result = os.popen(command).read()
     parsedResult = json.loads(result)    
+    if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
+      print "REST %s returned code %s" % (command, parsedResult['code'])
+      code=500
   except:
     print "REST IF %s has issue" % command
     result = ""
-
-  if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
-    print "REST %s returned code %s" % (command, parsedResult['code'])
-    code=500
-
-  if result == "":
     code = 500
 
   return (code, result)
@@ -622,13 +636,15 @@ def query_links():
 
 @app.route("/controller_status")
 def controller_status():
-  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
+#  onos_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh status | awk '{print $1}'"
+  onos_check="cd; onos status %s | grep %s | awk '{print $2}'"
   #cassandra_check="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-cassandra.sh status"
 
   cont_status=[]
   for i in controllers:
     status={}
     onos=os.popen(onos_check % i).read()[:-1]
+    onos=os.popen(onos_check % (i, i.lower())).read()[:-1]
     status["name"]=i
     status["onos"]=onos
     status["cassandra"]=0
@@ -641,8 +657,10 @@ def controller_status():
 ### Command ###
 @app.route("/gui/controller/<cmd>/<controller_name>")
 def controller_status_change(cmd, controller_name):
-  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
-  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+#  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
+#  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
+  start_onos="cd; onos start %s" % (controller_name[-1:])
+  stop_onos="cd; onos stop %s" % (controller_name[-1:])
 
   if cmd == "up":
     result=os.popen(start_onos).read()
@@ -653,8 +671,39 @@ def controller_status_change(cmd, controller_name):
 
   return ret
 
+@app.route("/gui/switchctrl/<cmd>")
+def switch_controller_setting(cmd):
+  if cmd =="local":
+    print "All aggr switches connects to local controller only"
+    result=""
+    if (TESTBED == "sw"):
+      for i in range(0, len(controllers)): 
+        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
+        result += os.popen(cmd_string).read()
+    else:
+      cmd_string="cd; switch local"
+      result += os.popen(cmd_string).read()
+  elif cmd =="all":
+    print "All aggr switches connects to all controllers except for core controller"
+    result=""
+    if (TESTBED == "sw"):
+      for i in range(0, len(controllers)): 
+        cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+        result += os.popen(cmd_string).read()
+    else:    
+      cmd_string="cd; switch all"
+      result += os.popen(cmd_string).read()
+
+  return result
+
+
+
 @app.route("/gui/switch/<cmd>/<dpid>")
 def switch_status_change(cmd, dpid):
+  result = ""
+  if (TESTBED == "hw"):
+    return result
+
   r = re.compile(':')
   dpid = re.sub(r, '', dpid)
   host=controllers[0]
@@ -673,6 +722,16 @@ def switch_status_change(cmd, dpid):
 #http://localhost:9000/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
 @app.route("/gui/link/up/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>")
 def link_up(src_dpid, src_port, dst_dpid, dst_port):
+  result = ""
+
+  if (TESTBED == "sw"): 
+    result = link_up_sw(src_dpid, src_port, dst_dpid, dst_port)
+  else:
+    result = link_up_hw(src_dpid, src_port, dst_dpid, dst_port)
+  return result
+
+# Link up on software testbed
+def link_up_sw(src_dpid, src_port, dst_dpid, dst_port):
 
   cmd = 'up'
   result=""
@@ -697,6 +756,81 @@ def link_up(src_dpid, src_port, dst_dpid, dst_port):
 
   return result
 
+# Link up on hardware testbed
+def link_up_hw(src_dpid, src_port, dst_dpid, dst_port):
+
+	port1 = src_port
+	port2 = dst_port
+	if src_dpid == "00:00:00:00:ba:5e:ba:11":
+		if dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 24
+			port2 = 24
+		elif dst_dpid == "00:01:00:16:97:08:9a:46":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:00:00:ba:5e:ba:13":
+                if dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:00:00:00:00:ba:12":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:13":
+			port1 = 23
+			port2 = 23
+                elif dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 24
+			port2 = 21
+	elif src_dpid == "00:01:00:16:97:08:9a:46":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:11":
+			port1 = 23
+			port2 = 23
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 24
+			port2 = 24
+	elif src_dpid == "00:00:00:08:a2:08:f9:01":
+                if dst_dpid == "00:00:00:00:ba:5e:ba:11":
+			port1 = 24
+			port2 = 24
+                elif dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:00:20:4e:7f:51:8a:35":
+			port1 = 23
+			port2 = 23
+	elif src_dpid == "00:00:20:4e:7f:51:8a:35":
+                if dst_dpid == "00:00:00:00:00:00:ba:12":
+			port1 = 21
+			port2 = 24
+                elif dst_dpid == "00:00:00:00:ba:5e:ba:13":
+			port1 = 22
+			port2 = 22
+                elif dst_dpid == "00:01:00:16:97:08:9a:46":
+			port1 = 24
+			port2 = 24
+                elif dst_dpid == "00:00:00:08:a2:08:f9:01":
+			port1 = 23
+			port2 = 23
+
+	cmd = 'up'
+	result=""
+	host = controllers[0]
+	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (src_dpid, port1, cmd)
+	print cmd_string
+	res=os.popen(cmd_string).read()
+	result = result + ' ' + res
+	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (dst_dpid, port2, cmd)
+	print cmd_string
+	res=os.popen(cmd_string).read()
+	result = result + ' ' + res
+
+
+	return result
+
 
 #* Link Down
 #http://localhost:9000/gui/link/down/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>
@@ -709,7 +843,13 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
     hostid=int(src_dpid.split(':')[-2])
     host = controllers[hostid-1]
 
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+  if (TESTBED == "sw"):
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
+  else:
+    if ( src_dpid == "00:00:00:08:a2:08:f9:01" ):
+      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( dst_dpid, dst_port, cmd)
+    else:
+      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( src_dpid, src_port, cmd)
   print cmd_string
 
   result=os.popen(cmd_string).read()
@@ -771,13 +911,25 @@ def iperf_start(flow_id,duration,samples):
 #  print "FlowPath: (flowId = %s src = %s/%s dst = %s/%s" % (flowId, src_dpid, src_port, dst_dpid, dst_port)
 
   if src_dpid in core_switches:
-      host = controllers[0]
+      src_host = controllers[0]
   else:
       hostid=int(src_dpid.split(':')[-2])
-      host = controllers[hostid-1]
+      src_host = controllers[hostid-1]
 
-#  ./runiperf.sh 2 00:00:00:00:00:00:02:02 1 00:00:00:00:00:00:03:02 1 100 15
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s %s %s'" % (host, flowId, src_dpid, src_port, dst_dpid, dst_port, duration, samples)
+  if dst_dpid in core_switches:
+      dst_host = controllers[0]
+  else:
+      hostid=int(dst_dpid.split(':')[-2])
+      dst_host = controllers[hostid-1]
+
+# /runiperf.sh <flowid> <src_dpid> <dst_dpid> svr|client <proto>/<duration>/<interval>/<samples>
+  protocol="udp"
+  interval=0.1
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (dst_host, flowId, src_dpid, dst_dpid, "svr", protocol, duration, interval, samples)
+  print cmd_string
+  os.popen(cmd_string)
+
+  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (src_host, flowId, src_dpid, dst_dpid, "client", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
 
@@ -787,6 +939,9 @@ def iperf_start(flow_id,duration,samples):
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
+  if (TESTBED == "hw"):
+    return "{}"
+
   try:
     command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
@@ -806,14 +961,14 @@ def iperf_rate(flow_id):
   dst_dpid = parsedResult['dataPath']['dstPort']['dpid']['value']
   dst_port = parsedResult['dataPath']['dstPort']['port']['value']
 
-  if src_dpid in core_switches:
+  if dst_dpid in core_switches:
       host = controllers[0]
   else:
-      hostid=int(src_dpid.split(':')[-2])
+      hostid=int(dst_dpid.split(':')[-2])
       host = controllers[hostid-1]
 
   try:
-    command = "curl -s http://%s:%s/log/iperf_%s.out" % (host, 9000, flow_id)
+    command = "curl -s http://%s:%s/log/iperfsvr_%s.out" % (host, 9000, flow_id)
     print command
     result = os.popen(command).read()
   except:
@@ -829,6 +984,7 @@ def iperf_rate(flow_id):
 
 if __name__ == "__main__":
   random.seed()
+  read_config()
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
 #      add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
 #     link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)

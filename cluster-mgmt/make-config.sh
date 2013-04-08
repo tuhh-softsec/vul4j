@@ -1,13 +1,16 @@
 #! /bin/bash
 USERNAME=ubuntu
-if [ $# == 3 ]; then
-  NR_NODES=$1
-  basename=$2
-  hosts_file=$3
-else
-  echo "$0 nr_hodes basename hostfile"
+if [ x$ONOS_CLUSTER_BASENAME == "x" -o x$ONOS_CLUSTER_NR_NODES == "x" ]; then 
+  echo "set environment variable ONOS_CLUSTER_BASENAME and ONOS_CLUSTER_NR_NODES"
+  exit
+elif [ $# != 1 ]; then
+  echo "$0 hostfile"
   exit
 fi
+
+basename=$ONOS_CLUSTER_BASENAME
+NR_NODES=$ONOS_CLUSTER_NR_NODES
+hosts_file=$1
 
 for n in `seq 1 $NR_NODES`; do
   rm -rf ${basename}${n}

@@ -3,12 +3,6 @@ package net.onrc.onos.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.frames.FramedVertexIterable;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -17,6 +11,12 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowId;
+
+import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.frames.FramedGraph;
+import com.tinkerpop.frames.FramedVertexIterable;
+import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBUtils implements IDBUtils {
 	
@@ -44,16 +44,6 @@ public class GraphDBUtils implements IDBUtils {
 	}
 
 	@Override
-	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
-	    ISwitchObject sw = searchSwitch(conn, dpid);
-	    if ((sw != null) &&
-		sw.getState().equals(SwitchState.ACTIVE.toString())) {
-		return sw;
-	    }
-	    return null;
-	}
-
-	@Override
 	public IDeviceObject searchDevice(GraphDBConnection conn, String macAddr) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
@@ -65,11 +55,24 @@ public class GraphDBUtils implements IDBUtils {
 	@Override
 	public IPortObject searchPort(GraphDBConnection conn, String dpid, short number) {
 		ISwitchObject sw = searchSwitch(conn, dpid);
+//		if (sw != null) {
+//			
+//			IPortObject port = null;
+//			try {
+//				port = sw.getPort(number);
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			return port;
+//		}
+//		return null;
 		GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
 		pipe.start(sw.asVertex());
 	    pipe.out("on").has("number", number);
-	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IPortObject.class);
-	    return r.iterator().hasNext() ? r.iterator().next() : null;		
+	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
+	    return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 
 	@Override
@@ -89,6 +92,7 @@ public class GraphDBUtils implements IDBUtils {
 	@Override
 	public void removePort(GraphDBConnection conn, IPortObject port) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+//		EventGraph<TitanGraph> eg = conn.getEventGraph();
 		fg.removeVertex(port.asVertex());		
 	}
 
@@ -135,15 +139,23 @@ public class GraphDBUtils implements IDBUtils {
 		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
 		pipe.start(flowEntry.asVertex());
 		pipe.out("flow");
-		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), pipe, IFlowPath.class);
+		FramedVertexIterable<IFlowPath> r = new FramedVertexIterable(conn.getFramedGraph(), (Iterable) pipe, IFlowPath.class);
 		return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 
 	@Override
-        public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn) {
+    public Iterable<IFlowPath> getAllFlowPaths(GraphDBConnection conn) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		Iterable<IFlowPath> flowPaths = fg.getVertices("type", "flow", IFlowPath.class);
 		
-		return fg.getVertices("type", "flow", IFlowPath.class);
+		List<IFlowPath> nonNullFlows = new ArrayList<IFlowPath>();
+
+		for (IFlowPath fp: flowPaths) {
+			if (fp.getFlowId() != null) {
+				nonNullFlows.add(fp);
+			}
+		}
+		return nonNullFlows;
 	}
 
 	@Override
@@ -210,5 +222,11 @@ public class GraphDBUtils implements IDBUtils {
 			}
 		}
 		return inactiveSwitches;
+	}
+
+	@Override
+	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

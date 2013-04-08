@@ -65,7 +65,7 @@ class Node {
     };
 
     public long nodeId;			// The node ID
-    public LinkedList<Link> links;	// The links originating from this node
+    public HashMap<Short, Link> links;	// The links originating from this node
 
     /**
      * Node constructor.
@@ -74,7 +74,7 @@ class Node {
      */
     public Node(long nodeId) {
 	this.nodeId = nodeId;
-	links = new LinkedList<Link>();
+	links = new HashMap<Short, Link>();
     }
 
     /**
@@ -88,7 +88,7 @@ class Node {
      */
     public void addNeighbor(Node neighbor, short myPort, short neighborPort) {
 	Link link = new Link(this, neighbor, myPort, neighborPort);
-	links.add(link);
+	links.put(myPort, link);
     }
 };
 
@@ -338,7 +338,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		path_found = true;
 		break;
 	    }
-	    for (Node.Link link : nextVertex.links) {
+	    for (Node.Link link : nextVertex.links.values()) {
 		Node child = link.neighbor;
 		if (! visitedSet.contains(child)) {
 		    previousVertexMap.put(child, link);

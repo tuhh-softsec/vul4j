@@ -1,12 +1,15 @@
 #! /bin/bash
-if [ $# == 3 ]; then
-  NR_NODES=$1
-  basename=$2
-  hosts_file=$3
-else
-  echo "$0 nr_hodes basename hostfile"
+if [ x$ONOS_CLUSTER_BASENAME == "x" -o x$ONOS_CLUSTER_NR_NODES == "x" ]; then 
+  echo "set environment variable ONOS_CLUSTER_BASENAME and ONOS_CLUSTER_NR_NODES"
+  exit
+elif [ $# != 1 ]; then
+  echo "$0 hostfile"
   exit
 fi
+
+basename=$ONOS_CLUSTER_BASENAME
+NR_NODES=$ONOS_CLUSTER_NR_NODES
+hosts_file=$1
 
 for n in `seq 2 $NR_NODES`; do
   if [ $n == 2 ]; then
@@ -18,7 +21,7 @@ for n in `seq 2 $NR_NODES`; do
 done
 cp template/onsdemo_core.py ${basename}1/onsdemo.py
 
-cat hosts  | awk '{printf("%s=%s\n",$2,$1)}' > .tmp
+cat $hosts_file  | awk '{printf("%s=%s\n",$2,$1)}' > .tmp
 for n in `seq 2 $NR_NODES`; do
   cat template/tunnel_onsdemo_edge_template.sh | awk '{if(NR==2){system("cat .tmp")}else{print $0}}' |\
   sed "s/__NWID__/$n/g" |\
