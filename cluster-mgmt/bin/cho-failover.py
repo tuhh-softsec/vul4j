@@ -6,13 +6,16 @@ import re
 from check_status import *
 import time
 
-flowdef="flowdef_8node_252.txt"
-basename="onosdevz"
-operation=["sw3-eth4 down","sw4-eth4 down","sw4-eth3 down","sw3-eth4 up","sw1-eth2 down","sw4-eth4 up","sw4-eth3 up","sw1-eth2 up"]
+basename=os.getenv("ONOS_CLUSTER_BASENAME")
+operation=['switch all', 'onos stop 8', 'onos stop 7', 'onos stop 6', 'onos stop 5', 'onos start 5;onos start 6;onos start 7;onos start 8', 'switch local']  
+nr_controllers=[8, 7, 6, 5, 4, 8, 8]
+
+wait1=30
+wait2=60
 
 def check_by_pingall():
   buf = ""
-  cmd = "dsh -w %s1 \"cd ONOS/web; ./pingallm.py %s\"" % (basename, flowdef)
+  cmd = "pingall-speedup.sh %s" % (flowdef)
   result = os.popen(cmd).read()
   buf += result
   
@@ -25,7 +28,6 @@ def link_change_core(op):
   cmd = "dsh -w %s1 \"sudo ifconfig %s\"" % (basename, op)
   os.popen(cmd)
   print cmd
-
 
 def check_flow_nmap():
   buf = "" 
@@ -51,77 +53,136 @@ def dump_json(url, filename):
   f.write(buf)
   f.close()
 
-def check_rest(cycle, n):
-  url="http://%s:%s/wm/core/topology/switches/all/json" % (RestIP, RestPort)
-  filename  = "rest-sw-log.%d.%d.log" % (cycle, n)
+def dump_flowgetall(tag):
+  url="http://%s:%s/wm/flow/getall/json" % (RestIP, RestPort)
+  filename  = "rest-flow-getall-log.%s.log" % tag
   dump_json(url, filename)
 
-  filename  = "rest-link-log.%d.%d.log" % (cycle, n)
+def check_rest(tag):
+  url="http://%s:%s/wm/flow/getall/json" % (RestIP, RestPort)
+  filename  = "rest-flow-getall-log.%s.log" % tag
+  dump_json(url, filename)
+
+  url="http://%s:%s/wm/core/topology/switches/all/json" % (RestIP, RestPort)
+  filename  = "rest-sw-log.%s.log" % tag
+  dump_json(url, filename)
+
   url = "http://%s:%s/wm/core/topology/links/json" % (RestIP, RestPort)
+  filename  = "rest-link-log.%s.log" % tag
   dump_json(url, filename)
 
   url = "http://%s:%s/wm/registry/switches/json" % (RestIP, RestPort)
-  filename  = "rest-reg-sw-log.%d.%d.log" % (cycle, n)
+  filename  = "rest-reg-sw-log.%s.log" % tag
   dump_json(url, filename)
 
   url = "http://%s:%s/wm/registry/controllers/json" % (RestIP, RestPort)
-  filename  = "rest-reg-ctrl-log.%d.%d.log" % (cycle, n)
+  filename  = "rest-reg-ctrl-log.%s.log" % tag
   dump_json(url, filename)
 
   url = "http://%s:%s/wm/flow/getsummary/0/0/json" % (RestIP, RestPort)
-  filename  = "rest-flow-log.%d.%d.log" % (cycle, n)
+  filename  = "rest-flow-getsummary-log.%s.log" % tag
   dump_json(url, filename)
 
 
-def log(cycle, n, nr_ctrl):
-  error = "error-log.%d.%d.log" % (cycle, n)
-  nmapflow  = "nmap-flow-log.%d.%d.log" % (cycle, n)
-  rawflow  = "raw-flow-log.%d.%d.log" % (cycle, n)
+def check_and_log(tag):
+  global cur_nr_controllers
+  buf = ""
+  buf += "check by pingall\n"
+  (code, result) = check_by_pingall()
+  if code == 0:
+    buf += "ping success %s\n" % (result)
+  else:
+    buf += "pingall failed\n"
+    buf += "%s\n" % (result)
+    error = "error-log.%s.log" % tag
+    rawflow  = "raw-flow-log.%s.log" % tag
+    
+    ferror = open(error, 'w')
+    ferror.write(result)
 
-  f = open(error, 'w')
-  f.write(result)
-  f.write(check_switch()[1])
-  f.write(check_link()[1])
-  f.write(check_switch_all(nr_ctrl)[1])
-  f.write(check_controllers(nr_ctrl)[1])
-  f.close()
+    fraw = open(rawflow,'w')
+    fraw.write(check_flow_raw()[1])
+    fraw.close()
 
-  f = open(nmapflow,'w')
-  f.write(check_flow_nmap()[1])
-  f.close()
+    check_rest(tag)
 
-  f = open(rawflow,'w')
-  f.write(check_flow_raw()[1])
-  f.close()
-  check_rest(cycle,n)
+    ferror.write(check_switch()[1])
+    ferror.write(check_link()[1])
+    ferror.write(check_switch_local()[1])
+    ferror.write(check_controllers(cur_nr_controllers)[1])
+    ferror.close()
 
+  return (code, buf)
 
-opration=['switch all', 'onos stop 8', 'onos stop 7', 'onos stop 6', 'onos stop 5', 'onos start 5;onos start 6;onos start 7;onos start 8', 'switch local']  
-nr_controllers=[8, 7, 6, 5, 4, 8, 8]
+def plog(string):
+  global logf
+  print string
+  logf.write(string+"\n")
 
 if __name__ == "__main__":
-  print "%s" % check_switch()[1]
-  print "%s" % check_link()[1]
-  print "%s" % check_controllers(8)[1]
+  global logf, cur_nr_controllers
+  argvs = sys.argv 
+  if len(argvs) == 5:
+    log_filename = sys.argv[1]
+    flowdef = sys.argv[2]
+    wait1 = int(sys.argv[3])
+    wait2 = int(sys.argv[4])
+  else:
+    print "usage: %s log_filename flowdef_filename wait1 wait2" % sys.argv[0]
+    print "  wait1: wait time (sec) to check ping after change"
+    print "  wait2: additional wait time (sec) if the first check failed"
+    sys.exit(1)
+
+  logf = open(log_filename, 'w', 0)    
+
+  plog("flow def: %s" % flowdef)
+  plog("wait1 : %d" % wait1)
+  plog("wait2 : %d" % wait2)
+
+  plog(check_switch()[1])
+  plog(check_link()[1])
+  plog(check_controllers(8)[1])
+
   (code, result) = check_by_pingall()
+
+  plog(result)
+
   print result
   k = raw_input('hit any key>')
 
   for cycle in range(1000):
     for n, op in enumerate(operation):
-      print "==== Cycle %d operation %d ====" % (cycle, n)
-      print op 
+      plog("==== Cycle %d operation %d ====: %s" % (cycle, n, os.popen('date').read()))
+#      link_change_core(op)
       os.popen(op)
-      print "wait 30 sec"
-      time.sleep(30)
+      plog(op)
+      cur_nr_controllers = nr_controllers[n]
 
-      print "check by pingall"
-      (code, result) = check_by_pingall()
-      if code == 0:
-        print "ping success %s" % (result)
-      else:
-        print "pingall failed (%d, %d). Collecting logs" % (cycle, n)
-        log(cycle, n, nr_controllers[n]) 
+      plog("wait %d sec" % wait1)
+      time.sleep(wait1)
+      plog("check and log: %s" % os.popen('date').read())
 
+      tstart=int(time.time())
+      (code, result) = check_and_log("%d.%d.1" % (cycle,n))
+      plog(result)
+      plog("done: %s" % os.popen('date').read())
+      tend=int(time.time())
 
+      tdelta=tend-tstart
 
+      if not code == 0:
+        wait = max(0, wait2 - tdelta)
+        plog("took %d sec for check and log. wait another %d sec" % (tdelta, wait))
+        time.sleep(wait)
+        plog("check and log: %s" % os.popen('date').read())
+        (code, result) = check_and_log("%d.%d.2" % (cycle,n))
+        plog(result)
+        plog("done: %s" % os.popen('date').read())
+        if code == 0:
+          tag = "%d.%d.2" % (cycle,n)
+          dump_flowgetall(tag)
+          rawflow  = "raw-flow-log.%s.log" % tag
+          fraw = open(rawflow,'w')
+          fraw.write(check_flow_raw()[1])
+          fraw.close()
+  logf.close()

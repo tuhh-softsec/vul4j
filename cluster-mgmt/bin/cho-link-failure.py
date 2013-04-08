@@ -6,9 +6,10 @@ import re
 from check_status import *
 import time
 
-flowdef="flowdef_8node_252.txt"
-basename="onosdevt"
+basename=os.getenv("ONOS_CLUSTER_BASENAME")
 operation=["sw3-eth4 down","sw4-eth4 down","sw4-eth3 down","sw3-eth4 up","sw1-eth2 down","sw4-eth4 up","sw4-eth3 up","sw1-eth2 up"]
+wait1=30
+wait2=60
 
 def check_by_pingall():
   buf = ""
@@ -82,13 +83,15 @@ def check_rest(tag):
 
 
 def check_and_log(tag):
-  print "check by pingall"
+  global cur_nr_controllers
+  buf = ""
+  buf += "check by pingall\n"
   (code, result) = check_by_pingall()
   if code == 0:
-    print "ping success %s" % (result)
+    buf += "ping success %s\n" % (result)
   else:
-    print "pingall failed"
-    print "%s" % (result)
+    buf += "pingall failed\n"
+    buf += "%s\n" % (result)
     error = "error-log.%s.log" % tag
     rawflow  = "raw-flow-log.%s.log" % tag
     
@@ -104,35 +107,76 @@ def check_and_log(tag):
     ferror.write(check_switch()[1])
     ferror.write(check_link()[1])
     ferror.write(check_switch_local()[1])
-    ferror.write(check_controllers(8)[1])
+    ferror.write(check_controllers(cur_nr_controllers)[1])
     ferror.close()
 
-  return code
+  return (code, buf)
 
+def plog(string):
+  global logf
+  print string
+  logf.write(string+"\n")
 
 if __name__ == "__main__":
-  print "%s" % check_switch()[1]
-  print "%s" % check_link()[1]
-  print "%s" % check_controllers(8)[1]
+  global logf, cur_nr_controllers
+
+  cur_nr_controllers = 8
+
+  argvs = sys.argv 
+  if len(argvs) == 5:
+    log_filename = sys.argv[1]
+    flowdef = sys.argv[2]
+    wait1 = int(sys.argv[3])
+    wait2 = int(sys.argv[4])
+  else:
+    print "usage: %s log_filename flowdef_filename wait1 wait2" % sys.argv[0]
+    print "  wait1: wait time (sec) to check ping after change"
+    print "  wait2: additional wait time (sec) if the first check failed"
+    sys.exit(1)
+
+  logf = open(log_filename, 'w', 0)    
+
+  plog("flow def: %s" % flowdef)
+  plog("wait1 : %d" % wait1)
+  plog("wait2 : %d" % wait2)
+
+  plog(check_switch()[1])
+  plog(check_link()[1])
+  plog(check_controllers(cur_nr_controllers)[1])
+
   (code, result) = check_by_pingall()
+
+  plog(result)
+
   print result
   k = raw_input('hit any key>')
 
   for cycle in range(1000):
     for n, op in enumerate(operation):
-      print "==== Cycle %d operation %d ====: %s" % (cycle, n, os.popen('date').read())
+      plog("==== Cycle %d operation %d ====: %s" % (cycle, n, os.popen('date').read()))
       link_change_core(op)
-      print "wait 30 sec"
-      time.sleep(30)
-      print "check and log: %s" % os.popen('date').read()
-      code = check_and_log("%d.%d.1" % (cycle,n))
-      print "done: %s" % os.popen('date').read()
+      plog(op)
+
+      plog("wait %d sec" % wait1)
+      time.sleep(wait1)
+      plog("check and log: %s" % os.popen('date').read())
+
+      tstart=int(time.time())
+      (code, result) = check_and_log("%d.%d.1" % (cycle,n))
+      plog(result)
+      plog("done: %s" % os.popen('date').read())
+      tend=int(time.time())
+
+      tdelta=tend-tstart
+
       if not code == 0:
-        print "wait another 60 sec"
-        time.sleep(60)
-        print "check and log: %s" % os.popen('date').read()
-        code = check_and_log("%d.%d.2" % (cycle,n))
-        print "done: %s" % os.popen('date').read()
+        wait = max(0, wait2 - tdelta)
+        plog("took %d sec for check and log. wait another %d sec" % (tdelta, wait))
+        time.sleep(wait)
+        plog("check and log: %s" % os.popen('date').read())
+        (code, result) = check_and_log("%d.%d.2" % (cycle,n))
+        plog(result)
+        plog("done: %s" % os.popen('date').read())
         if code == 0:
           tag = "%d.%d.2" % (cycle,n)
           dump_flowgetall(tag)
@@ -140,3 +184,4 @@ if __name__ == "__main__":
           fraw = open(rawflow,'w')
           fraw.write(check_flow_raw()[1])
           fraw.close()
+  logf.close()
