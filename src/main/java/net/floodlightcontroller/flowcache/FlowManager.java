@@ -131,23 +131,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().getAllFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    counterAllFlowEntries++;
-		    String flowEntryIdStr = flowEntryObj.getFlowEntryId();
-		    String userState = flowEntryObj.getUserState();
 		    String switchState = flowEntryObj.getSwitchState();
-		    String dpidStr = flowEntryObj.getSwitchDpid();
-		    if ((flowEntryIdStr == null) ||
-			(userState == null) ||
-			(switchState == null) ||
-			(dpidStr == null)) {
-			log.debug("IGNORING Flow Entry entry with null fields");
-			continue;
-		    }
-		    FlowEntryId flowEntryId = new FlowEntryId(flowEntryIdStr);
-		    Dpid dpid = new Dpid(dpidStr);
-
-		    if (! switchState.equals("FE_SWITCH_NOT_UPDATED"))
+		    if ((switchState == null) ||
+			(! switchState.equals("FE_SWITCH_NOT_UPDATED"))) {
 			continue;	// Ignore the entry: nothing to do
+		    }
 
+		    String dpidStr = flowEntryObj.getSwitchDpid();
+		    if (dpidStr == null)
+			continue;
+		    Dpid dpid = new Dpid(dpidStr);
 		    IOFSwitch mySwitch = mySwitches.get(dpid.value());
 		    if (mySwitch == null)
 			continue;	// Ignore the entry: not my switch
@@ -164,6 +157,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to cover the more common scenario.
 		    // TODO: This is error prone and needs to be fixed!
 		    //
+		    String userState = flowEntryObj.getUserState();
+		    if (userState == null)
+			continue;
 		    if (userState.equals("FE_USER_DELETE")) {
 			// An entry that needs to be deleted.
 			deleteFlowEntries.add(flowEntryObj);
@@ -232,7 +228,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowEntry(conn, flowEntryObj);
 		}
 
-
 		//
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
@@ -249,29 +244,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (dataPathSummaryStr.isEmpty())
 			continue;	// No need to maintain this flow
 
-		    // Fetch the fields needed to recompute the shortest path
-		    String flowIdStr = flowPathObj.getFlowId();
 		    String srcDpidStr = flowPathObj.getSrcSwitch();
-		    Short srcPortShort = flowPathObj.getSrcPort();
-		    String dstDpidStr = flowPathObj.getDstSwitch();
-		    Short dstPortShort = flowPathObj.getDstPort();
-		    if ((flowIdStr == null) ||
-			(srcDpidStr == null) ||
-			(srcPortShort == null) ||
-			(dstDpidStr == null) ||
-			(dstPortShort == null)) {
-			log.debug("IGNORING Flow Path entry with null fields");
+		    if (srcDpidStr == null)
 			continue;
-		    }
-
-		    FlowId flowId = new FlowId(flowIdStr);
 		    Dpid srcDpid = new Dpid(srcDpidStr);
-		    Port srcPort = new Port(srcPortShort);
-		    Dpid dstDpid = new Dpid(dstDpidStr);
-		    Port dstPort = new Port(dstPortShort);
-		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
-		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
-
 		    //
 		    // Use the source DPID as a heuristic to decide
 		    // which controller is responsible for maintaining the
@@ -283,6 +259,22 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
+
+		    // Fetch the fields needed to recompute the shortest path
+		    Short srcPortShort = flowPathObj.getSrcPort();
+		    String dstDpidStr = flowPathObj.getDstSwitch();
+		    Short dstPortShort = flowPathObj.getDstPort();
+		    if ((srcPortShort == null) ||
+			(dstDpidStr == null) ||
+			(dstPortShort == null)) {
+			continue;
+		    }
+
+		    Port srcPort = new Port(srcPortShort);
+		    Dpid dstDpid = new Dpid(dstDpidStr);
+		    Port dstPort = new Port(dstPortShort);
+		    SwitchPort srcSwitchPort = new SwitchPort(srcDpid, srcPort);
+		    SwitchPort dstSwitchPort = new SwitchPort(dstDpid, dstPort);
 
 		    counterMyFlowPaths++;
 
@@ -309,8 +301,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (dataPathSummaryStr.equals(newDataPathSummaryStr))
 			continue;	// Nothing changed
 
-		    log.debug("RECONCILE: Need to Reconcile Shortest Path for FlowID {}",
-			      flowId.toString());
 		    reconcileFlow(flowPathObj, dataPath);
 		}
 		topoRouteService.dropShortestPathTopo();
