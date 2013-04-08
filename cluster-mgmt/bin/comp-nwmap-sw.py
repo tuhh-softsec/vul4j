@@ -15,15 +15,21 @@ def dump_switch_table(filename):
   cmd="dsh \"cd ONOS/scripts; ./showflow.sh\""
   f=open(filename, 'w')
   result=os.popen(cmd).read()
+
   f.write(result)
   f.close()
 
 def dump_network_map(filename):
   url="http://%s1:%d/wm/flow/getall/json" % (basename, RestPort)
-  cmd="curl -s %s | python -m json.tool" % url
+  cmd="curl -s %s" % url
   f=open(filename, 'w')
-  result=os.popen(cmd).read()
-  f.write(result)
+  try:
+    result=os.popen(cmd).read()
+  except:
+    print "REST has issue"
+    sys.exit(1)
+
+  json.dump(result, f, indent=2, sort_keys=True)
   f.close()
     
 def make_key(*kargs):
@@ -111,7 +117,6 @@ if __name__ == "__main__":
     f1 = sys.argv[1]
     f2 = sys.argv[2]
 
-  print "dumpfiles: %s %s" % (f1, f2)
 
   fdb_nmap = fdb_nmap(f1)
   fdb_raw = fdb_raw(f2)
@@ -130,3 +135,4 @@ if __name__ == "__main__":
   
   print "Network Map has %d flow entries,  %d not found in switch" % (len(fdb_nmap), nr_not_found_in_switch)
   print "Switches have %d flow entries, %d not found in network map" % (len(fdb_raw), nr_not_found_in_nmap)
+  print "dumpfiles: %s %s" % (f1, f2)
