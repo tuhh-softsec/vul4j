@@ -308,6 +308,9 @@ function startIPerfForFlow(flow) {
 					}
 
 					var iperfData = JSON.parse(data);
+
+				console.log(iperfData.timestamp);
+
 					// if the data is fresh
 					if (flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp) {
 						iperfData.samples.forEach(function (s) {
