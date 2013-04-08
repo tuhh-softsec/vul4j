@@ -1,5 +1,6 @@
 {
     "LB": false, 
+    "TESTBED": "hw",
     "ONOS_DEFAULT_HOST": "localhost",
     "ONOS_GUI3_CONTROL_HOST": "http://10.128.4.11:9000", 
     "ONOS_GUI3_HOST": "http://10.128.4.11:9000", 

@@ -23,12 +23,13 @@ ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
 DEBUG=1
 
 def read_config():
-  global LB, controllers, core_switches, ONOS_GUI3_HOST, ONOS_GUI3_CONTROL_HOST
+  global LB, TESTBED, controllers, core_switches, ONOS_GUI3_HOST, ONOS_GUI3_CONTROL_HOST
   f = open(CONFIG_FILE)
   conf = json.load(f)
   LB = conf['LB']
+  TESTBED = conf['TESTBED']
   controllers = conf['controllers']
-  core_switcehs=conf['core_switches']
+  core_switches=conf['core_switches']
   ONOS_GUI3_HOST=conf['ONOS_GUI3_HOST']
   ONOS_GUI3_CONTROL_HOST=conf['ONOS_GUI3_CONTROL_HOST']
   f.close()

@@ -1,5 +1,6 @@
 {
     "LB": false, 
+    "TESTBED": "sw",
     "ONOS_DEFAULT_HOST": "localhost",
     "ONOS_GUI3_CONTROL_HOST": "http://devy-gui.onlab.us:8080", 
     "ONOS_GUI3_HOST": "http://devy-gui.onlab.us:8080", 
