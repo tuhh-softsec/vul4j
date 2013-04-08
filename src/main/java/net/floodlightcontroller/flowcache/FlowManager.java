@@ -120,7 +120,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    new LinkedList<IFlowEntry>();
 		LinkedList<IFlowEntry> deleteFlowEntries =
 		    new LinkedList<IFlowEntry>();
-
+		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
@@ -209,7 +209,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		*/
 
 		//
-		// Delete all entries marked for deletion from the
+		// Delete all Flow Entries marked for deletion from the
 		// Network MAP.
 		//
 		// TODO: We should use the OpenFlow Barrier mechanism
@@ -260,6 +260,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
 
+		    //
+		    // Test whether we need to complete the Flow cleanup,
+		    // if the Flow has been deleted by the user.
+		    //
+		    String flowUserState = flowPathObj.getUserState();
+		    if ((flowUserState != null)
+			&& flowUserState.equals("FE_USER_DELETE")) {
+			Iterable<IFlowEntry> flowEntries = flowPathObj.getFlowEntries();
+			boolean empty = true;	// TODO: an ugly hack
+			for (IFlowEntry flowEntryObj : flowEntries) {
+			    empty = false;
+			    break;
+			}
+			if (empty)
+			    deleteFlows.add(flowPathObj);
+		    }
+
 		    // Fetch the fields needed to recompute the shortest path
 		    Short srcPortShort = flowPathObj.getSrcPort();
 		    String dstDpidStr = flowPathObj.getDstSwitch();
@@ -303,6 +320,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 		    reconcileFlow(flowPathObj, dataPath);
 		}
+
+		//
+		// Delete all leftover Flows marked for deletion from the
+		// Network MAP.
+		//
+		while (! deleteFlows.isEmpty()) {
+		    IFlowPath flowPathObj = deleteFlows.poll();
+		    conn.utils().removeFlowPath(conn, flowPathObj);
+		}
+
 		topoRouteService.dropShortestPathTopo();
 
 		conn.endTx(Transaction.COMMIT);
@@ -441,11 +468,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	*/
 
 	IFlowPath flowObj = null;
+	boolean found = false;
 	try {
 	    if ((flowObj = conn.utils().searchFlowPath(conn, flowPath.flowId()))
 		!= null) {
 		log.debug("Adding FlowPath with FlowId {}: found existing FlowPath",
 			  flowPath.flowId().toString());
+		found = true;
 	    } else {
 		flowObj = conn.utils().newFlowPath(conn);
 		log.debug("Adding FlowPath with FlowId {}: creating new FlowPath",
@@ -508,6 +537,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	} else {
 	    flowObj.setDataPathSummary("");
 	}
+
+	if (found)
+	    flowObj.setUserState("FE_USER_MODIFY");
+	else
+	    flowObj.setUserState("FE_USER_ADD");
 
 	// Flow edges:
 	//   HeadFE
@@ -703,8 +737,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 
 	//
-	// Find and mark for deletion all Flow Entries
+	// Find and mark for deletion all Flow Entries,
+	// and the Flow itself.
 	//
+	flowObj.setUserState("FE_USER_DELETE");
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	boolean empty = true;	// TODO: an ugly hack
 	for (IFlowEntry flowEntryObj : flowEntries) {

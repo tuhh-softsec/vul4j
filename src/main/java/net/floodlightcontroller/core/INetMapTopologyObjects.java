@@ -270,6 +270,13 @@ public interface IFlowPath extends IBaseObject {
 		@JsonIgnore
 		@Property("state")
 		public String getState();
+
+		@JsonIgnore
+		@Property("user_state")
+		public String getUserState();
+
+		@Property("user_state")
+		public void setUserState(String userState);
 	}
 
 public interface IFlowEntry extends IBaseObject {
