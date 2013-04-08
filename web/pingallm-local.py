@@ -5,7 +5,7 @@ import os
 import re
 import json
 
-ping_cnt=3
+ping_cnt=10
 wait1=ping_cnt
 wait2=10
 
