@@ -179,11 +179,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    */
 		}
 
-		/*
-		log.debug("MEASUREMENT: Found {} My Flow Entries NOT_UPDATED",
-		    addFlowEntries.size() + deleteFlowEntries.size());
-		*/
-
 		//
 		// Process the Flow Entries that need to be added
 		//
@@ -202,11 +197,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			continue;		// Shouldn't happen
 		    installFlowEntry(mySwitch, flowObj, flowEntryObj);
 		}
-
-		/*
-		log.debug("MEASUREMENT: Found {} Flow Entries to delete",
-			  deleteFlowEntries.size());
-		*/
 
 		//
 		// Delete all Flow Entries marked for deletion from the
