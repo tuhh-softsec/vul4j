@@ -892,15 +892,11 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
 #1 FOOBAR 00:00:00:00:00:00:01:01 1 00:00:00:00:00:00:01:0b 1 matchSrcMac 00:00:00:00:00:00 matchDstMac 00:01:00:00:00:00
 @app.route("/gui/addflow/<src_dpid>/<src_port>/<dst_dpid>/<dst_port>/<srcMAC>/<dstMAC>")
 def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
-#  command =  "/home/ubuntu/ONOS/web/get_flow.py  all |grep FlowPath  |gawk '{print strtonum($4)}'| sort -n | tail -n 1"
-  command =  "curl -s http://localhost:8080/wm/flow/getsummary/0/0/json |grep flowId |tail -n 1 | sed s/[\"\,]//g | gawk '{print strtonum($2)}'"
-  print command
-  ret = os.popen(command).read()
-  if ret == "":
-    flow_nr=0
-  else:
-    flow_nr=int(ret)
-
+  host = pick_host()
+  url ="%s/wm/flow/getsummary/%s/%s/json" % (host, 0, 0)
+  (code, result) = get_json(url)
+  parsedResult = json.loads(result)
+  flow_nr = int(parsedResult[-1]['flowId'], 16)
   flow_nr += 1
   command =  "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   flow_nr += 1
@@ -1036,7 +1032,8 @@ if __name__ == "__main__":
 #    devices()
 #    iperf_start(1,10,15)
 #    iperf_rate(1)
-    switches()
+#    switches()
+    add_flow(1,2,3,4,5,6)
   else:
     app.debug = True
     app.run(threaded=True, host="0.0.0.0", port=9000)
