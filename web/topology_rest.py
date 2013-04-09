@@ -15,12 +15,16 @@ from flask import Flask, json, Response, render_template, make_response, request
 
 
 CONFIG_FILE=os.getenv("HOME") + "/ONOS/web/config.json"
+LINK_FILE=os.getenv("HOME") + "/ONOS/web/link.json"
 
 ## Global Var for ON.Lab local REST ##
 RestIP="localhost"
 RestPort=8080
 ONOS_DEFAULT_HOST="localhost" ;# Has to set if LB=False
 DEBUG=1
+
+pp = pprint.PrettyPrinter(indent=4)
+app = Flask(__name__)
 
 def read_config():
   global LB, TESTBED, controllers, core_switches, ONOS_GUI3_HOST, ONOS_GUI3_CONTROL_HOST
@@ -34,8 +38,23 @@ def read_config():
   ONOS_GUI3_CONTROL_HOST=conf['ONOS_GUI3_CONTROL_HOST']
   f.close()
 
-pp = pprint.PrettyPrinter(indent=4)
-app = Flask(__name__)
+def read_link_def():
+  global link_def
+  f=open(LINK_FILE)
+  try:
+    link_def=json.load(f)
+    f.close()
+  except:
+    print "Can't read link def file (link.json)"
+    sys.exit(1)
+
+def get_link_ports(src_dpid, dst_dpid):
+  ret = (-1, -1)
+  for link in link_def:
+    if link['src-switch'] == src_dpid and link['dst-switch'] == dst_dpid:
+        ret = (link['src-port'], link['dst-port'])
+        break
+  return ret
 
 ## Worker Functions ##
 def log_error(txt):
@@ -737,26 +756,36 @@ def link_up_sw(src_dpid, src_port, dst_dpid, dst_port):
 
   cmd = 'up'
   result=""
-
   for dpid in (src_dpid, dst_dpid):
     if dpid in core_switches:
       host = controllers[0]
-      src_ports = [1, 2, 3, 4, 5]
     else:
       hostid=int(dpid.split(':')[-2])
       host = controllers[hostid-1]
-      if hostid == 2 :
-        src_ports = [51]
-      else :
-        src_ports = [26]
 
-    for port in src_ports :
-      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
-      print cmd_string
-      res=os.popen(cmd_string).read()
-      result = result + ' ' + res
+    if dpid == src_dpid:
+      (port, dontcare) = get_link_ports(dpid, dst_dpid)
+    else:
+      (port, dontcare) = get_link_ports(dpid, src_dpid)
+
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+    print cmd_string
+    res=os.popen(cmd_string).read()
+    result = result + ' ' + res
 
   return result
+
+#      if hostid == 2 :
+#        src_ports = [51]
+#      else :
+#        src_ports = [26]
+#
+#    for port in src_ports :
+#      cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, dpid, port, cmd)
+#      print cmd_string
+#      res=os.popen(cmd_string).read()
+
+
 
 # Link up on hardware testbed
 def link_up_hw(src_dpid, src_port, dst_dpid, dst_port):
@@ -988,6 +1017,7 @@ def iperf_rate(flow_id):
 if __name__ == "__main__":
   random.seed()
   read_config()
+  read_link_def()
   if len(sys.argv) > 1 and sys.argv[1] == "-d":
 #      add_flow("00:00:00:00:00:00:02:02", 1, "00:00:00:00:00:00:03:02", 1, "00:00:00:00:02:02", "00:00:00:00:03:0c")
 #     link_change("up", "00:00:00:00:ba:5e:ba:11", 1, "00:00:00:00:00:00:00:00", 1)
