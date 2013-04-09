@@ -1,5 +1,5 @@
 function updateControllers() {
-	var controllers = d3.select('#controllerList').selectAll('.controller').data(model.controllers);
+	var controllers = d3.select('#controllers').selectAll('.controller').data(model.controllers);
 	controllers.enter().append('div')
 		.each(function (c) {
 			controllerColorMap[c] = colors.pop();

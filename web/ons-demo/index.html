@@ -24,31 +24,21 @@
 
 <div id='contents'>
 
-	<div id='columns'>
-		<div id='left'>
-			<div class='header'>
-				<img id='logo' src='assets/logo.svg'></img>
-			</div>
-			<div id='controllers'>
-				<div class='header'>ONOS Nodes</div>
-				<div id='controllerList'></div>
-			</div>
+	<div class='header'>
+		<img id='logo' src='assets/logo.svg'></img>
+		<div id='status'>
+			<div class='status'><span class='dynamic' id='activeFlows'>????</span><span class='static'>Flows</span></div>
+			<div class='status'><span class='dynamic' id='activeSwitches'>???</span><span class='static'>Active Switches</span></div>
 		</div>
-
-		<div id='right'>
-			<div class='header'>
-				<div id='status' class='top'>
-					<div class='status'><span class='dynamic' id='activeFlows'>????</span><span class='static'>Flows</span></div>
-					<div class='status'><span class='dynamic' id='activeSwitches'>???</span><span class='static'>Active Switches</span></div>
-				</div>
-				<div id='traceButton' class='button'>Trace</div>
-				<div id='lastUpdated' class='status top'><span class='static'>Last updated:</span><span id='lastUpdate' class='dynamic'>Mon Mar 18 11:11:12 PDT 2013</span></div>
-			</div>
-			<div id='topology'>
-				<div id='svg-container'></div>
-			</div>
-		</div>
+		<div id='lastUpdated' class='status'><span class='static'>Last updated:</span><span id='lastUpdate' class='dynamic'>Mon Mar 18 11:11:12 PDT 2013</span></div>
 	</div>
+
+	<div id='controllers'></div>
+
+	<div id='topology'>
+		<div id='svg-container'></div>
+	</div>
+
 	<div id='selectedFlowsHeader'>
 		<div id='deleteFlow'></div>
 		<div id='showFlowChooser' class='flowId'><div class='white-eye'></div></div>
@@ -56,7 +46,9 @@
 		<div class='dstDPID'>dst</div>
 		<div class='iperf'>iperf</div>
 	</div>
+
 	<div id='selectedFlows'></div>
+
 	<div id='flowChooser'></div>
 
 	<script src="js/app.js"></script>

@@ -36,6 +36,7 @@ body {
 
 #status {
 	display: -webkit-box;
+	-webkit-box-flex: 1.0;
 }
 
 #left, #right {
@@ -48,7 +49,7 @@ body {
 	-webkit-box-flex: 1.0;
 }
 
-#controllers, #topology {
+#topology {
 	-webkit-box-flex: 1.0;
 	position: relative;
 }
@@ -101,22 +102,19 @@ body {
 	width: 100%;
 }
 
-#controllers {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-}
-
-
 #controllerList {
 	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-box-flex: 1.0;
+	-webkit-box-orient: horizontal;
 	overflow: scroll;
 }
 
+#controllers {
+	display: -webkit-box;
+}
 .controller {
 	margin: .25em;
 	background-color: blue;
+	-webkit-box-flex: 1.0;
 }
 
 #svg-container {

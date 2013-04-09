@@ -45,7 +45,7 @@ body {
 	padding: .25em;
 }
 
-#status.top span {
+#status span {
 	font-size: 24px;
 }
 
@@ -65,10 +65,6 @@ body {
 	height: 50px;
 }
 
-#topology {
-	border-top: 1px solid #AAA;
-}
-
 .selectedFlow {
 	border-bottom: 1px solid #AAA;
 }
@@ -85,23 +81,14 @@ body {
 	padding-bottom: 0px;
 }
 
-#controllers .header {
-	-webkit-box-pack: center;
-	border-bottom: 1px solid #AAA;
-}
-
-
 #right .header {
 	font-size: 12px;
 	padding-right: .25em;
 	-webkit-box-sizing: border-box;
 }
 
-#controllers, #selectedFlows {
-	border-top: 1px solid #AAA;
-}
-
 #selectedFlows {
+	border-top: 1px solid #AAA;
 	border-bottom: 1px solid #AAA;
 }
 
@@ -109,6 +96,10 @@ body {
 	height: 2em;
 	color: white;
 	background-color: black;
+}
+
+.header, #controllers {
+	border-bottom: 1px solid #AAA;;
 }
 
 #flowChooser .selectedFlow {
@@ -190,10 +181,6 @@ path.iperfdata {
 	border-left: 1px solid #AAA;
 }
 
-
-#controllers {
-	border-right: 1px solid #AAA;
-}
 
 .controller {
 	padding: .25em;
