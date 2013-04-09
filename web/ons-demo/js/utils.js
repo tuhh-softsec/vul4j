@@ -84,4 +84,36 @@ function updateHeader() {
 	d3.select('#activeFlows').text(model.flows.length);
 }
 
+/***************************************************************************************************
+update the global linkmap
+***************************************************************************************************/
+function updateLinkMap(links) {
+	linkMap = {};
+	links.forEach(function (link) {
+		var srcDPID = link['src-switch'];
+		var dstDPID = link['dst-switch'];
+
+		var srcMap = linkMap[srcDPID] || {};
+
+		srcMap[dstDPID] = link;
+
+		linkMap[srcDPID]  = srcMap;
+	});
+}
+
+/***************************************************************************************************
+// removes links from the pending list that are now in the model
+***************************************************************************************************/
+function reconcilePendingLinks(model) {
+	links = [];
+	model.links.forEach(function (link) {
+		links.push(link);
+		delete pendingLinks[makeLinkKey(link)]
+	})
+	var linkId;
+	for (linkId in pendingLinks) {
+		links.push(pendingLinks[linkId]);
+	}
+}
+
 
