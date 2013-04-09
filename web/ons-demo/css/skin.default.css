@@ -173,7 +173,7 @@ path.iperfdata {
 }
 
 
-.srcDPID, .dstDPID, .deleteFlow, #deleteFlow {
+.srcDPID, .dstDPID, .deleteFlow, #showFlowChooser {
 	border-right: 1px solid #AAA;
 }
 
@@ -206,7 +206,7 @@ path.iperfdata {
 	background-image: url('../assets/white-eye.svg');
 	background-size: auto 100%;
 	background-repeat: no-repeat;
-	background-position: .25em center;
+	background-position: .4em center;
 }
 
 .deleteFlow {
