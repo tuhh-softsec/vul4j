@@ -1,3 +1,7 @@
+** April 8, 2013 **
+- merge from master
+- fix gradually increasing latency of iperf data display
+
 ** April 4, 2013 **
 - denser iperf display
 - don't pop alert on command error response. just log it
