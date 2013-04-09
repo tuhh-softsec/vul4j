@@ -10,6 +10,13 @@ body {
 	cursor: crosshair;
 }
 
+
+.state {
+	fill:none;
+	stroke:#888;
+	stroke-width:1;
+}
+
 .nodrop {
 	cursor: not-allowed;
 }
