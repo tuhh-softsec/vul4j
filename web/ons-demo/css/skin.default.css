@@ -11,15 +11,15 @@ body {
 	background-color: black;
 }
 
-#topology.linking {
+#topologyArea.linking {
 	cursor: crosshair;
 }
 
 
-.state {
+#map path {
 	fill:none;
 	stroke:#888;
-	stroke-width:1;
+	stroke-width:2;
 }
 
 .nodrop {

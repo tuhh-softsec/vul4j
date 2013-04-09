@@ -9,7 +9,7 @@ function mouseOverSwitch(data) {
 	}
 
 	// only highlight valid link or flow destination by checking for class of existing highlighted circle
-	var highlighted = svg.selectAll('.highlight')[0];
+	var highlighted = topology.selectAll('.highlight')[0];
 	if (highlighted.length == 1) {
 		var s = d3.select(highlighted[0]).select('circle');
 		// only allow links
@@ -47,7 +47,7 @@ function mouseOutSwitch(data) {
 function mouseDownSwitch(data) {
 	mouseOverSwitch(data);
 	data.mouseDown = true;
-	d3.select('#topology').classed('linking', true);
+	d3.select('#topologyArea').classed('linking', true);
 
 	d3.select('svg')
 		.append('svg:path')
@@ -80,7 +80,7 @@ function mouseDownSwitch(data) {
 function mouseUpSwitch(data) {
 	if (data.mouseDown) {
 		data.mouseDown = false;
-		d3.select('#topology').classed('linking', false);
+		d3.select('#topologyArea').classed('linking', false);
 		d3.event.stopPropagation();
 		d3.selectAll('.nodrop').classed('nodrop', false);
 	}
@@ -105,9 +105,9 @@ function doubleClickSwitch(data) {
 
 d3.select(document.body).on('mouseup', function () {
 	function clearHighlight() {
-		svg.selectAll('circle').each(function (data) {
+		topology.selectAll('circle').each(function (data) {
 			data.mouseDown = false;
-			d3.select('#topology').classed('linking', false);
+			d3.select('#topologyArea').classed('linking', false);
 			mouseOutSwitch(data);
 		});
 		d3.select('#linkVector').remove();
@@ -130,7 +130,7 @@ d3.select(document.body).on('mouseup', function () {
 	}
 
 
-	var highlighted = svg.selectAll('.highlight')[0];
+	var highlighted = topology.selectAll('.highlight')[0];
 	if (highlighted.length == 2) {
 		var s1Data = highlighted[0].__data__;
 		var s2Data = highlighted[1].__data__;
@@ -229,7 +229,7 @@ d3.select(document.body).on('mouseup', function () {
 });
 
 d3.select(document.body).on('mousemove', function () {
-	if (!d3.select('#topology').classed('linking')) {
+	if (!d3.select('#topologyArea').classed('linking')) {
 		return;
 	}
 	var linkVector = document.getElementById('linkVector');
@@ -238,7 +238,7 @@ d3.select(document.body).on('mousemove', function () {
 	}
 	linkVector = d3.select(linkVector);
 
-	var highlighted = svg.selectAll('.highlight')[0];
+	var highlighted = topology.selectAll('.highlight')[0];
 	var s1 = null, s2 = null;
 	if (highlighted.length > 1) {
 		var s1 = d3.select(highlighted[0]);

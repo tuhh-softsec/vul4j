@@ -1,6 +1,6 @@
 (function () {
 
-createTopologyView = function () {
+createTopologyView = function (cb) {
 
 	window.addEventListener('resize', function () {
 		// this is too slow. instead detect first resize event and hide the paths that have explicit matrix applied
@@ -20,8 +20,10 @@ createTopologyView = function () {
 	  .append("svg:path")
 	    .attr("d", "M0,-3L10,0L0,3");
 
-	return svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
-			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
+	topology = svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
+			attr('id', 'viewbox').append('svg:g').attr('id', 'topology').attr('transform', 'translate(500 500)');
+
+	cb();
 }
 
 function createRingTopologyModel(model) {
@@ -123,7 +125,7 @@ function createRingTopologyModel(model) {
 
 drawTopology = function () {
 	// DRAW THE SWITCHES
-	var rings = svg.selectAll('.ring').data(createRingTopologyModel(model));
+	var rings = topology.selectAll('.ring').data(createRingTopologyModel(model));
 
 	function ringEnter(data, i) {
 		if (!data.length) {
@@ -199,7 +201,7 @@ drawTopology = function () {
 	// Now setup the labels
 	// This is done separately because SVG draws in node order and we want the labels
 	// always on top
-	var labelRings = svg.selectAll('.labelRing').data(createRingTopologyModel(model));
+	var labelRings = topology.selectAll('.labelRing').data(createRingTopologyModel(model));
 
 	function labelRingEnter(data) {
 		if (!data.length) {

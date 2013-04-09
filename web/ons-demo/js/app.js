@@ -1,7 +1,7 @@
 /*global d3, document∆*/
 
 
-function sync(svg) {
+function sync() {
 	var d = Date.now();
 
 	updateModel(function (newModel) {
@@ -33,20 +33,24 @@ function sync(svg) {
 
 		// do it again in 1s
 		setTimeout(function () {
-			sync(svg)
+			sync()
 		}, 1000);
 	});
 }
 
-appInit();
+appInit(function () {
+	// workaround for Chrome v25 bug
+	// if executed immediately, the view box transform logic doesn't work properly
+	// fixed in Chrome v27
+	setTimeout(function () {
 
-// workaround for Chrome v25 bug
-// if executed immediately, the view box transform logic doesn't work properly
-// fixed in Chrome v27
-setTimeout(function () {
-	// workaround for another Chrome v25 bug
-	// viewbox transform stuff doesn't work in combination with browser zoom
-	// also works in Chrome v27
-	d3.select('#svg-container').style('zoom',  window.document.body.clientWidth/window.document.width);
-	sync(svg);
-}, 100);
+		// workaround for another Chrome v25 bug
+		// viewbox transform stuff doesn't work in combination with browser zoom
+		// also works in Chrome v27
+		d3.select('#svg-container').style('zoom',  window.document.body.clientWidth/window.document.width);
+
+		sync();
+	}, 100);
+});
+
+

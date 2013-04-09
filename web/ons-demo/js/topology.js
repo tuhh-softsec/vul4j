@@ -57,7 +57,7 @@ updateTopology = function() {
 
 	/* the remainder should work regardless of the topology display */
 
-	updateLinkLines();
+//	updateLinkLines();
 
 	// setup the mouseover behaviors
 	var allSwitches = d3.selectAll('.edge, .core, .aggregation');

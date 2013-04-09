@@ -59,6 +59,7 @@ def debug(txt):
 @app.route('/tpl/<filename>', methods=['GET'])
 @app.route('/ons-demo/<filename>', methods=['GET'])
 @app.route('/ons-demo/js/<filename>', methods=['GET'])
+@app.route('/ons-demo/d3/<filename>', methods=['GET'])
 @app.route('/ons-demo/css/<filename>', methods=['GET'])
 @app.route('/ons-demo/assets/<filename>', methods=['GET'])
 @app.route('/ons-demo/data/<filename>', methods=['GET'])
@@ -68,7 +69,7 @@ def return_file(filename="index.html"):
   else:
     fullpath = str(request.path)[1:]
 
-  try: 
+  try:
     open(fullpath)
   except:
     response = make_response("Cannot find a file: %s" % (fullpath), 500)
@@ -204,7 +205,7 @@ def get_json(url):
   try:
     command = "curl -s %s" % (url)
     result = os.popen(command).read()
-    parsedResult = json.loads(result)    
+    parsedResult = json.loads(result)
     if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
       print "REST %s returned code %s" % (command, parsedResult['code'])
       code=500
@@ -222,7 +223,7 @@ def pick_host():
     host=controllers[r]
   else:
     host=ONOS_DEFAULT_HOST
-    
+
   return "http://" + host + ":8080"
 
 ## Switch ##
@@ -677,7 +678,7 @@ def switch_controller_setting(cmd):
     print "All aggr switches connects to local controller only"
     result=""
     if (TESTBED == "sw"):
-      for i in range(0, len(controllers)): 
+      for i in range(0, len(controllers)):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
         result += os.popen(cmd_string).read()
     else:
@@ -687,10 +688,10 @@ def switch_controller_setting(cmd):
     print "All aggr switches connects to all controllers except for core controller"
     result=""
     if (TESTBED == "sw"):
-      for i in range(0, len(controllers)): 
+      for i in range(0, len(controllers)):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
         result += os.popen(cmd_string).read()
-    else:    
+    else:
       cmd_string="cd; switch all"
       result += os.popen(cmd_string).read()
 
@@ -724,7 +725,7 @@ def switch_status_change(cmd, dpid):
 def link_up(src_dpid, src_port, dst_dpid, dst_port):
   result = ""
 
-  if (TESTBED == "sw"): 
+  if (TESTBED == "sw"):
     result = link_up_sw(src_dpid, src_port, dst_dpid, dst_port)
   else:
     result = link_up_hw(src_dpid, src_port, dst_dpid, dst_port)

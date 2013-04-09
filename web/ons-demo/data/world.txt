@@ -1,0 +1,10 @@
+see: http://bost.ocks.org/mike/map/
+
+brew install gdal
+npm install -g topojson
+
+download: http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_1_states_provinces_lakes_shp.zip
+
+$ ogr2ogr -f GeoJSON -where "sr_adm0_a3 IN ('USA')" states.json ~/Desktop/ne_50m_admin_1_states_provinces_lakes_shp/ne_50m_admin_1_states_provinces_lakes_shp.shp
+$ topojson -o states.json world.json
+

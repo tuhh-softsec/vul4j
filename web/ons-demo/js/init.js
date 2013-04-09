@@ -1,5 +1,4 @@
-function appInit() {
-	svg = createTopologyView();
+function appInit(cb) {
 
 	// populates selected flows with empty rows
 	updateSelectedFlows();
@@ -7,4 +6,6 @@ function appInit() {
 	d3.select('#showFlowChooser').on('click', function () {
 		showFlowChooser();
 	});
+
+	createTopologyView(cb);
 }

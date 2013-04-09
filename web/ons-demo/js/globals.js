@@ -14,9 +14,9 @@ cached JSON representation of the model. used to detect model changes and update
 var modelString;
 
 /***************************************************************************************************
-the svg element for the topology view
+the root element for the topology view
 ***************************************************************************************************/
-var svg;
+var topology;
 
 /***************************************************************************************************
 links that were created in the webui but which have not appeared in the links API response yet
