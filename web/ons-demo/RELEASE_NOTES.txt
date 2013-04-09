@@ -1,4 +1,7 @@
 ** April 8, 2013 **
+- add explicit timeout logic so that the GUI doesn't have to be refreshed if the API misbehaves
+
+** April 8, 2013 **
 - merge from master
 - fix gradually increasing latency of iperf data display
 
