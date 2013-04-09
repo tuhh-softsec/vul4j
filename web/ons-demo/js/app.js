@@ -308,8 +308,16 @@ function startIPerfForFlow(flow) {
 					}
 
 					var iperfData = JSON.parse(data);
+
+//				console.log(iperfData.timestamp);
+
 					// if the data is fresh
 					if (flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp) {
+
+						while (flow.iperfData.samples.length > pointsToDisplay + iperfData.samples.length) {
+							flow.iperfData.samples.shift();
+						}
+
 						iperfData.samples.forEach(function (s) {
 							flow.iperfData.samples.push(s);
 						});
