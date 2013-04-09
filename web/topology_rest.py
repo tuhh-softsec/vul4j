@@ -657,10 +657,12 @@ def controller_status():
 ### Command ###
 @app.route("/gui/controller/<cmd>/<controller_name>")
 def controller_status_change(cmd, controller_name):
-#  start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
-#  stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
-  start_onos="cd; onos start %s" % (controller_name[-1:])
-  stop_onos="cd; onos stop %s" % (controller_name[-1:])
+  if (TESTBED == "hw"):
+    start_onos="cd; onos start %s" % (controller_name[-1:])
+    stop_onos="cd; onos stop %s" % (controller_name[-1:])
+  else:
+    start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
+    stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
     result=os.popen(start_onos).read()
@@ -870,7 +872,8 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
     flow_nr=int(ret)
 
   flow_nr += 1
-  command = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  command =  "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
+  flow_nr += 1
   command1 = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", dst_dpid, dst_port, src_dpid, src_port, dstMAC, srcMAC)
   print command
   errcode = os.popen(command).read()
