@@ -91,17 +91,29 @@ if (params.proxy) {
 	urls = proxyURLs;
 }
 
+var timeoutMS = 20000;
+
 function makeRequest(key) {
 	var url = urls[key];
 	if (url) {
 		return function (cb) {
-			d3.json(url, function (error, result) {
+			var timeout;
+			var xhr = d3.json(url, function (error, result) {
+				clearTimeout(timeout);
+
 				if (error) {
 					error = url + ' : ' + error.status;
 				}
 
-				cb(error, result);
+				if (cb) {
+					cb(error, result);
+				}
 			});
+			timeout = setTimeout(function () {
+				xhr.abort();
+				cb(url + ' timed out after ' + timeoutMS + ' ms');
+				cb = null;
+			}, timeoutMS);
 		}
 	} else {
 		return function (cb) {
