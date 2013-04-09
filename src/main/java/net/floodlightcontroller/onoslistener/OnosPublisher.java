@@ -51,7 +51,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
 	
-	protected final int CLEANUP_TASK_INTERVAL = 10; // 10 sec
+	protected final int CLEANUP_TASK_INTERVAL = 60; // 1 min
 	protected SingletonTask cleanupTask;
 	
 	/**

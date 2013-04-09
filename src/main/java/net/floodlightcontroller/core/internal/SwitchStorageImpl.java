@@ -48,7 +48,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			log.info("SwitchStorage:setStatus dpid:{} state: {} done", dpid, state);
 		} 	else {
 			conn.endTx(Transaction.ROLLBACK);
-			log.info("SwitchStorage:setStatus dpid:{} state: {} failed", dpid, state);
+			log.info("SwitchStorage:setStatus dpid:{} state: {} failed: switch not found", dpid, state);
 		}
 	}
 
@@ -83,9 +83,12 @@ public class SwitchStorageImpl implements ISwitchStorage {
             		conn.endTx(Transaction.COMMIT);
   
             	}
+            } else {
+        		log.error("SwitchStorage:addPort dpid:{} port:{} : failed switch does not exist", dpid, port.getPortNumber());
             }
 		} catch (Exception e) {
              // TODO: handle exceptions
+			e.printStackTrace();
 			conn.endTx(Transaction.ROLLBACK);
 			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, port.getPortNumber());
 		}	
@@ -115,32 +118,37 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		
-        try {
-        	ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
-            if (sw != null) {
-                    /*
-                     *  Do nothing or throw exception?
-                     */
-            	
-            		log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
-            		sw.setState(SwitchState.ACTIVE.toString());
-            		conn.endTx(Transaction.COMMIT);
-            } else {
-                    sw = conn.utils().newSwitch(conn);
+		try {
+			ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+			if (sw != null) {
+				/*
+				 *  Do nothing or throw exception?
+				 */
 
-                    sw.setType("switch");
-                    sw.setDPID(dpid);
-                    sw.setState(SwitchState.ACTIVE.toString());
-                    conn.endTx(Transaction.COMMIT);
-                    log.info("SwitchStorage:addSwitch dpid:{} added", dpid);
-            }
-    } catch (Exception e) {
-            /*
-             * retry?
-             */
-    	conn.endTx(Transaction.ROLLBACK);
-    	log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
-    }
+				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
+				sw.setState(SwitchState.ACTIVE.toString());
+				conn.endTx(Transaction.COMMIT);
+			} else {
+				sw = conn.utils().newSwitch(conn);
+
+				if (sw != null) {
+					sw.setType("switch");
+					sw.setDPID(dpid);
+					sw.setState(SwitchState.ACTIVE.toString());
+					conn.endTx(Transaction.COMMIT);
+					log.info("SwitchStorage:addSwitch dpid:{} added", dpid);
+				} else {
+					log.error("switchStorage:addSwitch dpid:{} failed -> newSwitch failed", dpid);
+				}
+			}
+		} catch (Exception e) {
+			/*
+			 * retry?
+			 */
+			e.printStackTrace();
+			conn.endTx(Transaction.ROLLBACK);
+			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
+		}
 
 
 	}
@@ -160,6 +168,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
             }
 		} catch (Exception e) {
              // TODO: handle exceptions
+			e.printStackTrace();
 			conn.endTx(Transaction.ROLLBACK);			
 			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
 		}

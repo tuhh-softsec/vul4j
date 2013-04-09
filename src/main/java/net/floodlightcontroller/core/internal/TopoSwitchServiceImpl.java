@@ -1,13 +1,13 @@
 package net.floodlightcontroller.core.internal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
@@ -21,7 +21,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	
 	@Override
 	public void close() {
-		conn.endTx(Transaction.COMMIT);
+
 		conn.close();
 	}
 	
