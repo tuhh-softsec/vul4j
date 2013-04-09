@@ -1,4 +1,6 @@
-function createTopologyView() {
+(function () {
+
+createTopologyView = function () {
 
 	window.addEventListener('resize', function () {
 		// this is too slow. instead detect first resize event and hide the paths that have explicit matrix applied
@@ -22,13 +24,7 @@ function createTopologyView() {
 			attr('id', 'viewbox').append('svg:g').attr('transform', 'translate(500 500)');
 }
 
-var widths = {
-	edge: 6,
-	aggregation: 12,
-	core: 18
-}
-
-function createTopologyModel(model) {
+function createRingTopologyModel(model) {
 	var rings = [{
 		radius: 3,
 		width: widths.edge,
@@ -124,3 +120,163 @@ function createTopologyModel(model) {
 //	return rings;
 	return testRings;
 }
+
+drawTopology = function () {
+	// DRAW THE SWITCHES
+	var rings = svg.selectAll('.ring').data(createRingTopologyModel(model));
+
+	function ringEnter(data, i) {
+		if (!data.length) {
+			return;
+		}
+
+		// create the nodes
+		var nodes = d3.select(this).selectAll("g")
+			.data(data, function (data) {
+				return data.dpid;
+			})
+			.enter().append("svg:g")
+			.attr("id", function (data, i) {
+				return data.dpid;
+			})
+			.attr("transform", function(data, i) {
+				return "rotate(" + data.angle+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angle) + ")";
+			});
+
+		// add the cirles representing the switches
+		nodes.append("svg:circle")
+			.attr("transform", function(data, i) {
+				var m = document.querySelector('#viewbox').getTransformToElement().inverse();
+				if (data.scale) {
+					m = m.scale(data.scale);
+				}
+				return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+			})
+			.attr("x", function (data) {
+				return -data.width / 2;
+			})
+			.attr("y", function (data) {
+				return -data.width / 2;
+			})
+			.attr("r", function (data) {
+				return data.width;
+			});
+	}
+
+	// append switches
+	rings.enter().append("svg:g")
+		.attr("class", "ring")
+		.each(ringEnter);
+
+
+	function ringUpdate(data, i) {
+		var nodes = d3.select(this).selectAll("g")
+			.data(data, function (data) {
+				return data.dpid;
+			});
+		nodes.select('circle')
+			.each(function (data) {
+				// if there's a pending state changed and then the state changes, clear the pending class
+				var circle = d3.select(this);
+				if (data.state === 'ACTIVE' && circle.classed('inactive') ||
+					data.state === 'INACTIVE' && circle.classed('active')) {
+					circle.classed('pending', false);
+				}
+			})
+			.attr('class', function (data)  {
+				if (data.state === 'ACTIVE' && data.controller) {
+					return data.className + ' active ' + controllerColorMap[data.controller];
+				} else {
+					return data.className + ' inactive ' + 'colorInactive';
+				}
+			});
+	}
+
+	// update  switches
+	rings.each(ringUpdate);
+
+
+	// Now setup the labels
+	// This is done separately because SVG draws in node order and we want the labels
+	// always on top
+	var labelRings = svg.selectAll('.labelRing').data(createRingTopologyModel(model));
+
+	function labelRingEnter(data) {
+		if (!data.length) {
+			return;
+		}
+
+		// create the nodes
+		var nodes = d3.select(this).selectAll("g")
+			.data(data, function (data) {
+				return data.dpid;
+			})
+			.enter().append("svg:g")
+			.classed('nolabel', true)
+			.attr("id", function (data) {
+				return data.dpid + '-label';
+			})
+			.attr("transform", function(data, i) {
+				return "rotate(" + data.angle+ ")translate(" + data.radius * 150 + ")rotate(" + (-data.angle) + ")";
+			})
+
+		// add the text nodes which show on mouse over
+		nodes.append("svg:text")
+				.text(function (data) {return data.dpid;})
+				.attr("x", function (data) {
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						if (data.className == 'edge') {
+							return - data.width*3 - 4;
+						} else {
+							return - data.width - 4;
+						}
+					} else {
+						if (data.className == 'edge') {
+							return data.width*3 + 4;
+						} else {
+							return data.width + 4;
+						}
+					}
+				})
+				.attr("y", function (data) {
+					var y;
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						if (data.className == 'edge') {
+							y = data.width*3/2 + 4;
+						} else {
+							y = data.width/2 + 4;
+						}
+					} else {
+						if (data.className == 'edge') {
+							y = data.width*3/2 + 4;
+						} else {
+							y = data.width/2 + 4;
+						}
+					}
+					return y - 6;
+				})
+				.attr("text-anchor", function (data) {
+					if (data.angle <= 90 || data.angle >= 270 && data.angle <= 360) {
+						return "end";
+					} else {
+						return "start";
+					}
+				})
+				.attr("transform", function(data) {
+					var m = document.querySelector('#viewbox').getTransformToElement().inverse();
+					if (data.scale) {
+						m = m.scale(data.scale);
+					}
+					return "matrix( " + m.a + " " + m.b + " " + m.c + " " + m.d + " " + m.e + " " + m.f + " )";
+				})
+	}
+
+	labelRings.enter().append("svg:g")
+		.attr("class", "textRing")
+		.each(labelRingEnter);
+
+	// switches should not change during operation of the ui so no
+	// rings.exit()
+}
+
+})();

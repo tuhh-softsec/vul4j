@@ -227,3 +227,45 @@ d3.select(document.body).on('mouseup', function () {
 		clearHighlight();
 	}
 });
+
+d3.select(document.body).on('mousemove', function () {
+	if (!d3.select('#topology').classed('linking')) {
+		return;
+	}
+	var linkVector = document.getElementById('linkVector');
+	if (!linkVector) {
+		return;
+	}
+	linkVector = d3.select(linkVector);
+
+	var highlighted = svg.selectAll('.highlight')[0];
+	var s1 = null, s2 = null;
+	if (highlighted.length > 1) {
+		var s1 = d3.select(highlighted[0]);
+		var s2 = d3.select(highlighted[1]);
+
+	} else if (highlighted.length > 0) {
+		var s1 = d3.select(highlighted[0]);
+	}
+	var src = s1;
+	if (s2 && !s2.data()[0].target) {
+		src = s2;
+	}
+	if (src) {
+		linkVector.attr('d', function () {
+				var srcPt = document.querySelector('svg').createSVGPoint();
+				srcPt.x = src.attr('x');
+				srcPt.y = src.attr('y');
+				srcPt = srcPt.matrixTransform(src[0][0].getCTM());
+
+				var svg = document.getElementById('topology');
+				var mouse = d3.mouse(viewbox);
+				var dstPt = document.querySelector('svg').createSVGPoint();
+				dstPt.x = mouse[0];
+				dstPt.y = mouse[1];
+				dstPt = dstPt.matrixTransform(viewbox.getCTM());
+
+				return line([srcPt, dstPt]);
+			});
+	}
+});
