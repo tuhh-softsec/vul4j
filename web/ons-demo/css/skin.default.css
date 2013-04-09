@@ -6,6 +6,11 @@ body {
 	margin: 0px;
 }
 
+#contents {
+	visibility: hidden;
+	background-color: black;
+}
+
 #topology.linking {
 	cursor: crosshair;
 }

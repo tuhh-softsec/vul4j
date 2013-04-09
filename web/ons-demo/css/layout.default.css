@@ -4,8 +4,22 @@ html, body {
 
 body {
 	display: -webkit-box;
-	-webkit-box-orient: vertical;
 	-webkit-user-select: none;
+}
+
+#background, #background-image {
+	width: 100%;
+	height: 100%;
+}
+
+#contents {
+	width: 100%;
+	height: 100%;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
 
 #columns {
