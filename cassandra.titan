@@ -1,6 +1,5 @@
-storage.backend=cassandra
+storage.backend=cassandrathrift
 storage.hostname=localhost
 storage.keyspace=onos
 storage.connection-pool-size=4096
 storage.replication-factor=3
-storage.read-consistency-level=1
