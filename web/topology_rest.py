@@ -864,11 +864,11 @@ def link_up_hw(src_dpid, src_port, dst_dpid, dst_port):
 	cmd = 'up'
 	result=""
 	host = controllers[0]
-	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (src_dpid, port1, cmd)
+	cmd_string="~/ONOS/scripts/link-hw.sh %s %s %s " % (src_dpid, port1, cmd)
 	print cmd_string
 	res=os.popen(cmd_string).read()
 	result = result + ' ' + res
-	cmd_string="~/ONOS/scripts/link.sh %s %s %s " % (dst_dpid, port2, cmd)
+	cmd_string="~/ONOS/scripts/link-hw.sh %s %s %s " % (dst_dpid, port2, cmd)
 	print cmd_string
 	res=os.popen(cmd_string).read()
 	result = result + ' ' + res
@@ -892,9 +892,9 @@ def link_down(cmd, src_dpid, src_port, dst_dpid, dst_port):
     cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./link.sh %s %s %s'" % (host, src_dpid, src_port, cmd)
   else:
     if ( src_dpid == "00:00:00:08:a2:08:f9:01" ):
-      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( dst_dpid, dst_port, cmd)
+      cmd_string="~/ONOS/scripts/link-hw.sh %s %s %s " % ( dst_dpid, dst_port, cmd)
     else:
-      cmd_string="~/ONOS/scripts/link.sh %s %s %s " % ( src_dpid, src_port, cmd)
+      cmd_string="~/ONOS/scripts/link-hw.sh %s %s %s " % ( src_dpid, src_port, cmd)
   print cmd_string
 
   result=os.popen(cmd_string).read()
@@ -957,34 +957,46 @@ def iperf_start(flow_id,duration,samples):
       src_host = controllers[0]
   else:
       hostid=int(src_dpid.split(':')[-2])
-      src_host = controllers[hostid-1]
+      if TESTBED == "hw":
+        src_host = "mininet%i" % hostid
+      else:
+        src_host = controllers[hostid-1]
 
   if dst_dpid in core_switches:
       dst_host = controllers[0]
   else:
       hostid=int(dst_dpid.split(':')[-2])
-      dst_host = controllers[hostid-1]
+      if TESTBED == "hw":
+        dst_host = "mininet%i" % hostid
+      else:
+        dst_host = controllers[hostid-1]
 
-# /runiperf.sh <flowid> <src_dpid> <dst_dpid> svr|client <proto>/<duration>/<interval>/<samples>
+# /runiperf.sh <flowid> <src_dpid> <dst_dpid> hw:svr|sw:svr|hw:client|sw:client <proto>/<duration>/<interval>/<samples>
   protocol="udp"
   interval=0.1
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (dst_host, flowId, src_dpid, dst_dpid, "svr", protocol, duration, interval, samples)
+  if TESTBED == "hw":
+    cmd_string="dsh -w %s 'cd ONOS/scripts; " % dst_host
+  else:
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s '" % dst_host
+  cmd_string += "./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "svr", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
 
-  cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./runiperf.sh %d %s %s %s %s/%s/%s/%s'" % (src_host, flowId, src_dpid, dst_dpid, "client", protocol, duration, interval, samples)
+  if TESTBED == "hw":
+    cmd_string="dsh -w %s 'cd ONOS/scripts; " % src_host
+  else:
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s'" % src_host
+  cmd_string+="./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "client", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
 
   return cmd_string
 
+
 #* Get Iperf Throughput
 #http://localhost:9000/gui/iperf/rate/<flow_id>
 @app.route("/gui/iperf/rate/<flow_id>")
 def iperf_rate(flow_id):
-  if (TESTBED == "hw"):
-    return "{}"
-
   try:
     command = "curl -s \'http://%s:%s/wm/flow/get/%s/json\'" % (RestIP, RestPort, flow_id)
     print command
@@ -1005,9 +1017,12 @@ def iperf_rate(flow_id):
   dst_port = parsedResult['dataPath']['dstPort']['port']['value']
 
   if dst_dpid in core_switches:
-      host = controllers[0]
+    host = controllers[0]
   else:
-      hostid=int(dst_dpid.split(':')[-2])
+    hostid=int(dst_dpid.split(':')[-2])
+    if TESTBED == "hw":
+      host = "mininet%i" % hostid
+    else:
       host = controllers[hostid-1]
 
   try:
@@ -1023,7 +1038,6 @@ def iperf_rate(flow_id):
   else:
     resp = Response(result, status=200, mimetype='application/json')
     return resp
-
 
 if __name__ == "__main__":
   random.seed()
