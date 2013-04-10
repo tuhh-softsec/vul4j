@@ -341,6 +341,10 @@ function clearIPerf(flow) {
 }
 
 function deselectFlow(flow, ifCreatePending) {
+	if (!flow) {
+		return;
+	}
+
 	var flowKey = makeFlowKey(flow);
 	var newSelectedFlows = [];
 	selectedFlows.forEach(function (flow) {

@@ -3,6 +3,7 @@
 - onos nodes at top
 - count only active switches in header
 - hook up switchctrl all and local actions
+- various small ui improvements (hover feedback e.g.)
 
 
 ** April 8, 2013 **

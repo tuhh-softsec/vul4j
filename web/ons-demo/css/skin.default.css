@@ -70,11 +70,15 @@ body {
 }
 
 .selectedFlow:hover {
-	background-color: #333;
+	background-color: #222;
 }
 
 .selectedFlow:last-child {
 	border-bottom: none;
+}
+
+#flowChooser .selectedFlow:hover {
+	background-color: white;
 }
 
 #lastUpdated {
@@ -183,6 +187,14 @@ path.iperfdata {
 
 .srcDPID, .dstDPID, .deleteFlow, #showFlowChooser {
 	border-right: 1px solid #AAA;
+}
+
+#showFlowChooser:hover, .deleteFlow:hover {
+	background-color: #444;
+}
+
+#showFlowChooser:active, .deleteFlow:active {
+	background-color: black;
 }
 
 .srcDPID {
