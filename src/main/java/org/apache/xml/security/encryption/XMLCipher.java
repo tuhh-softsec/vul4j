@@ -28,7 +28,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +55,7 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.keyresolver.implementations.EncryptedKeyResolver;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.transforms.InvalidTransformException;
 import org.apache.xml.security.transforms.TransformationException;
 import org.apache.xml.security.utils.Base64;
@@ -243,8 +243,6 @@ public class XMLCipher {
     // The EncryptedData being built (part of a WRAP operation) or read
     // (part of an UNWRAP operation)
     private EncryptedData ed;
-    
-    private SecureRandom random;
     
     private boolean secureValidation;
     
@@ -1126,11 +1124,8 @@ public class XMLCipher {
             // The Spec mandates a 96-bit IV for GCM algorithms
             if (AES_128_GCM.equals(algorithm) || AES_192_GCM.equals(algorithm) 
                 || AES_256_GCM.equals(algorithm)) {
-                if (random == null) {
-                    random = SecureRandom.getInstance("SHA1PRNG");
-                }
                 byte[] temp = new byte[12];
-                random.nextBytes(temp);
+                XMLSecurityConstants.secureRandom.nextBytes(temp);
                 IvParameterSpec paramSpec = new IvParameterSpec(temp);
                 c.init(cipherMode, key, paramSpec);
             } else {
@@ -1138,8 +1133,6 @@ public class XMLCipher {
             }
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new XMLEncryptionException("empty", ex);
         }
 
         try {
