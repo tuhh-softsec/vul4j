@@ -6,6 +6,7 @@
 - various small ui improvements (hover feedback, flow chooser animation e.g.)
 - splash screen and use vector graphics for on.lab logo
 - only show "marching ants" animation when iperf data is flowing
+- NOTE: the map view dynamically sizes with browser resize. so no need to refresh after resizing anymore
 
 
 ** April 8, 2013 **
