@@ -25,5 +25,9 @@ function appInit(cb) {
 		alert('scale')
 	});
 
+	d3.select('#action-reset').on('click', function () {
+		alert('reset')
+	});
+
 	createTopologyView(cb);
 }

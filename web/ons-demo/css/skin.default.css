@@ -106,6 +106,34 @@ body {
 	border-bottom: 1px solid #AAA;;
 }
 
+#onos {
+	background-color: #333;
+}
+
+#cluster-label {
+	font-size: 22px;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	color: #EEE;
+}
+
+#actions {
+	padding-right: .25em;
+	padding-left: .25em;
+	border-left: 1px solid white;
+	display: -webkit-box;
+	-webkit-box-align: center;
+}
+
+#controllers {
+	padding: .25em;
+	background-color: black;
+	margin: .25em;
+	border-radius: 8px;
+}
+
 #flowChooser .selectedFlow {
 	background-color: rgba(255, 255, 255, .75);
 	color: black;
@@ -208,6 +236,7 @@ path.iperfdata {
 	border: 1px solid #444;
 	color: white;
 	position: relative;
+	border-radius: 8px;
 }
 
 .controller:hover {
@@ -395,19 +424,21 @@ path {
 
 .action {
 	margin: .25em;
-	padding: .25em;
-	padding-left: 1em;
-	padding-right: 1em;
-	border: 1px solid #AAA;
+	border: 2px solid #AAA;
+	height: 2em;
+	width: 2em;
 	background-color: #444;
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
-	color: white;
+	color: #AAA;
+	border-radius: 50%;
+	-webkit-box-sizing: border-box;
 }
 
 .action:hover {
-	border: 1px solid #FFF;
+	border: 2px solid #FFF;
+	color: white;
 }
 
 .action:active {
