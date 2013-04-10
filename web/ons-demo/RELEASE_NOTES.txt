@@ -5,6 +5,7 @@
 - hook up switchctrl all and local actions
 - various small ui improvements (hover feedback, flow chooser animation e.g.)
 - splash screen and use vector graphics for on.lab logo
+- only show "marching ants" animation when iperf data is flowing
 
 
 ** April 8, 2013 **
