@@ -2,7 +2,7 @@
 
 var projection = d3.geo.mercator()
     .center([82, 46])
-    .scale(8000)
+    .scale(10000)
     .rotate([-180,0]);
 
 var switchXML;
@@ -164,8 +164,13 @@ function drawLinkLines() {
 }
 
 var fanOutAngles = {
-	aggregation: 90,
-	edge: 7
+	aggregation: 100,
+	edge: 5
+}
+
+var fanOutDistances = {
+	aggregation: 60,
+	edge: 140
 }
 
 function makeSwitchesModel(switches, className) {
@@ -187,8 +192,8 @@ function makeSwitchesModel(switches, className) {
 				fanOutAngle -= (upstreamGeo.count - 1) * fanOutAngles[className]/2;
 
 				var angle = toRadians(fanOutAngle);
-				var xOff = Math.sin(angle) * widths[className] * 20;
-				var yOff = Math.cos(angle) * widths[className] * 20;
+				var xOff = Math.sin(angle) * fanOutDistances[className];
+				var yOff = Math.cos(angle) * fanOutDistances[className];
 
 				pos = [pos[0] + xOff, pos[1] + yOff];
 
