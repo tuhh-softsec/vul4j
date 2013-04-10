@@ -50,6 +50,10 @@ var controllerFunctions = {
 		var flowId = parseInt(flow.flowId, 16);
 		var url = '/proxy/gui/iperf/rate/' + flowId;
 		callURL(url, cb);
+	},
+	switchControllerCmd: function (cmd) {
+		var url = '/proxy/gui/switchctrl/' + cmd;
+		callURL(url);
 	}
 };
 
@@ -92,3 +96,12 @@ function startIPerf(flow, duration, numSamples) {
 function getIPerfData(flow, cb) {
 	controllerFunctions.getIPerfDataCmd(flow, cb);
 }
+
+function switchLocal() {
+	controllerFunctions.switchControllerCmd('local');
+}
+
+function switchAll() {
+	controllerFunctions.switchControllerCmd('all');
+}
+

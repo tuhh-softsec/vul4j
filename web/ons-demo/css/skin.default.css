@@ -6,8 +6,20 @@ body {
 	margin: 0px;
 }
 
-#topology.linking {
+#contents {
+	visibility: hidden;
+	background-color: black;
+}
+
+#topologyArea.linking {
 	cursor: crosshair;
+}
+
+
+#map path {
+	fill:none;
+	stroke:#333;
+	stroke-width:2;
 }
 
 .nodrop {
@@ -33,7 +45,7 @@ body {
 	padding: .25em;
 }
 
-#status.top span {
+#status span {
 	font-size: 24px;
 }
 
@@ -53,31 +65,25 @@ body {
 	height: 50px;
 }
 
-#topology {
-	border-top: 1px solid #AAA;
-}
-
 .selectedFlow {
 	border-bottom: 1px solid #AAA;
 }
 
 .selectedFlow:hover {
-	background-color: #333;
+	background-color: #222;
 }
 
 .selectedFlow:last-child {
 	border-bottom: none;
 }
 
+#flowChooser .selectedFlow:hover {
+	background-color: white;
+}
+
 #lastUpdated {
 	padding-bottom: 0px;
 }
-
-#controllers .header {
-	-webkit-box-pack: center;
-	border-bottom: 1px solid #AAA;
-}
-
 
 #right .header {
 	font-size: 12px;
@@ -85,11 +91,8 @@ body {
 	-webkit-box-sizing: border-box;
 }
 
-#controllers, #selectedFlows {
-	border-top: 1px solid #AAA;
-}
-
 #selectedFlows {
+	border-top: 1px solid #AAA;
 	border-bottom: 1px solid #AAA;
 }
 
@@ -97,6 +100,10 @@ body {
 	height: 2em;
 	color: white;
 	background-color: black;
+}
+
+.header, #onos {
+	border-bottom: 1px solid #AAA;;
 }
 
 #flowChooser .selectedFlow {
@@ -147,8 +154,16 @@ path.flow.highlight {
 
 path.iperfdata {
 	fill: none;
-	stroke-width: 2px;
-	stroke: rgba(255, 255, 255, .75);
+	stroke-width: 1px;
+	stroke: #ccc;
+}
+
+.iperf {
+	background-color: #222;
+}
+
+#selectedFlowsHeader .iperf {
+	background-color: black;
 }
 
 #flowChooser {
@@ -161,7 +176,7 @@ path.iperfdata {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
-	width: 3em;
+	width: 4em;
 }
 
 
@@ -170,24 +185,39 @@ path.iperfdata {
 }
 
 
-.srcDPID, .dstDPID, .deleteFlow, #deleteFlow {
+.srcDPID, .dstDPID, .deleteFlow, #showFlowChooser {
 	border-right: 1px solid #AAA;
+}
+
+#showFlowChooser:hover, .deleteFlow:hover {
+	background-color: #444;
+}
+
+#showFlowChooser:active, .deleteFlow:active {
+	background-color: black;
 }
 
 .srcDPID {
 	border-left: 1px solid #AAA;
 }
 
-
-#controllers {
-	border-right: 1px solid #AAA;
-}
-
 .controller {
 	padding: .25em;
 	padding-left: 2.5em;
 	position: relative;
+	border: 1px solid #444;
+	color: white;
+	position: relative;
 }
+
+.controller:hover {
+	border: 1px solid white;
+}
+
+.action, .controller {
+	font-size: 18px;
+}
+
 
 .black-eye {
 	position: absolute;
@@ -207,7 +237,7 @@ path.iperfdata {
 	background-image: url('../assets/white-eye.svg');
 	background-size: auto 100%;
 	background-repeat: no-repeat;
-	background-position: .25em center;
+	background-position: .4em center;
 }
 
 .deleteFlow {
@@ -236,6 +266,10 @@ text {
 	fill: white;
 	font-size: 16px;
 	pointer-events: none;
+}
+
+text.label {
+	fill: #888;
 }
 
 path {
@@ -284,6 +318,7 @@ path {
 
 .color2 {
 	opacity: .15;
+	pointer-events: none;
 	fill: #FFBA00;
 	background-color: #FFBA00;
 }
@@ -332,6 +367,7 @@ path {
 
 .color9 {
 	opacity: .2;
+	pointer-events: none;
 	fill: #F53D65;
 	background-color: #F53D65;
 }
@@ -357,6 +393,27 @@ path {
 	background-color: #6949D7;
 }
 
+.action {
+	margin: .25em;
+	padding: .25em;
+	padding-left: 1em;
+	padding-right: 1em;
+	border: 1px solid #AAA;
+	background-color: #444;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	color: white;
+}
+
+.action:hover {
+	border: 1px solid #FFF;
+}
+
+.action:active {
+	background-color: #222;
+}
+
 
 @-webkit-keyframes pending {
 	from {
@@ -373,5 +430,10 @@ path {
 	-webkit-animation-direction: alternate;
 	-webkit-animation-timing-function: ease-in-out;
 	-webkit-animation-iteration-count: 70;
+}
+
+.core path {
+	stroke-width: 1px;
+	stroke: black;
 }
 
