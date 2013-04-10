@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+# ./prontolink.exp <ip of switch> <port> <0 or 1 (on or off)>
+set timeout -1
+set arg0 [lindex $argv 0]
+set port [lindex $argv 1]
+set onoff [lindex $argv 2]
+
+spawn ssh root@$arg0 
+expect ": "
+send "OpenFlow\r"
+expect "# "
+send "cli\r"
+expect "CLI# "
+send "port set $port enable=$onoff\r"
+expect "CLI# "
+send "quit\r"
+expect "# " 
+send "exit\r"
+expect "closed."

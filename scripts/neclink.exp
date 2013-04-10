@@ -1,0 +1,28 @@
+#!/usr/bin/expect -f
+# ./neclink.exp <ip of port> <'no' or blank>
+set timeout -1
+set port [lindex $argv 0]
+set no [lindex $argv 1]
+
+spawn ssh ons@10.128.0.11 
+expect ": "
+send "onos_test\r"
+expect ">"
+send "enable\r"
+expect ":"
+send "onos_test\r"
+expect "#"
+send "configure\r"
+expect "(config)# "
+send "interface gigabitethernet 0/$port\r"
+expect "if)# "
+send "$no shutdown\r"
+expect "# " 
+send "exit\r"
+expect "# " 
+send "exit\r"
+expect ": " 
+send "y\r"
+expect "#"
+send "exit\r"
+expect "closed."
