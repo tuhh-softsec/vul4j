@@ -13,6 +13,11 @@ createTopologyView = function (cb) {
 	topology = svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').attr('preserveAspectRatio', 'none').
 			attr('id', 'viewbox').append('svg:g').attr('id', 'topology').attr('transform', 'translate(500 500)');
 
+	flowLayer = d3.select('svg');
+
+	// hack to make the shared flow drawing code work
+	drawingRings = true;
+
 	cb();
 }
 

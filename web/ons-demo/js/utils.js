@@ -80,7 +80,25 @@ update the app header using the current model
 ***************************************************************************************************/
 function updateHeader() {
 	d3.select('#lastUpdate').text(new Date());
-	d3.select('#activeSwitches').text(model.edgeSwitches.length + model.aggregationSwitches.length + model.coreSwitches.length);
+
+	var count = 0;
+	model.edgeSwitches.forEach(function (s) {
+		if (s.state === 'ACTIVE') {
+			count += 1;
+		}
+	});
+	model.aggregationSwitches.forEach(function (s) {
+		if (s.state === 'ACTIVE') {
+			count += 1;
+		}
+	});
+	model.coreSwitches.forEach(function (s) {
+		if (s.state === 'ACTIVE') {
+			count += 1;
+		}
+	});
+
+	d3.select('#activeSwitches').text(count);
 	d3.select('#activeFlows').text(model.flows.length);
 }
 

@@ -150,8 +150,16 @@ path.flow.highlight {
 
 path.iperfdata {
 	fill: none;
-	stroke-width: 2px;
-	stroke: rgba(255, 255, 255, .75);
+	stroke-width: 1px;
+	stroke: #ccc;
+}
+
+.iperf {
+	background-color: #222;
+}
+
+#selectedFlowsHeader .iperf {
+	background-color: black;
 }
 
 #flowChooser {

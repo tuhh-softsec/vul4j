@@ -44,3 +44,14 @@ var selectedFlows = [];
 a mapping from controller name to color used for color coding the topology and ONOS nodes views
 ***************************************************************************************************/
 var controllerColorMap = {};
+
+/***************************************************************************************************
+defined by rings.js or map.js this is where the flows are drawn.
+***************************************************************************************************/
+var flowLayer;
+
+/***************************************************************************************************
+hack to make the old ring drawing code compatible with the shared flow drawing code
+will be obsoleted once the ring drawing code is disposed of
+***************************************************************************************************/
+var drawingRings;

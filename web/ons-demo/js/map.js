@@ -111,6 +111,8 @@ createTopologyView = function (cb) {
 		switchLayer = topology.append('g');
 		labelsLayer = topology.append('g');
 		linksLayer = topology.append('g');
+		flowLayer = topology.append('g');
+
 
 		cb();
 	});

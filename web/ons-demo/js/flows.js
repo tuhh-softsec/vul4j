@@ -7,7 +7,7 @@ function updateSelectedFlowsTopology() {
 		}
 	});
 
-	var flows = d3.select('svg').selectAll('.flow').data(topologyFlows);
+	var flows = flowLayer.selectAll('.flow').data(topologyFlows);
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
@@ -34,13 +34,17 @@ function updateSelectedFlowsTopology() {
 				var pt1 = document.querySelector('svg').createSVGPoint();
 				pt1.x = s1.attr('x');
 				pt1.y = s1.attr('y');
-				pt1 = pt1.matrixTransform(s1[0][0].getCTM());
+				if (drawingRings) {
+					pt1 = pt1.matrixTransform(s1[0][0].getCTM());
+				}
 				pts.push(pt1);
 
 				var pt2 = document.querySelector('svg').createSVGPoint();
 				pt2.x = s2.attr('x');
 				pt2.y = s2.attr('y');
-				pt2 = pt2.matrixTransform(s2[0][0].getCTM());
+				if (drawingRings) {
+					pt2 = pt2.matrixTransform(s2[0][0].getCTM());
+				}
 				pts.push(pt2);
 
 			} else if (d.dataPath && d.dataPath.flowEntries) {
@@ -51,7 +55,9 @@ function updateSelectedFlowsTopology() {
 						var pt = document.querySelector('svg').createSVGPoint();
 						pt.x = s.attr('x');
 						pt.y = s.attr('y');
-						pt = pt.matrixTransform(s[0][0].getCTM());
+						if (drawingRings) {
+							pt = pt.matrixTransform(s[0][0].getCTM());
+						}
 						pts.push(pt);
 					} else {
 						console.log('flow refers to non-existent switch: ' + flowEntry.dpid.value);
@@ -197,12 +203,12 @@ function startIPerfForFlow(flow) {
 		var i;
 		for (i=0; i < pointsToDisplay; ++i) {
 			var sample = flow.iperfData.samples[i];
-			var height = 30 * sample/1000000;
-			if (height > 30)
-				height = 30;
+			var height = 28 * sample/1000000;
+			if (height > 28)
+				height = 28;
 			pts.push({
 				x: i * 1000/(pointsToDisplay-1),
-				y: 32 - height
+				y: 30 - height
 			})
 		}
 		return pts;
@@ -299,7 +305,10 @@ function updateSelectedFlows() {
 	}
 
 	updateSelectedFlowsTable();
-	updateSelectedFlowsTopology();
+	// on app init, the table is updated before the svg is constructed
+	if (flowLayer) {
+		updateSelectedFlowsTopology();
+	}
 }
 
 function selectFlow(flow) {
