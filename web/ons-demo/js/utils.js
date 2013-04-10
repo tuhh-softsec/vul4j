@@ -201,6 +201,45 @@ function countCoreLinkFlows() {
 }
 
 
+/***************************************************************************************************
+
+***************************************************************************************************/
+function doConfirm(prompt, cb) {
+	var confirm = d3.select('#confirm');
+	confirm.select('#confirm-prompt').text(prompt);
+
+	function show() {
+		confirm.style('display', '-webkit-box');
+		confirm.style('opacity', 0);
+		setTimeout(function () {
+			confirm.style('opacity', 1);
+		}, 0);
+	}
+
+	function dismiss() {
+		confirm.style('opacity', 0);
+		confirm.on('webkitTransitionEnd', function () {
+			confirm.style('display', 'none');
+			confirm.on('webkitTransitionEnd', null);
+		});
+	}
+
+	confirm.select('#confirm-ok').on('click', function () {
+		d3.select(this).on('click', null);
+		dismiss();
+		cb(true);
+	});
+
+	confirm.select('#confirm-cancel').on('click', function () {
+		d3.select(this).on('click', null);
+		dismiss();
+		cb(false);
+	});
+
+	show();
+}
+
+
 
 
 

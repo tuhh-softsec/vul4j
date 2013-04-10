@@ -26,16 +26,20 @@ function updateControllers() {
 	controllers.on('dblclick', function (c) {
 		if (model.activeControllers.indexOf(c) != -1) {
 			var prompt = 'Dectivate ' + c + '?';
-			if (confirm(prompt)) {
-				controllerDown(c);
-				setPending(d3.select(this));
-			};
+			doConfirm(prompt, function (result) {
+				if (result) {
+					controllerDown(c);
+					setPending(d3.select(this));
+				};
+			})
 		} else {
 			var prompt = 'Activate ' + c + '?';
-			if (confirm(prompt)) {
-				controllerUp(c);
-				setPending(d3.select(this));
-			};
+			doConfirm(prompt, function (result) {
+				if (result) {
+					controllerUp(c);
+					setPending(d3.select(this));
+				};
+			});
 		}
 	});
 

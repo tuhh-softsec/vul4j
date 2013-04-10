@@ -473,3 +473,58 @@ path {
 	fill: rgba(255, 255, 255, .75);
 }
 
+#confirm {
+	display: none;
+	-webkit-transition: opacity .25s;
+	font-size: 20px;
+}
+
+#confirm-background {
+	background-color: black;
+	opacity: .5;
+}
+
+#confirm-prompt {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	-webkit-box-flex: 1.0;
+	text-align: center;
+}
+
+#confirm-buttons {
+	padding: 1em;
+}
+
+#confirm-prompt {
+	margin-top:1em;
+	line-height: 1.5em;
+}
+
+#confirm-panel {
+	position: relative;
+	background-color: #222;
+	border: 2px solid #aaa;
+	border-radius: 12px;
+	width: 20em;
+	padding: 1em;
+}
+
+.confirm-button {
+	padding: .5em;
+	border: 2px solid #aaa;
+	color: #aaa;
+	border-radius: 6px;
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.confirm-button:hover{
+	border: 2px solid white;
+	color: white;
+}
+
+.confirm-button:active{
+	background-color: black;
+}
+
