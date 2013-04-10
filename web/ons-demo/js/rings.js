@@ -16,6 +16,52 @@ createTopologyView = function (cb) {
 	cb();
 }
 
+function updateLinkLines() {
+
+	// key on link dpids since these will come/go during demo
+	var linkLines = d3.select('svg').selectAll('.link').data(links, function (d) {
+		return d['src-switch']+'->'+d['dst-switch'];
+	});
+
+	// add new links
+	linkLines.enter().append("svg:path").attr("class", "link");
+
+	linkLines.attr('id', function (d) {
+			return makeLinkKey(d);
+		}).attr("d", function (d) {
+			var src = d3.select(document.getElementById(d['src-switch']));
+			var dst = d3.select(document.getElementById(d['dst-switch']));
+
+			if (src.empty() || dst.empty()) {
+				return "M0,0";
+			}
+
+			var srcPt = document.querySelector('svg').createSVGPoint();
+			srcPt.x = src.attr('x');
+			srcPt.y = src.attr('y');
+			srcPt = srcPt.matrixTransform(src[0][0].getCTM());
+
+			var dstPt = document.querySelector('svg').createSVGPoint();
+			dstPt.x = dst.attr('x');
+			dstPt.y = dst.attr('y');
+			dstPt = dstPt.matrixTransform(dst[0][0].getCTM());
+
+			var midPt = document.querySelector('svg').createSVGPoint();
+			midPt.x = (srcPt.x + dstPt.x)/2;
+			midPt.y = (srcPt.y + dstPt.y)/2;
+
+			return line([srcPt, midPt, dstPt]);
+		})
+		.attr("marker-mid", function(d) { return "url(#arrow)"; })
+		.classed('pending', function (d) {
+			return d.pending;
+		});
+
+	// remove old links
+	linkLines.exit().remove();
+}
+
+
 function createRingTopologyModel(model) {
 	var rings = [{
 		radius: 3,
@@ -269,6 +315,8 @@ drawTopology = function () {
 
 	// switches should not change during operation of the ui so no
 	// rings.exit()
+
+	updateLinkLines();
 }
 
 })();
