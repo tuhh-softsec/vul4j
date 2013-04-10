@@ -120,6 +120,64 @@ createTopologyView = function (cb) {
 	});
 }
 
+function drawCoreFlowCounts() {
+	var links = {};
+	model.links.forEach(function (l) {
+		links[makeLinkKey(l)] = l;
+	});
+
+	var flowCounts = [];
+	countCoreLinkFlows().forEach(function (count) {
+		var l = links[count.key];
+		if (l) {
+			var src = d3.select(document.getElementById(l['src-switch']));
+			var dst = d3.select(document.getElementById(l['dst-switch']));
+
+			if (!src.empty() && !dst.empty()) {
+				var x1 = parseFloat(src.attr('x'));
+				var x2 = parseFloat(dst.attr('x'));
+				var y1 = parseFloat(src.attr('y'));
+				var y2 = parseFloat(dst.attr('y'));
+
+				var slope = (y2 - y1)/(x2 - x1);
+
+				var offset = 15;
+				var xOffset = offset;
+				var yOffset = slope*offset;
+
+				var d = Math.sqrt(xOffset*xOffset + yOffset*yOffset);
+				var scaler = offset/d;
+
+				count.pt = {
+					x: x1 + (x2 - x1)/2 + xOffset*scaler,
+					y: y1 + (y2 - y1)/2 + yOffset*scaler
+				}
+			}
+			flowCounts.push(count);
+		}
+	});
+
+
+	var counts = linksLayer.selectAll('.flowCount').data(flowCounts, function (d) {
+		return d.key;
+	});
+
+	counts.enter().append('svg:text')
+		.attr('class', 'flowCount')
+		.attr('x', function (d) {
+			return d.pt.x;
+		})
+		.attr('y', function (d) {
+			return d.pt.y;
+		});
+
+	counts.text(function (d) {
+		return d.value;
+	});
+
+	counts.exit().remove();
+}
+
 function drawLinkLines() {
 
 	// key on link dpids since these will come/go during demo
@@ -162,6 +220,7 @@ function drawLinkLines() {
 	// remove old links
 	linkLines.exit().remove();
 }
+
 
 var fanOutAngles = {
 	aggregation: 100,
@@ -252,9 +311,13 @@ function switchEnter(d) {
 		g.append('svg:text')
 			.classed('label', true)
 			.text(d.label)
-			.attr("text-anchor", "end")
-			.attr('x', d.x - width)
-			.attr('y', d.y - width);
+			.attr("text-anchor", function (d) {
+				return d.x > 500 ? "end" : "start";
+			})
+			.attr('x', function (d) {
+				return d.x > 500 ? d.x - width*.8 : d.x + width*.8;
+			})
+			.attr('y', d.y - width*.8);
 	}
 }
 
@@ -332,6 +395,8 @@ drawTopology = function () {
 	switchesUpdate(switchesEnter(switches));
 
 	drawLinkLines();
+
+	drawCoreFlowCounts();
 
 	labelsEnter(switches);
 }

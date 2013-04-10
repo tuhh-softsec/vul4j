@@ -81,24 +81,27 @@ update the app header using the current model
 function updateHeader() {
 	d3.select('#lastUpdate').text(new Date());
 
-	var count = 0;
+	var activeSwitchCount = 0;
 	model.edgeSwitches.forEach(function (s) {
 		if (s.state === 'ACTIVE') {
-			count += 1;
+			activeSwitchCount += 1;
 		}
 	});
 	model.aggregationSwitches.forEach(function (s) {
 		if (s.state === 'ACTIVE') {
-			count += 1;
+			activeSwitchCount += 1;
 		}
 	});
 	model.coreSwitches.forEach(function (s) {
 		if (s.state === 'ACTIVE') {
-			count += 1;
+			activeSwitchCount += 1;
 		}
 	});
 
-	d3.select('#activeSwitches').text(count);
+	d3.select('#activeSwitches').text(activeSwitchCount);
+
+
+
 	d3.select('#activeFlows').text(model.flows.length);
 }
 
@@ -152,5 +155,52 @@ function createRootSVG() {
 
 	return svg;
 }
+
+/***************************************************************************************************
+counts the number of flows which pass through each core<->core link
+***************************************************************************************************/
+function countCoreLinkFlows() {
+	var allCounts = {};
+	model.flows.forEach(function (f) {
+		if (f.dataPath && f.dataPath.flowEntries && f.dataPath.flowEntries.length > 1) {
+			var flowEntries = f.dataPath.flowEntries;
+			var i;
+
+			for (i = 0; i < flowEntries.length - 1; i += 1) {
+				var linkKey = flowEntries[i].dpid.value + '=>' + flowEntries[i+1].dpid.value;
+				if (!allCounts[linkKey]) {
+					allCounts[linkKey] = 1;
+				} else {
+					allCounts[linkKey] += 1;
+				}
+			}
+		}
+	});
+
+	var coreCounts = {};
+	var i, j;
+	for (i = 0; i < model.coreSwitches.length - 1; i += 1) {
+		for (j = i + 1; j < model.coreSwitches.length; j += 1) {
+			var si = model.coreSwitches[i];
+			var sj = model.coreSwitches[j];
+			var key1 =  si.dpid + '=>' + sj.dpid;
+			var key2 =  sj.dpid + '=>' + si.dpid;
+			var linkCount = 0;
+			if (allCounts[key1]) {
+				linkCount += allCounts[key1];
+			}
+			if (allCounts[key2]) {
+				linkCount += allCounts[key2];
+			}
+
+			coreCounts[key1] = linkCount;
+		}
+	}
+
+	return d3.entries(coreCounts);
+}
+
+
+
 
 
