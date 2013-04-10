@@ -232,7 +232,12 @@ public class GraphDBUtils implements IDBUtils {
 
 	@Override
 	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
-		// TODO Auto-generated method stub
-		return null;
+
+        ISwitchObject sw = searchSwitch(conn, dpid);
+        if ((sw != null) &&
+            sw.getState().equals(SwitchState.ACTIVE.toString())) {
+            return sw;
+        }
+        return null;
 	}
 }
