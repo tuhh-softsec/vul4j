@@ -1,4 +1,11 @@
 ** April 8, 2013 **
+- map view
+- onos nodes at top
+- count only active switches in header
+- hook up switchctrl all and local actions
+
+
+** April 8, 2013 **
 - add explicit timeout logic so that the GUI doesn't have to be refreshed if the API misbehaves
 
 ** April 8, 2013 **

@@ -102,15 +102,20 @@ body {
 	width: 100%;
 }
 
-#controllerList {
+#onos {
 	display: -webkit-box;
-	-webkit-box-orient: horizontal;
-	overflow: scroll;
+}
+
+#actions {
+	display: -webkit-box;
 }
 
 #controllers {
 	display: -webkit-box;
+	overflow: scroll;
+	-webkit-box-flex: 1.0;
 }
+
 .controller {
 	margin: .25em;
 	background-color: blue;

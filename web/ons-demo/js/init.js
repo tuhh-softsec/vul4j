@@ -7,5 +7,23 @@ function appInit(cb) {
 		showFlowChooser();
 	});
 
+	d3.select('#action-all').on('click', function () {
+		var prompt = "Switch controllers to all?"
+		if (confirm(prompt)) {
+			switchAll();
+		}
+	});
+
+	d3.select('#action-local').on('click', function () {
+		var prompt = "Switch controllers to local?"
+		if (confirm(prompt)) {
+			switchLocal();
+		}
+	});
+
+	d3.select('#action-scale').on('click', function () {
+		alert('scale')
+	});
+
 	createTopologyView(cb);
 }

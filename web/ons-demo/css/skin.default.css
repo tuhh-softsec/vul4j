@@ -98,7 +98,7 @@ body {
 	background-color: black;
 }
 
-.header, #controllers {
+.header, #onos {
 	border-bottom: 1px solid #AAA;;
 }
 
@@ -194,7 +194,19 @@ path.iperfdata {
 	padding: .25em;
 	padding-left: 2.5em;
 	position: relative;
+	border: 1px solid #444;
+	color: white;
+	position: relative;
 }
+
+.controller:hover {
+	border: 1px solid white;
+}
+
+.action, .controller {
+	font-size: 20px;
+}
+
 
 .black-eye {
 	position: absolute;
@@ -295,6 +307,7 @@ path {
 
 .color2 {
 	opacity: .15;
+	pointer-events: none;
 	fill: #FFBA00;
 	background-color: #FFBA00;
 }
@@ -343,6 +356,7 @@ path {
 
 .color9 {
 	opacity: .2;
+	pointer-events: none;
 	fill: #F53D65;
 	background-color: #F53D65;
 }
@@ -366,6 +380,27 @@ path {
 	pointer-events: none;
 	fill: #6949D7;
 	background-color: #6949D7;
+}
+
+.action {
+	margin: .25em;
+	padding: .25em;
+	padding-left: 1em;
+	padding-right: 1em;
+	border: 1px solid #AAA;
+	background-color: #444;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	color: white;
+}
+
+.action:hover {
+	border: 1px solid #FFF;
+}
+
+.action:active {
+	background-color: #222;
 }
 
 
