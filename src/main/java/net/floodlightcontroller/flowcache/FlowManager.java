@@ -1232,44 +1232,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
-	String dataPathSummaryStr = null;
-
 	//
-	// Do the shortest path computation
+	// Don't do the shortest path computation here.
+	// Instead, let the Flow reconciliation thread take care of it.
 	//
-	DataPath dataPath =
-	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
-					     flowPath.dataPath().dstPort());
-	if (dataPath == null) {
-	    // We need the DataPath to populate the Network MAP
-	    dataPath = new DataPath();
-	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
-	    dataPath.setDstPort(flowPath.dataPath().dstPort());
-	}
 
-	// Compute the Data Path summary
-	dataPathSummaryStr = dataPath.dataPathSummary();
-
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	for (FlowEntry flowEntry : dataPath.flowEntries()) {
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-	    flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
-	}
+	// We need the DataPath to populate the Network MAP
+	DataPath dataPath = new DataPath();
+	dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	dataPath.setDstPort(flowPath.dataPath().dstPort());
 
 	//
 	// Prepare the computed Flow Path
@@ -1281,6 +1252,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
 
 	FlowId flowId = new FlowId();
+	String dataPathSummaryStr = dataPath.dataPathSummary();
 	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
 	    return null;
 
