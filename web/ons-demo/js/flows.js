@@ -401,7 +401,12 @@ function showFlowChooser() {
 
 	}
 
-	var flows = d3.select('#flowChooser')
+	var flowChooser = d3.select(document.getElementById('flowChooser'));
+	flowChooser.html('');
+	flowChooser.style('-webkit-transform', 'translate3d(-100%, 0, 0)')
+		.style('-webkit-transition');
+
+	var flows = flowChooser
 		.append('div')
 		.style('pointer-events', 'auto')
 		.selectAll('.selectedFlow')
@@ -411,9 +416,16 @@ function showFlowChooser() {
 		.classed('selectedFlow', true)
 		.each(rowEnter);
 
+
 	setTimeout(function () {
+		flowChooser.style('-webkit-transition', '-webkit-transform .25s');
+		setTimeout(function () {
+			flowChooser.style('-webkit-transform', 'translate3d(0,0,0)');
+		}, 0);
+
+
 		d3.select(document.body).on('click', function () {
-			d3.select('#flowChooser').html('');
+			flowChooser.style('-webkit-transform', 'translate3d(-100%, 0, 0)')
 			d3.select(document.body).on('click', null);
 		});
 	}, 0);
