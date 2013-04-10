@@ -691,8 +691,8 @@ def controller_status():
 @app.route("/gui/controller/<cmd>/<controller_name>")
 def controller_status_change(cmd, controller_name):
   if (TESTBED == "hw"):
-    start_onos="cd; onos start %s" % (controller_name[-1:])
-    stop_onos="cd; onos stop %s" % (controller_name[-1:])
+    start_onos="/home/admin/bin/onos start %s" % (controller_name[-1:])
+    stop_onos="/home/admin/bin/onos stop %s" % (controller_name[-1:])
   else:
     start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
     stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
