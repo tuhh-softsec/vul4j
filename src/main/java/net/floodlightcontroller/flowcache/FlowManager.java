@@ -7,15 +7,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
@@ -59,7 +56,6 @@ import org.openflow.protocol.OFPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionOutput;
-import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,8 +65,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public GraphDBConnection conn;
 
     protected IRestApiService restApi;
-    protected IFloodlightProviderService floodlightProvider;
-    protected ITopoRouteService topoRouteService;
+    protected volatile IFloodlightProviderService floodlightProvider;
+    protected volatile ITopoRouteService topoRouteService;
     protected FloodlightModuleContext context;
 
     protected OFMessageDamper messageDamper;
@@ -99,11 +95,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
 
     // The periodic task(s)
-    private final ScheduledExecutorService mapReaderScheduler =
-	Executors.newScheduledThreadPool(1);
-
-    private final ScheduledExecutorService shortestPathReconcileScheduler =
-	Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService mapReaderScheduler;
+    private ScheduledExecutorService shortestPathReconcileScheduler;
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
@@ -386,15 +379,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	};
 
-    final ScheduledFuture<?> mapReaderHandle =
-	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
+    //final ScheduledFuture<?> mapReaderHandle =
+	//mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
 
-    final ScheduledFuture<?> shortestPathReconcileHandle =
-	shortestPathReconcileScheduler.scheduleAtFixedRate(shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+    //final ScheduledFuture<?> shortestPathReconcileHandle =
+	//shortestPathReconcileScheduler.scheduleAtFixedRate(shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
 
     @Override
     public void init(String conf) {
-	conn = GraphDBConnection.getInstance(conf);
+    	conn = GraphDBConnection.getInstance(conf);
     }
 
     public void finalize() {
@@ -449,6 +442,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// TODO: An ugly hack!
 	String conf = "/tmp/cassandra.titan";
 	this.init(conf);
+	
+		mapReaderScheduler = Executors.newScheduledThreadPool(1);
+		shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
     private long getNextFlowEntryId() {
@@ -471,10 +467,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     @Override
     public void startUp(FloodlightModuleContext context) {
-	restApi.addRestletRoutable(new FlowWebRoutable());
-
-	// Initialize the Flow Entry ID generator
-	nextFlowEntryIdPrefix = randomGenerator.nextInt();
+		restApi.addRestletRoutable(new FlowWebRoutable());
+	
+		// Initialize the Flow Entry ID generator
+		nextFlowEntryIdPrefix = randomGenerator.nextInt();
+		
+		mapReaderScheduler.scheduleAtFixedRate(
+				mapReader, 3, 3, TimeUnit.SECONDS);
+		shortestPathReconcileScheduler.scheduleAtFixedRate(
+				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
     }
 
     /**
