@@ -1,3 +1,7 @@
+** April 9, 2013 **
+- display number of flows for each core<->core link
+- graphics tweaks
+
 ** April 8, 2013 **
 - map view
 - onos nodes at top
