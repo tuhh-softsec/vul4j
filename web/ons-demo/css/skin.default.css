@@ -201,7 +201,6 @@ path.iperfdata {
 	border-left: 1px solid #AAA;
 }
 
-
 .controller {
 	padding: .25em;
 	padding-left: 2.5em;
@@ -216,7 +215,7 @@ path.iperfdata {
 }
 
 .action, .controller {
-	font-size: 20px;
+	font-size: 18px;
 }
 
 
@@ -431,5 +430,10 @@ path {
 	-webkit-animation-direction: alternate;
 	-webkit-animation-timing-function: ease-in-out;
 	-webkit-animation-iteration-count: 70;
+}
+
+.core path {
+	stroke-width: 1px;
+	stroke: black;
 }
 

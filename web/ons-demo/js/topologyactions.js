@@ -1,3 +1,12 @@
+function clearHighlight() {
+	topology.selectAll('circle').each(function (data) {
+		data.mouseDown = false;
+		d3.select('#topologyArea').classed('linking', false);
+		mouseOutSwitch(data);
+	});
+	d3.select('#linkVector').remove();
+};
+
 function mouseOverSwitch(data) {
 
 	d3.event.preventDefault();
@@ -87,6 +96,8 @@ function mouseUpSwitch(data) {
 }
 
 function doubleClickSwitch(data) {
+	clearHighlight();
+
 	var circle = d3.select(document.getElementById(data.dpid)).select('circle');
 	if (data.state == 'ACTIVE') {
 		var prompt = 'Deactivate ' + data.dpid + '?';
@@ -103,16 +114,7 @@ function doubleClickSwitch(data) {
 	}
 }
 
-d3.select(document.body).on('mouseup', function () {
-	function clearHighlight() {
-		topology.selectAll('circle').each(function (data) {
-			data.mouseDown = false;
-			d3.select('#topologyArea').classed('linking', false);
-			mouseOutSwitch(data);
-		});
-		d3.select('#linkVector').remove();
-	};
-
+d3.select(window).on('mouseup', function () {
 	d3.selectAll('.nodrop').classed('nodrop', false);
 
 	function removeLink(link) {

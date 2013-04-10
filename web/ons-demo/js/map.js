@@ -1,12 +1,11 @@
-
-
-
 (function () {
 
 var projection = d3.geo.mercator()
     .center([82, 46])
     .scale(8000)
     .rotate([-180,0]);
+
+var switchXML;
 
 function createMap(svg, cb) {
 	topology = svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').
@@ -23,7 +22,10 @@ function createMap(svg, cb) {
 		      		.append('path')
 		      		.attr('d', path)
 
-		cb();
+		d3.xml('assets/switch.svg', function (xml) {
+			switchXML = document.importNode(xml.documentElement, true);;
+			cb();
+		});
 	});
 }
 
@@ -220,12 +222,26 @@ function makeSwitchesModel(switches, className) {
 
 function switchEnter(d) {
 	var g = d3.select(this);
-	var width = widths[d.className];
+	var width;
 
-	g.append('svg:circle').attr('r', width)
-		.classed(d.className, true)
-		.attr('cx', d.x)
-		.attr('cy', d.y);
+	// attempt to draw an svg switch
+	if (false && d.className == 'core') {
+		width = 30;
+		g.select(function () {
+			return this.appendChild(switchXML.cloneNode(true));
+		})
+			.classed(d.className, true)
+			.attr('x', d.x - 30)
+			.attr('y', d.y - 30);
+
+	} else {
+		width = widths[d.className];
+		g.append('svg:circle').attr('r', width)
+			.classed(d.className, true)
+			.attr('cx', d.x)
+			.attr('cy', d.y);
+	}
+
 
 	if (d.label) {
 		g.append('svg:text')

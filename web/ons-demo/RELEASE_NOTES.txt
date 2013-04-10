@@ -3,7 +3,8 @@
 - onos nodes at top
 - count only active switches in header
 - hook up switchctrl all and local actions
-- various small ui improvements (hover feedback e.g.)
+- various small ui improvements (hover feedback, flow chooser animation e.g.)
+- splash screen and use vector graphics for on.lab logo
 
 
 ** April 8, 2013 **
