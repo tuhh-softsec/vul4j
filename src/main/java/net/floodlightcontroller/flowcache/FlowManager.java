@@ -267,11 +267,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
 			continue;
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
-			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
-			continue;	// No need to maintain this flow
 
 		    String srcDpidStr = flowPathObj.getSrcSwitch();
 		    if (srcDpidStr == null)
@@ -288,6 +283,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
+
+		    // Test the Data Path Summary string
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
+		    if (dataPathSummaryStr == null)
+			continue;	// Could be invalid entry?
+		    if (dataPathSummaryStr.isEmpty())
+			continue;	// No need to maintain this flow
 
 		    //
 		    // Test whether we need to complete the Flow cleanup,
