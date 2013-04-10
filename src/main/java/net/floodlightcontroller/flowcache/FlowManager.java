@@ -102,13 +102,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private final ScheduledExecutorService mapReaderScheduler =
 	Executors.newScheduledThreadPool(1);
 
+    private final ScheduledExecutorService shortestPathReconcileScheduler =
+	Executors.newScheduledThreadPool(1);
+
     final Runnable mapReader = new Runnable() {
 	    public void run() {
 		long startTime = System.nanoTime();
 		int counterAllFlowEntries = 0;
 		int counterMyNotUpdatedFlowEntries = 0;
-		int counterAllFlowPaths = 0;
-		int counterMyFlowPaths = 0;
 
 		if (floodlightProvider == null) {
 		    log.debug("FloodlightProvider service not found!");
@@ -120,7 +121,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    new LinkedList<IFlowEntry>();
 		LinkedList<IFlowEntry> deleteFlowEntries =
 		    new LinkedList<IFlowEntry>();
-		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
 
 		//
 		// Fetch all Flow Entries and select only my Flow Entries
@@ -218,6 +218,45 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowEntry(conn, flowEntryObj);
 		}
 
+		conn.endTx(Transaction.COMMIT);
+
+		if (processed_measurement_flow) {
+		    long estimatedTime =
+			System.nanoTime() - modifiedMeasurementFlowTime;
+		    String logMsg = "MEASUREMENT: Pushed Flow delay: " +
+			(double)estimatedTime / 1000000000 + " sec";
+		    log.debug(logMsg);
+		}
+
+		long estimatedTime = System.nanoTime() - startTime;
+		double rate = 0.0;
+		if (estimatedTime > 0)
+		    rate = ((double)counterAllFlowEntries * 1000000000) / estimatedTime;
+		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " +
+		    counterAllFlowEntries + " MyNotUpdatedFlowEntries: " +
+		    counterMyNotUpdatedFlowEntries + " in " +
+		    (double)estimatedTime / 1000000000 + " sec: " +
+		    rate + " paths/s";
+		log.debug(logMsg);
+	    }
+	};
+
+    final Runnable shortestPathReconcile = new Runnable() {
+	    public void run() {
+		long startTime = System.nanoTime();
+		int counterAllFlowPaths = 0;
+		int counterMyFlowPaths = 0;
+
+		if (floodlightProvider == null) {
+		    log.debug("FloodlightProvider service not found!");
+		    return;
+		}
+		Map<Long, IOFSwitch> mySwitches =
+		    floodlightProvider.getSwitches();
+		LinkedList<IFlowPath> deleteFlows = new LinkedList<IFlowPath>();
+
+		boolean processed_measurement_flow = false;
+
 		//
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
@@ -228,11 +267,6 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
 			continue;
-		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
-		    if (dataPathSummaryStr == null)
-			continue;	// Could be invalid entry?
-		    if (dataPathSummaryStr.isEmpty())
-			continue;	// No need to maintain this flow
 
 		    String srcDpidStr = flowPathObj.getSrcSwitch();
 		    if (srcDpidStr == null)
@@ -249,6 +283,13 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    IOFSwitch mySwitch = mySwitches.get(srcDpid.value());
 		    if (mySwitch == null)
 			continue;	// Ignore: not my responsibility
+
+		    // Test the Data Path Summary string
+		    String dataPathSummaryStr = flowPathObj.getDataPathSummary();
+		    if (dataPathSummaryStr == null)
+			continue;	// Could be invalid entry?
+		    if (dataPathSummaryStr.isEmpty())
+			continue;	// No need to maintain this flow
 
 		    //
 		    // Test whether we need to complete the Flow cleanup,
@@ -336,9 +377,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		double rate = 0.0;
 		if (estimatedTime > 0)
 		    rate = ((double)counterAllFlowPaths * 1000000000) / estimatedTime;
-		String logMsg = "MEASUREMENT: Processed AllFlowEntries: " +
-		    counterAllFlowEntries + " MyNotUpdatedFlowEntries: " +
-		    counterMyNotUpdatedFlowEntries + " AllFlowPaths: " +
+		String logMsg = "MEASUREMENT: Processed AllFlowPaths: " +
 		    counterAllFlowPaths + " MyFlowPaths: " +
 		    counterMyFlowPaths + " in " +
 		    (double)estimatedTime / 1000000000 + " sec: " +
@@ -349,6 +388,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     final ScheduledFuture<?> mapReaderHandle =
 	mapReaderScheduler.scheduleAtFixedRate(mapReader, 3, 3, TimeUnit.SECONDS);
+
+    final ScheduledFuture<?> shortestPathReconcileHandle =
+	shortestPathReconcileScheduler.scheduleAtFixedRate(shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
 
     @Override
     public void init(String conf) {
@@ -1232,44 +1274,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath) {
-	String dataPathSummaryStr = null;
-
 	//
-	// Do the shortest path computation
+	// Don't do the shortest path computation here.
+	// Instead, let the Flow reconciliation thread take care of it.
 	//
-	DataPath dataPath =
-	    topoRouteService.getShortestPath(flowPath.dataPath().srcPort(),
-					     flowPath.dataPath().dstPort());
-	if (dataPath == null) {
-	    // We need the DataPath to populate the Network MAP
-	    dataPath = new DataPath();
-	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
-	    dataPath.setDstPort(flowPath.dataPath().dstPort());
-	}
 
-	// Compute the Data Path summary
-	dataPathSummaryStr = dataPath.dataPathSummary();
-
-	//
-	// Set the incoming port matching and the outgoing port output
-	// actions for each flow entry.
-	//
-	for (FlowEntry flowEntry : dataPath.flowEntries()) {
-	    // Set the incoming port matching
-	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
-	    flowEntry.setFlowEntryMatch(flowEntryMatch);
-	    flowEntryMatch.enableInPort(flowEntry.inPort());
-
-	    // Set the outgoing port output action
-	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
-	    if (flowEntryActions == null) {
-		flowEntryActions = new ArrayList<FlowEntryAction>();
-		flowEntry.setFlowEntryActions(flowEntryActions);
-	    }
-	    FlowEntryAction flowEntryAction = new FlowEntryAction();
-	    flowEntryAction.setActionOutput(flowEntry.outPort());
-	    flowEntryActions.add(flowEntryAction);
-	}
+	// We need the DataPath to populate the Network MAP
+	DataPath dataPath = new DataPath();
+	dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	dataPath.setDstPort(flowPath.dataPath().dstPort());
 
 	//
 	// Prepare the computed Flow Path
@@ -1281,6 +1294,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
 
 	FlowId flowId = new FlowId();
+	String dataPathSummaryStr = dataPath.dataPathSummary();
 	if (! addFlow(computedFlowPath, flowId, dataPathSummaryStr))
 	    return null;
 
@@ -1323,73 +1337,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	// Remove the old Flow Entries, and add the new Flow Entries
 	//
-
-	//
-	// Remove the Flow Entries from the Network MAP
-	//
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	LinkedList<IFlowEntry> deleteFlowEntries = new LinkedList<IFlowEntry>();
 	for (IFlowEntry flowEntryObj : flowEntries) {
-	    String dpidStr = flowEntryObj.getSwitchDpid();
-	    if (dpidStr == null)
-		continue;
-	    Dpid dpid = new Dpid(dpidStr);
-	    IOFSwitch mySwitch = mySwitches.get(dpid.value());
-
 	    flowEntryObj.setUserState("FE_USER_DELETE");
-	    if (mySwitch == null) {
-		//
-		// Not my switch. Mark it for deletion in the Network MAP
-		//
-		flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-		continue;
-	    }
-
-	    deleteFlowEntries.add(flowEntryObj);
-
-	    //
-	    // Delete the flow entry from the switch
-	    //
-	    // flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
-	    installFlowEntry(mySwitch, flowObj, flowEntryObj);
-	    // flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
+	    flowEntryObj.setSwitchState("FE_SWITCH_NOT_UPDATED");
 	}
-	for (IFlowEntry flowEntryObj : deleteFlowEntries) {
-	    flowObj.removeFlowEntry(flowEntryObj);
-	    conn.utils().removeFlowEntry(conn, flowEntryObj);
-	}
-
-	//
-	// Install the new shortest path into the Network MAP and the switches.
-	//
 	for (FlowEntry flowEntry : newDataPath.flowEntries()) {
-	    flowEntry.setFlowEntryUserState(FlowEntryUserState.FE_USER_ADD);
-	    IFlowEntry flowEntryObj = addFlowEntry(flowObj, flowEntry);
-	    if (flowEntryObj == null) {
-		//
-		// TODO: Remove the "new Object[] wrapper in the statement
-		// below after the SLF4J logger is upgraded to
-		// Version 1.7.5
-		//
-		log.error("Cannot add Flow Entry to switch {} for Path Flow from {} to {} : Flow Entry not in the Network MAP",
-			  new Object[] {
-			      flowEntry.dpid(),
-			      newDataPath.srcPort(),
-			      newDataPath.dstPort()
-			  });
-		continue;
-	    }
-
-	    IOFSwitch mySwitch = mySwitches.get(flowEntry.dpid().value());
-	    if (mySwitch == null) {
-		// Not my switch: just add to the Network MAP
-		continue;
-	    }
-
-	    // Install the Flow Entry into the switch
-	    if (installFlowEntry(mySwitch, flowObj, flowEntryObj)) {
-		flowEntryObj.setSwitchState("FE_SWITCH_UPDATED");
-	    }
+	    addFlowEntry(flowObj, flowEntry);
 	}
 
 	//

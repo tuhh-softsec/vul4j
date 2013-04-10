@@ -3,7 +3,12 @@
 
 onos stop
 cassandra cleandb
+cassandra stop
+zk stop
 
+zk start
+cassandra start
+cassandra cleandb
 db_status=`cassandra checkdb |grep OK | wc -l`
 if [ $db_status != 1 ];then
   echo $db_status

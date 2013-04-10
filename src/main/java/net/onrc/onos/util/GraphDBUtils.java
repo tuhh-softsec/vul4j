@@ -38,7 +38,7 @@ public class GraphDBUtils implements IDBUtils {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
-		return fg.getVertices("dpid",dpid).iterator().hasNext() ? 
+		return (fg != null && fg.getVertices("dpid",dpid).iterator().hasNext()) ? 
 				fg.getVertices("dpid",dpid,ISwitchObject.class).iterator().next() : null;
     			
 	}
@@ -47,7 +47,7 @@ public class GraphDBUtils implements IDBUtils {
 	public IDeviceObject searchDevice(GraphDBConnection conn, String macAddr) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		return fg.getVertices("dl_address",macAddr).iterator().hasNext() ? fg.getVertices("dl_address",macAddr,
+		return (fg != null && fg.getVertices("dl_address",macAddr).iterator().hasNext()) ? fg.getVertices("dl_address",macAddr,
     			IDeviceObject.class).iterator().next() : null;
     			
 	}
@@ -58,6 +58,9 @@ public class GraphDBUtils implements IDBUtils {
 //		if (sw != null) {
 //			
 //			IPortObject port = null;
+//			
+			// Requires Frames 2.3.0
+//			
 //			try {
 //				port = sw.getPort(number);
 //			} catch (Exception e) {
@@ -67,12 +70,15 @@ public class GraphDBUtils implements IDBUtils {
 //			
 //			return port;
 //		}
-//		return null;
-		GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
-		pipe.start(sw.asVertex());
-	    pipe.out("on").has("number", number);
-	    FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
-	    return r.iterator().hasNext() ? r.iterator().next() : null;
+		
+		if (sw != null) {
+			GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
+			pipe.start(sw.asVertex());
+			pipe.out("on").has("number", number);
+			FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
+			return r != null && r.iterator().hasNext() ? r.iterator().next() : null;
+		}
+		return null;
 	}
 
 	@Override
@@ -93,19 +99,19 @@ public class GraphDBUtils implements IDBUtils {
 	public void removePort(GraphDBConnection conn, IPortObject port) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 //		EventGraph<TitanGraph> eg = conn.getEventGraph();
-		fg.removeVertex(port.asVertex());		
+		if (fg != null) fg.removeVertex(port.asVertex());		
 	}
 
 	@Override
 	public void removeDevice(GraphDBConnection conn, IDeviceObject dev) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		fg.removeVertex(dev.asVertex());		
+		if (fg != null) fg.removeVertex(dev.asVertex());		
 	}
 
 	@Override
 	public Iterable<IDeviceObject> getDevices(GraphDBConnection conn) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		return fg.getVertices("type","device",IDeviceObject.class);
+		return fg != null ? fg.getVertices("type","device",IDeviceObject.class) : null;
 	}
 
 	@Override
@@ -226,7 +232,12 @@ public class GraphDBUtils implements IDBUtils {
 
 	@Override
 	public ISwitchObject searchActiveSwitch(GraphDBConnection conn, String dpid) {
-		// TODO Auto-generated method stub
-		return null;
+
+        ISwitchObject sw = searchSwitch(conn, dpid);
+        if ((sw != null) &&
+            sw.getState().equals(SwitchState.ACTIVE.toString())) {
+            return sw;
+        }
+        return null;
 	}
 }

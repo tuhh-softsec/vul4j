@@ -87,6 +87,7 @@ public class GraphDBConnection {
 		   		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(graph);
 		   		return fg;
 		   	} else {
+		   		log.error("new FramedGraph failed");
 		   		return null;
 		   	}
 	   }
@@ -118,16 +119,16 @@ public class GraphDBConnection {
 	   
 	   public void endTx(Transaction tx) {
 		   try {
-			switch (tx) {
+			   switch (tx) {
 			   case COMMIT:
 				   graph.stopTransaction(Conclusion.SUCCESS);
 			   case ROLLBACK:
 				   graph.stopTransaction(Conclusion.FAILURE);
 			   }
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		   } catch (Exception e) {
+			   // TODO Auto-generated catch block
+			   log.error("{}",e.toString());
+		   }
 	   }
 	   
 	   public void endTx(TransactionHandle tr, Transaction tx) {
@@ -167,6 +168,7 @@ public class GraphDBConnection {
 	   }
 	   
 	   public void close() {
+		   endTx(Transaction.COMMIT);
 //		   graph.shutdown();
 	   }
 	   
