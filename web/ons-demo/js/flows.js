@@ -1,3 +1,20 @@
+function startFlowAnimation(flow) {
+	if (flow.select('animate').empty()) {
+		flow.append('svg:animate')
+			.attr('attributeName', 'stroke-dashoffset')
+			.attr('attributeType', 'xml')
+			.attr('from', '500')
+			.attr('to', '-500')
+			.attr('dur', '20s')
+			.attr('repeatCount', 'indefinite');
+	}
+}
+
+function stopFlowAnimation(flow) {
+	flow.select('animate').remove();
+}
+
+
 function updateSelectedFlowsTopology() {
 	// DRAW THE FLOWS
 	var topologyFlows = [];
@@ -11,13 +28,6 @@ function updateSelectedFlowsTopology() {
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
-		.append('svg:animate')
-		.attr('attributeName', 'stroke-dashoffset')
-		.attr('attributeType', 'xml')
-		.attr('from', '500')
-		.attr('to', '-500')
-		.attr('dur', '20s')
-		.attr('repeatCount', 'indefinite');
 
 	flows.exit().remove();
 
@@ -78,10 +88,6 @@ function updateSelectedFlowsTopology() {
 		.classed('pending', function (d) {
 			return d && (d.createPending || d.deletePending);
 		});
-
-	// "marching ants"
-	flows.select('animate').attr('from', 500);
-
 }
 
 function updateSelectedFlowsTable() {
@@ -229,6 +235,9 @@ function startIPerfForFlow(flow) {
 
 
 		}, interval);
+
+		var animationTimeout;
+
 		flow.iperfFetchInterval = setInterval(function () {
 			getIPerfData(flow, function (data) {
 				try {
@@ -248,6 +257,14 @@ function startIPerfForFlow(flow) {
 
 					// if the data is fresh
 					if (flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp) {
+
+						var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
+						startFlowAnimation(flowSelection);
+						clearTimeout(animationTimeout);
+						// kill the animation if iperfdata stops flowing
+						animationTimeout = setTimeout(function () {
+							stopFlowAnimation(flowSelection);
+						}, updateRate*1.5);
 
 						while (flow.iperfData.samples.length > pointsToDisplay + iperfData.samples.length) {
 							flow.iperfData.samples.shift();
