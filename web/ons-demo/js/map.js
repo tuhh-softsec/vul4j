@@ -3,28 +3,16 @@
 
 (function () {
 
-createTopologyView = function (cb) {
-	var svg = d3.select('#svg-container').append('svg:svg');
+var projection = d3.geo.mercator()
+    .center([82, 45])
+    .scale(10000)
+    .rotate([-180,0]);
 
-	svg.append("svg:defs").append("svg:marker")
-	    .attr("id", "arrow")
-	    .attr("viewBox", "0 -5 10 10")
-	    .attr("refX", -1)
-	    .attr("markerWidth", 5)
-	    .attr("markerHeight", 5)
-	    .attr("orient", "auto")
-	  .append("svg:path")
-	    .attr("d", "M0,-3L10,0L0,3");
-
+function createMap(svg, cb) {
 	topology = svg.append('svg:svg').attr('id', 'viewBox').attr('viewBox', '0 0 1000 1000').
 			attr('id', 'viewbox');
 
 	var map = topology.append("g").attr('id', 'map');
-
-	var projection = d3.geo.mercator()
-	    .center([82, 45])
-	    .scale(10000)
-	    .rotate([-180,0]);
 
 	var path = d3.geo.path().projection(projection);
 
@@ -37,26 +25,76 @@ createTopologyView = function (cb) {
 
 		cb();
 	});
+}
 
 
-	// var map = topology.append('svg:g')
-	// 	.attr('transform', 'scale(1.7 1.7)translate(-200, 0)');
+var projection
+createTopologyView = function (cb) {
+	var svg = createRootSVG();
 
-	// d3.xml("assets/map.svg", "image/svg+xml", function(xml) {
-	//   var importedNode = document.importNode(xml.documentElement, true);
-	//   var paths = importedNode.querySelectorAll('path');
-	//   var i;
-	//   for (i=0; i < paths.length; i+=1) {
-	//   	map.append('svg:path')
-	//   		.attr('class', 'state')
-	//   		.attr('d', d3.select(paths.item(i)).attr('d'))
-	//   }
+	createMap(svg, cb);
+}
 
-	//   cb();
-	// });
+function makeSwitchesModel(switches) {
+	var switchesModel = [];
+	switches.forEach(function (s) {
+		switchesModel.push({
+			dpid: s.dpid,
+			state: s.state,
+			className: 'core',
+			controller: s.controller,
+			geo: model.configuration.geo[s.dpid]
+		});
+	});
+
+	return switchesModel;
 }
 
 drawTopology = function () {
+
+
+	// enter
+	function switchEnter(s) {
+		var g = d3.select(this);
+
+		g.append('svg:circle').attr('r', widths.core);
+		g.append('svg:text').text(s.geo.label).attr('transform', 'translate(' + widths.core + ' ' + widths.core + ')');
+
+	}
+
+	var coreSwitches = topology.selectAll('.core').data(makeSwitchesModel(model.coreSwitches))
+		.enter()
+		.append('svg:g')
+		.attr("id", function (d) {
+			return d.dpid;
+		})
+		.classed('core', true)
+		.attr("transform", function(d) {
+			if (d.geo) {
+				return "translate(" + projection([d.geo.lng, d.geo.lat]) + ")";
+			}
+		})
+		.each(switchEnter);
+
+
+
+	// update
+	coreSwitches
+		.each(function (data) {
+			// if there's a pending state changed and then the state changes, clear the pending class
+			var circle = d3.select(this);
+			if (data.state === 'ACTIVE' && circle.classed('inactive') ||
+				data.state === 'INACTIVE' && circle.classed('active')) {
+				circle.classed('pending', false);
+			}
+		})
+		.attr('class', function (data)  {
+			if (data.state === 'ACTIVE' && data.controller) {
+				return data.className + ' active ' + controllerColorMap[data.controller];
+			} else {
+				return data.className + ' inactive ' + 'colorInactive';
+			}
+		});
 
 }
 

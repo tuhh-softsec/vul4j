@@ -116,4 +116,23 @@ function reconcilePendingLinks(model) {
 	}
 }
 
+/***************************************************************************************************
+used by both ring and map models
+***************************************************************************************************/
+function createRootSVG() {
+	var svg = d3.select('#svg-container').append('svg:svg');
+
+	svg.append("svg:defs").append("svg:marker")
+	    .attr("id", "arrow")
+	    .attr("viewBox", "0 -5 10 10")
+	    .attr("refX", -1)
+	    .attr("markerWidth", 5)
+	    .attr("markerHeight", 5)
+	    .attr("orient", "auto")
+	  .append("svg:path")
+	    .attr("d", "M0,-3L10,0L0,3");
+
+	return svg;
+}
+
 
