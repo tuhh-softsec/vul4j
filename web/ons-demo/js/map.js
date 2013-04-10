@@ -116,7 +116,7 @@ createTopologyView = function (cb) {
 	});
 }
 
-function updateLinkLines() {
+function drawLinkLines() {
 
 	// key on link dpids since these will come/go during demo
 	var linkLines = linksLayer.selectAll('.link').data(links, function (d) {
@@ -227,10 +227,34 @@ function switchEnter(d) {
 
 	if (d.label) {
 		g.append('svg:text')
+			.classed('label', true)
 			.text(d.label)
-			.attr('x', d.x + width)
-			.attr('y', d.y + width);
+			.attr("text-anchor", "end")
+			.attr('x', d.x - width)
+			.attr('y', d.y - width);
 	}
+}
+
+function labelsEnter(switches) {
+	return labelsLayer.selectAll('g').data(switches, function (d) {
+		return d.dpid;
+	}).enter().append('svg:g')
+		.classed('nolabel', true)
+		.attr("id", function (data) {
+			return data.dpid + '-label';
+		})
+		.append("svg:text")
+			.text(function (data) {return data.dpid;})
+			.attr('x', function (d) {
+				return d.x;
+			})
+			.attr('y', function (d) {
+				return d.y;
+			})
+			.attr("text-anchor", function (d) {
+				return d.x > 500 ? "end" : "start";
+			})
+
 }
 
 function switchesEnter(switches) {
@@ -251,29 +275,6 @@ function switchesEnter(switches) {
 				.each(switchEnter);
 }
 
-// function labelsEnter(className, model) {
-// 			.enter().append("svg:g")
-// 			.classed('nolabel', true)
-// 			.attr("id", function (data) {
-// 				return data.dpid + '-label';
-// 			})
-
-
-// 	return topology.selectAll('.'+className).data(makeSwitchesModel(model))
-// 		.enter()
-// 			.append('svg:g')
-// 				.attr("id", function (d) {
-// 					return d.dpid;
-// 				})
-// 				.classed('core', true)
-// 				.attr('x', function (d) {
-// 					return d.x;
-// 				})
-// 				.attr('y', function (d) {
-// 					return d.y;
-// 				})
-// 				.each(switchEnter);
-// }
 
 function switchesUpdate(switches) {
 	switches.each(function (d) {
@@ -307,11 +308,9 @@ drawTopology = function () {
 
 	switchesUpdate(switchesEnter(switches));
 
+	drawLinkLines();
 
-
-
-
-	updateLinkLines();
+	labelsEnter(switches);
 }
 
 })();

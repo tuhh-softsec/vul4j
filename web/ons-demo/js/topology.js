@@ -10,6 +10,9 @@ updateTopology = function() {
 
 	/* currently rings.js and map.js can be included to define the topology display */
 
+	reconcilePendingLinks(model);
+	updateLinkMap(links);
+
 	drawTopology();
 
 	// setup the mouseover behaviors

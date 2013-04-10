@@ -164,7 +164,7 @@ path.iperfdata {
 	display: -webkit-box;
 	-webkit-box-pack: center;
 	-webkit-box-align: center;
-	width: 3em;
+	width: 4em;
 }
 
 
@@ -235,6 +235,10 @@ text {
 	fill: white;
 	font-size: 16px;
 	pointer-events: none;
+}
+
+text.label {
+	fill: #888;
 }
 
 path {

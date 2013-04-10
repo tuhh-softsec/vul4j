@@ -21,8 +21,6 @@ function sync() {
 			if (modelChanged) {
 				updateControllers();
 				updateSelectedFlows();
-				reconcilePendingLinks(model);
-				updateLinkMap(links);
 				updateTopology();
 			}
 

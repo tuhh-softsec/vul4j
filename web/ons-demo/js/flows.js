@@ -26,7 +26,7 @@ function updateSelectedFlowsTopology() {
 				return;
 			}
 			var pts = [];
-			if (!d.dataPath.flowEntries) {
+			if (d.createPending) {
 				// create a temporary vector to indicate the pending flow
 				var s1 = d3.select(document.getElementById(d.srcDpid));
 				var s2 = d3.select(document.getElementById(d.dstDpid));
@@ -43,7 +43,7 @@ function updateSelectedFlowsTopology() {
 				pt2 = pt2.matrixTransform(s2[0][0].getCTM());
 				pts.push(pt2);
 
-			} else {
+			} else if (d.dataPath && d.dataPath.flowEntries) {
 				d.dataPath.flowEntries.forEach(function (flowEntry) {
 					var s = d3.select(document.getElementById(flowEntry.dpid.value));
 					// s[0] is null if the flow entry refers to a non-existent switch
@@ -186,7 +186,6 @@ function updateSelectedFlowsTable() {
 	flows.exit().remove();
 }
 
-// TODO: cancel the interval when the flow is desel
 function startIPerfForFlow(flow) {
 	var duration = 10000; // seconds
 	var interval = 100; // ms. this is defined by the server
