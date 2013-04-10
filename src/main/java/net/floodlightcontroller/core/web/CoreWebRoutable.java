@@ -65,6 +65,7 @@ public class CoreWebRoutable implements RestletRoutable {
         router.attach("/topology/switches/{filter}/json", TopoSwitchesResource.class);
         router.attach("/topology/links/json", TopoLinksResource.class);
         router.attach("/topology/devices/json", TopoDevicesResource.class);
+        router.attach("/clearflowtable/json", ClearFlowTableResource.class);
         return router;
     }
 }
