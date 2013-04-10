@@ -286,9 +286,9 @@ function switchesUpdate(switches) {
 		})
 		.attr('class', function (d)  {
 			if (d.state === 'ACTIVE' && d.controller) {
-				return d.className + ' active ' + controllerColorMap[d.controller];
+				return 'active ' + controllerColorMap[d.controller];
 			} else {
-				return d.className + ' inactive ' + 'colorInactive';
+				return 'inactive ' + 'colorInactive';
 			}
 		});
 }

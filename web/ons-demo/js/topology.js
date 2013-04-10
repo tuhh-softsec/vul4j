@@ -9,6 +9,7 @@ flow related topology is in flows.js
 updateTopology = function() {
 
 	/* currently rings.js and map.js can be included to define the topology display */
+
 	drawTopology();
 
 	// setup the mouseover behaviors
