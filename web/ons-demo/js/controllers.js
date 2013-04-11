@@ -26,18 +26,20 @@ function updateControllers() {
 	controllers.on('dblclick', function (c) {
 		if (model.activeControllers.indexOf(c) != -1) {
 			var prompt = 'Dectivate ' + c + '?';
+			var that = this;
 			doConfirm(prompt, function (result) {
 				if (result) {
 					controllerDown(c);
-					setPending(d3.select(this));
+					setPending(d3.select(that));
 				};
 			})
 		} else {
 			var prompt = 'Activate ' + c + '?';
+			var that = this;
 			doConfirm(prompt, function (result) {
 				if (result) {
 					controllerUp(c);
-					setPending(d3.select(this));
+					setPending(d3.select(that));
 				};
 			});
 		}
