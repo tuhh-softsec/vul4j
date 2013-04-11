@@ -5,12 +5,19 @@ function toD3(results) {
 		edgeSwitches: [],
 		aggregationSwitches: [],
 		coreSwitches: [],
-		flows: results.flows,
+		flows: [],
 		controllers: results.controllers,
 		activeControllers: results.activeControllers,
 		links: results.links,
 		configuration: results.configuration
 	};
+
+	// remove bad flows;
+	results.flows.forEach(function (f) {
+		if (f.dataPath && f.dataPath.flowEntries && f.dataPath.flowEntries.length > 1) {
+			model.flows.push(f);
+		}
+	})
 
 	// sort the switches
 	results.switches.sort(function (a, b) {

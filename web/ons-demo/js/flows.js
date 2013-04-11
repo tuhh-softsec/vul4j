@@ -142,16 +142,18 @@ function updateSelectedFlowsTable() {
 		row.on('dblclick', function () {
 			if (d) {
 				var prompt = 'Delete flow ' + d.flowId + '?';
-				if (confirm(prompt)) {
-					deleteFlow(d);
-					d.deletePending = true;
-					updateSelectedFlows();
-
-					setTimeout(function () {
-						d.deletePending = false;
+				doConfirm(prompt, function (result) {
+					if (result) {
+						deleteFlow(d);
+						d.deletePending = true;
 						updateSelectedFlows();
-					}, pendingTimeout)
-				};
+
+						setTimeout(function () {
+							d.deletePending = false;
+							updateSelectedFlows();
+						}, pendingTimeout)
+					};
+				});
 			}
 		});
 
