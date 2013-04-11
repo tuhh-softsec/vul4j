@@ -100,6 +100,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     final Runnable mapReader = new Runnable() {
 	    public void run() {
+		try {
+		    runImpl();
+		} catch (Exception e) {
+		    log.debug("Exception processing All Flow Entries from the Network MAP: ", e);
+		    conn.endTx(Transaction.ROLLBACK);
+		    return;
+		}
+	    }
+
+	    private void runImpl() {
 		long startTime = System.nanoTime();
 		int counterAllFlowEntries = 0;
 		int counterMyNotUpdatedFlowEntries = 0;
@@ -236,6 +246,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     final Runnable shortestPathReconcile = new Runnable() {
 	    public void run() {
+		try {
+		    runImpl();
+		} catch (Exception e) {
+		    log.debug("Exception processing All Flows from the Network MAP: ", e);
+		    conn.endTx(Transaction.ROLLBACK);
+		    return;
+		}
+	    }
+
+	    private void runImpl() {
 		long startTime = System.nanoTime();
 		int counterAllFlowPaths = 0;
 		int counterMyFlowPaths = 0;
