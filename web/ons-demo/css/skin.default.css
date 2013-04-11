@@ -167,7 +167,7 @@ path {
 
 path.flow {
 	fill: none;
-	stroke-width: 5px;
+	stroke-width: 8px;
 	stroke: rgba(255, 255, 255, .35);
 }
 
@@ -181,13 +181,13 @@ path.flow.highlight {
 }
 
 path.iperfdata {
-	fill: none;
+	fill: #ccc;
 	stroke-width: 1px;
 	stroke: #ccc;
 }
 
 .iperf {
-	background-color: #222;
+	background-color: black;
 }
 
 #selectedFlowsHeader .iperf {
@@ -293,7 +293,7 @@ path.iperfdata {
 text {
 	stroke: none;
 	fill: white;
-	font-size: 16px;
+	font-size: 22px;
 	pointer-events: none;
 }
 
@@ -469,7 +469,7 @@ path {
 }
 
 .flowCount {
-	font-size: 20px;
+	font-size: 24px;
 	fill: rgba(255, 255, 255, .75);
 }
 

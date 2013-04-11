@@ -41,7 +41,6 @@ function sync() {
 // also works in Chrome v27
 function zoomWorkaround() {
 	var zoom = window.document.body.clientWidth/window.document.width;
-	console.log(zoom);
 	// workaround does not seem to be effective for transforming mouse coordinates
 	// map display does not use the transform stuff, so commenting out
 //	d3.select('#svg-container').style('zoom',  zoom);
