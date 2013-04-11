@@ -9,20 +9,28 @@ function appInit(cb) {
 
 	d3.select('#action-all').on('click', function () {
 		var prompt = "Switch controllers to all?"
-		if (confirm(prompt)) {
-			switchAll();
-		}
+		doConfirm(prompt, function (result) {
+			if (result) {
+				switchAll();
+			}
+		});
 	});
 
 	d3.select('#action-local').on('click', function () {
 		var prompt = "Switch controllers to local?"
-		if (confirm(prompt)) {
-			switchLocal();
-		}
+		doConfirm(prompt, function (result) {
+			if (result) {
+				switchLocal();
+			}
+		});
 	});
 
 	d3.select('#action-scale').on('click', function () {
 		alert('scale')
+	});
+
+	d3.select('#action-reset').on('click', function () {
+		alert('reset')
 	});
 
 	createTopologyView(cb);

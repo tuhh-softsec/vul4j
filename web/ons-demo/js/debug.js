@@ -10,3 +10,22 @@ function debug_findlink(model, dpid) {
 	});
 	return links;
 }
+
+function debug_findswitch(model, dpid) {
+	var sw;
+
+	model.edgeSwitches.forEach(function (s) {
+		if (s.dpid == dpid)
+			sw = s;
+	});
+	model.aggregationSwitches.forEach(function (s) {
+		if (s.dpid == dpid)
+			sw = s;
+	});
+	model.coreSwitches.forEach(function (s) {
+		if (s.dpid == dpid)
+			sw = s;
+	});
+
+	return sw;
+}

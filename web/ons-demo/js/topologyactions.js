@@ -101,16 +101,20 @@ function doubleClickSwitch(data) {
 	var circle = d3.select(document.getElementById(data.dpid)).select('circle');
 	if (data.state == 'ACTIVE') {
 		var prompt = 'Deactivate ' + data.dpid + '?';
-		if (confirm(prompt)) {
-			switchDown(data);
-			setPending(circle);
-		}
+		doConfirm(prompt, function(result) {
+			if (result) {
+				switchDown(data);
+				setPending(circle);
+			}
+		});
 	} else {
 		var prompt = 'Activate ' + data.dpid + '?';
-		if (confirm(prompt)) {
-			switchUp(data);
-			setPending(circle);
-		}
+		doConfirm(prompt, function (result) {
+			if (result) {
+				switchUp(data);
+				setPending(circle);
+			}
+		});
 	}
 }
 
@@ -148,78 +152,87 @@ d3.select(window).on('mouseup', function () {
 
 		if (s1Data.className == 'edge' && s2Data.className == 'edge') {
 			var prompt = 'Create flow from ' + srcData.dpid + ' to ' + dstData.dpid + '?';
-			if (confirm(prompt)) {
-				addFlow(srcData, dstData);
+			doConfirm(prompt, function (result) {
+				if (result) {
+					addFlow(srcData, dstData);
 
-				var flow = {
-					dataPath: {
-						srcPort: {
-							dpid: {
-								value: srcData.dpid
+					var flow = {
+						dataPath: {
+							srcPort: {
+								dpid: {
+									value: srcData.dpid
+								}
+							},
+							dstPort: {
+								dpid: {
+									value: dstData.dpid
+								}
 							}
 						},
-						dstPort: {
-							dpid: {
-								value: dstData.dpid
-							}
-						}
-					},
-				        srcDpid: srcData.dpid,
-				        dstDpid: dstData.dpid,
-					createPending: true
-				};
+					        srcDpid: srcData.dpid,
+					        dstDpid: dstData.dpid,
+						createPending: true
+					};
 
-				selectFlow(flow);
+					selectFlow(flow);
 
-				setTimeout(function () {
-					deselectFlowIfCreatePending(flow);
-				}, pendingTimeout);
-			}
+					setTimeout(function () {
+						deselectFlowIfCreatePending(flow);
+					}, pendingTimeout);
+				}
+			});
+
 		} else {
 			var map = linkMap[srcData.dpid];
 			if (map && map[dstData.dpid]) {
 				var prompt = 'Remove link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
-				if (confirm(prompt)) {
-					removeLink(map[dstData.dpid]);
-				}
+				doConfirm(prompt, function (result) {
+					if (result) {
+						removeLink(map[dstData.dpid]);
+					}
+				});
 			} else {
 				map = linkMap[dstData.dpid];
 				if (map && map[srcData.dpid]) {
 					var prompt = 'Remove link between ' + dstData.dpid + ' and ' + srcData.dpid + '?';
-					if (confirm(prompt)) {
-						removeLink(map[srcData.dpid]);
-					}
+					doConfirm(prompt, function (result) {
+						if (result) {
+							removeLink(map[srcData.dpid]);
+						}
+					});
 				} else {
 					var prompt = 'Create link between ' + srcData.dpid + ' and ' + dstData.dpid + '?';
-					if (confirm(prompt)) {
-						var link1 = {
-							'src-switch': srcData.dpid,
-							'src-port': 1,
-							'dst-switch': dstData.dpid,
-							'dst-port': 1,
-							pending: true
-						};
-						pendingLinks[makeLinkKey(link1)] = link1;
-						var link2 = {
-							'src-switch': dstData.dpid,
-							'src-port': 1,
-							'dst-switch': srcData.dpid,
-							'dst-port': 1,
-							pending: true
-						};
-						pendingLinks[makeLinkKey(link2)] = link2;
-						updateTopology();
-
-						linkUp(link1);
-
-						// remove the pending links after 10s
-						setTimeout(function () {
-							delete pendingLinks[makeLinkKey(link1)];
-							delete pendingLinks[makeLinkKey(link2)];
-
+					doConfirm(prompt, function (result) {
+						if (result) {
+							var link1 = {
+								'src-switch': srcData.dpid,
+								'src-port': 1,
+								'dst-switch': dstData.dpid,
+								'dst-port': 1,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link1)] = link1;
+							var link2 = {
+								'src-switch': dstData.dpid,
+								'src-port': 1,
+								'dst-switch': srcData.dpid,
+								'dst-port': 1,
+								pending: true
+							};
+							pendingLinks[makeLinkKey(link2)] = link2;
 							updateTopology();
-						}, pendingTimeout);
-					}
+
+							linkUp(link1);
+
+							// remove the pending links after 10s
+							setTimeout(function () {
+								delete pendingLinks[makeLinkKey(link1)];
+								delete pendingLinks[makeLinkKey(link2)];
+
+								updateTopology();
+							}, pendingTimeout);
+						}
+					});
 				}
 			}
 		}

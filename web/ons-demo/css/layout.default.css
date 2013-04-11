@@ -27,6 +27,38 @@ body {
 	-webkit-box-flex: 1.0;
 }
 
+#confirm {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+}
+
+#confirm-background {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#confirm-panel {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: justify;
+}
+
+#confirm-buttons {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-flex: 1.0;
+	-webkit-box-align: center;
+}
+
 .header {
 	width: 100%;
 	display: -webkit-box;
