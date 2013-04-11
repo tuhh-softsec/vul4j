@@ -33,5 +33,13 @@ function appInit(cb) {
 		alert('reset')
 	});
 
+	d3.select('#action-kill').on('click', function () {
+		var prompt = "Kill ONOS node?";
+		var options = model.activeControllers;
+		doConfirm(prompt, function (result) {
+			controllerDown(result);
+		}, options);
+	});
+
 	createTopologyView(cb);
 }

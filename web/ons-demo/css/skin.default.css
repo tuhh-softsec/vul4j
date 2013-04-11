@@ -528,3 +528,21 @@ path {
 	background-color: black;
 }
 
+select {
+	margin-top: 1em;
+	-webkit-appearance: none;
+	border-radius: 0px;
+	font-size: 18px;
+	padding: .5em;
+	background-color: black;
+	color: white;
+	border: 1px solid white;
+}
+
+select:after {
+	content: 'a';
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
