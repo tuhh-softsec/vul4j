@@ -131,14 +131,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		boolean processed_measurement_flow = false;
 		Iterable<IFlowEntry> allFlowEntries =
-		    conn.utils().getAllFlowEntries(conn);
+		    conn.utils().getAllSwitchNotUpdatedFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    counterAllFlowEntries++;
-		    String switchState = flowEntryObj.getSwitchState();
-		    if ((switchState == null) ||
-			(! switchState.equals("FE_SWITCH_NOT_UPDATED"))) {
-			continue;	// Ignore the entry: nothing to do
-		    }
 
 		    String dpidStr = flowEntryObj.getSwitchDpid();
 		    if (dpidStr == null)

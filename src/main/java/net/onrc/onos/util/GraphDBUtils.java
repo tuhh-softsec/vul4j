@@ -194,6 +194,13 @@ public class GraphDBUtils implements IDBUtils {
 		
 		return fg.getVertices("type", "flow_entry", IFlowEntry.class);
 	}
+	
+	@Override
+	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		//TODO: Should use an enum for flow_switch_state
+		return fg.getVertices("switch_state", "FE_SWITCH_NOT_UPDATED", IFlowEntry.class);
+	}
 
 	@Override
 	public Iterable<ISwitchObject> getActiveSwitches(GraphDBConnection conn) {

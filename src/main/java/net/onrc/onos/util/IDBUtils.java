@@ -37,4 +37,6 @@ public interface IDBUtils {
 	ISwitchObject newSwitch(GraphDBConnection conn);
 	void removePort(GraphDBConnection conn, IPortObject port);
 	void removeSwitch(GraphDBConnection conn, ISwitchObject sw);
+	Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries(
+			GraphDBConnection conn);
 }

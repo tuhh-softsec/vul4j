@@ -68,6 +68,10 @@ public class GraphDBConnection {
 		        	graph.createKeyIndex("flow_entry_id",
 						     Vertex.class);
 		        }
+		        if (!s.contains("switch_state")) {
+		        	graph.createKeyIndex("switch_state",
+						     Vertex.class);
+		        }
 		        graph.stopTransaction(Conclusion.SUCCESS);
 		        eg = new EventTransactionalGraph<TitanGraph>(graph);
 		   }		   
