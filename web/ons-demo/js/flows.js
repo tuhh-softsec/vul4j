@@ -217,6 +217,12 @@ function startIPerfForFlow(flow) {
 				var sample = iperfData.samples[i];
 
 				var x = (1000 - (iperfData.now - sample.time)*10);
+				// workaround for discontinuity in iperf data
+				if (x < 0) {
+					i -= 1;
+					continue;
+				}
+
 				var y = 28 * sample.value/1000000;
 				if (y > 28) {
 					y = 28;
@@ -236,11 +242,8 @@ function startIPerfForFlow(flow) {
 				d += 'L' + x + ',' + (30-y);
 
 				i -= 1;
-
-				if (!i) {
-					d += 'L' + x + ',30';
-				}
 			}
+			d += 'L' + lastX + ',30';
 		}
 		return d;
 	}
