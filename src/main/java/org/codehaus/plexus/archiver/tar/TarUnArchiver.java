@@ -17,8 +17,8 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.bzip2.CBZip2InputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.zip.AbstractZipUnArchiver;
 import org.codehaus.plexus.util.IOUtil;
@@ -200,7 +200,7 @@ public class TarUnArchiver
                         throw new ArchiverException( "Invalid bz2 file." + file.toString() );
                     }
                 }
-                return new CBZip2InputStream( istream );
+                return new BZip2CompressorInputStream( istream );
             }
             return istream;
         }

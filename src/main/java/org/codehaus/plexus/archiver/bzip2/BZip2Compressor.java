@@ -17,6 +17,7 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.IOUtil;
@@ -31,7 +32,7 @@ import java.io.IOException;
 public class BZip2Compressor
     extends Compressor
 {
-    private CBZip2OutputStream zOut;
+    private BZip2CompressorOutputStream zOut;
     
     /**
      * perform the GZip compression operation.
@@ -45,7 +46,7 @@ public class BZip2Compressor
                 new BufferedOutputStream( new FileOutputStream( getDestFile() ) );
             bos.write( 'B' );
             bos.write( 'Z' );
-            zOut = new CBZip2OutputStream( bos );
+            zOut = new BZip2CompressorOutputStream( bos );
             compress( getSource(), zOut );
         }
         catch ( IOException ioe )
