@@ -977,7 +977,7 @@ def iperf_start(flow_id,duration,samples):
   if TESTBED == "hw":
     cmd_string="dsh -w %s 'cd ONOS/scripts; " % dst_host
   else:
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s '" % dst_host
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; " % dst_host
   cmd_string += "./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "svr", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
@@ -985,7 +985,7 @@ def iperf_start(flow_id,duration,samples):
   if TESTBED == "hw":
     cmd_string="dsh -w %s 'cd ONOS/scripts; " % src_host
   else:
-    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s'" % src_host
+    cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts;" % src_host
   cmd_string+="./runiperf.sh %d %s %s %s:%s %s/%s/%s/%s'" % (flowId, src_dpid, dst_dpid, TESTBED, "client", protocol, duration, interval, samples)
   print cmd_string
   os.popen(cmd_string)
