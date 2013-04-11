@@ -209,6 +209,8 @@ function startIPerfForFlow(flow) {
 	function makeGraph(iperfData) {
 		var d = 'M0,0';
 
+		var now = flow.iperfData.startTime + (Date.now() - flow.iperfData.localNow)/1000;
+
 		if (iperfData.samples && iperfData.samples.length) {
 
 			var lastX;
@@ -216,7 +218,7 @@ function startIPerfForFlow(flow) {
 			while (i) {
 				var sample = iperfData.samples[i];
 
-				var x = (1000 - (iperfData.now - sample.time)*10);
+				var x = (1000 - (now - sample.time)*10);
 				// workaround for discontinuity in iperf data
 				if (x < 0) {
 					i -= 1;
@@ -255,7 +257,6 @@ function startIPerfForFlow(flow) {
 			if (flow.iperfData) {
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
 				iperfPath.attr('d', makeGraph(flow.iperfData));
-				flow.iperfData.now += interval/1000;
 			}
 
 
@@ -290,8 +291,9 @@ function startIPerfForFlow(flow) {
 
 						var startTime = endTime - (iperfData.samples.length * interval/1000);
 						// set now on the first buffer
-						if (!flow.iperfData.now) {
-							flow.iperfData.now = startTime;
+						if (!flow.iperfData.startTime) {
+							flow.iperfData.startTime = startTime;
+							flow.iperfData.localNow = Date.now();
 						}
 
 						console.log('iperf buffer start time: ' + startTime);
@@ -306,8 +308,11 @@ function startIPerfForFlow(flow) {
 						}
 
 						// if the client gets too out of sync, resynchronize
-						if (Math.abs(flow.iperfData.now - startTime) > (updateRate/1000) * 1.25) {
-							flow.iperfData.now = startTime;
+						var clientNow = flow.iperfData.startTime + (Date.now() - flow.iperfData.localNow)/1000;
+						if (Math.abs(clientNow - startTime) > (updateRate/1000) * 2) {
+							console.log('resynchronizing now: ' + clientNow + ' => ' + startTime);
+							flow.iperfData.startTime = startTime;
+							flow.iperfData.localNow = Date.now();
 						}
 
 						var time = startTime;
