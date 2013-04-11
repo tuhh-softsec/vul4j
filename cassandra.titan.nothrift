@@ -1,4 +1,4 @@
-storage.backend=cassandrathrift
+storage.backend=cassandra
 storage.hostname=localhost
 storage.keyspace=onos
 storage.connection-pool-size=4096
