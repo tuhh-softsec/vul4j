@@ -34,7 +34,7 @@ public class BZip2Compressor
     private CBZip2OutputStream zOut;
     
     /**
-     * perform the GZip compression operation.
+     * perform the BZip2 compression operation.
      */
     public void compress()
         throws ArchiverException
