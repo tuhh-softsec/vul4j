@@ -77,6 +77,7 @@ function startIPerfForFlow(flow) {
 	if (flow.flowId) {
 		iperfLog('starting iperf', flow);
 		startIPerf(flow, duration, updateRate/interval);
+
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
@@ -182,7 +183,8 @@ function startIPerfForFlow(flow) {
 //				iperfLog(data, flow);
 			});
 		}
-		fetchData();
 
+		// wait a buffer to make sure the old iperf session gets cleared out
+		setTimeout(fetchData, updateRate);
 	}
 }
