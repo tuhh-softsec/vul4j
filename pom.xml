@@ -622,6 +622,7 @@
 		<module>esigate-war</module>
 		<module>esigate-server</module>
 		<module>esigate-distribution</module>
+		<module>esigate-test</module>
 	</modules>
 	<distributionManagement>
 		<site>
