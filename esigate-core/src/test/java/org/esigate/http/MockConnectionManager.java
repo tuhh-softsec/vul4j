@@ -33,6 +33,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
+import org.esigate.test.connection.IResponseHandler;
 
 public class MockConnectionManager implements HttpClientConnectionManager {
 	private final AtomicBoolean open = new AtomicBoolean(false);
