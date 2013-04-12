@@ -57,11 +57,11 @@ public class TarBZip2UnArchiverTest
         tarArchiver.setDestFile( getTestFile( "target/output/archive.tar" ) );
         tarArchiver.createArchive();
 
-        BZip2Archiver gzipArchiver = (BZip2Archiver) lookup( Archiver.ROLE, "bzip2" );
+        BZip2Archiver bzip2Archiver = (BZip2Archiver) lookup( Archiver.ROLE, "bzip2" );
 
-        gzipArchiver.setDestFile( testBZip2File );
-        gzipArchiver.addFile( getTestFile( "target/output/archive.tar" ), "dontcare" );
-        gzipArchiver.createArchive();
+        bzip2Archiver.setDestFile( testBZip2File );
+        bzip2Archiver.addFile( getTestFile( "target/output/archive.tar" ), "dontcare" );
+        bzip2Archiver.createArchive();
 
         TarBZip2UnArchiver tarBZip2UnArchiver = (TarBZip2UnArchiver) lookup( UnArchiver.ROLE, "tbz2" );
 
