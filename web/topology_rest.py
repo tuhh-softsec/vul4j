@@ -764,16 +764,21 @@ def switch_controller_setting(cmd):
 
 @app.route("/gui/reset")
 def reset_demo():
-  cmd_string="cd ~/bin; ./demo-reset-hw.sh > /tmp/watch &"
+  if (TESTBED == "hw"):
+    cmd_string="cd ~/bin; ./demo-reset-hw.sh > /tmp/watch &"
+  else:
+    cmd_string="cd ~/ONOS/scripts; ./demo-reset-sw.sh > /tmp/watch &"
   os.popen(cmd_string)
   return "Reset" 
 
 @app.route("/gui/scale")
 def scale_demo():
-  cmd_string="cd ~/bin;  ~/bin/demo-scale-out-hw.sh > /tmp/watch &"
+  if (TESTBED == "hw"):
+    cmd_string="cd ~/bin;  ~/bin/demo-scale-out-hw.sh > /tmp/watch &"
+  else:
+    cmd_string="cd ~/ONOS/scripts; ./demo-scale-out-sw.sh > /tmp/watch &"
   os.popen(cmd_string)
   return "scale"
-
 
 @app.route("/gui/switch/<cmd>/<dpid>")
 def switch_status_change(cmd, dpid):
