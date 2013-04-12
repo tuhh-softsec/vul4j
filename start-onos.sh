@@ -127,6 +127,14 @@ case "$1" in
     check_db
     start 
     ;;
+  startifdown)
+    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
+    if [ $n == 0 ]; then
+      start
+    else 
+      echo "$n instance of onos running"
+    fi
+    ;;
   stop)
     stop
     ;;
@@ -134,10 +142,10 @@ case "$1" in
     deldb
     ;;
   status)
-    n=`ps -edalf |grep java |grep logback.xml | wc -l`
+    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
     echo "$n instance of onos running"
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart|status}"
+    echo "Usage: $0 {start|stop|restart|status|startifdown}"
     exit 1
 esac
