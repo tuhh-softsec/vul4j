@@ -108,6 +108,9 @@ function getIPerfData(flow, cb) {
 function switchLocal() {
 	controllerFunctions.switchControllerCmd('local');
 }
+function switchAll() {
+	controllerFunctions.switchControllerCmd('all');
+}
 
 function resetNetwork() {
 	controllerFunctions.resetCmd();
