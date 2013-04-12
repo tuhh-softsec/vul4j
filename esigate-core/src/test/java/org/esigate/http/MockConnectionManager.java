@@ -35,6 +35,11 @@ import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
 import org.esigate.test.conn.IResponseHandler;
 
+/**
+ * @deprecated 
+ * @see org.esigate.test.conn.MockConnectionManager
+ *
+ */
 public class MockConnectionManager implements HttpClientConnectionManager {
 	private final AtomicBoolean open = new AtomicBoolean(false);
 	private IResponseHandler responseHandler;
