@@ -206,20 +206,48 @@ function startIPerfForFlow(flow) {
 	var updateRate = 2000; // ms
 	var pointsToDisplay = 1000;
 
-	function makePoints() {
-		var pts = [];
-		var i;
-		for (i=0; i < pointsToDisplay; ++i) {
-			var sample = flow.iperfData.samples[i];
-			var height = 28 * sample/1000000;
-			if (height > 28)
-				height = 28;
-			pts.push({
-				x: i * 1000/(pointsToDisplay-1),
-				y: 30 - height
-			})
+	function makeGraph(iperfData) {
+		var d = 'M0,0';
+
+		var now = flow.iperfData.startTime + (Date.now() - flow.iperfData.localNow)/1000;
+
+		if (iperfData.samples && iperfData.samples.length) {
+
+			var lastX;
+			var i = iperfData.samples.length - 1;
+			while (i) {
+				var sample = iperfData.samples[i];
+
+				var x = (1000 - (now - sample.time)*10);
+				// workaround for discontinuity in iperf data
+				if (x < 0) {
+					i -= 1;
+					continue;
+				}
+
+				var y = 28 * sample.value/1000000;
+				if (y > 28) {
+					y = 28;
+				}
+				if (i == iperfData.samples.length - 1) {
+					d = 'M' + x + ',30';
+				}
+
+				// handle gaps
+				// 1.5 for rounding error
+				if (lastX && lastX - x > 1.5) {
+					d += 'L' + lastX + ',30';
+					d += 'M' + x + ',30'
+				}
+				lastX = x;
+
+				d += 'L' + x + ',' + (30-y);
+
+				i -= 1;
+			}
+			d += 'L' + lastX + ',30';
 		}
-		return pts;
+		return d;
 	}
 
 	if (flow.flowId) {
@@ -227,32 +255,23 @@ function startIPerfForFlow(flow) {
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
-				while (flow.iperfData.samples.length < pointsToDisplay) {
-					flow.iperfData.samples.push(0);
-				}
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
-				iperfPath.attr('d', line(makePoints()));
-				flow.iperfData.samples.shift();
+				iperfPath.attr('d', makeGraph(flow.iperfData));
 			}
 
 
 		}, interval);
 
 		var animationTimeout;
+		flow.iperfData = {
+			samples: []
+		}
 
+		var lastTime;
 		flow.iperfFetchInterval = setInterval(function () {
+			console.log('Requesting iperf data');
 			getIPerfData(flow, function (data) {
 				try {
-					if (!flow.iperfData) {
-						flow.iperfData = {
-							samples: []
-						};
-						var i;
-						for (i = 0; i < pointsToDisplay; ++i) {
-							flow.iperfData.samples.push(0);
-						}
-					}
-
 					var iperfData = JSON.parse(data);
 
 //				console.log(iperfData.timestamp);
@@ -268,12 +287,42 @@ function startIPerfForFlow(flow) {
 							stopFlowAnimation(flowSelection);
 						}, updateRate*1.5);
 
+						var endTime = Math.floor(iperfData['end-time']*10)/10;
+
+						var startTime = endTime - (iperfData.samples.length * interval/1000);
+						// set now on the first buffer
+						if (!flow.iperfData.startTime) {
+							flow.iperfData.startTime = startTime;
+							flow.iperfData.localNow = Date.now();
+						}
+
+						console.log('iperf buffer start time: ' + startTime);
+						if (lastTime && (startTime - lastTime) > updateRate/1000) {
+							console.log('iperf buffer gap: ' + startTime + ',' + lastTime);
+						}
+						lastTime = startTime;
+
+						// clear out the old data
 						while (flow.iperfData.samples.length > pointsToDisplay + iperfData.samples.length) {
 							flow.iperfData.samples.shift();
 						}
 
+						// if the client gets too out of sync, resynchronize
+						var clientNow = flow.iperfData.startTime + (Date.now() - flow.iperfData.localNow)/1000;
+						if (Math.abs(clientNow - startTime) > (updateRate/1000) * 2) {
+							console.log('resynchronizing now: ' + clientNow + ' => ' + startTime);
+							flow.iperfData.startTime = startTime;
+							flow.iperfData.localNow = Date.now();
+						}
+
+						var time = startTime;
 						iperfData.samples.forEach(function (s) {
-							flow.iperfData.samples.push(s);
+							var sample = {
+								time: time,
+								value: s
+							};
+							flow.iperfData.samples.push(sample);
+							time += interval/1000;
 						});
 					}
 					flow.iperfData.timestamp = iperfData.timestamp;
@@ -282,7 +331,7 @@ function startIPerfForFlow(flow) {
 				}
 //				console.log(data);
 			});
-		}, updateRate/2); // over sample to avoid gaps
+		}, updateRate*.5); // over sample to avoid gaps
 	}
 }
 

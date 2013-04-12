@@ -25,6 +25,6 @@ Widths of each switch type
 ***************************************************************************************************/
 var widths = {
 	edge: 6,
-	aggregation: 12,
-	core: 18
+	aggregation: 16,
+	core: 20
 }
