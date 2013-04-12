@@ -215,6 +215,11 @@ function updateSelectedFlows() {
 			if (flow) {
 				var liveFlow = flowMap[makeFlowKey(flow)];
 				if (liveFlow) {
+					flow.flowId = liveFlow.flowId;
+					if (flow.createPending) {
+						startIPerfForFlow(flow);
+						flow.createPending = false;
+					}
 					flow.dataPath = liveFlow.dataPath;
 					newSelectedFlows.push(flow);
 				} else if (flow.createPending) {
