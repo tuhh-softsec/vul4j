@@ -185,6 +185,6 @@ function startIPerfForFlow(flow) {
 		}
 
 		// wait a buffer to make sure the old iperf session gets cleared out
-		setTimeout(fetchData, updateRate);
+		flow.iperfFetchTimeout = setTimeout(fetchData, updateRate);
 	}
 }
