@@ -1,4 +1,4 @@
-package org.esigate.test.connection;
+package org.esigate.test.conn;
 
 import java.io.IOException;
 
