@@ -21,6 +21,7 @@ import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.HttpClientHelper;
 import org.esigate.http.IResponseHandler;
 import org.esigate.http.MockConnectionManager;
+import org.esigate.test.TestUtils;
 import org.esigate.test.http.HttpRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 
@@ -121,8 +122,10 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	 * {@link Driver#proxy(String, HttpEntityEnclosingRequest, Renderer...)} on
 	 * an HttpRequest
 	 * 
+	 * 
 	 * @param d
 	 * @param request
+	 *            Request must have been created with a mediator.
 	 * @return
 	 * @throws IOException
 	 * @throws HttpErrorPage
@@ -132,7 +135,12 @@ public abstract class AbstractDriverTestCase extends TestCase {
 			HttpEntityEnclosingRequest request) throws IOException,
 			HttpErrorPage, URISyntaxException {
 		String uri = request.getRequestLine().getUri();
-		return d.proxy(new URI(uri).getPath(), request);
+		d.proxy(new URI(uri).getPath(), request);
+
+		return TestUtils.getResponse(request);
+
+		// This is work in progress. Commenting right now.
+		// return d.proxy(new URI(uri).getPath(), request);
 	}
 
 }
