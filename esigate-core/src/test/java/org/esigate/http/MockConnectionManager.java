@@ -26,15 +26,17 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.conn.ConnectionRequest;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.protocol.HttpContext;
 
 public class MockConnectionManager implements HttpClientConnectionManager {
 	private final AtomicBoolean open = new AtomicBoolean(false);
-	private HttpResponse response;
+	private IResponseHandler responseHandler;
 	private HttpRequest sentRequest;
 	private long sleep = 0l;
 
@@ -160,13 +162,37 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 		return sentRequest;
 	}
 
-	public void setResponse(HttpResponse response) {
-		this.response = response;
+	/**
+	 * Set the HttpResponse that will always be returned when calling the
+	 * backend.
+	 * 
+	 * @param response
+	 */
+	public void setResponse(final HttpResponse response) {
+		setResponseHandler( new IResponseHandler() {
+			@Override
+			public HttpResponse execute(HttpRequest request) throws IOException {
+				return response;
+			}
+		});
 	}
 
-	public HttpResponse execute(@SuppressWarnings("unused") HttpRequest request) {
-		// default implementation, can be overridden
-		return response;
+	/**
+	 * Set a custom response handler. This allows to control and inject all
+	 * responses from backend.
+	 * 
+	 * @param responseHandler
+	 */
+	public void setResponseHandler(IResponseHandler responseHandler ){
+	  this.responseHandler = responseHandler;
+	}
+	
+	public HttpResponse execute( HttpRequest request) {
+		try {
+			return this.responseHandler.execute(request);	
+		}catch (IOException e){
+			return new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), 500, e.getMessage());
+		}		
 	}
 
 	public final boolean isOpen() {
