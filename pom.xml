@@ -415,7 +415,8 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.8.2</version>
-				<scope>test</scope>
+				<!-- Junit must be provided in order to compile org.esigate.test package. This scope ensure it is not included in war -->
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit-addons</groupId>
