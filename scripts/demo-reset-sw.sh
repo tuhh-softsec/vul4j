@@ -1,7 +1,7 @@
 #! /bin/bash
 basename=$ONOS_CLUSTER_BASENAME
 DIR=${HOME}/ONOS
-endt=`date +"%s"`
+tstart=`date +"%s"`
 echo "All Link Up"
 $DIR/scripts/all-linkup.sh
 echo "Delete Flows"
@@ -18,6 +18,6 @@ sleep 2
 for i in 1 2 3 4 5 6 7 8; do
     ssh -i ~/.ssh/onlabkey.pem  ${basename}$i 'cd ONOS/scripts; ./ctrl-local.sh'
 done
-endt=`date +"%s"`
-(( delta = endt -start ))
+tend=`date +"%s"`
+(( delta = tend - tstart ))
 echo "Demo Reset Done: took $delta sec"
