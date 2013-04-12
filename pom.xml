@@ -374,7 +374,11 @@
 				<artifactId>esigate-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.esigate</groupId>
+				<artifactId>esigate-test</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet.jsp</groupId>
 				<artifactId>jsp-api</artifactId>
