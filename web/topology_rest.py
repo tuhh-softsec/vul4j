@@ -229,8 +229,35 @@ def proxy_switch_controller_setting(cmd):
   resp = Response(result, status=200, mimetype='application/json')
   return resp
 
+@app.route("/proxy/gui/reset")
+def proxy_gui_reset():
+  result = ""
+  try:
+    command = "curl -m 300 -s %s/gui/reset" % (ONOS_GUI3_CONTROL_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
 
-###### ONOS RESET API ##############################
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+@app.route("/proxy/gui/scale")
+def proxy_gui_scale():
+  result = ""
+  try:
+    command = "curl -m 300 -s %s/gui/scale" % (ONOS_GUI3_CONTROL_HOST)
+    print command
+    result = os.popen(command).read()
+  except:
+    print "REST IF has issue"
+    exit
+
+  resp = Response(result, status=200, mimetype='application/json')
+  return resp
+
+###### ONOS REST API ##############################
 ## Worker Func ###
 def get_json(url):
   code = 200
@@ -692,17 +719,20 @@ def controller_status():
 def controller_status_change(cmd, controller_name):
   if (TESTBED == "hw"):
     start_onos="/home/admin/bin/onos start %s" % (controller_name[-1:])
+#    start_onos="/home/admin/bin/onos start %s > /tmp/debug " % (controller_name[-1:])
     stop_onos="/home/admin/bin/onos stop %s" % (controller_name[-1:])
+#    stop_onos="/home/admin/bin/onos stop %s > /tmp/debug " % (controller_name[-1:])
+#    print "Debug: Controller command %s called %s" % (cmd, controller_name)
   else:
     start_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh start" % (controller_name)
     stop_onos="ssh -i ~/.ssh/onlabkey.pem %s ONOS/start-onos.sh stop" % (controller_name)
 
   if cmd == "up":
     result=os.popen(start_onos).read()
-    ret = "controller %s is up" % (controller_name)
+    ret = "controller %s is up: %s" % (controller_name, result)
   elif cmd == "down":
     result=os.popen(stop_onos).read()
-    ret = "controller %s is down" % (controller_name)
+    ret = "controller %s is down: %s" % (controller_name, result)
 
   return ret
 
@@ -716,7 +746,7 @@ def switch_controller_setting(cmd):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
         result += os.popen(cmd_string).read()
     else:
-      cmd_string="cd; switch local"
+      cmd_string="cd; switch local > /tmp/watch"
       result += os.popen(cmd_string).read()
   elif cmd =="all":
     print "All aggr switches connects to all controllers except for core controller"
@@ -724,13 +754,25 @@ def switch_controller_setting(cmd):
     if (TESTBED == "sw"):
       for i in range(0, len(controllers)):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
+        print "cmd is: "+cmd_string
         result += os.popen(cmd_string).read()
     else:
-      cmd_string="cd; switch all"
+      cmd_string="/home/admin/bin/switch all > /tmp/watch"
       result += os.popen(cmd_string).read()
 
   return result
 
+@app.route("/gui/reset")
+def reset_demo():
+  cmd_string="cd ~/bin; ./demo-reset-hw.sh > /tmp/watch &"
+  os.popen(cmd_string)
+  return "Reset" 
+
+@app.route("/gui/scale")
+def scale_demo():
+  cmd_string="cd ~/bin;  ~/bin/demo-scale-out-hw.sh > /tmp/watch &"
+  os.popen(cmd_string)
+  return "scale"
 
 
 @app.route("/gui/switch/<cmd>/<dpid>")
@@ -1061,7 +1103,8 @@ if __name__ == "__main__":
 #    iperf_start(1,10,15)
 #    iperf_rate(1)
 #    switches()
-    add_flow(1,2,3,4,5,6)
+#    add_flow(1,2,3,4,5,6)
+    reset_demo()
   else:
     app.debug = True
     app.run(threaded=True, host="0.0.0.0", port=9000)
