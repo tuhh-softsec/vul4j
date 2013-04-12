@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.esigate.http.MockConnectionManager;
 
 /**
  * A response handler for {@link MockConnectionManager}
