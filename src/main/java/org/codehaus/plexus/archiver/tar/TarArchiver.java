@@ -25,12 +25,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
-import org.codehaus.plexus.archiver.bzip2.CBZip2OutputStream;
 import org.codehaus.plexus.archiver.util.EnumeratedAttribute;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -623,7 +623,7 @@ public class TarArchiver
             {
                 ostream.write( 'B' );
                 ostream.write( 'Z' );
-                return new CBZip2OutputStream( ostream );
+                return new BZip2CompressorOutputStream( ostream );
             }
             return ostream;
         }

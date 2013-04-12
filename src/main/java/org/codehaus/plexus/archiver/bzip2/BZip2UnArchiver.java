@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.IOUtil;
@@ -53,7 +54,7 @@ public class BZip2UnArchiver
                               + getDestFile().getAbsolutePath() );
 
             FileOutputStream out = null;
-            CBZip2InputStream zIn = null;
+            BZip2CompressorInputStream zIn = null;
             FileInputStream fis = null;
             BufferedInputStream bis = null;
             try
@@ -90,7 +91,7 @@ public class BZip2UnArchiver
         }
     }
 
-    public static CBZip2InputStream getBZip2InputStream( InputStream bis )
+    public static BZip2CompressorInputStream getBZip2InputStream( InputStream bis )
         throws IOException
     {
         int b = bis.read();
@@ -103,7 +104,7 @@ public class BZip2UnArchiver
         {
             return null;
         }
-        return new CBZip2InputStream( bis );
+        return new BZip2CompressorInputStream( bis );
     }
 
     protected void execute( String path, File outputDirectory )
