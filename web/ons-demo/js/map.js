@@ -344,10 +344,7 @@ function labelsEnter(switches) {
 }
 
 function switchesEnter(switches) {
-	switchLayer.selectAll('g').data(switches, function (d) {
-		return d.dpid;
-	})
-		.enter()
+	switches.enter()
 			.append('svg:g')
 				.attr("id", function (d) {
 					return d.dpid;
@@ -363,9 +360,7 @@ function switchesEnter(switches) {
 
 
 function switchesUpdate(switches) {
-	switchLayer.selectAll('g').data(switches, function (d) {
-		return d.dpid;
-	}).each(function (d) {
+	switches.each(function (d) {
 			// if there's a pending state changed and then the state changes, clear the pending class
 			var circle = d3.select(this);
 			if (d.state === 'ACTIVE' && circle.classed('inactive') ||
@@ -392,8 +387,10 @@ drawTopology = function () {
 	var aggregationSwitches = makeSwitchesModel(model.aggregationSwitches, 'aggregation');
 	var edgeSwitches = makeSwitchesModel(model.edgeSwitches, 'edge');
 
-	var switches = coreSwitches.concat(aggregationSwitches).concat(edgeSwitches);
-
+	var switches = 	switchLayer.selectAll('g')
+		.data(coreSwitches.concat(aggregationSwitches).concat(edgeSwitches), function (d) {
+			return d.dpid;
+		});
 	switchesEnter(switches)
 	switchesUpdate(switches);
 
