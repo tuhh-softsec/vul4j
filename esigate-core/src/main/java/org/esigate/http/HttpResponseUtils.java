@@ -165,4 +165,20 @@ public class HttpResponseUtils {
 		
 		return removeSessionId(result, httpResponse);
 	}
+	
+	public static boolean isCacheableError(HttpResponse httpResponse) {
+		int statusCode = httpResponse.getStatusLine().getStatusCode();
+		return statusCode == HttpStatus.SC_NOT_FOUND
+				|| statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR
+				|| statusCode == HttpStatus.SC_SERVICE_UNAVAILABLE;
+	}
+	
+	public static boolean isCacheableSuccess(HttpResponse httpResponse) {
+		int statusCode = httpResponse.getStatusLine().getStatusCode();
+		return statusCode == HttpStatus.SC_OK
+				|| statusCode == HttpStatus.SC_MOVED_PERMANENTLY
+				|| statusCode == HttpStatus.SC_MOVED_TEMPORARILY
+				|| statusCode == HttpStatus.SC_NOT_MODIFIED;
+	}
+	
 }
