@@ -1,6 +1,9 @@
 function startFlowAnimation(flow) {
-	if (flow.select('animate').empty()) {
-		flow.append('svg:animate')
+//	console.log('starting animation for flow: ' + flow.flowId);
+
+	var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
+	if (flowSelection.select('animate').empty()) {
+		flowSelection.append('svg:animate')
 			.attr('attributeName', 'stroke-dashoffset')
 			.attr('attributeType', 'xml')
 			.attr('from', '500')
@@ -11,7 +14,8 @@ function startFlowAnimation(flow) {
 }
 
 function stopFlowAnimation(flow) {
-	flow.select('animate').remove();
+	var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
+	flowSelection.select('animate').remove();
 }
 
 
@@ -24,7 +28,9 @@ function updateSelectedFlowsTopology() {
 		}
 	});
 
-	var flows = flowLayer.selectAll('.flow').data(topologyFlows);
+	var flows = flowLayer.selectAll('.flow').data(topologyFlows, function (d) {
+		return d.flowId;
+	});
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')

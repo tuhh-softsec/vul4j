@@ -1,8 +1,8 @@
 var enableIPerfLog = false;
 
-function iperfLog(message) {
+function iperfLog(message, flow) {
 	if (enableIPerfLog) {
-		console.log(message);
+		console.log('flow: ' + flow.flowId + '===>' + message);
 	}
 }
 
@@ -11,11 +11,16 @@ function hasIPerf(flow) {
 }
 
 function clearIPerf(flow) {
-	iperfLog('clearing iperf interval for: ' + flow.flowId);
+	iperfLog('clearing iperf interval for: ' + flow.flowId, flow);
 	clearTimeout(flow.iperfFetchTimeout);
 	delete flow.iperfFetchTimeout;
 	clearInterval(flow.iperfDisplayInterval);
 	delete flow.iperfDisplayInterval;
+	clearTimeout(flow.animationTimeout);
+	delete flow.animationTimeout;
+	stopFlowAnimation(flow);
+	delete flow.iperfData.timestamp;
+
 	delete flow.iperfData;
 }
 
@@ -70,11 +75,14 @@ function startIPerfForFlow(flow) {
 	}
 
 	if (flow.flowId) {
-		iperfLog('starting iperf for: ' + flow.flowId);
+		iperfLog('starting iperf', flow);
 		startIPerf(flow, duration, updateRate/interval);
 		flow.iperfDisplayInterval = setInterval(function () {
 			if (flow.iperfData) {
 				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
+				flow.iperfData.samples.sort(function (a, b) {
+					return a.time - b.time;
+				});
 				iperfPath.attr('d', makeGraph(flow.iperfData));
 			}
 
@@ -86,9 +94,17 @@ function startIPerfForFlow(flow) {
 			samples: []
 		}
 
+		function resetFlowAnimationTimeout() {
+			clearTimeout(flow.animationTimeout);
+			// kill the animation if iperfdata stops flowing
+			flow.animationTimeout = setTimeout(function () {
+				stopFlowAnimation(flow);
+			}, updateRate*1.5);
+		}
+
 		var lastTime;
 		function fetchData() {
-			iperfLog('Requesting iperf data');
+			iperfLog('Requesting iperf data', flow);
 			var fetchTime = Date.now();
 			getIPerfData(flow, function (data) {
 				var requestTime = Date.now() - fetchTime;
@@ -96,35 +112,29 @@ function startIPerfForFlow(flow) {
 				if (requestTime > 1000) {
 					requestTimeMessage = requestTimeMessage.toUpperCase();
 				}
-				iperfLog(requestTimeMessage);
+				iperfLog(requestTimeMessage, flow);
 
 				if (!flow.iperfData) {
-					iperfLog('iperf session closed for flow: ' + flow.id);
+					iperfLog('iperf session closed', flow);
 					return;
 				}
 
 				try {
 					var iperfData = JSON.parse(data);
 
-//				iperfLog(iperfData.timestamp);
+//				iperfLog(iperfData.timestamp, flow);
 
 					// if the data is fresh
 					if (!(flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp)) {
 						if (!flow.iperfData.timestamp) {
-							iperfLog('received first iperf buffer');
+							iperfLog('received first iperf buffer', flow);
 						} else {
-							iperfLog('received duplicate iperf buffer with timestamp: ' + iperfData.timestamp);
+							iperfLog('received duplicate iperf buffer with timestamp: ' + iperfData.timestamp, flow);
 						}
 					} else {
-						iperfLog('received new iperf buffer with timstamp: ' + iperfData.timestamp);
-
-						var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
-						startFlowAnimation(flowSelection);
-						clearTimeout(animationTimeout);
-						// kill the animation if iperfdata stops flowing
-						animationTimeout = setTimeout(function () {
-							stopFlowAnimation(flowSelection);
-						}, updateRate*1.5);
+						iperfLog('received new iperf buffer with timstamp: ' + iperfData.timestamp, flow);
+						startFlowAnimation(flow);
+						resetFlowAnimationTimeout();
 
 						var endTime = Math.floor(iperfData['end-time']*10)/10;
 
@@ -135,9 +145,9 @@ function startIPerfForFlow(flow) {
 							flow.iperfData.localNow = Date.now();
 						}
 
-						iperfLog('iperf buffer start time: ' + startTime);
+						iperfLog('iperf buffer start time: ' + startTime, flow);
 						if (lastTime && (startTime - lastTime) > updateRate/1000) {
-							iperfLog('iperf buffer gap: ' + (startTime - lastTime) );
+							iperfLog('iperf buffer gap: ' + (startTime - lastTime), flow);
 						}
 						lastTime = startTime;
 
@@ -149,7 +159,7 @@ function startIPerfForFlow(flow) {
 						// if the client gets too out of sync, resynchronize
 						var clientNow = flow.iperfData.startTime + (Date.now() - flow.iperfData.localNow)/1000;
 						if (Math.abs(clientNow - startTime) > (updateRate/1000) * 2) {
-							iperfLog('resynchronizing now: ' + clientNow + ' => ' + startTime);
+							iperfLog('resynchronizing now: ' + clientNow + ' => ' + startTime, flow);
 							flow.iperfData.startTime = startTime;
 							flow.iperfData.localNow = Date.now();
 						}
@@ -166,10 +176,10 @@ function startIPerfForFlow(flow) {
 					}
 					flow.iperfData.timestamp = iperfData.timestamp;
 				} catch (e) {
-					iperfLog('bad iperf data: ' + data);
+					iperfLog('bad iperf data: ' + data, flow);
 				}
 				flow.iperfFetchTimeout = setTimeout(fetchData, updateRate*.25); // over sample to avoid gaps
-//				iperfLog(data);
+//				iperfLog(data, flow);
 			});
 		}
 		fetchData();
