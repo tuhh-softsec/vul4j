@@ -8,7 +8,7 @@ function appInit(cb) {
 	});
 
 	d3.select('#action-all').on('click', function () {
-		var prompt = "Switch controllers to all?"
+		var prompt = "Add backup controllers?"
 		doConfirm(prompt, function (result) {
 			if (result) {
 				switchAll();

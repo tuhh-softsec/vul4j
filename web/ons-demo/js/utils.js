@@ -79,7 +79,7 @@ function makeSelectedFlowKey(flow) {
 update the app header using the current model
 ***************************************************************************************************/
 function updateHeader() {
-	d3.select('#lastUpdate').text(new Date());
+	d3.select('#lastUpdate').text(new Date().toLocaleString());
 
 	var activeSwitchCount = 0;
 	model.edgeSwitches.forEach(function (s) {
