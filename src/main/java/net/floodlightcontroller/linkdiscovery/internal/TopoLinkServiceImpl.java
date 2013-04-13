@@ -34,6 +34,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	public List<Link> getActiveLinks() {
 		// TODO Auto-generated method stub
 		conn = GraphDBConnection.getInstance("");
+		conn.close(); //Commit to ensure we see latest data
 		Iterable<ISwitchObject> switches = conn.utils().getActiveSwitches(conn);
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {

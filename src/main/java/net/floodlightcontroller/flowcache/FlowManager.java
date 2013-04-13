@@ -1111,6 +1111,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
     	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
+    	conn.endTx(Transaction.COMMIT);
+    	
     	try {
     	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
     		log.debug("Get all FlowPaths: found FlowPaths");
