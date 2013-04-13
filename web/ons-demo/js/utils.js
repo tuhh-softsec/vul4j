@@ -204,9 +204,23 @@ function countCoreLinkFlows() {
 /***************************************************************************************************
 
 ***************************************************************************************************/
-function doConfirm(prompt, cb) {
+function doConfirm(prompt, cb, options) {
 	var confirm = d3.select('#confirm');
 	confirm.select('#confirm-prompt').text(prompt);
+
+	var select = d3.select(document.getElementById('confirm-select'));
+	if (options) {
+		select.style('display', 'block');
+		select.text('');
+		select.selectAll('option').
+			data(options)
+			.enter()
+				.append('option')
+					.attr('value', function (d) {return d})
+					.text(function (d) {return d});
+	} else {
+		select.style('display', 'none');
+	}
 
 	function show() {
 		confirm.style('display', '-webkit-box');
@@ -227,7 +241,11 @@ function doConfirm(prompt, cb) {
 	confirm.select('#confirm-ok').on('click', function () {
 		d3.select(this).on('click', null);
 		dismiss();
-		cb(true);
+		if (options) {
+			cb(select[0][0].value);
+		} else {
+			cb(true);
+		}
 	});
 
 	confirm.select('#confirm-cancel').on('click', function () {

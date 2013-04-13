@@ -54,6 +54,14 @@ var controllerFunctions = {
 	switchControllerCmd: function (cmd) {
 		var url = '/proxy/gui/switchctrl/' + cmd;
 		callURL(url);
+	},
+	resetCmd: function () {
+		var url = '/proxy/gui/reset';
+		callURL(url);
+	},
+	scaleCmd: function () {
+		var url = '/proxy/gui/scale';
+		callURL(url);
 	}
 };
 
@@ -100,8 +108,15 @@ function getIPerfData(flow, cb) {
 function switchLocal() {
 	controllerFunctions.switchControllerCmd('local');
 }
-
 function switchAll() {
 	controllerFunctions.switchControllerCmd('all');
+}
+
+function resetNetwork() {
+	controllerFunctions.resetCmd();
+}
+
+function scaleNetwork() {
+	controllerFunctions.scaleCmd();;
 }
 

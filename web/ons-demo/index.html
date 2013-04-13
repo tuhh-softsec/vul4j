@@ -23,10 +23,11 @@
 		<div id='cluster-label'>ONOS Node Cluster</div>
 		<div id='controllers'></div>
 		<div id='actions'>
-			<div id='action-all' class='action'>A</div>
 			<div id='action-local' class='action'>1</div>
-			<div id='action-scale' class='action'>S</div>
 			<div id='action-reset' class='action'>R</div>
+			<div id='action-scale' class='action'>S</div>
+			<div id='action-all' class='action'>A</div>
+			<div id='action-kill' class='action'>K</div>
 		</div>
 	</div>
 
@@ -50,6 +51,7 @@
 	<div id='confirm-background'></div>
 	<div id='confirm-panel'>
 		<div id='confirm-prompt'>A PROMPT</div>
+		<select id='confirm-select'></select>
 		<div id='confirm-buttons'>
 			<div id='confirm-ok' class='confirm-button'>OK</div>
 			<div id='confirm-cancel' class='confirm-button'>CANCEL</div>
@@ -74,6 +76,7 @@
 
 <script src="js/topologyactions.js"></script>
 <script src="js/topology.js"></script>
+<script src="js/iperf.js"></script>
 <script src="js/flows.js"></script>
 <script src="js/init.js"></script>
 <script src="js/app.js"></script>

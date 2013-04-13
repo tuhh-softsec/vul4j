@@ -1,6 +1,9 @@
 function startFlowAnimation(flow) {
-	if (flow.select('animate').empty()) {
-		flow.append('svg:animate')
+//	console.log('starting animation for flow: ' + flow.flowId);
+
+	var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
+	if (flowSelection.select('animate').empty()) {
+		flowSelection.append('svg:animate')
 			.attr('attributeName', 'stroke-dashoffset')
 			.attr('attributeType', 'xml')
 			.attr('from', '500')
@@ -11,7 +14,8 @@ function startFlowAnimation(flow) {
 }
 
 function stopFlowAnimation(flow) {
-	flow.select('animate').remove();
+	var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
+	flowSelection.select('animate').remove();
 }
 
 
@@ -24,7 +28,9 @@ function updateSelectedFlowsTopology() {
 		}
 	});
 
-	var flows = flowLayer.selectAll('.flow').data(topologyFlows);
+	var flows = flowLayer.selectAll('.flow').data(topologyFlows, function (d) {
+		return d.flowId;
+	});
 
 	flows.enter().append("svg:path").attr('class', 'flow')
 		.attr('stroke-dasharray', '4, 10')
@@ -200,92 +206,6 @@ function updateSelectedFlowsTable() {
 	flows.exit().remove();
 }
 
-function startIPerfForFlow(flow) {
-	var duration = 10000; // seconds
-	var interval = 100; // ms. this is defined by the server
-	var updateRate = 2000; // ms
-	var pointsToDisplay = 1000;
-
-	function makePoints() {
-		var pts = [];
-		var i;
-		for (i=0; i < pointsToDisplay; ++i) {
-			var sample = flow.iperfData.samples[i];
-			var height = 28 * sample/1000000;
-			if (height > 28)
-				height = 28;
-			pts.push({
-				x: i * 1000/(pointsToDisplay-1),
-				y: 30 - height
-			})
-		}
-		return pts;
-	}
-
-	if (flow.flowId) {
-		console.log('starting iperf for: ' + flow.flowId);
-		startIPerf(flow, duration, updateRate/interval);
-		flow.iperfDisplayInterval = setInterval(function () {
-			if (flow.iperfData) {
-				while (flow.iperfData.samples.length < pointsToDisplay) {
-					flow.iperfData.samples.push(0);
-				}
-				var iperfPath = d3.select(document.getElementById(makeSelectedFlowKey(flow))).select('path');
-				iperfPath.attr('d', line(makePoints()));
-				flow.iperfData.samples.shift();
-			}
-
-
-		}, interval);
-
-		var animationTimeout;
-
-		flow.iperfFetchInterval = setInterval(function () {
-			getIPerfData(flow, function (data) {
-				try {
-					if (!flow.iperfData) {
-						flow.iperfData = {
-							samples: []
-						};
-						var i;
-						for (i = 0; i < pointsToDisplay; ++i) {
-							flow.iperfData.samples.push(0);
-						}
-					}
-
-					var iperfData = JSON.parse(data);
-
-//				console.log(iperfData.timestamp);
-
-					// if the data is fresh
-					if (flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp) {
-
-						var flowSelection = d3.select(document.getElementById(makeFlowKey(flow)));
-						startFlowAnimation(flowSelection);
-						clearTimeout(animationTimeout);
-						// kill the animation if iperfdata stops flowing
-						animationTimeout = setTimeout(function () {
-							stopFlowAnimation(flowSelection);
-						}, updateRate*1.5);
-
-						while (flow.iperfData.samples.length > pointsToDisplay + iperfData.samples.length) {
-							flow.iperfData.samples.shift();
-						}
-
-						iperfData.samples.forEach(function (s) {
-							flow.iperfData.samples.push(s);
-						});
-					}
-					flow.iperfData.timestamp = iperfData.timestamp;
-				} catch (e) {
-					console.log('bad iperf data: ' + data);
-				}
-//				console.log(data);
-			});
-		}, updateRate/2); // over sample to avoid gaps
-	}
-}
-
 function updateSelectedFlows() {
 	// make sure that all of the selected flows are either
 	// 1) valid (meaning they are in the latest list of flows)
@@ -301,10 +221,13 @@ function updateSelectedFlows() {
 			if (flow) {
 				var liveFlow = flowMap[makeFlowKey(flow)];
 				if (liveFlow) {
-					newSelectedFlows.push(liveFlow);
-					liveFlow.deletePending = flow.deletePending;
-					liveFlow.iperfFetchInterval = flow.iperfFetchInterval;
-					liveFlow.iperfDisplayInterval = flow.iperfDisplayInterval;
+					flow.flowId = liveFlow.flowId;
+					if (flow.createPending) {
+						startIPerfForFlow(flow);
+						flow.createPending = false;
+					}
+					flow.dataPath = liveFlow.dataPath;
+					newSelectedFlows.push(flow);
 				} else if (flow.createPending) {
 					newSelectedFlows.push(flow);
 				} else if (hasIPerf(flow)) {
@@ -344,19 +267,6 @@ function selectFlow(flow) {
 		selectedFlows = selectedFlows.slice(0, 3);
 		updateSelectedFlows();
 	}
-}
-
-function hasIPerf(flow) {
-	return flow && flow.iperfFetchInterval;
-}
-
-function clearIPerf(flow) {
-	console.log('clearing iperf interval for: ' + flow.flowId);
-	clearInterval(flow.iperfFetchInterval);
-	delete flow.iperfFetchInterval;
-	clearInterval(flow.iperfDisplayInterval);
-	delete flow.iperfDisplayInterval;
-	delete flow.iperfData;
 }
 
 function deselectFlow(flow, ifCreatePending) {

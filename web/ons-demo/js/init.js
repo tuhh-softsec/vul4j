@@ -26,11 +26,29 @@ function appInit(cb) {
 	});
 
 	d3.select('#action-scale').on('click', function () {
-		alert('scale')
+		var prompt = "Scale network?"
+		doConfirm(prompt, function (result) {
+			if (result) {
+				scaleNetwork();
+			}
+		});
 	});
 
 	d3.select('#action-reset').on('click', function () {
-		alert('reset')
+		var prompt = "Reset network?"
+		doConfirm(prompt, function (result) {
+			if (result) {
+				resetNetwork();
+			}
+		});
+	});
+
+	d3.select('#action-kill').on('click', function () {
+		var prompt = "Kill ONOS node?";
+		var options = model.activeControllers;
+		doConfirm(prompt, function (result) {
+			controllerDown(result);
+		}, options);
 	});
 
 	createTopologyView(cb);

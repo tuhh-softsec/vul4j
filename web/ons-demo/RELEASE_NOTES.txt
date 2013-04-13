@@ -1,3 +1,12 @@
+** April 12, 2013 **
+- fixed bug in iperf fetch
+- improved iperf logging
+
+** April 11, 2013 **
+- Use timestamps for iperf display
+This elimates spurious gaps when server responds slowly. However, gaps still appear if the server drops buffers entirely
+- Add "K" action for killing a controller
+
 ** April 9, 2013 **
 - display number of flows for each core<->core link
 - graphics tweaks
