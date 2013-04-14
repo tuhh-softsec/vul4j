@@ -174,12 +174,12 @@ path {
 
 path.flow {
 	fill: none;
-	stroke-width: 8px;
+	stroke-width: 10px;
 	stroke: rgba(255, 255, 255, .35);
 }
 
 path.flow.highlight {
-	stroke-width: 6px;
+	stroke-width: 16px;
 	stroke: rgba(255, 255, 255, .75);
 }
 
@@ -303,7 +303,7 @@ path.iperfdata {
 text {
 	stroke: none;
 	fill: white;
-	font-size: 22px;
+	font-size: 28px;
 	pointer-events: none;
 }
 
@@ -351,8 +351,8 @@ path {
 .color1 {
 	opacity: .15;
 	pointer-events: none;
-	fill: #EC0033;
-	background-color: #EC0033;
+	fill: #FF0000;
+	background-color: #FF0000;
 }
 
 .color2 {
@@ -372,8 +372,8 @@ path {
 .color4 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #B12C49;
-	background-color: #B12C49;
+	fill: #800080;
+	background-color: #800080;
 }
 
 .color5 {
@@ -386,50 +386,50 @@ path {
 .color6 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #990021;
-	background-color: #990021;
+	fill: #5555FF;
+	background-color: #2222FF;
 }
 
 .color7 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #990021;
-	background-color: #990021;
+	fill: #5555FF;
+	background-color: #2222FF;
 }
 
 .color8 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #A67900;
-	background-color: #A67900;
+	fill: #A0522D;
+	background-color: #A0522D;
 }
 
 .color9 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #F53D65;
-	background-color: #F53D65;
+	fill: #66CDAA;
+	background-color: #66CDAA;
 }
 
 .color10 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #1F0772;
-	background-color: #1F0772;
+	fill: #FFA500;
+	background-color: #FFA500;
 }
 
 .color11 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #F56E8B;
-	background-color: #F56E8B;
+	fill: #FFA500;
+	background-color: #FFA500;
 }
 
 .color12 {
 	opacity: .2;
 	pointer-events: none;
-	fill: #6949D7;
-	background-color: #6949D7;
+	fill: #FF69B4;
+	background-color: #FF69B4;
 }
 
 .action {
@@ -480,8 +480,8 @@ path {
 }
 
 .flowCount {
-	font-size: 24px;
-	fill: rgba(255, 255, 255, .75);
+	font-size: 32px;
+	fill: rgba(255, 255, 255, .99);
 }
 
 #confirm {
