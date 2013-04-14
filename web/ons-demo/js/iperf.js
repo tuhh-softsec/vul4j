@@ -123,7 +123,7 @@ function startIPerfForFlow(flow) {
 				try {
 					var iperfData = JSON.parse(data);
 
-//				iperfLog(iperfData.timestamp, flow);
+//				console.log('end-time: ' + iperfData['end-time']);
 
 					// if the data is fresh
 					if (!(flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp)) {
