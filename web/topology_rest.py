@@ -742,7 +742,7 @@ def switch_controller_setting(cmd):
     print "All aggr switches connects to local controller only"
     result=""
     if (TESTBED == "sw"):
-      for i in range(0, len(controllers)):
+      for i in range(1, len(controllers)):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-local.sh'" % (controllers[i])
         result += os.popen(cmd_string).read()
     else:
@@ -752,7 +752,7 @@ def switch_controller_setting(cmd):
     print "All aggr switches connects to all controllers except for core controller"
     result=""
     if (TESTBED == "sw"):
-      for i in range(0, len(controllers)):
+      for i in range(1, len(controllers)):
         cmd_string="ssh -i ~/.ssh/onlabkey.pem %s 'cd ONOS/scripts; ./ctrl-add-ext.sh'" % (controllers[i])
         print "cmd is: "+cmd_string
         result += os.popen(cmd_string).read()
