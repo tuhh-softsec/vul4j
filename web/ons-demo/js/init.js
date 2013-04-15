@@ -44,7 +44,7 @@ function appInit(cb) {
 	});
 
 	d3.select('#action-kill').on('click', function () {
-		var prompt = "Kill ONOS node?";
+		var prompt = "Kill ONOS instance?";
 		var options = model.activeControllers;
 		doConfirm(prompt, function (result) {
 			controllerDown(result);

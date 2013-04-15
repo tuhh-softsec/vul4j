@@ -193,7 +193,7 @@ def proxy_del_flow(flow_id):
 @app.route("/proxy/gui/iperf/start/<flow_id>/<duration>/<samples>")
 def proxy_iperf_start(flow_id,duration,samples):
   try:
-    command = "curl -s %s/gui/iperf/start/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id, duration, samples)
+    command = "curl -m 40 -s %s/gui/iperf/start/%s/%s/%s" % (ONOS_GUI3_CONTROL_HOST, flow_id, duration, samples)
     print command
     result = os.popen(command).read()
   except:
@@ -262,7 +262,7 @@ def proxy_gui_scale():
 def get_json(url):
   code = 200
   try:
-    command = "curl -s %s" % (url)
+    command = "curl -m 60 -s %s" % (url)
     result = os.popen(command).read()
     parsedResult = json.loads(result)
     if type(parsedResult) == 'dict' and parsedResult.has_key('code'):
@@ -962,10 +962,12 @@ def add_flow(src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC):
   command =  "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", src_dpid, src_port, dst_dpid, dst_port, srcMAC, dstMAC)
   flow_nr += 1
   command1 = "/home/ubuntu/ONOS/web/add_flow.py -m onos %d %s %s %s %s %s matchSrcMac %s matchDstMac %s" % (flow_nr, "dummy", dst_dpid, dst_port, src_dpid, src_port, dstMAC, srcMAC)
-  print command
+  print "add flow: %s, %s" % (command, command1)
   errcode = os.popen(command).read()
   errcode1 = os.popen(command1).read()
-  return errcode+" "+errcode1
+  ret=command+":"+errcode+" "+command1+":"+errcode1
+  print ret 
+  return ret
 
 #* Delete Flow
 #http://localhost:9000/gui/delflow/<flow_id>
@@ -986,9 +988,10 @@ def iperf_start(flow_id,duration,samples):
     result = os.popen(command).read()
     if len(result) == 0:
       print "No Flow found"
-      return;
+      return "Flow %s not found" % (flow_id);
   except:
     print "REST IF has issue"
+    return "REST IF has issue"
     exit
 
   parsedResult = json.loads(result)
@@ -1079,9 +1082,9 @@ def iperf_rate(flow_id):
   except:
     exit
 
-  if len(result) == 0:
+  if re.match("Cannot", result):
     resp = Response(result, status=400, mimetype='text/html')
-    return "no iperf file found (flowid %s)" % flow_id;
+    return "no iperf file found (host %s flowid %s): %s" % (host, flow_id, result)
   else:
     resp = Response(result, status=200, mimetype='application/json')
     return resp
