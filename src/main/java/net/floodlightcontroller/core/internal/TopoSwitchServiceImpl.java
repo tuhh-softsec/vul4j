@@ -29,6 +29,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		// TODO Auto-generated method stub
 		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
+		conn.close(); //Commit to ensure we see latest data
 		return conn.utils().getActiveSwitches(conn);
 	}
 
@@ -36,6 +37,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	public Iterable<ISwitchObject> getAllSwitches() {
 		// TODO Auto-generated method stub
 		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
+		conn.close(); //Commit to ensure we see latest data
 		return conn.utils().getAllSwitches(conn);
 	}
 
@@ -43,6 +45,7 @@ public class TopoSwitchServiceImpl implements ITopoSwitchService {
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		// TODO Auto-generated method stub
 		conn = GraphDBConnection.getInstance("/tmp/cassandra.titan");
+		conn.close(); //Commit to ensure we see latest data
 		return conn.utils().getInactiveSwitches(conn);
 	}
 

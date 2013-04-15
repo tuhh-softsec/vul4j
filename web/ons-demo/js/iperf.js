@@ -49,9 +49,9 @@ function startIPerfForFlow(flow) {
 					continue;
 				}
 
-				var y = 28 * sample.value/1000000;
-				if (y > 28) {
-					y = 28;
+				var y = 24 * sample.value/1000000;
+				if (y > 24) {
+					y = 24;
 				}
 				if (i == iperfData.samples.length - 1) {
 					d = 'M' + x + ',30';
@@ -123,7 +123,7 @@ function startIPerfForFlow(flow) {
 				try {
 					var iperfData = JSON.parse(data);
 
-//				iperfLog(iperfData.timestamp, flow);
+//				console.log('end-time: ' + iperfData['end-time']);
 
 					// if the data is fresh
 					if (!(flow.iperfData.timestamp && iperfData.timestamp != flow.iperfData.timestamp)) {

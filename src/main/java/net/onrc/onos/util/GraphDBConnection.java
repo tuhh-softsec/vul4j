@@ -42,7 +42,7 @@ public class GraphDBConnection {
 	   private GraphDBConnection(){ }
 	   
 	   /* Static 'instance' method */
-	   public static GraphDBConnection getInstance(final String conf) {
+	   public static synchronized GraphDBConnection getInstance(final String conf) {
 		   if (GraphDBConnection.configFile == null || GraphDBConnection.configFile.isEmpty()) {
 			   GraphDBConnection.configFile = conf;
 			   log.debug("GraphDBConnection::Setting Config File {}", GraphDBConnection.configFile);

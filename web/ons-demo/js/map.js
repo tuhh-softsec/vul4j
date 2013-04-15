@@ -386,19 +386,20 @@ drawTopology = function () {
 	var coreSwitches = makeSwitchesModel(model.coreSwitches, 'core');
 	var aggregationSwitches = makeSwitchesModel(model.aggregationSwitches, 'aggregation');
 	var edgeSwitches = makeSwitchesModel(model.edgeSwitches, 'edge');
+	var allSwitches = coreSwitches.concat(aggregationSwitches).concat(edgeSwitches);
 
-	var switches = 	switchLayer.selectAll('g')
-		.data(coreSwitches.concat(aggregationSwitches).concat(edgeSwitches), function (d) {
+	var switchSelection = switchLayer.selectAll('g')
+		.data(allSwitches, function (d) {
 			return d.dpid;
 		});
-	switchesEnter(switches)
-	switchesUpdate(switches);
+	switchesEnter(switchSelection)
+	switchesUpdate(switchSelection);
 
 	drawLinkLines();
 
 	drawCoreFlowCounts();
 
-	labelsEnter(switches);
+	labelsEnter(allSwitches);
 }
 
 })();
