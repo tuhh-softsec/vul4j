@@ -126,7 +126,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    new LinkedList<IFlowEntry>();
 
 		//
-		// Fetch all Flow Entries and select only my Flow Entries
+		// Fetch all Flow Entries which need to be updated and select only my Flow Entries
 		// that need to be updated into the switches.
 		//
 		boolean processed_measurement_flow = false;
@@ -488,9 +488,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		nextFlowEntryIdPrefix = randomGenerator.nextInt();
 		
 		mapReaderScheduler.scheduleAtFixedRate(
-				mapReader, 3, 3, TimeUnit.SECONDS);
+				mapReader, 100, 100, TimeUnit.MILLISECONDS);
 		shortestPathReconcileScheduler.scheduleAtFixedRate(
-				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+				shortestPathReconcile, 100, 100, TimeUnit.MILLISECONDS);
     }
 
     /**

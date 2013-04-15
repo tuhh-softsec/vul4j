@@ -67,6 +67,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
             catch (Exception e) {
                 log.error("Error in cleanup thread", e);
             } finally {
+            	conn.close();
                     cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
                                               TimeUnit.SECONDS);
             }
@@ -85,8 +86,8 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
     }
 
     protected void switchCleanup() {
-    	TopoSwitchServiceImpl impl = new TopoSwitchServiceImpl();
-    	Iterable<ISwitchObject> switches = impl.getActiveSwitches();
+    	conn.close();
+    	Iterable<ISwitchObject> switches = conn.utils().getActiveSwitches(conn);
     	
     	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
@@ -109,6 +110,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 				e.printStackTrace();
 			}			
 		}
+    	conn.close();
     }
 
 	@Override
