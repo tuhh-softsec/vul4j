@@ -121,8 +121,8 @@ public class PosixTarEntry extends TarEntry
 
         offset = TarUtils.getNameBytes( this.name, outbuf, offset, NAMELEN );
         offset = TarUtils.getOctalBytes( this.mode, outbuf, offset, MODELEN );
-        offset = TarUtils.getOctalBytes( ( this.userId >= 0 ? this.userId : 0 ), outbuf, offset, UIDLEN );
-        offset = TarUtils.getOctalBytes( ( this.groupId >= 0 ? this.groupId : 0 ), outbuf, offset, GIDLEN );
+        offset = TarUtils.getOctalBytes( this.userId, outbuf, offset, UIDLEN );
+        offset = TarUtils.getOctalBytes( this.groupId, outbuf, offset, GIDLEN );
         offset = TarUtils.getLongOctalBytes( this.size, outbuf, offset, SIZELEN );
         offset = TarUtils.getLongOctalBytes( this.modTime, outbuf, offset, MODTIMELEN );
 

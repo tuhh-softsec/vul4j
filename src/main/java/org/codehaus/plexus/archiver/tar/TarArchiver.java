@@ -17,6 +17,14 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  */
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
@@ -29,14 +37,6 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -249,7 +249,7 @@ public class TarArchiver
         int pathLength = vPath.length();
         try
         {
-            final TarEntry te;
+        	TarEntry te = null;
 			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
 			{
         		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
@@ -337,20 +337,10 @@ public class TarArchiver
                             : options.getUserName() );
             te.setGroupName( ( attributes != null && attributes.getGroupName() != null ) ? attributes.getGroupName()
                             : options.getGroup() );
-
-            final int userId =
-                ( attributes != null && attributes.getUserId() != null ) ? attributes.getUserId() : options.getUid();
-            if ( userId > 0 )
-            {
-                te.setUserId( userId );
-            }
-
-            final int groupId =
-                ( attributes != null && attributes.getGroupId() != null ) ? attributes.getGroupId() : options.getGid();
-            if ( groupId > 0 )
-            {
-                te.setGroupId( groupId );
-            }
+            te.setUserId( ( attributes != null && attributes.getUserId() != null) ? attributes.getUserId()
+                            : options.getUid() );
+            te.setGroupId( ( attributes != null && attributes.getGroupId() != null) ? attributes.getGroupId()
+                            : options.getGid() );
 
             tOut.putNextEntry( te );
 
