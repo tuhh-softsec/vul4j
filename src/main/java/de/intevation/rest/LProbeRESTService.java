@@ -1,11 +1,15 @@
 package de.intevation.rest;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import de.intevation.data.LProbeRepository;
+import de.intevation.model.LProbe;
 
 /**
  * JAX-RS Example
@@ -17,12 +21,17 @@ import javax.ws.rs.Produces;
 @RequestScoped
 public class LProbeRESTService {
 
-   //@Inject
-   //private EntityManager em;
+   @Inject
+   private LProbeRepository repository;
+
+   @Inject
+   private Logger log;
 
    @GET
    @Produces("text/plain")
    public String listAllMembers() {
+      final List<LProbe> result = repository.findAll();
+      System.out.println(result);
       return "Probenliste";
    }
 
@@ -36,7 +45,7 @@ public class LProbeRESTService {
    //@GET
    //@Produces("text/xml")
    //public List<Member> listAllMembers() {
-   //   // Use @SupressWarnings to force IDE to ignore warnings about "genericizing" the results of
+   //   // Us @SupressWarnings to force IDE to ignore warnings about "genericizing" the results of
    //   // this query
    //   @SuppressWarnings("unchecked")
    //   // We recommend centralizing inline queries such as this one into @NamedQuery annotations on
