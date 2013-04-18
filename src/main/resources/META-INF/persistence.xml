@@ -8,6 +8,7 @@
       <!-- If you are running in a production environment, add a managed 
          data source, the example data source is just for development and testing! -->
       <jta-data-source>java:jboss/datasources/ladaDS</jta-data-source>
+      <class>de.intevation.model.LProbe</class>
       <properties>
          <!-- Properties for Hibernate -->
          <property name="hibernate.hbm2ddl.auto" value="create-drop" />
