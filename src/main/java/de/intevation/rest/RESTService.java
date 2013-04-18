@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 public class RESTService {
 
    @GET
-   @Produces("text/xml")
+   @Produces("text/plain")
    public String listAll() {
       return "Dies ist ein Test";
    }
