@@ -27,11 +27,28 @@ import junit.framework.TestCase;
 public class TarEntryTest
     extends TestCase
 {
+
     /**
      * demonstrates bug 18105 on OSes with os.name shorter than 7.
      */
     public void testFileConstructor()
     {
         new TarEntry( new java.io.File( "/foo" ) );
+    }
+
+    /**
+     * Test case for PLXCOMP-220.
+     */
+    public void testInvalidUidGid()
+    {
+        final TarEntry writtenEntry = new TarEntry( "test.java" );
+        writtenEntry.setUserId( -1 );
+        writtenEntry.setGroupId( -1 );
+        final byte[] buffer = new byte[TarBuffer.DEFAULT_RCDSIZE];
+        writtenEntry.writeEntryHeader( buffer );
+
+        final TarEntry readEntry = new TarEntry( buffer );
+        assertEquals( 0, readEntry.getUserId() );
+        assertEquals( 0, readEntry.getGroupId() );
     }
 }

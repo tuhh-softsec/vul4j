@@ -30,7 +30,7 @@ public class PosixTarEntryTest
         new PosixTarEntry( new java.io.File( "/foo" ) );
     }
     
-    public void testPathSplittig()
+    public void testPathSplitting()
     {
     	PosixTarEntry pte = new PosixTarEntry( "/a/very/long/path/to/file/but/not/too/long/so/it/does/not/exceed/TarConstants.NAMELEN/plus/TarConstants.POSIX_PREFIXLEN" );
     	assertEquals("/a/very/long/path/to", pte.prefix.toString());
@@ -43,5 +43,21 @@ public class PosixTarEntryTest
     	pte = new PosixTarEntry( "this/path/has/exactly/99/characters/one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/" );
     	assertEquals("", pte.prefix.toString());
     	assertEquals("this/path/has/exactly/99/characters/one/two/three/four/five/six/seven/eight/nine/ten/eleven/twelve/", pte.name.toString());
+    }
+
+    /**
+     * Test case for PLXCOMP-220.
+     */
+    public void testInvalidUidGid()
+    {
+        final TarEntry writtenEntry = new TarEntry( "test.java" );
+        writtenEntry.setUserId( -1 );
+        writtenEntry.setGroupId( -1 );
+        final byte[] buffer = new byte[TarBuffer.DEFAULT_RCDSIZE];
+        writtenEntry.writeEntryHeader( buffer );
+
+        final TarEntry readEntry = new TarEntry( buffer );
+        assertEquals( 0, readEntry.getUserId() );
+        assertEquals( 0, readEntry.getGroupId() );
     }
 }
