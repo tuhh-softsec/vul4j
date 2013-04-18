@@ -12,7 +12,7 @@ public class RESTService {
    @GET
    @Produces("text/plain")
    public String listAll() {
-      return "Dies ist ein Test";
+      return "Hallo Welt!";
    }
 }
 
