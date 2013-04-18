@@ -1,0 +1,17 @@
+# use glob syntax.
+syntax: glob
+
+*.class
+*.orig
+.classpath
+.gitignore
+.factorypath
+.gitignore
+.project
+*~
+
+# switch to regexp syntax.
+syntax: regexp
+^target/
+^.settings
+
