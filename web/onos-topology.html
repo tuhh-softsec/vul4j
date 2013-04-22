@@ -2,11 +2,6 @@
 <html>
 <meta charset="utf-8">
 <style>
-path.link {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
-}
 circle {
   stroke: #333;
   stroke-width: 1.5px;
@@ -25,8 +20,10 @@ text {
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 </head>
 <body>
+<!--
 <button id="more">more</button>
-<button id="less">lesse</button>
+<button id="less">less</button>
+--!>
 <svg width="4in" height="2in" 
      viewBox="0 0 4000 2000" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
@@ -38,9 +35,25 @@ text {
       orient="auto">
       <path d="M0,-5L10,0L0,5"/>
     </marker>
+    <marker id="TriangleRed"
+      viewBox="0 -5 10 10" refX="10" refY="-0.2" 
+      markerUnits="strokeWidth"
+      markerWidth="6" markerHeight="6"
+      orient="auto">
+      <path d="M0,-5L10,0L0,5" fill="red" stroke="red"/>
+    </marker>
   </defs>
+<h1>ONOS Sprint 4 Demo GUI</h1>
+<h2>Controller Status</h2>
+<div id="servers"></div>
+<div id="onos-status"></div>
+<div id="cassandra-status"></div>
+<h2>Topology View</h2>
+<div id="topology"></div>
+<script type="text/javascript" src="js/controller-status.js"></script>
 <script type="text/javascript">
-gui("http://gui.onlab.us:8080/topology");
+controller_status("http://gui3.onlab.us:8081/controller_status");
+gui("http://gui3.onlab.us:8081/topology");
 </script>
 </svg>
 </body>

@@ -1,5 +1,7 @@
 package net.floodlightcontroller.util;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * The class representing a Caller ID for an ONOS component.
  */
@@ -25,6 +27,7 @@ public class CallerId {
      *
      * @return the value of the Caller ID.
      */
+    @JsonProperty("value")
     public String value() { return value; }
 
     /**
@@ -32,6 +35,7 @@ public class CallerId {
      *
      * @param value the value to set.
      */
+    @JsonProperty("value")
     public void setValue(String value) {
 	this.value = value;
     }

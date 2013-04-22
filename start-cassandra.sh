@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Set paths
+FL_HOME=`dirname $0`
 CASSANDRA_DIR=${HOME}/apache-cassandra-1.1.4
 LOGDIR=${HOME}/ONOS/onos-logs
 CASSANDRA_LOG=$LOGDIR/cassandara.`hostname`.log
@@ -37,22 +39,24 @@ function stop {
   pids="$capid"
   for p in ${pids}; do
     if [ x$p != "x" ]; then
-      sudo kill -KILL $p
+      kill -KILL $p
       echo "Killed existing prosess (pid: $p)"
     fi
   done
 }
 
-#function deldb {
+function deldb {
 #   # Delete the berkeley db database
-#   if [ -d "/tmp/cassandra.titan" ]; then
-#      rm -rf /tmp/cassandra.titan
-#      mkdir /tmp/cassandra.titan
-#   fi
-#}
+   if [ -d "/tmp/cassandra.titan" ]; then
+      echo "deleting berkeley db dir"
+      sudo rm -rf /tmp/cassandra.titan
+   fi
+}
 
 case "$1" in
   start)
+    deldb
+    cp $FL_HOME/cassandra.titan /tmp
     stop
     start 
     ;;

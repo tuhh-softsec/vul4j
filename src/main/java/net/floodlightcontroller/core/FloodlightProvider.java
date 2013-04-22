@@ -10,12 +10,14 @@ import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.mastership.IMastershipService;
+import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {
     Controller controller;
@@ -50,7 +52,10 @@ public class FloodlightProvider implements IFloodlightModule {
         dependencies.add(IRestApiService.class);
         dependencies.add(ICounterStoreService.class);
         dependencies.add(IThreadPoolService.class);
-        dependencies.add(IMastershipService.class);
+        dependencies.add(IFlowService.class);
+        dependencies.add(ITopoRouteService.class);
+        dependencies.add(IControllerRegistryService.class);
+
         return dependencies;
     }
 
@@ -66,7 +71,11 @@ public class FloodlightProvider implements IFloodlightModule {
            context.getServiceImpl(IRestApiService.class));
        controller.setThreadPoolService(
            context.getServiceImpl(IThreadPoolService.class));
-       controller.setMastershipService(context.getServiceImpl(IMastershipService.class));
+       controller.setFlowService(context.getServiceImpl(IFlowService.class));
+       controller.setTopoRouteService(context.getServiceImpl(ITopoRouteService.class));
+       controller.setMastershipService(
+    		   context.getServiceImpl(IControllerRegistryService.class));
+
        controller.init(context.getConfigParams(this));
     }
 

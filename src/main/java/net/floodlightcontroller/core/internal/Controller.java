@@ -22,8 +22,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
+import java.net.UnknownHostException;
 import java.nio.channels.ClosedChannelException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -52,9 +53,10 @@ import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
-import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IListener.Command;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
+import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchFilter;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -65,7 +67,7 @@ import net.floodlightcontroller.core.internal.OFChannelState.HandshakeState;
 import net.floodlightcontroller.core.util.ListenerDispatcher;
 import net.floodlightcontroller.core.web.CoreWebRoutable;
 import net.floodlightcontroller.counter.ICounterStoreService;
-import net.floodlightcontroller.mastership.IMastershipService;
+import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.perfmon.IPktInProcessingTimeService;
 import net.floodlightcontroller.restserver.IRestApiService;
@@ -75,6 +77,9 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
+import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
+import net.onrc.onos.registry.controller.RegistryException;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -107,9 +112,9 @@ import org.openflow.protocol.OFGetConfigReply;
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
 import org.openflow.protocol.OFPhysicalPort;
-import org.openflow.protocol.OFPortStatus;
 import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
 import org.openflow.protocol.OFPhysicalPort.OFPortState;
+import org.openflow.protocol.OFPortStatus;
 import org.openflow.protocol.OFPortStatus.OFPortReason;
 import org.openflow.protocol.OFSetConfig;
 import org.openflow.protocol.OFStatisticsRequest;
@@ -141,18 +146,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
-   
-	ThreadLocal<SwitchStorageImpl> store = new ThreadLocal<SwitchStorageImpl>() {
-		@Override
-		protected SwitchStorageImpl initialValue() {
-			SwitchStorageImpl swStore = new SwitchStorageImpl();
-			//TODO: Get the file path from global properties
-			swStore.init("/tmp/cassandra.titan");
-			return swStore;
-		}
-	};
-	
-	protected SwitchStorageImpl swStore = store.get();
+   	
+	protected SwitchStorageImpl swStore;;
 	
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
@@ -189,7 +184,9 @@ public class Controller implements IFloodlightProviderService,
     protected IStorageSourceService storageSource;
     protected IPktInProcessingTimeService pktinProcTime;
     protected IThreadPoolService threadPool;
-    protected IMastershipService masterHelper;
+    protected IFlowService flowService;
+    protected ITopoRouteService topoRouteService;
+    protected IControllerRegistryService registryService;
     
     // Configuration options
     protected int openFlowPort = 6633;
@@ -392,8 +389,16 @@ public class Controller implements IFloodlightProviderService,
         this.threadPool = tp;
     }
 
-	public void setMastershipService(IMastershipService serviceImpl) {
-		this.masterHelper = serviceImpl;		
+    public void setFlowService(IFlowService serviceImpl) {
+	this.flowService = serviceImpl;		
+    }
+
+    public void setTopoRouteService(ITopoRouteService serviceImpl) {
+	this.topoRouteService = serviceImpl;		
+    }
+
+	public void setMastershipService(IControllerRegistryService serviceImpl) {
+		this.registryService = serviceImpl;		
 	}
 	
     @Override
@@ -452,6 +457,52 @@ public class Controller implements IFloodlightProviderService,
         return new OFChannelHandler(state);
     }
     
+    protected class RoleChangeCallback implements ControlChangeCallback {
+		@Override
+		public void controlChanged(long dpid, boolean hasControl) {
+			log.info("Role change callback for switch {}, hasControl {}", 
+					HexString.toHexString(dpid), hasControl);
+			
+			synchronized(roleChanger){
+				OFSwitchImpl sw = null;
+				for (OFSwitchImpl connectedSw : connectedSwitches){
+					if (connectedSw.getId() == dpid){
+						sw = connectedSw;
+						break;
+					}
+				}
+				if (sw == null){
+					log.warn("Switch {} not found in connected switches",
+							HexString.toHexString(dpid));
+					return;
+				}
+				
+				Role role = null;
+				
+				/*
+				 * issue #229
+				 * Cannot rely on sw.getRole() as it can be behind due to pending
+				 * role changes in the queue. Just submit it and late the RoleChanger
+				 * handle duplicates.
+				 */
+
+				if (hasControl){
+					role = Role.MASTER;
+				}
+				else {
+					role = Role.SLAVE;
+				}
+
+				log.debug("Sending role request {} msg to {}", role, sw);
+				Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+				swList.add(sw);
+				roleChanger.submitRequest(swList, role);
+
+			}
+			
+		}
+    }
+    
     /**
      * Channel handler deals with the switch connection and dispatches
      * switch messages to the appropriate locations.
@@ -499,6 +550,9 @@ public class Controller implements IFloodlightProviderService,
                     removeSwitch(sw);
                 }
                 synchronized(roleChanger) {
+                	if (controlRequested) {
+                		registryService.releaseControl(sw.getId());
+                	}
                     connectedSwitches.remove(sw);
                 }
                 sw.setConnected(false);
@@ -705,6 +759,7 @@ public class Controller implements IFloodlightProviderService,
          */
         void sendHelloConfiguration() throws IOException {
             // Send initial Features Request
+        	log.debug("Sending FEATURES_REQUEST to {}", sw);
             sw.write(factory.getMessage(OFType.FEATURES_REQUEST), null);
         }
         
@@ -714,6 +769,7 @@ public class Controller implements IFloodlightProviderService,
          * @throws IOException
          */
         void sendFeatureReplyConfiguration() throws IOException {
+        	log.debug("Sending CONFIG_REQUEST to {}", sw);
             // Ensure we receive the full packet via PacketIn
             OFSetConfig config = (OFSetConfig) factory
                     .getMessage(OFType.SET_CONFIG);
@@ -733,12 +789,15 @@ public class Controller implements IFloodlightProviderService,
                     dfuture);
 
         }
-        
+ 
+      	volatile Boolean controlRequested = Boolean.FALSE;
         protected void checkSwitchReady() {
+  
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
                 state.hsState = HandshakeState.READY;
+                log.debug("Handshake with {} complete", sw);
                 
                 synchronized(roleChanger) {
                     // We need to keep track of all of the switches that are connected
@@ -751,6 +810,24 @@ public class Controller implements IFloodlightProviderService,
                     connectedSwitches.add(sw);
                     
                     if (role != null) {
+                    	//Put the switch in SLAVE mode until we know we have control
+                    	log.debug("Setting new switch {} to SLAVE", sw.getStringId());
+                    	Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
+                    	swList.add(sw);
+                    	roleChanger.submitRequest(swList, Role.SLAVE);
+                    	
+                    	//Request control of the switch from the global registry
+                    	try {
+                    		controlRequested = Boolean.TRUE;
+							registryService.requestControl(sw.getId(), 
+									new RoleChangeCallback());
+						} catch (RegistryException e) {
+							log.debug("Registry error: {}", e.getMessage());
+							controlRequested = Boolean.FALSE;
+						}
+                    	
+                    	
+                    	
                         // Send a role request if role support is enabled for the controller
                         // This is a probe that we'll use to determine if the switch
                         // actually supports the role request message. If it does we'll
@@ -758,12 +835,14 @@ public class Controller implements IFloodlightProviderService,
                         // OFError message. 
                         // If role is MASTER we will promote switch to active
                         // list when we receive the switch's role reply messages
+                        /*
                         log.debug("This controller's role is {}, " + 
                                 "sending initial role request msg to {}",
                                 role, sw);
                         Collection<OFSwitchImpl> swList = new ArrayList<OFSwitchImpl>(1);
                         swList.add(sw);
                         roleChanger.submitRequest(swList, role);
+                        */
                     } 
                     else {
                         // Role supported not enabled on controller (for now)
@@ -777,6 +856,18 @@ public class Controller implements IFloodlightProviderService,
                         addSwitch(sw);
                         state.firstRoleReplyReceived = true;
                     }
+                }
+                if (!controlRequested) {
+                	// yield to allow other thread(s) to release control
+                	try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// Ignore interruptions						
+					}
+                	// safer to bounce the switch to reconnect here than proceeding further
+                	log.debug("Closing {} because we weren't able to request control " +
+                			"successfully" + sw);
+                	sw.channel.close();
                 }
             }
         }
@@ -1004,6 +1095,7 @@ public class Controller implements IFloodlightProviderService,
                     shouldHandleMessage = handleVendorMessage((OFVendor)m);
                     break;
                 case ERROR:
+                	log.debug("Recieved ERROR message from switch {}: {}", sw, m);
                     // TODO: we need better error handling. Especially for 
                     // request/reply style message (stats, roles) we should have
                     // a unified way to lookup the xid in the error message. 
@@ -1027,6 +1119,7 @@ public class Controller implements IFloodlightProviderService,
                         // is not a spurious error
                         shouldLogError = !isBadVendorError;
                         if (isBadVendorError) {
+                        	log.debug("Handling bad vendor error for {}", sw);
                             if (state.firstRoleReplyReceived && (role != null)) {
                                 log.warn("Received ERROR from sw {} that "
                                           +"indicates roles are not supported "
@@ -1034,16 +1127,23 @@ public class Controller implements IFloodlightProviderService,
                                           +"role reply earlier", sw);
                             }
                             state.firstRoleReplyReceived = true;
-                            sw.deliverRoleRequestNotSupported(error.getXid());
+                            Role requestedRole = 
+                            		sw.deliverRoleRequestNotSupported(error.getXid());
                             synchronized(roleChanger) {
                                 if (sw.role == null && Controller.this.role==Role.SLAVE) {
+                                	//This will now never happen. The Controller's role
+                                	//is now never SLAVE, always MASTER.
                                     // the switch doesn't understand role request
                                     // messages and the current controller role is
                                     // slave. We need to disconnect the switch. 
                                     // @see RoleChanger for rationale
+                                	log.warn("Closing {} channel because controller's role " +
+                                			"is SLAVE", sw);
                                     sw.getChannel().close();
                                 }
-                                else if (sw.role == null) {
+                                else if (sw.role == null && requestedRole == Role.MASTER) {
+                                	log.debug("Adding switch {} because we got an error" +
+                                			" returned from a MASTER role request", sw);
                                     // Controller's role is master: add to
                                     // active 
                                     // TODO: check if clearing flow table is
@@ -1076,6 +1176,8 @@ public class Controller implements IFloodlightProviderService,
                             // to make sure that the switch eventually accepts one
                             // of our requests or disconnect the switch. This feels
                             // cumbersome. 
+                        	log.debug("Closing {} channel because we recieved an " + 
+                        			"error other than BAD_VENDOR", sw);
                             sw.getChannel().close();
                         }
                     }
@@ -1447,6 +1549,8 @@ public class Controller implements IFloodlightProviderService,
                 // a "Not removing Switch ... already removed debug message.
                 // TODO: Figure out a way to handle this that avoids the
                 // spurious debug message.
+                log.debug("Closing {} because a new IOFSwitch got added " +
+                		"for this dpid", oldSw);
                 oldSw.getChannel().close();
             }
             finally {
@@ -1455,9 +1559,11 @@ public class Controller implements IFloodlightProviderService,
         }
         
         updateActiveSwitchInfo(sw);
-        swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-        for (OFPhysicalPort port: sw.getPorts()) {
-            swStore.addPort(sw.getStringId(), port);
+        if (registryService.hasControl(sw.getId())) {
+        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
+        	for (OFPhysicalPort port: sw.getPorts()) {
+        		swStore.addPort(sw.getStringId(), port);
+        	}
         }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
@@ -1478,7 +1584,14 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
-        swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+ //
+ //     Cannot set sw to inactive in network map due to race condition
+ //     Need a cleanup thread to periodically check switches not active in registry
+ //     and acquire control to set to inactive state in network map and release it       
+ //
+ //       if (registryService.hasControl(sw.getId())) {
+ //      	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
+ //       }
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
@@ -2045,6 +2158,16 @@ public class Controller implements IFloodlightProviderService,
         if (controllerId != null) {
             this.controllerId = controllerId;
         }
+        else {
+        	//Try to get the hostname of the machine and use that for controller ID
+        	try {
+    			String hostname = java.net.InetAddress.getLocalHost().getHostName();
+    			this.controllerId = hostname;
+    		} catch (UnknownHostException e) {
+    			// Can't get hostname, we'll just use the default
+    		}
+        }
+        
         log.debug("ControllerId set to {}", this.controllerId);
     }
 
@@ -2084,9 +2207,22 @@ public class Controller implements IFloodlightProviderService,
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
         this.providerMap = new HashMap<String, List<IInfoProvider>>();
+        
         setConfigParams(configParams);
-        this.role = getInitialRole(configParams);
+        //this.role = getInitialRole(configParams);
+        //Set the controller's role to MASTER so it always tries to do role requests.
+        this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
+        
+		String conf = configParams.get("dbconf");
+		if (conf == null || conf.isEmpty()) {
+			conf = "/tmp/cassandra.titan";
+			log.debug("did not get DB config setting using default {}", conf);
+		}
+		log.debug("setting DB config {}", conf);
+		this.swStore = new SwitchStorageImpl();
+		this.swStore.init(conf);
+		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
     }
@@ -2100,6 +2236,12 @@ public class Controller implements IFloodlightProviderService,
                         "that the system database has failed to start. " +
                         LogMessageDoc.CHECK_CONTROLLER)
     public void startupComponents() {
+    	try {
+			registryService.registerController(controllerId);
+		} catch (RegistryException e2) {
+			log.warn("Registry service error: {}", e2.getMessage());
+		}
+    	
         // Create the table names we use
         storageSource.createTable(CONTROLLER_TABLE_NAME, null);
         storageSource.createTable(SWITCH_TABLE_NAME, null);

@@ -1,8 +1,19 @@
 package net.floodlightcontroller.util;
 
+import java.math.BigInteger;
+
+import net.floodlightcontroller.util.serializers.FlowIdDeserializer;
+import net.floodlightcontroller.util.serializers.FlowIdSerializer;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * The class representing a Flow ID.
  */
+@JsonDeserialize(using=FlowIdDeserializer.class)
+@JsonSerialize(using=FlowIdSerializer.class)
 public class FlowId {
     private long value;
 
@@ -23,6 +34,25 @@ public class FlowId {
     }
 
     /**
+     * Constructor from a string.
+     *
+     * @param value the value to use.
+     */
+    public FlowId(String value) {
+	//
+	// Use the help of BigInteger to parse strings representing
+	// large unsigned hex long values.
+	//
+	char c = 0;
+	if (value.length() > 2)
+	    c = value.charAt(1);
+	if ((c == 'x') || (c == 'X'))
+	    this.value = new BigInteger(value.substring(2), 16).longValue();
+	else
+	    this.value = Long.decode(value);
+    }
+
+    /**
      * Get the value of the Flow ID.
      *
      * @return the value of the Flow ID.
@@ -39,14 +69,12 @@ public class FlowId {
     }
 
     /**
-     * Convert the Flow ID value to a string.
+     * Convert the Flow ID value to a hexadecimal string.
      *
-     * @return the Flow ID value to a string.
+     * @return the Flow ID value to a hexadecimal string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
-	return ret;
+	return "0x" + Long.toHexString(this.value);
     }
 }

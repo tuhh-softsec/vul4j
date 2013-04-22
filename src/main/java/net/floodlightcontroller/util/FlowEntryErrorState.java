@@ -1,5 +1,7 @@
 package net.floodlightcontroller.util;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * The class representing the Flow Entry error state.
  */
@@ -31,14 +33,36 @@ public class FlowEntryErrorState {
      *
      * @return the error type.
      */
+    @JsonProperty("type")
     public short type() { return type; }
+
+    /**
+     * Set the error type.
+     *
+     * @param type the error type to use.
+     */
+    @JsonProperty("type")
+    public void setType(short type) {
+	this.type = type;
+    }
 
     /**
      * Get the error code.
      *
      * @return the error code.
      */
+    @JsonProperty("code")
     public short code() { return code; }
+
+    /**
+     * Set the error code.
+     *
+     * @param code the error code to use.
+     */
+    @JsonProperty("code")
+    public void setCode(short code) {
+	this.code = code;
+    }
 
     /**
      * Set the values of the error type and code.
@@ -54,12 +78,14 @@ public class FlowEntryErrorState {
     /**
      * Convert the error type and code to a string.
      *
+     * The string has the following form:
+     * [type=1 code=2]
+     *
      * @return the error type and code as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[type=" + this.type + " code=" + code + "]";
 	return ret;
     }
 }

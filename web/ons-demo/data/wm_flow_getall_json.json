@@ -1,0 +1,439 @@
+[
+    {
+        "dataPath": {
+            "srcPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:06:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            },
+            "flowEntries": [
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:06:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:06:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:ba:5e:ba:13"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:ba:5e:ba:11"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:02:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:02:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                }
+            ],
+            "dstPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:02:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            }
+        },
+        "flowId": {
+            "value": "0x1"
+        },
+        "installerId": {
+            "value": "1"
+        }
+    },
+
+
+{
+        "dataPath": {
+            "srcPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:06:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            },
+            "flowEntries": [
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:06:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:06:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:ba:5e:ba:13"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:08:a2:08:f9:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:03:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:03:05"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                }
+            ],
+            "dstPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:03:05"
+                },
+                "port": {
+                    "value": 4
+                }
+            }
+        },
+        "flowId": {
+            "value": "0x2"
+        },
+        "installerId": {
+            "value": "1"
+        }
+    },
+
+{
+        "dataPath": {
+            "srcPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:07:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            },
+            "flowEntries": [
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:07:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:07:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:20:4e:7f:51:8a:35"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:16:97:08:9a:46"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:08:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:08:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                }
+            ],
+            "dstPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:08:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            }
+        },
+        "flowId": {
+            "value": "0x3"
+        },
+        "installerId": {
+            "value": "1"
+        }
+    },
+{
+        "dataPath": {
+            "srcPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:05:02"
+                },
+                "port": {
+                    "value": 4
+                }
+            },
+            "flowEntries": [
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:05:02"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:05:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x1",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:ba:12"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:08:a2:08:f9:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:ba:5e:ba:11"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x2",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:02:01"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                },
+                {
+                    "dpid": {
+                        "value": "00:00:00:00:00:00:02:15"
+                    },
+                    "flowEntryActions": null,
+                    "flowEntryErrorState": null,
+                    "flowEntryId": "0x3",
+                    "flowEntryMatch": null,
+                    "flowEntrySwitchState": "FE_SWITCH_UPDATED",
+                    "flowEntryUserState": "FE_USER_ADD",
+                    "inPort": null,
+                    "outPort": null
+                }
+            ],
+            "dstPort": {
+                "dpid": {
+                    "value": "00:00:00:00:00:00:02:15"
+                },
+                "port": {
+                    "value": 4
+                }
+            }
+        },
+        "flowId": {
+            "value": "0x4"
+        },
+        "installerId": {
+            "value": "1"
+        }
+    }
+
+]

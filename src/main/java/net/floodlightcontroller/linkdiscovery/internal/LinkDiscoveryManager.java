@@ -42,31 +42,30 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
-import net.floodlightcontroller.core.internal.OFSwitchImpl;
 import net.floodlightcontroller.core.IOFSwitchListener;
 import net.floodlightcontroller.core.annotations.LogMessageCategory;
 import net.floodlightcontroller.core.annotations.LogMessageDoc;
 import net.floodlightcontroller.core.annotations.LogMessageDocs;
-//import net.floodlightcontroller.core.internal.SwitchStorageImpl;
+import net.floodlightcontroller.core.internal.OFSwitchImpl;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscovery;
+import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LinkType;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.SwitchType;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
-import net.floodlightcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
+import net.floodlightcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.floodlightcontroller.packet.BSN;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -75,14 +74,15 @@ import net.floodlightcontroller.packet.LLDPTLV;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.storage.IResultSet;
-import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.IStorageSourceListener;
+import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.EventHistory;
 import net.floodlightcontroller.util.EventHistory.EvAction;
+import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
@@ -127,6 +127,12 @@ implements IOFMessageListener, IOFSwitchListener,
 IStorageSourceListener, ILinkDiscoveryService,
 IFloodlightModule, IInfoProvider, IHAListener {
     protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
+    
+    protected enum NetworkMapOperation {
+    	NONE,
+    	INSERT,
+    	UPDATE
+    }
 
     // Names of table/fields for links in the storage API
     private static final String LINK_TABLE_NAME = "controller_link";
@@ -146,7 +152,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
-
+    protected IControllerRegistryService registryService;
 
     // LLDP and BDDP fields
     private static final byte[] LLDP_STANDARD_DST_MAC_STRING = 
@@ -180,13 +186,13 @@ IFloodlightModule, IInfoProvider, IHAListener {
     // Link discovery task details.
     protected SingletonTask discoveryTask;
     protected final int DISCOVERY_TASK_INTERVAL = 1; 
-    protected final int LINK_TIMEOUT = 5; // decreased timeout as part of LLDP process from 35 secs
-    protected final int LLDP_TO_ALL_INTERVAL = 2 ; //decreased from 15 seconds.
+    protected final int LINK_TIMEOUT = 35; // original 35 secs, aggressive 5 secs
+    protected final int LLDP_TO_ALL_INTERVAL = 15 ; //original 15 seconds, aggressive 2 secs.
     protected long lldpClock = 0;
     // This value is intentionally kept higher than LLDP_TO_ALL_INTERVAL.
     // If we want to identify link failures faster, we could decrease this
     // value to a small number, say 1 or 2 sec.
-    protected final int LLDP_TO_KNOWN_INTERVAL= 2; // LLDP frequency for known links from 20 secs
+    protected final int LLDP_TO_KNOWN_INTERVAL= 20; // LLDP frequency for known links
 
     protected LLDPTLV controllerTLV;
     protected ReentrantReadWriteLock lock;
@@ -851,7 +857,9 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     log.trace("Getting BDDP packets from a different controller" +
                             "and letting it go through normal processing chain.");
                 }
-                return Command.CONTINUE;
+                //XXX Fix the BDDP broadcast issue
+                //return Command.CONTINUE;
+                return Command.STOP;
             }
         }
 
@@ -1020,6 +1028,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
         NodePortTuple srcNpt, dstNpt;
         boolean linkChanged = false;
+        NetworkMapOperation operation = NetworkMapOperation.NONE;
 
         lock.writeLock().lock();
         try {
@@ -1068,7 +1077,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 writeLinkToStorage(lt, newInfo);
                 
                 // Write link to network map
-                linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
+                operation = NetworkMapOperation.INSERT;
+                //linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
                 
                 updateOperation = UpdateOperation.LINK_UPDATED;
                 linkChanged = true;
@@ -1127,7 +1137,8 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 writeLinkToStorage(lt, newInfo);
 
                 // Write link to network map
-                linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
+                operation = NetworkMapOperation.UPDATE;
+                //linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
                 
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
@@ -1157,6 +1168,18 @@ IFloodlightModule, IInfoProvider, IHAListener {
         } finally {
             lock.writeLock().unlock();
         }
+        
+        switch (operation){
+        case INSERT:
+        	linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
+        	break;
+        case UPDATE:
+        	linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
+        	break;
+        case NONE:
+        default:
+        	break;
+        }
 
         return linkChanged;
     }
@@ -1170,6 +1193,14 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * @param links The List of @LinkTuple to delete.
      */
     protected void deleteLinks(List<Link> links, String reason) {
+    	deleteLinks(links, reason, Boolean.TRUE);
+    }
+    
+    /**
+     * Removes links from memory and storage.
+     * @param links The List of @LinkTuple to delete.
+     */
+    protected void deleteLinks(List<Link> links, String reason, Boolean hasControl) {
         NodePortTuple srcNpt, dstNpt;
 
         lock.writeLock().lock();
@@ -1218,6 +1249,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
                 // remote link from network map
                 linkStore.update(lt, DM_OPERATION.DELETE);
+
                 
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
@@ -1242,7 +1274,10 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
         IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
         if (iofSwitch == null) return Command.CONTINUE;
-
+        
+        // If we do not control this switch, then we should not process its port status messages
+        if (!registryService.hasControl(iofSwitch.getId())) return Command.CONTINUE;
+        
         if (log.isTraceEnabled()) {
             log.trace("handlePortStatus: Switch {} port #{} reason {}; " +
                     "config is {} state is {}",
@@ -1416,7 +1451,11 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 }
                 // add all tuples with an endpoint on this switch to erase list
                 eraseList.addAll(switchLinks.get(sw));
-                deleteLinks(eraseList, "Switch Removed");
+                
+                // We can get called to delete links when we lose mastership. To avoid clearing the network map in that case,
+                // figure out if we have control of the switch
+                boolean hasControl = registryService.hasControl(sw);
+                deleteLinks(eraseList, "Switch Removed", hasControl);
 
                 // Send a switch removed update
                 LDUpdate update = new LDUpdate(sw, null, UpdateOperation.SWITCH_REMOVED);
@@ -1846,6 +1885,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         l.add(IStorageSourceService.class);
         l.add(IThreadPoolService.class);
         l.add(IRestApiService.class);
+        l.add(IControllerRegistryService.class);
         return l;
     }
 
@@ -1856,6 +1896,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         storageSource = context.getServiceImpl(IStorageSourceService.class);
         threadPool = context.getServiceImpl(IThreadPoolService.class);
         restApi = context.getServiceImpl(IRestApiService.class);
+        registryService = context.getServiceImpl(IControllerRegistryService.class);
 
         // Set the autoportfast feature to false.
         this.autoPortFastFeature = false;

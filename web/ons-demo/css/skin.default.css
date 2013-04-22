@@ -1,0 +1,559 @@
+
+body {
+	background-color: black;
+	color: white;
+	font-family: Helvetica;
+	margin: 0px;
+}
+
+#contents {
+	visibility: hidden;
+	background-color: black;
+}
+
+#topologyArea.linking {
+	cursor: crosshair;
+}
+
+
+#map path {
+	fill:none;
+	stroke:#333;
+	stroke-width:2;
+}
+
+.nodrop {
+	cursor: not-allowed;
+}
+
+.status {
+	padding: 1em;
+}
+
+
+.status:last-child {
+	border-right: none;
+}
+
+.status .static {
+	color: #AAA;
+	padding: .25em;
+}
+
+.status .dynamic {
+	color: #FFF;
+	padding: .25em;
+}
+
+#status span {
+	font-size: 24px;
+}
+
+.button {
+	padding: 1em;
+	background-color: lightgray;
+	color: black;
+	border: 1px solid #AAA;
+}
+
+#arrow {
+	stroke: none;
+	fill: rgba(255, 255, 255, .35);
+}
+
+.header {
+	height: 50px;
+}
+
+.selectedFlow {
+	border-bottom: 1px solid #AAA;
+}
+
+.selectedFlow:hover {
+	background-color: #222;
+}
+
+.selectedFlow:last-child {
+	border-bottom: none;
+}
+
+#flowChooser .selectedFlow:hover {
+	background-color: white;
+}
+
+#lastUpdated {
+	padding-bottom: 0px;
+}
+
+#right .header {
+	font-size: 12px;
+	padding-right: .25em;
+	-webkit-box-sizing: border-box;
+}
+
+#selectedFlows {
+	border-top: 1px solid #AAA;
+	border-bottom: 1px solid #AAA;
+}
+
+.selectedFlow {
+	height: 2em;
+	color: white;
+	background-color: black;
+}
+
+.header, #onos {
+	border-bottom: 1px solid #AAA;;
+}
+
+#onos {
+	background-color: #333;
+}
+
+#cluster-label {
+	font-size: 22px;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	padding-left: .5em;
+	padding-right: .5em;
+	color: #EEE;
+}
+
+#actions {
+	padding-right: .25em;
+	padding-left: .25em;
+	padding-top: .25em;
+	padding-bottom: .25em;
+	border-left: 1px solid white;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: center;
+}
+
+#controllers {
+	padding: .25em;
+	background-color: black;
+	margin: .25em;
+	border-radius: 8px;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-align: center;
+}
+
+#flowChooser .selectedFlow {
+	background-color: rgba(255, 255, 255, .75);
+	color: black;
+}
+
+#flowChooser .flowId {
+	padding-left: 2em;
+}
+
+
+.selectedFlow.selected {
+	color: black;
+	background-color:#AAA;
+}
+
+.highlight circle {
+	stroke: rgba(255, 255, 255, .5);
+	stroke-width: 2px;
+}
+
+#linkVector {
+	fill: none;
+	stroke-width: 1px;
+	stroke: rgba(255, 255, 255, .75);
+	pointer-events: none;
+}
+
+path {
+	pointer-events: none;
+}
+
+path.flow {
+	fill: none;
+	stroke-width: 10px;
+	stroke: rgba(255, 255, 255, .35);
+}
+
+path.flow.highlight {
+	stroke-width: 16px;
+	stroke: rgba(255, 255, 255, .75);
+}
+
+#selectedFlowsHeader {
+	border-top: 1px solid #AAA;
+}
+
+path.iperfdata {
+	fill: none;
+	stroke-width: 1px;
+	stroke: #ccc;
+}
+
+.iperf {
+	background-color: black;
+}
+
+#selectedFlowsHeader .iperf {
+	background-color: black;
+}
+
+#flowChooser {
+	pointer-events: none;
+	background-color: rgba(0, 0, 0, .25);
+}
+
+
+.flowId, .srcDPID, .dstDPID, .iperf, #deleteFlow, .deleteFlow {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	width: 4em;
+}
+
+
+.srcDPID, .dstDPID {
+	width: 12em;
+}
+
+
+.srcDPID, .dstDPID, .deleteFlow, #showFlowChooser {
+	border-right: 1px solid #AAA;
+}
+
+#showFlowChooser:hover, .deleteFlow:hover {
+	background-color: #444;
+}
+
+#showFlowChooser:active, .deleteFlow:active {
+	background-color: black;
+}
+
+.srcDPID {
+	border-left: 1px solid #AAA;
+}
+
+.controller {
+	padding: .25em;
+	padding-left: 2.5em;
+	position: relative;
+	height: 1.5em;
+	border: 1px solid #444;
+	color: white;
+	position: relative;
+	border-radius: 8px;
+	display: -webkit-box;
+	-webkit-box-align: center;
+}
+
+.controller:hover {
+	border: 1px solid white;
+}
+
+.controller {
+	font-size: 18px;
+}
+
+
+.black-eye {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 2.25em;
+	background-image: url('../assets/black-eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .25em center;
+}
+
+.white-eye {
+	height: 100%;
+	width: 2.25em;
+	background-image: url('../assets/white-eye.svg');
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: .4em center;
+}
+
+.deleteFlow {
+	height: 100%;
+	background-image: url('../assets/delete.svg');
+	background-size: auto 150%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#logo {
+	height: 50px;
+}
+
+.edge {
+	stroke: black;
+	stroke-width: 1.5px;
+}
+
+.nolabel text {
+	display: none;
+}
+
+text {
+	stroke: none;
+	fill: white;
+	font-size: 28px;
+	pointer-events: none;
+}
+
+text.label {
+	fill: #888;
+}
+
+path {
+	stroke: rgba(255, 255, 255, .25);
+	stroke-width: 1.5px;
+}
+
+.aggregation {
+	stroke: black;
+	stroke-width: 2px;
+}
+
+#traceButton {
+	visibility: hidden
+}
+
+.color1-selected .color1,
+.color2-selected .color2,
+.color3-selected .color3,
+.color4-selected .color4,
+.color5-selected .color5,
+.color6-selected .color6,
+.color7-selected .color7,
+.color8-selected .color8,
+.color9-selected .color9,
+.color10-selected .color10,
+.color11-selected .color11,
+.color12-selected .color12  {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.colorInactive {
+	opacity: 1;
+	fill: #444;
+	background-color: #444;
+	color: #222;
+}
+
+.color1 {
+	opacity: .15;
+	pointer-events: none;
+	fill: #FF0000;
+	background-color: #FF0000;
+}
+
+.color2 {
+	opacity: .15;
+	pointer-events: none;
+	fill: #FFBA00;
+	background-color: #FFBA00;
+}
+
+.color3 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #3714B0;
+	background-color: #3714B0;
+}
+
+.color4 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #800080;
+	background-color: #800080;
+}
+
+.color5 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #402C84;
+	background-color: #402C84;
+}
+
+.color6 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #5555FF;
+	background-color: #2222FF;
+}
+
+.color7 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #5555FF;
+	background-color: #2222FF;
+}
+
+.color8 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #A0522D;
+	background-color: #A0522D;
+}
+
+.color9 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #66CDAA;
+	background-color: #66CDAA;
+}
+
+.color10 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #FFA500;
+	background-color: #FFA500;
+}
+
+.color11 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #FFA500;
+	background-color: #FFA500;
+}
+
+.color12 {
+	opacity: .2;
+	pointer-events: none;
+	fill: #FF69B4;
+	background-color: #FF69B4;
+}
+
+.action {
+	margin: .1em;
+	border: 2px solid #AAA;
+	height: 1.5em;
+	width: 5em;
+	font-size: 9px;
+	background-color: #444;
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	color: #AAA;
+	border-radius: 0%;
+	-webkit-box-sizing: border-box;
+}
+
+.action:hover {
+	border: 2px solid #FFF;
+	color: white;
+}
+
+.action:active {
+	background-color: #222;
+}
+
+
+@-webkit-keyframes pending {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.5;
+	}
+}
+
+.pending {
+	-webkit-animation-name: pending;
+	-webkit-animation-duration: .5s;
+	-webkit-animation-direction: alternate;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-iteration-count: 70;
+}
+
+.core path {
+	stroke-width: 1px;
+	stroke: black;
+}
+
+.flowCount {
+	font-size: 32px;
+	fill: rgba(255, 255, 255, .99);
+}
+
+#confirm {
+	display: none;
+	-webkit-transition: opacity .25s;
+	font-size: 20px;
+}
+
+#confirm-background {
+	background-color: black;
+	opacity: .5;
+}
+
+#confirm-prompt {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	-webkit-box-flex: 1.0;
+	text-align: center;
+}
+
+#confirm-buttons {
+	padding: 1em;
+}
+
+#confirm-prompt {
+	margin-top:1em;
+	line-height: 1.5em;
+}
+
+#confirm-panel {
+	position: relative;
+	background-color: #222;
+	border: 2px solid #aaa;
+	border-radius: 12px;
+	width: 20em;
+	padding: 1em;
+}
+
+.confirm-button {
+	padding: .5em;
+	border: 2px solid #aaa;
+	color: #aaa;
+	border-radius: 6px;
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.confirm-button:hover{
+	border: 2px solid white;
+	color: white;
+}
+
+.confirm-button:active{
+	background-color: black;
+}
+
+select {
+	margin-top: 1em;
+	-webkit-appearance: none;
+	border-radius: 0px;
+	font-size: 18px;
+	padding: .5em;
+	background-color: black;
+	color: white;
+	border: 1px solid white;
+}
+
+select:after {
+	content: 'a';
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import net.floodlightcontroller.util.SwitchPort;
 import net.floodlightcontroller.util.FlowEntry;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * The class representing the Data Path.
  */
@@ -17,6 +19,9 @@ public class DataPath {
      * Default constructor.
      */
     public DataPath() {
+	srcPort = new SwitchPort();
+	dstPort = new SwitchPort();
+	flowEntries = new ArrayList<FlowEntry>();
     }
 
     /**
@@ -24,6 +29,7 @@ public class DataPath {
      *
      * @return the data path source port.
      */
+    @JsonProperty("srcPort")
     public SwitchPort srcPort() { return srcPort; }
 
     /**
@@ -31,6 +37,7 @@ public class DataPath {
      *
      * @param srcPort the data path source port to set.
      */
+    @JsonProperty("srcPort")
     public void setSrcPort(SwitchPort srcPort) {
 	this.srcPort = srcPort;
     }
@@ -40,6 +47,7 @@ public class DataPath {
      *
      * @return the data path destination port.
      */
+    @JsonProperty("dstPort")
     public SwitchPort dstPort() { return dstPort; }
 
     /**
@@ -47,6 +55,7 @@ public class DataPath {
      *
      * @param dstPort the data path destination port to set.
      */
+    @JsonProperty("dstPort")
     public void setDstPort(SwitchPort dstPort) {
 	this.dstPort = dstPort;
     }
@@ -56,6 +65,7 @@ public class DataPath {
      *
      * @return the data path flow entries.
      */
+    @JsonProperty("flowEntries")
     public ArrayList<FlowEntry> flowEntries() { return flowEntries; }
 
     /**
@@ -63,19 +73,59 @@ public class DataPath {
      *
      * @param flowEntries the data path flow entries to set.
      */
+    @JsonProperty("flowEntries")
     public void setFlowEntries(ArrayList<FlowEntry> flowEntries) {
 	this.flowEntries = flowEntries;
     }
 
     /**
+     * Get a string with the summary of the shortest-path data path
+     * computation.
+     *
+     * NOTE: This method assumes the DataPath was created by
+     * using FlowManager::getShortestPath() so the inPort and outPort
+     * of the Flow Entries are set.
+     * NOTE: This method is a temporary solution and will be removed
+     * in the future.
+     *
+     * @return a string with the summary of the shortest-path
+     * data path computation if valid, otherwise the string "X".
+     * If the shortest-path was valid, The string has the following form:
+     * inPort/dpid/outPort;inPort/dpid/outPort;...
+     */
+    public String dataPathSummary() {
+	String resultStr = new String();
+	if (this.flowEntries != null) {
+	    for (FlowEntry flowEntry : this.flowEntries) {
+		// The data path summary string
+		resultStr = resultStr +
+		    flowEntry.inPort().toString() + "/"
+		    + flowEntry.dpid().toString() + "/" +
+		    flowEntry.outPort().toString() + ";";
+	    }
+	}
+	if (resultStr.isEmpty())
+	    resultStr = "X";		// Invalid shortest-path
+	return resultStr;
+    }
+
+    /**
      * Convert the data path to a string.
+     *
+     * The string has the following form:
+     * [src=01:01:01:01:01:01:01:01/1111 flowEntry=<entry1> flowEntry=<entry2> flowEntry=<entry3> dst=02:02:02:02:02:02:02:02/2222]
      *
      * @return the data path as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[src=" + this.srcPort.toString();
+
+	for (FlowEntry fe : flowEntries) {
+	    ret += " flowEntry=" + fe.toString();
+	}
+	ret += " dst=" + this.dstPort.toString() + "]";
+
 	return ret;
     }
 }

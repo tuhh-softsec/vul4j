@@ -1,9 +1,9 @@
 package net.floodlightcontroller.flowcache.web;
 
 import net.floodlightcontroller.flowcache.IFlowService;
+import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
 
-import org.openflow.util.HexString;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
@@ -27,10 +27,11 @@ public class GetFlowByIdResource extends ServerResource {
 
 	// Extract the arguments
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	long flowId = HexString.toLong(flowIdStr);
+	FlowId flowId = new FlowId(flowIdStr);
+
 	log.debug("Get Flow Id: " + flowIdStr);
 
-	// TODO: Implement it.
+	result = flowService.getFlow(flowId);
 
         return result;
     }

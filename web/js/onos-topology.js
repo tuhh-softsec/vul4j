@@ -1,9 +1,10 @@
 function gui(data_source){
-    var width = 960,
-    height = 500;
+    var width = 1280,
+    height = 1280;
+    var radius = 8;
     var color = d3.scale.category20();
 
-    var svg = d3.select("body").append("svg:svg")
+    var svg = d3.select("#topology").append("svg:svg")
 	.attr("width", width)
 	.attr("height", height);
 
@@ -22,26 +23,26 @@ function gui(data_source){
 
     d3.json(data_source, init);
 
-/* For debugging  */
+/* For debugging  
     $("#more").click( function() {
         $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_more',
+	    url: 'http://gui.onlab.us:8080/topology_more',
 	    success: function(json) {
-		update(json)
+		update(json);
 	    },
 	    dataType: "json"
         });
     });
     $("#less").click( function() {
         $.ajax({
-	    url: 'http://onosnat.onlab.us:8080/topology_less',
+	    url: 'http://gui.onlab.us:8080/topology_less',
 	    success: function(json) {
-		update(json)
+		update(json);
 	    },
 	    dataType: "json"
         });
     });
-/**/
+*/
 
     function compare_link (a, b){
         if (a.source > b.source) {return 1;}
@@ -207,32 +208,75 @@ function gui(data_source){
 		}
 	    }
 	}
+	for (var i = 0; i < links.length; i++) {
+            for (var j = 0; j < json.links.length; j++) {
+		if (links[i].target.name == json.nodes[json.links[j].target].name && 
+		    links[i].source.name == json.nodes[json.links[j].source].name ){
+		    if (links[i].type != json.links[j].type){
+			links[i].type = json.links[j].type;
+			changed = true;
+		    }
+		}
+	    }
+	}
 	return changed
     }
 
     function draw(force, path, circle, text){
 	force.stop();
         path.enter().append("svg:path")
-	    .attr("class", function(d) { return "link"; });
+	    .attr("class", function(d) { return "link"; })
+	    .attr("marker-end", function(d) {
+		if(d.type == 1){
+		    return "url(#TriangleRed)";
+		} else {
+		    return "url(#Triangle)";
+		}
+	    });
 
         circle.enter().append("svg:circle")
-	    .attr("r", 8)
+	    .attr("r", function(d) { 
+		if (d.group == 1000){
+		    return radius/2;
+		}else{
+		    return radius;
+		}
+	    })
 	    .call(node_drag);
 //            .call(force.drag);
 
 	text.enter().append("svg:text")
-	    .attr("x", 8)
+	    .attr("x", radius)
 	    .attr("y", ".31em")
-	    .text(function(d) { return d.name.split(":")[6] + d.name.split(":")[7] });
+	    .text(function(d) { 
+		l=d.name.split(":").length
+		return d.name.split(":")[l-2] + ":" + d.name.split(":")[l-1]
+	    });
 
         circle.append("title")
 	    .text(function(d) { return d.name; });
 
 	circle.attr("fill", function(d) {
-	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else{ return "gray"; }
+               if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
+
 	});
 
 	path.attr("stroke", function(d) {
@@ -243,7 +287,7 @@ function gui(data_source){
 	    }
 	}).attr("stroke-width", function(d) {
 	    if(d.type == 1){
-		return "4px";
+		return "2px";
 	    } else {
 		return "1.5px";
 	    }
@@ -269,19 +313,19 @@ function gui(data_source){
 	var changed = cdiff(json);
 
 	console.log("changed? " + changed);
+        path = svg.selectAll("path").data(links)
+        circle = svg.selectAll("circle").data(nodes);
+	text = svg.selectAll("text").data(nodes);
 
+	console.log(path)
 	if (changed){
-
-            path = svg.selectAll("path").data(links)
-            circle = svg.selectAll("circle").data(nodes);
-	    text = svg.selectAll("text").data(nodes);
 
 	    draw(force, path, circle, text);
 	}
     }
 
     function init_draw(nodes, links){
-        path = svg.append("svg:g").selectAll("path").data(links)
+        path = svg.append("svg:g").selectAll("path").data(links);
         circle = svg.append("svg:g").selectAll("circle").data(nodes);
 	text = svg.append("svg:g").selectAll("text").data(nodes);
 
@@ -289,7 +333,6 @@ function gui(data_source){
 
 	setInterval(function() {
             $.ajax({
-//		url: 'http://onosnat.onlab.us:8080/topology',
 		url: data_source,
 		success: function(json) {
 		    update(json)
@@ -298,8 +341,6 @@ function gui(data_source){
             });
 	}, 3000); 
     }
-
-
     function tick() {
 	path.attr("d", function(d) {
 	    var dx = d.target.x - d.source.x,
@@ -308,15 +349,54 @@ function gui(data_source){
 	    dr = 0;  // 0 for direct line
 	    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	});
+	path.attr("stroke", function(d) {
+	    if(d.type == 1){
+		return "red"
+	    } else {
+		return "black"
+	    }
+	}).attr("stroke-width", function(d) {
+	    if(d.type == 1){
+		return "3px";
+	    } else {
+		return "1.5px";
+	    }
+	}).attr("marker-end", function(d) {
+	    if(d.type == 1){
+		return "url(#TriangleRed)";
+	    } else {
+		return "url(#Triangle)";
+	    }
+	});
+
 //	circle.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; });
 	circle.attr("transform", function(d) {
-	    return "translate(" + d.x + "," + d.y + ")";
+	    x = Math.max(radius, Math.min(width - radius, d.x));
+	    y = Math.max(radius, Math.min(height - radius, d.y)); 
+//	    return "translate(" + d.x + "," + d.y + ")";
+	    return "translate(" + x + "," + y + ")";
 	})
+
 	circle.attr("fill", function(d) {
-	    if (d.group == 1){return "red";}
-	    else if (d.group == 2){return "blue";}
-	    else if (d.group == 3){return "green";}
-	    else{ return "gray"; }
+                if (d.group == 1){
+                    return "red"
+                }else if (d.group == 2){
+                    return "blue"
+                }else if (d.group == 3){
+                    return "green"
+                }else if (d.group == 4){
+                    return "orange"
+                }else if (d.group == 5){
+                    return "cyan"
+                }else if (d.group == 6){
+                    return "magenta"
+                }else if (d.group == 7){
+                    return "yellow"
+                }else if (d.group == 8){
+                    return "purple"
+                }else{
+                    return "gray"
+                }
 	});
 //	text.attr("x", function(d) { return d.x; }).attr("y", function(d) { return d.y; });
 	text.attr("transform", function(d) {

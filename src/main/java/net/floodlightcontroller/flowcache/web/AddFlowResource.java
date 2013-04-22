@@ -1,8 +1,16 @@
 package net.floodlightcontroller.flowcache.web;
 
-import net.floodlightcontroller.flowcache.IFlowService;
+import java.io.IOException;
 
-import org.restlet.resource.Get;
+import net.floodlightcontroller.flowcache.IFlowService;
+import net.floodlightcontroller.util.FlowId;
+import net.floodlightcontroller.util.FlowPath;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +19,9 @@ public class AddFlowResource extends ServerResource {
 
     protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
 
-    @Get("json")
-    public Boolean retrieve() {
-	Boolean result = false;
+    @Post("json")
+    public FlowId store(String flowJson) {
+	FlowId result = new FlowId();
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -24,12 +32,30 @@ public class AddFlowResource extends ServerResource {
             return result;
 	}
 
+	//
 	// Extract the arguments
-	String flowPathStr = (String) getRequestAttributes().get("flow");
+	// NOTE: The "flow" is specified in JSON format.
+	//
+	ObjectMapper mapper = new ObjectMapper();
+	String flowPathStr = flowJson;
+	FlowPath flowPath = null;
 	log.debug("Add Flow Path: " + flowPathStr);
+	try {
+	    flowPath = mapper.readValue(flowPathStr, FlowPath.class);
+	} catch (JsonGenerationException e) {
+	    e.printStackTrace();
+	} catch (JsonMappingException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 
-	// TODO: Implement it.
-	result = true;
+	// Process the request
+	if (flowPath != null) {
+	    if (flowService.addFlow(flowPath, result, null) != true) {
+		result = new FlowId();		// Error: Return empty Flow Id
+	    }
+	}
 
         return result;
     }

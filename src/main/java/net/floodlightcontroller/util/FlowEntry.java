@@ -1,32 +1,20 @@
 package net.floodlightcontroller.util;
 
+import java.util.ArrayList;
+
 import net.floodlightcontroller.util.Dpid;
-import net.floodlightcontroller.util.FlowEntryActions;
+import net.floodlightcontroller.util.FlowEntryAction;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowEntryMatch;
+import net.floodlightcontroller.util.FlowEntrySwitchState;
+import net.floodlightcontroller.util.FlowEntryUserState;
 import net.floodlightcontroller.util.Port;
 
-/**
- * The Flow Entry state as set by the user (via the ONOS API).
- */
-enum FlowEntryUserState {
-	FE_USER_UNKNOWN,		// Initialization value: state unknown
-	FE_USER_ADD,			// Flow entry that is added
-	FE_USER_MODIFY,			// Flow entry that is modified
-	FE_USER_DELETE			// Flow entry that is deleted
-}
+import net.floodlightcontroller.util.MACAddress;
+import net.floodlightcontroller.util.IPv4;
 
-/**
- * The Flow Entry state as set by the controller.
- */
-enum FlowEntrySwitchState {
-	FE_SWITCH_UNKNOWN,		// Initialization value: state unknown
-	FE_SWITCH_NOT_UPDATED,		// Switch not updated with this entry
-	FE_SWITCH_UPDATE_IN_PROGRESS,	// Switch update in progress
-	FE_SWITCH_UPDATED,		// Switch updated with this entry
-	FE_SWITCH_UPDATE_FAILED	// Error updating the switch with this entry
-}
-
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The class representing the Flow Entry.
@@ -35,12 +23,17 @@ enum FlowEntrySwitchState {
  * support multiple in-ports and multiple out-ports.
  */
 public class FlowEntry {
+    private FlowId flowId;			// FlowID of flowEntry
     private FlowEntryId flowEntryId;		// The Flow Entry ID
     private FlowEntryMatch flowEntryMatch;	// The Flow Entry Match
-    private FlowEntryActions flowEntryActions;	// The Flow Entry Actions
+    private ArrayList<FlowEntryAction> flowEntryActions; // The Flow Entry Actions
     private Dpid dpid;				// The Switch DPID
-    private Port inPort;			// The Switch incoming port
-    private Port outPort;			// The Switch outgoing port
+    private Port inPort;		// The Switch incoming port. Used only
+					// when the entry is used to return
+					// Shortest Path computation.
+    private Port outPort;		// The Switch outgoing port. Used only
+					// when the entry is used to return
+					// Shortest Path computation.
     private FlowEntryUserState flowEntryUserState; // The Flow Entry User state
     private FlowEntrySwitchState flowEntrySwitchState; // The Flow Entry Switch state
     // The Flow Entry Error state (if FlowEntrySwitchState is FE_SWITCH_FAILED)
@@ -50,8 +43,103 @@ public class FlowEntry {
      * Default constructor.
      */
     public FlowEntry() {
+	// TODO: Test code
+	/*
+	MACAddress mac = MACAddress.valueOf("01:02:03:04:05:06");
+	IPv4 ipv4 = new IPv4("1.2.3.4");
+	IPv4Net ipv4net = new IPv4Net("5.6.7.0/24");
+
+	flowEntryMatch = new FlowEntryMatch();
+	flowEntryMatch.enableInPort(new Port((short)10));
+	flowEntryMatch.enableSrcMac(mac);
+	flowEntryMatch.enableDstMac(mac);
+	flowEntryMatch.enableVlanId((short)20);
+	flowEntryMatch.enableVlanPriority((byte)30);
+	flowEntryMatch.enableEthernetFrameType((short)40);
+	flowEntryMatch.enableIpToS((byte)50);
+	flowEntryMatch.enableIpProto((byte)60);
+	flowEntryMatch.enableSrcIPv4Net(ipv4net);
+	flowEntryMatch.enableDstIPv4Net(ipv4net);
+	flowEntryMatch.enableSrcTcpUdpPort((short)70);
+	flowEntryMatch.enableDstTcpUdpPort((short)80);
+
+	FlowEntryAction action = null;
+	ArrayList<FlowEntryAction> actions = new ArrayList<FlowEntryAction>();
+
+	action = new FlowEntryAction();
+	action.setActionOutput(new Port((short)12));
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionOutputToController((short)13);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetVlanId((short)14);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetVlanPriority((byte)15);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionStripVlan(true);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetEthernetSrcAddr(mac);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetEthernetDstAddr(mac);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetIPv4SrcAddr(ipv4);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetIPv4DstAddr(ipv4);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetIpToS((byte)16);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetTcpUdpSrcPort((short)17);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionSetTcpUdpDstPort((short)18);
+	actions.add(action);
+
+	action = new FlowEntryAction();
+	action.setActionEnqueue(new Port((short)19), 20);
+	actions.add(action);
+
+	setFlowEntryActions(actions);
+	*/
+
+
 	flowEntryUserState = FlowEntryUserState.FE_USER_UNKNOWN;
 	flowEntrySwitchState = FlowEntrySwitchState.FE_SWITCH_UNKNOWN;
+    }
+
+    /**
+     * Get the Flow ID.
+     * @return the Flow ID.
+     */
+    @JsonIgnore
+    public FlowId getFlowId() { return flowId; }
+
+    /**
+     * Set the Flow ID.
+     *
+     * @param flowId the Flow ID to set.
+     */
+    public void setFlowId(FlowId flowId) {
+	this.flowId = flowId;
     }
 
     /**
@@ -59,6 +147,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry ID.
      */
+    @JsonProperty("flowEntryId")
     public FlowEntryId flowEntryId() { return flowEntryId; }
 
     /**
@@ -66,6 +155,7 @@ public class FlowEntry {
      *
      * @param flowEntryId the Flow Entry ID to set.
      */
+    @JsonProperty("flowEntryId")
     public void setFlowEntryId(FlowEntryId flowEntryId) {
 	this.flowEntryId = flowEntryId;
     }
@@ -75,6 +165,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Match.
      */
+    @JsonProperty("flowEntryMatch")
     public FlowEntryMatch flowEntryMatch() { return flowEntryMatch; }
 
     /**
@@ -82,6 +173,7 @@ public class FlowEntry {
      *
      * @param flowEntryMatch the Flow Entry Match to set.
      */
+    @JsonProperty("flowEntryMatch")
     public void setFlowEntryMatch(FlowEntryMatch flowEntryMatch) {
 	this.flowEntryMatch = flowEntryMatch;
     }
@@ -91,14 +183,18 @@ public class FlowEntry {
      *
      * @return the Flow Entry Actions.
      */
-    public FlowEntryActions flowEntryActions() { return flowEntryActions; }
+    @JsonProperty("flowEntryActions")
+    public ArrayList<FlowEntryAction> flowEntryActions() {
+	return flowEntryActions;
+    }
 
     /**
      * Set the Flow Entry Actions.
      *
      * @param flowEntryActions the Flow Entry Actions to set.
      */
-    public void setFlowEntryActions(FlowEntryActions flowEntryActions) {
+    @JsonProperty("flowEntryActions")
+    public void setFlowEntryActions(ArrayList<FlowEntryAction> flowEntryActions) {
 	this.flowEntryActions = flowEntryActions;
     }
 
@@ -107,6 +203,7 @@ public class FlowEntry {
      *
      * @return the Switch DPID.
      */
+    @JsonProperty("dpid")
     public Dpid dpid() { return dpid; }
 
     /**
@@ -114,6 +211,7 @@ public class FlowEntry {
      *
      * @param dpid the Switch DPID to set.
      */
+    @JsonProperty("dpid")
     public void setDpid(Dpid dpid) {
 	this.dpid = dpid;
     }
@@ -121,15 +219,21 @@ public class FlowEntry {
     /**
      * Get the Switch incoming port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @return the Switch incoming port.
      */
+    @JsonProperty("inPort")
     public Port inPort() { return inPort; }
 
     /**
      * Set the Switch incoming port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @param inPort the Switch incoming port to set.
      */
+    @JsonProperty("inPort")
     public void setInPort(Port inPort) {
 	this.inPort = inPort;
     }
@@ -137,15 +241,21 @@ public class FlowEntry {
     /**
      * Get the Switch outgoing port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @return the Switch outgoing port.
      */
+    @JsonProperty("outPort")
     public Port outPort() { return outPort; }
 
     /**
      * Set the Switch outgoing port.
      *
+     * Used only when the entry is used to return Shortest Path computation.
+     *
      * @param outPort the Switch outgoing port to set.
      */
+    @JsonProperty("outPort")
     public void setOutPort(Port outPort) {
 	this.outPort = outPort;
     }
@@ -155,6 +265,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry User state.
      */
+    @JsonProperty("flowEntryUserState")
     public FlowEntryUserState flowEntryUserState() {
 	return flowEntryUserState;
     }
@@ -164,6 +275,7 @@ public class FlowEntry {
      *
      * @param flowEntryUserState the Flow Entry User state to set.
      */
+    @JsonProperty("flowEntryUserState")
     public void setFlowEntryUserState(FlowEntryUserState flowEntryUserState) {
 	this.flowEntryUserState = flowEntryUserState;
     }
@@ -176,6 +288,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Switch state.
      */
+    @JsonProperty("flowEntrySwitchState")
     public FlowEntrySwitchState flowEntrySwitchState() {
 	return flowEntrySwitchState;
     }
@@ -188,6 +301,7 @@ public class FlowEntry {
      *
      * @param flowEntrySwitchState the Flow Entry Switch state to set.
      */
+    @JsonProperty("flowEntrySwitchState")
     public void setFlowEntrySwitchState(FlowEntrySwitchState flowEntrySwitchState) {
 	this.flowEntrySwitchState = flowEntrySwitchState;
     }
@@ -197,6 +311,7 @@ public class FlowEntry {
      *
      * @return the Flow Entry Error state.
      */
+    @JsonProperty("flowEntryErrorState")
     public FlowEntryErrorState flowEntryErrorState() {
 	return flowEntryErrorState;
     }
@@ -206,6 +321,7 @@ public class FlowEntry {
      *
      * @param flowEntryErrorState the Flow Entry Error state to set.
      */
+    @JsonProperty("flowEntryErrorState")
     public void setFlowEntryErrorState(FlowEntryErrorState flowEntryErrorState) {
 	this.flowEntryErrorState = flowEntryErrorState;
     }
@@ -213,12 +329,28 @@ public class FlowEntry {
     /**
      * Convert the flow entry to a string.
      *
+     * The string has the following form:
+     *  [flowEntryId=XXX flowEntryMatch=XXX flowEntryAction=XXX
+     *   flowEntryAction=XXX flowEntryAction=XXX dpid=XXX
+     *   inPort=XXX outPort=XXX flowEntryUserState=XXX flowEntrySwitchState=XXX
+     *   flowEntryErrorState=XXX]
      * @return the flow entry as a string.
      */
     @Override
     public String toString() {
-	String ret = "";
-	// TODO: Implement it!
+	String ret = "[flowEntryId=" + this.flowEntryId.toString();
+	ret += " flowEntryMatch=" + this.flowEntryMatch.toString();
+	for (FlowEntryAction fa : flowEntryActions) {
+	    ret += " flowEntryAction=" + fa.toString();
+	}
+	ret += " dpid=" + this.dpid.toString();
+	ret += " inPort=" + this.inPort.toString();
+	ret += " outPort=" + this.outPort.toString();
+	ret += " flowEntryUserState=" + this.flowEntryUserState;
+	ret += " flowEntrySwitchState=" + this.flowEntrySwitchState;
+	ret += " flowEntryErrorState=" + this.flowEntryErrorState.toString();
+	ret += "]";
+
 	return ret;
     }
 }

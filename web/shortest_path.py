@@ -20,7 +20,7 @@ from flask import Flask, json, Response, render_template, make_response, request
 ControllerIP="127.0.0.1"
 ControllerPort=8080
 
-DEBUG=0
+DEBUG=1
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
@@ -34,26 +34,45 @@ def debug(txt):
     print '%s' % (txt)
 
 # @app.route("/wm/topology/route/<srcdpid>/<srcport>/<destdpid>/<destport>/json")
+#
+# Sample output:
+# {'dstPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:02'}}, 'srcPort': {'port': {'value': 0}, 'dpid': {'value': '00:00:00:00:00:00:00:01'}}, 'flowEntries': [{'outPort': {'value': 1}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 0}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:01'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}, {'outPort': {'value': 0}, 'flowEntryErrorState': None, 'flowEntryMatch': None, 'flowEntryActions': None, 'inPort': {'value': 9}, 'flowEntryId': None, 'flowEntryUserState': 'FE_USER_UNKNOWN', 'dpid': {'value': '00:00:00:00:00:00:00:02'}, 'flowEntrySwitchState': 'FE_SWITCH_UNKNOWN'}]}
+#
 def shortest_path(v1, p1, v2, p2):
   try:
     command = "curl -s http://%s:%s/wm/topology/route/%s/%s/%s/%s/json" % (ControllerIP, ControllerPort, v1, p1, v2, p2)
+    debug("shortest_path %s" % command)
+
     result = os.popen(command).read()
+    debug("result %s" % result)
+
+    if len(result) == 0:
+	print "No Path found"
+	return;
+
     parsedResult = json.loads(result)
+    debug("parsed %s" % parsedResult)
   except:
     log_error("Controller IF has issue")
     exit(1)
 
-  debug("shortest_path %s" % command)
-  debug("parsed %s" % parsedResult)
+  srcSwitch = parsedResult['srcPort']['dpid']['value'];
+  srcPort = parsedResult['srcPort']['port']['value'];
+  dstSwitch = parsedResult['dstPort']['dpid']['value'];
+  dstPort = parsedResult['dstPort']['port']['value'];
 
-  for v in parsedResult:
-    dpid = v['switch'];
-    port = v['port'];
-    print "PathEntry: (%s, %s)" % (dpid, port)
+  print "DataPath: (src = %s/%s dst = %s/%s)" % (srcSwitch, srcPort, dstSwitch, dstPort);
+
+  for f in parsedResult['flowEntries']:
+    inPort = f['inPort']['value'];
+    outPort = f['outPort']['value'];
+    dpid = f['dpid']['value']
+    print "  FlowEntry: (%s, %s, %s)" % (inPort, dpid, outPort)
 
 
 if __name__ == "__main__":
-  usage_msg = "Usage: %s <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
+  usage_msg = "Compute the shortest path between two switch ports in the Network MAP\n"
+  usage_msg = usage_msg + "Usage: %s <src-dpid> <src-port> <dest-dpid> <dest-port>" % (sys.argv[0])
 
   # app.debug = False;
 
