@@ -18,6 +18,7 @@ package org.esigate.events.impl;
 import java.util.List;
 
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.esigate.Renderer;
 import org.esigate.events.Event;
 
@@ -32,4 +33,9 @@ public class RenderEvent extends Event {
 	public List<Renderer> renderers;
 	public String remoteUrl;
 	public HttpRequest originalRequest;
+	
+	/**
+	 * The response from backend, including headers.
+	 */
+	public HttpResponse httpResponse;
 }
