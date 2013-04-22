@@ -42,6 +42,9 @@ public abstract class ComparableType<T extends ComparableType> implements Compar
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
         if (this == obj) {
             return true;
         }

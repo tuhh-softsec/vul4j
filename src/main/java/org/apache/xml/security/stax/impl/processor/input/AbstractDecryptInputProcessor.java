@@ -374,10 +374,9 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     private InboundSecurityToken getSecurityToken(InputProcessorChain inputProcessorChain,
                                            XMLSecStartElement xmlSecStartElement,
                                            EncryptedDataType encryptedDataType) throws XMLSecurityException {
-        KeyInfoType keyInfoType;
-        if (this.keyInfoType != null) {
-            keyInfoType = this.keyInfoType;
-        } else {
+
+        KeyInfoType keyInfoType = this.keyInfoType;
+        if (keyInfoType == null) {
             keyInfoType = encryptedDataType.getKeyInfo();
         }
 
