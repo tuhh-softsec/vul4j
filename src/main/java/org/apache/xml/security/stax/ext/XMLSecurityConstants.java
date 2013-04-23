@@ -52,6 +52,7 @@ public class XMLSecurityConstants {
 
     public static final DatatypeFactory datatypeFactory;
     public static final XMLOutputFactory xmlOutputFactory;
+    public static final XMLOutputFactory xmlOutputFactoryNonRepairingNs;
 
     static {
         try {
@@ -67,7 +68,10 @@ public class XMLSecurityConstants {
         }
 
         xmlOutputFactory = XMLOutputFactory.newInstance();
-        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
+        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+
+        xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
+        xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
 
         try {
             setJaxbContext(

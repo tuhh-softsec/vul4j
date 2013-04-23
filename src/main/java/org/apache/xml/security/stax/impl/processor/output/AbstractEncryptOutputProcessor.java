@@ -142,7 +142,9 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
                 //we create a new StAX writer for optimized namespace writing.
                 //spec says (4.2): "The cleartext octet sequence obtained in step 3 is interpreted as UTF-8 encoded character data."
-                xmlEventWriter = new XMLSecurityEventWriter(XMLSecurityConstants.xmlOutputFactory.createXMLStreamWriter(cipherOutputStream, "UTF-8"));
+                xmlEventWriter = new XMLSecurityEventWriter(
+                        XMLSecurityConstants.xmlOutputFactoryNonRepairingNs.createXMLStreamWriter(
+                                cipherOutputStream, "UTF-8"));
                 //we have to output a fake element to workaround text-only encryption:
                 xmlEventWriter.add(wrapperStartElement);
             } catch (NoSuchPaddingException e) {

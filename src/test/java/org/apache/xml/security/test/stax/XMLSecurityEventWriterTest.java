@@ -18,12 +18,18 @@
  */
 package org.apache.xml.security.test.stax;
 
+import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.stax.XMLSecEventFactory;
+import org.apache.xml.security.stax.impl.stax.XMLSecEndElementImpl;
+import org.apache.xml.security.stax.impl.stax.XMLSecNamespaceImpl;
+import org.apache.xml.security.stax.impl.stax.XMLSecStartElementImpl;
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.apache.xml.security.stax.impl.XMLSecurityEventWriter;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
 import java.io.StringWriter;
@@ -59,5 +65,28 @@ public class XMLSecurityEventWriterTest extends org.junit.Assert {
         xmlSecurityEventWriter.close();
         stdXmlEventWriter.close();
         XMLAssert.assertXMLEqual(stdStringWriter.toString(), secStringWriter.toString());
+    }
+
+    //@see WSS-437
+    @Test
+    public void testNamespaces() throws Exception {
+        StringWriter stringWriter = new StringWriter();
+        XMLStreamWriter xmlStreamWriter = XMLSecurityConstants.xmlOutputFactory.createXMLStreamWriter(stringWriter);
+        XMLEventWriter xmlEventWriter = new XMLSecurityEventWriter(xmlStreamWriter);
+        xmlEventWriter.add(new XMLSecStartElementImpl(new QName("http://ns1", "a", "ns1"), null, null));
+        xmlEventWriter.add(XMLSecNamespaceImpl.getInstance("ns1", "http://ns1"));
+        xmlEventWriter.add(new XMLSecStartElementImpl(new QName("http://ns2", "b", ""), null, null));
+        xmlEventWriter.add(XMLSecNamespaceImpl.getInstance("", "http://ns2"));
+        xmlEventWriter.add(new XMLSecEndElementImpl(new QName("http://ns2", "b", ""), null));
+        xmlEventWriter.add(new XMLSecStartElementImpl(new QName("http://ns3", "c", ""), null, null));
+        xmlEventWriter.close();
+
+        Assert.assertEquals(
+                "<ns1:a xmlns:ns1=\"http://ns1\">" +
+                        "<b xmlns=\"http://ns2\"/>" +
+                        "<c xmlns=\"http://ns3\">" +
+                        "</c>" +
+                        "</ns1:a>",
+                stringWriter.toString());
     }
 }
