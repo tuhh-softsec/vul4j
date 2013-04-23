@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.TransactionalGraph;
-import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
 import com.tinkerpop.frames.FramedGraph;
@@ -25,7 +24,7 @@ public class GraphDBConnection {
 	class TransactionHandle {
 		protected TransactionalGraph tr;
 		public void create() {
-			tr = graph.startTransaction();			
+			tr = graph.newTransaction();			
 		}
 	}
 	protected static Logger log = LoggerFactory.getLogger(GraphDBConnection.class);
@@ -72,7 +71,7 @@ public class GraphDBConnection {
 		        	graph.createKeyIndex("switch_state",
 						     Vertex.class);
 		        }
-		        graph.stopTransaction(Conclusion.SUCCESS);
+		        graph.commit();
 		        eg = new EventTransactionalGraph<TitanGraph>(graph);
 		   }		   
 		   if (utils == null) {
@@ -125,9 +124,9 @@ public class GraphDBConnection {
 		   try {
 			   switch (tx) {
 			   case COMMIT:
-				   graph.stopTransaction(Conclusion.SUCCESS);
+				   graph.commit();
 			   case ROLLBACK:
-				   graph.stopTransaction(Conclusion.FAILURE);
+				   graph.rollback();
 			   }
 		   } catch (Exception e) {
 			   // TODO Auto-generated catch block
@@ -139,15 +138,15 @@ public class GraphDBConnection {
 		   switch (tx) {
 		   case COMMIT:
 			   if (tr != null && tr.tr != null) {
-				   tr.tr.stopTransaction(Conclusion.SUCCESS);
+				   tr.tr.commit();
 			   } else {
-				   graph.stopTransaction(Conclusion.SUCCESS);
+				   graph.commit();
 			   }
 		   case ROLLBACK:
 			   if (tr != null && tr.tr != null) {
-				   tr.tr.stopTransaction(Conclusion.FAILURE);
+				   tr.tr.rollback();
 			   } else {
-				   graph.stopTransaction(Conclusion.FAILURE);
+				   graph.rollback();
 			   }
 		   }
 	   }   
@@ -158,9 +157,9 @@ public class GraphDBConnection {
 			if (fire.equals(GenerateEvent.TRUE)) {
 				   switch (tx) {
 				   case COMMIT:
-					   eg.stopTransaction(Conclusion.SUCCESS);
+					   eg.commit();
 				   case ROLLBACK:
-					   eg.stopTransaction(Conclusion.FAILURE);
+					   eg.rollback();
 				   }
 			   } else {
 					endTx(tx);   			   
@@ -173,7 +172,5 @@ public class GraphDBConnection {
 	   
 	   public void close() {
 		   endTx(Transaction.COMMIT);
-//		   graph.shutdown();
-	   }
-	   
+	   }	   
 }
