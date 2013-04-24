@@ -71,6 +71,7 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                     InternalSignatureOutputProcessor internalSignatureOutputProcessor = null;
 
                     SignaturePartDef signaturePartDef = new SignaturePartDef();
+                    signaturePartDef.setSecurePart(securePart);
                     signaturePartDef.setTransforms(securePart.getTransforms());
                     signaturePartDef.setExcludeVisibleC14Nprefixes(true);
                     String digestMethod = securePart.getDigestMethod();

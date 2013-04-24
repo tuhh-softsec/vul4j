@@ -30,10 +30,19 @@ import java.security.Key;
  */
 public class EncryptionPartDef {
 
+    private SecurePart securePart;
     private SecurePart.Modifier modifier;
     private Key symmetricKey;
     private String keyId;
     private String encRefId;
+
+    public SecurePart getSecurePart() {
+        return securePart;
+    }
+
+    public void setSecurePart(SecurePart securePart) {
+        this.securePart = securePart;
+    }
 
     public SecurePart.Modifier getModifier() {
         return modifier;

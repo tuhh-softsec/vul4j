@@ -68,6 +68,9 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
     @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+
+        List<SignaturePartDef> signaturePartDefs = getSignaturePartDefList();
+
         Map<Object, SecurePart> dynamicSecureParts = outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.SIGNATURE_PARTS);
         Iterator<Map.Entry<Object, SecurePart>> securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
         while (securePartsMapIterator.hasNext()) {
@@ -81,6 +84,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                 InputStream inputStream = resourceResolver.getInputStreamFromExternalReference();
 
                 SignaturePartDef signaturePartDef = new SignaturePartDef();
+                signaturePartDef.setSecurePart(securePart);
                 signaturePartDef.setSigRefId(externalReference);
                 signaturePartDef.setExternalResource(true);
                 signaturePartDef.setTransforms(securePart.getTransforms());
@@ -89,7 +93,7 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
                     digestMethod = getSecurityProperties().getSignatureDigestAlgorithm();
                 }
                 signaturePartDef.setDigestAlgo(digestMethod);
-                getSignaturePartDefList().add(signaturePartDef);
+                signaturePartDefs.add(signaturePartDef);
 
                 try {
                     if (securePart.getTransforms() != null) {
@@ -112,6 +116,22 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
                 signaturePartDef.setDigestValue(calculatedDigest);
             }
+        }
+
+        securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
+        loop:
+        while (securePartsMapIterator.hasNext()) {
+            Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
+            final SecurePart securePart = securePartEntry.getValue();
+
+            for (int i = 0; i < signaturePartDefs.size(); i++) {
+                SignaturePartDef signaturePartDef = signaturePartDefs.get(i);
+
+                if (signaturePartDef.getSecurePart() == securePart) {
+                    continue loop;
+                }
+            }
+            throw new XMLSecurityException("stax.signature.securePartNotFound", securePart.getName());
         }
 
         super.doFinal(outputProcessorChain);

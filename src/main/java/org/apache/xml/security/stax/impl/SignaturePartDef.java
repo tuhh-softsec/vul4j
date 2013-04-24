@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.stax.impl;
 
+import org.apache.xml.security.stax.ext.SecurePart;
+
 /**
  * SignaturePartDef holds information about parts to be signed
  *
@@ -26,6 +28,7 @@ package org.apache.xml.security.stax.impl;
  */
 public class SignaturePartDef {
 
+    private SecurePart securePart;
     private String sigRefId;
     private String digestValue;
     private String[] transforms;
@@ -34,6 +37,14 @@ public class SignaturePartDef {
     private boolean excludeVisibleC14Nprefixes;
     private boolean externalResource;
     private boolean generateXPointer;
+
+    public SecurePart getSecurePart() {
+        return securePart;
+    }
+
+    public void setSecurePart(SecurePart securePart) {
+        this.securePart = securePart;
+    }
 
     public String getSigRefId() {
         return sigRefId;

@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.test.stax.signature;
 
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 import org.apache.xml.security.test.stax.utils.XmlReaderToWriter;
@@ -31,6 +32,7 @@ import org.w3c.dom.NodeList;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayInputStream;
@@ -98,6 +100,48 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         
         // Verify using DOM
         verifyUsingDOM(document, cert, properties.getSignatureSecureParts());
+    }
+
+    @Test
+    public void testExceptionOnElementToSignNotFound() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions =
+                new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
+        properties.setOutAction(actions);
+
+        // Set the key up
+        KeyStore keyStore = KeyStore.getInstance("jks");
+        keyStore.load(
+                this.getClass().getClassLoader().getResource("transmitter.jks").openStream(),
+                "default".toCharArray()
+        );
+        Key key = keyStore.getKey("transmitter", "default".toCharArray());
+        properties.setSignatureKey(key);
+        X509Certificate cert = (X509Certificate)keyStore.getCertificate("transmitter");
+        properties.setSignatureCerts(new X509Certificate[]{cert});
+
+        SecurePart securePart =
+                new SecurePart(new QName("urn:example:po", "NotExistingElement"), SecurePart.Modifier.Content);
+        properties.addSignaturePart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        try {
+            XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+            xmlStreamWriter.close();
+            Assert.fail("Exception expected");
+        } catch (XMLStreamException e) {
+            Assert.assertTrue(e.getCause() instanceof XMLSecurityException);
+            Assert.assertEquals("Part to sign not found: {urn:example:po}NotExistingElement", e.getCause().getMessage());
+        }
     }
 
     @Test

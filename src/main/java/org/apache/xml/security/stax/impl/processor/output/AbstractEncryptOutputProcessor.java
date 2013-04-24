@@ -23,6 +23,7 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
 import org.apache.xml.security.stax.ext.OutputProcessorChain;
+import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.stax.*;
 import org.apache.xml.security.stax.impl.EncryptionPartDef;
@@ -69,6 +70,32 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
     @Override
     public abstract void processEvent(XMLSecEvent xmlSecEvent, OutputProcessorChain outputProcessorChain)
             throws XMLStreamException, XMLSecurityException;
+
+    @Override
+    public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+
+        List<EncryptionPartDef> encryptionPartDefs =
+                outputProcessorChain.getSecurityContext().getAsList(EncryptionPartDef.class);
+
+        Map<Object, SecurePart> dynamicSecureParts = outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.ENCRYPTION_PARTS);
+        Iterator<Map.Entry<Object, SecurePart>> securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
+        loop:
+        while (securePartsMapIterator.hasNext()) {
+            Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
+            final SecurePart securePart = securePartEntry.getValue();
+
+            for (int i = 0; encryptionPartDefs != null && i < encryptionPartDefs.size(); i++) {
+                EncryptionPartDef encryptionPartDef = encryptionPartDefs.get(i);
+
+                if (encryptionPartDef.getSecurePart() == securePart) {
+                    continue loop;
+                }
+            }
+            throw new XMLSecurityException("stax.encryption.securePartNotFound", securePart.getName());
+        }
+
+        super.doFinal(outputProcessorChain);
+    }
 
     protected AbstractInternalEncryptionOutputProcessor getActiveInternalEncryptionOutputProcessor() {
         return activeInternalEncryptionOutputProcessor;

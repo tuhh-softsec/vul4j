@@ -76,6 +76,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                     final OutboundSecurityToken securityToken = securityTokenProvider.getSecurityToken();
 
                     EncryptionPartDef encryptionPartDef = new EncryptionPartDef();
+                    encryptionPartDef.setSecurePart(securePart);
                     encryptionPartDef.setModifier(securePart.getModifier());
                     encryptionPartDef.setEncRefId(IDGenerator.generateID(null));
                     encryptionPartDef.setKeyId(securityTokenProvider.getId());

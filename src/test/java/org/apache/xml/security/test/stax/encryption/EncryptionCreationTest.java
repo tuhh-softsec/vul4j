@@ -35,10 +35,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.OutboundXMLSec;
 import org.apache.xml.security.stax.ext.SecurePart;
 import org.apache.xml.security.stax.ext.XMLSec;
@@ -133,6 +135,42 @@ public class EncryptionCreationTest extends org.junit.Assert {
         // Check the CreditCard decrypted ok
         nodeList = doc.getElementsByTagNameNS("urn:example:po", "CreditCard");
         Assert.assertEquals(nodeList.getLength(), 1);
+    }
+
+    @Test
+    public void testExceptionOnElementToEncryptNotFound() throws Exception {
+        // Set up the Configuration
+        XMLSecurityProperties properties = new XMLSecurityProperties();
+        XMLSecurityConstants.Action[] actions =
+                new XMLSecurityConstants.Action[]{XMLSecurityConstants.ENCRYPT};
+        properties.setOutAction(actions);
+
+        // Set the key up
+        SecretKey key = generateDESSecretKey();
+        properties.setEncryptionKey(key);
+        properties.setEncryptionSymAlgorithm("http://www.w3.org/2001/04/xmlenc#tripledes-cbc");
+
+        SecurePart securePart =
+                new SecurePart(new QName("urn:example:po", "NotExistingElement"), SecurePart.Modifier.Content);
+        properties.addEncryptionPart(securePart);
+
+        OutboundXMLSec outboundXMLSec = XMLSec.getOutboundXMLSec(properties);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLStreamWriter xmlStreamWriter = outboundXMLSec.processOutMessage(baos, "UTF-8");
+
+        InputStream sourceDocument =
+                this.getClass().getClassLoader().getResourceAsStream(
+                        "ie/baltimore/merlin-examples/merlin-xmlenc-five/plaintext.xml");
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(sourceDocument);
+
+        try {
+            XmlReaderToWriter.writeAll(xmlStreamReader, xmlStreamWriter);
+            xmlStreamWriter.close();
+            Assert.fail("Exception expected");
+        } catch (XMLStreamException e) {
+            Assert.assertTrue(e.getCause() instanceof XMLSecurityException);
+            Assert.assertEquals("Part to encrypt not found: {urn:example:po}NotExistingElement", e.getCause().getMessage());
+        }
     }
     
     @Test
