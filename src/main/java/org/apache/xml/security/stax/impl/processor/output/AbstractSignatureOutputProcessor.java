@@ -68,7 +68,11 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
 
     @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        doFinalInternal(outputProcessorChain);
+        super.doFinal(outputProcessorChain);
+    }
 
+    protected void doFinalInternal(OutputProcessorChain outputProcessorChain) throws XMLSecurityException, XMLStreamException {
         List<SignaturePartDef> signaturePartDefs = getSignaturePartDefList();
 
         Map<Object, SecurePart> dynamicSecureParts = outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.SIGNATURE_PARTS);
@@ -118,7 +122,13 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             }
         }
 
-        securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
+        verifySignatureParts(outputProcessorChain);
+    }
+
+    protected void verifySignatureParts(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
+        List<SignaturePartDef> signaturePartDefs = getSignaturePartDefList();
+        Map<Object, SecurePart> dynamicSecureParts = outputProcessorChain.getSecurityContext().getAsMap(XMLSecurityConstants.SIGNATURE_PARTS);
+        Iterator<Map.Entry<Object, SecurePart>> securePartsMapIterator = dynamicSecureParts.entrySet().iterator();
         loop:
         while (securePartsMapIterator.hasNext()) {
             Map.Entry<Object, SecurePart> securePartEntry = securePartsMapIterator.next();
@@ -133,8 +143,6 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
             }
             throw new XMLSecurityException("stax.signature.securePartNotFound", securePart.getName());
         }
-
-        super.doFinal(outputProcessorChain);
     }
 
     protected InternalSignatureOutputProcessor getActiveInternalSignatureOutputProcessor() {

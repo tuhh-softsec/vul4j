@@ -73,7 +73,15 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
 
     @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
+        doFinalInternal(outputProcessorChain);
+        super.doFinal(outputProcessorChain);
+    }
 
+    protected void doFinalInternal(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
+        verifyEncryptionParts(outputProcessorChain);
+    }
+
+    protected void verifyEncryptionParts(OutputProcessorChain outputProcessorChain) throws XMLSecurityException {
         List<EncryptionPartDef> encryptionPartDefs =
                 outputProcessorChain.getSecurityContext().getAsList(EncryptionPartDef.class);
 
@@ -93,8 +101,6 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
             }
             throw new XMLSecurityException("stax.encryption.securePartNotFound", securePart.getName());
         }
-
-        super.doFinal(outputProcessorChain);
     }
 
     protected AbstractInternalEncryptionOutputProcessor getActiveInternalEncryptionOutputProcessor() {
