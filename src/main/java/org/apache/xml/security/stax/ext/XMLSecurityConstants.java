@@ -289,8 +289,8 @@ public class XMLSecurityConstants {
     public static final String SIGNATURE_PARTS = "signatureParts";
     public static final String ENCRYPTION_PARTS = "encryptionParts";
 
-    public static final Action SIGNATURE = new Action("SIGNATURE");
-    public static final Action ENCRYPT = new Action("ENCRYPT");
+    public static final Action SIGNATURE = new Action("Signature");
+    public static final Action ENCRYPT = new Action("Encrypt");
 
     public static class Action extends ComparableType<Action> {
         public Action(String name) {
