@@ -29,11 +29,10 @@ public class LProbeRESTService {
    private Logger log;
 
    @GET
-   @Produces("text/plain")
-   public String listAllMembers() {
+   @Produces("text/json")
+   public List<LProbe> listAllMembers() {
       final List<LProbe> result = repository.findAll();
-      System.out.println(result);
-      return "Probenliste";
+      return result;
    }
 
    @GET
