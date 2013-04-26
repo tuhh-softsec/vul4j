@@ -3,6 +3,7 @@ package de.intevation.model;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -13,74 +14,36 @@ import java.sql.Timestamp;
 @Table(name="l_probe")
 public class LProbe implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name="probe_id")
 	private String probeId;
-
-	@Column(name="ba_id")
 	private String baId;
-
-	@Column(name="datenbasis_id")
 	private Integer datenbasisId;
-
-	@Column(name="erzeuger_id")
 	private Integer erzeugerId;
-
-	@Column(name="hauptproben_nr")
 	private String hauptprobenNr;
-
-	@Column(name="letzte_aenderung")
 	private Timestamp letzteAenderung;
-
 	private String media;
-
-	@Column(name="media_desk")
 	private String mediaDesk;
-
 	private Long mittelungsdauer;
-
-	@Column(name="mp_kat")
 	private String mpKat;
-
-	@Column(name="mpl_id")
 	private String mplId;
-
-	@Column(name="mpr_id")
 	private Integer mprId;
-
-	@Column(name="mst_id")
 	private String mstId;
-
-	@Column(name="netzbetreiber_id")
 	private String netzbetreiberId;
-
-	@Column(name="probe_nehmer_id")
 	private Integer probeNehmerId;
-
-	@Column(name="probeentnahme_beginn")
 	private Timestamp probeentnahmeBeginn;
-
-	@Column(name="probeentnahme_ende")
 	private Timestamp probeentnahmeEnde;
-
-	@Column(name="probenart_id")
 	private Integer probenartId;
-
-	@Column(name="solldatum_beginn")
 	private Timestamp solldatumBeginn;
-
-	@Column(name="solldatum_ende")
 	private Timestamp solldatumEnde;
-
 	private Boolean test;
-
-	@Column(name="umw_id")
 	private String umwId;
+	private List<LKommentarP> LKommentarPs;
 
 	public LProbe() {
 	}
 
+
+	@Id
+	@Column(name="probe_id")
 	public String getProbeId() {
 		return this.probeId;
 	}
@@ -89,6 +52,8 @@ public class LProbe implements Serializable {
 		this.probeId = probeId;
 	}
 
+
+	@Column(name="ba_id")
 	public String getBaId() {
 		return this.baId;
 	}
@@ -97,6 +62,8 @@ public class LProbe implements Serializable {
 		this.baId = baId;
 	}
 
+
+	@Column(name="datenbasis_id")
 	public Integer getDatenbasisId() {
 		return this.datenbasisId;
 	}
@@ -105,6 +72,8 @@ public class LProbe implements Serializable {
 		this.datenbasisId = datenbasisId;
 	}
 
+
+	@Column(name="erzeuger_id")
 	public Integer getErzeugerId() {
 		return this.erzeugerId;
 	}
@@ -113,6 +82,8 @@ public class LProbe implements Serializable {
 		this.erzeugerId = erzeugerId;
 	}
 
+
+	@Column(name="hauptproben_nr")
 	public String getHauptprobenNr() {
 		return this.hauptprobenNr;
 	}
@@ -121,6 +92,8 @@ public class LProbe implements Serializable {
 		this.hauptprobenNr = hauptprobenNr;
 	}
 
+
+	@Column(name="letzte_aenderung")
 	public Timestamp getLetzteAenderung() {
 		return this.letzteAenderung;
 	}
@@ -128,6 +101,7 @@ public class LProbe implements Serializable {
 	public void setLetzteAenderung(Timestamp letzteAenderung) {
 		this.letzteAenderung = letzteAenderung;
 	}
+
 
 	public String getMedia() {
 		return this.media;
@@ -137,6 +111,8 @@ public class LProbe implements Serializable {
 		this.media = media;
 	}
 
+
+	@Column(name="media_desk")
 	public String getMediaDesk() {
 		return this.mediaDesk;
 	}
@@ -144,6 +120,7 @@ public class LProbe implements Serializable {
 	public void setMediaDesk(String mediaDesk) {
 		this.mediaDesk = mediaDesk;
 	}
+
 
 	public Long getMittelungsdauer() {
 		return this.mittelungsdauer;
@@ -153,6 +130,8 @@ public class LProbe implements Serializable {
 		this.mittelungsdauer = mittelungsdauer;
 	}
 
+
+	@Column(name="mp_kat")
 	public String getMpKat() {
 		return this.mpKat;
 	}
@@ -161,6 +140,8 @@ public class LProbe implements Serializable {
 		this.mpKat = mpKat;
 	}
 
+
+	@Column(name="mpl_id")
 	public String getMplId() {
 		return this.mplId;
 	}
@@ -169,6 +150,8 @@ public class LProbe implements Serializable {
 		this.mplId = mplId;
 	}
 
+
+	@Column(name="mpr_id")
 	public Integer getMprId() {
 		return this.mprId;
 	}
@@ -177,6 +160,8 @@ public class LProbe implements Serializable {
 		this.mprId = mprId;
 	}
 
+
+	@Column(name="mst_id")
 	public String getMstId() {
 		return this.mstId;
 	}
@@ -185,6 +170,8 @@ public class LProbe implements Serializable {
 		this.mstId = mstId;
 	}
 
+
+	@Column(name="netzbetreiber_id")
 	public String getNetzbetreiberId() {
 		return this.netzbetreiberId;
 	}
@@ -193,6 +180,8 @@ public class LProbe implements Serializable {
 		this.netzbetreiberId = netzbetreiberId;
 	}
 
+
+	@Column(name="probe_nehmer_id")
 	public Integer getProbeNehmerId() {
 		return this.probeNehmerId;
 	}
@@ -201,6 +190,8 @@ public class LProbe implements Serializable {
 		this.probeNehmerId = probeNehmerId;
 	}
 
+
+	@Column(name="probeentnahme_beginn")
 	public Timestamp getProbeentnahmeBeginn() {
 		return this.probeentnahmeBeginn;
 	}
@@ -209,6 +200,8 @@ public class LProbe implements Serializable {
 		this.probeentnahmeBeginn = probeentnahmeBeginn;
 	}
 
+
+	@Column(name="probeentnahme_ende")
 	public Timestamp getProbeentnahmeEnde() {
 		return this.probeentnahmeEnde;
 	}
@@ -217,6 +210,8 @@ public class LProbe implements Serializable {
 		this.probeentnahmeEnde = probeentnahmeEnde;
 	}
 
+
+	@Column(name="probenart_id")
 	public Integer getProbenartId() {
 		return this.probenartId;
 	}
@@ -225,6 +220,8 @@ public class LProbe implements Serializable {
 		this.probenartId = probenartId;
 	}
 
+
+	@Column(name="solldatum_beginn")
 	public Timestamp getSolldatumBeginn() {
 		return this.solldatumBeginn;
 	}
@@ -233,6 +230,8 @@ public class LProbe implements Serializable {
 		this.solldatumBeginn = solldatumBeginn;
 	}
 
+
+	@Column(name="solldatum_ende")
 	public Timestamp getSolldatumEnde() {
 		return this.solldatumEnde;
 	}
@@ -240,6 +239,7 @@ public class LProbe implements Serializable {
 	public void setSolldatumEnde(Timestamp solldatumEnde) {
 		this.solldatumEnde = solldatumEnde;
 	}
+
 
 	public Boolean getTest() {
 		return this.test;
@@ -249,12 +249,39 @@ public class LProbe implements Serializable {
 		this.test = test;
 	}
 
+
+	@Column(name="umw_id")
 	public String getUmwId() {
 		return this.umwId;
 	}
 
 	public void setUmwId(String umwId) {
 		this.umwId = umwId;
+	}
+
+
+	//bi-directional many-to-one association to LKommentarP
+	@OneToMany(mappedBy="LProbe", cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+	public List<LKommentarP> getLKommentarPs() {
+		return this.LKommentarPs;
+	}
+
+	public void setLKommentarPs(List<LKommentarP> LKommentarPs) {
+		this.LKommentarPs = LKommentarPs;
+	}
+
+	public LKommentarP addLKommentarP(LKommentarP LKommentarP) {
+		getLKommentarPs().add(LKommentarP);
+		LKommentarP.setLProbe(this);
+
+		return LKommentarP;
+	}
+
+	public LKommentarP removeLKommentarP(LKommentarP LKommentarP) {
+		getLKommentarPs().remove(LKommentarP);
+		LKommentarP.setLProbe(null);
+
+		return LKommentarP;
 	}
 
 }
