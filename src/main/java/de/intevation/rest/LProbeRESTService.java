@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 
 import de.intevation.data.LProbeRepository;
 import de.intevation.model.LProbe;
+import de.intevation.service.LProbeService;
 
 /**
  * JAX-RS Example

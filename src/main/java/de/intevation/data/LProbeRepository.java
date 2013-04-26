@@ -16,6 +16,9 @@
  */
 package de.intevation.data;
 
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -25,12 +28,16 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 import de.intevation.model.LProbe;
+import de.intevation.service.LProbeService;
 
 @ApplicationScoped
 public class LProbeRepository {
 
     @Inject
     private EntityManager em;
+    
+    @Inject
+    private LProbeService service;
 
     public LProbe findById(Long id) {
         return em.find(LProbe.class, id);
@@ -38,7 +45,12 @@ public class LProbeRepository {
     
     
     public void delete(LProbe item) {
-        em.remove(item);
+    	try {
+			service.delete(item.getProbeId());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     //public LProbe findByEmail(String email) {
