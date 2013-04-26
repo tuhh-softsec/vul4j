@@ -41,7 +41,23 @@ public class LProbeRESTService {
    public String loadById() {
       return "Eine Probe!";
    }
+   
+   @GET
+   @Path("/deleteLast")
+   @Produces("text/plain")
+   public String deleteLast() {
+	   final List<LProbe> result = repository.findAll();
+	   LProbe last_element = result.get(result.size()-1);
+	   repository.delete(last_element);
+	   return "Gelöscht id" + last_element.getProbeId();
+   }
 
+   @GET
+   @Path("/new")
+   @Produces("text/plain")
+   public String create() {
+      return "Neu";
+   }
    //@GET
    //@Produces("text/xml")
    //public List<Member> listAllMembers() {

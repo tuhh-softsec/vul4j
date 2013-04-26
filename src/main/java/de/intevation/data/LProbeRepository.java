@@ -35,6 +35,11 @@ public class LProbeRepository {
     public LProbe findById(Long id) {
         return em.find(LProbe.class, id);
     }
+    
+    
+    public void delete(LProbe item) {
+        em.remove(item);
+    }
 
     //public LProbe findByEmail(String email) {
     //    CriteriaBuilder cb = em.getCriteriaBuilder();
