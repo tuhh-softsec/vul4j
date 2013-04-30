@@ -9,7 +9,6 @@
    	<class>de.intevation.model.LKommentarP</class>
    	<class>de.intevation.model.LKommentarPPK</class>
    	<class>de.intevation.model.LProbe</class>
-   	<class>de.intevation.model.PProbe</class>
       <!-- If you are running in a production environment, add a managed 
          data source, the example data source is just for development and testing! -->
       <properties>
