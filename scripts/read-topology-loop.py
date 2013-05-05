@@ -11,6 +11,7 @@ import sys
 import json
 import time
 import timeit
+from datetime import datetime
 
 host = "localhost"
 port = "9000"
@@ -30,14 +31,22 @@ def do_request():
     try:
         result = os.popen(command).read()
         parsedResult = json.loads(result)
+        return True
     except Exception as e:
-        print "Curl call failed: %s" % e
-        sys.exit(1)
+        print "Curl call failed at %s: %s" % (datetime.now(), e)
+        return False
         
-
 if __name__ == "__main__":
     while (True):
-        time_elapsed = timeit.timeit('do_request()', 'from __main__ import do_request', number=1)
-        output_file.write("%s%s" % (time_elapsed, os.linesep))
+        #time_elapsed = timeit.timeit('do_request()', 'from __main__ import do_request, last_call_successful', number=1)
+        start_time = time.time()
+        result = do_request()
+        end_time = time.time()
+
+        if result:
+            output_file.write("%s%s" % (end_time - start_time, os.linesep))
+        else:
+            output_file.write("%s%s" % (0, os.linesep))
+            
         output_file.flush()
         time.sleep(1)
