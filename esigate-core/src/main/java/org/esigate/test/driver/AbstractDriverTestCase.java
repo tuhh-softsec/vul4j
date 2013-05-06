@@ -102,7 +102,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	/**
 	 * Create a fluent-style builder for HttpResponse.
 	 * 
-	 * @return
+	 * @return a HttpResponseBuilder
 	 */
 	public static HttpResponseBuilder createHttpResponse() {
 		return new HttpResponseBuilder();
@@ -111,7 +111,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	/**
 	 * Create a fluent-style builder for HttpRequest.
 	 * 
-	 * @return
+	 * @return a HttpRequestBuilder
 	 */
 	public static HttpRequestBuilder createHttpRequest() {
 		return new HttpRequestBuilder();
@@ -126,7 +126,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
 	 * @param d
 	 * @param request
 	 *            Request must have been created with a mediator.
-	 * @return
+	 * @return the response
 	 * @throws IOException
 	 * @throws HttpErrorPage
 	 * @throws URISyntaxException
