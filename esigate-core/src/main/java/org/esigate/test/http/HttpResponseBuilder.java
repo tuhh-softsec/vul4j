@@ -34,58 +34,27 @@ public class HttpResponseBuilder {
 	List<Header> headers = new ArrayList<Header>();
 	HttpEntity entity = null;
 
-	/**
-	 * Set protocol version
-	 * 
-	 * @param paramProtocolVersion
-	 * @return
-	 */
 	public HttpResponseBuilder protocolVersion(
 			ProtocolVersion paramProtocolVersion) {
 		this.protocolVersion = paramProtocolVersion;
 		return this;
 	}
 
-	/**
-	 * Set status
-	 * 
-	 * @param paramStatus
-	 * @return
-	 */
 	public HttpResponseBuilder status(int paramStatus) {
 		this.status = paramStatus;
 		return this;
 	}
 
-	/**
-	 * Set reason.
-	 * 
-	 * @param paramReason
-	 * @return
-	 */
 	public HttpResponseBuilder reason(String paramReason) {
 		this.reason = paramReason;
 		return this;
 	}
 
-	/**
-	 * Add header.
-	 * 
-	 * @param name
-	 * @param value
-	 * @return
-	 */
 	public HttpResponseBuilder header(String name, String value) {
 		this.headers.add(new BasicHeader(name, value));
 		return this;
 	}
 
-	/**
-	 * Add entity.
-	 * 
-	 * @param paramEntity
-	 * @return
-	 */
 	public HttpResponseBuilder entity(HttpEntity paramEntity) {
 		this.entity = paramEntity;
 		return this;

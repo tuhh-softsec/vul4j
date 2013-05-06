@@ -17,7 +17,7 @@ public interface IResponseHandler {
 	 * reponse.
 	 * 
 	 * @param request
-	 * @return
+	 * @return the response
 	 * @throws IOException
 	 */
 	HttpResponse execute(HttpRequest request) throws IOException;

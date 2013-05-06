@@ -38,58 +38,27 @@ public class HttpRequestBuilder {
 	boolean mockMediator = false;
 	ContainerRequestMediator mediator = null;
 
-	/**
-	 * Set uri
-	 * 
-	 * @param uri
-	 * @return
-	 */
 	public HttpRequestBuilder uri(String uri) {
 		this.uriString = uri;
 		return this;
 	}
 
-	/**
-	 * Add header.
-	 * 
-	 * @param name
-	 * @param value
-	 * @return
-	 */
 	public HttpRequestBuilder header(String name, String value) {
 		this.headers.add(new BasicHeader(name, value));
 		return this;
 	}
 
-	/**
-	 * Set method.
-	 * 
-	 * @param paramMethod
-	 * @return
-	 */
 	public HttpRequestBuilder method(String paramMethod) {
 		this.method = paramMethod;
 		return this;
 	}
 
-	/**
-	 * Set protocol version.
-	 * 
-	 * @param paramProtocolVersion
-	 * @return
-	 */
 	public HttpRequestBuilder protocolVersion(
 			ProtocolVersion paramProtocolVersion) {
 		this.protocolVersion = paramProtocolVersion;
 		return this;
 	}
 
-	/**
-	 * Add entity.
-	 * 
-	 * @param paramEntity
-	 * @return
-	 */
 	public HttpRequestBuilder entity(HttpEntity paramEntity) {
 		this.entity = paramEntity;
 		return this;
@@ -117,7 +86,7 @@ public class HttpRequestBuilder {
 	/**
 	 * Build the request as defined in the current builder.
 	 * 
-	 * @return
+	 * @return the request
 	 */
 	public HttpEntityEnclosingRequest build() {
 		HttpEntityEnclosingRequest request = null;
