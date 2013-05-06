@@ -630,7 +630,7 @@
 	</distributionManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dependency.httpclient.version>4.3-alpha2-SNAPSHOT</dependency.httpclient.version>
+		<dependency.httpclient.version>4.3-beta1</dependency.httpclient.version>
 		<currentVersion>${project.version}</currentVersion>
 	</properties>
 </project>
