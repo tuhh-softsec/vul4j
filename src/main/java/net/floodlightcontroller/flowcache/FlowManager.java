@@ -1851,7 +1851,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public boolean measurementInstallPaths(Integer numThreads) {
 	List<Thread> threads = new LinkedList<Thread>();
 
-	measurementProcessingPaths = measurementStoredPaths;
+	// Create a copy of the paths to install
+	measurementProcessingPaths = new LinkedList<FlowPath>(measurementStoredPaths);
+
 	//
 	// Create the threads to install the Flow Paths
 	//
@@ -1935,6 +1937,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public boolean measurementClearAllPaths() {
 	measurementStoredPaths.clear();
 	topoRouteService.dropShortestPathTopo();
+	measurementStartTimeProcessingPaths = 0;
+	measurementEndTimeProcessingPaths = 0;
 
 	return true;
     }
