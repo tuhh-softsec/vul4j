@@ -101,4 +101,39 @@ public interface IFlowService extends IFloodlightService {
      * @return the added shortest-path flow on success, otherwise null.
      */
     public FlowPath addAndMaintainShortestPathFlow(FlowPath flowPath);
+
+    /**
+     * Store a path flow for measurement purpose.
+     *
+     * NOTE: The Flow Path argument does NOT contain flow entries.
+     *
+     * @param flowPath the Flow Path with the endpoints and the match
+     * conditions to store.
+     * @return the stored shortest-path flow on success, otherwise null.
+     */
+    public FlowPath measurementStorePathFlow(FlowPath flowPath);
+
+    /**
+     * Install path flows for measurement purpose.
+     *
+     * @param numThreads the number of threads to use to install the path
+     * flows.
+     * @return true on success, otherwise false.
+     */
+    public boolean measurementInstallPaths(Integer numThreads);
+
+    /**
+     * Get the measurement time that took to install the path flows.
+     *
+     * @return the measurement time (in nanoseconds) it took to install
+     * the path flows.
+     */
+    public Long measurementGetInstallPathsTimeNsec();
+
+    /**
+     * Clear the path flows stored for measurement purpose.
+     *
+     * @return true on success, otherwise false.
+     */
+    public boolean measurementClearAllPaths();
 }
