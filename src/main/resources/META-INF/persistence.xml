@@ -6,8 +6,6 @@
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
    <persistence-unit name="primary">
    	<jta-data-source>java:/jboss/postgresql</jta-data-source>
-   	<class>de.intevation.model.LKommentarP</class>
-   	<class>de.intevation.model.LKommentarPPK</class>
    	<class>de.intevation.model.LProbe</class>
       <!-- If you are running in a production environment, add a managed 
          data source, the example data source is just for development and testing! -->

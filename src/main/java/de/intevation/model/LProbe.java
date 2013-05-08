@@ -36,7 +36,6 @@ public class LProbe implements Serializable {
 	private Timestamp solldatumEnde;
 	private Boolean test;
 	private String umwId;
-	private List<LKommentarP> LKommentarPs;
 
 	public LProbe() {
 	}
@@ -258,30 +257,4 @@ public class LProbe implements Serializable {
 	public void setUmwId(String umwId) {
 		this.umwId = umwId;
 	}
-
-
-	//bi-directional many-to-one association to LKommentarP
-	@OneToMany(mappedBy="LProbe", cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-	public List<LKommentarP> getLKommentarPs() {
-		return this.LKommentarPs;
-	}
-
-	public void setLKommentarPs(List<LKommentarP> LKommentarPs) {
-		this.LKommentarPs = LKommentarPs;
-	}
-
-	public LKommentarP addLKommentarP(LKommentarP LKommentarP) {
-		getLKommentarPs().add(LKommentarP);
-		LKommentarP.setLProbe(this);
-
-		return LKommentarP;
-	}
-
-	public LKommentarP removeLKommentarP(LKommentarP LKommentarP) {
-		getLKommentarPs().remove(LKommentarP);
-		LKommentarP.setLProbe(null);
-
-		return LKommentarP;
-	}
-
 }
