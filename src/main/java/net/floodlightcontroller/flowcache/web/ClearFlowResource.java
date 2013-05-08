@@ -27,11 +27,16 @@ public class ClearFlowResource extends ServerResource {
 
 	// Extract the arguments
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	FlowId flowId = new FlowId(flowIdStr);
-	log.debug("Clear Flow Id: " + flowIdStr);
 
 	// Process the request
-	result = flowService.clearFlow(flowId);
+	if (flowIdStr.equals("all")) {
+	    log.debug("Clear All Flows");
+	    result = flowService.clearAllFlows();
+	} else {
+	    FlowId flowId = new FlowId(flowIdStr);
+	    log.debug("Clear Flow Id: " + flowIdStr);
+	    result = flowService.clearFlow(flowId);
+	}
 	return result;
     }
 }

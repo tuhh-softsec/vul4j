@@ -751,6 +751,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Delete all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean deleteAllFlows() {
+
+	// Get all flows and delete them one-by-one
+    	ArrayList<FlowPath> allFlows = getAllFlows();
+	for (FlowPath flowPath : allFlows) {
+	    deleteFlow(flowPath.flowId());
+	}
+
+	return true;
+    }
+
+    /**
      * Delete a previously added flow.
      *
      * @param flowId the Flow ID of the flow to delete.
@@ -808,6 +825,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (empty)
 	    conn.utils().removeFlowPath(conn, flowObj);
 	conn.endTx(Transaction.COMMIT);
+
+	return true;
+    }
+
+    /**
+     * Clear the state for all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean clearAllFlows() {
+
+	// Get all flows and clear them one-by-one
+    	ArrayList<FlowPath> allFlows = getAllFlows();
+	for (FlowPath flowPath : allFlows) {
+	    clearFlow(flowPath.flowId());
+	}
 
 	return true;
     }

@@ -29,12 +29,26 @@ public interface IFlowService extends IFloodlightService {
 		    String dataPathSummaryStr);
 
     /**
+     * Delete all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    boolean deleteAllFlows();
+
+    /**
      * Delete a previously added flow.
      *
      * @param flowId the Flow ID of the flow to delete.
      * @return true on success, otherwise false.
      */
     boolean deleteFlow(FlowId flowId);
+
+    /**
+     * Clear the state for all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    boolean clearAllFlows();
 
     /**
      * Clear the state for a previously added flow.

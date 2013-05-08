@@ -51,6 +51,7 @@ if __name__ == "__main__":
   usage_msg = usage_msg + "    Arguments:\n"
   usage_msg = usage_msg + "        <begin-flow-id> <end-flow-id>      Delete all flows in the flow ID range\n"
   usage_msg = usage_msg + "        <flow-id>                          Delete a single flow with the flow ID\n"
+  usage_msg = usage_msg + "        all                                Delete all flows\n"
 
   # app.debug = False;
 
@@ -63,14 +64,18 @@ if __name__ == "__main__":
   if len(sys.argv) < 2:
     log_error(usage_msg)
     exit(1)
-  begin_flow_id = int(sys.argv[1], 0)
-  if len(sys.argv) >= 3:
-    end_flow_id = int(sys.argv[2], 0)
-  else:
-    end_flow_id = begin_flow_id
 
-  # Do the work
-  flow_id = begin_flow_id
-  while flow_id <= end_flow_id:
-    delete_flow_path(flow_id)
-    flow_id = flow_id + 1
+  if (sys.argv[1] == "all"):
+    delete_flow_path(sys.argv[1])
+  else:
+    begin_flow_id = int(sys.argv[1], 0)
+    if len(sys.argv) >= 3:
+      end_flow_id = int(sys.argv[2], 0)
+    else:
+      end_flow_id = begin_flow_id
+
+    # Do the work
+    flow_id = begin_flow_id
+    while flow_id <= end_flow_id:
+      delete_flow_path(flow_id)
+      flow_id = flow_id + 1
