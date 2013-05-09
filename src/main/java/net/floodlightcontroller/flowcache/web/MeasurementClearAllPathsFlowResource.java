@@ -9,8 +9,8 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClearFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(ClearFlowResource.class);
+public class MeasurementClearAllPathsFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementClearAllPathsFlowResource.class);
 
     @Get("json")
     public Boolean retrieve() {
@@ -26,17 +26,10 @@ public class ClearFlowResource extends ServerResource {
 	}
 
 	// Extract the arguments
-	String flowIdStr = (String) getRequestAttributes().get("flow-id");
+	log.debug("Measurement Clear All Paths");
 
 	// Process the request
-	if (flowIdStr.equals("all")) {
-	    log.debug("Clear All Flows");
-	    result = flowService.clearAllFlows();
-	} else {
-	    FlowId flowId = new FlowId(flowIdStr);
-	    log.debug("Clear Flow Id: " + flowIdStr);
-	    result = flowService.clearFlow(flowId);
-	}
+	result = flowService.measurementClearAllPaths();
 	return result;
     }
 }

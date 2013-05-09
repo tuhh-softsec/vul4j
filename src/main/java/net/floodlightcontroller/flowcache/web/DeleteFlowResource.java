@@ -27,11 +27,16 @@ public class DeleteFlowResource extends ServerResource {
 
 	// Extract the arguments
 	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	FlowId flowId = new FlowId(flowIdStr);
-	log.debug("Delete Flow Id: " + flowIdStr);
 
 	// Process the request
-	result = flowService.deleteFlow(flowId);
+	if (flowIdStr.equals("all")) {
+	    log.debug("Delete All Flows");
+	    result = flowService.deleteAllFlows();
+	} else {
+	    FlowId flowId = new FlowId(flowIdStr);
+	    log.debug("Delete Flow Id: " + flowIdStr);
+	    result = flowService.deleteFlow(flowId);
+	}
 	return result;
     }
 }
