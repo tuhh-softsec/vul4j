@@ -45,7 +45,7 @@ def main():
       if (testbed == "SW"): 
         cmd="ssh -o StrictHostKeyChecking=no 1.1.%d.1 '/home/ubuntu/ONOS/scripts/iperf -u -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid)
       else:
-        cmd="~/mininet/util/m g%sh%02d '/home/ubuntu/ONOS/scripts/iperf -u -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_nwid, src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid + 1)
+        cmd="~/mininet/util/m g%sh%02d '/home/ubuntu/ONOS/scripts/iperf -u -t%s -i%s -k%s -yJ -o /home/ubuntu/ONOS/web/log/iperfclient_%s.out -c 192.168.%d.%d 2>&1 &' &" % (src_nwid, src_hostid, duration, interval, samples, flowid, dst_nwid, dst_hostid )
       killcmd='sudo pkill -KILL -f \"iperf .* -o .*/iperfclient_%s.out\"' % (flowid)
       print killcmd
       print cmd
