@@ -92,26 +92,8 @@ public class XMLSignatureOutputProcessor extends AbstractSignatureOutputProcesso
                             attributeList.add(createAttribute(XMLSecurityConstants.ATT_NULL_Id, signaturePartDef.getSigRefId()));
                             xmlSecEvent = addAttributes(xmlSecStartElement, attributeList);
                         }
-                        String signatureAppendId =
-                                outputProcessorChain.getSecurityContext().get(
-                                        XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
-                        if (signatureAppendId == null || "".equals(signatureAppendId)) {
-                            outputProcessorChain.getSecurityContext().put(
-                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID,
-                                    signaturePartDef.getSigRefId()
-                            );
-                        }
                     } else {
                         signaturePartDef.setSigRefId(securePart.getIdToSign());
-                        String signatureAppendId =
-                                outputProcessorChain.getSecurityContext().get(
-                                        XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID);
-                        if (signatureAppendId == null || "".equals(signatureAppendId)) {
-                            outputProcessorChain.getSecurityContext().put(
-                                    XMLSecurityConstants.PROP_APPEND_SIGNATURE_ON_THIS_ID,
-                                    securePart.getIdToSign()
-                            );
-                        }
                     }
 
                     getSignaturePartDefList().add(signaturePartDef);

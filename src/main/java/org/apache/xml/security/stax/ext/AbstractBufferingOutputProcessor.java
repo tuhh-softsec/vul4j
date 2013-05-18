@@ -19,13 +19,8 @@
 package org.apache.xml.security.stax.ext;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.stax.ext.stax.XMLSecAttribute;
-import org.apache.xml.security.stax.ext.stax.XMLSecEndElement;
 import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
-import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
 
@@ -38,14 +33,6 @@ import java.util.*;
 public abstract class AbstractBufferingOutputProcessor extends AbstractOutputProcessor {
 
     private final ArrayDeque<XMLSecEvent> xmlSecEventBuffer = new ArrayDeque<XMLSecEvent>(100);
-    private String appendAfterThisTokenId;
-    private static final List<QName> appendAfterOneOfThisAttributes;
-
-    static {
-        List<QName> list = new ArrayList<QName>(1);
-        list.add(XMLSecurityConstants.ATT_NULL_Id);
-        appendAfterOneOfThisAttributes = Collections.unmodifiableList(list);
-    }
 
     protected AbstractBufferingOutputProcessor() throws XMLSecurityException {
         super();
@@ -53,18 +40,6 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
 
     protected Deque<XMLSecEvent> getXmlSecEventBuffer() {
         return xmlSecEventBuffer;
-    }
-
-    protected String getAppendAfterThisTokenId() {
-        return appendAfterThisTokenId;
-    }
-
-    protected void setAppendAfterThisTokenId(String appendAfterThisTokenId) {
-        this.appendAfterThisTokenId = appendAfterThisTokenId;
-    }
-
-    protected List<QName> getAppendAfterOneOfThisAttributes() {
-        return appendAfterOneOfThisAttributes;
     }
 
     @Override
@@ -76,7 +51,7 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
     @Override
     public void doFinal(OutputProcessorChain outputProcessorChain) throws XMLStreamException, XMLSecurityException {
         OutputProcessorChain subOutputProcessorChain = outputProcessorChain.createSubChain(this);
-        flushBufferAndCallbackAfterTokenID(subOutputProcessorChain, getXmlSecEventBuffer());
+        flushBufferAndCallbackAfterHeader(subOutputProcessorChain, getXmlSecEventBuffer());
         //call final on the rest of the chain
         subOutputProcessorChain.doFinal();
         //this processor is now finished and we can remove it now
@@ -86,70 +61,12 @@ public abstract class AbstractBufferingOutputProcessor extends AbstractOutputPro
     protected abstract void processHeaderEvent(OutputProcessorChain outputProcessorChain)
             throws XMLStreamException, XMLSecurityException;
 
-    protected void flushBufferAndCallbackAfterTokenID(OutputProcessorChain outputProcessorChain,
-                                                      Deque<XMLSecEvent> xmlSecEventDeque)
+    protected void flushBufferAndCallbackAfterHeader(OutputProcessorChain outputProcessorChain,
+                                                     Deque<XMLSecEvent> xmlSecEventDeque)
             throws XMLStreamException, XMLSecurityException {
 
-        String appendAfterThisTokenId = getAppendAfterThisTokenId();
-
-        //append current header
-        if (appendAfterThisTokenId == null) {
-            this.processHeaderEvent(outputProcessorChain);
-        } else {
-            //we have a dependent token. so we have to append the current header after the token
-            QName matchingElementName = null;
-
-            loop:
-            while (!xmlSecEventDeque.isEmpty()) {
-                XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
-
-                outputProcessorChain.reset();
-                outputProcessorChain.processEvent(xmlSecEvent);
-                switch (xmlSecEvent.getEventType()) {
-                    //search for an element with a matching wsu:Id. this is our token
-                    case XMLStreamConstants.START_ELEMENT:
-                        XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
-                        List<XMLSecAttribute> xmlSecAttributes = xmlSecStartElement.getOnElementDeclaredAttributes();
-                        for (int i = 0; i < xmlSecAttributes.size(); i++) {
-                            XMLSecAttribute xmlSecAttribute = xmlSecAttributes.get(i);
-                            final QName attributeName = xmlSecAttribute.getName();
-                            final String attributeValue = xmlSecAttribute.getValue();
-                            if (getAppendAfterOneOfThisAttributes().contains(attributeName)
-                                    && appendAfterThisTokenId.equals(attributeValue)) {
-                                matchingElementName = xmlSecStartElement.getName();
-                                break loop;
-                            }
-                        }
-                        break;
-                }
-            }
-
-            //we found the token and...
-            int level = 0;
-            loop:
-            while (!xmlSecEventDeque.isEmpty()) {
-                XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
-
-                outputProcessorChain.reset();
-                outputProcessorChain.processEvent(xmlSecEvent);
-                //...loop until we reach the token end element
-                switch (xmlSecEvent.getEventType()) {
-                    case XMLStreamConstants.START_ELEMENT:
-                        level++;
-                        break;
-                    case XMLStreamConstants.END_ELEMENT:
-                        XMLSecEndElement xmlSecEndElement = xmlSecEvent.asEndElement();
-                        if (level == 0 && xmlSecEndElement.getName().equals(matchingElementName)) {
-                            //output now the current header
-                            this.processHeaderEvent(outputProcessorChain);
-                            break loop;
-                        }
-                        level--;
-                        break;
-                }
-            }
-        }
-
+        this.processHeaderEvent(outputProcessorChain);
+        
         //loop through the rest of the document
         while (!xmlSecEventDeque.isEmpty()) {
             XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();

@@ -284,8 +284,6 @@ public class XMLSecurityConstants {
     public static final String PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION = "PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTION";
     public static final String PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTED_KEY = "PROP_USE_THIS_TOKEN_ID_FOR_ENCRYPTED_KEY";
 
-    public static final String PROP_APPEND_SIGNATURE_ON_THIS_ID = "PROP_APPEND_SIGNATURE_ON_THIS_ID";
-
     public static final String SIGNATURE_PARTS = "signatureParts";
     public static final String ENCRYPTION_PARTS = "encryptionParts";
 

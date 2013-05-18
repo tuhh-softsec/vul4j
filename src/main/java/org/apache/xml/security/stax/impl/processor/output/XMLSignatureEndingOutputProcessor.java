@@ -72,7 +72,7 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
     }
 
     @Override
-    protected void flushBufferAndCallbackAfterTokenID(
+    protected void flushBufferAndCallbackAfterHeader(
             OutputProcessorChain outputProcessorChain, Deque<XMLSecEvent> xmlSecEventDeque)
             throws XMLStreamException, XMLSecurityException {
 
@@ -87,7 +87,7 @@ public class XMLSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
         outputProcessorChain.reset();
         outputProcessorChain.processEvent(xmlSecEvent);
         //...then call super to append the signature and flush the rest
-        super.flushBufferAndCallbackAfterTokenID(outputProcessorChain, xmlSecEventDeque);
+        super.flushBufferAndCallbackAfterHeader(outputProcessorChain, xmlSecEventDeque);
     }
 
     @Override
