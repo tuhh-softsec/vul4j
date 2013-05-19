@@ -14,16 +14,34 @@ import org.esigate.events.impl.ReadEntityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This extension reads html and xhtml documents, and ensure document has been
+ * read using the right charset. This prevents charset issues when the remote
+ * server provides a wrong charset or no charset at all in HTTP headers even if
+ * document is not ISO-8859-1 (the default).
+ * 
+ * <p>
+ * To be processed by this extension, documents must have one of the following
+ * MIME types:
+ * <ul>
+ * <li>text/html</li>
+ * <li>application/xhtml+xml</li>
+ * </ul>
+ * ... and this MIME type must be declared as parsableContentTypes in
+ * configuration file (esigate.properties).
+ * 
+ * @see http://www.esigate.org/reference.html#Configuration_file
+ * 
+ * @author Nicolas Richeton
+ * 
+ */
 public class HtmlCharsetProcessor implements Extension, IEventListener {
-	private static final Logger LOG = LoggerFactory
-			.getLogger(DefaultCharset.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultCharset.class);
 
 	private final static Pattern PATTERN_META_HTML5 = Pattern.compile(
-			".*<head>.*<meta[^>]+charset=\"([^>^\"]+)\"[^>]*/?>.*</head>.*",
-			Pattern.CASE_INSENSITIVE);
+			".*<head>.*<meta[^>]+charset=\"([^>^\"]+)\"[^>]*/?>.*</head>.*", Pattern.CASE_INSENSITIVE);
 	private final static Pattern PATTERN_META_HTML4_XHTML = Pattern.compile(
-			".*<head>.*<meta[^>]+charset=([^>^\"]+)\"[^>]*/?>.*</head>.*",
-			Pattern.CASE_INSENSITIVE);
+			".*<head>.*<meta[^>]+charset=([^>^\"]+)\"[^>]*/?>.*</head>.*", Pattern.CASE_INSENSITIVE);
 
 	@Override
 	public boolean event(EventDefinition id, Event event) {
@@ -33,8 +51,8 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 		LOG.debug("Content mime type is {}", readEntityEvent.mimeType);
 
 		// Detect on supported MIME types.
-		if ("text/html".equals(readEntityEvent.mimeType)
-				|| "application/xhtml+xml".equals(readEntityEvent.mimeType)) {
+		// ReadEntityEvent is only sent when esigate tries to parse a document.
+		if ("text/html".equals(readEntityEvent.mimeType) || "application/xhtml+xml".equals(readEntityEvent.mimeType)) {
 			LOG.debug("Supported MIME type, parsing content");
 
 			Matcher m = PATTERN_META_HTML5.matcher(readEntityEvent.entityContent);
@@ -52,11 +70,9 @@ public class HtmlCharsetProcessor implements Extension, IEventListener {
 
 		// If another charset was found, update String object
 		if (charset != null && !charset.equals(readEntityEvent.charset)) {
-			LOG.debug("Changing charset fom {} to {}", readEntityEvent.charset,
-					charset);
+			LOG.debug("Changing charset fom {} to {}", readEntityEvent.charset, charset);
 			readEntityEvent.charset = charset;
-			readEntityEvent.entityContent = new String(readEntityEvent.rawEntityContent,
-					readEntityEvent.charset);
+			readEntityEvent.entityContent = new String(readEntityEvent.rawEntityContent, readEntityEvent.charset);
 		}
 
 		return true;
