@@ -1,6 +1,7 @@
 package net.floodlightcontroller.core;
 
 import java.util.List;
+import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
@@ -47,7 +48,7 @@ public interface INetMapTopologyService extends INetMapService {
 
 	    /**
 	     * Fetch the Switch and Ports info from the Titan Graph
-	     * and store it locally for fast access during the shortest path
+	     * and return it for fast access during the shortest path
 	     * computation.
 	     *
 	     * After fetching the state, method @ref getTopoShortestPath()
@@ -63,14 +64,17 @@ public interface INetMapTopologyService extends INetMapService {
 	     * method @ref dropShortestPathTopo() should be used to release
 	     * the internal state that is not needed anymore:
 	     *
-	     *       prepareShortestPathTopo();
+	     *       Map<Long, ?> shortestPathTopo;
+	     *       shortestPathTopo = prepareShortestPathTopo();
 	     *       for (int i = 0; i < 10000; i++) {
-	     *           dataPath = getTopoShortestPath(...);
+	     *           dataPath = getTopoShortestPath(shortestPathTopo, ...);
 	     *           ...
 	     *        }
-	     *        dropShortestPathTopo();
+	     *        dropShortestPathTopo(shortestPathTopo);
+	     *
+	     * @return the Shortest Path info handler stored in a map.
 	     */
-	    void prepareShortestPathTopo();
+	    Map<Long, ?> prepareShortestPathTopo();
 
 	    /**
 	     * Release the state that was populated by
@@ -78,8 +82,10 @@ public interface INetMapTopologyService extends INetMapService {
 	     *
 	     * See the documentation for method @ref prepareShortestPathTopo()
 	     * for additional information and usage.
+	     *
+	     * @shortestPathTopo the Shortest Path info handler to release.
 	     */
-	    void dropShortestPathTopo();
+	    void dropShortestPathTopo(Map<Long, ?> shortestPathTopo);
 
 	    /**
 	     * Get the shortest path from a source to a destination by
@@ -89,12 +95,15 @@ public interface INetMapTopologyService extends INetMapService {
 	     * See the documentation for method @ref prepareShortestPathTopo()
 	     * for additional information and usage.
 	     *
+	     * @paran shortestPathTopoHandler the Shortest Path info handler
+	     * to use.
 	     * @param src the source in the shortest path computation.
 	     * @param dest the destination in the shortest path computation.
 	     * @return the data path with the computed shortest path if
 	     * found, otherwise null.
 	     */
-	    DataPath getTopoShortestPath(SwitchPort src, SwitchPort dest);
+	    DataPath getTopoShortestPath(Map<Long, ?> shortestPathTopo,
+					 SwitchPort src, SwitchPort dest);
 
 	    /**
 	     * Test whether a route exists from a source to a destination.

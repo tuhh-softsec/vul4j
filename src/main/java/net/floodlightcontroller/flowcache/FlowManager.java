@@ -98,6 +98,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private LinkedList<FlowPath> measurementStoredPaths = new LinkedList<FlowPath>();
     private long measurementStartTimeProcessingPaths = 0;
     private long measurementEndTimeProcessingPaths = 0;
+    Map<Long, ?> measurementShortestPathTopo = null;
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -277,7 +278,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-		topoRouteService.prepareShortestPathTopo();
+		Map<Long, ?> shortestPathTopo =
+		    topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -352,7 +354,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
+			topoRouteService.getTopoShortestPath(shortestPathTopo,
+							     srcSwitchPort,
 							     dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
@@ -377,7 +380,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowPath(conn, flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo();
+		topoRouteService.dropShortestPathTopo(shortestPathTopo);
 
 		conn.endTx(Transaction.COMMIT);
 
@@ -1891,13 +1894,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Prepare the Shortest Path computation if the first Flow Path
 	//
 	if (measurementStoredPaths.isEmpty())
-	    topoRouteService.prepareShortestPathTopo();
+	    measurementShortestPathTopo = topoRouteService.prepareShortestPathTopo();
 
 	//
 	// Compute the Shortest Path
 	//
 	DataPath dataPath =
-	    topoRouteService.getTopoShortestPath(flowPath.dataPath().srcPort(),
+	    topoRouteService.getTopoShortestPath(measurementShortestPathTopo,
+						 flowPath.dataPath().srcPort(),
 						 flowPath.dataPath().dstPort());
 	if (dataPath == null) {
 	    // We need the DataPath to populate the Network MAP
@@ -2030,7 +2034,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean measurementClearAllPaths() {
 	measurementStoredPaths.clear();
-	topoRouteService.dropShortestPathTopo();
+	topoRouteService.dropShortestPathTopo(measurementShortestPathTopo);
 	measurementStartTimeProcessingPaths = 0;
 	measurementEndTimeProcessingPaths = 0;
 
