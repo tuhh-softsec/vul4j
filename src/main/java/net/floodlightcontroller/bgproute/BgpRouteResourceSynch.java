@@ -6,7 +6,6 @@ import org.restlet.resource.Delete;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.floodlightcontroller.restclient.RestClient;
 
 
 public class BgpRouteResourceSynch extends ServerResource {
@@ -29,7 +28,7 @@ public class BgpRouteResourceSynch extends ServerResource {
 				
 			String BGPdRestIp = bgpRoute.getBGPdRestIp();	
 				
-			//BGPdRestIp includes port number, such as 1.1.1.1:8080
+			//bgpdRestIp includes port number, such as 1.1.1.1:8080
 			RestClient.post("http://"+BGPdRestIp+"/wm/bgp/"+router_id+"/"+prefix+"/"+mask+"/"+nexthop);
 			}catch(Exception e)
 			{e.printStackTrace();}
