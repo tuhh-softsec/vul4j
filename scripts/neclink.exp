@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 # ./neclink.exp <ip of port> <'no' or blank>
-set timeout -1
+set timeout 5
 set port [lindex $argv 0]
 set no [lindex $argv 1]
 

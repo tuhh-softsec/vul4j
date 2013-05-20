@@ -115,4 +115,7 @@ public interface IControllerRegistryService extends IFloodlightService {
 	 * @return Collection of dpids
 	 */
 	public Collection<Long> getSwitchesControlledByController(String controllerId);
+	
+	public IdBlock allocateUniqueIdBlock();
+	
 }

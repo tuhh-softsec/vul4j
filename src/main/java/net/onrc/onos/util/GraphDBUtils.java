@@ -15,7 +15,7 @@ import net.floodlightcontroller.util.FlowId;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
-import com.tinkerpop.frames.FramedVertexIterable;
+import com.tinkerpop.frames.structures.FramedVertexIterable;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBUtils implements IDBUtils {
@@ -193,6 +193,13 @@ public class GraphDBUtils implements IDBUtils {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
 		return fg.getVertices("type", "flow_entry", IFlowEntry.class);
+	}
+	
+	@Override
+	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries(GraphDBConnection conn) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
+		//TODO: Should use an enum for flow_switch_state
+		return fg.getVertices("switch_state", "FE_SWITCH_NOT_UPDATED", IFlowEntry.class);
 	}
 
 	@Override

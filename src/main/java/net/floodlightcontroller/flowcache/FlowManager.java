@@ -87,9 +87,15 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static int nextFlowEntryIdSuffix = 0;
     private static long nextFlowEntryId = 0;
 
+    // State for measurement purpose
     private static long measurementFlowId = 100000;
     private static String measurementFlowIdStr = "0x186a0";	// 100000
     private long modifiedMeasurementFlowTime = 0;
+    //
+    private LinkedList<FlowPath> measurementStoredPaths = new LinkedList<FlowPath>();
+    private LinkedList<FlowPath> measurementProcessingPaths = null;
+    private long measurementStartTimeProcessingPaths = 0;
+    private long measurementEndTimeProcessingPaths = 0;
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -126,19 +132,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    new LinkedList<IFlowEntry>();
 
 		//
-		// Fetch all Flow Entries and select only my Flow Entries
+		// Fetch all Flow Entries which need to be updated and select only my Flow Entries
 		// that need to be updated into the switches.
 		//
 		boolean processed_measurement_flow = false;
 		Iterable<IFlowEntry> allFlowEntries =
-		    conn.utils().getAllFlowEntries(conn);
+		    conn.utils().getAllSwitchNotUpdatedFlowEntries(conn);
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    counterAllFlowEntries++;
-		    String switchState = flowEntryObj.getSwitchState();
-		    if ((switchState == null) ||
-			(! switchState.equals("FE_SWITCH_NOT_UPDATED"))) {
-			continue;	// Ignore the entry: nothing to do
-		    }
 
 		    String dpidStr = flowEntryObj.getSwitchDpid();
 		    if (dpidStr == null)
@@ -467,7 +468,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
-    private long getNextFlowEntryId() {
+    private synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.
 	// NOTE: For now, the higher 32 bits are random, and
@@ -493,9 +494,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		nextFlowEntryIdPrefix = randomGenerator.nextInt();
 		
 		mapReaderScheduler.scheduleAtFixedRate(
-				mapReader, 3, 3, TimeUnit.SECONDS);
+				mapReader, 1, 1, TimeUnit.SECONDS);
 		shortestPathReconcileScheduler.scheduleAtFixedRate(
-				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
+				shortestPathReconcile, 100, 100, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -750,6 +751,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Delete all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean deleteAllFlows() {
+
+	// Get all flows and delete them one-by-one
+    	ArrayList<FlowPath> allFlows = getAllFlows();
+	for (FlowPath flowPath : allFlows) {
+	    deleteFlow(flowPath.flowId());
+	}
+
+	return true;
+    }
+
+    /**
      * Delete a previously added flow.
      *
      * @param flowId the Flow ID of the flow to delete.
@@ -807,6 +825,23 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (empty)
 	    conn.utils().removeFlowPath(conn, flowObj);
 	conn.endTx(Transaction.COMMIT);
+
+	return true;
+    }
+
+    /**
+     * Clear the state for all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean clearAllFlows() {
+
+	// Get all flows and clear them one-by-one
+    	ArrayList<FlowPath> allFlows = getAllFlows();
+	for (FlowPath flowPath : allFlows) {
+	    clearFlow(flowPath.flowId());
+	}
 
 	return true;
     }
@@ -1768,4 +1803,178 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	return (installRemoteFlowEntry(flowPath, flowEntry));
     }
+
+    /**
+     * Store a path flow for measurement purpose.
+     *
+     * NOTE: The Flow Path argument does NOT contain flow entries.
+     * The Shortest Path is computed, and the corresponding Flow Entries
+     * are stored in the Flow Path.
+     *
+     * @param flowPath the Flow Path with the endpoints and the match
+     * conditions to store.
+     * @return the stored shortest-path flow on success, otherwise null.
+     */
+    @Override
+    public FlowPath measurementStorePathFlow(FlowPath flowPath) {
+	//
+	// Prepare the Shortest Path computation if the first Flow Path
+	//
+	if (measurementStoredPaths.isEmpty())
+	    topoRouteService.prepareShortestPathTopo();
+
+	//
+	// Compute the Shortest Path
+	//
+	DataPath dataPath =
+	    topoRouteService.getTopoShortestPath(flowPath.dataPath().srcPort(),
+						 flowPath.dataPath().dstPort());
+	if (dataPath == null) {
+	    // We need the DataPath to populate the Network MAP
+	    dataPath = new DataPath();
+	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	    dataPath.setDstPort(flowPath.dataPath().dstPort());
+	}
+
+	//
+	// Set the incoming port matching and the outgoing port output
+	// actions for each flow entry.
+	//
+	for (FlowEntry flowEntry : dataPath.flowEntries()) {
+	    // Set the incoming port matching
+	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+	    flowEntry.setFlowEntryMatch(flowEntryMatch);
+	    flowEntryMatch.enableInPort(flowEntry.inPort());
+
+	    // Set the outgoing port output action
+	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
+	    if (flowEntryActions == null) {
+		flowEntryActions = new ArrayList<FlowEntryAction>();
+		flowEntry.setFlowEntryActions(flowEntryActions);
+	    }
+	    FlowEntryAction flowEntryAction = new FlowEntryAction();
+	    flowEntryAction.setActionOutput(flowEntry.outPort());
+	    flowEntryActions.add(flowEntryAction);
+	}
+
+	//
+	// Prepare the computed Flow Path
+	//
+	FlowPath computedFlowPath = new FlowPath();
+	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
+	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setDataPath(dataPath);
+	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
+
+	//
+	// Add the computed Flow Path the the internal storage
+	//
+	measurementStoredPaths.add(computedFlowPath);
+
+	return (computedFlowPath);
+    }
+
+    /**
+     * Install path flows for measurement purpose.
+     *
+     * @param numThreads the number of threads to use to install the path
+     * flows.
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean measurementInstallPaths(Integer numThreads) {
+	List<Thread> threads = new LinkedList<Thread>();
+
+	// Create a copy of the paths to install
+	measurementProcessingPaths = new LinkedList<FlowPath>(measurementStoredPaths);
+
+	//
+	// Create the threads to install the Flow Paths
+	//
+	for (int i = 0; i < numThreads; i++) {
+	    Thread thread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+		    while (true) {
+			FlowPath flowPath = measurementPollFirstFlowPath();
+			if (flowPath == null)
+			    return;
+			// Install the Flow Path
+			FlowId flowId = new FlowId();
+			String dataPathSummaryStr =
+			    flowPath.dataPath().dataPathSummary();
+			addFlow(flowPath, flowId, dataPathSummaryStr);
+		    }
+		}}, "Measurement Add Flow Path");
+	    threads.add(thread);
+	}
+
+	//
+	// Start processing
+	//
+	measurementEndTimeProcessingPaths = 0;
+	measurementStartTimeProcessingPaths = System.nanoTime();
+	for (Thread thread : threads) {
+	    thread.start();
+	}
+
+	//
+	// Wait until the end of processing time
+	//
+	while (measurementEndTimeProcessingPaths == 0) {
+	    try {
+		Thread.sleep(100);
+	    } catch (InterruptedException e) {
+		// Continue waiting
+	    }
+	}
+
+	return true;
+    }
+
+    /**
+     * Get the measurement time that took to install the path flows.
+     *
+     * @return the measurement time (in nanoseconds) it took to install
+     * the path flows.
+     */
+    @Override
+    public Long measurementGetInstallPathsTimeNsec() {
+	return new Long(measurementEndTimeProcessingPaths -
+			measurementStartTimeProcessingPaths);
+    }
+
+    /**
+     * Get a Flow Path that needs to be installed for measurement purpose.
+     *
+     * If there is no next Flow Path to install, the end time measurement
+     * is recorded.
+     *
+     * @return the next Flow Path to install if exists, otherwise null.
+     */
+    private synchronized FlowPath measurementPollFirstFlowPath() {
+	FlowPath flowPath = measurementProcessingPaths.pollFirst();
+
+	// Record the end of processing, if the first call
+	if ((flowPath == null) && (measurementEndTimeProcessingPaths == 0))
+	    measurementEndTimeProcessingPaths = System.nanoTime();
+
+	return flowPath;
+    }
+
+    /**
+     * Clear the path flows stored for measurement purpose.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean measurementClearAllPaths() {
+	measurementStoredPaths.clear();
+	topoRouteService.dropShortestPathTopo();
+	measurementStartTimeProcessingPaths = 0;
+	measurementEndTimeProcessingPaths = 0;
+
+	return true;
+    }
+
 }

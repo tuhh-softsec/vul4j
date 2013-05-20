@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 # ./prontolink.exp <ip of switch> <port> <0 or 1 (on or off)>
-set timeout -1
+set timeout 5
 set arg0 [lindex $argv 0]
 set port [lindex $argv 1]
 set onoff [lindex $argv 2]
