@@ -14,43 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.intevation.data;
+package de.intevation.lada.data;
 
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.List;
 
-import de.intevation.model.LProbe;
-import de.intevation.service.LProbeService;
+import de.intevation.lada.model.LProbe;
+import de.intevation.lada.service.LProbeService;
 
 @ApplicationScoped
 public class LProbeRepository {
 
     @Inject
+    @PersistenceContext(type=PersistenceContextType.EXTENDED)
     private EntityManager em;
-    
+
     @Inject
     private LProbeService service;
 
     public LProbe findById(Long id) {
         return em.find(LProbe.class, id);
     }
-    
-    
+
     public void delete(LProbe item) {
-    	try {
-			service.delete(item.getProbeId());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            service.delete(item.getProbeId());
+        }
+        catch (Exception e) {
+             // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     //public LProbe findByEmail(String email) {

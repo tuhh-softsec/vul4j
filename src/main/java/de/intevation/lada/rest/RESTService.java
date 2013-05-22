@@ -1,4 +1,4 @@
-package de.intevation.rest;
+package de.intevation.lada.rest;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;

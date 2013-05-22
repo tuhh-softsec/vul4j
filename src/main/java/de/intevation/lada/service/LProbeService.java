@@ -1,4 +1,4 @@
-package de.intevation.service;
+package de.intevation.lada.service;
 
 import java.util.logging.Logger;
 
@@ -8,7 +8,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import de.intevation.model.LProbe;
+import de.intevation.lada.model.LProbe;
 
 @Stateless
 public class LProbeService {
