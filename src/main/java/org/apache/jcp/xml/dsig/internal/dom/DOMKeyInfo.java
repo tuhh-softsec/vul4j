@@ -144,7 +144,10 @@ public final class DOMKeyInfo extends BaseStructure implements KeyInfo {
     public void marshal(XMLStructure parent, XMLCryptoContext context)
         throws MarshalException
     {
-        if (parent == null || !(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
+        if (parent == null) {
+            throw new NullPointerException("parent is null");
+        }
+        if (!(parent instanceof javax.xml.crypto.dom.DOMStructure)) {
             throw new ClassCastException("parent must be of type DOMStructure");
         }
 
