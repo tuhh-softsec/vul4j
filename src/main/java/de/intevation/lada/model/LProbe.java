@@ -24,6 +24,8 @@ import javax.persistence.TemporalType;
 public class LProbe implements java.io.Serializable {
 
 	private String probeId;
+	private String mstId;
+	private String umwId;
 	private boolean test;
 	private String hauptprobenNr;
 	private String baId;
@@ -49,13 +51,15 @@ public class LProbe implements java.io.Serializable {
 		this.test = test;
 	}
 
-	public LProbe(String probeId, boolean test,
+	public LProbe(String probeId, String mstId, String umwId, boolean test,
 			String hauptprobenNr, String baId, String mediaDesk, String media,
 			Date probeentnahmeBeginn, Date probeentnahmeEnde,
 			Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
 			Integer probeNehmerId, Character mpKat, String mplId,
 			Integer mprId, Date solldatumBeginn, Date solldatumEnde) {
 		this.probeId = probeId;
+		this.mstId = mstId;
+		this.umwId = umwId;
 		this.test = test;
 		this.hauptprobenNr = hauptprobenNr;
 		this.baId = baId;
@@ -231,5 +235,23 @@ public class LProbe implements java.io.Serializable {
 
 	public void setSolldatumEnde(Date solldatumEnde) {
 		this.solldatumEnde = solldatumEnde;
+	}
+	
+	public void setMstId(String mstId) {
+		this.mstId = mstId;
+	}
+
+	@Column(name = "mst_id")
+	public String getMstId() {
+		return this.mstId;
+	}
+
+	public void setUmwId(String umwId) {
+		this.umwId = umwId;
+	}
+
+	@Column(name = "umw_id")
+	public String getUmwId() {
+		return this.umwId;
 	}
 }
