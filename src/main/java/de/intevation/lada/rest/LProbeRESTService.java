@@ -36,9 +36,9 @@ public class LProbeRESTService {
     private Logger log;
 
     @GET
-    @Path("/{id:[0-9][0-9]*}")
-    @Produces("text/plain")
-    public LProbe loadById(@PathParam("id") long id) {
+    @Path("/{id}")
+    @Produces("text/json")
+    public LProbe loadById(@PathParam("id") String id) {
        return repository.findById(id);
     }
 

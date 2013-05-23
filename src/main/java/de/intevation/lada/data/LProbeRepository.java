@@ -42,7 +42,7 @@ public class LProbeRepository {
     @Inject
     private LProbeService service;
 
-    public LProbe findById(Long id) {
+    public LProbe findById(String id) {
         return em.find(LProbe.class, id);
     }
 
