@@ -16,6 +16,7 @@
  */
 package de.intevation.lada.data;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,6 +26,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.intevation.lada.model.LProbe;
@@ -54,25 +56,45 @@ public class LProbeRepository {
         }
     }
 
-    //public LProbe findByEmail(String email) {
-    //    CriteriaBuilder cb = em.getCriteriaBuilder();
-    //    CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
-    //    Root<LProbe> member = criteria.from(LProbe.class);
-    //    // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-    //    // feature in JPA 2.0
-    //    // criteria.select(member).where(cb.equal(member.get(LProbe_.name), email));
-    //    criteria.select(member).where(cb.equal(member.get("email"), email));
-    //    return em.createQuery(criteria).getSingleResult();
-    //}
+    public List<LProbe> filter(String mstId, String uwbId, Long begin) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
+        Root<LProbe> member = criteria.from(LProbe.class);
+        Predicate mst = cb.equal(member.get("mstId"), mstId);
+        Predicate uwb = cb.equal(member.get("umwId"), uwbId);
+
+        if (!mstId.isEmpty() && !uwbId.isEmpty() && begin != null) {
+            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
+            criteria.where(cb.and(mst, uwb, beg));
+        }
+        else if (!mstId.isEmpty() && !uwbId.isEmpty() && begin == null) {
+            criteria.where(cb.and(mst, uwb));
+        }
+        else if (!mstId.isEmpty() && uwbId.isEmpty() && begin != null) {
+            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
+            criteria.where(cb.and(mst, beg));
+        }
+        else if (mstId.isEmpty() && !uwbId.isEmpty() && begin != null) {
+            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
+            criteria.where(cb.and(uwb, beg));
+        }
+        else if (!mstId.isEmpty() && uwbId.isEmpty() && begin == null) {
+            criteria.where(mst);
+        }
+        else if (mstId.isEmpty() && !uwbId.isEmpty() && begin == null) {
+            criteria.where(uwb);
+        }
+        else if (mstId.isEmpty() && uwbId.isEmpty() && begin != null) {
+            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
+            criteria.where(beg);
+        }
+        return em.createQuery(criteria).getResultList();
+    }
 
     public List<LProbe> findAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
         Root<LProbe> member = criteria.from(LProbe.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(member).orderBy(cb.asc(member.get(LProbe_.name)));
-        //criteria.select(member).orderBy(cb.asc(member.get("name")));
         criteria.select(member);
         return em.createQuery(criteria).getResultList();
     }

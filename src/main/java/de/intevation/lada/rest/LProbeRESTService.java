@@ -5,9 +5,15 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.model.LProbe;
@@ -30,17 +36,10 @@ public class LProbeRESTService {
     private Logger log;
 
     @GET
-    @Produces("text/json")
-    public List<LProbe> listAllMembers() {
-       final List<LProbe> result = repository.findAll();
-       return result;
-    }
-
-    @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces("text/plain")
-    public String loadById() {
-       return "Eine Probe!";
+    public LProbe loadById(@PathParam("id") long id) {
+       return repository.findById(id);
     }
 
     @GET
@@ -54,10 +53,31 @@ public class LProbeRESTService {
     }
 
     @GET
-    @Path("/new")
-    @Produces("text/plain")
-    public String create() {
-       return "Neu";
+    @Produces("text/json")
+    public List<LProbe> filter(@Context UriInfo info) {
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty()) {
+            return repository.findAll();
+        }
+        String mstId = "";
+        String uwbId = "";
+        Long begin = null;
+        if (params.containsKey("mst")) {
+            mstId = params.getFirst("mst");
+        }
+        if (params.containsKey("uwb")) {
+            uwbId = params.getFirst("uwb");
+        }
+        if (params.containsKey("begin")) {
+            String tmp = params.getFirst("begin");
+            try {
+                begin = Long.valueOf(tmp);
+            }
+            catch (NumberFormatException nfe) {
+                begin = null;
+            }
+        }
+        return repository.filter(mstId, uwbId, begin);
     }
     //@GET
     //@Produces("text/xml")
