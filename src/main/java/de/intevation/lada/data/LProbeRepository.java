@@ -1,19 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the 
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package de.intevation.lada.data;
 
 import java.util.Date;
@@ -32,30 +16,46 @@ import javax.persistence.criteria.Root;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.service.LProbeService;
 
+/**
+ * This Container is an interface to request, filter and select LProbe
+ * obejcts from the connected database.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 public class LProbeRepository {
 
+    /**
+     * The entitymanager managing the data.
+     */
     @Inject
     @PersistenceContext(type=PersistenceContextType.EXTENDED)
     private EntityManager em;
 
+    /**
+     * Service class for LPRobe. Used to manipulate data objects.
+     */
     @Inject
     private LProbeService service;
 
+    /**
+     * Find a single LProbe object identified by its id.
+     *
+     * @param id The mst_id
+     * @return The SMessStelle object.
+     */
     public LProbe findById(String id) {
         return em.find(LProbe.class, id);
     }
 
-    public void delete(LProbe item) {
-        try {
-            service.delete(item.getProbeId());
-        }
-        catch (Exception e) {
-             // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * Filter for LProbe objects.
+     *
+     * @param mstId mst_id
+     * @param uwbId umw_id
+     * @param begin probeentnahmebegin
+     * @return
+     */
     public List<LProbe> filter(String mstId, String uwbId, Long begin) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
@@ -91,6 +91,11 @@ public class LProbeRepository {
         return em.createQuery(criteria).getResultList();
     }
 
+    /**
+     * Get all LProbe objects from database.
+     *
+     * @return List of LProbe objects.
+     */
     public List<LProbe> findAll() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);

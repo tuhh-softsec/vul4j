@@ -20,21 +20,32 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.service.LProbeService;
 
 /**
- * JAX-RS Example
- *
- * This class produces a RESTful service to read the contents of the members table.
-*/
-
+ * This class produces a RESTful service to read the contents of LProbe table.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("/proben")
 @RequestScoped
 public class LProbeRESTService {
 
+    /**
+     * The Repository for LProbe.
+     */
     @Inject
     private LProbeRepository repository;
 
+    /**
+     * The logger for this class.
+     */
     @Inject
     private Logger log;
 
+    /**
+     * Request a LProbe via its id.
+     *
+     * @param id The LProbe id
+     * @return JSON Object via REST service.
+     */
     @GET
     @Path("/{id}")
     @Produces("text/json")
@@ -42,6 +53,18 @@ public class LProbeRESTService {
        return repository.findById(id);
     }
 
+    /**
+     * Request LProbe via a filter.
+     *
+     * Query parameters are used for the filter in form of key-value pairs.
+     * This filter can take the three parameters
+     *   mst=$MSTID (String)
+     *   uwb=$UWBID (String)
+     *   begin=$PROBEENTNAHMEBEGIN (Timestamp)
+     *
+     * @param info The URL query parameters.
+     * @return JSON Object via Rest service.
+     */
     @GET
     @Produces("text/json")
     public List<LProbe> filter(@Context UriInfo info) {

@@ -11,13 +11,27 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.model.SMessStelle;
 
-
+/**
+ * This Container is an interface to request, filter and select SMessStelle
+ * obejcts from the connected database.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ApplicationScoped
 public class SMessstelleRepository
 {
+
+    /**
+     * The entitymanager managing the data.
+     */
     @Inject
     EntityManager em;
 
+    /**
+     * Get all SMessStelle object from database.
+     *
+     * @return List of SMessStelle objects.
+     */
     public List<SMessStelle> findAll() {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<SMessStelle> criteria = builder.createQuery(SMessStelle.class);
@@ -26,6 +40,12 @@ public class SMessstelleRepository
         return em.createQuery(criteria).getResultList();
     }
 
+    /**
+     * Find a single SMessStelle object identified by its id.
+     *
+     * @param id The mst_id
+     * @return The SMessStelle object.
+     */
     public SMessStelle findById(String id) {
         return em.find(SMessStelle.class, id);
     }
