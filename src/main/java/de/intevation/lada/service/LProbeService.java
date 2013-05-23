@@ -19,14 +19,10 @@ public class LProbeService {
     @Inject
     private EntityManager em;
 
-//    @Inject
-//    private Event<Member> memberEventSrc;
-
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void delete(String id) throws Exception {
-    	LProbe probe = em.find(LProbe.class, id);
+        LProbe probe = em.find(LProbe.class, id);
         log.info("Deleting " + probe.getProbeId());
         em.remove(probe);
-        //memberEventSrc.fire(member);
     }
 }

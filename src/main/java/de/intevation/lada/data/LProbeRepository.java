@@ -29,7 +29,6 @@ public class LProbeRepository {
      * The entitymanager managing the data.
      */
     @Inject
-    @PersistenceContext(type=PersistenceContextType.EXTENDED)
     private EntityManager em;
 
     /**

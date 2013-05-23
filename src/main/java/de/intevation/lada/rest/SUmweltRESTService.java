@@ -41,7 +41,7 @@ public class SUmweltRESTService {
      */
     @GET
     @Produces("text/json")
-    public List<SUmwelt> listAllMembers() {
+    public List<SUmwelt> findAll() {
         final List<SUmwelt> result = repository.findAll();
         return result;
     }
