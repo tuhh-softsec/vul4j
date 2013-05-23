@@ -43,16 +43,6 @@ public class LProbeRESTService {
     }
 
     @GET
-    @Path("/deleteLast")
-    @Produces("text/plain")
-    public String deleteLast() {
-       final List<LProbe> result = repository.findAll();
-       LProbe last_element = result.get(result.size()-1);
-       repository.delete(last_element);
-       return "Gelöscht id" + last_element.getProbeId();
-    }
-
-    @GET
     @Produces("text/json")
     public List<LProbe> filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
@@ -79,24 +69,4 @@ public class LProbeRESTService {
         }
         return repository.filter(mstId, uwbId, begin);
     }
-    //@GET
-    //@Produces("text/xml")
-    //public List<Member> listAllMembers() {
-    //   // Us @SupressWarnings to force IDE to ignore warnings about "genericizing" the results of
-    //   // this query
-    //   @SuppressWarnings("unchecked")
-    //   // We recommend centralizing inline queries such as this one into @NamedQuery annotations on
-    //   // the @Entity class
-    //   // as described in the named query blueprint:
-    //   // https://blueprints.dev.java.net/bpcatalog/ee5/persistence/namedquery.html
-    //   final List<Member> results = em.createQuery("select m from Member m order by m.name").getResultList();
-    //   return results;
-    //}
-
-    //@GET
-    //@Path("/{id:[0-9][0-9]*}")
-    //@Produces("text/xml")
-    //public Member lookupMemberById(@PathParam("id") long id) {
-    //   return em.find(Member.class, id);
-    //}
 }
