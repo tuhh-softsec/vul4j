@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.intevation.utils;
+package de.intevation.lada.utils;
 
 import java.util.logging.Logger;
 
