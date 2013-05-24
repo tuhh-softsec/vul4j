@@ -5,19 +5,16 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.service.LProbeService;
 
 /**
  * This class produces a RESTful service to read the contents of LProbe table.
@@ -26,7 +23,7 @@ import de.intevation.lada.service.LProbeService;
  */
 @Path("/proben")
 @RequestScoped
-public class LProbeRESTService {
+public class LProbeService {
 
     /**
      * The Repository for LProbe.
@@ -50,7 +47,7 @@ public class LProbeRESTService {
     @Path("/{id}")
     @Produces("text/json")
     public LProbe loadById(@PathParam("id") String id) {
-       return repository.findById(id);
+       return repository.findById(LProbe.class, id);
     }
 
     /**
@@ -70,7 +67,7 @@ public class LProbeRESTService {
     public List<LProbe> filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
-            return repository.findAll();
+            return repository.findAll(LProbe.class);
         }
         String mstId = "";
         String uwbId = "";

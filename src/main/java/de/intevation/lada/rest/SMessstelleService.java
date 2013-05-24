@@ -10,8 +10,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import de.intevation.lada.data.SMessstelleRepository;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessStelle;
+import javax.inject.Named;
 
 /**
  * This class produces a RESTful service to read the contents of s_messstelle
@@ -21,13 +22,13 @@ import de.intevation.lada.model.SMessStelle;
  */
 @Path("/mst")
 @RequestScoped
-public class SMessstelleRESTService
+public class SMessstelleService
 {
     /**
      * The Repository for SMessStelle.
      */
-    @Inject
-    private SMessstelleRepository repository;
+    @Inject @Named
+    private Repository repository;
 
     /**
      * The logger for this class
@@ -43,7 +44,7 @@ public class SMessstelleRESTService
     @GET
     @Produces("text/json")
     public List<SMessStelle> findAll() {
-        final List<SMessStelle> result = repository.findAll();
+        List<SMessStelle> result = repository.findAll(SMessStelle.class);
         return result;
     }
 
@@ -54,9 +55,9 @@ public class SMessstelleRESTService
      * @return JSON Object via REST service.
      */
     @GET
-    @Path("/{id:[0-9][0-9]*}")
+    @Path("/{id}")
     @Produces("text/json")
     public SMessStelle findById(@PathParam("id") String id) {
-        return repository.findById(id);
+        return repository.findById(SMessStelle.class, id);
     }
 }

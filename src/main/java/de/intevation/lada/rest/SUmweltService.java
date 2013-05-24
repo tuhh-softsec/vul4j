@@ -10,8 +10,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import de.intevation.lada.data.SUmweltRepository;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SUmwelt;
+import javax.inject.Named;
 
 /**
  * This class produces a RESTful service to read the contents of s_umwelt table.
@@ -20,13 +21,13 @@ import de.intevation.lada.model.SUmwelt;
  */
 @Path("/uwb")
 @RequestScoped
-public class SUmweltRESTService {
+public class SUmweltService {
 
     /**
      * The Repository for SUmwelt.
      */
-    @Inject
-    private SUmweltRepository repository;
+    @Inject @Named
+    private Repository repository;
 
     /**
      * The logger for this class.
@@ -42,7 +43,7 @@ public class SUmweltRESTService {
     @GET
     @Produces("text/json")
     public List<SUmwelt> findAll() {
-        final List<SUmwelt> result = repository.findAll();
+        List<SUmwelt> result = repository.findAll(SUmwelt.class);
         return result;
     }
 
@@ -56,6 +57,6 @@ public class SUmweltRESTService {
     @Path("/{id:[0-9][0-9]*}")
     @Produces("text/json")
     public SUmwelt loadById(@PathParam("id") String id) {
-        return repository.findById(id);
+        return repository.findById(SUmwelt.class, id);
     }
 }
