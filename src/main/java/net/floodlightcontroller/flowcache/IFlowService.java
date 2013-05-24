@@ -145,6 +145,14 @@ public interface IFlowService extends IFloodlightService {
     public Long measurementGetInstallPathsTimeNsec();
 
     /**
+     * Get the measurement install time per Flow.
+     *
+     * @return a multi-line string with the following format per line:
+     * ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
+     */
+    public String measurementGetPerFlowInstallTime();
+
+    /**
      * Clear the path flows stored for measurement purpose.
      *
      * @return true on success, otherwise false.

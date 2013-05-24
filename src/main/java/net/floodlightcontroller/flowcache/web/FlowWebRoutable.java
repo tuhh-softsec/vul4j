@@ -25,6 +25,7 @@ public class FlowWebRoutable implements RestletRoutable {
         router.attach("/measurement-store-path/json", MeasurementStorePathFlowResource.class);
         router.attach("/measurement-install-paths/{num-threads}/json", MeasurementInstallPathsFlowResource.class);
         router.attach("/measurement-get-install-paths-time-nsec/json", MeasurementGetInstallPathsTimeNsecFlowResource.class);
+        router.attach("/measurement-get-per-flow-install-time/json", MeasurementGetPerFlowInstallTimeFlowResource.class);
         router.attach("/measurement-clear-all-paths/json", MeasurementClearAllPathsFlowResource.class);
         return router;
     }
