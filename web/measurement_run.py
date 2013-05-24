@@ -6,21 +6,18 @@ import string
 import subprocess
 import time
 
-threads_n = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100]
-# threads_n = [1]
-# flows_n = [42, 252, 420, 1008]
-# flow_n = 42
-# flow_n = 1008
-flow_n = 252
-# flow_n = 1
+# flow_n = 252
+# threads_n = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 100]
+# iterations_n = 10
+
+flow_n = 1
+threads_n = [1]
 iterations_n = 10
 # iterations_n = 100
 
-# threads_n = [1]
-# flowdef_filename = "web/flowdef_8node_1008.txt"
-# flowdef_filename = "web/flowdef_8node_252.txt"
-# flowdef_filename = "web/flowdef_8node_42.txt"
-# flowdef_filename = "web/flowdef_8node_1.txt"
+# flow_n = 42
+# flow_n = 420
+# flow_n = 1008
 
 def run_command(cmd):
     """
@@ -50,9 +47,15 @@ def run_measurement(thread_n):
     # Get the measurement data and print it
     cmd = "web/measurement_get_install_paths_time_nsec.py"
     r = run_command(cmd)		# Tuple: [<stdout>, <stderr>]
-    res = r[0].split()		# Tuple: [<num>, nsec]
+    res = r[0].split()			# Tuple: [<num>, nsec]
     nsec_str = res[0]
     msec = float(nsec_str) / (1000 * 1000)
+
+    # Get the measurement data and print it
+    cmd = "web/measurement_get_per_flow_install_time.py"
+    r = run_command(cmd)		# Tuple: [<stdout>, <stderr>]
+    res = r[0]
+    print res
 
     # Keep checking until all Flow Paths are installed
     while True:
