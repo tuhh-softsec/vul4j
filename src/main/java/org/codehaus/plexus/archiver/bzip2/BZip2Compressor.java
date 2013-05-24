@@ -44,8 +44,6 @@ public class BZip2Compressor
         {
             BufferedOutputStream bos =
                 new BufferedOutputStream( new FileOutputStream( getDestFile() ) );
-            bos.write( 'B' );
-            bos.write( 'Z' );
             zOut = new BZip2CompressorOutputStream( bos );
             compress( getSource(), zOut );
         }

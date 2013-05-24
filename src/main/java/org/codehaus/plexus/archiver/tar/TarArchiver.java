@@ -631,8 +631,6 @@ public class TarArchiver
             }
             else if ( BZIP2.equals( value ) )
             {
-                ostream.write( 'B' );
-                ostream.write( 'Z' );
                 return new BZip2CompressorOutputStream( ostream );
             }
             return ostream;

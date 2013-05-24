@@ -94,16 +94,6 @@ public class BZip2UnArchiver
     public static BZip2CompressorInputStream getBZip2InputStream( InputStream bis )
         throws IOException
     {
-        int b = bis.read();
-        if ( b != 'B' )
-        {
-            return null;
-        }
-        b = bis.read();
-        if ( b != 'Z' )
-        {
-            return null;
-        }
         return new BZip2CompressorInputStream( bis );
     }
 
