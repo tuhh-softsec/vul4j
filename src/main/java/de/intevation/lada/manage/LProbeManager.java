@@ -1,4 +1,4 @@
-package de.intevation.lada.service;
+package de.intevation.lada.manage;
 
 import java.util.logging.Logger;
 
@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import de.intevation.lada.model.LProbe;
 
 @Stateless
-public class LProbeService {
+public class LProbeManager {
 
     @Inject
     private Logger log;
