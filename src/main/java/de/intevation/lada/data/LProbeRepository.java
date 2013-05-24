@@ -6,15 +6,13 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.service.LProbeService;
 
 /**
  * This Container is an interface to request, filter and select LProbe
@@ -23,7 +21,7 @@ import de.intevation.lada.service.LProbeService;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @ApplicationScoped
-public class LProbeRepository {
+public class LProbeRepository extends Repository{
 
     /**
      * The entitymanager managing the data.
@@ -32,20 +30,10 @@ public class LProbeRepository {
     private EntityManager em;
 
     /**
-     * Service class for LPRobe. Used to manipulate data objects.
+     * Manager class for LPRobe. Used to manipulate data objects.
      */
     @Inject
-    private LProbeService service;
-
-    /**
-     * Find a single LProbe object identified by its id.
-     *
-     * @param id The mst_id
-     * @return The SMessStelle object.
-     */
-    public LProbe findById(String id) {
-        return em.find(LProbe.class, id);
-    }
+    private LProbeManager manager;
 
     /**
      * Filter for LProbe objects.
@@ -87,19 +75,6 @@ public class LProbeRepository {
             Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
             criteria.where(beg);
         }
-        return em.createQuery(criteria).getResultList();
-    }
-
-    /**
-     * Get all LProbe objects from database.
-     *
-     * @return List of LProbe objects.
-     */
-    public List<LProbe> findAll() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
-        Root<LProbe> member = criteria.from(LProbe.class);
-        criteria.select(member);
         return em.createQuery(criteria).getResultList();
     }
 }
