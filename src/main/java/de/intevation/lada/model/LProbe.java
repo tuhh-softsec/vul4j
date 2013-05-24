@@ -26,6 +26,8 @@ public class LProbe implements java.io.Serializable {
 	private String baId;
 	private String mediaDesk;
 	private String media;
+	private String probenartId;
+	private String datenbasisId;
 	private Date probeentnahmeBeginn;
 	private Date probeentnahmeEnde;
 	private Long mittelungsdauer;
@@ -48,6 +50,7 @@ public class LProbe implements java.io.Serializable {
 
 	public LProbe(String probeId, String mstId, String umwId, boolean test,
 			String hauptprobenNr, String baId, String mediaDesk, String media,
+			String probenartId, String datenbasisId,
 			Date probeentnahmeBeginn, Date probeentnahmeEnde,
 			Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
 			Integer probeNehmerId, Character mpKat, String mplId,
@@ -60,6 +63,8 @@ public class LProbe implements java.io.Serializable {
 		this.baId = baId;
 		this.mediaDesk = mediaDesk;
 		this.media = media;
+		this.setProbenartId(probenartId);
+		this.setDatenbasisId(datenbasisId);
 		this.probeentnahmeBeginn = probeentnahmeBeginn;
 		this.probeentnahmeEnde = probeentnahmeEnde;
 		this.mittelungsdauer = mittelungsdauer;
@@ -249,4 +254,22 @@ public class LProbe implements java.io.Serializable {
 	public String getUmwId() {
 		return this.umwId;
 	}
+
+	@Column(name = "probenart_id")
+    public String getProbenartId() {
+        return probenartId;
+    }
+
+    public void setProbenartId(String probenartId) {
+        this.probenartId = probenartId;
+    }
+
+    @Column(name = "datenbasis_id")
+    public String getDatenbasisId() {
+        return datenbasisId;
+    }
+
+    public void setDatenbasisId(String datenbasisId) {
+        this.datenbasisId = datenbasisId;
+    }
 }
