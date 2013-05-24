@@ -12,7 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LProbeManager;
+import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeDetails;
 
 /**
  * This Container is an interface to request, filter and select LProbe
@@ -76,5 +78,23 @@ public class LProbeRepository extends Repository{
             criteria.where(beg);
         }
         return em.createQuery(criteria).getResultList();
+    }
+
+    public LProbeDetails details(String probeId) {
+        LProbeDetails details = new LProbeDetails();
+        LProbe probe = em.find(LProbe.class, probeId);
+        if (probe == null) {
+            return new LProbeDetails();
+        }
+        details.setLprobe(probe);
+
+        CriteriaBuilder cbLorts = em.getCriteriaBuilder();
+        CriteriaQuery<LOrt> criteriaLorts = cbLorts.createQuery(LOrt.class);
+        Root<LOrt> member = criteriaLorts.from(LOrt.class);
+        criteriaLorts.where(cbLorts.equal(member.get("probeId"), probe.getProbeId()));
+        List<LOrt> lorts = em.createQuery(criteriaLorts).getResultList();
+        details.setLorts(lorts);
+
+        return details;
     }
 }
