@@ -47,8 +47,8 @@ public class LProbeService {
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public LProbe loadById(@PathParam("id") String id) {
-       return repository.findById(LProbe.class, id);
+    public LProbeDetails details(@PathParam("id") String id) {
+        return repository.details(id);
     }
 
     /**
@@ -89,12 +89,5 @@ public class LProbeService {
             }
         }
         return repository.filter(mstId, uwbId, begin);
-    }
-
-    @GET
-    @Path("/details/{id}")
-    @Produces("text/json")
-    public LProbeDetails details(@PathParam("id") String id) {
-        return repository.details(id);
     }
 }
