@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LProbeManager;
+import de.intevation.lada.model.LKommentarP;
 import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.model.LProbeDetails;
@@ -90,10 +91,18 @@ public class LProbeRepository extends Repository{
 
         CriteriaBuilder cbLorts = em.getCriteriaBuilder();
         CriteriaQuery<LOrt> criteriaLorts = cbLorts.createQuery(LOrt.class);
-        Root<LOrt> member = criteriaLorts.from(LOrt.class);
-        criteriaLorts.where(cbLorts.equal(member.get("probeId"), probe.getProbeId()));
+        Root<LOrt> lo = criteriaLorts.from(LOrt.class);
+        criteriaLorts.where(cbLorts.equal(lo.get("probeId"), probe.getProbeId()));
         List<LOrt> lorts = em.createQuery(criteriaLorts).getResultList();
         details.setLorts(lorts);
+
+        CriteriaBuilder cbLKomm = em.getCriteriaBuilder();
+        CriteriaQuery<LKommentarP> criteriaLKomm =
+            cbLKomm.createQuery(LKommentarP.class);
+        Root<LKommentarP> lk = criteriaLKomm.from(LKommentarP.class);
+        criteriaLorts.where(cbLorts.equal(lk.get("probeId"), probe.getProbeId()));
+        List<LKommentarP> lkomm = em.createQuery(criteriaLKomm).getResultList();
+        details.setLkommentar(lkomm);
 
         return details;
     }

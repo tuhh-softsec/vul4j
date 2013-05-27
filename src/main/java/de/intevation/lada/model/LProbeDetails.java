@@ -9,13 +9,19 @@ public class LProbeDetails implements Serializable
 
     private LProbe lprobe;
     private List<LOrt> lorts;
+    private List<LKommentarP> lkommentar;
 
     public LProbeDetails() {
     }
 
-    public LProbeDetails(LProbe lprobe, List<LOrt> lorts) {
+    public LProbeDetails(
+        LProbe lprobe,
+        List<LOrt> lorts,
+        List<LKommentarP> lkommentar
+    ) {
         this.lprobe = lprobe;
         this.lorts = lorts;
+        this.setLkommentar(lkommentar);
     }
 
     public LProbe getLprobe() {
@@ -32,5 +38,13 @@ public class LProbeDetails implements Serializable
 
     public void setLorts(List<LOrt> lorts) {
         this.lorts = lorts;
+    }
+
+    public List<LKommentarP> getLkommentar() {
+        return lkommentar;
+    }
+
+    public void setLkommentar(List<LKommentarP> lkommentar) {
+        this.lkommentar = lkommentar;
     }
 }
