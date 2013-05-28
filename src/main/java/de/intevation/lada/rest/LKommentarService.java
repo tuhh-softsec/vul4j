@@ -65,15 +65,12 @@ public class LKommentarService
     @Produces("text/json")
     public List<LKommentarP> filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty()) {
-            return new ArrayList<LKommentarP>(0);
-        }
         if (params.containsKey("probe")) {
             String probe = params.getFirst("probe");
             return repository.filter(probe);
         }
         else {
-            return new ArrayList<LKommentarP>(0);
+            return repository.findAll(LKommentarP.class);
         }
     }
 
