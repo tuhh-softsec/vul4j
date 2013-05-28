@@ -26,7 +26,7 @@ import de.intevation.lada.model.LKommentarP;
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("/kommentar")
+@Path("/kommentare")
 @RequestScoped
 public class LKommentarService
 {
