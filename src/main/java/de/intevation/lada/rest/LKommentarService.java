@@ -11,6 +11,8 @@ import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -55,6 +57,36 @@ public class LKommentarService
         return repository.findById(LKommentarP.class, id);
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Produces("text/json")
+    public String delete(@PathParam("id") String id) {
+        return "[{success: true}]";
+        //String response = repository.delete(id);
+        //if (response.isEmpty()) {
+        //    return "[{success: true}]";
+        //}
+        //else {
+        //    return "[{success: false," +
+        //        " error: " + response + "}]";
+        //}
+    }
+
+    @PUT
+    @Produces("text/json")
+    @Consumes("application/json")
+    public String update(LKommentarP kommentar) {
+        return "[{success: true}]";
+        //String response = repository.delete(id);
+        //if (response.isEmpty()) {
+        //    return "[{success: true}]";
+        //}
+        //else {
+        //    return "[{success: false," +
+        //        " error: " + response + "}]";
+        //}
+    }
+
     /**
      * Request a list of LKommentarP objects filtered by LProbe id.
      *
@@ -75,7 +107,6 @@ public class LKommentarService
     }
 
     @POST
-    @Path("/create")
     @Consumes("application/json")
     public String create(LKommentarP kommentar) {
         String response = repository.create(kommentar);
