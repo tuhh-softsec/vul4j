@@ -90,4 +90,14 @@ public class LProbeService {
         }
         return repository.filter(mstId, uwbId, begin);
     }
+
+
+    //    200 Ok
+    //    Anderes ist Fehler.
+    //    {
+    //        returncode: 500,
+    //        field: [
+    //           {fieldname: validator_error_code},
+    //        ]
+    //    }
 }
