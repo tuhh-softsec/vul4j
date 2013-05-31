@@ -18,7 +18,6 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbeDetails;
 
 /**
  * This class produces a RESTful service to read the contents of LProbe table.
@@ -50,7 +49,7 @@ public class LProbeService {
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public LProbeDetails details(@PathParam("id") String id) {
+    public LProbe details(@PathParam("id") String id) {
         return repository.details(id);
     }
 

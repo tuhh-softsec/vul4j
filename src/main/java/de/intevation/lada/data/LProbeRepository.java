@@ -1,21 +1,23 @@
 package de.intevation.lada.data;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LProbeManager;
-import de.intevation.lada.model.LKommentarP;
-import de.intevation.lada.model.LOrt;
 import de.intevation.lada.model.LProbe;
-import de.intevation.lada.model.LProbeDetails;
+import de.intevation.lada.validation.ValidationException;
 
 /**
  * This Container is an interface to request, filter and select LProbe
@@ -37,6 +39,13 @@ public class LProbeRepository extends Repository{
      */
     @Inject
     private LProbeManager manager;
+
+    /**
+     * Errors/Warnings occured in repository operations.
+     */
+    private int generalError;
+    private Map<String, Integer> errors;
+    private Map<String, Integer> warnings;
 
     /**
      * Filter for LProbe objects.
@@ -81,29 +90,57 @@ public class LProbeRepository extends Repository{
         return em.createQuery(criteria).getResultList();
     }
 
-    public LProbeDetails details(String probeId) {
-        LProbeDetails details = new LProbeDetails();
-        LProbe probe = em.find(LProbe.class, probeId);
-        if (probe == null) {
-            return new LProbeDetails();
+    public LProbe details(String probeId) {
+        return em.find(LProbe.class, probeId);
+    }
+
+    public boolean create(LProbe probe) {
+        setGeneralError(200);
+        setErrors(new HashMap<String, Integer>());
+        setWarnings(new HashMap<String, Integer>());
+        try {
+            manager.create(probe);
+            setWarnings(manager.getWarnings());
+            return true;
         }
-        details.setLprobe(probe);
+        catch (EntityExistsException eee) {
+            setGeneralError(601);
+        }
+        catch (IllegalArgumentException iae) {
+            setGeneralError(602);
+        }
+        catch (TransactionRequiredException tre) {
+            setGeneralError(603);
+        }
+        catch (ValidationException ve) {
+            setGeneralError(604);
+            setErrors(ve.getErrors());
+            setWarnings(manager.getWarnings());
+        }
+        return false;
+    }
 
-        CriteriaBuilder cbLorts = em.getCriteriaBuilder();
-        CriteriaQuery<LOrt> criteriaLorts = cbLorts.createQuery(LOrt.class);
-        Root<LOrt> lo = criteriaLorts.from(LOrt.class);
-        criteriaLorts.where(cbLorts.equal(lo.get("probeId"), probe.getProbeId()));
-        List<LOrt> lorts = em.createQuery(criteriaLorts).getResultList();
-        details.setLorts(lorts);
+    public int getGeneralError() {
+        return generalError;
+    }
 
-        CriteriaBuilder cbLKomm = em.getCriteriaBuilder();
-        CriteriaQuery<LKommentarP> criteriaLKomm =
-            cbLKomm.createQuery(LKommentarP.class);
-        Root<LKommentarP> lk = criteriaLKomm.from(LKommentarP.class);
-        criteriaLorts.where(cbLorts.equal(lk.get("probeId"), probe.getProbeId()));
-        List<LKommentarP> lkomm = em.createQuery(criteriaLKomm).getResultList();
-        details.setLkommentar(lkomm);
+    private void setGeneralError(int generalError) {
+        this.generalError = generalError;
+    }
 
-        return details;
+    public Map<String, Integer> getErrors() {
+        return errors;
+    }
+
+    private void setErrors(Map<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public Map<String, Integer> getWarnings() {
+        return warnings;
+    }
+
+    private void setWarnings(Map<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }
