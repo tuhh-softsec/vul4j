@@ -94,7 +94,6 @@ public class LProbeService {
     }
 
     @POST
-    @Path("/create")
     @Produces("text/json")
     @Consumes("application/json")
     public String create(LProbe probe) {
