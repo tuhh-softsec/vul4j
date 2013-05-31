@@ -49,8 +49,8 @@ public class LProbeService {
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public LProbe details(@PathParam("id") String id) {
-        return repository.details(id);
+    public LProbe findById(@PathParam("id") String id) {
+        return repository.findById(LProbe.class, id);
     }
 
     /**

@@ -16,6 +16,11 @@ import de.intevation.lada.model.LProbe;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
+/**
+ * This Manager provides databse operations for LProbe objects.
+ * 
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Stateless
 public class LProbeManager {
 
@@ -42,6 +47,16 @@ public class LProbeManager {
         em.remove(probe);
     }
 
+    /**
+     * Persist a new LProbe object in the database using the LProbeValidator.
+     *
+     * @param probe The new LProbe object.
+     *
+     * @throws EntityExistsException
+     * @throws IllegalArgumentException
+     * @throws TransactionRequiredException
+     * @throws ValidationException
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void create(LProbe probe)
     throws EntityExistsException,
@@ -52,6 +67,11 @@ public class LProbeManager {
         em.persist(probe);
     }
 
+    /**
+     * Get the warnings found while validating a LProbe object.
+     *
+     * @return Map of warnings containing field - warn code pair.
+     */
     public Map<String, Integer> getWarnings() {
         return validator.getWarnings();
     }
