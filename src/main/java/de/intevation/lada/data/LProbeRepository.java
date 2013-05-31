@@ -90,14 +90,19 @@ public class LProbeRepository extends Repository{
         return em.createQuery(criteria).getResultList();
     }
 
-    public LProbe details(String probeId) {
-        return em.find(LProbe.class, probeId);
-    }
-
+    /**
+     * Validate and persist a new LProbe object.
+     *
+     * @param probe The new LProbe object
+     * @return True on success, else returns false.
+     */
     public boolean create(LProbe probe) {
+        // Make sure that no old errors and warnings remain.
         setGeneralError(200);
         setErrors(new HashMap<String, Integer>());
         setWarnings(new HashMap<String, Integer>());
+
+        // Try to save the new LProbe.
         try {
             manager.create(probe);
             setWarnings(manager.getWarnings());
@@ -120,26 +125,56 @@ public class LProbeRepository extends Repository{
         return false;
     }
 
+    /**
+     * Getter for the error code returned by the validator.
+     *
+     * @return The error code returned by the validator.
+     */
     public int getGeneralError() {
         return generalError;
     }
 
+    /**
+     * Private setter for the general error code.
+     *
+     * @param generalError
+     */
     private void setGeneralError(int generalError) {
         this.generalError = generalError;
     }
 
+    /**
+     * Getter for all errors occured while validating a LProbe object.
+     *
+     * @return Map of field - error code pairs.
+     */
     public Map<String, Integer> getErrors() {
         return errors;
     }
 
+    /**
+     * Private setter for validation errors.
+     * 
+     * @param errors
+     */
     private void setErrors(Map<String, Integer> errors) {
         this.errors = errors;
     }
 
+    /**
+     * Getter for all warnings occured while validating a LProbe object.
+     *
+     * @return Map of field - error code pairs.
+     */
     public Map<String, Integer> getWarnings() {
         return warnings;
     }
 
+    /**
+     * Private setter for validation warnings.
+     *
+     * @param warnings
+     */
     private void setWarnings(Map<String, Integer> warnings) {
         this.warnings = warnings;
     }
