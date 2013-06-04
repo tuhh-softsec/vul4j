@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>
-	Esigate - Webapp integration, Remote templating, Web accelerator
+	ESIGate - Webapp integration, Remote templating, Web accelerator
 </title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="description" content="Esigate is a http proxy, with full support of ESI specification and additional features to make web application integration fast and easy. "/>
@@ -68,6 +68,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="index.html">English</a></li>
                   <li><a href="index_fr.html">French</a></li>
+                  <li><a href="index_es.html">Spanish</a></li>
                 </ul>
               </li>
             </ul>
@@ -159,15 +160,15 @@
 			<div class="span4">
 				<h2>Server-side integration</h2>
 				<p>Esigate allows a fast and invisible <a href="http://en.wikipedia.org/wiki/Mashup_(web_application_hybrid)">mashup</a> of any web applications.</p>
-				<p>It can be used to add application modules, written in any programming language (PHP, Java, .Net, ...) to a <a href="http://en.wikipedia.org/wiki/Content_management_system">CMS</a>, without cache or accessibility issues.</p>
+				<p>It can be used to add application modules, written in any programming language (PHP, Java, .Net...) to a <a href="http://en.wikipedia.org/wiki/Content_management_system">CMS</a>, without cache or accessibility issues.</p>
 				<p>
 					<a class="btn" href="#features-integration">Details &raquo;</a>
 				</p>
 			</div>
 			<div class="span4">
 				<h2>Shared remote templates</h2>
-				<p>Use a single, shared <a href="http://en.wikipedia.org/wiki/Web_template">template</a> for several applications, ensuring exact same design and real-time synchronization.</p>
-				<p>Use a <a href="http://en.wikipedia.org/wiki/Content_management_system">CMS</a> or a portail a template, to get graphical administration features for all your applications.</p>
+				<p>Use a single, shared <a href="http://en.wikipedia.org/wiki/Web_template">template</a> for several applications, ensuring exactly the same design and real-time synchronization.</p>
+				<p>Use a <a href="http://en.wikipedia.org/wiki/Content_management_system">CMS</a> or a portal as a template, to get graphical administration features for all your applications.</p>
 				<p>
 					<a class="btn" href="#features-remote">Details &raquo;</a>
 				</p>
@@ -199,7 +200,7 @@
 					</div>
 
 					<div class="span8">
-						<p>esigate allows to combine web pages and HTML fragments produced by several applications. This is done server-side and at the HTML level. As a result, the end user gets a simple HTML page as if it was produced by a single application.
+						<p>ESIGate allows to combine web pages and HTML fragments produced by several applications. This is done server-side and at the HTML level. As a result, the end user gets a simple HTML page as if it was produced by a single application.
 						</p>
 							<div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>+</span>
 							<img src="website/img/assemble2.png"/><span>+</span>
@@ -207,9 +208,9 @@
 							<span>=</span><img src="website/img/assemble3.png"/></div>
 						
 
-						<p>Instead of developing a single, large application, use several applications, sharing the same design and content : </p>
+						<p>Instead of developing a single, large application, use several applications, sharing the same design and content: </p>
 
-						<p>A typical setup could be :</p>
+						<p>A typical setup could be:</p>
 						<ul>
 							<li>Drupal (PHP-based CMS), used to manage the global design and content.</li>
 							<li>Struts2 (Java framework), used for custom developments.</li>
@@ -228,16 +229,15 @@
 					</div>
 
 					<div class="span8">
-						<p>esigate let you use remove templates. This means that all main design elements (basic HTML content and structure, shared textual content, css, images, .. ) are not included in application but assembled on-the-fly for each user request. 
-							:</p>
+						<p>ESIGate lets you use remote templates. This means that all the main design elements (basic HTML content and structure, shared textual content, css, images... ) are not included in the application but assembled on-the-fly for each user request.</p>
 <div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>&#8658;</span>
 							<img src="website/img/assemble4.png"/>
 </div>
-						<p>The benefits are :</p>
+						<p>The benefits are:</p>
 						<ul>
-							<li>A same design can be used in several applications : graphical, textual or even layout changes are applyed in real time, without deployment or restart.</li>
-							<li>Template is hosted on an HTTP server and can be provided by a dynamic application as a content management system or a portal. These products often provides administration features for design and layout which can be used directly with esigate.</li>
-							<li>Better performances since applications render fewer HTML code and content. Shared content are stored in esigate cache and merged at high speed on each request.</li>
+							<li>A same design can be used in several applications: graphical, textual or even layout changes are applyed in real time, without deployment or restart.</li>
+							<li>Template is hosted on an HTTP server and can be provided by a dynamic application as a content management system or a portal. These products often provide administration features for design and layout which can be used directly with ESIGate.</li>
+							<li>Better performances since applications render fewer HTML code and content. Shared content are stored in ESIGate cache and merged at high speed on each request.</li>
 
 						</ul>
 
@@ -252,16 +252,16 @@
 					</div>
 
 					<div class="span8">
-						<p>esigate is both a proxy and a cache : </p>
+						<p>ESIGate is both a proxy and a cache: </p>
 
 						<p>HTML content is cached according to HTTP directives returned by each URL. Caching can be forced globally or on specific urls by using extensions.</p>
 
-						<p>Embedded or distributed cache : each esigate instance can use its own cache or share a common cache using ehcache or memcached.</p>
+						<p>Embedded or distributed cache: each ESIGate instance can use its own cache or share a common cache using ehcache or memcached.</p>
 
 						<p>Background revalidation and reuse of stale content on error allows constant response times and failure-resistance.</p>
 
 
-						<p>Non-cacheable pages are usually composed of cacheable content and some dynamic content. Withg esigate applications can generate the dynamic part only (fast) and reuse all cacheable content (bloc-level cache).</p>
+						<p>Non-cacheable pages are usually composed of cacheable content and some dynamic content. With ESIGate, applications can generate the dynamic part only (fast) and reuse all cacheable content (bloc-level cache).</p>
 					</div>
 				</div>
 
@@ -274,14 +274,14 @@
 					</div>
 
 					<div class="span8">
-						<p>esigate process HTML content transparently. As a result it is compatible with most framework, tools and web applications as long as they provide web interfaces (HTML or XML over HTTP).</p>
+						<p>ESIGate processes HTML content transparently. As a result it is compatible with most framework, tools and web applications as long as they provide web interfaces (HTML or XML over HTTP).</p>
 
-						<p>esigate has been used successfully with :</p>
+						<p>ESIGate has been used successfully with:</p>
 						<ul>
-							<li>Languages : PHP, Java, ...</li>
-							<li>Frameworks : <a href="http://struts.apache.org/2.x/index.html">Struts2</a>, <a href="http://wicket.apache.org">Wicket</a>, <a href="http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html">JSF</a>, <a href="http://jquery.com">JQuery</a>, ...</li>
-							<li>Products : <a href="http://drupal.org">Drupal</a>, <a
-								href="http://ez.no">eZ publish</a>, <a href="http://www.jahia.com/cms/fr/home.html">Jahia</a>, <a href="https://www.varnish-cache.org">Varnish</a>, ...
+							<li>Languages: PHP, Java...</li>
+							<li>Frameworks: <a href="http://struts.apache.org/2.x/index.html">Struts2</a>, <a href="http://wicket.apache.org">Wicket</a>, <a href="http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html">JSF</a>, <a href="http://jquery.com">JQuery</a>...</li>
+							<li>Products: <a href="http://drupal.org">Drupal</a>, <a
+								href="http://ez.no">eZ publish</a>, <a href="http://www.jahia.com/cms/fr/home.html">Jahia</a>, <a href="https://www.varnish-cache.org">Varnish</a>...
 							</li>
 						</ul>
 
@@ -298,18 +298,17 @@
 
 					<div class="span8">
 						<p>
-							Esigate fully supports the <a
+							ESIGate fully supports the <a
 								hre="http://www.w3.org/TR/esi-lang">ESI 1.0</a> W3C proposal.
 						</p>
 						<p>
-							Unique <a href="http://www.esigate.org/esi.html">additions
-								</a> improve ESI, allows its use on wider uses cases  :
+							Unique <a href="http://www.esigate.org/esi.html">additions</a> improve ESI, allowing its use on wider usecases:
 						</p>
 						<ul>
 							<li>Fragments and XPath support to securely extract parts of HTML pages.</li>
 							<li>Ability to replace fragments on inclusion, enabling shared template use.</li>
 							<li>Support for XSLT-transformed XML fragments.</li>
-							<li>Specific configuration for each backend (ttl, extensions, ...).</li>
+							<li>Specific configuration for each backend (ttl, extensions...).</li>
 						</ul>
 
 					</div>
@@ -325,18 +324,18 @@
 
 					<div class="span8">
 						<p>
-							esigate provides a JAVA <a
-								href="http://www.esigate.org/extensions.html">extension API</a>. Extentions can hook on the request lifecycle and change behavior according to you needs.
+							ESIGate provides a JAVA <a
+								href="http://www.esigate.org/reference.html#Extensions">extension API</a>. Extensions can hook on the request lifecycle and change behavior according to your needs.
 						</p>
 						<p>
-							Extensions can also handle authentication. esigate comes with a native <a href="http://www.jasig.org/cas">CAS
+							Extensions can also handle authentication. ESIGate comes with a native <a href="http://www.jasig.org/cas">CAS
 								SSO</a> extension.
 						</p>
 
 						<div  class="feature-integration-img"><img src="website/img/cas-logo.png" title="Logo CAS"/></div>
 
 
-						<p>esigate can also be embedded in applications and used for API to build fast and great applications.</p>
+						<p>ESIGate can also be embedded in applications and used for API to build fast and great applications.</p>
 					</div>
 				</div>
 
@@ -359,10 +358,10 @@
 				<div class="row">
 					<div class="span3 offset1">
 					<div class="project-logo">
-						<img src="website/img/sflogo.gif" title="Sourceforge logo" alt="Sourceforge"/>
+						<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&type=16" title="Sourceforge logo" alt="Sourceforge"/>
 					</div>
 						<p>
-							esigate is developed on Sourceforge. The <a
+							ESIGate is hosted on Sourceforge. The <a
 								href="http://sourceforge.net/projects/webassembletool/">project home</a> provides sources and downloads access, mailing lists and project wiki.
 						</p>
 					</div>
@@ -372,11 +371,11 @@
 							<img src="website/img/maven-logo.png" title="Maven logo" alt="Maven" />
 						</div>
 						<p>
-							esigate is build with Maven. For developers, the Maven site is available, with <a
+							ESIGate is build with Maven. For developers, the Maven site is available, with <a
 								href="http://www.esigate.org/project-info.html">project informations
-								</a> (project team, source repository, dependencies, ...) and <a
+								</a> (project team, source repository, dependencies...) and <a
 								href="http://www.esigate.org/project-reports.html">reports</a>
-							(Javadoc, changelog, ...).
+							(Javadoc, changelog...).
 						</p>
 					</div>
 
@@ -389,7 +388,7 @@
 						<p>
 
 
-							esigate is avalaible on the <a
+							ESIGate is avalaible on the <a
 								href="http://search.maven.org/"> central</a> Maven repository. It can be easily added to an existing project by adding the right  <a
 								href="http://search.maven.org/#search%7Cga%7C1%7Cesigate">
 								esigate-* dependency</a>.
@@ -412,8 +411,8 @@
 						
 						
 						<h3>Talk with us !</h3>
-						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a> : general discution, questions and answers.</p> 
-						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-devel@lists.sourceforge.net">webassembletool-devel@lists.sourceforge.net</a> : mailing list on esigate development.</p>
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a>: general discution, questions and answers.</p> 
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-devel@lists.sourceforge.net">webassembletool-devel@lists.sourceforge.net</a>: mailing list on ESIGate development.</p>
 						 
 				<h3>Statistics by Ohloh:</h3>
 				<script type="text/javascript"
@@ -432,7 +431,7 @@
 			
 <h2>Support</h2>
 
-<p>esigate is open-source and can be used at no cost.</p>
+<p>ESIGate is open-source and can be used at no cost.</p>
 <h3>Community support</h3>
 <p>You can get help from the user mailing list
 	<i class="icon-envelope"></i> <a
@@ -442,7 +441,7 @@
 
 <h3>Commercial support</h3>
 
-<p>The following companies provide commercial services on esigate :</p>
+<p>The following companies provide commercial services on ESIGate:</p>
 
 
 <div class="row support-row">
@@ -453,11 +452,11 @@
 
 	<div class="span8">
 		<p>In business since 1991, Smile is the first European integrator of open source solutions. Smile employs
-			 7 active esigate developers, including the creator of the project.</p>
-		<p>Smile has delivered several esigate-based projects.</p>
+			 7 active ESIGate developers, including the creator of the project.</p>
+		<p>Smile has delivered several ESIGate-based projects.</p>
 		<p>
 			<span class="badge badge-success"
-				title="esigate committer"><i
+				title="ESIGate committer"><i
 				class="icon-ok-sign icon-white"></i> Committer</span> <a
 				href="http://www.smile.fr">Contact...</a>
 		</p>
@@ -469,11 +468,11 @@
 	</div>
 
 	<div class="span8">
-		<p>Committer and user of esigate since the very first esigate versions, provides commercial training and support on esigate.</p>
-		<p>Nicolas also provides expertise on esigate projects delivered by Capgemini.</p>
+		<p>Committer and user of ESIGate since the very first ESIGate versions, provides commercial training and support on ESIGate.</p>
+		<p>Nicolas also provides expertise on ESIGate projects delivered by Capgemini.</p>
 		<p>
 			<span class="badge badge-success"
-				title="esigate committer"><i
+				title="ESIGate committer"><i
 				class="icon-ok-sign icon-white"></i> Committer</span> <a
 				href="http://blog.richeton.com/esigate/commercial-support/">Contact...</a>
 		</p>
@@ -486,7 +485,7 @@
 
 	<div class="span8">
 		<p>Capgemini is headquartered in Paris, France and operates in 40 countries. We are, above all, a people company: more than 120,000 people in North America, Europe, South America and the Asia Pacific region..</p>
-		<p>Capgemini has delivered several major projects built with esigate.</p>
+		<p>Capgemini has delivered several major projects built with ESIGate.</p>
 		<p>
 			<span class="badge badge-notice"
 				title="Integrator"><i

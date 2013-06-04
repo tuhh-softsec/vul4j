@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="
+es
+">
+<head>
+<meta charset="utf-8">
+<title>
+	
+ESIGate - Integración de aplicaciones Web, Plantillas remotas, Acelerador Web
+
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="
+ESIGate es un proxy http, con un soporte completo de la especificación ESI, y funciones suplementarias para hacer la integración de aplicaciones web simple y rápida.
+"/>
+<meta name="author" content="Nicolas Richeton"/>
+
+<link href="website/css/bootstrap.min.css" rel="stylesheet">
+<link href="website/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link rel="stylesheet/less" type="text/css" href="website/css/esigate.less" />
+<script src="website/js/less-1.3.1.min.js"></script>
+
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-27343319-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body data-spy="scroll" data-target=".navbar">
+
+	
+    <div class="navbar  navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">esigate</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#home">
+Inicio
+</a></li>
+              <li><a href="#features">
+Características
+</a></li>
+              <li><a href="#project">
+Proyecto
+</a></li>
+<!--               <li><a href="#changelog">$beginparam$i18n.changelog$Changelog$endparam$i18n.changelog$</a></li> -->
+<!--               <li><a href="#roadmap">$beginparam$i18n.roadmap$Roadmap$endparam$i18n.roadmap$</a></li> -->
+              <li><a href="#support">
+Asistencia
+</a></li>
+              <li class=""><a href="
+http://www.esigate.org/reference.html
+">
+Documentación
+ <i class="icon-share icon-white"></i></a></li>
+              </ul>
+              <ul class="nav pull-right">
+              
+              <li class="dropdown ">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+Idioma
+ <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="index.html">
+Inglés
+</a></li>
+                  <li><a href="index_fr.html">
+Francés
+</a></li>
+                  <li><a href="index_es.html">
+Español
+</a></li>
+                </ul>
+              </li>
+            </ul>
+           
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<div class="container">
+
+
+	<section id="home">
+
+		<div class="row ">
+			<div class="span2 offset1">
+				<h1><a href="http://www.esigate.org"><img src="website/img/logo.png" alt="esigate logo"  title="esigate"/></a></h1>
+			</div>
+			<div class="span9">
+				<div class="pull-right"><p>
+		Versión
+		 4.0</p>
+<!-- 				<p><a href="https://twitter.com/share" class="twitter-share-button" -->
+<!-- 							data-url="http://www.esigate.org" data-lang="en">Tweet</a> -->
+<!-- 						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
+			
+<!-- 			</p> -->
+<!-- 				<p> -->
+<!-- 				<a -->
+<!-- 							href="https://twitter.com/intent/tweet?button_hashtag=esigate&text=" -->
+<!-- 							class="twitter-hashtag-button" data-lang="en">Tweet #esigate</a> -->
+<!-- 						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script> -->
+				
+<!-- 				</p> -->
+				</div>
+
+<!-- 				<h1>esigate</h1> -->
+				<div class="esi-title top-space1">
+		Integración de aplicaciones Web
+		,</div>
+				<div class="esi-title space1">
+		Plantillas remotas
+		,</div>
+				<div class="esi-title space2">
+		Acelerador Web
+		</div>
+
+				<div class="row logo-btn-row">
+					<div class="span2  logo-btn-small ">
+						<a href="https://twitter.com/share" class="twitter-share-button"
+							data-url="http://www.esigate.org" data-lang="en">Tweet</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+					</div>
+					<div class="span2 logo-btn-small">
+						<a
+							href="https://twitter.com/intent/tweet?button_hashtag=esigate&text="
+							class="twitter-hashtag-button" data-lang="en">Tweet #esigate</a>
+						<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+					</div>
+					<div class="span2  logo-btn">
+						<a href="
+		http://www.esigate.org/quickstart.html
+		" class="btn">
+		Tutorial
+		</a>
+					</div>
+					<div class="span3">
+						<a class="btn btn-primary btn-large" href="http://sourceforge.net/projects/webassembletool/files/latest/download?source=files"><i
+							class="icon-download-alt icon-white"></i> 
+		Descargar
+		</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+		<!-- Example row of columns -->
+<div class="row row-gradient used-by">
+	<div class="span12">
+		<div class="row row-gradient-bottom">
+					
+		
+			<div class="span10 offset1 ">
+				<span class="esi-users-label" >
+				<span class="badge">
+				 <i class="  icon-heart icon-white"></i>	
+		esigate es utilizado por
+		 
+					</span>
+				</span>
+
+				<div id="usersCarousel" class="carousel slide ">
+					<div class="carousel-inner"></div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+			<div class="row top-space2 bottom-space2">
+			<div class="span4">
+				<h2>Integración del lado del servidor</h2>
+				<p>ESIGate permite una <a href="http://es.wikipedia.org/wiki/Mashup_%28aplicaci%C3%B3n_web_h%C3%ADbrida%29" title="Mashup">integración</a> transparente y eficiente entre todas las aplicaciones Web.</p>
+				<p>Por ejemplo, ESIGate permite agregar a un <a href="http://es.wikipedia.org/wiki/Sistema_de_gesti%C3%B3n_de_contenidos" title="Sistema de gestion de contenidos">CMS</a>
+ (Sistema de gestión de contenidos) módulos desarrollados en cualquier lenguaje (PHP, Java, .Net...) sin problemas de caché o de accesibilidad.</p>
+ 				<p>
+					<a class="btn" href="#features-integration" title="Detalles sobre la integracion del lado del servidor con ESIGate">Ver detalles &raquo;</a>
+				</p>
+			</div>
+			<div class="span4">
+				<h2>Plantillas remotas compartidas</h2>
+				<p>Usar la misma <a href="http://es.wikipedia.org/wiki/Plantilla" title="plantilla">plantilla</a> en varias aplicaciones para garantizar el mismo diseño y una sincronización en tiempo real.</p>
+				<p>Utilizar un <a href="http://es.wikipedia.org/wiki/Sistema_de_gesti%C3%B3n_de_contenidos" title="Sistema de Gestion de Contenidos">CMS</a> o un portal como plantilla para disfrutar de funcionalidades de administración gráfica del diseño de todas sus aplicaciones.</p>
+				<p>
+					<a class="btn" href="#features-remote" title="Detalles sobre las plantillas remotas y compartidas con ESIGate">Ver detalles &raquo;</a>
+				</p>
+			</div>
+			<div class="span4">
+				<h2>Acelerador Web</h2>
+				<p>Etiquetas <a href="http://en.wikipedia.org/wiki/Edge_Side_Includes" lang="en" title="Edge Side Includes">ESI</a> mejoradas para permitir el almacenamiento en caché de fragmentos de páginas dinámicas.</p>
+				<p>ESIGate entrega contenido connectado y dinámico en milisegundos. También ofrece contenido estático completamente en caché.</p>
+				<p>
+					<a class="btn" href="#features-accelerator" title="Detalles sobre la aceleracion web con ESIGate">Ver detalles &raquo;</a>
+				</p>
+			</div>
+		</div>
+
+
+	</section>
+
+	<section id="features">
+		<div class="row row-gradient top-space5">
+			<div class="span12">
+
+				<h2>Características</h2>
+
+				<div class="row" id="features-integration">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Integración del lado del servidor
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>ESIGate puede combinar páginas web, o fragmentos HTML de
+							páginas web, de aplicaciones diferentes. Esto se realiza del lado
+							del servidor, directamente en HTML. Este montaje es completamente
+							transparente para el usuario, que obtiene al final una página
+							HTML simple como si se ha sido producido por una sola aplicación.</p>
+						<div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>+</span>
+							<img src="website/img/assemble2.png"/><span>+</span>
+							<img src="website/img/logo.png" width="50" alt="logo esigate"/>
+							<span>=</span><img src="website/img/assemble3.png"/></div>
+
+						<p>En lugar de desarrollar una aplicación única y grande,
+							ESIGate permite utilizar varias aplicaciones independientes,
+							incorporando datos desde otras aplicaciones y unificando la
+							interfaz gráfica.</p>
+
+						<p>Una configuración clásica podría ser :</p>
+						<ul>
+							<li>Drupal (CMS PHP), utilizado para gestionar el diseño
+								gráfico y el contenido editorial</li>
+							<li>Struts 2 (Java framework), utilizado para desarrollados
+								a medida</li>
+						</ul>
+
+						<p>La integración del lado del servidor permite también una
+							optimizacion de las applicaciones y de los sitios web para la
+							accesibilidad y los motores de búsqueda (SEO).</p>
+					</div>
+				</div>
+
+				<div class="row feature-row" id="features-remote">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Plantillas remotas compartidas
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>ESIGate le permite utilizar plantillas remotas. Esto
+							significa que todos los elementos de diseño (el contenido y la
+							estructura HTML básicos, el contenido textual compartido, css,
+							imágenes...) no estan incluido directamente en sus aplicaciones
+							sino agregados sobre la marcha para cada solicitud del usuario.</p>
+						<div class="feature-integration-img"><img src="website/img/assemble1.png"/><span>&#8658;</span>
+							<img src="website/img/assemble4.png"/>
+</div>
+						<p>Este modo de funcionamiento tiene muchas ventajas :</p>
+						<ul>
+							<li>El mismo diseño gráfico puede ser compartido por varias
+								aplicaciones : los cambios del tema gráfico, del texto y de la
+								composición visual estan tenido en cuenta en tiempo real, sin
+								despliegue o reinicio.</li>
+							<li>La plantilla está alojado en un servidor HTTP. Se puede
+								utilizar plantillas dinámicas mediante la sustitución de los
+								archivos estáticos con un sistema de gestión de contenidos (CMS)
+								o un portal. En este caso, disfrutara de las funciones
+								administrativas que incluyen estes sistemas.</li>
+							<li>Mejor rendimiento puesto que sus aplicaciones no tienen
+								que generar tampoco el código HTML y los contenidos básico :
+								sólo generan los datos con valor agregado. Los datos compartidos
+								y los datos externos se almacenan en caché por ESIGate y estan
+								incorporado inmediatamente en cada solicitud.</li>
+
+						</ul>
+
+					</div>
+				</div>
+
+				<div class="row feature-row" id="features-accelerator">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Acelerador Web
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>ESIGate es un proxy y un caché ambos :</p>
+
+						<p>El contenido HTML se almacena en caché según las directivas
+							HTTP devueltas por cada URL. Es posible imponer el caché en
+							general o para URL especificas con el uso de extensiones.</p>
+
+						<p>Caché integrado o distribuido : cada instancia de Esigate
+							puede utilizar su propia caché o compartir una caché común
+							utilizando ehcache o memcached.</p>
+
+						<p>La revalidación en segundo plano y la reutilización de
+							contenidos desactualizados en caso de error permiten obtener
+							tiempos de respuesta constantes y una mejor resistencia al
+							fracaso.</p>
+
+
+						<p>Las paginas no almacenables en caché se componen
+							generalmente de contenidos almacenables en caché y de algunos
+							contenidos dinámicos. Con ESIGate, las aplicaciones pueden
+							generar solamente la parte dinámica y reutilizar todos los
+							contenidos almacenables en caché (caché de nivel de bloque).</p>
+
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-compatibility">
+					<div class="span3 offset1">
+						<h3>
+							<i class="icon-star"></i> Compatibilidad
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>ESIGate procesa el contenido HTML de forma transparente. De
+							esta manera, es compatible con la mayoría de los frameworks,
+							herramientas y aplicaciones web, mientras que provean interfaces
+							web (HTML o XML sobre HTTP).</p>
+
+						<p>ESIGate ha sido utilizado con éxito con :</p>
+						<ul>
+							<li>Lenguajes : PHP, Java...</li>
+							<li>Frameworks : <a
+								href="http://struts.apache.org/2.x/index.html" lang="en"
+								title="Framework Apache Struts 2">Struts2</a>, <a
+								href="http://wicket.apache.org/" lang="en"
+								title="Framework Apache Wicket">Wicket</a>, <a
+								href="http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html"
+								lang="en" title="Java Server Faces">JSF</a>, <a
+								href="http://jquery.com/" lang="en" title="JQuery">JQuery</a>...
+							</li>
+							<li>Productos : <a href="http://drupal.org/" lang="en"
+								title="CMS Drupal">Drupal</a>, <a href="http://ez.no/" lang="en"
+								title="CMS ZE Publish">eZ Publish</a>, <a
+								href="http://www.jahia.com" lang="en" title="CMS Jahia">Jahia</a>,
+								<a href="https://www.varnish-cache.org/" lang="en"
+								title="Cache Varnish">Varnish</a>...
+							</li>
+						</ul>
+
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-esi">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> ESI 1.0 y adiciónes
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>
+							ESIGate implementa completamente la propuesta W3C <a
+								hre="http://www.w3.org/TR/esi-lang" lang="en"
+								title="ESI Language Specification">ESI 1.0</a>.
+						</p>
+						<p>
+							<a href="http://www.esigate.org/reference.html#ESI_syntax"
+								lang="en" title="ESI sintaxis">Adiciones únicas</a> le permiten
+							utilizar ESI para desarrollar aplicaciones potentes con
+							facilidad, cuyos los contenidos provienen de varias fuentes :
+						</p>
+						<ul>
+							<li>Gestión de fragmentos y soporte de XPath para integrar
+								solamente partes de las páginas HTML.</li>
+							<li>Sustitución de fragmentos de páginas para permitir un
+								uso a través de plantillas.</li>
+							<li>Soporte de XSLT para formatear fragmentos XML.</li>
+							<li>Configuraciones específicas (ttl, extensiones...) segun
+								las fuentes de datos.</li>
+						</ul>
+
+
+					</div>
+				</div>
+
+
+				<div class="row feature-row" id="features-compatibility">
+					<div class="span3 offset1">
+						<h3>
+							<i class=" icon-star"></i> Extensiones y API
+						</h3>
+					</div>
+
+					<div class="span8">
+						<p>
+							ESIGate tiene un <a
+								href="http://www.esigate.org/reference.html#Extensions">mecanismo
+								de extensiones</a> desarrollado en Java. Las extensiones pueden
+							enganchar en el ciclo de vida de la solicitud y cambiar el
+							comportamiento en función de sus requisitos.
+						</p>
+						<p>
+							Las extensiones pueden también manejar la autenticación. ESIGate
+							incorpora una extension nativa para <a
+								href="http://www.jasig.org/cas">CAS SSO</a>.
+						</p>
+						<div class="feature-integration-img"><img src="website/img/cas-logo.png" title="Logo CAS"/></div>
+
+						<p>ESIGate se puede también integrar en sus aplicaciones y se
+							utiliza en forma de API para desarrollar aplicaciones estupendas
+							y rápidas.</p>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</section>
+	
+
+	<section id="project">
+		<div class="row row-gradient top-space5">
+			<div class="span12">
+
+				<h2>Proyecto</h2>
+
+
+				<div class="row">
+					<div class="span3 offset1">
+					<div class="project-logo">
+						<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=209844&type=16" title="Sourceforge logo" alt="Sourceforge"/>
+					</div>
+						<p>
+							ESIGate está alojado en Sourceforge. En la
+							<a href="http://sourceforge.net/projects/webassembletool/">pagina
+								del proyecto</a> se encuentran el código fuente, el acceso para
+							descargar ESIGate, listas de correos y un wiki.
+						</p>
+					</div>
+					
+					<div class="span3 ">
+						<div class="project-logo">
+							<img src="website/img/maven-logo.png" title="Maven logo" alt="Maven" />
+						</div>
+						<p>
+							Maven se utiliza para construir el proyecto. Para los
+							desarrolladores, el sitio Maven está disponible con <a
+								href="http://www.esigate.org/project-info.html">informaciones
+								sobre el proyecto</a> (equipo de trabajo, repositorio de fuentes,
+							dependencias...) e <a
+								href="http://www.esigate.org/project-reports.html">informes</a>
+							(Javadoc, cambios...).
+						</p>
+					</div>
+
+					<div class="span3">
+						<div class="project-logo">
+							<img src="website/img/centralRepository_logo.png"
+								title="Maven central repository logo"
+								alt="Maven central repository" />
+						</div>
+						<p>
+							ESIGate esta disponible en el <a href="http://search.maven.org/">repositorio
+								central de Maven</a>. Puede ser facilmente agregado a un proyecto
+							existente con la <a
+								href="http://search.maven.org/#search%7Cga%7C1%7Cesigate">dependencia
+								esigate-*</a> adaptada.
+						</p>
+					</div>
+
+				</div>
+
+
+				<h3>					Enlaces rápidos :</h3> 
+				<p>
+					<a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php" title="versiones" lang="en">Versiones</a>
+					| <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/roadmap_page.php" title="hoja de ruta" lang="en">Hoja de ruta</a> | <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php" title="errores" lang="en">Bugs</a>
+					| <a
+						href="http://sourceforge.net/apps/mantisbt/webassembletool/bug_report_page.php" title="reportar un error" lang="en">Reportar un error</a> (<i class="icon-lock"></i> requiere una cuenta de SourceForge)</p>
+						
+						
+						<h3>Hable con nosotros !</h3>
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a> : lista de correo para los usuarios : conversaciónes generales, preguntas... </p> 
+						<p><i class="icon-envelope"></i> <a  href="mailto:webassembletool-devel@lists.sourceforge.net">webassembletool-devel@lists.sourceforge.net</a> : lista de correo para los desarrolladores ESIGate.</p>
+						 
+				<h3>Estadísticas por Ohloh :</h3>
+				<script type="text/javascript"
+					src="http://www.ohloh.net/p/9896/widgets/project_factoids_stats.js"></script>
+
+			</div>
+		</div>
+	</section>
+
+	<section id="support">
+		<div class="row row-gradient top-space">
+			<div class="span12">
+				
+<h2>Asistencia</h2>
+
+<p>ESIGate es un proyecto de código abierto y puede ser utilizado sin costo.</p>
+<h3>Apoyo comunitario</h3>
+<p>Usted puede obtener ayuda de la comunidad mediente la lista de correo de usuarios
+	<i class="icon-envelope"></i> <a
+		href="mailto:webassembletool-users@lists.sourceforge.net">webassembletool-users@lists.sourceforge.net</a>.
+</p>
+
+
+<h3>Soporte comercial</h3>
+
+<p>Las empresas siguientes ofrecen servicios sobre ESIGate para acompañarle en sus proyectos :</p>
+
+
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/smile.png" alt="Smile" />
+
+	</div>
+
+	<div class="span8">
+		<p>Smile es una empresa de expertos en arquitecturas web y soluciones Open Source. Smile ha realizado varios proyectos con ESIGate.</p>
+		<p>
+			<span class="badge badge-success"
+				title="desarrollador ESIGate"><i
+				class="icon-ok-sign icon-white"></i> Desarrollador</span> <a
+				href="http://www.smile-oss.com/" lang="en" title="Smile">Contacto...</a>
+		</p>
+	</div>
+</div>
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/nicolas-richeton.png" alt="Nicolas Richeton" />
+	</div>
+
+	<div class="span8">
+		<p>Desarrollador y usuario de ESIGate desde la primera version, Nicolas provee formaciónes comerciales y asistencia técnica con ESIGate.</p>
+		<p>Nicolas ofrece también su experiencia en proyectos ESIGate realizados por Capgemini.</p>
+		<p>
+			<span class="badge badge-success"
+				title="desarrollador ESIGate"><i
+				class="icon-ok-sign icon-white"></i> Desarrollador</span> <a
+				href="http://blog.richeton.com/esigate/commercial-support/" lang="en" title="Nicolas Richeton">Contacto...</a>
+		</p>
+	</div>
+</div>
+<div class="row support-row">
+	<div class="span3 offset1 ">
+		<img src="website/support/capgemini.png" alt="Cap Gemini" />
+	</div>
+
+	<div class="span8">
+		<p>Capgemini es uno de los principales proveedores mundiales de servicios de Consultoría, Tecnología y Outsourcing. Presente en 40 países con más de 120.000 empleados, 
+		Capgemini ha realisado varios proyectos con ESIGate.</p>
+		<p>
+			<span class="badge badge-notice"
+				title="Integrador"><i
+				class="icon-ok-sign icon-white"></i> Integrador</span> <a href="http://www.capgemini.com/" lang="en" title="Cap Gemini">Contacto...</a>
+		</p>
+	</div>
+</div>
+
+
+			</div>
+		</div>
+
+
+
+	</section>
+
+
+	  <hr>
+
+      <footer>
+        <p>&copy; 2008-2013</p>
+      </footer>
+
+</div>
+<!-- /container -->
+
+
+
+
+
+	<script src="website/js/jquery-1.8.3.min.js"></script>
+	<script src="website/js/bootstrap.min.js?v1"></script>
+
+	<script src="website/js/users.js?v1"></script>
+
+</body>
+</html>
+
+
