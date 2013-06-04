@@ -80,7 +80,7 @@ public class GraphDBConnection {
 	      return singleton;
 	   }
 	   
-	   public IDBUtils utils() {
+	public IDBUtils utils() {
 		   return utils;
 	   }
 	   
@@ -110,17 +110,17 @@ public class GraphDBConnection {
 		   log.debug("Registered listener {}",listener.getClass());
 	   }
 	   
-	   public Boolean isValid() {
+	public Boolean isValid() {
 		   
 		   return (graph != null||graph.isOpen());
 	   }
 	   
-	   public void startTx() {
+	public void startTx() {
 		   
 		   
 	   }
 	   
-	   public void endTx(Transaction tx) {
+	public void endTx(Transaction tx) {
 		   try {
 			   switch (tx) {
 			   case COMMIT:
@@ -170,7 +170,7 @@ public class GraphDBConnection {
 		}
 	   }
 	   
-	   public void close() {
+	public void close() {
 		   endTx(Transaction.COMMIT);
 	   }	   
 }

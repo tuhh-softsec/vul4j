@@ -11,20 +11,32 @@ import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.IDBUtils;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.gremlin.java.GremlinPipeline;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({TitanFactory.class})
 public class LinkStorageImplTest {
 	private static ILinkStorage linkStorage;
 	private static TitanGraph titanGraph;
 	
+	//private static IController
+
 	//TODO Future ideas:
 	//Test add links with CREATE and UPDATE
 	//Test adding existing link again
@@ -33,13 +45,22 @@ public class LinkStorageImplTest {
 	public void setUp() throws Exception{
 		titanGraph = TestDatabaseManager.getTestDatabase();
 		TestDatabaseManager.populateTestData(titanGraph);
+
+		linkStorage = new LinkStorageImpl();
+
+		// replace TitanFactory.open() to mock method
+		PowerMock.mockStatic(TitanFactory.class);
+		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
+		PowerMock.replay(TitanFactory.class);
 		
-		linkStorage = new TestableLinkStorageImpl(titanGraph);
+		linkStorage.init("/dummy/path/to/db");
 	}
 	
 	@After
 	public void tearDown() throws Exception {		
+//		dbConnection.close();
 		titanGraph.shutdown();
+		TestDatabaseManager.deleteTestDatabase();
 	}
 	
 	/*
