@@ -53,7 +53,7 @@ implements Validator
         // TODO Implement me!
 
         // Dummy error.
-        errors.put("probeid", 611);
+        errors.put("probeId", 611);
         ValidationException ve = new ValidationException(errors);
         throw ve;
     }
