@@ -26,7 +26,7 @@ public class LProbe implements java.io.Serializable {
 	private String baId;
 	private String mediaDesk;
 	private String media;
-	private String probenartId;
+	private Integer probenartId;
 	private String datenbasisId;
 	private Date probeentnahmeBeginn;
 	private Date probeentnahmeEnde;
@@ -39,6 +39,7 @@ public class LProbe implements java.io.Serializable {
 	private Integer mprId;
 	private Date solldatumBeginn;
 	private Date solldatumEnde;
+	private Integer netzbetreiberId;
 
 	public LProbe() {
 	}
@@ -50,11 +51,11 @@ public class LProbe implements java.io.Serializable {
 
 	public LProbe(String probeId, String mstId, String umwId, boolean test,
 			String hauptprobenNr, String baId, String mediaDesk, String media,
-			String probenartId, String datenbasisId,
+			Integer probenartId, String datenbasisId,
 			Date probeentnahmeBeginn, Date probeentnahmeEnde,
 			Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
 			Integer probeNehmerId, Character mpKat, String mplId,
-			Integer mprId, Date solldatumBeginn, Date solldatumEnde) {
+			Integer mprId, Date solldatumBeginn, Date solldatumEnde, Integer netzbetreiberId) {
 		this.probeId = probeId;
 		this.mstId = mstId;
 		this.umwId = umwId;
@@ -76,6 +77,7 @@ public class LProbe implements java.io.Serializable {
 		this.mprId = mprId;
 		this.solldatumBeginn = solldatumBeginn;
 		this.solldatumEnde = solldatumEnde;
+      this.netzbetreiberId = netzbetreiberId;
 	}
 
 	@Id
@@ -256,11 +258,11 @@ public class LProbe implements java.io.Serializable {
 	}
 
 	@Column(name = "probenart_id")
-    public String getProbenartId() {
+    public Integer getProbenartId() {
         return probenartId;
     }
 
-    public void setProbenartId(String probenartId) {
+    public void setProbenartId(Integer probenartId) {
         this.probenartId = probenartId;
     }
 
@@ -271,5 +273,14 @@ public class LProbe implements java.io.Serializable {
 
     public void setDatenbasisId(String datenbasisId) {
         this.datenbasisId = datenbasisId;
+    }
+
+    @Column(name = "netzbetreiber_id")
+    public Integer getNetzbetreiberId() {
+        return netzbetreiberId;
+    }
+
+    public void setNetzbetreiberId(Integer netzbetreiberId) {
+        this.netzbetreiberId = netzbetreiberId;
     }
 }
