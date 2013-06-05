@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -93,33 +94,42 @@ public class LProbeService {
         return repository.filter(mstId, uwbId, begin);
     }
 
+    @PUT
+    @Path("/{id}")
+    @Produces("text/json")
+    @Consumes("application/json")
+    public String update(LProbe probe) {
+        return "{success: false, errors: {probeId: \"Client not found\"}}";
+    }
+
     @POST
     @Produces("text/json")
     @Consumes("application/json")
     public String create(LProbe probe) {
         boolean success = repository.create(probe);
+        int generalError = repository.getGeneralError();
         if(success) {
-            return "[{" +
-                   "returncode: 200," +
-                   "errorfields: []," +
-                   createWarningFields() +
-                   "}]";
+            return "{" +
+                   "success: true, " +
+                   "message: " + generalError + ", " +
+                   "errors: {" + createErrorFields() + "}, " +
+                   "warnings: {" + createWarningFields() + "}" +
+                   "}";
         }
         else {
-            int generalError = repository.getGeneralError();
-            String response = "[{ \"returncode\": " + generalError + ", ";
-            response += "\"errors\": {" + createErrorFields() + "}, ";
-            response += "\"warnings\": {" + createWarningFields() + "}";
-            response += "}]";
-            return response;
+            return "{" +
+                   "success: false, " +
+                   "message: " + generalError + ", " +
+                   "errors: {" + createErrorFields() + "}, " +
+                   "warnings: {" + createWarningFields() + "}" +
+                   "}";
         }
     }
 
     private String createWarningFields() {
         Map<String, Integer> warnings = repository.getWarnings();
-        String response = "\"fields\": [";
+        String response = "";
         if (warnings == null || warnings.isEmpty()) {
-            response += "]";
             return response;
         }
         boolean first = true;
@@ -127,19 +137,16 @@ public class LProbeService {
             if (!first) {
                 response +=",";
             }
-            response += "{" + "\"" + entry.getKey() +
-                "\": " + entry.getValue() + "}";
+            response += entry.getKey() + ":" + "\"" + entry.getValue() + "\"";
             first = false;
         }
-        response += "]";
         return response;
     }
 
     private String createErrorFields() {
         Map<String, Integer> errors = repository.getErrors();
-        String response = "\"fields\": [";
+        String response = "";
         if (errors.isEmpty()) {
-            response += "]";
             return response;
         }
         boolean first = true;
@@ -147,11 +154,9 @@ public class LProbeService {
             if (!first) {
                 response +=",";
             }
-            response += "{" + "\"" + entry.getKey() +
-                "\": " + entry.getValue() + "}";
+            response += entry.getKey() + ":" + "\"" + entry.getValue() + "\"";
             first = false;
         }
-        response += "]";
         return response;
     }
 }
