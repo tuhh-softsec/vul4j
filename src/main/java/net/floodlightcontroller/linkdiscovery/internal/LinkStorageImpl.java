@@ -82,10 +82,12 @@ public class LinkStorageImpl implements ILinkStorage {
             	}
             	
             	if (currLinks.contains(vportDst)) {
-            		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
+            		} else if (op.equals(DM_OPERATION.UPDATE)) {
+                		// TODO: update linkinfo
+            			// GraphDB seems to have no KeyIndex for LinkInfo data
             		}
             	} else {
             		vportSrc.setLinkPort(vportDst);
@@ -165,24 +167,34 @@ public class LinkStorageImpl implements ILinkStorage {
         }
 	}
 
-	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
-		IPortObject vportSrc, vportDst;
-    	List<Link> links = null;
-    	Link lt;
+		IPortObject vportSrc;
+		
+		List<Link> links = new ArrayList<Link>();
     	
 		vportSrc = conn.utils().searchPort(conn, HexString.toHexString(dpid), port);
 		if (vportSrc != null) {
-			
-     		for (Edge e : vportSrc.asVertex().getEdges(Direction.OUT)) {
-     			if (e.getLabel().equals("link")) {
-     				break;
-     			}
-     		}
+ 			
+			for (Edge e : vportSrc.asVertex().getEdges(Direction.IN)) {
+				if(e.getLabel().equals("link")) {
+					Vertex v = e.getVertex(Direction.OUT);
+					short dst_port = v.getProperty("number");
+					for(Edge e2 : v.getEdges(Direction.IN)) {
+						if(e2.getLabel().equals("on")) {
+							Vertex v2 = e2.getVertex(Direction.OUT);
+							long dst_dpid = HexString.toLong((String) v2.getProperty("dpid"));
+							
+			         		Link lt = new Link(dpid, port, dst_dpid, dst_port);
+			         		links.add(lt);
+						}
+					}
+				}
+			}
 		}
-     	return null;
+		
+     	return links;
 	}
 	
 	@Override
@@ -195,14 +207,28 @@ public class LinkStorageImpl implements ILinkStorage {
 
 	@Override
 	public void deleteLinksOnPort(Long dpid, short port) {
-		// TODO Auto-generated method stub
+		List<Link> linksToDelete = getLinks(dpid,port);
 		
+		for(Link l : linksToDelete) {
+			deleteLink(l);
+		}
 	}
 
 	@Override
 	public List<Link> getLinks(String dpid) {
-		// TODO Auto-generated method stub
-		return null;
+		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
+		ISwitchObject vswitch;
+		List<Link> links = new ArrayList<Link>();
+
+		vswitch = conn.utils().searchSwitch(conn, dpid);
+
+		for(IPortObject vportSrc : vswitch.getPorts()) {
+			// TODO array concatenation may be heavy
+			List<Link> sublinks = getLinks(HexString.toLong(dpid), vportSrc.getNumber());
+			links.addAll(sublinks);
+		}
+
+		return links;
 	}
 
 	public List<Link> getActiveLinks() {

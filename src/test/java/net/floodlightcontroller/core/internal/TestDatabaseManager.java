@@ -5,18 +5,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
+
+import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 
 import org.apache.commons.io.FileUtils;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
+import com.tinkerpop.frames.FramedGraph;
 
 public class TestDatabaseManager {
 	private static final String testDbLocation = "/tmp/onos-testdb";
@@ -63,6 +70,15 @@ public class TestDatabaseManager {
             	port.setProperty("number", portNum.shortValue());
         	}
         }
+        
+		FramedGraph<TitanGraph> fg = new FramedGraph<TitanGraph>(titanGraph);
+		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
+		List<ISwitchObject> activeSwitches = new ArrayList<ISwitchObject>();
+
+		for (ISwitchObject sw: switches) {
+			sw.setState(SwitchState.ACTIVE.toString());
+		}
+
         titanGraph.stopTransaction(Conclusion.SUCCESS);
 	}
 	
