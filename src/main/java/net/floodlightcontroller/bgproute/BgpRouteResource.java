@@ -28,8 +28,7 @@ public class BgpRouteResource extends ServerResource {
 
 	//@SuppressWarnings("unused")
 	@Get
-	public String get(String fmJson) {		
-		//String linpp=fmJson;
+	public String get(String fmJson) {
 		String dest = (String) getRequestAttributes().get("dest");
 		String output = "";
 		IBgpRouteService bgpRoute = (IBgpRouteService)getContext().getAttributes().

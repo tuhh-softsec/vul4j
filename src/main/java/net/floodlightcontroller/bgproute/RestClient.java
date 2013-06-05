@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ public class RestClient {
 
 			URL url = new URL(str);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(2 * 1000); //2 seconds
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
 
@@ -44,6 +46,8 @@ public class RestClient {
 			
 		} catch (MalformedURLException e) {
 			log.error("Malformed URL for GET request", e);
+		} catch (ConnectTimeoutException e) {
+			log.warn("Couldn't connect remote REST server");
 		} catch (IOException e) {
 			log.warn("Couldn't connect remote REST server");
 		}
