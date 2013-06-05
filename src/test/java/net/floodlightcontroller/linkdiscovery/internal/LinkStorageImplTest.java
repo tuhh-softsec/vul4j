@@ -38,10 +38,11 @@ public class LinkStorageImplTest {
 	
 	//private static IController
 
-	//TODO Future ideas:
-	//Test add links with CREATE and UPDATE
-	//Test adding existing link again
-	
+	/**
+	 * Setup code called before each tests.
+	 * Read test graph data and replace DB access by test graph data.
+	 * @throws Exception
+	 */
 	@Before
 	public void setUp() throws Exception{
 		TestDatabaseManager.deleteTestDatabase();
@@ -49,7 +50,7 @@ public class LinkStorageImplTest {
 		titanGraph = TestDatabaseManager.getTestDatabase();
 		TestDatabaseManager.populateTestData(titanGraph);
 
-		// replace TitanFactory.open() return value to dummy DB
+		// replace return value of TitanFactory.open() to dummy DB created above
 		PowerMock.mockStatic(TitanFactory.class);
 		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
 		PowerMock.replay(TitanFactory.class);
@@ -60,6 +61,11 @@ public class LinkStorageImplTest {
 		linkStorage.init("/dummy/path/to/db");
 	}
 	
+	/**
+	 * Closing code called after each tests.
+	 * Discard test graph data.
+	 * @throws Exception
+	 */
 	@After
 	public void tearDown() throws Exception {
 		// finish code
@@ -101,10 +107,6 @@ public class LinkStorageImplTest {
 		doTestLinkIsInGraph(linkToVerify);
 	}
 
-	/*
-	 * Add a link between port 1.102 and 2.104
-	 * i.e SEA switch port 3 to LAX switch port 1
-	 */
 	@Test
 	public void testUpdate_InsertSingleLink(){
 		Link linkToInsert = createFeasibleLink();
@@ -145,7 +147,7 @@ public class LinkStorageImplTest {
 	public void testUpdate_UpdateLinks(){
 		List<Link> linksToUpdate= createExistingLinks();
 
-		// Who calls this method like this way? 
+		// TODO: Who calls update method like this way? Remove this test if unneeded.
 		linkStorage.update(linksToUpdate, ILinkStorage.DM_OPERATION.UPDATE);
 
 		// TODO: verification of update result
@@ -171,7 +173,7 @@ public class LinkStorageImplTest {
 	}
 	
 	@Test
-	public void testUpdate_CreateLinksMixuture(){
+	public void testUpdate_CreateLinks_Mixuture(){
 		List<Link> linksToCreate = new ArrayList<Link>();
 		linksToCreate.add(createFeasibleLink());
 		linksToCreate.add(createExistingLink());
@@ -202,7 +204,7 @@ public class LinkStorageImplTest {
 	}
 	
 	@Test
-	public void testUpdate_InsertLinksMixuture(){
+	public void testUpdate_InsertLinks_Mixuture(){
 		List<Link> linksToInsert = new ArrayList<Link>();
 		linksToInsert.add(createFeasibleLink());
 		linksToInsert.add(createExistingLink());
@@ -234,7 +236,7 @@ public class LinkStorageImplTest {
 	}
 	
 	@Test
-	public void testUpdate_DeleteLinksMixuture(){
+	public void testUpdate_DeleteLinks_Mixuture(){
 		List<Link> linksToDelete = new ArrayList<Link>();
 		linksToDelete.add(createFeasibleLink());
 		linksToDelete.add(createExistingLink());
@@ -245,29 +247,81 @@ public class LinkStorageImplTest {
 		doTestLinkIsNotInGraph(createExistingLink());
 	}
 	
-	@Test
-	public void testAddOrUpdateLink() {
-		Link linkToDelete = createExistingLink();
+	@Ignore @Test
+	public void testAddOrUpdateLink_Update() {
+		Link linkToUpdate= createExistingLink();
+		LinkInfo infoToUpdate = new LinkInfo(
+				System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                0, 0);
+
+		linkStorage.addOrUpdateLink(linkToUpdate, infoToUpdate, ILinkStorage.DM_OPERATION.UPDATE);
+		
+		// TODO: get LinkInfo from titanGraph and verify
 
 	}
 	
 	@Test
-	public void testUpdateInsertMultipleLinks() {
-		List<Link> linksToAdd = createFeasibleLinks();
-		List<Link> linksToVerify = createFeasibleLinks();
+	public void testAddOrUpdateLink_Create() {
+		Link linkToCreate = createFeasibleLink();
+		Link linkToVerify = createFeasibleLink();
 		
-		linkStorage.update(linksToAdd, ILinkStorage.DM_OPERATION.INSERT);
+		//Use the link storage API to add the link
+		linkStorage.addOrUpdateLink(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
+		doTestLinkIsInGraph(linkToVerify);
+
+		// Add same link
+		Link linkToCreateTwice = createFeasibleLink();
+		linkStorage.addOrUpdateLink(linkToCreateTwice, null, ILinkStorage.DM_OPERATION.CREATE);
 		
-		for(Link l : linksToVerify) {
-			doTestLinkIsInGraph(l);
-		}
+		// this occurs assertion failure if there are two links in titanGraph
+		doTestLinkIsInGraph(linkToVerify);
 	}
 	
 	@Test
-	public void testGetLinks(){
-		Link linkToVerify = createExistingLink();
+	public void testAddOrUpdateLink_Insert() {
+		Link linkToInsert = createFeasibleLink();
+		Link linkToVerify = createFeasibleLink();
 		
-		List<Link> list = linkStorage.getLinks(linkToVerify.getSrc(), (short)linkToVerify.getSrcPort());
+		//Use the link storage API to add the link
+		linkStorage.addOrUpdateLink(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
+
+		doTestLinkIsInGraph(linkToVerify);
+		
+		// Add same link
+		Link linkToInsertTwice = createFeasibleLink();
+		linkStorage.addOrUpdateLink(linkToInsertTwice, null, ILinkStorage.DM_OPERATION.INSERT);
+
+		// this occurs assertion failure if there are two links in titanGraph
+		doTestLinkIsInGraph(linkToVerify);
+	}
+	
+	// TODO: Check if addOrUpdateLink() should accept DELETE operation. If not, remove this test.
+	@Ignore @Test
+	public void testAddOrUpdateLink_Delete() {
+		Link linkToDelete = createExistingLink();
+		Link linkToVerify = createExistingLink();
+
+		// Test deletion of existing link
+		linkStorage.addOrUpdateLink(linkToDelete, null, DM_OPERATION.DELETE);
+		doTestLinkIsNotInGraph(linkToVerify);
+		
+		linkToDelete = createFeasibleLink();
+		linkToVerify = createFeasibleLink();
+
+		// Test deletion of not-existing link
+		linkStorage.addOrUpdateLink(linkToDelete, null, DM_OPERATION.DELETE);
+		doTestLinkIsNotInGraph(linkToVerify);
+	}
+	
+	@Test
+	public void testGetLinks_ByDpidPort(){
+		Link linkToVerify = createExistingLink();
+		Long dpid = linkToVerify.getSrc();
+		short port = (short)linkToVerify.getSrcPort();
+		
+		List<Link> list = linkStorage.getLinks(dpid, port);
 		
 		assertEquals(list.size(), 1);
 		
@@ -285,10 +339,11 @@ public class LinkStorageImplTest {
 	}
 	
 	@Test
-	public void testGetLinksByDpid() {
+	public void testGetLinks_ByString() {
 		Link linkToVeryfy = createExistingLink();
+		String dpid = HexString.toHexString(linkToVeryfy.getSrc());
 		
-		List<Link> links = linkStorage.getLinks(HexString.toHexString(linkToVeryfy.getSrc()));
+		List<Link> links = linkStorage.getLinks(dpid);
 		assertTrue(links.contains(linkToVeryfy));
 
 		Link linkToVerifyNot = createFeasibleLink();
@@ -324,6 +379,18 @@ public class LinkStorageImplTest {
 	}
 	
 	@Test
+	public void testDeleteLinks_Mixture(){
+		List<Link> linksToDelete = new ArrayList<Link>();
+		linksToDelete.add(createFeasibleLink());
+		linksToDelete.add(createExistingLink());
+		
+		// Test deletion of mixture of new/existing links
+		linkStorage.deleteLinks(linksToDelete);
+		doTestLinkIsNotInGraph(createFeasibleLink());
+		doTestLinkIsNotInGraph(createExistingLink());
+	}
+
+	@Test
 	public void testGetActiveLinks() {
 		Link existingLink = createExistingLink();
 		Link notExistingLink = createFeasibleLink();
@@ -343,10 +410,10 @@ public class LinkStorageImplTest {
 		
 		doTestLinkIsNotInGraph(linkToVerify);
 	}
-	
+
 	/**
-	 * Test if titanGraph has specific link (no more than one link)
-	 * @param link
+	 * Test if titanGraph has specific link
+	 * @param link 
 	 */
 	private void doTestLinkIsInGraph(Link link) {
 		String src_dpid = HexString.toHexString(link.getSrc());
@@ -357,12 +424,14 @@ public class LinkStorageImplTest {
 		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
 		Iterator<Vertex> it = titanGraph.getVertices("dpid", src_dpid).iterator();
 		
+		// Test if just one switch is found in the graph
 		assertTrue(it.hasNext());
 		Vertex sw = it.next();
 		assertFalse(it.hasNext());
 		
 		pipe.start(sw).out("on").has("number", src_port).out("link").has("number", dst_port).in("on").has("dpid", dst_dpid);
 		
+		// Test if just one link is found in the graph
 		assertTrue(pipe.hasNext());
 		pipe.next();
 		assertFalse(pipe.hasNext());
@@ -381,40 +450,64 @@ public class LinkStorageImplTest {
 		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
 		Iterator<Vertex> it = titanGraph.getVertices("dpid", src_dpid).iterator();
 		
+		// Test if just one switch is found in the graph
 		assertTrue(it.hasNext());
 		Vertex sw = it.next();
 		assertFalse(it.hasNext());
 		
 		pipe.start(sw).out("on").has("number", src_port).out("link").has("number", dst_port).in("on").has("dpid", dst_dpid);
 		
+		// Test if no link is found in the graph
 		assertFalse(pipe.hasNext());
 	}
 
 	//----------------- Creation of test data -----------------------
+	/**
+	 * Returns new Link object which has information of existing link in titanGraph
+	 * @return new Link object
+	 */
 	private Link createExistingLink() {
+		// Link from SEA switch port 2 to CHI switch port 1
 		return new Link(Long.decode("0x0000000000000a01"), 2, Long.decode("0x0000000000000a03"), 1);
 	}
 	
+	/**
+	 * Returns new Link object which has information of not-existing but feasible link in titanGraph
+	 * @return new Link object
+	 */
 	private Link createFeasibleLink() {
+		// Link from SEA switch port 1 to LAX switch port 1
 		return new Link(Long.decode("0x0000000000000a01"), 4, Long.decode("0x0000000000000a02"), 1);
 	}
 	
-	// make NO sense while test-network data doesn't define physical network
+	// make NO sense while test-network data doesn't define physical network (i.e. any link is feasible)
 	@SuppressWarnings("unused")
 	private Link createInfeasibleLink() {
 		return new Link(Long.decode("0x0000000000000a01"), 1, Long.decode("0x0000000000000a02"), 1);
 	}
 
+	/**
+	 * Returns list of Link objects which all has information of existing link in titanGraph
+	 * @return ArrayList of new Link objects
+	 */
 	private List<Link> createExistingLinks() {
 		List<Link> links = new ArrayList<Link>();
+		// Link from SEA switch port 2 to CHI switch port 1
 		links.add(new Link(Long.decode("0x0000000000000a01"), 2, Long.decode("0x0000000000000a03"), 1));
+		// Link from LAX switch port 1 to SEA switch port 3
 		links.add(new Link(Long.decode("0x0000000000000a02"), 1, Long.decode("0x0000000000000a01"), 3));
 		return links;
 	}
 	
+	/**
+	 * Returns list of Link objects which all has information of not-existing but feasible link
+	 * @return ArrayList of new Link objects
+	 */
 	private List<Link> createFeasibleLinks() {
 		List<Link> links = new ArrayList<Link>();
+		// Link from CHI switch port 4 to NYC switch port 3
 		links.add(new Link(Long.decode("0x0000000000000a03"), 4, Long.decode("0x0000000000000a05"), 3));
+		// Link from SEA switch port 4 to LAX switch port 1
 		links.add(new Link(Long.decode("0x0000000000000a01"), 4, Long.decode("0x0000000000000a02"), 1));
 		return links;
 	}
