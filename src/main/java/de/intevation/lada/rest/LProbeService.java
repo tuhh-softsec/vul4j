@@ -111,7 +111,7 @@ public class LProbeService {
         if(success) {
             return "{" +
                    "success: true, " +
-                   "message: " + generalError + ", " +
+                   "message: \"" + generalError + "\", " +
                    "errors: {" + createErrorFields() + "}, " +
                    "warnings: {" + createWarningFields() + "}" +
                    "}";
@@ -119,7 +119,7 @@ public class LProbeService {
         else {
             return "{" +
                    "success: false, " +
-                   "message: " + generalError + ", " +
+                   "message: \"" + generalError + "\", " +
                    "errors: {" + createErrorFields() + "}, " +
                    "warnings: {" + createWarningFields() + "}" +
                    "}";
