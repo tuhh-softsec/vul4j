@@ -28,11 +28,21 @@ public class LinkStorageImpl implements ILinkStorage {
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected String conf;
 
+	/**
+	 * Update a record in the LinkStorage in a way provided by op.
+	 * @param link Record of a link to be updated.
+	 * @param op Operation to be done.
+	 */
 	@Override
 	public void update(Link link, DM_OPERATION op) {
 		update(link, (LinkInfo)null, op);
 	}
 
+	/**
+	 * Update multiple records in the LinkStorage in a way provided by op.
+	 * @param links List of records to be updated.
+	 * @param op Operation to be done.
+	 */
 	@Override
 	public void update(List<Link> links, DM_OPERATION op) {
 		for (Link lt: links) {
@@ -40,6 +50,12 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 
+	/**
+	 * Update a record of link with meta-information in the LinkStorage in a way provided by op.
+	 * @param link Record of a link to update.
+	 * @param linkinfo Meta-information of a link to be updated.
+	 * @param op Operation to be done.
+	 */
 	@Override
 	public void update(Link link, LinkInfo linkinfo, DM_OPERATION op) {
 		switch (op) {
@@ -54,6 +70,12 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 	
+	/**
+	 * Perform INSERT/CREATE/UPDATE operation to update the LinkStorage.
+	 * @param lt Record of a link to be updated.
+	 * @param linkinfo Meta-information of a link to be updated.
+	 * @param op Operation to be done. (only INSERT/CREATE/UPDATE is acceptable)
+	 */
 	public void updateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		IPortObject vportSrc = null, vportDst = null;
@@ -105,6 +127,10 @@ public class LinkStorageImpl implements ILinkStorage {
         }
 	}
 	
+	/**
+	 * Delete multiple records in the LinkStorage.
+	 * @param links List of records to be deleted.
+	 */
 	@Override
 	public void deleteLinks(List<Link> links) {
 
@@ -113,7 +139,10 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 	
-
+	/**
+	 * Delete a record in the LinkStorage.
+	 * @param link Record to be deleted.
+	 */
 	@Override
 	public void deleteLink(Link lt) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
@@ -165,6 +194,12 @@ public class LinkStorageImpl implements ILinkStorage {
         }
 	}
 
+	/**
+	 * Get list of all links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 * @return List of links. Empty list if no port was found.
+	 */
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
@@ -199,6 +234,10 @@ public class LinkStorageImpl implements ILinkStorage {
      	return links;
 	}
 	
+	/**
+	 * Initialize the object. Open LinkStorage using given configuration file.
+	 * @param conf Path (absolute path for now) to configuration file.
+	 */
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from properties
@@ -207,6 +246,11 @@ public class LinkStorageImpl implements ILinkStorage {
 		
 	}
 
+	/**
+	 * Delete records of the links connected to the port specified by given DPID and port number.
+	 * @param dpid DPID of desired port.
+	 * @param port Port number of desired port.
+	 */
 	// TODO: Fix me
 	@Override
 	public void deleteLinksOnPort(Long dpid, short port) {
@@ -220,6 +264,11 @@ public class LinkStorageImpl implements ILinkStorage {
 		// END: Trial code
 	}
 
+	/**
+	 * Get list of all links connected to the switch specified by given DPID.
+	 * @param dpid DPID of desired switch.
+	 * @return List of links. Empty list if no port was found.
+	 */
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(String dpid) {
@@ -241,6 +290,10 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 
+	/**
+	 * Get list of all links whose state is ACTIVE.
+	 * @return List of active links. Empty list if no port was found.
+	 */
 	public List<Link> getActiveLinks() {
 
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
@@ -265,6 +318,9 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 	
+	/**
+	 * PipeFunction object to extract link from given "switch-port-port-switch" Path.
+	 */
 	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
 		@Override
@@ -291,10 +347,16 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 	
+	/**
+	 * Finalize the object.
+	 */
 	public void finalize() {
 		close();
 	}
 
+	/**
+	 * Close LinkStorage.
+	 */
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
