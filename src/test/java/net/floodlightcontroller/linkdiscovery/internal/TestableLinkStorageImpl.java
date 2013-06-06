@@ -25,7 +25,6 @@ public class TestableLinkStorageImpl extends LinkStorageImpl {
 	
 	@Override
 	public void init(String conf){
-		super.init(conf);
         Set<String> s = graph.getIndexedKeys(Vertex.class);
         if (!s.contains("dpid")) {
            graph.createKeyIndex("dpid", Vertex.class);
