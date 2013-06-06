@@ -28,6 +28,9 @@ public class LinkStorageImpl implements ILinkStorage {
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected String conf;
 
+	/**
+	 * Update
+	 */
 	@Override
 	public void update(Link link, DM_OPERATION op) {
 		update(link, (LinkInfo)null, op);
@@ -72,7 +75,6 @@ public class LinkStorageImpl implements ILinkStorage {
             vportDst = conn.utils().searchPort(conn, dpid, port);
                         
             if (vportSrc != null && vportDst != null) {
-         	       	
             	// check if the link exists
             	
             	Iterable<IPortObject> currPorts = vportSrc.getLinkedPorts();
@@ -80,7 +82,7 @@ public class LinkStorageImpl implements ILinkStorage {
             	for (IPortObject V : currPorts) {
             		currLinks.add(V);
             	}
-            	
+
             	if (currLinks.contains(vportDst)) {
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
@@ -88,9 +90,49 @@ public class LinkStorageImpl implements ILinkStorage {
             		} else if (op.equals(DM_OPERATION.UPDATE)) {
                 		// TODO: update linkinfo
             			// GraphDB seems to have no KeyIndex for LinkInfo data
+            			
+            			// BEGIN: trial code (update implementation)
+            			if(linkinfo != null) {
+            				vportSrc.setPortState(linkinfo.getSrcPortState());
+            				vportDst.setPortState(linkinfo.getDstPortState());
+            				
+            				Vertex vsrc = vportSrc.asVertex();
+    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+
+//            				for(Edge e: vportSrc.asVertex().getEdges(Direction.OUT)) {
+//            					if(e.getVertex(Direction.OUT).equals(vportDst.asVertex())) {
+//            						e.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+//            						e.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+//            						e.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+//            					}
+//            				}
+            				
+                    		conn.endTx(Transaction.COMMIT);
+                    		log.debug("addOrUpdateLink(): link updated {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            			}
+            			// END: trial code
             		}
             	} else {
-            		vportSrc.setLinkPort(vportDst);
+            		if (op.equals(DM_OPERATION.UPDATE)) {
+            			log.debug("addOrUpdateLink(): failed link doesn't exist {} {} src {} dst {}", 
+            					new Object[]{op, lt, vportSrc, vportDst});
+            		} else {
+                		vportSrc.setLinkPort(vportDst);
+                		
+            			// BEGIN: trial code (update implementation)
+            			if(linkinfo != null) {
+            				vportSrc.setPortState(linkinfo.getSrcPortState());
+            				vportDst.setPortState(linkinfo.getDstPortState());
+            				
+            				Vertex vsrc = vportSrc.asVertex();
+    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+            			}
+            			// END: trial code
+            		}
 
             		conn.endTx(Transaction.COMMIT);
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
@@ -148,6 +190,14 @@ public class LinkStorageImpl implements ILinkStorage {
          			}
          		}*/
          		vportSrc.removeLink(vportDst);
+         		
+    			// BEGIN: trial code (update implementation)
+         		Vertex vsrc = vportSrc.asVertex();
+         		vsrc.removeProperty("first_seen_time");
+         		vsrc.removeProperty("last_lldp_received_time");
+         		vsrc.removeProperty("last_bddp_received_time");
+         		// END: trial code
+         		
         		conn.endTx(Transaction.COMMIT);
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
             			lt, vportSrc, vportDst});

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
@@ -50,27 +51,65 @@ public class GraphDBConnection {
 				   (graph == null||graph.isOpen() == Boolean.FALSE)) {
 		        graph = TitanFactory.open(GraphDBConnection.configFile);		        
 		        // FIXME: Creation on Indexes should be done only once
-		        Set<String> s = graph.getIndexedKeys(Vertex.class);
-		        if (!s.contains("dpid")) {
+		        Set<String> s_vertices = graph.getIndexedKeys(Vertex.class);
+		        if (!s_vertices.contains("dpid")) {
 		           graph.createKeyIndex("dpid", Vertex.class);
 		        }
-		        if (!s.contains("type")) {
+		        if (!s_vertices.contains("type")) {
 		        	graph.createKeyIndex("type", Vertex.class);
 		        }
-		        if (!s.contains("dl_address")) {
+		        if (!s_vertices.contains("dl_address")) {
 		        	graph.createKeyIndex("dl_address", Vertex.class);
 		        }
-		        if (!s.contains("flow_id")) {
+		        if (!s_vertices.contains("flow_id")) {
 		        	graph.createKeyIndex("flow_id", Vertex.class);
 		        }
-		        if (!s.contains("flow_entry_id")) {
+		        if (!s_vertices.contains("flow_entry_id")) {
 		        	graph.createKeyIndex("flow_entry_id",
 						     Vertex.class);
 		        }
-		        if (!s.contains("switch_state")) {
+		        if (!s_vertices.contains("switch_state")) {
 		        	graph.createKeyIndex("switch_state",
 						     Vertex.class);
 		        }
+		        
+		        // BEGIN: trial code
+		        /*
+		         * Trial to store link state information as properties of port.
+		         * Currently no need to be implemented. Just reference.
+		         */
+		        // These keys are assigned to port vertex with "OUT" direction link
+//		        if (!s_vertices.contains("first_seen_time")) {
+//		        	graph.createKeyIndex("first_seen_time", Vertex.class);
+//		        }
+//		        if (!s_vertices.contains("last_lldp_received_time")) {
+//		        	graph.createKeyIndex("last_lldp_received_time", Vertex.class);
+//		        }
+//		        if (!s_vertices.contains("last_bddp_received_time")) {
+//		        	graph.createKeyIndex("last_bddp_received_time", Vertex.class);
+//		        }
+//		        
+//		        
+//		        Set<String> s_edges = graph.getIndexedKeys(Edge.class);
+//		        if (!s_edges.contains("src_port_state")) {
+//		        	graph.createKeyIndex("src_port_state",
+//						     Edge.class);
+//		        }
+//		        if (!s_edges.contains("dst_port_state")) {
+//		        	graph.createKeyIndex("dst_port_state",
+//						     Edge.class);
+//		        }
+//		        if (!s_edges.contains("first_seen_time")) {
+//		        	graph.createKeyIndex("first_seen_time", Edge.class);
+//		        }
+//		        if (!s_edges.contains("last_lldp_received_time")) {
+//		        	graph.createKeyIndex("last_lldp_received_time", Edge.class);
+//		        }
+//		        if (!s_edges.contains("last_bddp_received_time")) {
+//		        	graph.createKeyIndex("last_bddp_received_time", Edge.class);
+//		        }
+		        // END: trial code
+		        
 		        graph.commit();
 		        eg = new EventTransactionalGraph<TitanGraph>(graph);
 		   }		   
@@ -80,7 +119,7 @@ public class GraphDBConnection {
 	      return singleton;
 	   }
 	   
-	public IDBUtils utils() {
+	   public IDBUtils utils() {
 		   return utils;
 	   }
 	   
