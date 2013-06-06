@@ -84,55 +84,13 @@ public class LinkStorageImpl implements ILinkStorage {
             	}
 
             	if (currLinks.contains(vportDst)) {
+            		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
-            		} else if (op.equals(DM_OPERATION.UPDATE)) {
-                		// TODO: update linkinfo
-            			// GraphDB seems to have no KeyIndex for LinkInfo data
-            			
-            			// BEGIN: trial code (update implementation)
-            			if(linkinfo != null) {
-            				vportSrc.setPortState(linkinfo.getSrcPortState());
-            				vportDst.setPortState(linkinfo.getDstPortState());
-            				
-            				Vertex vsrc = vportSrc.asVertex();
-    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-
-//            				for(Edge e: vportSrc.asVertex().getEdges(Direction.OUT)) {
-//            					if(e.getVertex(Direction.OUT).equals(vportDst.asVertex())) {
-//            						e.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-//            						e.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-//            						e.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-//            					}
-//            				}
-            				
-                    		conn.endTx(Transaction.COMMIT);
-                    		log.debug("addOrUpdateLink(): link updated {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
-            			}
-            			// END: trial code
             		}
             	} else {
-            		if (op.equals(DM_OPERATION.UPDATE)) {
-            			log.debug("addOrUpdateLink(): failed link doesn't exist {} {} src {} dst {}", 
-            					new Object[]{op, lt, vportSrc, vportDst});
-            		} else {
-                		vportSrc.setLinkPort(vportDst);
-                		
-            			// BEGIN: trial code (update implementation)
-            			if(linkinfo != null) {
-            				vportSrc.setPortState(linkinfo.getSrcPortState());
-            				vportDst.setPortState(linkinfo.getDstPortState());
-            				
-            				Vertex vsrc = vportSrc.asVertex();
-    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-            			}
-            			// END: trial code
-            		}
+            		vportSrc.setLinkPort(vportDst);
 
             		conn.endTx(Transaction.COMMIT);
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
@@ -190,13 +148,6 @@ public class LinkStorageImpl implements ILinkStorage {
          			}
          		}*/
          		vportSrc.removeLink(vportDst);
-         		
-    			// BEGIN: trial code (update implementation)
-         		Vertex vsrc = vportSrc.asVertex();
-         		vsrc.removeProperty("first_seen_time");
-         		vsrc.removeProperty("last_lldp_received_time");
-         		vsrc.removeProperty("last_bddp_received_time");
-         		// END: trial code
          		
         		conn.endTx(Transaction.COMMIT);
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
@@ -264,19 +215,23 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 
+	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(String dpid) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		ISwitchObject vswitch;
 		List<Link> links = new ArrayList<Link>();
 
+		// BEGIN: Trial code
+		// author: Naoki Shiota
 		vswitch = conn.utils().searchSwitch(conn, dpid);
 
 		for(IPortObject vportSrc : vswitch.getPorts()) {
-			// TODO array concatenation may be heavy
+			// array concatenation may be heavy...
 			List<Link> sublinks = getLinks(HexString.toLong(dpid), vportSrc.getNumber());
 			links.addAll(sublinks);
 		}
+		// END: Trial code
 
 		return links;
 	}

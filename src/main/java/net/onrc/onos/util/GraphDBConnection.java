@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
@@ -72,43 +71,6 @@ public class GraphDBConnection {
 		        	graph.createKeyIndex("switch_state",
 						     Vertex.class);
 		        }
-		        
-		        // BEGIN: trial code
-		        /*
-		         * Trial to store link state information as properties of port.
-		         * Currently no need to be implemented. Just reference.
-		         */
-		        // These keys are assigned to port vertex with "OUT" direction link
-//		        if (!s_vertices.contains("first_seen_time")) {
-//		        	graph.createKeyIndex("first_seen_time", Vertex.class);
-//		        }
-//		        if (!s_vertices.contains("last_lldp_received_time")) {
-//		        	graph.createKeyIndex("last_lldp_received_time", Vertex.class);
-//		        }
-//		        if (!s_vertices.contains("last_bddp_received_time")) {
-//		        	graph.createKeyIndex("last_bddp_received_time", Vertex.class);
-//		        }
-//		        
-//		        
-//		        Set<String> s_edges = graph.getIndexedKeys(Edge.class);
-//		        if (!s_edges.contains("src_port_state")) {
-//		        	graph.createKeyIndex("src_port_state",
-//						     Edge.class);
-//		        }
-//		        if (!s_edges.contains("dst_port_state")) {
-//		        	graph.createKeyIndex("dst_port_state",
-//						     Edge.class);
-//		        }
-//		        if (!s_edges.contains("first_seen_time")) {
-//		        	graph.createKeyIndex("first_seen_time", Edge.class);
-//		        }
-//		        if (!s_edges.contains("last_lldp_received_time")) {
-//		        	graph.createKeyIndex("last_lldp_received_time", Edge.class);
-//		        }
-//		        if (!s_edges.contains("last_bddp_received_time")) {
-//		        	graph.createKeyIndex("last_bddp_received_time", Edge.class);
-//		        }
-		        // END: trial code
 		        
 		        graph.commit();
 		        eg = new EventTransactionalGraph<TitanGraph>(graph);

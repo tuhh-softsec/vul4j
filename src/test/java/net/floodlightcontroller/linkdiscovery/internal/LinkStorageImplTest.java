@@ -85,6 +85,9 @@ public class LinkStorageImplTest {
 	}
 	
 	// TODO: remove @Ignore after UPDATE method is implemented
+	/**
+	 * Test if update() can correctly updates LinkInfo for a Link.
+	 */
 	@Ignore @Test
 	public void testUpdate_UpdateSingleLink() {
 		Link linkToUpdate= createExistingLink();
@@ -97,6 +100,9 @@ public class LinkStorageImplTest {
 		doTestLinkHasStateOf(linkToUpdate, infoToVerify);
 	}
 	
+	/**
+	 * Test if update() can correctly creates a Link.
+	 */
 	@Test
 	public void testUpdate_CreateSingleLink() {
 		Link linkToCreate = createFeasibleLink();
@@ -114,6 +120,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsInGraph(linkToVerify);
 	}
 
+	/**
+	 * Test if update() can correctly inserts a Link.
+	 */
 	@Test
 	public void testUpdate_InsertSingleLink(){
 		Link linkToInsert = createFeasibleLink();
@@ -132,6 +141,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsInGraph(linkToVerify);
 	}
 	
+	/**
+	 * Test if update() can correctly deletes a Link.
+	 */
 	@Test
 	public void testUpdate_DeleteSingleLink(){
 		Link linkToDelete = createExistingLink();
@@ -148,7 +160,10 @@ public class LinkStorageImplTest {
 		linkStorage.update(linkToDelete, DM_OPERATION.DELETE);
 		doTestLinkIsNotInGraph(linkToVerify);
 	}
-		
+
+	/**
+	 * Test if update() can correctly creates multiple Links.
+	 */
 	@Test
 	public void testUpdate_CreateLinks(){
 		List<Link> linksToCreate = createFeasibleLinks();
@@ -168,6 +183,9 @@ public class LinkStorageImplTest {
 		}
 	}
 	
+	/**
+	 * Test if update() can handle mixture of normal/abnormal input for creation of Links.
+	 */
 	@Test
 	public void testUpdate_CreateLinks_Mixuture(){
 		List<Link> linksToCreate = new ArrayList<Link>();
@@ -180,6 +198,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsInGraph(createExistingLink());
 	}
 
+	/**
+	 * Test if update() can correctly inserts multiple Links.
+	 */
 	@Test
 	public void testUpdate_InsertLinks(){
 		List<Link> linksToInsert = createFeasibleLinks();
@@ -199,6 +220,9 @@ public class LinkStorageImplTest {
 		}
 	}
 	
+	/**
+	 * Test if update() can handle mixture of normal/abnormal input for creation of Links.
+	 */
 	@Test
 	public void testUpdate_InsertLinks_Mixuture(){
 		List<Link> linksToInsert = new ArrayList<Link>();
@@ -211,7 +235,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsInGraph(createExistingLink());
 	}
 
-
+	/**
+	 * Test if update() can correctly deletes multiple Links.
+	 */
 	@Test
 	public void testUpdate_DeleteLinks(){
 		List<Link> linksToDelete = createExistingLinks();
@@ -231,6 +257,9 @@ public class LinkStorageImplTest {
 		}
 	}
 	
+	/**
+	 * Test if update() can handle mixture of normal/abnormal input for deletion of Links.
+	 */
 	@Test
 	public void testUpdate_DeleteLinks_Mixuture(){
 		List<Link> linksToDelete = new ArrayList<Link>();
@@ -244,71 +273,86 @@ public class LinkStorageImplTest {
 	}
 	
 	// TODO: remove @Ignore after UPDATE method is implemented
+	/**
+	 * Test if updateLink() can correctly updates LinkInfo for a Link.
+	 */
 	@Ignore @Test
-	public void testAddOrUpdateLink_Update() {
+	public void testUpdateLink_Update() {
 		Link linkToUpdate= createExistingLink();
 		long currentTime = System.currentTimeMillis();
 		LinkInfo infoToUpdate = createFeasibleLinkInfo(currentTime);
 		LinkInfo infoToVerify = createFeasibleLinkInfo(currentTime);
 
-		linkStorage.addOrUpdateLink(linkToUpdate, infoToUpdate, ILinkStorage.DM_OPERATION.UPDATE);
+		linkStorage.updateLink(linkToUpdate, infoToUpdate, ILinkStorage.DM_OPERATION.UPDATE);
 		
 		doTestLinkHasStateOf(linkToUpdate, infoToVerify);
 	}
 	
+	/**
+	 * Test if updateLink() can correctly creates a Link.
+	 */
 	@Test
-	public void testAddOrUpdateLink_Create() {
+	public void testUpdateLink_Create() {
 		Link linkToCreate = createFeasibleLink();
 		Link linkToVerify = createFeasibleLink();
 		
 		//Use the link storage API to add the link
-		linkStorage.addOrUpdateLink(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
+		linkStorage.updateLink(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
 		doTestLinkIsInGraph(linkToVerify);
 
 		// Add same link
 		Link linkToCreateTwice = createFeasibleLink();
-		linkStorage.addOrUpdateLink(linkToCreateTwice, null, ILinkStorage.DM_OPERATION.CREATE);
+		linkStorage.updateLink(linkToCreateTwice, null, ILinkStorage.DM_OPERATION.CREATE);
 		
 		// this occurs assertion failure if there are two links in titanGraph
 		doTestLinkIsInGraph(linkToVerify);
 	}
 	
+	/**
+	 * Test if updateLink() can correctly inserts a Link.
+	 */
 	@Test
-	public void testAddOrUpdateLink_Insert() {
+	public void testUpdateLink_Insert() {
 		Link linkToInsert = createFeasibleLink();
 		Link linkToVerify = createFeasibleLink();
 		
 		//Use the link storage API to add the link
-		linkStorage.addOrUpdateLink(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
+		linkStorage.updateLink(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
 
 		doTestLinkIsInGraph(linkToVerify);
 		
 		// Add same link
 		Link linkToInsertTwice = createFeasibleLink();
-		linkStorage.addOrUpdateLink(linkToInsertTwice, null, ILinkStorage.DM_OPERATION.INSERT);
+		linkStorage.updateLink(linkToInsertTwice, null, ILinkStorage.DM_OPERATION.INSERT);
 
 		// this occurs assertion failure if there are two links in titanGraph
 		doTestLinkIsInGraph(linkToVerify);
 	}
 	
 	// TODO: Check if addOrUpdateLink() should accept DELETE operation. If not, remove this test.
+	/**
+	 * Test if updateLink() can correctly deletes a Link.
+	 */
 	@Ignore @Test
-	public void testAddOrUpdateLink_Delete() {
+	public void testUpdateLink_Delete() {
 		Link linkToDelete = createExistingLink();
 		Link linkToVerify = createExistingLink();
 
 		// Test deletion of existing link
-		linkStorage.addOrUpdateLink(linkToDelete, null, DM_OPERATION.DELETE);
+		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
 		doTestLinkIsNotInGraph(linkToVerify);
 		
 		linkToDelete = createFeasibleLink();
 		linkToVerify = createFeasibleLink();
 
 		// Test deletion of not-existing link
-		linkStorage.addOrUpdateLink(linkToDelete, null, DM_OPERATION.DELETE);
+		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
 		doTestLinkIsNotInGraph(linkToVerify);
 	}
 	
+	/**
+	 * Test if getLinks() can correctly return Links connected to specific DPID and port.
+	 */
 	@Test
 	public void testGetLinks_ByDpidPort(){
 		Link linkToVerify = createExistingLink();
@@ -332,6 +376,9 @@ public class LinkStorageImplTest {
 		assertEquals(list2.size(), 0);
 	}
 	
+	/**
+	 * Test if getLinks() can correctly return Links connected to specific MAC address.
+	 */
 	@Test
 	public void testGetLinks_ByString() {
 		Link linkToVeryfy = createExistingLink();
@@ -344,6 +391,9 @@ public class LinkStorageImplTest {
 		assertFalse(links.contains(linkToVerifyNot));
 	}
 	
+	/**
+	 * Test if deleteLink() can correctly delete a Link.
+	 */
 	@Test
 	public void testDeleteLink() {
 		// Deletion of existing link
@@ -361,6 +411,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsNotInGraph(linkToVerify);
 	}
 	
+	/**
+	 * Test if deleteLinks() can correctly delete Links.
+	 */
 	@Test
 	public void testDeleteLinks(){
 		List<Link> linksToDelete = createExistingLinks();
@@ -372,6 +425,9 @@ public class LinkStorageImplTest {
 		}
 	}
 	
+	/**
+	 * Test if deleteLinks() can handle mixture of normal/abnormal input.
+	 */
 	@Test
 	public void testDeleteLinks_Mixture(){
 		List<Link> linksToDelete = new ArrayList<Link>();
@@ -384,6 +440,9 @@ public class LinkStorageImplTest {
 		doTestLinkIsNotInGraph(createExistingLink());
 	}
 
+	/**
+	 * Test if getActiveLinks() can correctly return active Links.
+	 */
 	@Test
 	public void testGetActiveLinks() {
 		Link existingLink = createExistingLink();
@@ -395,6 +454,9 @@ public class LinkStorageImplTest {
 		assertFalse(links.contains(notExistingLink));
 	}
 	
+	/**
+	 * Test if deleteLinksOnPort() can delete Links.
+	 */
 	@Test
 	public void testDeleteLinksOnPort() {
 		Link linkToDelete = createExistingLink();
@@ -501,21 +563,7 @@ public class LinkStorageImplTest {
 		assertFalse(pipe.hasNext());
 
 		// TODO: implement test code to check if update is correctly done.
-		int portStateSrc = edge.getVertex(Direction.OUT).getProperty("port_state");
-		int portStateDst = edge.getVertex(Direction.IN).getProperty("port_state");
-		
-		assertTrue(portStateSrc == info.getSrcPortState());
-		assertTrue(portStateDst == info.getDstPortState());
-
-//		long firstSeenTime = edge.getProperty("first_seen_time");
-//		long lastLldpReceivedTime = edge.getProperty("last_lldp_received_time");
-//		long lastBddpReceivedTime = edge.getProperty("last_bddp_received_time");
-		long firstSeenTime = edge.getVertex(Direction.OUT).getProperty("first_seen_time");
-		long lastLldpReceivedTime = edge.getVertex(Direction.OUT).getProperty("last_lldp_received_time");
-		long lastBddpReceivedTime = edge.getVertex(Direction.OUT).getProperty("last_bddp_received_time");
-		assertTrue(firstSeenTime == info.getFirstSeenTime());		
-		assertTrue(lastLldpReceivedTime == info.getUnicastValidTime());
-		assertTrue(lastBddpReceivedTime == info.getMulticastValidTime());
+		assertTrue(false);
 	}
 
 
