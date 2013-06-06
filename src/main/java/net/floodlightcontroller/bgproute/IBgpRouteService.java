@@ -12,5 +12,9 @@ public interface IBgpRouteService extends IFloodlightService {
 
 	public String getRouterId();
 
-	public void  clearPtree() ;
+	public void clearPtree();
+	
+	//TODO This functionality should be provided by some sort of Ptree listener framework
+	public void prefixAdded(PtreeNode node);
+	public void prefixDeleted(PtreeNode node);
 }

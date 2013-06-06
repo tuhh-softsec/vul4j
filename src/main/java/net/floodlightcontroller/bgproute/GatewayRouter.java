@@ -9,10 +9,18 @@ public class GatewayRouter {
 	private MACAddress routerMac;
 	private IPv4 routerIp;
 	
-	public GatewayRouter(SwitchPort attachmentPoint, MACAddress routerMac, IPv4 routerIp) {
+	//For now, put in the IP and MAC of the SDN domain's router that this 
+	//gateway will be communicating with
+	private MACAddress sdnRouterMac;
+	private IPv4 sdnRouterIp;
+	
+	public GatewayRouter(SwitchPort attachmentPoint, MACAddress routerMac, 
+			IPv4 routerIp, MACAddress sdnRouterMac, IPv4 sdnRouterIp) {
 		this.attachmentPoint = attachmentPoint;
 		this.routerMac = routerMac;
 		this.routerIp = routerIp;
+		this.sdnRouterIp = sdnRouterIp;
+		this.sdnRouterMac = sdnRouterMac;
 	}
 
 	public SwitchPort getAttachmentPoint() {
@@ -25,5 +33,14 @@ public class GatewayRouter {
 
 	public IPv4 getRouterIp() {
 		return routerIp;
+	}
+	
+	//TODO delete if not needed
+	public MACAddress getSdnRouterMac() {
+		return sdnRouterMac;
+	}
+	
+	public IPv4 getSdnRouterIp() {
+		return sdnRouterIp;
 	}
 }

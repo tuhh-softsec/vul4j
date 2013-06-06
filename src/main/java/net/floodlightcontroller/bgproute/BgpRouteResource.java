@@ -35,8 +35,7 @@ public class BgpRouteResource extends ServerResource {
 				get(IBgpRouteService.class.getCanonicalName());
 
 		if (dest != null) {
-			//TODO this code path looks like its never used (except maybe for debugging)
-			//Needs to be changed to use the new RestClient.get().
+			//TODO Needs to be changed to use the new RestClient.get().
 			
 			
 			//Prefix p;
@@ -135,6 +134,8 @@ public class BgpRouteResource extends ServerResource {
 			}
 			node.rib = rib;
 
+			bgpRoute.prefixAdded(node);
+			
 			reply = "[POST: " + prefix + "/" + mask + ":" + nexthop + "]";
 			log.info(reply);
 		}
@@ -193,6 +194,8 @@ public class BgpRouteResource extends ServerResource {
 				}
 			}
 
+			bgpRoute.prefixDeleted(node);
+			
 			reply =reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "]";
 		}
 		else {

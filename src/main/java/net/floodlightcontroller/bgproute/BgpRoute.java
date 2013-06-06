@@ -19,6 +19,7 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.devicemanager.IDeviceService;
+import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyListener;
@@ -57,7 +58,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	protected IDeviceService devices;
 	protected IRestApiService restApi;
 	
-	
 	protected static Ptree ptree;
 	protected String bgpdRestIp;
 	protected String routerId;
@@ -71,6 +71,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	protected final long L2_FWD_COOKIE = APP_COOKIE + 1;
 	//Cookie for flows in ingress switches that rewrite the MAC address
 	protected final long MAC_RW_COOKIE = APP_COOKIE + 2;
+	//Forwarding uses priority 0, and the mac rewrite entries in ingress switches
+	//need to be higher priority than this otherwise the rewrite may not get done
+	protected final short SDNIP_PRIORITY = 10;
 	
 	//TODO temporary
 	protected List<GatewayRouter> gatewayRouters;
@@ -81,25 +84,33 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		gatewayRouters.add(
 				new GatewayRouter(new SwitchPort(new Dpid(163L), new Port((short)1)),
 				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x02, 0x01}),
-				new IPv4("192.168.10.1")));
+				new IPv4("192.168.10.1"),
+				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x01}),
+				new IPv4("192.168.10.101")));
 		//00:00:00:00:00:00:00:a5 port 1
 		//gatewayRouters.add(new SwitchPort(new Dpid(165L), new Port((short)1)));
 		gatewayRouters.add(
 				new GatewayRouter(new SwitchPort(new Dpid(165L), new Port((short)1)),
 				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x02, 0x02}),
-				new IPv4("192.168.20.1")));
+				new IPv4("192.168.20.1"),
+				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x02}),
+				new IPv4("192.168.20.101")));
 		//00:00:00:00:00:00:00:a2 port 1
 		//gatewayRouters.add(new SwitchPort(new Dpid(162L), new Port((short)1)));
 		gatewayRouters.add(
 				new GatewayRouter(new SwitchPort(new Dpid(162L), new Port((short)1)),
 				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x03, 0x01}),
-				new IPv4("192.168.30.1")));
+				new IPv4("192.168.30.1"),
+				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x03}),
+				new IPv4("192.168.30.101")));
 		//00:00:00:00:00:00:00:a6
 		//gatewayRouters.add(new SwitchPort(new Dpid(166L), new Port((short)1)));
 		gatewayRouters.add(
 				new GatewayRouter(new SwitchPort(new Dpid(166L), new Port((short)1)),
 				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x04, 0x01}),
-				new IPv4("192.168.40.1")));
+				new IPv4("192.168.40.1"),
+				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x04}),
+				new IPv4("192.168.40.101")));
 		
 	}
 	
@@ -128,7 +139,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		l.add(ITopoRouteService.class);
 		l.add(IDeviceService.class);
 		l.add(IRestApiService.class);
-		//l.add(IBgpRouteService.class);
 		return l;
 	}
 	
@@ -316,39 +326,42 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 			
 			node.rib = rib;
 			
-			newPrefix(node);
+			prefixAdded(node);
 		} 
 	}
 	
-	private void newPrefix(PtreeNode node) {
+	public void prefixAdded(PtreeNode node) {
 		//Add a flow to rewrite mac for this prefix to all border switches
 		GatewayRouter thisRouter = null;
-		for (GatewayRouter router : gatewayRouters){
-			log.debug("Matching router ip {} with RIB routerId {}",
-					router.getRouterIp().value(), InetAddresses.coerceToInteger(node.rib.routerId));
-			
-			if (router.getRouterIp().value() == InetAddresses.coerceToInteger(node.rib.routerId)){
+		for (GatewayRouter router : gatewayRouters){	
+			if (router.getRouterIp().value() == 
+					InetAddresses.coerceToInteger(node.rib.nextHop)){
 				thisRouter = router;
 				break;
 			}
 		}
 		
 		if (thisRouter == null){
-			log.error("Couldn't find advertising router in router list for prefix {}", node.rib);
+			//TODO local router isn't in gateway list so this will get thrown
+			//Need to work out what to do about local prefixes with next hop 0.0.0.0.
+			log.error("Couldn't find next hop router in router {} in config"
+					, node.rib.nextHop.toString());
 			return; //just quit out here? This is probably a configuration error
 		}
-		
+
 		for (GatewayRouter ingressRouter : gatewayRouters){
 			if (ingressRouter == thisRouter) {
 				continue;
 			}
 			
 			DataPath shortestPath = topoRouteService.getShortestPath(
-					ingressRouter.getAttachmentPoint(), thisRouter.getAttachmentPoint());
+					ingressRouter.getAttachmentPoint(), 
+					thisRouter.getAttachmentPoint());
 			
 			if (shortestPath == null){
 				log.debug("Shortest path between {} and {} not found",
-						ingressRouter.getAttachmentPoint(), thisRouter.getAttachmentPoint());
+						ingressRouter.getAttachmentPoint(), 
+						thisRouter.getAttachmentPoint());
 				return; // just quit here?
 			}
 			
@@ -367,19 +380,32 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	        .setCommand(OFFlowMod.OFPFC_ADD)
 	        //.setMatch(match)
 	        //.setActions(actions)
+	        .setPriority(SDNIP_PRIORITY)
 	        .setLengthU(OFFlowMod.MINIMUM_LENGTH
 	        		+ OFActionDataLayerDestination.MINIMUM_LENGTH
 	        		+ OFActionOutput.MINIMUM_LENGTH);
 	        
 	        OFMatch match = new OFMatch();
 	        match.setDataLayerType(Ethernet.TYPE_IPv4);
-	        //match.setNetworkDestination(InetAddresses.coerceToInteger(node.rib.getNextHop()));
-	        //TODO set mask length
+	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_TYPE);
 	        
-	        log.debug("finding prefix, {}", InetAddresses.fromInteger(node.keyBits).toString());
-	        //match.setFromCIDR(node.keyBits, which)
-	        //match.setw
-	        //fm.setMatch(match);
+	        match.setDataLayerSource(ingressRouter.getRouterMac().toBytes());
+	        match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_SRC);
+	        
+	        //match.setDataLayerDestination(ingressRouter.getSdnRouterMac().toBytes());
+	        //match.setWildcards(match.getWildcards() & ~OFMatch.OFPFW_DL_DST);
+
+	        InetAddress address = null;
+	        try {
+				address = InetAddress.getByAddress(node.key);
+			} catch (UnknownHostException e1) {
+				//Should never happen is the reverse conversion has already been done
+				log.error("Malformed IP address");
+				return;
+			}
+	        
+	        match.setFromCIDR(address.getHostAddress() + "/" + node.rib.masklen, OFMatch.STR_NW_DST);
+	        fm.setMatch(match);
 	        
 	        //Set up MAC rewrite action
 	        OFActionDataLayerDestination macRewriteAction = new OFActionDataLayerDestination();
@@ -388,6 +414,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	        //Set up output action
 	        OFActionOutput outputAction = new OFActionOutput();
 	        outputAction.setMaxLength((short)0xffff); //TODO check what this is (and if needed for mac rewrite)
+	        
+	        Port outputPort = shortestPath.flowEntries().get(0).outPort();
+	        outputAction.setPort(outputPort.value());
 	        
 	        List<OFAction> actions = new ArrayList<OFAction>();
 	        actions.add(macRewriteAction);
@@ -414,8 +443,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		}
 	}
 	
-	private void prefixDelete(PtreeNode node) {
+	public void prefixDeleted(PtreeNode node) {
 		//Remove MAC rewriting flows from other border switches
+		
 	}
 	
 	/*
@@ -453,11 +483,9 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		//for each prefix received. This will be done later when prefixes have 
 		//actually been received.
 		
-		//for (Map.Entry<IOFSwitch, SwitchPort> src : gatewaySwitches.entrySet()){
 		for (GatewayRouter dstRouter : gatewayRouters){
 			SwitchPort routerAttachmentPoint = dstRouter.getAttachmentPoint();
 			for (Map.Entry<IOFSwitch, SwitchPort> src : gatewaySwitches.entrySet()) {
-		//List<IOFSwitch> switches = new ArrayList<IOFSwitch>(gatewaySwitches.keySet());
 		
 				if (routerAttachmentPoint.dpid().value() == 
 						src.getKey().getId()){
@@ -472,13 +500,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 							src.getValue(), routerAttachmentPoint);
 					return; // just quit here?
 				}
-				
-				/*
-				List<FlowEntry> flowEntries = shortestPath.flowEntries();
-
-				for (FlowEntry e : shortestPath.flowEntries()){
-					log.debug("fish: {}" , e.dpid().toString());
-				}*/
 				
 				//install flows
 				installPath(shortestPath.flowEntries(), dstRouter);
@@ -577,6 +598,12 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 			//RestClient.get ("http://localhost:5000/topo_change");
 		}
 		*/
+		
+		for (LDUpdate update : topology.getLastLinkUpdates()){
+			log.debug("{} event causing internal L2 path recalculation",
+					update.getOperation().toString());
+			
+		}
 		calculateFullMesh();
 	}
 }
