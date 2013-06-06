@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.event.EventTransactionalGraph;
@@ -98,7 +99,7 @@ public class GraphDBConnection {
 	   
 	   protected EventTransactionalGraph<TitanGraph> getEventGraph() {
 		   
-		   	if (isValid()) {		   		
+		   	if (isValid()) {
 		   		return eg;
 		   	} else {
 		   		return null;

@@ -84,13 +84,55 @@ public class LinkStorageImpl implements ILinkStorage {
             	}
 
             	if (currLinks.contains(vportDst)) {
-            		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
+            		} else if (op.equals(DM_OPERATION.UPDATE)) {
+                		// TODO: update linkinfo
+            			// GraphDB seems to have no KeyIndex for LinkInfo data
+            			
+            			// BEGIN: trial code (update implementation)
+            			if(linkinfo != null) {
+            				vportSrc.setPortState(linkinfo.getSrcPortState());
+            				vportDst.setPortState(linkinfo.getDstPortState());
+            				
+            				Vertex vsrc = vportSrc.asVertex();
+    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+
+//            				for(Edge e: vportSrc.asVertex().getEdges(Direction.OUT)) {
+//            					if(e.getVertex(Direction.OUT).equals(vportDst.asVertex())) {
+//            						e.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+//            						e.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+//            						e.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+//            					}
+//            				}
+            				
+                    		conn.endTx(Transaction.COMMIT);
+                    		log.debug("addOrUpdateLink(): link updated {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            			}
+            			// END: trial code
             		}
             	} else {
-            		vportSrc.setLinkPort(vportDst);
+            		if (op.equals(DM_OPERATION.UPDATE)) {
+            			log.debug("addOrUpdateLink(): failed link doesn't exist {} {} src {} dst {}", 
+            					new Object[]{op, lt, vportSrc, vportDst});
+            		} else {
+                		vportSrc.setLinkPort(vportDst);
+                		
+            			// BEGIN: trial code (update implementation)
+            			if(linkinfo != null) {
+            				vportSrc.setPortState(linkinfo.getSrcPortState());
+            				vportDst.setPortState(linkinfo.getDstPortState());
+            				
+            				Vertex vsrc = vportSrc.asVertex();
+    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
+    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
+    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
+            			}
+            			// END: trial code
+            		}
 
             		conn.endTx(Transaction.COMMIT);
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
