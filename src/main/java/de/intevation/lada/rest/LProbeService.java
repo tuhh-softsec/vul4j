@@ -50,11 +50,12 @@ public class LProbeService {
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public LProbe findById(@PathParam("id") String id) {
-        return repository.findById(LProbe.class, id);
+    public Response findById(@PathParam("id") String id) {
+    LProbe item = repository.findById(LProbe.class, id);
+    return new Response(true, "200", item);
     }
 
-    /**
+	/**
      * Request LProbe via a filter.
      *
      * Query parameters are used for the filter in form of key-value pairs.
@@ -68,10 +69,11 @@ public class LProbeService {
      */
     @GET
     @Produces("text/json")
-    public List<LProbe> filter(@Context UriInfo info) {
+    public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
-            return repository.findAll(LProbe.class);
+            List<LProbe> items = repository.findAll(LProbe.class);
+            return new Response(true, "200", items);
         }
         String mstId = "";
         String uwbId = "";
@@ -91,7 +93,8 @@ public class LProbeService {
                 begin = null;
             }
         }
-        return repository.filter(mstId, uwbId, begin);
+        List<LProbe> items = repository.filter(mstId, uwbId, begin);
+        return new Response(true, "200", items);
     }
 
     @PUT
