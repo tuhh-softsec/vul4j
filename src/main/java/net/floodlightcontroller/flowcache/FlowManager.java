@@ -98,6 +98,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private LinkedList<FlowPath> measurementStoredPaths = new LinkedList<FlowPath>();
     private long measurementStartTimeProcessingPaths = 0;
     private long measurementEndTimeProcessingPaths = 0;
+    Map<Long, ?> measurementShortestPathTopo = null;
+    private String measurementPerFlowStr = new String();
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -277,7 +279,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-		topoRouteService.prepareShortestPathTopo();
+		Map<Long, ?> shortestPathTopo =
+		    topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -352,7 +355,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
+			topoRouteService.getTopoShortestPath(shortestPathTopo,
+							     srcSwitchPort,
 							     dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
@@ -377,7 +381,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowPath(conn, flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo();
+		topoRouteService.dropShortestPathTopo(shortestPathTopo);
 
 		conn.endTx(Transaction.COMMIT);
 
@@ -812,7 +816,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    thread.start();
 	}
 
-	// Want for all threads to complete
+	// Wait for all threads to complete
 	for (Thread thread : threads) {
 	    try {
 		thread.join();
@@ -1891,13 +1895,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Prepare the Shortest Path computation if the first Flow Path
 	//
 	if (measurementStoredPaths.isEmpty())
-	    topoRouteService.prepareShortestPathTopo();
+	    measurementShortestPathTopo = topoRouteService.prepareShortestPathTopo();
 
 	//
 	// Compute the Shortest Path
 	//
 	DataPath dataPath =
-	    topoRouteService.getTopoShortestPath(flowPath.dataPath().srcPort(),
+	    topoRouteService.getTopoShortestPath(measurementShortestPathTopo,
+						 flowPath.dataPath().srcPort(),
 						 flowPath.dataPath().dstPort());
 	if (dataPath == null) {
 	    // We need the DataPath to populate the Network MAP
@@ -1956,11 +1961,38 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
      */
     @Override
     public boolean measurementInstallPaths(Integer numThreads) {
-	List<Thread> threads = new LinkedList<Thread>();
-
 	// Create a copy of the Flow Paths to install
 	final ConcurrentLinkedQueue<FlowPath> measurementProcessingPaths =
 	    new ConcurrentLinkedQueue<FlowPath>(measurementStoredPaths);
+
+	/**
+	 * A Thread-wrapper class for executing the threads and collecting
+	 * the measurement data.
+	 */
+	class MyThread extends Thread {
+	    public long[] execTime = new long[2000];
+	    public int samples = 0;
+	    public int threadId = -1;
+	    @Override
+	    public void run() {
+		while (true) {
+		    FlowPath flowPath = measurementProcessingPaths.poll();
+		    if (flowPath == null)
+			return;
+		    // Install the Flow Path
+		    FlowId flowId = new FlowId();
+		    String dataPathSummaryStr =
+			flowPath.dataPath().dataPathSummary();
+		    long startTime = System.nanoTime();
+		    addFlow(flowPath, flowId, dataPathSummaryStr);
+		    long endTime = System.nanoTime();
+		    execTime[samples] = endTime - startTime;
+		    samples++;
+		}
+	    }
+	};
+
+	List<MyThread> threads = new LinkedList<MyThread>();
 
 	log.debug("Measurement Installing {} flows",
 		  measurementProcessingPaths.size());
@@ -1969,20 +2001,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Create the threads to install the Flow Paths
 	//
 	for (int i = 0; i < numThreads; i++) {
-	    Thread thread = new Thread(new Runnable() {
-		@Override
-		public void run() {
-		    while (true) {
-			FlowPath flowPath = measurementProcessingPaths.poll();
-			if (flowPath == null)
-			    return;
-			// Install the Flow Path
-			FlowId flowId = new FlowId();
-			String dataPathSummaryStr =
-			    flowPath.dataPath().dataPathSummary();
-			addFlow(flowPath, flowId, dataPathSummaryStr);
-		    }
-		}}, "Measurement Add Flow Path");
+	    MyThread thread = new MyThread();
+	    thread.threadId = i;
 	    threads.add(thread);
 	}
 
@@ -1995,7 +2015,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    thread.start();
 	}
 
-	// Want for all threads to complete
+	// Wait for all threads to complete
 	for (Thread thread : threads) {
 	    try {
 		thread.join();
@@ -2006,6 +2026,20 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
 	// Record the end of processing
 	measurementEndTimeProcessingPaths = System.nanoTime();
+
+	//
+	// Prepare the string with measurement data per each Flow Path
+	// installation.
+	// The string is multiple lines: one line per Flow Path installation:
+	//    ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
+	//
+	measurementPerFlowStr = new String();
+	String eol = System.getProperty("line.separator");
+	for (MyThread thread : threads) {
+	    for (int i = 0; i < thread.samples; i++) {
+		measurementPerFlowStr += "ThreadAndTimePerFlow " + thread.threadId + " " + numThreads + " " + thread.execTime[i] + eol;
+	    }
+	}
 
 	return true;
     }
@@ -2023,6 +2057,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Get the measurement install time per Flow.
+     *
+     * @return a multi-line string with the following format per line:
+     * ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
+     */
+    @Override
+    public String measurementGetPerFlowInstallTime() {
+	return new String(measurementPerFlowStr);
+    }
+
+    /**
      * Clear the path flows stored for measurement purpose.
      *
      * @return true on success, otherwise false.
@@ -2030,9 +2075,10 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     @Override
     public boolean measurementClearAllPaths() {
 	measurementStoredPaths.clear();
-	topoRouteService.dropShortestPathTopo();
+	topoRouteService.dropShortestPathTopo(measurementShortestPathTopo);
 	measurementStartTimeProcessingPaths = 0;
 	measurementEndTimeProcessingPaths = 0;
+	measurementPerFlowStr = new String();
 
 	return true;
     }
