@@ -28,9 +28,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
 	protected String conf;
 
-	/**
-	 * Update
-	 */
 	@Override
 	public void update(Link link, DM_OPERATION op) {
 		update(link, (LinkInfo)null, op);
@@ -84,55 +81,13 @@ public class LinkStorageImpl implements ILinkStorage {
             	}
 
             	if (currLinks.contains(vportDst)) {
+            		// TODO: update linkinfo
             		if (op.equals(DM_OPERATION.INSERT) || op.equals(DM_OPERATION.CREATE)) {
             			log.debug("addOrUpdateLink(): failed link exists {} {} src {} dst {}", 
             					new Object[]{op, lt, vportSrc, vportDst});
-            		} else if (op.equals(DM_OPERATION.UPDATE)) {
-                		// TODO: update linkinfo
-            			// GraphDB seems to have no KeyIndex for LinkInfo data
-            			
-            			// BEGIN: trial code (update implementation)
-            			if(linkinfo != null) {
-            				vportSrc.setPortState(linkinfo.getSrcPortState());
-            				vportDst.setPortState(linkinfo.getDstPortState());
-            				
-            				Vertex vsrc = vportSrc.asVertex();
-    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-
-//            				for(Edge e: vportSrc.asVertex().getEdges(Direction.OUT)) {
-//            					if(e.getVertex(Direction.OUT).equals(vportDst.asVertex())) {
-//            						e.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-//            						e.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-//            						e.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-//            					}
-//            				}
-            				
-                    		conn.endTx(Transaction.COMMIT);
-                    		log.debug("addOrUpdateLink(): link updated {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
-            			}
-            			// END: trial code
             		}
             	} else {
-            		if (op.equals(DM_OPERATION.UPDATE)) {
-            			log.debug("addOrUpdateLink(): failed link doesn't exist {} {} src {} dst {}", 
-            					new Object[]{op, lt, vportSrc, vportDst});
-            		} else {
-                		vportSrc.setLinkPort(vportDst);
-                		
-            			// BEGIN: trial code (update implementation)
-            			if(linkinfo != null) {
-            				vportSrc.setPortState(linkinfo.getSrcPortState());
-            				vportDst.setPortState(linkinfo.getDstPortState());
-            				
-            				Vertex vsrc = vportSrc.asVertex();
-    						vsrc.setProperty("first_seen_time", linkinfo.getFirstSeenTime());
-    						vsrc.setProperty("last_lldp_received_time", linkinfo.getUnicastValidTime());
-    						vsrc.setProperty("last_bddp_received_time", linkinfo.getMulticastValidTime());
-            			}
-            			// END: trial code
-            		}
+            		vportSrc.setLinkPort(vportDst);
 
             		conn.endTx(Transaction.COMMIT);
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
@@ -210,6 +165,7 @@ public class LinkStorageImpl implements ILinkStorage {
         }
 	}
 
+	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
@@ -217,6 +173,8 @@ public class LinkStorageImpl implements ILinkStorage {
 		
 		List<Link> links = new ArrayList<Link>();
     	
+		// BEGIN: Trial code
+		// author: Naoki Shiota
 		vportSrc = conn.utils().searchPort(conn, HexString.toHexString(dpid), port);
 		if (vportSrc != null) {
  			
@@ -236,6 +194,7 @@ public class LinkStorageImpl implements ILinkStorage {
 				}
 			}
 		}
+		// END: Trial code
 		
      	return links;
 	}
@@ -248,13 +207,17 @@ public class LinkStorageImpl implements ILinkStorage {
 		
 	}
 
+	// TODO: Fix me
 	@Override
 	public void deleteLinksOnPort(Long dpid, short port) {
+		// BEGIN: Trial code
+		// author: Naoki Shiota
 		List<Link> linksToDelete = getLinks(dpid,port);
 		
 		for(Link l : linksToDelete) {
 			deleteLink(l);
 		}
+		// END: Trial code
 	}
 
 	// TODO: Fix me
