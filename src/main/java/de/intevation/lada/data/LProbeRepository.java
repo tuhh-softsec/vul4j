@@ -1,9 +1,6 @@
 package de.intevation.lada.data;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -49,6 +46,7 @@ public class LProbeRepository extends Repository{
      * @return
      */
     public List<LProbe> filter(String mstId, String uwbId, Long begin) {
+        this.reset();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
         Root<LProbe> member = criteria.from(LProbe.class);
@@ -91,9 +89,7 @@ public class LProbeRepository extends Repository{
      */
     public boolean create(LProbe probe) {
         // Make sure that no old errors and warnings remain.
-        setGeneralError(200);
-        setErrors(new HashMap<String, Integer>());
-        setWarnings(new HashMap<String, Integer>());
+        this.reset();
 
         // Try to save the new LProbe.
         try {
