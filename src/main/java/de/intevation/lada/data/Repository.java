@@ -1,6 +1,7 @@
 package de.intevation.lada.data;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,6 +28,13 @@ public class Repository
     private EntityManager em;
 
     /**
+     * Errors/Warnings occured in repository operations.
+     */
+    private int generalError;
+    private Map<String, Integer> errors;
+    private Map<String, Integer> warnings;
+
+    /**
      * Get all objects of type <link>clazz</link>from database.
      *
      * @param clazz The class type.
@@ -49,5 +57,59 @@ public class Repository
      */
     public <T> T findById(Class<T> clazz, String id) {
         return em.find(clazz, id);
+    }
+
+    /**
+     * Getter for the error code returned by the validator.
+     *
+     * @return The error code returned by the validator.
+     */
+    public int getGeneralError() {
+        return generalError;
+    }
+
+    /**
+     * Protected setter for the general error code.
+     *
+     * @param generalError
+     */
+    protected void setGeneralError(int generalError) {
+        this.generalError = generalError;
+    }
+
+    /**
+     * Getter for all errors occured while validating a LProbe object.
+     *
+     * @return Map of field - error code pairs.
+     */
+    public Map<String, Integer> getErrors() {
+        return errors;
+    }
+
+    /**
+     * Protected setter for validation errors.
+     * 
+     * @param errors
+     */
+    protected void setErrors(Map<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    /**
+     * Getter for all warnings occured while validating a LProbe object.
+     *
+     * @return Map of field - error code pairs.
+     */
+    public Map<String, Integer> getWarnings() {
+        return warnings;
+    }
+
+    /**
+     * Protected setter for validation warnings.
+     *
+     * @param warnings
+     */
+    protected void setWarnings(Map<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }

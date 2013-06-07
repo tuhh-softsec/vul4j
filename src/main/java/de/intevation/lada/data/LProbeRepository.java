@@ -41,13 +41,6 @@ public class LProbeRepository extends Repository{
     private LProbeManager manager;
 
     /**
-     * Errors/Warnings occured in repository operations.
-     */
-    private int generalError;
-    private Map<String, Integer> errors;
-    private Map<String, Integer> warnings;
-
-    /**
      * Filter for LProbe objects.
      *
      * @param mstId mst_id
@@ -125,57 +118,4 @@ public class LProbeRepository extends Repository{
         return false;
     }
 
-    /**
-     * Getter for the error code returned by the validator.
-     *
-     * @return The error code returned by the validator.
-     */
-    public int getGeneralError() {
-        return generalError;
-    }
-
-    /**
-     * Private setter for the general error code.
-     *
-     * @param generalError
-     */
-    private void setGeneralError(int generalError) {
-        this.generalError = generalError;
-    }
-
-    /**
-     * Getter for all errors occured while validating a LProbe object.
-     *
-     * @return Map of field - error code pairs.
-     */
-    public Map<String, Integer> getErrors() {
-        return errors;
-    }
-
-    /**
-     * Private setter for validation errors.
-     * 
-     * @param errors
-     */
-    private void setErrors(Map<String, Integer> errors) {
-        this.errors = errors;
-    }
-
-    /**
-     * Getter for all warnings occured while validating a LProbe object.
-     *
-     * @return Map of field - error code pairs.
-     */
-    public Map<String, Integer> getWarnings() {
-        return warnings;
-    }
-
-    /**
-     * Private setter for validation warnings.
-     *
-     * @param warnings
-     */
-    private void setWarnings(Map<String, Integer> warnings) {
-        this.warnings = warnings;
-    }
 }
