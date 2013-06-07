@@ -51,12 +51,8 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     public Response findById(@PathParam("id") String id) {
-        boolean success = true;
         LProbe item = repository.findById(LProbe.class, id);
-        if (item == null) {
-            success = false;
-        }
-        Response response = new Response(success, repository.getGeneralError(), item);
+        Response response = new Response(repository.getSuccess(), repository.getGeneralError(), item);
         response.setWarnings(repository.getWarnings());
         response.setErrors(repository.getErrors());
         return response;
