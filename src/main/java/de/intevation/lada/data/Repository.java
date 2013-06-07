@@ -30,6 +30,7 @@ public class Repository
     /**
      * Errors/Warnings occured in repository operations.
      */
+    private boolean success;
     private int generalError;
     private Map<String, Integer> errors;
     private Map<String, Integer> warnings;
@@ -61,6 +62,25 @@ public class Repository
             this.setGeneralError(600);
         }
         return item;
+    }
+
+    /**
+     * Getter for the success boolean which indicates whether the request
+     * succeeds.
+     *
+     * @return The true or false.
+     */
+    public boolean getSuccess() {
+        return this.success;
+    }
+
+    /**
+     * Protected setter for the success boolean which indicates whether the
+     * request succeeds.
+     *
+     */
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
     /**
