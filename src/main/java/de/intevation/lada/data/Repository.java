@@ -56,7 +56,11 @@ public class Repository
      * @return The requested object of type clazz
      */
     public <T> T findById(Class<T> clazz, String id) {
-        return em.find(clazz, id);
+        T item = em.find(clazz, id);
+        if (item == null) {
+            this.setGeneralError(600);
+        }
+        return item;
     }
 
     /**
