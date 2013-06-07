@@ -115,58 +115,12 @@ public class LProbeService {
     @POST
     @Produces("text/json")
     @Consumes("application/json")
-    public String create(LProbe probe) {
+    public Response create(LProbe probe) {
         boolean success = repository.create(probe);
         int generalError = repository.getGeneralError();
-        if(success) {
-            return "{" +
-                   "success: true, " +
-                   "message: \"" + generalError + "\", " +
-                   "errors: {" + createErrorFields() + "}, " +
-                   "warnings: {" + createWarningFields() + "}" +
-                   "}";
-        }
-        else {
-            return "{" +
-                   "success: false, " +
-                   "message: \"" + generalError + "\", " +
-                   "errors: {" + createErrorFields() + "}, " +
-                   "warnings: {" + createWarningFields() + "}" +
-                   "}";
-        }
-    }
-
-    private String createWarningFields() {
-        Map<String, Integer> warnings = repository.getWarnings();
-        String response = "";
-        if (warnings == null || warnings.isEmpty()) {
-            return response;
-        }
-        boolean first = true;
-        for (Map.Entry<String, Integer> entry: warnings.entrySet()) {
-            if (!first) {
-                response +=",";
-            }
-            response += entry.getKey() + ":" + "\"" + entry.getValue() + "\"";
-            first = false;
-        }
-        return response;
-    }
-
-    private String createErrorFields() {
-        Map<String, Integer> errors = repository.getErrors();
-        String response = "";
-        if (errors.isEmpty()) {
-            return response;
-        }
-        boolean first = true;
-        for (Map.Entry<String, Integer> entry: errors.entrySet()) {
-            if (!first) {
-                response +=",";
-            }
-            response += entry.getKey() + ":" + "\"" + entry.getValue() + "\"";
-            first = false;
-        }
+        Response response = new Response(success, generalError, probe);
+        response.setWarnings(repository.getWarnings());
+        response.setErrors(repository.getErrors());
         return response;
     }
 }
