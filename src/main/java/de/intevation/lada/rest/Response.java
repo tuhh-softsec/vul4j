@@ -1,5 +1,11 @@
 package de.intevation.lada.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
+
 /**
 * This class is nice!.
 *
@@ -8,15 +14,22 @@ package de.intevation.lada.rest;
 @SuppressWarnings("serial")
 public class Response implements java.io.Serializable {
 
+
+    /**
+     * The logger for this class.
+     */
+    @Inject
+    private Logger log;
+
     private Boolean success;
     private String message;
     private Object data;
-    private String errors;
-    private String warnings;
+    private Map<String, String> errors;
+    private Map<String, String> warnings;
 
-    public Response(boolean success, String message, Object data) {
+    public Response(boolean success, int code, Object data) {
         this.success = success;
-        this.message = message;
+        this.message = Integer.toString(code);
         this.data = data;
     }
 
@@ -44,19 +57,49 @@ public class Response implements java.io.Serializable {
         this.data = data;
     }
 
-    public String getErrors() {
+    public Map<String, String> getErrors() {
         return errors;
     }
 
-    public void setErrors(String errors) {
-        this.errors = errors;
+    public void setErrors(Map<String, Integer> errors) {
+        this.errors = this.convertCodes(errors);
     }
 
-    public String getWarnings() {
+    public Map<String, String> getWarnings() {
         return warnings;
     }
 
-    public void setWarnings(String warnings) {
-        this.warnings = warnings;
+    public void setWarnings(Map<String, Integer> warnings) {
+        this.warnings = this.convertCodes(warnings);
+    }
+
+    private HashMap<String, String> convertCodes(Map<String, Integer> codes) {
+        HashMap<String, String> converted = new HashMap<String, String>();
+        if (codes == null || codes.isEmpty()) {
+            return converted;
+        }
+        for (Map.Entry<String, Integer> entry: codes.entrySet()) {
+            converted.put(entry.getKey(), Integer.toString(entry.getValue()));
+        }
+        return converted;
+    }
+
+    /* Currently unused but might be helpfull later */
+    private String codes2string(Map<String, Integer> codes) {
+        String response = "{";
+        if (codes == null || codes.isEmpty()) {
+            response += "}";
+            return response;
+        }
+        boolean first = true;
+        for (Map.Entry<String, Integer> entry: codes.entrySet()) {
+            if (!first) {
+                response +=",";
+            }
+            response += entry.getKey() + ":" + "\"" + entry.getValue() + "\"";
+            first = false;
+        }
+        response += "}";
+        return response;
     }
 }
