@@ -1,6 +1,7 @@
 package de.intevation.lada.data;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
