@@ -80,7 +80,7 @@ public class LProbeService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
             List<LProbe> items = repository.findAll(LProbe.class);
-            return new Response(true, "200", items);
+            return new Response(true, repository.getGeneralError(), items);
         }
         String mstId = "";
         String uwbId = "";
@@ -101,7 +101,7 @@ public class LProbeService {
             }
         }
         List<LProbe> items = repository.filter(mstId, uwbId, begin);
-        return new Response(true, "200", items);
+        return new Response(true, repository.getGeneralError(), items);
     }
 
     @PUT
