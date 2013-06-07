@@ -1,5 +1,6 @@
 package de.intevation.lada.data;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,11 +43,19 @@ public class Repository
      * @return List of objects.
      */
     public <T> List<T> findAll(Class<T> clazz) {
+        this.reset();
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         Root<T> member = criteria.from(clazz);
         criteria.select(member);
         return em.createQuery(criteria).getResultList();
+    }
+
+    public void reset() {
+        this.setSuccess(true);
+        this.setGeneralError(200);
+        this.setErrors(new HashMap<String, Integer>());
+        this.setWarnings(new HashMap<String, Integer>());
     }
 
     /**
@@ -57,6 +66,7 @@ public class Repository
      * @return The requested object of type clazz
      */
     public <T> T findById(Class<T> clazz, String id) {
+        this.reset();
         T item = em.find(clazz, id);
         if (item == null) {
             this.setGeneralError(600);
