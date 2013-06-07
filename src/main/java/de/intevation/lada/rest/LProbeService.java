@@ -21,10 +21,10 @@ import de.intevation.lada.data.LProbeRepository;
 import de.intevation.lada.model.LProbe;
 
 /**
- * This class produces a RESTful service to read the contents of LProbe table.
- * 
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
- */
+* This class produces a RESTful service to read the contents of LProbe table.
+* 
+* @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+*/
 @Path("/proben")
 @RequestScoped
 public class LProbeService {
@@ -51,8 +51,8 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     public Response findById(@PathParam("id") String id) {
-    LProbe item = repository.findById(LProbe.class, id);
-    return new Response(true, "200", item);
+        LProbe item = repository.findById(LProbe.class, id);
+        return new Response(true, "200", item);
     }
 
 	/**
