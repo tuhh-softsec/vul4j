@@ -70,6 +70,7 @@ public class Repository
         T item = em.find(clazz, id);
         if (item == null) {
             this.setGeneralError(600);
+            this.setSuccess(false);
         }
         return item;
     }
