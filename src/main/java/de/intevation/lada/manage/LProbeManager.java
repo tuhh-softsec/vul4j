@@ -18,7 +18,7 @@ import de.intevation.lada.validation.Validator;
 
 /**
  * This Manager provides databse operations for LProbe objects.
- * 
+ *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
@@ -36,7 +36,7 @@ public class LProbeManager {
 
     /**
      * Delete a LProbe object by id.
-     * 
+     *
      * @param id
      * @throws Exception
      */
