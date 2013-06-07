@@ -82,8 +82,23 @@ EOF_LOGBACK
   echo "Starting ONOS controller ..."
   echo 
   #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
-  java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
+  #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/n
 
+  mvn exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
+
+  echo "Waiting for ONOS to start..."
+  COUNT=0
+  ESTATE=0
+  while [ "$COUNT" != "10" ]; do
+    COUNT=$((COUNT + 1))
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
+    if [ "$n" -ge "1" ]; then
+      exit 0
+    fi
+    sleep $COUNT
+  done
+  echo "Timed out"
+  exit 1
 
 #  echo "java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ./onos.properties > /dev/null 2>&1 &"
 #  sudo -b /usr/sbin/tcpdump -n -i eth0 -s0 -w ${PCAP_LOG} 'tcp port 6633' > /dev/null  2>&1
@@ -128,7 +143,7 @@ case "$1" in
     start 
     ;;
   startifdown)
-    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     if [ $n == 0 ]; then
       start
     else 
@@ -142,7 +157,7 @@ case "$1" in
     deldb
     ;;
   status)
-    n=`jps -l |grep "net.floodlightcontroller.core.Main" | wc -l`
+    n=`jps -l |grep "${MAIN_CLASS}" | wc -l`
     echo "$n instance of onos running"
     ;;
   *)
