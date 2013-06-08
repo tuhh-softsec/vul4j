@@ -29,9 +29,9 @@ public class X509SubjectNameSecurityToken extends X509SecurityToken {
 
     private String subjectName;
 
-    protected X509SubjectNameSecurityToken(SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext,
-                                           String id, SecurityTokenConstants.KeyIdentifier keyIdentifier) {
-        super(tokenType, inboundSecurityContext, id, keyIdentifier);
+    protected X509SubjectNameSecurityToken(
+            SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext, String id) {
+        super(tokenType, inboundSecurityContext, id, SecurityTokenConstants.KeyIdentifier_X509SubjectName, false);
     }
 
     public String getSubjectName() {

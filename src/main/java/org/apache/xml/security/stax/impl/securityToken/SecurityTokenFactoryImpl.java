@@ -22,6 +22,7 @@ import org.apache.xml.security.binding.xmldsig.*;
 import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.*;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants.TokenType;
 import org.apache.xml.security.stax.securityToken.InboundSecurityToken;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
@@ -65,8 +66,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                     XMLSecurityUtils.getQNameType(keyInfoType.getContent(), XMLSecurityConstants.TAG_dsig_KeyName);
             if (keyName != null) {
                 KeyNameSecurityToken token =
-                        new KeyNameSecurityToken(keyName, inboundSecurityContext,
-                                SecurityTokenConstants.KeyIdentifier_KeyName);
+                        new KeyNameSecurityToken(keyName, inboundSecurityContext);
                 setTokenKey(securityProperties, keyUsage, token);
                 return token;
             }
@@ -83,8 +83,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         if (SecurityTokenConstants.KeyUsage_Signature_Verification.equals(keyUsage)
                 && securityProperties.getSignatureVerificationKey() != null) {
             AbstractInboundSecurityToken token =
-                    new AbstractInboundSecurityToken(inboundSecurityContext, null,
-                            SecurityTokenConstants.KeyIdentifier_NoKeyInfo) {
+                    new AbstractInboundSecurityToken(inboundSecurityContext, IDGenerator.generateID(null),
+                            SecurityTokenConstants.KeyIdentifier_NoKeyInfo, false) {
                         @Override
                         public TokenType getTokenType() {
                             return SecurityTokenConstants.DefaultToken;
@@ -95,8 +95,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         } else if (SecurityTokenConstants.KeyUsage_Decryption.equals(keyUsage)
                 && securityProperties.getDecryptionKey() != null) {
             AbstractInboundSecurityToken token =
-                    new AbstractInboundSecurityToken(inboundSecurityContext, null,
-                            SecurityTokenConstants.KeyIdentifier_NoKeyInfo) {
+                    new AbstractInboundSecurityToken(inboundSecurityContext, IDGenerator.generateID(null),
+                            SecurityTokenConstants.KeyIdentifier_NoKeyInfo, false) {
                         @Override
                         public TokenType getTokenType() {
                             return SecurityTokenConstants.DefaultToken;
@@ -115,20 +115,17 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
         final RSAKeyValueType rsaKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig_RSAKeyValue);
         if (rsaKeyValueType != null) {
-            return new RsaKeyValueSecurityToken(rsaKeyValueType, inboundSecurityContext,
-                    SecurityTokenConstants.KeyIdentifier_KeyValue);
+            return new RsaKeyValueSecurityToken(rsaKeyValueType, inboundSecurityContext);
         }
         final DSAKeyValueType dsaKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig_DSAKeyValue);
         if (dsaKeyValueType != null) {
-            return new DsaKeyValueSecurityToken(dsaKeyValueType, inboundSecurityContext,
-                    SecurityTokenConstants.KeyIdentifier_KeyValue);
+            return new DsaKeyValueSecurityToken(dsaKeyValueType, inboundSecurityContext);
         }
         final ECKeyValueType ecKeyValueType =
                 XMLSecurityUtils.getQNameType(keyValueType.getContent(), XMLSecurityConstants.TAG_dsig11_ECKeyValue);
         if (ecKeyValueType != null) {
-            return new ECKeyValueSecurityToken(ecKeyValueType, inboundSecurityContext,
-                    SecurityTokenConstants.KeyIdentifier_KeyValue);
+            return new ECKeyValueSecurityToken(ecKeyValueType, inboundSecurityContext);
         }
         throw new XMLSecurityException("stax.unsupportedKeyValue");
     }
@@ -152,7 +149,7 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             }
             X509SecurityToken token =
                     new X509SecurityToken(tokenType, inboundSecurityContext,
-                            "", SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            IDGenerator.generateID(null), SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier, true);
             token.setX509Certificates(new X509Certificate[]{cert});
 
             setTokenKey(securityProperties, keyUsage, token);
@@ -172,8 +169,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 throw new XMLSecurityException("stax.noKey", keyUsage);
             }
             X509IssuerSerialSecurityToken token =
-                    new X509IssuerSerialSecurityToken(SecurityTokenConstants.X509V3Token, inboundSecurityContext,
-                            "", SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
+                    new X509IssuerSerialSecurityToken(
+                            SecurityTokenConstants.X509V3Token, inboundSecurityContext, IDGenerator.generateID(null));
             token.setIssuerName(issuerSerialType.getX509IssuerName());
             token.setSerialNumber(issuerSerialType.getX509SerialNumber());
 
@@ -192,8 +189,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
                 throw new XMLSecurityException("stax.noKey", keyUsage);
             }
             X509SKISecurityToken token =
-                    new X509SKISecurityToken(SecurityTokenConstants.X509V3Token, inboundSecurityContext,
-                            "", SecurityTokenConstants.KeyIdentifier_X509Ski);
+                    new X509SKISecurityToken(
+                            SecurityTokenConstants.X509V3Token, inboundSecurityContext, IDGenerator.generateID(null));
             token.setSkiBytes(skiBytes);
 
             setTokenKey(securityProperties, keyUsage, token);
@@ -213,8 +210,8 @@ public class SecurityTokenFactoryImpl extends SecurityTokenFactory {
             String normalizedSubjectName =
                     RFC2253Parser.normalize(subjectName);
             X509SubjectNameSecurityToken token =
-                    new X509SubjectNameSecurityToken(SecurityTokenConstants.X509V3Token, inboundSecurityContext,
-                            "", SecurityTokenConstants.KeyIdentifier_X509SubjectName);
+                    new X509SubjectNameSecurityToken(
+                            SecurityTokenConstants.X509V3Token, inboundSecurityContext, IDGenerator.generateID(null));
             token.setSubjectName(normalizedSubjectName);
 
             setTokenKey(securityProperties, keyUsage, token);

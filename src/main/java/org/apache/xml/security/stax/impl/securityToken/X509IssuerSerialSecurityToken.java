@@ -31,9 +31,9 @@ public class X509IssuerSerialSecurityToken extends X509SecurityToken {
     private String issuerName;
     private BigInteger serialNumber;
 
-    protected X509IssuerSerialSecurityToken(SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext,
-                                            String id, SecurityTokenConstants.KeyIdentifier keyIdentifier) {
-        super(tokenType, inboundSecurityContext, id, keyIdentifier);
+    protected X509IssuerSerialSecurityToken(
+            SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext, String id) {
+        super(tokenType, inboundSecurityContext, id, SecurityTokenConstants.KeyIdentifier_IssuerSerial, false);
     }
 
     public String getIssuerName() {

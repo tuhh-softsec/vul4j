@@ -382,13 +382,13 @@ public class AbstractSignatureVerificationTest extends org.junit.Assert {
             X509SecurityToken x509SecurityToken =
                     (X509SecurityToken) tokenEvent.getSecurityToken();
             assertNotNull(x509SecurityToken);
-            if (SecurityTokenConstants.KeyIdentifier_X509Certificate.equals(keyIdentifier)) {
+            if (SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier.equals(keyIdentifier)) {
                 assertEquals(cert, x509SecurityToken.getX509Certificates()[0]);
             } else if (SecurityTokenConstants.KeyIdentifier_X509SubjectName.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, cert.getPublicKey());
                 assertNotNull(((X509SubjectNameSecurityToken) x509SecurityToken).getSubjectName());
-            } else if (SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
+            } else if (SecurityTokenConstants.KeyIdentifier_IssuerSerial.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, cert.getPublicKey());
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getIssuerName());

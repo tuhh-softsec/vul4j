@@ -21,6 +21,7 @@ package org.apache.xml.security.stax.impl.securityToken;
 import org.apache.xml.security.binding.xmldsig.DSAKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.math.BigInteger;
@@ -38,9 +39,8 @@ public class DsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private DSAKeyValueType dsaKeyValueType;
 
-    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, InboundSecurityContext inboundSecurityContext,
-                                    SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
-        super(inboundSecurityContext, null, keyIdentifier);
+    public DsaKeyValueSecurityToken(DSAKeyValueType dsaKeyValueType, InboundSecurityContext inboundSecurityContext) {
+        super(inboundSecurityContext, IDGenerator.generateID(null), SecurityTokenConstants.KeyIdentifier_KeyValue, true);
         this.dsaKeyValueType = dsaKeyValueType;
     }
 

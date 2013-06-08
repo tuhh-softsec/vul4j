@@ -29,9 +29,9 @@ public class X509SKISecurityToken extends X509SecurityToken {
 
     private byte[] skiBytes;
 
-    protected X509SKISecurityToken(SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext, String id,
-                                   SecurityTokenConstants.KeyIdentifier keyIdentifier) {
-        super(tokenType, inboundSecurityContext, id, keyIdentifier);
+    protected X509SKISecurityToken(
+            SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext, String id) {
+        super(tokenType, inboundSecurityContext, id, SecurityTokenConstants.KeyIdentifier_SkiKeyIdentifier, false);
     }
 
     public byte[] getSkiBytes() {

@@ -47,7 +47,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
 import org.apache.xml.security.stax.impl.securityToken.X509IssuerSerialSecurityToken;
@@ -398,7 +397,7 @@ public class IAIKTest extends org.junit.Assert {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509SubjectNameSecurityToken)x509SecurityToken).getSubjectName());
-            } else if (SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
+            } else if (SecurityTokenConstants.KeyIdentifier_IssuerSerial.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509IssuerSerialSecurityToken)x509SecurityToken).getIssuerName());

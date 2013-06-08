@@ -21,6 +21,7 @@ package org.apache.xml.security.stax.impl.securityToken;
 import org.apache.xml.security.binding.xmldsig.RSAKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InboundSecurityContext;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.math.BigInteger;
@@ -38,9 +39,8 @@ public class RsaKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private RSAKeyValueType rsaKeyValueType;
 
-    public RsaKeyValueSecurityToken(RSAKeyValueType rsaKeyValueType, InboundSecurityContext inboundSecurityContext,
-                                    SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
-        super(inboundSecurityContext, null, keyIdentifier);
+    public RsaKeyValueSecurityToken(RSAKeyValueType rsaKeyValueType, InboundSecurityContext inboundSecurityContext) {
+        super(inboundSecurityContext, IDGenerator.generateID(null), SecurityTokenConstants.KeyIdentifier_KeyValue, true);
         this.rsaKeyValueType = rsaKeyValueType;
     }
 

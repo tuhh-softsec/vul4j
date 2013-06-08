@@ -97,7 +97,8 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                 }
 
                 this.securityToken = new AbstractInboundSecurityToken(
-                        inboundSecurityContext, encryptedKeyType.getId(), null) {
+                        inboundSecurityContext, encryptedKeyType.getId(),
+                        SecurityTokenConstants.KeyIdentifier_EncryptedKey, true) {
 
                     private byte[] decryptedKey = null;
 

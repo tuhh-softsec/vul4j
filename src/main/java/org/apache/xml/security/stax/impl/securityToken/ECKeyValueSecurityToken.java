@@ -22,6 +22,7 @@ import org.apache.xml.security.binding.xmldsig11.ECKeyValueType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.ext.InboundSecurityContext;
 import org.apache.xml.security.stax.impl.algorithms.ECDSAUtils;
+import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityToken.SecurityTokenConstants;
 
 import java.math.BigInteger;
@@ -38,11 +39,9 @@ public class ECKeyValueSecurityToken extends AbstractInboundSecurityToken {
 
     private ECKeyValueType ecKeyValueType;
 
-    public ECKeyValueSecurityToken(
-            ECKeyValueType ecKeyValueType, InboundSecurityContext inboundSecurityContext,
-            SecurityTokenConstants.KeyIdentifier keyIdentifier) throws XMLSecurityException {
-
-        super(inboundSecurityContext, null, keyIdentifier);
+    public ECKeyValueSecurityToken(ECKeyValueType ecKeyValueType, InboundSecurityContext inboundSecurityContext)
+            throws XMLSecurityException {
+        super(inboundSecurityContext, IDGenerator.generateID(null), SecurityTokenConstants.KeyIdentifier_KeyValue, true);
 
         if (ecKeyValueType.getECParameters() != null) {
             throw new XMLSecurityException("stax.ecParametersNotSupported");

@@ -146,7 +146,7 @@ public abstract class AbstractPerformanceTest {
                 XMLSecurityConstants.SIGNATURE
         };
         xmlSecurityProperties.setOutAction(actions);
-        xmlSecurityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Certificate);
+        xmlSecurityProperties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         xmlSecurityProperties.setSignatureKey(key);
         xmlSecurityProperties.setSignatureCerts(new X509Certificate[]{cert});

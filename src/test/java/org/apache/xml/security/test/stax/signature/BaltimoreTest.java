@@ -50,7 +50,6 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.Init;
 import org.apache.xml.security.stax.ext.InboundXMLSec;
 import org.apache.xml.security.stax.ext.XMLSec;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.apache.xml.security.stax.ext.XMLSecurityProperties;
 import org.apache.xml.security.stax.impl.resourceResolvers.ResolverHttp;
 import org.apache.xml.security.stax.impl.securityToken.KeyNameSecurityToken;
@@ -997,7 +996,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
+                    SecurityTokenConstants.KeyIdentifier_IssuerSerial);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1386,7 +1385,7 @@ public class BaltimoreTest extends org.junit.Assert {
             
             // Check the SecurityEvents
             checkSignatureToken(securityEventListener, cert.getPublicKey(),
-                    SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
+                    SecurityTokenConstants.KeyIdentifier_IssuerSerial);
         } finally {
             TestUtils.switchAllowNotSameDocumentReferences(false);
             HttpRequestRedirectorProxy.stopHttpEngine();
@@ -1570,7 +1569,7 @@ public class BaltimoreTest extends org.junit.Assert {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509SubjectNameSecurityToken) x509SecurityToken).getSubjectName());
-            } else if (SecurityTokenConstants.KeyIdentifier_X509IssuerSerial.equals(keyIdentifier)) {
+            } else if (SecurityTokenConstants.KeyIdentifier_IssuerSerial.equals(keyIdentifier)) {
                 Key processedKey = x509SecurityToken.getPublicKey();
                 assertEquals(processedKey, key);
                 assertNotNull(((X509IssuerSerialSecurityToken) x509SecurityToken).getIssuerName());

@@ -139,7 +139,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSecurityEvents(securityEventListener);
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -216,7 +216,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSecurityEvents(securityEventListener);
         checkSignedElementMultipleSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         List<SignedElementSecurityEvent> signedElementSecurityEventList = securityEventListener.getSecurityEvents(SecurityEventConstants.SignedElement);
         Assert.assertEquals(2, signedElementSecurityEventList.size());
@@ -436,7 +436,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                 "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1");
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -516,7 +516,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                             "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -596,7 +596,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                             "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -676,7 +676,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
                             "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Certificate);
+                            SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -758,7 +758,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSecurityEvents(securityEventListener);
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509IssuerSerial);
+                            SecurityTokenConstants.KeyIdentifier_IssuerSerial);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);
@@ -918,7 +918,7 @@ public class SignatureVerificationTest extends AbstractSignatureVerificationTest
         checkSecurityEvents(securityEventListener);
         checkSignedElementSecurityEvents(securityEventListener);
         checkSignatureToken(securityEventListener, cert, null,
-                            SecurityTokenConstants.KeyIdentifier_X509Ski);
+                            SecurityTokenConstants.KeyIdentifier_SkiKeyIdentifier);
 
         SignedElementSecurityEvent signedElementSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.SignedElement);
         X509TokenSecurityEvent x509TokenSecurityEvent = securityEventListener.getSecurityEvent(SecurityEventConstants.X509Token);

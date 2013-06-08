@@ -30,9 +30,10 @@ public class X509SecurityToken extends AbstractInboundSecurityToken {
 
     private final SecurityTokenConstants.TokenType tokenType;
 
-    protected X509SecurityToken(SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext,
-                                String id, SecurityTokenConstants.KeyIdentifier keyIdentifier) {
-        super(inboundSecurityContext, id, keyIdentifier);
+    protected X509SecurityToken(
+            SecurityTokenConstants.TokenType tokenType, InboundSecurityContext inboundSecurityContext,
+            String id, SecurityTokenConstants.KeyIdentifier keyIdentifier, boolean includedInMessage) {
+        super(inboundSecurityContext, id, keyIdentifier, includedInMessage);
         this.tokenType = tokenType;
     }
 

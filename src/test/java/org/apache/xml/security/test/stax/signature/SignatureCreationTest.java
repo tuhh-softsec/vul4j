@@ -764,7 +764,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Ski);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_SkiKeyIdentifier);
         properties.setSignatureAlgorithm("http://www.w3.org/2000/09/xmldsig#rsa-sha1");
         
         // Set the key up
@@ -809,7 +809,7 @@ public class SignatureCreationTest extends AbstractSignatureCreationTest {
         XMLSecurityConstants.Action[] actions = 
             new XMLSecurityConstants.Action[]{XMLSecurityConstants.SIGNATURE};
         properties.setOutAction(actions);
-        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509Certificate);
+        properties.setSignatureKeyIdentifier(SecurityTokenConstants.KeyIdentifier_X509KeyIdentifier);
         
         // Set the key up
         KeyStore keyStore = KeyStore.getInstance("jks");

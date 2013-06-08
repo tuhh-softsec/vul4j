@@ -101,4 +101,10 @@ public interface SecurityToken {
      * @return
      */
     XMLSecEvent getXMLSecEvent();
+
+    /**
+     * Returns if the token is included in the message or not
+     * @return true if the token is included false otherwise
+     */
+    boolean isIncludedInMessage();
 }

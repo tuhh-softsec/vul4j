@@ -58,12 +58,24 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
     private PublicKey publicKey;
     private X509Certificate[] x509Certificates;
     private boolean asymmetric = false;
+    private boolean includedInMessage = false;
 
-    public AbstractInboundSecurityToken(InboundSecurityContext inboundSecurityContext, String id,
-                                        SecurityTokenConstants.KeyIdentifier keyIdentifier) {
+    public AbstractInboundSecurityToken(
+            InboundSecurityContext inboundSecurityContext, String id,
+            SecurityTokenConstants.KeyIdentifier keyIdentifier, boolean includedInMessage) {
+
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("No id specified");
+        }
+
+        if (keyIdentifier == null) {
+            throw new IllegalArgumentException("No keyIdentifier specified");
+        }
+
         this.inboundSecurityContext = inboundSecurityContext;
         this.id = id;
         this.keyIdentifier = keyIdentifier;
+        this.includedInMessage = includedInMessage;
     }
 
     private void testAndSetInvocation() throws XMLSecurityException {
@@ -266,5 +278,10 @@ public abstract class AbstractInboundSecurityToken implements InboundSecurityTok
 
     public void setKeyWrappingToken(InboundSecurityToken keyWrappingToken) {
         this.keyWrappingToken = keyWrappingToken;
+    }
+
+    @Override
+    public boolean isIncludedInMessage() {
+        return includedInMessage;
     }
 }

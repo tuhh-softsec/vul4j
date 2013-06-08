@@ -30,9 +30,9 @@ public class SecurityTokenConstants {
 
     public static final KeyIdentifier KeyIdentifier_KeyValue = new KeyIdentifier("KeyValue");
     public static final KeyIdentifier KeyIdentifier_KeyName = new KeyIdentifier("KeyName");
-    public static final KeyIdentifier KeyIdentifier_X509IssuerSerial = new KeyIdentifier("X509IssuerSerial");
-    public static final KeyIdentifier KeyIdentifier_X509Ski = new KeyIdentifier("X509Ski");
-    public static final KeyIdentifier KeyIdentifier_X509Certificate = new KeyIdentifier("X509Certificate");
+    public static final KeyIdentifier KeyIdentifier_IssuerSerial = new KeyIdentifier("IssuerSerial");
+    public static final KeyIdentifier KeyIdentifier_SkiKeyIdentifier = new KeyIdentifier("SkiKeyIdentifier");
+    public static final KeyIdentifier KeyIdentifier_X509KeyIdentifier = new KeyIdentifier("X509KeyIdentifier");
     public static final KeyIdentifier KeyIdentifier_X509SubjectName = new KeyIdentifier("X509SubjectName");
     public static final KeyIdentifier KeyIdentifier_NoKeyInfo = new KeyIdentifier("NoKeyInfo");
     public static final KeyIdentifier KeyIdentifier_EncryptedKey = new KeyIdentifier("EncryptedKey");
