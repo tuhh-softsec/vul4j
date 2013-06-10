@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * 
  * @author Francois-Xavier Bonnet
- * @author Nicols Richeton
+ * @author Nicolas Richeton
  */
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
