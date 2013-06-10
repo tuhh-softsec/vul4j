@@ -30,10 +30,6 @@ public class LProbeManager {
     @Inject
     private EntityManager em;
 
-    @Inject
-    @Named("lprobevalidator")
-    private Validator validator;
-
     /**
      * Delete a LProbe object by id.
      *
@@ -55,24 +51,12 @@ public class LProbeManager {
      * @throws EntityExistsException
      * @throws IllegalArgumentException
      * @throws TransactionRequiredException
-     * @throws ValidationException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void create(LProbe probe)
     throws EntityExistsException,
         IllegalArgumentException,
-        TransactionRequiredException,
-        ValidationException {
-        validator.validate(probe);
+        TransactionRequiredException {
         em.persist(probe);
-    }
-
-    /**
-     * Get the warnings found while validating a LProbe object.
-     *
-     * @return Map of warnings containing field - warn code pair.
-     */
-    public Map<String, Integer> getWarnings() {
-        return validator.getWarnings();
     }
 }

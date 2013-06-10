@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.Root;
 import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.validation.ValidationException;
+import de.intevation.lada.validation.Validator;
 
 /**
  * This Container is an interface to request, filter and select LProbe
@@ -25,6 +27,10 @@ import de.intevation.lada.validation.ValidationException;
  */
 @ApplicationScoped
 public class LProbeRepository extends Repository{
+
+    @Inject
+    @Named("lprobevalidator")
+    private Validator validator;
 
     /**
      * The entitymanager managing the data.
@@ -94,8 +100,9 @@ public class LProbeRepository extends Repository{
 
         // Try to save the new LProbe.
         try {
+            validator.validate(probe);
             manager.create(probe);
-            setWarnings(manager.getWarnings());
+            setWarnings(validator.getWarnings());
             return true;
         }
         catch (EntityExistsException eee) {
@@ -110,7 +117,7 @@ public class LProbeRepository extends Repository{
         catch (ValidationException ve) {
             setGeneralError(604);
             setErrors(ve.getErrors());
-            setWarnings(manager.getWarnings());
+            setWarnings(validator.getWarnings());
         }
         return false;
     }
