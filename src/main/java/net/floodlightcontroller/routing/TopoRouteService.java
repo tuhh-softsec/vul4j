@@ -101,14 +101,6 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     
     GraphDBConnection conn;
 
-    //
-    // Topology state for storing (on demand) Switch and Ports info for
-    // fast access during the shortest path computation.
-    // It is explicitly populated by method @ref prepareShortestPathTopo().
-    // See the documentation for that method for details.
-    //
-    HashMap<Long, Node> shortestPathTopo;
-
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
         Collection<Class<? extends IFloodlightService>> l = 
@@ -168,7 +160,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
     /**
      * Fetch the Switch and Ports info from the Titan Graph
-     * and store it locally for fast access during the shortest path
+     * and return it for fast access during the shortest path
      * computation.
      *
      * After fetching the state, method @ref getTopoShortestPath()
@@ -184,16 +176,18 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * method @ref dropShortestPathTopo() should be used to release
      * the internal state that is not needed anymore:
      *
-     *       prepareShortestPathTopo();
+     *       Map<Long, ?> shortestPathTopo;
+     *       shortestPathTopo = prepareShortestPathTopo();
      *       for (int i = 0; i < 10000; i++) {
-     *           dataPath = getTopoShortestPath(...);
+     *           dataPath = getTopoShortestPath(shortestPathTopo, ...);
      *           ...
      *        }
-     *        dropShortestPathTopo();
+     *        dropShortestPathTopo(shortestPathTopo);
+     *
+     * @return the Shortest Path info handler stored in a map.
      */
-    
-    public void prepareShortestPathTopo() {
-	shortestPathTopo = new HashMap<Long, Node>();
+    public Map<Long, ?> prepareShortestPathTopo() {
+	Map<Long, Node> shortestPathTopo = new HashMap<Long, Node>();
 
 	//
 	// Fetch the relevant info from the Switch and Port vertices
@@ -260,6 +254,8 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    }
 	}
 	conn.endTx(Transaction.COMMIT);
+
+	return shortestPathTopo;
     }
 
     /**
@@ -268,9 +264,10 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      *
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
+     *
+     * @shortestPathTopo the Shortest Path info handler to release.
      */
-  
-    public void dropShortestPathTopo() {
+    public void dropShortestPathTopo(Map<Long, ?> shortestPathTopo) {
 	shortestPathTopo = null;
     }
 
@@ -282,13 +279,17 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
      *
+     * @param shortestPathTopoHandler the Shortest Path info handler
+     * to use.
      * @param src the source in the shortest path computation.
      * @param dest the destination in the shortest path computation.
      * @return the data path with the computed shortest path if
      * found, otherwise null.
      */
-  
-    public DataPath getTopoShortestPath(SwitchPort src, SwitchPort dest) {
+    public DataPath getTopoShortestPath(Map<Long, ?> shortestPathTopoHandler,
+					SwitchPort src, SwitchPort dest) {
+	@SuppressWarnings("unchecked")
+	Map<Long, Node> shortestPathTopo = (Map)shortestPathTopoHandler;
 	DataPath result_data_path = new DataPath();
 
 	// Initialize the source and destination in the data path to return

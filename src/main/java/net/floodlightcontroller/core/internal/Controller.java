@@ -147,7 +147,6 @@ import org.slf4j.LoggerFactory;
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
    	
-	protected SwitchStorageImpl swStore;;
 	
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
@@ -265,16 +264,24 @@ public class Controller implements IFloodlightProviderService,
     public enum SwitchUpdateType {
         ADDED,
         REMOVED,
-        PORTCHANGED
+        PORTCHANGED,
+        PORTADDED,
+        PORTREMOVED
     }
     /**
      * Update message indicating a switch was added or removed 
      */
     protected class SwitchUpdate implements IUpdate {
         public IOFSwitch sw;
+        public OFPhysicalPort port;
         public SwitchUpdateType switchUpdateType;
         public SwitchUpdate(IOFSwitch sw, SwitchUpdateType switchUpdateType) {
             this.sw = sw;
+            this.switchUpdateType = switchUpdateType;
+        }
+        public SwitchUpdate(IOFSwitch sw, OFPhysicalPort port, SwitchUpdateType switchUpdateType) {
+            this.sw = sw;
+            this.port = port;
             this.switchUpdateType = switchUpdateType;
         }
         public void dispatch() {
@@ -294,6 +301,14 @@ public class Controller implements IFloodlightProviderService,
                         case PORTCHANGED:
                             listener.switchPortChanged(sw.getId());
                             break;
+                        case PORTADDED:
+                        	listener.switchPortAdded(sw.getId(), port);
+                        	break;
+                        case PORTREMOVED:
+                        	listener.switchPortRemoved(sw.getId(), port);
+                        	break;
+                        default:
+                        	break;
                     }
                 }
             }
@@ -1269,23 +1284,43 @@ public class Controller implements IFloodlightProviderService,
             		((OFPortState.OFPPS_LINK_DOWN.getValue() & port.getState()) > 0);
             sw.setPort(port);
            if (!portDown) {
-               swStore.addPort(sw.getStringId(), port);
+               SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
+               try {
+                   this.updates.put(update);
+               } catch (InterruptedException e) {
+                   log.error("Failure adding update to queue", e);
+               }
            } else {
-        	   swStore.deletePort(sw.getStringId(), port.getPortNumber());
+               SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTREMOVED);
+               try {
+                   this.updates.put(update);
+               } catch (InterruptedException e) {
+                   log.error("Failure adding update to queue", e);
+               }
            }
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} modified for {}", portNumber, sw);
         } else if (m.getReason() == (byte)OFPortReason.OFPPR_ADD.ordinal()) {
             sw.setPort(port);
-            swStore.addPort(sw.getStringId(), port);
+            SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTADDED);
+            try {
+                this.updates.put(update);
+            } catch (InterruptedException e) {
+                log.error("Failure adding update to queue", e);
+            }
             if (updateStorage)
                 updatePortInfo(sw, port);
             log.debug("Port #{} added for {}", portNumber, sw);
         } else if (m.getReason() == 
                    (byte)OFPortReason.OFPPR_DELETE.ordinal()) {
             sw.deletePort(portNumber);
-            swStore.deletePort(sw.getStringId(), portNumber);
+            SwitchUpdate update = new SwitchUpdate(sw, port, SwitchUpdateType.PORTREMOVED);
+            try {
+                this.updates.put(update);
+            } catch (InterruptedException e) {
+                log.error("Failure adding update to queue", e);
+            }
             if (updateStorage)
                 removePortInfo(sw, portNumber);
             log.debug("Port #{} deleted for {}", portNumber, sw);
@@ -1559,12 +1594,6 @@ public class Controller implements IFloodlightProviderService,
         }
         
         updateActiveSwitchInfo(sw);
-        if (registryService.hasControl(sw.getId())) {
-        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
-        	for (OFPhysicalPort port: sw.getPorts()) {
-        		swStore.addPort(sw.getStringId(), port);
-        	}
-        }
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.ADDED);
         try {
             this.updates.put(update);
@@ -1584,14 +1613,6 @@ public class Controller implements IFloodlightProviderService,
         // this method is only called after netty has processed all
         // pending messages
         log.debug("removeSwitch: {}", sw);
- //
- //     Cannot set sw to inactive in network map due to race condition
- //     Need a cleanup thread to periodically check switches not active in registry
- //     and acquire control to set to inactive state in network map and release it       
- //
- //       if (registryService.hasControl(sw.getId())) {
- //      	swStore.update(sw.getStringId(), SwitchState.INACTIVE, DM_OPERATION.UPDATE);
- //       }
         if (!this.activeSwitches.remove(sw.getId(), sw) || !sw.isConnected()) {
             log.debug("Not removing switch {}; already removed", sw);
             return;
@@ -2220,8 +2241,6 @@ public class Controller implements IFloodlightProviderService,
 			log.debug("did not get DB config setting using default {}", conf);
 		}
 		log.debug("setting DB config {}", conf);
-		this.swStore = new SwitchStorageImpl();
-		this.swStore.init(conf);
 		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();

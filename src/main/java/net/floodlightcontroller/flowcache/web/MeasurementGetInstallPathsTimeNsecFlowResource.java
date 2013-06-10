@@ -9,12 +9,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClearFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(ClearFlowResource.class);
+public class MeasurementGetInstallPathsTimeNsecFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementGetInstallPathsTimeNsecFlowResource.class);
 
     @Get("json")
-    public Boolean retrieve() {
-	Boolean result = false;
+    public Long retrieve() {
+	Long result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -22,21 +22,16 @@ public class ClearFlowResource extends ServerResource {
 
         if (flowService == null) {
 	    log.debug("ONOS Flow Service not found");
-            return result;
+	    return result;
 	}
 
 	// Extract the arguments
-	String flowIdStr = (String) getRequestAttributes().get("flow-id");
 
 	// Process the request
-	if (flowIdStr.equals("all")) {
-	    log.debug("Clear All Flows");
-	    result = flowService.clearAllFlows();
-	} else {
-	    FlowId flowId = new FlowId(flowIdStr);
-	    log.debug("Clear Flow Id: " + flowIdStr);
-	    result = flowService.clearFlow(flowId);
-	}
+	result = flowService.measurementGetInstallPathsTimeNsec();
+
+	log.debug("Measurement Get Install Paths Time (nsec): " + result);
+
 	return result;
     }
 }

@@ -26,6 +26,6 @@ net.floodlightcontroller.firewall.Firewall
 net.floodlightcontroller.onoslistener.OnosPublisher
 net.floodlightcontroller.flowcache.FlowManager
 net.floodlightcontroller.routing.TopoRouteService
+net.floodlightcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
-

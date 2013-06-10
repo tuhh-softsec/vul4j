@@ -2175,4 +2175,16 @@ IFloodlightModule, IInfoProvider, IHAListener {
     public void setAutoPortFastFeature(boolean autoPortFastFeature) {
         this.autoPortFastFeature = autoPortFastFeature;
     }
+
+	@Override
+	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
+		// TODO Auto-generated method stub
+		
+	}
 }

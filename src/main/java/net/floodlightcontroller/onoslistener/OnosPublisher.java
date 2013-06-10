@@ -6,12 +6,14 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.IOFSwitch;
@@ -50,6 +52,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected static final String DBConfigFile = "dbconf";
 	protected static final String CleanupEnabled = "EnableCleanup";
 	protected IThreadPoolService threadPool;
+	protected IFloodlightProviderService floodlightProvider;
 	
 	protected final int CLEANUP_TASK_INTERVAL = 60; // 1 min
 	protected SingletonTask cleanupTask;
@@ -116,12 +119,29 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
 		// TODO Auto-generated method stub
+		switch (update.getOperation()) {
+		
+			case LINK_REMOVED:
+				// TODO: Move network map link removal here
+				// reconcile paths here
+//				IPortObject srcPort = conn.utils().searchPort(conn, HexString.toHexString(update.getSrc()), update.getSrcPort());
+				break;
+					
+			default:
+				break;
+		}
 
 	}
 
 	@Override
 	public void addedSwitch(IOFSwitch sw) {
-		// TODO Auto-generated method stub
+
+		if (registryService.hasControl(sw.getId())) {
+	        	swStore.update(sw.getStringId(), SwitchState.ACTIVE, DM_OPERATION.UPDATE);
+	        	for (OFPhysicalPort port: sw.getPorts()) {
+	        		swStore.addPort(sw.getStringId(), port);
+	        	}
+		}
 
 	}
 
@@ -135,6 +155,19 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	public void switchPortChanged(Long switchId) {
 		// TODO Auto-generated method stub
 
+	}
+
+
+	@Override
+	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
+		// TODO Auto-generated method stub
+		swStore.addPort(HexString.toHexString(switchId), port);
+	}
+
+	@Override
+	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
+		// TODO Auto-generated method stub
+		swStore.deletePort(HexString.toHexString(switchId), port.getPortNumber());		
 	}
 
 	@Override
@@ -206,6 +239,8 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		conn = GraphDBConnection.getInstance(conf);
 		
 		log = LoggerFactory.getLogger(OnosPublisher.class);
+		floodlightProvider =
+	            context.getServiceImpl(IFloodlightProviderService.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
 		threadPool = context.getServiceImpl(IThreadPoolService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
@@ -227,6 +262,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		String cleanupNeeded = configMap.get(CleanupEnabled);
 
 		deviceService.addListener(this);
+		floodlightProvider.addOFSwitchListener(this);
 		
 		log.debug("Adding EventListener");
 		conn.addEventListener(new LocalTopologyEventListener(conn));

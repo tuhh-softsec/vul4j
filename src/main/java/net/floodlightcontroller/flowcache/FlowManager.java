@@ -1,6 +1,8 @@
 package net.floodlightcontroller.flowcache;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -87,9 +90,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     private static int nextFlowEntryIdSuffix = 0;
     private static long nextFlowEntryId = 0;
 
+    // State for measurement purpose
     private static long measurementFlowId = 100000;
     private static String measurementFlowIdStr = "0x186a0";	// 100000
     private long modifiedMeasurementFlowTime = 0;
+    //
+    private LinkedList<FlowPath> measurementStoredPaths = new LinkedList<FlowPath>();
+    private long measurementStartTimeProcessingPaths = 0;
+    private long measurementEndTimeProcessingPaths = 0;
+    Map<Long, ?> measurementShortestPathTopo = null;
+    private String measurementPerFlowStr = new String();
 
     /** The logger. */
     private static Logger log = LoggerFactory.getLogger(FlowManager.class);
@@ -269,7 +279,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		// Fetch and recompute the Shortest Path for those
 		// Flow Paths this controller is responsible for.
 		//
-		topoRouteService.prepareShortestPathTopo();
+		Map<Long, ?> shortestPathTopo =
+		    topoRouteService.prepareShortestPathTopo();
 		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
@@ -344,7 +355,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    // to avoid closing the transaction.
 		    //
 		    DataPath dataPath =
-			topoRouteService.getTopoShortestPath(srcSwitchPort,
+			topoRouteService.getTopoShortestPath(shortestPathTopo,
+							     srcSwitchPort,
 							     dstSwitchPort);
 		    if (dataPath == null) {
 			// We need the DataPath to compare the paths
@@ -369,7 +381,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    conn.utils().removeFlowPath(conn, flowPathObj);
 		}
 
-		topoRouteService.dropShortestPathTopo();
+		topoRouteService.dropShortestPathTopo(shortestPathTopo);
 
 		conn.endTx(Transaction.COMMIT);
 
@@ -462,7 +474,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		shortestPathReconcileScheduler = Executors.newScheduledThreadPool(1);
     }
 
-    private long getNextFlowEntryId() {
+    private synchronized long getNextFlowEntryId() {
 	//
 	// Generate the next Flow Entry ID.
 	// NOTE: For now, the higher 32 bits are random, and
@@ -531,8 +543,14 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	} catch (Exception e) {
 	    // TODO: handle exceptions
 	    conn.endTx(Transaction.ROLLBACK);
-	    log.error(":addFlow FlowId:{} failed",
-		      flowPath.flowId().toString());
+
+	    StringWriter sw = new StringWriter();
+	    e.printStackTrace(new PrintWriter(sw));
+	    String stacktrace = sw.toString();
+
+	    log.error(":addFlow FlowId:{} failed: {}",
+		      flowPath.flowId().toString(),
+		      stacktrace);
 	}
 	if (flowObj == null) {
 	    log.error(":addFlow FlowId:{} failed: Flow object not created",
@@ -745,6 +763,73 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     }
 
     /**
+     * Delete all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean deleteAllFlows() {
+	List<Thread> threads = new LinkedList<Thread>();
+	final ConcurrentLinkedQueue<FlowId> concurrentAllFlowIds =
+	    new ConcurrentLinkedQueue<FlowId>();
+
+	// Get all Flow IDs
+	Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+	for (IFlowPath flowPathObj : allFlowPaths) {
+	    if (flowPathObj == null)
+		continue;
+	    String flowIdStr = flowPathObj.getFlowId();
+	    if (flowIdStr == null)
+		continue;
+	    FlowId flowId = new FlowId(flowIdStr);
+	    concurrentAllFlowIds.add(flowId);
+	}
+
+	// Delete all flows one-by-one
+	for (FlowId flowId : concurrentAllFlowIds)
+	    deleteFlow(flowId);
+
+	/*
+	 * TODO: A faster mechanism to delete the Flow Paths by using
+	 * a number of threads. Commented-out for now.
+	 */
+	/*
+	//
+	// Create the threads to delete the Flow Paths
+	//
+	for (int i = 0; i < 10; i++) {
+	    Thread thread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+		    while (true) {
+			FlowId flowId = concurrentAllFlowIds.poll();
+			if (flowId == null)
+			    return;
+			deleteFlow(flowId);
+		    }
+		}}, "Delete All Flow Paths");
+	    threads.add(thread);
+	}
+
+	// Start processing
+	for (Thread thread : threads) {
+	    thread.start();
+	}
+
+	// Wait for all threads to complete
+	for (Thread thread : threads) {
+	    try {
+		thread.join();
+	    } catch (InterruptedException e) {
+		log.debug("Exception waiting for a thread to delete a Flow Path: ", e);
+	    }
+	}
+	*/
+
+	return true;
+    }
+
+    /**
      * Delete a previously added flow.
      *
      * @param flowId the Flow ID of the flow to delete.
@@ -802,6 +887,35 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (empty)
 	    conn.utils().removeFlowPath(conn, flowObj);
 	conn.endTx(Transaction.COMMIT);
+
+	return true;
+    }
+
+    /**
+     * Clear the state for all previously added flows.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean clearAllFlows() {
+	List<FlowId> allFlowIds = new LinkedList<FlowId>();
+
+	// Get all Flow IDs
+	Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+	for (IFlowPath flowPathObj : allFlowPaths) {
+	    if (flowPathObj == null)
+		continue;
+	    String flowIdStr = flowPathObj.getFlowId();
+	    if (flowIdStr == null)
+		continue;
+	    FlowId flowId = new FlowId(flowIdStr);
+	    allFlowIds.add(flowId);
+	}
+
+	// Clear all flows one-by-one
+	for (FlowId flowId : allFlowIds) {
+	    clearFlow(flowId);
+	}
 
 	return true;
     }
@@ -1762,5 +1876,210 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// and removal of flow entries.
 	//
 	return (installRemoteFlowEntry(flowPath, flowEntry));
+    }
+
+    /**
+     * Store a path flow for measurement purpose.
+     *
+     * NOTE: The Flow Path argument does NOT contain flow entries.
+     * The Shortest Path is computed, and the corresponding Flow Entries
+     * are stored in the Flow Path.
+     *
+     * @param flowPath the Flow Path with the endpoints and the match
+     * conditions to store.
+     * @return the stored shortest-path flow on success, otherwise null.
+     */
+    @Override
+    public synchronized FlowPath measurementStorePathFlow(FlowPath flowPath) {
+	//
+	// Prepare the Shortest Path computation if the first Flow Path
+	//
+	if (measurementStoredPaths.isEmpty())
+	    measurementShortestPathTopo = topoRouteService.prepareShortestPathTopo();
+
+	//
+	// Compute the Shortest Path
+	//
+	DataPath dataPath =
+	    topoRouteService.getTopoShortestPath(measurementShortestPathTopo,
+						 flowPath.dataPath().srcPort(),
+						 flowPath.dataPath().dstPort());
+	if (dataPath == null) {
+	    // We need the DataPath to populate the Network MAP
+	    dataPath = new DataPath();
+	    dataPath.setSrcPort(flowPath.dataPath().srcPort());
+	    dataPath.setDstPort(flowPath.dataPath().dstPort());
+	}
+
+	//
+	// Set the incoming port matching and the outgoing port output
+	// actions for each flow entry.
+	//
+	for (FlowEntry flowEntry : dataPath.flowEntries()) {
+	    // Set the incoming port matching
+	    FlowEntryMatch flowEntryMatch = new FlowEntryMatch();
+	    flowEntry.setFlowEntryMatch(flowEntryMatch);
+	    flowEntryMatch.enableInPort(flowEntry.inPort());
+
+	    // Set the outgoing port output action
+	    ArrayList<FlowEntryAction> flowEntryActions = flowEntry.flowEntryActions();
+	    if (flowEntryActions == null) {
+		flowEntryActions = new ArrayList<FlowEntryAction>();
+		flowEntry.setFlowEntryActions(flowEntryActions);
+	    }
+	    FlowEntryAction flowEntryAction = new FlowEntryAction();
+	    flowEntryAction.setActionOutput(flowEntry.outPort());
+	    flowEntryActions.add(flowEntryAction);
+	}
+
+	//
+	// Prepare the computed Flow Path
+	//
+	FlowPath computedFlowPath = new FlowPath();
+	computedFlowPath.setFlowId(new FlowId(flowPath.flowId().value()));
+	computedFlowPath.setInstallerId(new CallerId(flowPath.installerId().value()));
+	computedFlowPath.setDataPath(dataPath);
+	computedFlowPath.setFlowEntryMatch(new FlowEntryMatch(flowPath.flowEntryMatch()));
+
+	//
+	// Add the computed Flow Path to the internal storage
+	//
+	measurementStoredPaths.add(computedFlowPath);
+
+	log.debug("Measurement storing path {}",
+		  computedFlowPath.flowId().toString());
+
+	return (computedFlowPath);
+    }
+
+    /**
+     * Install path flows for measurement purpose.
+     *
+     * @param numThreads the number of threads to use to install the path
+     * flows.
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean measurementInstallPaths(Integer numThreads) {
+	// Create a copy of the Flow Paths to install
+	final ConcurrentLinkedQueue<FlowPath> measurementProcessingPaths =
+	    new ConcurrentLinkedQueue<FlowPath>(measurementStoredPaths);
+
+	/**
+	 * A Thread-wrapper class for executing the threads and collecting
+	 * the measurement data.
+	 */
+	class MyThread extends Thread {
+	    public long[] execTime = new long[2000];
+	    public int samples = 0;
+	    public int threadId = -1;
+	    @Override
+	    public void run() {
+		while (true) {
+		    FlowPath flowPath = measurementProcessingPaths.poll();
+		    if (flowPath == null)
+			return;
+		    // Install the Flow Path
+		    FlowId flowId = new FlowId();
+		    String dataPathSummaryStr =
+			flowPath.dataPath().dataPathSummary();
+		    long startTime = System.nanoTime();
+		    addFlow(flowPath, flowId, dataPathSummaryStr);
+		    long endTime = System.nanoTime();
+		    execTime[samples] = endTime - startTime;
+		    samples++;
+		}
+	    }
+	};
+
+	List<MyThread> threads = new LinkedList<MyThread>();
+
+	log.debug("Measurement Installing {} flows",
+		  measurementProcessingPaths.size());
+
+	//
+	// Create the threads to install the Flow Paths
+	//
+	for (int i = 0; i < numThreads; i++) {
+	    MyThread thread = new MyThread();
+	    thread.threadId = i;
+	    threads.add(thread);
+	}
+
+	//
+	// Start processing
+	//
+	measurementEndTimeProcessingPaths = 0;
+	measurementStartTimeProcessingPaths = System.nanoTime();
+	for (Thread thread : threads) {
+	    thread.start();
+	}
+
+	// Wait for all threads to complete
+	for (Thread thread : threads) {
+	    try {
+		thread.join();
+	    } catch (InterruptedException e) {
+		log.debug("Exception waiting for a thread to install a Flow Path: ", e);
+	    }
+	}
+
+	// Record the end of processing
+	measurementEndTimeProcessingPaths = System.nanoTime();
+
+	//
+	// Prepare the string with measurement data per each Flow Path
+	// installation.
+	// The string is multiple lines: one line per Flow Path installation:
+	//    ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
+	//
+	measurementPerFlowStr = new String();
+	String eol = System.getProperty("line.separator");
+	for (MyThread thread : threads) {
+	    for (int i = 0; i < thread.samples; i++) {
+		measurementPerFlowStr += "ThreadAndTimePerFlow " + thread.threadId + " " + numThreads + " " + thread.execTime[i] + eol;
+	    }
+	}
+
+	return true;
+    }
+
+    /**
+     * Get the measurement time that took to install the path flows.
+     *
+     * @return the measurement time (in nanoseconds) it took to install
+     * the path flows.
+     */
+    @Override
+    public Long measurementGetInstallPathsTimeNsec() {
+	return new Long(measurementEndTimeProcessingPaths -
+			measurementStartTimeProcessingPaths);
+    }
+
+    /**
+     * Get the measurement install time per Flow.
+     *
+     * @return a multi-line string with the following format per line:
+     * ThreadAndTimePerFlow <ThreadId> <TotalThreads> <Time(ns)>
+     */
+    @Override
+    public String measurementGetPerFlowInstallTime() {
+	return new String(measurementPerFlowStr);
+    }
+
+    /**
+     * Clear the path flows stored for measurement purpose.
+     *
+     * @return true on success, otherwise false.
+     */
+    @Override
+    public boolean measurementClearAllPaths() {
+	measurementStoredPaths.clear();
+	topoRouteService.dropShortestPathTopo(measurementShortestPathTopo);
+	measurementStartTimeProcessingPaths = 0;
+	measurementEndTimeProcessingPaths = 0;
+	measurementPerFlowStr = new String();
+
+	return true;
     }
 }
