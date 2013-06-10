@@ -107,4 +107,5 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 				.getConfiguration().getInstanceName());
 
 	}
+
 }

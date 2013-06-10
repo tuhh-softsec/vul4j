@@ -1,3 +1,17 @@
+/* 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.esigate.impl;
 
 import java.util.regex.Matcher;
@@ -5,6 +19,23 @@ import java.util.regex.Pattern;
 
 import org.esigate.ConfigurationException;
 
+/**
+ * UriMapping holds provider mapping definition.
+ * 
+ * <p>
+ * Mappings are based on (all optional) :
+ * <ul>
+ * <li>A Scheme, host and port</li>
+ * <li>a starting path</li>
+ * <li>an extension</li>
+ * </ul>
+ * <p>
+ * Default (all values set to null) mappings are allowed.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class UriMapping {
 	private final static Pattern MAPPING_PATTERN = Pattern
 			.compile("((http://|https://)[^/:]*(:([0-9]*))?)?(/[^*]*)?(\\*?)([^*]*)");
@@ -13,6 +44,13 @@ public class UriMapping {
 	private final String extension;
 	private final int weight;
 
+	/**
+	 * Creates UriMapping object and compute its weight.
+	 * 
+	 * @param host
+	 * @param path
+	 * @param extension
+	 */
 	private UriMapping(String host, String path, String extension) {
 		this.host = host;
 		this.path = path;

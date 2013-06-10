@@ -250,7 +250,7 @@ public class DriverFactory {
 	}
 
 	/**
-	 * Method used to inject providers. Usefull mainly for unit testing purpose
+	 * Method used to inject providers. Useful mainly for unit testing purpose
 	 * 
 	 * @param instanceName
 	 *            The name of the provider

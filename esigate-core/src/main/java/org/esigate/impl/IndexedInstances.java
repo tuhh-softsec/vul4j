@@ -17,6 +17,8 @@ package org.esigate.impl;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.esigate.Driver;
 
@@ -42,15 +44,25 @@ public class IndexedInstances {
 	private Map<UriMapping, String> buildUriMappings(Map<String, Driver> instances2) {
 		Map<UriMapping, String> result = new LinkedHashMap<UriMapping, String>();
 
+		Map<UriMapping, String> unsortedResult = new LinkedHashMap<UriMapping, String>();
+
 		if (this.instances != null) {
 			for (String instanceId : this.instances.keySet()) {
 				List<UriMapping> driverMappings = this.instances.get(instanceId).getConfiguration().getUriMappings();
 
 				for (UriMapping mapping : driverMappings) {
-					result.put(mapping, instanceId);
+					unsortedResult.put(mapping, instanceId);
 				}
 			}
 		}
+
+		// Order according to weight. 
+		SortedSet<UriMapping> keys = new TreeSet<UriMapping>( new UriMappingComparator());
+		keys.addAll(unsortedResult.keySet());
+		for (UriMapping key : keys) { 
+		  result.put(key, unsortedResult.get(key));
+		}		
+		
 		return result;
 	}
 
