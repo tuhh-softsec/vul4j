@@ -75,6 +75,32 @@ cassandra () {
         sleep 1
       done
       ;;
+    bootup)
+      echo "Removing old Cassandra data and logs"
+      dsh -g ${basename} "rm -rf /var/lib/cassandra/*"
+      dsh -g ${basename} "rm -rf /var/log/cassandra/*"
+
+      echo "Starting Cassandra nodes one by one..."
+      for (( c=1; c<=$nr_nodes; c++ ))
+      do
+	echo "Starting node ${basename}${c}"
+	dsh -g ${basename} -w ${basename}${c} "cd $ONOS_DIR; ./start-cassandra.sh start"
+
+	#Wait until it's up
+	while [ 1 ]; do
+            echo $$
+            dsh -w ${basename}1 "cd $ONOS_DIR; ./start-cassandra.sh status" > .cassandra_check.$$
+            cat .cassandra_check.$$
+            nup=`cat .cassandra_check.$$ | grep Normal |grep Up| wc -l`
+            if [ $nup == $c ]; then
+		echo "New node up: $nup up of of $nr_nodes"
+		break;
+            fi
+            echo "Waiting for new node to come up: $nup up of of $nr_nodes"
+            sleep 5
+	done
+      done
+      ;;
     stop)
       echo "Stopping Cassandra.."
       dsh -g ${basename} "cd $ONOS_DIR; ./start-cassandra.sh stop"
