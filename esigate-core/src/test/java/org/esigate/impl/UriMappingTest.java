@@ -1,41 +1,42 @@
 package org.esigate.impl;
 
-import javax.naming.ConfigurationException;
 
 import junit.framework.TestCase;
+
+import org.esigate.ConfigurationException;
 
 public class UriMappingTest extends TestCase {
 
 	public void testParseMapping() throws Exception {
 		UriMapping uriMapping = UriMapping.create("http://foo.com:80/a*.jsp");
-		assertEquals("http://foo.com:80", uriMapping.host);
-		assertEquals("/a", uriMapping.path);
-		assertEquals(".jsp", uriMapping.extension);
+		assertEquals("http://foo.com:80", uriMapping.getHost());
+		assertEquals("/a", uriMapping.getPath());
+		assertEquals(".jsp", uriMapping.getExtension());
 
 		uriMapping = UriMapping.create("http://foo.com:80/aaa.jsp");
-		assertEquals("http://foo.com:80", uriMapping.host);
-		assertEquals("/aaa.jsp", uriMapping.path);
-		assertNull(uriMapping.extension);
+		assertEquals("http://foo.com:80", uriMapping.getHost());
+		assertEquals("/aaa.jsp", uriMapping.getPath());
+		assertNull(uriMapping.getExtension());
 
 		uriMapping = UriMapping.create("https://foo.com/aaa.jsp");
-		assertEquals("https://foo.com", uriMapping.host);
-		assertEquals("/aaa.jsp", uriMapping.path);
-		assertNull(uriMapping.extension);
+		assertEquals("https://foo.com", uriMapping.getHost());
+		assertEquals("/aaa.jsp", uriMapping.getPath());
+		assertNull(uriMapping.getExtension());
 
 		uriMapping = UriMapping.create("/aaa.jsp");
-		assertNull(uriMapping.host);
-		assertEquals("/aaa.jsp", uriMapping.path);
-		assertNull(uriMapping.extension);
+		assertNull(uriMapping.getHost());
+		assertEquals("/aaa.jsp", uriMapping.getPath());
+		assertNull(uriMapping.getExtension());
 
 		uriMapping = UriMapping.create("*.jsp");
-		assertNull(uriMapping.host);
-		assertNull(uriMapping.path);
-		assertEquals(".jsp", uriMapping.extension);
+		assertNull(uriMapping.getHost());
+		assertNull(uriMapping.getPath());
+		assertEquals(".jsp", uriMapping.getExtension());
 
 		uriMapping = UriMapping.create("/test/*");
-		assertNull(uriMapping.host);
-		assertEquals("/test/", uriMapping.path);
-		assertNull(uriMapping.extension);
+		assertNull(uriMapping.getHost());
+		assertEquals("/test/", uriMapping.getPath());
+		assertNull(uriMapping.getExtension());
 	}
 
 	public void testParseInvalidMapping() throws Exception {

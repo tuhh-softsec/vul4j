@@ -15,10 +15,14 @@
 
 package org.esigate;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
+import org.esigate.impl.UriMapping;
 import org.esigate.renderers.ResourceFixupRenderer;
 import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
 import org.esigate.url.RoundRobinBaseUrlRetrieveStrategy;
@@ -42,6 +46,7 @@ public class DriverConfiguration {
 	private final boolean preserveHost;
 	private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
 	private final boolean isVisibleBaseURLEmpty;
+	private final List<UriMapping> uriMappings;
 
 	public DriverConfiguration(String instanceName, Properties props) {
 		this.instanceName = instanceName;
@@ -56,14 +61,35 @@ public class DriverConfiguration {
 		} else {
 			this.fixMode = ResourceFixupRenderer.RELATIVE;
 		}
+
+		this.uriMappings = parseMappings(props);
 		properties = props;
+	}
+
+	/**
+	 * Read the "Mappings" parameter and create the corresponding UriMapping
+	 * rules.
+	 * 
+	 * @param props
+	 * @return The mapping rules for this driver instance.
+	 */
+	private static List<UriMapping> parseMappings(Properties props) {
+		List<UriMapping> mappings = new ArrayList<UriMapping>();
+
+		Collection<String> mappingsParam = Parameters.MAPPINGS.getValueList(props);
+		for (String mappingParam : mappingsParam) {
+			mappings.add(UriMapping.create(mappingParam));
+		}
+
+		return mappings;
 	}
 
 	private BaseUrlRetrieveStrategy getBaseUrlRetrieveSession(Properties props) {
 		BaseUrlRetrieveStrategy urlStrategy = null;
 		String baseURLs = Parameters.REMOTE_URL_BASE.getValueString(props);
 		if (StringUtils.isEmpty(baseURLs))
-			throw new ConfigurationException(Parameters.REMOTE_URL_BASE.name + " property cannot be empty for instance '" + instanceName + "'");
+			throw new ConfigurationException(Parameters.REMOTE_URL_BASE.name
+					+ " property cannot be empty for instance '" + instanceName + "'");
 		String[] urls = StringUtils.split(baseURLs, ",");
 		if (1 == urls.length) {
 			String baseURL = StringUtils.trimToEmpty(urls[0]);
@@ -87,7 +113,6 @@ public class DriverConfiguration {
 		}
 		return urlStrategy;
 	}
-
 
 	public int getFixMode() {
 		return fixMode;
@@ -119,6 +144,15 @@ public class DriverConfiguration {
 
 	public BaseUrlRetrieveStrategy getBaseUrlRetrieveStrategy() {
 		return baseUrlRetrieveStrategy;
+	}
+
+	/**
+	 * Get URI mappings for this driver instance.
+	 * 
+	 * @return
+	 */
+	public List<UriMapping> getUriMappings() {
+		return this.uriMappings;
 	}
 
 }

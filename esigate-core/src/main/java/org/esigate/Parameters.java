@@ -36,6 +36,7 @@ public interface Parameters {
 
 	// Core parameters
 	public static final Parameter REMOTE_URL_BASE = new Parameter("remoteUrlBase", null);
+	public static final Parameter MAPPINGS = new Parameter("mappings", null);
 	public static final Parameter URI_ENCODING = new Parameter("uriEncoding", "ISO-8859-1");
 	public static final Parameter PARSABLE_CONTENT_TYPES = new Parameter("parsableContentTypes", "text/html, application/xhtml+xml");
 
