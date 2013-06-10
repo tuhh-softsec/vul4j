@@ -43,11 +43,11 @@ public class DriverSelector {
 	private Map<String, String> webXmlProviderMappings = null;
 
 	public Map<String, String> getWebXmlProviderMappings() {
-		return webXmlProviderMappings;
+		return this.webXmlProviderMappings;
 	}
 
 	public String getWebXmlProvider() {
-		return webXmlProvider;
+		return this.webXmlProvider;
 	}
 
 	public DriverSelector() {
@@ -60,11 +60,11 @@ public class DriverSelector {
 
 	public void setWebXmlProviders(String providers) {
 		if (providers != null) {
-			webXmlProviderMappings = new HashMap<String, String>();
+			this.webXmlProviderMappings = new HashMap<String, String>();
 			String[] providersArray = StringUtils.split(providers, ",");
 			for (String p : providersArray) {
 				String[] mapping = StringUtils.split(p, "=");
-				webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)),
+				this.webXmlProviderMappings.put(StringUtils.trim(mapping[0].toLowerCase(Locale.ENGLISH)),
 						StringUtils.trim(mapping[1]));
 			}
 		}
