@@ -197,7 +197,7 @@ public class HttpClientHelperTest extends TestCase {
 		result = executeRequest();
 		assertTrue("Response should not have been refreshed yet.", compare(response, result));
 		// Wait until revalidation is complete
-		Thread.sleep(100);
+		Thread.sleep(1000);
 		// Fourth request after cache has been updated at last
 		result = executeRequest();
 		assertTrue("Response should have been refreshed.", compare(response2, result));
