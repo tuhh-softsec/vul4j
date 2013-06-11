@@ -19,7 +19,6 @@
 package org.apache.xml.security.stax.impl.algorithms;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.crypto.Mac;
 import java.security.*;
@@ -33,11 +32,11 @@ public class HMACSignatureAlgorithm implements SignatureAlgorithm {
 
     private Mac mac;
 
-    public HMACSignatureAlgorithm(AlgorithmType algorithmType) throws NoSuchProviderException, NoSuchAlgorithmException {
-        if (algorithmType.getJCEProvider() != null) {
-            mac = Mac.getInstance(algorithmType.getJCEName(), algorithmType.getJCEProvider());
+    public HMACSignatureAlgorithm(String jceName, String jceProvider) throws NoSuchProviderException, NoSuchAlgorithmException {
+        if (jceProvider != null) {
+            mac = Mac.getInstance(jceName, jceProvider);
         } else {
-            mac = Mac.getInstance(algorithmType.getJCEName());
+            mac = Mac.getInstance(jceName);
         }
     }
 

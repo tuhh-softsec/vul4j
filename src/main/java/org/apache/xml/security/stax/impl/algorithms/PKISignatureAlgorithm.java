@@ -19,7 +19,6 @@
 package org.apache.xml.security.stax.impl.algorithms;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import java.io.IOException;
 import java.security.*;
@@ -34,10 +33,10 @@ public class PKISignatureAlgorithm implements SignatureAlgorithm {
     private final String jceName;
     private final Signature signature;
 
-    public PKISignatureAlgorithm(AlgorithmType algorithmType) throws NoSuchProviderException, NoSuchAlgorithmException {
-        this.jceName = algorithmType.getJCEName();
-        if (algorithmType.getJCEProvider() != null) {
-            signature = Signature.getInstance(this.jceName, algorithmType.getJCEProvider());
+    public PKISignatureAlgorithm(String jceName, String jceProvider) throws NoSuchProviderException, NoSuchAlgorithmException {
+        this.jceName = jceName;
+        if (jceProvider != null) {
+            signature = Signature.getInstance(this.jceName, jceProvider);
         } else {
             signature = Signature.getInstance(this.jceName);
         }

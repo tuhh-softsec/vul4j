@@ -40,7 +40,6 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 import org.apache.xml.security.stax.impl.XMLSecurityEventReader;
 import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.*;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -351,14 +350,15 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
     private Cipher getCipher(String algorithmURI) throws XMLSecurityException {
         Cipher symCipher;
         try {
-            AlgorithmType symEncAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
-            if (symEncAlgo == null) {
+            String jceName = JCEAlgorithmMapper.translateURItoJCEID(algorithmURI);
+            String jceProvider = JCEAlgorithmMapper.getJCEProviderFromURI(algorithmURI);
+            if (jceName == null) {
                 throw new XMLSecurityException("algorithms.NoSuchMap", algorithmURI);
             }
-            if (symEncAlgo.getJCEProvider() != null) {
-                symCipher = Cipher.getInstance(symEncAlgo.getJCEName(), symEncAlgo.getJCEProvider());
+            if (jceProvider != null) {
+                symCipher = Cipher.getInstance(jceName, jceProvider);
             } else {
-                symCipher = Cipher.getInstance(symEncAlgo.getJCEName());
+                symCipher = Cipher.getInstance(jceName);
             }
             //we have to defer the initialization of the cipher until we can extract the IV...
         } catch (NoSuchAlgorithmException e) {

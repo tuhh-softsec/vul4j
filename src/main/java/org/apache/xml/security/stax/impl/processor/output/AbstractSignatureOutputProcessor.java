@@ -31,7 +31,6 @@ import org.apache.xml.security.stax.impl.SignaturePartDef;
 import org.apache.xml.security.stax.impl.transformer.TransformIdentity;
 import org.apache.xml.security.stax.impl.util.DigestOutputStream;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -157,16 +156,17 @@ public abstract class AbstractSignatureOutputProcessor extends AbstractOutputPro
     private DigestOutputStream createMessageDigestOutputStream(String digestAlgorithm)
             throws XMLSecurityException {
 
-        AlgorithmType algorithmType = JCEAlgorithmMapper.getAlgorithmMapping(digestAlgorithm);
-        if (algorithmType == null) {
+        String jceName = JCEAlgorithmMapper.translateURItoJCEID(digestAlgorithm);
+        String jceProvider = JCEAlgorithmMapper.getJCEProviderFromURI(digestAlgorithm);
+        if (jceName == null) {
             throw new XMLSecurityException("algorithms.NoSuchMap", digestAlgorithm);
         }
         MessageDigest messageDigest;
         try {
-            if (algorithmType.getJCEProvider() != null) {
-                messageDigest = MessageDigest.getInstance(algorithmType.getJCEName(), algorithmType.getJCEProvider());
+            if (jceProvider != null) {
+                messageDigest = MessageDigest.getInstance(jceName, jceProvider);
             } else {
-                messageDigest = MessageDigest.getInstance(algorithmType.getJCEName());
+                messageDigest = MessageDigest.getInstance(jceName);
             }
         } catch (NoSuchAlgorithmException e) {
             throw new XMLSecurityException(e);

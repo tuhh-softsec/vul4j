@@ -204,7 +204,7 @@ public class OutboundXMLSec {
             }
             // If none is configured then generate one
             String keyAlgorithm = 
-                JCEAlgorithmMapper.getJCERequiredKeyFromURI(securityProperties.getEncryptionSymAlgorithm());
+                JCEAlgorithmMapper.getJCEKeyAlgorithmFromURI(securityProperties.getEncryptionSymAlgorithm());
             KeyGenerator keyGen;
             try {
                 keyGen = KeyGenerator.getInstance(keyAlgorithm);

@@ -275,6 +275,23 @@ public class JCEMapper {
         }
         return null;
     }
+    
+    /**
+     * Method getJCEProviderFromURI
+     *
+     * @param algorithmURI
+     * @return The JCEProvider for the given URI.
+     */
+    public static String getJCEProviderFromURI(String algorithmURI) {
+        if (log.isDebugEnabled()) {
+            log.debug("Request for URI " + algorithmURI);
+        }
+        Algorithm algorithm = algorithmsMap.get(algorithmURI);
+        if (algorithm != null) {
+            return algorithm.jceProvider;
+        }
+        return null;
+    }
 
     /**
      * Gets the default Provider for obtaining the security algorithms
@@ -301,6 +318,7 @@ public class JCEMapper {
         final String jceName;
         final String algorithmClass;
         final int keyLength;
+        final String jceProvider;
         
         /**
          * Gets data from element
@@ -310,6 +328,7 @@ public class JCEMapper {
             requiredKey = el.getAttributeNS(null, "RequiredKey");
             jceName = el.getAttributeNS(null, "JCEName");
             algorithmClass = el.getAttributeNS(null, "AlgorithmClass");
+            jceProvider = el.getAttributeNS(null, "JCEProvider");
             if (el.hasAttribute("KeyLength")) {
                 keyLength = Integer.parseInt(el.getAttributeNS(null, "KeyLength"));
             } else {
@@ -330,10 +349,16 @@ public class JCEMapper {
         }
         
         public Algorithm(String requiredKey, String jceName, String algorithmClass, int keyLength) {
+            this(requiredKey, jceName, algorithmClass, keyLength, null);
+        }
+        
+        public Algorithm(String requiredKey, String jceName, 
+                         String algorithmClass, int keyLength, String jceProvider) {
             this.requiredKey = requiredKey;
             this.jceName = jceName;
             this.algorithmClass = algorithmClass;
             this.keyLength = keyLength;
+            this.jceProvider = jceProvider;
         }
     }
     

@@ -18,53 +18,36 @@
  */
 package org.apache.xml.security.stax.config;
 
+import java.util.List;
+
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.xmlsecurity.ns.configuration.AlgorithmType;
 import org.xmlsecurity.ns.configuration.JCEAlgorithmMappingsType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Mapping between JCE id and xmlsec uri's for algorithms
- * Class lent from apache santuario (xmlsec)
- *
- * @author $Author$
- * @version $Revision$ $Date$
  */
-public class JCEAlgorithmMapper {
-
-    private static Map<String, String> uriToJCEName;
-    private static Map<String, AlgorithmType> algorithmsMap;
+public class JCEAlgorithmMapper extends JCEMapper {
 
     private JCEAlgorithmMapper() {
     }
 
     protected static synchronized void init(JCEAlgorithmMappingsType jceAlgorithmMappingsType) throws Exception {
         List<AlgorithmType> algorithms = jceAlgorithmMappingsType.getAlgorithm();
-        uriToJCEName = new HashMap<String, String>(algorithms.size() + 1);
-        algorithmsMap = new HashMap<String, AlgorithmType>(algorithms.size() + 1);
 
         for (int i = 0; i < algorithms.size(); i++) {
             AlgorithmType algorithmType = algorithms.get(i);
-            uriToJCEName.put(algorithmType.getURI(), algorithmType.getJCEName());
-            algorithmsMap.put(algorithmType.getURI(), algorithmType);
+            int keyLength = 0;
+            if (algorithmType.getKeyLength() != null) {
+                keyLength = algorithmType.getKeyLength();
+            }
+            Algorithm algorithm = 
+                new Algorithm(algorithmType.getRequiredKey(), algorithmType.getJCEName(),
+                              algorithmType.getAlgorithmClass(), keyLength,
+                              algorithmType.getJCEProvider());
+            
+            register(algorithmType.getURI(), algorithm);
         }
     }
 
-    public static AlgorithmType getAlgorithmMapping(String algoURI) {
-        return algorithmsMap.get(algoURI);
-    }
-
-    public static String translateURItoJCEID(String AlgorithmURI) {
-        return uriToJCEName.get(AlgorithmURI);
-    }
-
-    public static int getKeyLengthFromURI(String AlgorithmURI) {
-        return algorithmsMap.get(AlgorithmURI).getKeyLength();
-    }
-
-    public static String getJCERequiredKeyFromURI(String AlgorithmURI) {
-        return algorithmsMap.get(AlgorithmURI).getRequiredKey();
-    }
 }

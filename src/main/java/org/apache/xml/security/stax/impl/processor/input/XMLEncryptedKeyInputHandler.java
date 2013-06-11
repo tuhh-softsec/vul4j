@@ -35,7 +35,6 @@ import org.apache.xml.security.stax.impl.securityToken.AbstractInboundSecurityTo
 import org.apache.xml.security.stax.securityToken.SecurityTokenFactory;
 import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.securityEvent.EncryptedKeyTokenSecurityEvent;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -110,7 +109,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                             return key;
                         }
 
-                        String algoFamily = JCEAlgorithmMapper.getJCERequiredKeyFromURI(algorithmURI);
+                        String algoFamily = JCEAlgorithmMapper.getJCEKeyAlgorithmFromURI(algorithmURI);
                         key = new SecretKeySpec(getSecret(this, correlationID, algorithmURI), algoFamily);
                         setSecretKey(algorithmURI, key);
                         return key;
@@ -155,8 +154,9 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                         if (algorithmURI == null) {
                             throw new XMLSecurityException("stax.encryption.noEncAlgo");
                         }
-                        AlgorithmType encAlgo = JCEAlgorithmMapper.getAlgorithmMapping(algorithmURI);
-                        if (encAlgo == null) {
+                        String jceName = JCEAlgorithmMapper.translateURItoJCEID(algorithmURI);
+                        String jceProvider = JCEAlgorithmMapper.getJCEProviderFromURI(algorithmURI);
+                        if (jceName == null) {
                             throw new XMLSecurityException("algorithms.NoSuchMap", algorithmURI);
                         }
 
@@ -171,10 +171,10 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
                                 algorithmUsage = XMLSecurityConstants.Sym_Key_Wrap;
                             }
 
-                            if (encAlgo.getJCEProvider() == null) {
-                                cipher = Cipher.getInstance(encAlgo.getJCEName());
+                            if (jceProvider == null) {
+                                cipher = Cipher.getInstance(jceName);
                             } else {
-                                cipher = Cipher.getInstance(encAlgo.getJCEName(), encAlgo.getJCEProvider());
+                                cipher = Cipher.getInstance(jceName, jceProvider);
                             }
                             if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(algorithmURI) ||
                                     XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(algorithmURI)) {
@@ -223,7 +223,7 @@ public class XMLEncryptedKeyInputHandler extends AbstractInputSecurityHeaderHand
 
                         try {
                             Key key = cipher.unwrap(encryptedKeyType.getCipherData().getCipherValue(),
-                                    encAlgo.getJCEName(),
+                                    jceName,
                                     Cipher.SECRET_KEY);
                             return this.decryptedKey = key.getEncoded();
                         } catch (IllegalStateException e) {

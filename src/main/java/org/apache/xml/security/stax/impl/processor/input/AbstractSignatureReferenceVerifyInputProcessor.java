@@ -40,7 +40,6 @@ import org.apache.xml.security.stax.impl.util.IDGenerator;
 import org.apache.xml.security.stax.impl.util.KeyValue;
 import org.apache.xml.security.stax.impl.util.UnsynchronizedBufferedOutputStream;
 import org.apache.xml.security.stax.securityEvent.AlgorithmSuiteSecurityEvent;
-import org.xmlsecurity.ns.configuration.AlgorithmType;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -267,24 +266,24 @@ public abstract class AbstractSignatureReferenceVerifyInputProcessor extends Abs
             throws XMLSecurityException {
 
         String digestMethodAlgorithm = referenceType.getDigestMethod().getAlgorithm();
-        AlgorithmType digestAlgorithm =
-                JCEAlgorithmMapper.getAlgorithmMapping(digestMethodAlgorithm);
-        if (digestAlgorithm == null) {
+        String jceName = JCEAlgorithmMapper.translateURItoJCEID(digestMethodAlgorithm);
+        String jceProvider = JCEAlgorithmMapper.getJCEProviderFromURI(digestMethodAlgorithm);
+        if (jceName == null) {
             throw new XMLSecurityException("algorithms.NoSuchMap", digestMethodAlgorithm);
         }
 
         AlgorithmSuiteSecurityEvent algorithmSuiteSecurityEvent = new AlgorithmSuiteSecurityEvent();
-        algorithmSuiteSecurityEvent.setAlgorithmURI(digestAlgorithm.getURI());
+        algorithmSuiteSecurityEvent.setAlgorithmURI(digestMethodAlgorithm);
         algorithmSuiteSecurityEvent.setAlgorithmUsage(XMLSecurityConstants.Dig);
         algorithmSuiteSecurityEvent.setCorrelationID(referenceType.getId());
         inboundSecurityContext.registerSecurityEvent(algorithmSuiteSecurityEvent);
 
         MessageDigest messageDigest;
         try {
-            if (digestAlgorithm.getJCEProvider() != null) {
-                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName(), digestAlgorithm.getJCEProvider());
+            if (jceProvider != null) {
+                messageDigest = MessageDigest.getInstance(jceName, jceProvider);
             } else {
-                messageDigest = MessageDigest.getInstance(digestAlgorithm.getJCEName());
+                messageDigest = MessageDigest.getInstance(jceName);
             }
         } catch (NoSuchAlgorithmException e) {
             throw new XMLSecurityException(e);
