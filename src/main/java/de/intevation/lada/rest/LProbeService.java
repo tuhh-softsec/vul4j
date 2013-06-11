@@ -104,8 +104,8 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     @Consumes("application/json")
-    public String update(LProbe probe) {
-        return "{success: false, errors: {probeId: \"Client not found\"}}";
+    public Response update(LProbe probe) {
+        return repository.update(probe);
     }
 
     @POST
