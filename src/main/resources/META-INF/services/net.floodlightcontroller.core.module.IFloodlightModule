@@ -10,7 +10,6 @@ net.floodlightcontroller.staticflowentry.StaticFlowEntryPusher
 net.floodlightcontroller.perfmon.PktInProcessingTime
 net.floodlightcontroller.perfmon.NullPktInProcessingTime
 net.floodlightcontroller.restserver.RestApiServer
-net.floodlightcontroller.jython.JythonDebugInterface
 net.floodlightcontroller.counter.CounterStore
 net.floodlightcontroller.counter.NullCounterStore
 net.floodlightcontroller.threadpool.ThreadPool
