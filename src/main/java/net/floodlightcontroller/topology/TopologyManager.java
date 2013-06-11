@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
+import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IHAListener;
@@ -871,7 +872,8 @@ public class TopologyManager implements
             if (log.isTraceEnabled()) {
                 log.trace("Applying update: {}", update);
             }
-            if (update.getOperation() == UpdateOperation.LINK_UPDATED) {
+            if (update.getOperation() == UpdateOperation.LINK_UPDATED ||
+            		update.getOperation() == UpdateOperation.LINK_ADDED	) {
                 addOrUpdateLink(update.getSrc(), update.getSrcPort(),
                                 update.getDst(), update.getDstPort(),
                                 update.getType());
