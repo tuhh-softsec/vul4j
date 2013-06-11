@@ -41,7 +41,7 @@ public class LProbe implements java.io.Serializable {
     private Integer mprId;
     private Date solldatumBeginn;
     private Date solldatumEnde;
-    private Integer netzbetreiberId;
+    private String netzbetreiberId;
 
     public LProbe() {
     }
@@ -57,7 +57,7 @@ public class LProbe implements java.io.Serializable {
             Date probeentnahmeBeginn, Date probeentnahmeEnde,
             Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
             Integer probeNehmerId, Character mpKat, String mplId,
-            Integer mprId, Date solldatumBeginn, Date solldatumEnde, Integer netzbetreiberId) {
+            Integer mprId, Date solldatumBeginn, Date solldatumEnde, String netzbetreiberId) {
         this.probeId = probeId;
         this.mstId = mstId;
         this.umwId = umwId;
@@ -278,11 +278,11 @@ public class LProbe implements java.io.Serializable {
     }
 
     @Column(name = "netzbetreiber_id")
-    public Integer getNetzbetreiberId() {
+    public String getNetzbetreiberId() {
         return netzbetreiberId;
     }
 
-    public void setNetzbetreiberId(Integer netzbetreiberId) {
+    public void setNetzbetreiberId(String netzbetreiberId) {
         this.netzbetreiberId = netzbetreiberId;
     }
 }
