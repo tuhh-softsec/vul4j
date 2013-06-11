@@ -7,6 +7,7 @@
    <persistence-unit name="primary">
        <jta-data-source>java:/jboss/Lada</jta-data-source>
        <class>de.intevation.lada.model.LProbe</class>
+       <class>de.intevation.lada.model.SNetzBetreiber</class>
        <properties>
            <!-- Properties for Hibernate -->
            <property name="hibernate.show_sql" value="true" />
