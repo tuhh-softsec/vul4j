@@ -106,14 +106,14 @@ public class DriverSelector {
 
 	/**
 	 * This methods forces DriverFactory to load configuration and init. This is
-	 * used to prevent delayed configuration error reporting when a user sends the very
-	 * first hit to Esigate (instead of 'on startup').
+	 * used to prevent delayed configuration error reporting when a user sends
+	 * the very first hit to Esigate (instead of 'on startup').
 	 */
 	public void touchDriverFactory() {
-		
+
 		// Using getDriver() instead of DriverFactory#configure() to prevent
 		// multiple configuration loading if several servlets are used
-		
+
 		if (this.webXmlProvider != null) {
 			// Get defined provider
 			DriverFactory.getInstance(this.webXmlProvider);
@@ -122,7 +122,7 @@ public class DriverSelector {
 			DriverFactory.getInstance(this.webXmlProviderMappings.values().iterator().next());
 		} else {
 			// Get default provider
-			DriverFactory.getInstanceFor(null, null, null);
+			// DriverFactory.getInstanceFor(null, null, "/");
 		}
 	}
 }
