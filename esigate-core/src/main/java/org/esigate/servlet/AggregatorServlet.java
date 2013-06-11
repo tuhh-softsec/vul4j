@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Servlet used to proxy requests from a remote application.
+ * 
  * <p>
  * Parameters are :
  * <ul>
@@ -44,7 +45,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
+ * @deprecated use {@link ProxyServlet} instead.
  */
+@Deprecated
 public class AggregatorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(AggregatorServlet.class);
