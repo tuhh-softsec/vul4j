@@ -94,7 +94,7 @@ public class LProbeRepository extends Repository{
      * Validate and persist a new LProbe object.
      *
      * @param probe The new LProbe object
-     * @return True on success, else returns false.
+     * @return Response.
      */
     public Response create(LProbe probe) {
         Response response = new Response(true, 200, probe);
@@ -130,4 +130,37 @@ public class LProbeRepository extends Repository{
         return response;
     }
 
+    public Response update(LProbe probe) {
+        Response response = new Response(true, 200, probe);
+        // Try to save the new LProbe.
+        try {
+            validator.validate(probe);
+            manager.update(probe);
+            response.setWarnings(validator.getWarnings());
+            return response;
+        }
+        catch (EntityExistsException eee) {
+            response.setSuccess(false);
+            response.setMessage(601);
+        }
+        catch (IllegalArgumentException iae) {
+            response.setSuccess(false);
+            response.setMessage(602);
+        }
+        catch (TransactionRequiredException tre) {
+            response.setSuccess(false);
+            response.setMessage(603);
+        }
+        catch (ValidationException ve) {
+            response.setSuccess(false);
+            response.setMessage(604);
+            response.setErrors(ve.getErrors());
+            response.setWarnings(validator.getWarnings());
+        }
+        catch (EJBTransactionRolledbackException te) {
+            response.setSuccess(false);
+            response.setMessage(604);
+        }
+        return response;
+    }
 }
