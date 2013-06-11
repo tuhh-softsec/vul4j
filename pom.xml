@@ -30,6 +30,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <powermock.version>1.5</powermock.version>
+    <restlet.version>2.1-RC1</restlet.version>
   </properties>
   <build>
     <plugins>
@@ -56,8 +57,8 @@
           <target>1.6</target>
           <encoding>UTF-8</encoding>
         </configuration>
-        <executions>                         
-         </executions>
+        <executions>
+        </executions>
       </plugin>
       <!-- test -->
       <plugin>
@@ -69,10 +70,12 @@
             <!-- exclude all test cases for now -->
             <!-- <exclude>**/storage/tests/StorageTest.java</exclude> -->
             <!-- <exclude>**/test/*</exclude> -->
+          <!--
             <exclude>**/test/*</exclude>
             <exclude>**/Test*.java</exclude>
             <exclude>**/*Test.java</exclude>
             <exclude>**/*TestCase.java</exclude>
+          -->
           </excludes>
         </configuration>
       </plugin>
@@ -119,39 +122,45 @@
     </plugins>
   </reporting>
   <dependencies>
+    <!-- ONOS's direct dependencies -->
     <dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm-tree</artifactId>
-      <version>3.0</version>
+      <groupId>org.apache.cassandra</groupId>
+      <artifactId>apache-cassandra</artifactId>
+      <version>1.2.4</version>
+      <type>pom</type>
     </dependency>
     <dependency>
-      <groupId>net.sourceforge.cobertura</groupId>
-      <artifactId>cobertura</artifactId>
-      <version>1.9.4.1</version>
+      <groupId>com.thinkaurelius.titan</groupId>
+      <artifactId>titan-all</artifactId>
+      <version>0.2.1</version>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.objenesis</groupId>
-      <artifactId>objenesis</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
+      <groupId>com.tinkerpop</groupId>
+      <artifactId>frames</artifactId>
+      <version>2.3.1</version>
     </dependency>
     <!--
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>13.0.1</version>
+      <groupId>com.tinkerpop.blueprints</groupId>
+      <artifactId>blueprints-core</artifactId>
+      <version>2.3.0</version>
     </dependency>
     -->
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.0.0</version>
-      <scope>runtime</scope>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+      <version>2.4</version>
+      <classifier>jdk15</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>${restlet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.slf4j</artifactId>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -163,6 +172,31 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.9.11</version>
     </dependency>
+    <!-- Not sure if it's mandatory for ONOS -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.0.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Floodlight's dependencies -->
+    <dependency>
+      <groupId>net.sourceforge.cobertura</groupId>
+      <artifactId>cobertura</artifactId>
+      <version>1.9.4.1</version>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>13.0.1</version>
+    </dependency>
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -170,23 +204,13 @@
     </dependency>
     <dependency>
       <groupId>org.restlet.jse</groupId>
-      <artifactId>org.restlet</artifactId>
-      <version>2.1-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet.jse</groupId>
       <artifactId>org.restlet.ext.jackson</artifactId>
-      <version>2.1-RC1</version>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jse</groupId>
       <artifactId>org.restlet.ext.simple</artifactId>
-      <version>2.1-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet.jse</groupId>
-      <artifactId>org.restlet.ext.slf4j</artifactId>
-      <version>2.1-RC1</version>
+      <version>${restlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
@@ -219,6 +243,12 @@
       <version>0.7.0</version>
     </dependency>
     <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <!-- Dependency for libraries used for testing -->
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -242,31 +272,19 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
       <version>2.2.2</version>
     </dependency>
-    <dependency>
-      <groupId>com.thinkaurelius.titan</groupId>
-      <artifactId>titan-all</artifactId>
-      <version>0.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.tinkerpop</groupId>
-      <artifactId>frames</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.tinkerpop.blueprints</groupId>
-      <artifactId>blueprints-core</artifactId>
-      <version>2.3.0</version>
-    </dependency>
+    -->
     <!-- dependency to locally modified version -->
     <dependency>
       <groupId>com.netflix.curator</groupId>
@@ -295,17 +313,5 @@
       <version>0.1.0</version>
     </dependency>
     -->
-    <dependency>
-      <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
-      <version>2.4</version>
-      <classifier>jdk15</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cassandra</groupId>
-      <artifactId>apache-cassandra</artifactId>
-      <version>1.2.4</version>
-      <type>pom</type>
-    </dependency>
   </dependencies>
 </project>
