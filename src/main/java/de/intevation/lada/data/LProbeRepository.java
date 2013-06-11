@@ -16,6 +16,7 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
@@ -94,32 +95,34 @@ public class LProbeRepository extends Repository{
      * @param probe The new LProbe object
      * @return True on success, else returns false.
      */
-    public boolean create(LProbe probe) {
-        // Make sure that no old errors and warnings remain.
-        this.reset();
-
+    public Response create(LProbe probe) {
+        Response response = new Response(true, 200, probe);
         // Try to save the new LProbe.
         try {
             validator.validate(probe);
             manager.create(probe);
-            setWarnings(validator.getWarnings());
-            return true;
+            response.setWarnings(validator.getWarnings());
+            return response;
         }
         catch (EntityExistsException eee) {
-            setGeneralError(601);
+            response.setSuccess(false);
+            response.setMessage(601);
         }
         catch (IllegalArgumentException iae) {
-            setGeneralError(602);
+            response.setSuccess(false);
+            response.setMessage(602);
         }
         catch (TransactionRequiredException tre) {
-            setGeneralError(603);
+            response.setSuccess(false);
+            response.setMessage(603);
         }
         catch (ValidationException ve) {
-            setGeneralError(604);
-            setErrors(ve.getErrors());
-            setWarnings(validator.getWarnings());
+            response.setSuccess(false);
+            response.setMessage(604);
+            response.setErrors(ve.getErrors());
+            response.setWarnings(validator.getWarnings());
         }
-        return false;
+        return response;
     }
 
 }
