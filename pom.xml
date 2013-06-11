@@ -172,7 +172,6 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.9.11</version>
     </dependency>
-    <!-- Not sure if it's mandatory for ONOS -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
