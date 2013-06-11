@@ -55,29 +55,29 @@ public class GraphDBUtils implements IDBUtils {
 	@Override
 	public IPortObject searchPort(GraphDBConnection conn, String dpid, short number) {
 		ISwitchObject sw = searchSwitch(conn, dpid);
-//		if (sw != null) {
-//			
-//			IPortObject port = null;
-//			
-			// Requires Frames 2.3.0
-//			
-//			try {
-//				port = sw.getPort(number);
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			return port;
-//		}
-		
 		if (sw != null) {
-			GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
-			pipe.start(sw.asVertex());
-			pipe.out("on").has("number", number);
-			FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
-			return r != null && r.iterator().hasNext() ? r.iterator().next() : null;
+			
+			IPortObject port = null;
+			
+			// Requires Frames 2.3.0
+			
+			try {
+				port = sw.getPort(number);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return port;
 		}
+		
+//		if (sw != null) {
+//			GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
+//			pipe.start(sw.asVertex());
+//			pipe.out("on").has("number", number);
+//			FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
+//			return r != null && r.iterator().hasNext() ? r.iterator().next() : null;
+//		}
 		return null;
 	}
 
