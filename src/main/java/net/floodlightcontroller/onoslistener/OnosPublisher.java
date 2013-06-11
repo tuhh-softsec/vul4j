@@ -32,6 +32,10 @@ import net.floodlightcontroller.devicemanager.IDeviceService;
 import net.floodlightcontroller.devicemanager.IDeviceStorage;
 import net.floodlightcontroller.devicemanager.internal.DeviceStorageImpl;
 import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
+import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.floodlightcontroller.linkdiscovery.ILinkStorage;
+import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl;
+import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
@@ -44,6 +48,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	
 	protected IDeviceStorage devStore;
 	protected ISwitchStorage swStore;
+	protected ILinkStorage linkStore;
 	protected static Logger log;
 	protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
@@ -56,6 +61,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	
 	protected final int CLEANUP_TASK_INTERVAL = 60; // 1 min
 	protected SingletonTask cleanupTask;
+	protected ILinkDiscoveryService linkDiscovery;
 	
 	/**
      *  Cleanup and synch switch state from registry
@@ -119,12 +125,21 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	@Override
 	public void linkDiscoveryUpdate(LDUpdate update) {
 		// TODO Auto-generated method stub
+		Link lt = new Link(update.getSrc(),update.getSrcPort(),update.getDst(),update.getDstPort());
+		log.debug("{}:LinkDicoveryUpdate(): Updating Link {}",this.getClass(), lt);
 		switch (update.getOperation()) {
 		
 			case LINK_REMOVED:
+				linkStore.update(lt, DM_OPERATION.DELETE);
 				// TODO: Move network map link removal here
 				// reconcile paths here
 //				IPortObject srcPort = conn.utils().searchPort(conn, HexString.toHexString(update.getSrc()), update.getSrcPort());
+				break;
+			case LINK_UPDATED:
+				linkStore.update(lt, DM_OPERATION.UPDATE);
+				break;
+			case LINK_ADDED:
+				linkStore.update(lt, DM_OPERATION.INSERT);
 				break;
 					
 			default:
@@ -242,6 +257,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
+		linkDiscovery = context.getServiceImpl(ILinkDiscoveryService.class);
 		threadPool = context.getServiceImpl(IThreadPoolService.class);
 		registryService = context.getServiceImpl(IControllerRegistryService.class);
 		
@@ -250,6 +266,9 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		
 		swStore = new SwitchStorageImpl();
 		swStore.init(conf);
+		
+		linkStore = new LinkStorageImpl();
+		linkStore.init(conf);
 				
 		log.debug("Initializing OnosPublisher module with {}", conf);
 		
@@ -263,6 +282,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 
 		deviceService.addListener(this);
 		floodlightProvider.addOFSwitchListener(this);
+		linkDiscovery.addListener(this);
 		
 		log.debug("Adding EventListener");
 		conn.addEventListener(new LocalTopologyEventListener(conn));
