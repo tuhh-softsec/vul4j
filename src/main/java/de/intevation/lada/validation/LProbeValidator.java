@@ -9,7 +9,7 @@ import de.intevation.lada.model.LProbe;
 
 /**
  * Validator for LProbe objects.
- * 
+ *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Named("lprobevalidator")
@@ -24,7 +24,7 @@ implements Validator
 
     /**
      * Validate a LProbe object.
-     * 
+     *
      * @param probe The LProbe object.
      */
     @Override
@@ -59,8 +59,8 @@ implements Validator
     }
 
     /**
-     * Getter for warnings occured while validating the LProbe.
-     * 
+     * Getter for warnings occurred while validating the LProbe.
+     *
      * @return Map of field - warning code pairs.
      */
     @Override
