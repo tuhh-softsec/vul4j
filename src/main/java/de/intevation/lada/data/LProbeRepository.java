@@ -3,6 +3,7 @@ package de.intevation.lada.data;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -121,6 +122,10 @@ public class LProbeRepository extends Repository{
             response.setMessage(604);
             response.setErrors(ve.getErrors());
             response.setWarnings(validator.getWarnings());
+        }
+        catch (EJBTransactionRolledbackException te) {
+            response.setSuccess(false);
+            response.setMessage(604);
         }
         return response;
     }

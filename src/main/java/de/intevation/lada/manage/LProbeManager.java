@@ -3,6 +3,7 @@ package de.intevation.lada.manage;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -56,6 +57,7 @@ public class LProbeManager {
     public void create(LProbe probe)
     throws EntityExistsException,
         IllegalArgumentException,
+        EJBTransactionRolledbackException,
         TransactionRequiredException {
         em.persist(probe);
     }
