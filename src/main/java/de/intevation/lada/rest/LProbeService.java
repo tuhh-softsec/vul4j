@@ -113,10 +113,5 @@ public class LProbeService {
     @Consumes("application/json")
     public Response create(LProbe probe) {
         return repository.create(probe);
-        //int generalError = repository.getGeneralError();
-        //Response response = new Response(success, generalError, probe);
-        //response.setWarnings(repository.getWarnings());
-        //response.setErrors(repository.getErrors());
-        //return response;
     }
 }
