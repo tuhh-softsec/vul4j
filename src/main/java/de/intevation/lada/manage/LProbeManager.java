@@ -61,4 +61,22 @@ public class LProbeManager {
         TransactionRequiredException {
         em.persist(probe);
     }
+
+    /**
+     * Updates a LProbe object in the database.
+     *
+     * @param probe The new LProbe object.
+     *
+     * @throws EntityExistsException
+     * @throws IllegalArgumentException
+     * @throws TransactionRequiredException
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void update(LProbe probe)
+    throws EntityExistsException,
+        IllegalArgumentException,
+        EJBTransactionRolledbackException,
+        TransactionRequiredException {
+        em.merge(probe);
+    }
 }
