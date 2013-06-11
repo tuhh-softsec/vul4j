@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntryAction;
+import net.floodlightcontroller.util.FlowEntryErrorState;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.FlowEntrySwitchState;
