@@ -1,5 +1,6 @@
 package net.floodlightcontroller.core;
 
+import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.flowcache.web.DatapathSummarySerializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -11,6 +12,7 @@ import com.tinkerpop.frames.Adjacency;
 import com.tinkerpop.frames.Incidence;
 import com.tinkerpop.frames.Property;
 import com.tinkerpop.frames.annotations.gremlin.GremlinGroovy;
+import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 import com.tinkerpop.frames.VertexFrame;
 
 public interface INetMapTopologyObjects {
@@ -46,9 +48,9 @@ public interface ISwitchObject extends IBaseObject{
 		public Iterable<IPortObject> getPorts();
 
 // Requires Frames 2.3.0		
-//		@JsonIgnore
-//		@GremlinGroovy("_().out('on').has('number',port_num)")
-//		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
+		@JsonIgnore
+		@GremlinGroovy("_().out('on').has('number',port_num)")
+		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
 		
 		@Adjacency(label="on")
 		public void addPort(final IPortObject port);
@@ -63,6 +65,7 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonIgnore
 		@Incidence(label="switch",direction = Direction.IN)
 		public Iterable<IFlowEntry> getFlowEntries();
+
 	}
 	
 	public interface IPortObject extends IBaseObject{

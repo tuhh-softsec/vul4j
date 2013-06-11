@@ -545,6 +545,16 @@ public class ControllerTest extends FloodlightTestCase {
                 nPortChanged++;
                 notifyAll();
             }
+			@Override
+			public void switchPortAdded(Long switchId, OFPhysicalPort port) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
+				// TODO Auto-generated method stub
+				
+			}
         }
         DummySwitchListener switchListener = new DummySwitchListener();
         IOFSwitch sw = createMock(IOFSwitch.class);

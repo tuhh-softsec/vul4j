@@ -8,6 +8,7 @@ import net.floodlightcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl.ExtractLink;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 			}
 						
 		}
+		conn.endTx(Transaction.COMMIT);
 		return links;
 	}
 

@@ -44,7 +44,6 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IHAListener;
 import net.floodlightcontroller.core.IInfoProvider;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IOFSwitchListener;
@@ -197,20 +196,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected LLDPTLV controllerTLV;
     protected ReentrantReadWriteLock lock;
     int lldpTimeCount = 0;
-
-    // Storage
-
-    ThreadLocal<LinkStorageImpl> store = new ThreadLocal<LinkStorageImpl>() {
-		@Override
-		protected LinkStorageImpl initialValue() {
-			LinkStorageImpl swStore = new LinkStorageImpl();
-			//TODO: Get the file path from global properties
-			swStore.init("/tmp/cassandra.titan");
-			return swStore;
-		}
-	};
-    protected LinkStorageImpl linkStore = store.get();
-   // protected SwitchStorageImpl swStore;
     
     /**
      * Flag to indicate if automatic port fast is enabled or not.
@@ -1076,11 +1061,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
                 writeLinkToStorage(lt, newInfo);
                 
-                // Write link to network map
-                operation = NetworkMapOperation.INSERT;
-                //linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
-                
-                updateOperation = UpdateOperation.LINK_UPDATED;
+                updateOperation = UpdateOperation.LINK_ADDED;
                 linkChanged = true;
 
                 // Add to event history
@@ -1135,10 +1116,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // valid time, plus the port states if they've changed (i.e. if
                 // they weren't set to null in the previous block of code.
                 writeLinkToStorage(lt, newInfo);
-
-                // Write link to network map
-                operation = NetworkMapOperation.UPDATE;
-                //linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
                 
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
@@ -1169,17 +1146,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
             lock.writeLock().unlock();
         }
         
-        switch (operation){
-        case INSERT:
-        	linkStore.update(lt, newInfo, DM_OPERATION.INSERT);
-        	break;
-        case UPDATE:
-        	linkStore.update(lt, newInfo, DM_OPERATION.UPDATE);
-        	break;
-        case NONE:
-        default:
-        	break;
-        }
 
         return linkChanged;
     }
@@ -1246,10 +1212,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
                 // remove link from storage.
                 removeLinkFromStorage(lt);
-
-                // remote link from network map
-                linkStore.update(lt, DM_OPERATION.DELETE);
-
                 
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
@@ -1301,7 +1263,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     ((byte)OFPortReason.OFPPR_MODIFY.ordinal() ==
                     ps.getReason() && !portEnabled(ps.getDesc()))) {
                 deleteLinksOnPort(npt, "Port Status Changed");
-                //swStore.deletePort(HexString.toHexString(npt.getNodeId()), npt.getPortId());
+                
                 LDUpdate update = new LDUpdate(sw, port, UpdateOperation.PORT_DOWN);
                 updates.add(update);
                 linkDeleted = true;
@@ -1344,9 +1306,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                                      getLinkType(lt, linkInfo),
                                                      operation));
                             writeLinkToStorage(lt, linkInfo);
-                            
-                            // Write the changed link to the network map
-                            linkStore.update(lt,  linkInfo, DM_OPERATION.UPDATE);
                             
                             linkInfoChanged = true;
                         }

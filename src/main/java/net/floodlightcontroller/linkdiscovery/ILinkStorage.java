@@ -17,7 +17,7 @@ public interface ILinkStorage extends INetMapStorage {
 	/*
 	 *  Add Linkinfo
 	 */
-	public void addOrUpdateLink (Link link, LinkInfo linkinfo, DM_OPERATION op);
+	public void updateLink (Link link, LinkInfo linkinfo, DM_OPERATION op);
 	
 	/*
 	 * Delete a single link

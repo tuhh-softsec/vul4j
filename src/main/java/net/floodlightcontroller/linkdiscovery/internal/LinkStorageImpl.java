@@ -5,8 +5,6 @@ import java.util.List;
 
 import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoSwitchService;
-import net.floodlightcontroller.core.internal.TopoSwitchServiceImpl;
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
@@ -48,7 +46,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		case UPDATE:
 		case CREATE:
 		case INSERT:
-			addOrUpdateLink(link, linkinfo, op);
+			updateLink(link, linkinfo, op);
 			break;
 		case DELETE:
 			deleteLink(link);
@@ -56,11 +54,11 @@ public class LinkStorageImpl implements ILinkStorage {
 		}
 	}
 	
-	public void addOrUpdateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
+	public void updateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
 		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		IPortObject vportSrc = null, vportDst = null;
 	
-		log.trace("addOrUpdateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
+		log.trace("updateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
 		
         try {
             // get source port vertex
@@ -93,18 +91,18 @@ public class LinkStorageImpl implements ILinkStorage {
             		vportSrc.setLinkPort(vportDst);
 
             		conn.endTx(Transaction.COMMIT);
-            		log.debug("addOrUpdateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
             } else {
-            	log.error("addOrUpdateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
- //           	conn.endTx(Transaction.ROLLBACK);
+            	log.error("updateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
+            	conn.endTx(Transaction.ROLLBACK);
             }
         } catch (TitanException e) {
             /*
              * retry till we succeed?
              */
         	e.printStackTrace();
-        	log.error("addOrUpdateLink(): titan exception {} {} {}", new Object[]{op, lt, e.toString()});
+        	log.error("updateLink(): titan exception {} {} {}", new Object[]{op, lt, e.toString()});
         }
 	}
 	
@@ -154,7 +152,7 @@ public class LinkStorageImpl implements ILinkStorage {
             	
             } else {
             	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
-//            	conn.endTx(Transaction.ROLLBACK);
+            	conn.endTx(Transaction.ROLLBACK);
             }
          	
         } catch (TitanException e) {
@@ -162,6 +160,7 @@ public class LinkStorageImpl implements ILinkStorage {
              * retry till we succeed?
              */
         	log.error("deleteLink(): titan exception {} {}", new Object[]{lt, e.toString()});
+        	conn.endTx(Transaction.ROLLBACK);
         	e.printStackTrace();
         }
 	}

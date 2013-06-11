@@ -2234,13 +2234,6 @@ public class Controller implements IFloodlightProviderService,
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
-        
-		String conf = configParams.get("dbconf");
-		if (conf == null || conf.isEmpty()) {
-			conf = "/tmp/cassandra.titan";
-			log.debug("did not get DB config setting using default {}", conf);
-		}
-		log.debug("setting DB config {}", conf);
 		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
