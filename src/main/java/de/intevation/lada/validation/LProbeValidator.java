@@ -37,7 +37,7 @@ implements Validator
             throw new ValidationException(errors);
         }
         // Dummy warning.
-        warnings.put("entnahmeort", 612);
+        //warnings.put("entnahmeort", 612);
         validateId(probe);
     }
 
@@ -52,10 +52,10 @@ implements Validator
         Map<String, Integer> errors = new HashMap<String, Integer>();
         // TODO Implement me!
 
-        // Dummy error.
-        errors.put("probeId", 611);
-        ValidationException ve = new ValidationException(errors);
-        throw ve;
+        //// Dummy error.
+        //errors.put("probeId", 611);
+        //ValidationException ve = new ValidationException(errors);
+        //throw ve;
     }
 
     /**
