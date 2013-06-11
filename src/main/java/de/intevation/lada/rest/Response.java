@@ -45,8 +45,8 @@ public class Response implements java.io.Serializable {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(int message) {
+        this.message = Integer.toString(message);
     }
 
     public Object getData() {
