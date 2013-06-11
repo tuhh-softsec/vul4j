@@ -63,7 +63,7 @@
 	</filter-mapping>
 	<servlet>
 		<servlet-name>aggregator1</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>aggregator1</servlet-name>

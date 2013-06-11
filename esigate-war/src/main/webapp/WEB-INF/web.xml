@@ -4,7 +4,7 @@
 	
 	<servlet>
 		<servlet-name>esigate</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>esigate</param-value>

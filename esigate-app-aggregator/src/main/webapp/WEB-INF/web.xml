@@ -3,11 +3,11 @@
 <web-app id="WebApp_ID">
 	<servlet>
 		<servlet-name>aggregator1</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>nocacheaggregator1</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>nocacheaggregated1</param-value>
@@ -15,7 +15,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>aggregator2</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>aggregated2</param-value>
@@ -23,7 +23,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>rawhttpserver</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>rawhttpserver</param-value>
@@ -31,7 +31,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>preservehostaggregator</servlet-name>
-		<servlet-class>org.esigate.servlet.AggregatorServlet</servlet-class>
+		<servlet-class>org.esigate.servlet.ProxyServlet</servlet-class>
 		<init-param>
 			<param-name>provider</param-name>
 			<param-value>preservehostaggregated1</param-value>
