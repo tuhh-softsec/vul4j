@@ -18,246 +18,245 @@ import javax.persistence.TemporalType;
 @Table(name = "l_probe", schema = "public")
 public class LProbe implements java.io.Serializable {
 
-	private String probeId;
-	private String mstId;
-	private String umwId;
-	private boolean test;
-	private String hauptprobenNr;
-	private String baId;
-	private String mediaDesk;
-	private String media;
-	private Integer probenartId;
-	private String datenbasisId;
-	private Date probeentnahmeBeginn;
-	private Date probeentnahmeEnde;
-	private Long mittelungsdauer;
-	private Date letzteAenderung;
-	private Integer erzeugerId;
-	private Integer probeNehmerId;
-	private Character mpKat;
-	private String mplId;
-	private Integer mprId;
-	private Date solldatumBeginn;
-	private Date solldatumEnde;
-	private Integer netzbetreiberId;
+    private String probeId;
+    private String mstId;
+    private String umwId;
+    private boolean test;
+    private String hauptprobenNr;
+    private String baId;
+    private String mediaDesk;
+    private String media;
+    private Integer probenartId;
+    private Integer datenbasisId;
+    private Date probeentnahmeBeginn;
+    private Date probeentnahmeEnde;
+    private Long mittelungsdauer;
+    private Date letzteAenderung;
+    private Integer erzeugerId;
+    private Integer probeNehmerId;
+    private Character mpKat;
+    private String mplId;
+    private Integer mprId;
+    private Date solldatumBeginn;
+    private Date solldatumEnde;
+    private Integer netzbetreiberId;
 
-	public LProbe() {
-	}
+    public LProbe() {
+    }
 
-	public LProbe(String probeId, boolean test) {
-		this.probeId = probeId;
-		this.test = test;
-	}
+    public LProbe(String probeId, boolean test) {
+        this.probeId = probeId;
+        this.test = test;
+    }
 
-	public LProbe(String probeId, String mstId, String umwId, boolean test,
-			String hauptprobenNr, String baId, String mediaDesk, String media,
-			Integer probenartId, String datenbasisId,
-			Date probeentnahmeBeginn, Date probeentnahmeEnde,
-			Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
-			Integer probeNehmerId, Character mpKat, String mplId,
-			Integer mprId, Date solldatumBeginn, Date solldatumEnde, Integer netzbetreiberId) {
-		this.probeId = probeId;
-		this.mstId = mstId;
-		this.umwId = umwId;
-		this.test = test;
-		this.hauptprobenNr = hauptprobenNr;
-		this.baId = baId;
-		this.mediaDesk = mediaDesk;
-		this.media = media;
-		this.setProbenartId(probenartId);
-		this.setDatenbasisId(datenbasisId);
-		this.probeentnahmeBeginn = probeentnahmeBeginn;
-		this.probeentnahmeEnde = probeentnahmeEnde;
-		this.mittelungsdauer = mittelungsdauer;
-		this.letzteAenderung = letzteAenderung;
-		this.erzeugerId = erzeugerId;
-		this.probeNehmerId = probeNehmerId;
-		this.mpKat = mpKat;
-		this.mplId = mplId;
-		this.mprId = mprId;
-		this.solldatumBeginn = solldatumBeginn;
-		this.solldatumEnde = solldatumEnde;
-      this.netzbetreiberId = netzbetreiberId;
-	}
+    public LProbe(String probeId, String mstId, String umwId, boolean test,
+            String hauptprobenNr, String baId, String mediaDesk, String media,
+            Integer probenartId, Integer datenbasisId,
+            Date probeentnahmeBeginn, Date probeentnahmeEnde,
+            Long mittelungsdauer, Date letzteAenderung, Integer erzeugerId,
+            Integer probeNehmerId, Character mpKat, String mplId,
+            Integer mprId, Date solldatumBeginn, Date solldatumEnde, Integer netzbetreiberId) {
+        this.probeId = probeId;
+        this.mstId = mstId;
+        this.umwId = umwId;
+        this.test = test;
+        this.hauptprobenNr = hauptprobenNr;
+        this.baId = baId;
+        this.mediaDesk = mediaDesk;
+        this.media = media;
+        this.setProbenartId(probenartId);
+        this.setDatenbasisId(datenbasisId);
+        this.probeentnahmeBeginn = probeentnahmeBeginn;
+        this.probeentnahmeEnde = probeentnahmeEnde;
+        this.mittelungsdauer = mittelungsdauer;
+        this.letzteAenderung = letzteAenderung;
+        this.erzeugerId = erzeugerId;
+        this.probeNehmerId = probeNehmerId;
+        this.mpKat = mpKat;
+        this.mplId = mplId;
+        this.mprId = mprId;
+        this.solldatumBeginn = solldatumBeginn;
+        this.solldatumEnde = solldatumEnde;
+        this.netzbetreiberId = netzbetreiberId;
+    }
 
-	@Id
-	@Column(name = "probe_id", unique = true, nullable = false, length = 20)
-	public String getProbeId() {
-		return this.probeId;
-	}
+    @Id
+    @Column(name = "probe_id", unique = true, nullable = false, length = 20)
+    public String getProbeId() {
+        return this.probeId;
+    }
 
-	public void setProbeId(String probeId) {
-		this.probeId = probeId;
-	}
+    public void setProbeId(String probeId) {
+        this.probeId = probeId;
+    }
 
-	@Column(name = "test", nullable = false)
-	public boolean isTest() {
-		return this.test;
-	}
+    @Column(name = "test", nullable = false)
+        public boolean isTest() {
+        return this.test;
+    }
 
-	public void setTest(boolean test) {
-		this.test = test;
-	}
+    public void setTest(boolean test) {
+        this.test = test;
+    }
 
-	@Column(name = "hauptproben_nr", length = 20)
-	public String getHauptprobenNr() {
-		return this.hauptprobenNr;
-	}
+    @Column(name = "hauptproben_nr", length = 20)
+    public String getHauptprobenNr() {
+        return this.hauptprobenNr;
+    }
 
-	public void setHauptprobenNr(String hauptprobenNr) {
-		this.hauptprobenNr = hauptprobenNr;
-	}
+    public void setHauptprobenNr(String hauptprobenNr) {
+        this.hauptprobenNr = hauptprobenNr;
+    }
 
-	@Column(name = "ba_id", length = 1)
-	public String getBaId() {
-		return this.baId;
-	}
+    @Column(name = "ba_id", length = 1)
+    public String getBaId() {
+        return this.baId;
+    }
 
-	public void setBaId(String baId) {
-		this.baId = baId;
-	}
+    public void setBaId(String baId) {
+        this.baId = baId;
+    }
 
-	@Column(name = "media_desk", length = 100)
-	public String getMediaDesk() {
-		return this.mediaDesk;
-	}
+    @Column(name = "media_desk", length = 100)
+    public String getMediaDesk() {
+        return this.mediaDesk;
+    }
 
-	public void setMediaDesk(String mediaDesk) {
-		this.mediaDesk = mediaDesk;
-	}
+    public void setMediaDesk(String mediaDesk) {
+        this.mediaDesk = mediaDesk;
+    }
 
-	@Column(name = "media", length = 100)
-	public String getMedia() {
-		return this.media;
-	}
+    @Column(name = "media", length = 100)
+    public String getMedia() {
+        return this.media;
+    }
 
-	public void setMedia(String media) {
-		this.media = media;
-	}
+    public void setMedia(String media) {
+        this.media = media;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "probeentnahme_beginn", length = 35)
-	public Date getProbeentnahmeBeginn() {
-		return this.probeentnahmeBeginn;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "probeentnahme_beginn", length = 35)
+    public Date getProbeentnahmeBeginn() {
+        return this.probeentnahmeBeginn;
+    }
 
-	public void setProbeentnahmeBeginn(Date probeentnahmeBeginn) {
-		this.probeentnahmeBeginn = probeentnahmeBeginn;
-	}
+    public void setProbeentnahmeBeginn(Date probeentnahmeBeginn) {
+        this.probeentnahmeBeginn = probeentnahmeBeginn;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "probeentnahme_ende", length = 35)
-	public Date getProbeentnahmeEnde() {
-		return this.probeentnahmeEnde;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "probeentnahme_ende", length = 35)
+    public Date getProbeentnahmeEnde() {
+        return this.probeentnahmeEnde;
+    }
 
-	public void setProbeentnahmeEnde(Date probeentnahmeEnde) {
-		this.probeentnahmeEnde = probeentnahmeEnde;
-	}
+    public void setProbeentnahmeEnde(Date probeentnahmeEnde) {
+        this.probeentnahmeEnde = probeentnahmeEnde;
+    }
 
-	@Column(name = "mittelungsdauer")
-	public Long getMittelungsdauer() {
-		return this.mittelungsdauer;
-	}
+    @Column(name = "mittelungsdauer")
+    public Long getMittelungsdauer() {
+        return this.mittelungsdauer;
+    }
 
-	public void setMittelungsdauer(Long mittelungsdauer) {
-		this.mittelungsdauer = mittelungsdauer;
-	}
+    public void setMittelungsdauer(Long mittelungsdauer) {
+        this.mittelungsdauer = mittelungsdauer;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "letzte_aenderung", length = 29)
-	public Date getLetzteAenderung() {
-		return this.letzteAenderung;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "letzte_aenderung", length = 29)
+    public Date getLetzteAenderung() {
+        return this.letzteAenderung;
+    }
 
-	public void setLetzteAenderung(Date letzteAenderung) {
-		this.letzteAenderung = letzteAenderung;
-	}
+    public void setLetzteAenderung(Date letzteAenderung) {
+        this.letzteAenderung = letzteAenderung;
+    }
 
-	@Column(name = "erzeuger_id")
-	public Integer getErzeugerId() {
-		return this.erzeugerId;
-	}
+    @Column(name = "erzeuger_id")
+    public Integer getErzeugerId() {
+        return this.erzeugerId;
+    }
 
-	public void setErzeugerId(Integer erzeugerId) {
-		this.erzeugerId = erzeugerId;
-	}
+    public void setErzeugerId(Integer erzeugerId) {
+        this.erzeugerId = erzeugerId;
+    }
 
-	@Column(name = "probe_nehmer_id")
-	public Integer getProbeNehmerId() {
-		return this.probeNehmerId;
-	}
+    @Column(name = "probe_nehmer_id")
+    public Integer getProbeNehmerId() {
+        return this.probeNehmerId;
+    }
 
-	public void setProbeNehmerId(Integer probeNehmerId) {
-		this.probeNehmerId = probeNehmerId;
-	}
+    public void setProbeNehmerId(Integer probeNehmerId) {
+        this.probeNehmerId = probeNehmerId;
+    }
 
-	@Column(name = "mp_kat", length = 1)
-	public Character getMpKat() {
-		return this.mpKat;
-	}
+    @Column(name = "mp_kat", length = 1)
+    public Character getMpKat() {
+        return this.mpKat;
+    }
 
-	public void setMpKat(Character mpKat) {
-		this.mpKat = mpKat;
-	}
+    public void setMpKat(Character mpKat) {
+        this.mpKat = mpKat;
+    }
 
-	@Column(name = "mpl_id", length = 3)
-	public String getMplId() {
-		return this.mplId;
-	}
+    @Column(name = "mpl_id", length = 3)
+    public String getMplId() {
+        return this.mplId;
+    }
 
-	public void setMplId(String mplId) {
-		this.mplId = mplId;
-	}
+    public void setMplId(String mplId) {
+        this.mplId = mplId;
+    }
 
-	@Column(name = "mpr_id")
-	public Integer getMprId() {
-		return this.mprId;
-	}
+    @Column(name = "mpr_id")
+    public Integer getMprId() {
+        return this.mprId;
+    }
 
-	public void setMprId(Integer mprId) {
-		this.mprId = mprId;
-	}
+    public void setMprId(Integer mprId) {
+        this.mprId = mprId;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "solldatum_beginn", length = 29)
-	public Date getSolldatumBeginn() {
-		return this.solldatumBeginn;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "solldatum_beginn", length = 29)
+    public Date getSolldatumBeginn() {
+        return this.solldatumBeginn;
+    }
 
-	public void setSolldatumBeginn(Date solldatumBeginn) {
-		this.solldatumBeginn = solldatumBeginn;
-	}
+    public void setSolldatumBeginn(Date solldatumBeginn) {
+        this.solldatumBeginn = solldatumBeginn;
+    }
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "solldatum_ende", length = 29)
-	public Date getSolldatumEnde() {
-		return this.solldatumEnde;
-	}
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "solldatum_ende", length = 29)
+    public Date getSolldatumEnde() {
+        return this.solldatumEnde;
+    }
 
-	public void setSolldatumEnde(Date solldatumEnde) {
-		this.solldatumEnde = solldatumEnde;
-	}
-	
-	public void setMstId(String mstId) {
-		this.mstId = mstId;
-	}
+    public void setSolldatumEnde(Date solldatumEnde) {
+        this.solldatumEnde = solldatumEnde;
+    }
 
-	@Column(name = "mst_id")
-	public String getMstId() {
-		return this.mstId;
-	}
+    public void setMstId(String mstId) {
+        this.mstId = mstId;
+    }
+    @Column(name = "mst_id")
+    public String getMstId() {
+        return this.mstId;
+    }
 
-	public void setUmwId(String umwId) {
-		this.umwId = umwId;
-	}
+    public void setUmwId(String umwId) {
+        this.umwId = umwId;
+    }
 
-	@Column(name = "umw_id")
-	public String getUmwId() {
-		return this.umwId;
-	}
+    @Column(name = "umw_id")
+    public String getUmwId() {
+        return this.umwId;
+    }
 
-	@Column(name = "probenart_id")
+    @Column(name = "probenart_id")
     public Integer getProbenartId() {
         return probenartId;
     }
@@ -267,11 +266,11 @@ public class LProbe implements java.io.Serializable {
     }
 
     @Column(name = "datenbasis_id")
-    public String getDatenbasisId() {
+    public Integer getDatenbasisId() {
         return datenbasisId;
     }
 
-    public void setDatenbasisId(String datenbasisId) {
+    public void setDatenbasisId(Integer datenbasisId) {
         this.datenbasisId = datenbasisId;
     }
 
