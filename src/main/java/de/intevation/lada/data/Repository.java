@@ -67,4 +67,8 @@ public class Repository
         }
         return new Response(true, 200, item);
     }
+
+    public CriteriaBuilder getCriteriaBuilder() {
+        return em.getCriteriaBuilder();
+    }
 }
