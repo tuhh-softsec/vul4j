@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.thinkaurelius.titan.core.TitanException;
-import net.floodlightcontroller.core.internal.SwitchStorageImpl;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.IDeviceStorage;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 

@@ -1,4 +1,4 @@
-package net.floodlightcontroller.core.internal;
+package net.onrc.onos.ofcontroller.core.internal;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
