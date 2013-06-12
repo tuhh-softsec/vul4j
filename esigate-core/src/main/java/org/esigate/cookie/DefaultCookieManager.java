@@ -15,16 +15,14 @@
 
 package org.esigate.cookie;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.esigate.ConfigurationException;
@@ -36,25 +34,45 @@ import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This cookie manager supports rules for forwarding cookies to the user
+ * browser, ignore and discard cookies, or store cookies in the user session.
+ * 
+ * <p>
+ * When cookies are not forwarded or discarded, a the user session is used to
+ * store these cookies : in that case Esigate is no longer stateful. For public
+ * deployment is is recommended to use cookie forwarding and discarding to
+ * prevent session creation.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class DefaultCookieManager implements CookieManager {
 	private static final Logger LOG = LoggerFactory.getLogger(CookieManager.class);
 	private static final String COOKIES_LIST_SESSION_KEY = CookieManager.class.getName() + "#cookies";
 	protected Collection<String> discardCookies;
 	protected Collection<String> forwardCookies;
 
+	/**
+	 * Init cookie manager. Reads parameters <b>discardCookies</b> and
+	 * <b>forwardCookies</b>.
+	 */
 	@Override
 	public void init(Driver d, Properties properties) {
 		// Cookies to forward
-		forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
+		this.forwardCookies = Parameters.FORWARD_COOKIES.getValueList(properties);
 		// Cookies to discard
-		discardCookies = Parameters.DISCARD_COOKIES.getValueList(properties);
-		if (forwardCookies.contains("*") && forwardCookies.size() > 1) {
+		this.discardCookies = Parameters.DISCARD_COOKIES.getValueList(properties);
+
+		// Verify configuration
+		if (this.forwardCookies.contains("*") && this.forwardCookies.size() > 1) {
 			throw new ConfigurationException("forwardCookies must be a list of cookie names OR *");
 		}
-		if (discardCookies.contains("*") && discardCookies.size() > 1) {
+		if (this.discardCookies.contains("*") && this.discardCookies.size() > 1) {
 			throw new ConfigurationException("discardCookies must be a list of cookie names OR *");
 		}
-		if (forwardCookies.contains("*") && discardCookies.contains("*")) {
+		if (this.forwardCookies.contains("*") && this.discardCookies.contains("*")) {
 			throw new ConfigurationException("cannot use * for forwardCookies AND discardCookies at the same time");
 		}
 	}
@@ -66,43 +84,56 @@ public class DefaultCookieManager implements CookieManager {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> discarding");
 			}
+			
+			// Ignore cookie
 		} else if (forwardCookies.contains(name) || forwardCookies.contains("*")) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> forwarding");
 			}
+			
+			// Forward cookie in response.
 			HttpRequestHelper.getMediator(originalRequest).addCookie(rewriteForBrowser(cookie, originalRequest));
 		} else {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Cookie " + toString(cookie) + " -> storing to context");
 			}
+			
+			// Store cookie in session
 			UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
-			@SuppressWarnings("unchecked")
-			List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
+
+			BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 			if (cookies == null)
-				cookies = new ArrayList<Cookie>();
-			cookies.add(cookie);
-			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, (Serializable) cookies);
+				cookies = new BasicCookieStore();
+			cookies.addCookie(cookie);
+
+			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, cookies);
 		}
 	}
 
 	@Override
 	public List<Cookie> getCookies(HttpRequest originalRequest) {
-		List<Cookie> cookies = new ArrayList<Cookie>();
+		BasicCookieStore cookies = new BasicCookieStore();
 		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
-		@SuppressWarnings("unchecked")
-		List<Cookie> sessionCookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
-		if (sessionCookies != null)
-			cookies.addAll(sessionCookies);
+
+		// Read cookies from session
+		BasicCookieStore sessionCookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
+		if (sessionCookies != null) {
+			for (Cookie c : sessionCookies.getCookies()) {
+				cookies.addCookie(c);
+			}
+		}
+		
+		// Read cookie from request
 		Cookie[] requestCookies = HttpRequestHelper.getMediator(originalRequest).getCookies();
 		if (requestCookies != null) {
 			for (Cookie cookie : requestCookies) {
 				String name = cookie.getName();
 				if (forwardCookies.contains(name) || (forwardCookies.contains("*") && !discardCookies.contains(name))) {
-					cookies.add(rewriteForServer(cookie, originalRequest));
+					cookies.addCookie(rewriteForServer(cookie, originalRequest));
 				}
 			}
 		}
-		return cookies;
+		return cookies.getCookies();
 	}
 
 	private static Cookie rewriteForServer(Cookie cookie, HttpRequest originalRequest) {
@@ -159,7 +190,8 @@ public class DefaultCookieManager implements CookieManager {
 		}
 
 		// Rewrite domain
-		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(), UriUtils.extractHostName(originalRequest.getRequestLine().getUri()));
+		String domain = rewriteDomain(cookie.getDomain(), HttpRequestHelper.getBaseUrl(originalRequest).getHost(),
+				UriUtils.extractHostName(originalRequest.getRequestLine().getUri()));
 
 		// Rewrite path
 		String originalPath = cookie.getPath();
@@ -219,32 +251,23 @@ public class DefaultCookieManager implements CookieManager {
 
 	@Override
 	public boolean clearExpired(Date date, HttpRequest originalRequest) {
-		if (date == null)
-			return false;
 		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
-		@SuppressWarnings("unchecked")
-		List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
+		BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
+
 		if (cookies != null) {
-			boolean removed = false;
-			for (Iterator<Cookie> it = cookies.iterator(); it.hasNext();) {
-				if (it.next().isExpired(date)) {
-					it.remove();
-					removed = true;
-				}
-			}
-			return removed;
+			return cookies.clearExpired(date);
 		}
+
 		return false;
 	}
 
 	@Override
 	public void clear(HttpRequest originalRequest) {
 		UserContext userContext = HttpRequestHelper.getUserContext(originalRequest);
-		@SuppressWarnings("unchecked")
-		List<Cookie> cookies = (List<Cookie>) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
+		BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 		if (cookies != null) {
 			cookies.clear();
-			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, (Serializable) cookies);
+			userContext.setAttribute(COOKIES_LIST_SESSION_KEY, cookies);
 		}
 	}
 
