@@ -21,6 +21,8 @@ import net.floodlightcontroller.core.module.ModuleLoaderResource;
 import net.floodlightcontroller.linkdiscovery.web.TopoLinksResource;
 import net.floodlightcontroller.devicemanager.web.TopoDevicesResource;
 import net.floodlightcontroller.restserver.RestletRoutable;
+import net.onrc.onos.ofcontroller.core.web.ClearFlowTableResource;
+import net.onrc.onos.ofcontroller.core.web.TopoSwitchesResource;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
