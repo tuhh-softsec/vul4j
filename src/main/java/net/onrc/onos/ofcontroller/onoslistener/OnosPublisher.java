@@ -1,4 +1,4 @@
-package net.floodlightcontroller.onoslistener;
+package net.onrc.onos.ofcontroller.onoslistener;
 
 import java.util.ArrayList;
 import java.util.Collection;
