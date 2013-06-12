@@ -9,6 +9,5 @@ import java.util.Map;
  */
 public interface Validator
 {
-    public void validate(Object object) throws ValidationException;
-    public Map<String, Integer> getWarnings();
+    public Map<String, Integer> validate(Object object) throws ValidationException;
 }

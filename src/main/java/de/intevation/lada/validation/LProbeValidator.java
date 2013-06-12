@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -24,18 +25,13 @@ import de.intevation.lada.model.LProbe;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Named("lprobevalidator")
+@ApplicationScoped
 public class LProbeValidator
 implements Validator
 {
-
     /**
-     * Warnings found while validating the LProbe
+     * The repositories used in this validator.
      */
-    private Map<String, Integer> warnings;
-
-    @Inject
-    private EntityManager em;
-
     @Inject
     private LProbeRepository probeRepository;
     @Inject
@@ -47,9 +43,9 @@ implements Validator
      * @param probe The LProbe object.
      */
     @Override
-    public void validate(Object probe)
+    public Map<String, Integer> validate(Object probe)
     throws ValidationException {
-        warnings = new HashMap<String, Integer>();
+        Map<String, Integer>warnings = new HashMap<String, Integer>();
         if (!(probe instanceof LProbe)) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 610);
@@ -57,16 +53,17 @@ implements Validator
         }
         LProbe p = (LProbe)probe;
 
-        validateHauptProbenNummer(p);
-        validateEntnahmeOrt(p);
-        validateProbenahmeBegin(p);
-        validateUWB(p);
+        validateEntnahmeOrt(p, warnings);
+        validateProbenahmeBegin(p, warnings);
+        validateUWB(p, warnings);
+        validateHauptProbenNummer(p, warnings);
+        return warnings;
     }
 
-    private void validateHauptProbenNummer(LProbe p)
+    private void validateHauptProbenNummer(LProbe p, Map<String, Integer> warnings)
     throws ValidationException {
         String hpn = p.getHauptprobenNr();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaBuilder cb = probeRepository.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
         Root<LProbe> member = criteria.from(LProbe.class);
         Predicate mstId = cb.equal(member.get("mstId"), p.getMstId());
@@ -77,14 +74,14 @@ implements Validator
         if (!proben.isEmpty()) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("hauptprobenNr", 611);
-            throw new ValidationException(errors);
+            throw new ValidationException(errors, warnings);
         }
     }
 
-    private void validateEntnahmeOrt(LProbe probe) {
+    private void validateEntnahmeOrt(LProbe probe, Map<String, Integer> warnings) {
         String pid = probe.getProbeId();
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaBuilder cb = ortRepository.getCriteriaBuilder();
         CriteriaQuery<LOrt> criteria = cb.createQuery(LOrt.class);
         Root<LOrt> member = criteria.from(LOrt.class);
         Predicate probeId = cb.equal(member.get("probeId"), pid);
@@ -92,34 +89,24 @@ implements Validator
 
         List<LOrt> orte = ortRepository.filter(criteria);
         if(orte.isEmpty()) {
-            this.warnings.put("entnahmeOrt", 631);
+            warnings.put("entnahmeOrt", 631);
         }
     }
 
-    private void validateProbenahmeBegin(LProbe probe) {
+    private void validateProbenahmeBegin(LProbe probe, Map<String, Integer> warnings) {
         Date begin = probe.getProbeentnahmeBeginn();
         if (begin == null) {
-            this.warnings.put("probeentnahmeBegin", 631);
+            warnings.put("probeentnahmeBegin", 631);
         }
         else if (begin.after(new Date())){
-            this.warnings.put("probeentnahmeBegin", 661);
+            warnings.put("probeentnahmeBegin", 661);
         }
     }
 
-    private void validateUWB(LProbe probe) {
+    private void validateUWB(LProbe probe, Map<String, Integer> warnings) {
         String uwb = probe.getUmwId();
         if (uwb == null || uwb.equals("")) {
-            this.warnings.put("uwb", 631);
+            warnings.put("uwb", 631);
         }
-    }
-
-    /**
-     * Getter for warnings occurred while validating the LProbe.
-     *
-     * @return Map of field - warning code pairs.
-     */
-    @Override
-    public Map<String, Integer> getWarnings() {
-        return warnings;
     }
 }

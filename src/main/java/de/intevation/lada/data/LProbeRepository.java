@@ -2,6 +2,7 @@ package de.intevation.lada.data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,7 +19,6 @@ import javax.persistence.criteria.Root;
 import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.rest.Response;
-import de.intevation.lada.validation.LProbeValidator;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
@@ -43,6 +43,9 @@ public class LProbeRepository extends Repository{
     @Inject
     private LProbeManager manager;
 
+    @Inject
+    @Named("lprobevalidator")
+    private Validator validator;
     /**
      * Filter for LProbe objects used for calls from a service.
      *
@@ -105,12 +108,11 @@ public class LProbeRepository extends Repository{
      */
     public Response create(LProbe probe) {
         Response response = new Response(true, 200, probe);
-        Validator validator = new LProbeValidator();
         // Try to save the new LProbe.
         try {
-            validator.validate(probe);
+            Map<String, Integer> warnings = validator.validate(probe);
             manager.create(probe);
-            response.setWarnings(validator.getWarnings());
+            response.setWarnings(warnings);
             return response;
         }
         catch (EntityExistsException eee) {
@@ -129,7 +131,7 @@ public class LProbeRepository extends Repository{
             response.setSuccess(false);
             response.setMessage(604);
             response.setErrors(ve.getErrors());
-            response.setWarnings(validator.getWarnings());
+            response.setWarnings(ve.getWarnings());
         }
         catch (EJBTransactionRolledbackException te) {
             response.setSuccess(false);
@@ -140,12 +142,11 @@ public class LProbeRepository extends Repository{
 
     public Response update(LProbe probe) {
         Response response = new Response(true, 200, probe);
-        Validator validator = new LProbeValidator();
         // Try to save the new LProbe.
         try {
-            validator.validate(probe);
+            Map<String, Integer> warnings = validator.validate(probe);
             manager.update(probe);
-            response.setWarnings(validator.getWarnings());
+            response.setWarnings(warnings);
             return response;
         }
         catch (EntityExistsException eee) {
@@ -164,7 +165,7 @@ public class LProbeRepository extends Repository{
             response.setSuccess(false);
             response.setMessage(604);
             response.setErrors(ve.getErrors());
-            response.setWarnings(validator.getWarnings());
+            response.setWarnings(ve.getWarnings());
         }
         catch (EJBTransactionRolledbackException te) {
             response.setSuccess(false);
