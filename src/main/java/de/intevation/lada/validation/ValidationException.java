@@ -1,5 +1,6 @@
 package de.intevation.lada.validation;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,6 +17,11 @@ extends Exception
     private Map<String, Integer> errors;
 
     /**
+     * Warnings saved in this exception.
+     */
+    private Map<String, Integer> warnings;
+
+    /**
      * Do not allow an empty ValidationException object. 
      */
     private ValidationException() {
@@ -29,6 +35,21 @@ extends Exception
     public ValidationException(Map<String, Integer> errors) {
         this();
         this.errors = errors;
+        this.warnings = new HashMap<String, Integer>();
+    }
+
+    /**
+     * Create a new instance with errors and warnings.
+     *
+     * @param errors
+     */
+    public ValidationException(
+        Map<String, Integer> errors,
+        Map<String, Integer> warnings
+    ) {
+        this();
+        this.errors = errors;
+        this.warnings = warnings;
     }
 
     /**
@@ -38,5 +59,14 @@ extends Exception
      */
     public Map<String, Integer> getErrors() {
         return errors;
+    }
+
+    /**
+     * Getter for the warnings.
+     *
+     * @return
+     */
+    public Map<String, Integer> getWarnings() {
+        return warnings;
     }
 }
