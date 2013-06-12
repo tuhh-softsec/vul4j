@@ -31,6 +31,8 @@ public class Response implements java.io.Serializable {
         this.success = success;
         this.message = Integer.toString(code);
         this.data = data;
+        this.errors = new HashMap<String, String>();
+        this.warnings = new HashMap<String, String>();
     }
 
     public Boolean getSuccess() {
