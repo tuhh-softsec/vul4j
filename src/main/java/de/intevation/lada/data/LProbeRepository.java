@@ -47,7 +47,7 @@ public class LProbeRepository extends Repository{
     private LProbeManager manager;
 
     /**
-     * Filter for LProbe objects.
+     * Filter for LProbe objects used for calls from a service.
      *
      * @param mstId mst_id
      * @param uwbId umw_id
@@ -86,8 +86,18 @@ public class LProbeRepository extends Repository{
             Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
             criteria.where(beg);
         }
-        List<LProbe> result = em.createQuery(criteria).getResultList();
+        List<LProbe> result = filter(criteria);
         return new Response(true, 200, result);
+    }
+
+    /**
+     * Filter LProbe object list by the given criteria.
+     *
+     * @param criteria
+     * @return List of LProbe objects.
+     */
+    public List<LProbe> filter(CriteriaQuery<LProbe> criteria) {
+        return em.createQuery(criteria).getResultList();
     }
 
     /**
