@@ -3,11 +3,11 @@ package net.onrc.onos.ofcontroller.flowcache;
 import java.util.ArrayList;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.util.CallerId;
-import net.floodlightcontroller.util.DataPathEndpoints;
-import net.floodlightcontroller.util.FlowId;
-import net.floodlightcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.util.CallerId;
+import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
+import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.FlowPath;
 
 /**
  * @short Interface for providing Flow Service to other modules.

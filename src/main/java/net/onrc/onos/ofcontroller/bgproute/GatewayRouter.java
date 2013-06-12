@@ -1,8 +1,8 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
-import net.floodlightcontroller.util.IPv4;
 import net.floodlightcontroller.util.MACAddress;
-import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.ofcontroller.util.IPv4;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 public class GatewayRouter {
 	private SwitchPort attachmentPoint;

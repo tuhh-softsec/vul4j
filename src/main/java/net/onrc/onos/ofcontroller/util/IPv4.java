@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import net.floodlightcontroller.util.serializers.IPv4Deserializer;
 import net.floodlightcontroller.util.serializers.IPv4Serializer;

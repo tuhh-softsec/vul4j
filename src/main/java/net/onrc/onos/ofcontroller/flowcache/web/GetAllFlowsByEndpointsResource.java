@@ -2,12 +2,12 @@ package net.onrc.onos.ofcontroller.flowcache.web;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.util.DataPathEndpoints;
-import net.floodlightcontroller.util.Dpid;
-import net.floodlightcontroller.util.FlowPath;
-import net.floodlightcontroller.util.Port;
-import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.util.DataPathEndpoints;
+import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.SwitchPort;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

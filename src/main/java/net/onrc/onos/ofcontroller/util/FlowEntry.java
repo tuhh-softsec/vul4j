@@ -1,18 +1,15 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.util.Dpid;
-import net.floodlightcontroller.util.FlowEntryAction;
-import net.floodlightcontroller.util.FlowEntryErrorState;
-import net.floodlightcontroller.util.FlowEntryId;
-import net.floodlightcontroller.util.FlowEntryMatch;
-import net.floodlightcontroller.util.FlowEntrySwitchState;
-import net.floodlightcontroller.util.FlowEntryUserState;
-import net.floodlightcontroller.util.Port;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.floodlightcontroller.util.IPv4;
+import net.onrc.onos.ofcontroller.util.FlowEntryAction;
+import net.onrc.onos.ofcontroller.util.FlowEntryErrorState;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
+import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
+import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;

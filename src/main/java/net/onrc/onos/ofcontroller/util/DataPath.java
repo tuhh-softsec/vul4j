@@ -1,9 +1,7 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.util.SwitchPort;
-import net.floodlightcontroller.util.FlowEntry;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

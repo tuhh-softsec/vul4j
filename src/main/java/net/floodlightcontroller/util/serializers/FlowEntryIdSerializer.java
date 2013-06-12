@@ -7,7 +7,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.floodlightcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 /**
  * Serialize a Flow Entry ID as a hexadecimal string.

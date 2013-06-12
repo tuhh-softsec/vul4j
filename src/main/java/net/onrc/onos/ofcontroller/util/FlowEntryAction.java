@@ -1,8 +1,7 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
-import net.floodlightcontroller.util.IPv4;
 import net.floodlightcontroller.util.MACAddress;
-import net.floodlightcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.Port.PortValues;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

@@ -7,7 +7,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.floodlightcontroller.util.IPv6Net;
+import net.onrc.onos.ofcontroller.util.IPv6Net;
 
 /**
  * Serialize an IPv6Net address as a string.

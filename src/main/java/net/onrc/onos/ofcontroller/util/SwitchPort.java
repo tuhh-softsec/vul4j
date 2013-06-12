@@ -1,7 +1,6 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
-import net.floodlightcontroller.util.Dpid;
-import net.floodlightcontroller.util.Port;
+import net.onrc.onos.ofcontroller.util.Port;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

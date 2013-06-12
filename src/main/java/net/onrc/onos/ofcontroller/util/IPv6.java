@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import org.openflow.util.HexString;
 import net.floodlightcontroller.util.serializers.IPv6Deserializer;

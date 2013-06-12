@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 /**
  * The Flow Entry state as set by the controller.

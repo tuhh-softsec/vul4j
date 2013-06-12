@@ -7,7 +7,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.floodlightcontroller.util.IPv4Net;
+import net.onrc.onos.ofcontroller.util.IPv4Net;
 
 /**
  * Serialize an IPv4Net address as a string.

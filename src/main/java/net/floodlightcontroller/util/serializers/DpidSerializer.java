@@ -7,7 +7,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.floodlightcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.Dpid;
 
 /**
  * Serialize a DPID as a string.

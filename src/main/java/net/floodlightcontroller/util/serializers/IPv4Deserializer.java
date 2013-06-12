@@ -10,7 +10,7 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.floodlightcontroller.util.IPv4;
+import net.onrc.onos.ofcontroller.util.IPv4;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

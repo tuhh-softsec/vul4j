@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

@@ -1,26 +1,26 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
-import net.floodlightcontroller.util.IPv4;
-import net.floodlightcontroller.util.serializers.IPv4NetDeserializer;
-import net.floodlightcontroller.util.serializers.IPv4NetSerializer;
+import net.floodlightcontroller.util.serializers.IPv6NetDeserializer;
+import net.floodlightcontroller.util.serializers.IPv6NetSerializer;
+import net.onrc.onos.ofcontroller.util.IPv6;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * The class representing an IPv4 network address.
+ * The class representing an IPv6 network address.
  */
-@JsonDeserialize(using=IPv4NetDeserializer.class)
-@JsonSerialize(using=IPv4NetSerializer.class)
-public class IPv4Net {
-    private IPv4 address;		// The IPv4 address
+@JsonDeserialize(using=IPv6NetDeserializer.class)
+@JsonSerialize(using=IPv6NetSerializer.class)
+public class IPv6Net {
+    private IPv6 address;		// The IPv6 address
     private short prefixLen;		// The prefix length
 
     /**
      * Default constructor.
      */
-    public IPv4Net() {
+    public IPv6Net() {
 	this.prefixLen = 0;
     }
 
@@ -30,7 +30,7 @@ public class IPv4Net {
      * @param address the address to use.
      * @param prefixLen the prefix length to use.
      */
-    public IPv4Net(IPv4 address, short prefixLen) {
+    public IPv6Net(IPv6 address, short prefixLen) {
 	this.address = address;
 	this.prefixLen = prefixLen;
     }
@@ -40,41 +40,41 @@ public class IPv4Net {
      *
      * @param value the value to use.
      */
-    public IPv4Net(String value) {
+    public IPv6Net(String value) {
 	String[] splits = value.split("/");
 	if (splits.length != 2) {
-	    throw new IllegalArgumentException("Specified IPv4Net address must contain an IPv4 " +
+	    throw new IllegalArgumentException("Specified IPv6Net address must contain an IPv6 " +
 					       "address and a prefix length separated by '/'");
 	}
-	this.address = new IPv4(splits[0]);
+	this.address = new IPv6(splits[0]);
 	this.prefixLen = Short.decode(splits[1]);
     }
 
     /**
-     * Get the address value of the IPv4Net address.
+     * Get the address value of the IPv6Net address.
      *
-     * @return the address value of the IPv4Net address.
+     * @return the address value of the IPv6Net address.
      */
-    public IPv4 address() { return address; }
+    public IPv6 address() { return address; }
 
     /**
-     * Set the address value of the IPv4Net address.
+     * Set the address value of the IPv6Net address.
      *
      * @param address the address to use.
      */
-    public void setAddress(IPv4 address) {
+    public void setAddress(IPv6 address) {
 	this.address = address;
     }
 
     /**
-     * Get the prefix length value of the IPv4Net address.
+     * Get the prefix length value of the IPv6Net address.
      *
-     * @return the prefix length value of the IPv4Net address.
+     * @return the prefix length value of the IPv6Net address.
      */
     public short prefixLen() { return prefixLen; }
 
     /**
-     * Set the prefix length value of the IPv4Net address.
+     * Set the prefix length value of the IPv6Net address.
      *
      * @param prefixLen the prefix length to use.
      */
@@ -83,20 +83,20 @@ public class IPv4Net {
     }
 
     /**
-     * Set the value of the IPv4Net address.
+     * Set the value of the IPv6Net address.
      *
      * @param address the address to use.
      * @param prefixLen the prefix length to use.
      */
-    public void setValue(IPv4 address, short prefixLen) {
+    public void setValue(IPv6 address, short prefixLen) {
 	this.address = address;
 	this.prefixLen = prefixLen;
     }
 
     /**
-     * Convert the IPv4Net value to an "address/prefixLen" string.
+     * Convert the IPv6Net value to an "address/prefixLen" string.
      *
-     * @return the IPv4Net value as an "address/prefixLen" string.
+     * @return the IPv6Net value as an "address/prefixLen" string.
      */
     @Override
     public String toString() {

@@ -1,26 +1,26 @@
-package net.floodlightcontroller.util;
+package net.onrc.onos.ofcontroller.util;
 
 import java.math.BigInteger;
 
-import net.floodlightcontroller.util.serializers.FlowIdDeserializer;
-import net.floodlightcontroller.util.serializers.FlowIdSerializer;
+import net.floodlightcontroller.util.serializers.FlowEntryIdDeserializer;
+import net.floodlightcontroller.util.serializers.FlowEntryIdSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * The class representing a Flow ID.
+ * The class representing a Flow Entry ID.
  */
-@JsonDeserialize(using=FlowIdDeserializer.class)
-@JsonSerialize(using=FlowIdSerializer.class)
-public class FlowId {
+@JsonDeserialize(using=FlowEntryIdDeserializer.class)
+@JsonSerialize(using=FlowEntryIdSerializer.class)
+public class FlowEntryId {
     private long value;
 
     /**
      * Default constructor.
      */
-    public FlowId() {
+    public FlowEntryId() {
 	this.value = 0;
     }
 
@@ -29,7 +29,7 @@ public class FlowId {
      *
      * @param value the value to use.
      */
-    public FlowId(long value) {
+    public FlowEntryId(long value) {
 	this.value = value;
     }
 
@@ -38,7 +38,7 @@ public class FlowId {
      *
      * @param value the value to use.
      */
-    public FlowId(String value) {
+    public FlowEntryId(String value) {
 	//
 	// Use the help of BigInteger to parse strings representing
 	// large unsigned hex long values.
@@ -53,14 +53,14 @@ public class FlowId {
     }
 
     /**
-     * Get the value of the Flow ID.
+     * Get the value of the Flow Entry ID.
      *
-     * @return the value of the Flow ID.
+     * @return the value of the Flow Entry ID.
      */
     public long value() { return value; }
 
     /**
-     * Set the value of the Flow ID.
+     * Set the value of the Flow Entry ID.
      *
      * @param value the value to set.
      */
@@ -69,9 +69,9 @@ public class FlowId {
     }
 
     /**
-     * Convert the Flow ID value to a hexadecimal string.
+     * Convert the Flow Entry ID value to a hexadecimal string.
      *
-     * @return the Flow ID value to a hexadecimal string.
+     * @return the Flow Entry ID value to a hexadecimal string.
      */
     @Override
     public String toString() {

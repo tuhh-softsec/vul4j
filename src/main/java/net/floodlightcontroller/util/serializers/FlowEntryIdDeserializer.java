@@ -10,7 +10,7 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.floodlightcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
