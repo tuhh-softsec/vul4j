@@ -36,8 +36,7 @@ import org.apache.http.protocol.HttpContext;
 import org.esigate.test.conn.IResponseHandler;
 
 /**
- * @deprecated 
- * @see org.esigate.test.conn.MockConnectionManager
+ * @deprecated Use {@link org.esigate.test.conn.MockConnectionManager} instead
  *
  */
 public class MockConnectionManager implements HttpClientConnectionManager {
