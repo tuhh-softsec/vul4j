@@ -1,4 +1,4 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
 import net.floodlightcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
@@ -9,12 +9,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MeasurementClearAllPathsFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(MeasurementClearAllPathsFlowResource.class);
+public class MeasurementGetPerFlowInstallTimeFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementGetPerFlowInstallTimeFlowResource.class);
 
     @Get("json")
-    public Boolean retrieve() {
-	Boolean result = false;
+    public String retrieve() {
+	String result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -22,14 +22,16 @@ public class MeasurementClearAllPathsFlowResource extends ServerResource {
 
         if (flowService == null) {
 	    log.debug("ONOS Flow Service not found");
-            return result;
+	    return result;
 	}
 
 	// Extract the arguments
-	log.debug("Measurement Clear All Paths");
 
 	// Process the request
-	result = flowService.measurementClearAllPaths();
+	result = flowService.measurementGetPerFlowInstallTime();
+
+	log.debug("Measurement Get Install Paths Time (nsec): " + result);
+
 	return result;
     }
 }

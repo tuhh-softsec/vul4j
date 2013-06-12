@@ -1,4 +1,4 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
 import net.floodlightcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
@@ -9,8 +9,8 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeleteFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);
+public class MeasurementClearAllPathsFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementClearAllPathsFlowResource.class);
 
     @Get("json")
     public Boolean retrieve() {
@@ -26,17 +26,10 @@ public class DeleteFlowResource extends ServerResource {
 	}
 
 	// Extract the arguments
-	String flowIdStr = (String) getRequestAttributes().get("flow-id");
+	log.debug("Measurement Clear All Paths");
 
 	// Process the request
-	if (flowIdStr.equals("all")) {
-	    log.debug("Delete All Flows");
-	    result = flowService.deleteAllFlows();
-	} else {
-	    FlowId flowId = new FlowId(flowIdStr);
-	    log.debug("Delete Flow Id: " + flowIdStr);
-	    result = flowService.deleteFlow(flowId);
-	}
+	result = flowService.measurementClearAllPaths();
 	return result;
     }
 }

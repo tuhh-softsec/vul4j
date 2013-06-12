@@ -1,6 +1,7 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
-import net.floodlightcontroller.util.FlowId;
+import java.util.ArrayList;
+
 import net.floodlightcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 
@@ -9,12 +10,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetFlowByIdResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(GetFlowByIdResource.class);
+public class GetAllFlowsResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(GetAllFlowsResource.class);
 
     @Get("json")
-    public FlowPath retrieve() {
-	FlowPath result = null;
+    public ArrayList<FlowPath> retrieve() {
+	ArrayList<FlowPath> result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -26,12 +27,9 @@ public class GetFlowByIdResource extends ServerResource {
 	}
 
 	// Extract the arguments
-	String flowIdStr = (String) getRequestAttributes().get("flow-id");
-	FlowId flowId = new FlowId(flowIdStr);
+	log.debug("Get All Flows Endpoints");
 
-	log.debug("Get Flow Id: " + flowIdStr);
-
-	result = flowService.getFlow(flowId);
+	result = flowService.getAllFlows();
 
         return result;
     }

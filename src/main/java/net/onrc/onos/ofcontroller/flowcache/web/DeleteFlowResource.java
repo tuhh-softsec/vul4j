@@ -1,4 +1,4 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
 import net.floodlightcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
@@ -9,12 +9,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MeasurementGetPerFlowInstallTimeFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(MeasurementGetPerFlowInstallTimeFlowResource.class);
+public class DeleteFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(DeleteFlowResource.class);
 
     @Get("json")
-    public String retrieve() {
-	String result = null;
+    public Boolean retrieve() {
+	Boolean result = false;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -22,16 +22,21 @@ public class MeasurementGetPerFlowInstallTimeFlowResource extends ServerResource
 
         if (flowService == null) {
 	    log.debug("ONOS Flow Service not found");
-	    return result;
+            return result;
 	}
 
 	// Extract the arguments
+	String flowIdStr = (String) getRequestAttributes().get("flow-id");
 
 	// Process the request
-	result = flowService.measurementGetPerFlowInstallTime();
-
-	log.debug("Measurement Get Install Paths Time (nsec): " + result);
-
+	if (flowIdStr.equals("all")) {
+	    log.debug("Delete All Flows");
+	    result = flowService.deleteAllFlows();
+	} else {
+	    FlowId flowId = new FlowId(flowIdStr);
+	    log.debug("Delete Flow Id: " + flowIdStr);
+	    result = flowService.deleteFlow(flowId);
+	}
 	return result;
     }
 }

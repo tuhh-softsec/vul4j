@@ -1,4 +1,4 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
 import java.io.IOException;
 
@@ -15,9 +15,9 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AddFlowResource extends ServerResource {
+public class MeasurementStorePathFlowResource extends ServerResource {
 
-    protected static Logger log = LoggerFactory.getLogger(AddFlowResource.class);
+    protected static Logger log = LoggerFactory.getLogger(MeasurementStorePathFlowResource.class);
 
     @Post("json")
     public FlowId store(String flowJson) {
@@ -39,7 +39,7 @@ public class AddFlowResource extends ServerResource {
 	ObjectMapper mapper = new ObjectMapper();
 	String flowPathStr = flowJson;
 	FlowPath flowPath = null;
-	log.debug("Add Flow Path: " + flowPathStr);
+	log.debug("Measurement Store Flow Path: " + flowPathStr);
 	try {
 	    flowPath = mapper.readValue(flowPathStr, FlowPath.class);
 	} catch (JsonGenerationException e) {
@@ -52,9 +52,12 @@ public class AddFlowResource extends ServerResource {
 
 	// Process the request
 	if (flowPath != null) {
-	    if (flowService.addFlow(flowPath, result, null) != true) {
+	    FlowPath addedFlowPath =
+		flowService.measurementStorePathFlow(flowPath);
+	    if (addedFlowPath == null)
 		result = new FlowId();		// Error: Return empty Flow Id
-	    }
+	    else
+		result = addedFlowPath.flowId();
 	}
 
         return result;

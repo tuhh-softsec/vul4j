@@ -1,4 +1,4 @@
-package net.floodlightcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowcache.web;
 
 import net.floodlightcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
@@ -9,12 +9,12 @@ import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MeasurementGetInstallPathsTimeNsecFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(MeasurementGetInstallPathsTimeNsecFlowResource.class);
+public class MeasurementInstallPathsFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementInstallPathsFlowResource.class);
 
     @Get("json")
-    public Long retrieve() {
-	Long result = null;
+    public Boolean retrieve() {
+	Boolean result = false;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -26,12 +26,12 @@ public class MeasurementGetInstallPathsTimeNsecFlowResource extends ServerResour
 	}
 
 	// Extract the arguments
+	String numThreadsStr = (String) getRequestAttributes().get("num-threads");
+	Integer numThreads = new Integer(numThreadsStr);
+	log.debug("Measurement Install Paths Number of Threads " + numThreadsStr);
 
 	// Process the request
-	result = flowService.measurementGetInstallPathsTimeNsec();
-
-	log.debug("Measurement Get Install Paths Time (nsec): " + result);
-
+	result = flowService.measurementInstallPaths(numThreads);
 	return result;
     }
 }
