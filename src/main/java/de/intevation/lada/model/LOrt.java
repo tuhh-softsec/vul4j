@@ -56,12 +56,12 @@ public class LOrt implements java.io.Serializable {
 		this.POrtId = POrtId;
 	}
 
-	@JoinColumn(name = "ort_id", nullable = false)
-	public Long getOrt() {
+	@Column(name = "ort_id", nullable = false)
+	public Long getOrtId() {
 		return this.ortId;
 	}
 
-	public void setOrt(Long ortId) {
+	public void setOrtId(Long ortId) {
 		this.ortId = ortId;
 	}
 
