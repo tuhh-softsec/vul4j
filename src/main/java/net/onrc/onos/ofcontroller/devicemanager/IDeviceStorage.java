@@ -1,5 +1,6 @@
-package net.floodlightcontroller.devicemanager;
+package net.onrc.onos.ofcontroller.devicemanager;
 
+import net.floodlightcontroller.devicemanager.IDevice;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 
