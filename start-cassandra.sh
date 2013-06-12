@@ -2,7 +2,7 @@
 
 # Set paths
 FL_HOME=`dirname $0`
-CASSANDRA_DIR=${HOME}/apache-cassandra-1.1.4
+CASSANDRA_DIR=${HOME}/apache-cassandra-1.2.4
 LOGDIR=${HOME}/ONOS/onos-logs
 CASSANDRA_LOG=$LOGDIR/cassandara.`hostname`.log
 
