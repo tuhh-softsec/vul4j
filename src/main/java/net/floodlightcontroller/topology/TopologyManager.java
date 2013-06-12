@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import net.floodlightcontroller.core.FloodlightContext;
 import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.IFloodlightProviderService.Role;
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.IOFMessageListener;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.IHAListener;
@@ -40,6 +39,7 @@ import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.routing.Route;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.web.TopologyWebRoutable;
+import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;

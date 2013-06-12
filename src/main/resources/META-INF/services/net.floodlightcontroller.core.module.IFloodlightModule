@@ -17,9 +17,9 @@ net.floodlightcontroller.devicemanager.internal.DefaultEntityClassifier
 net.floodlightcontroller.devicemanager.test.MockDeviceManager
 net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
-net.floodlightcontroller.onoslistener.OnosPublisher
-net.floodlightcontroller.flowcache.FlowManager
-net.floodlightcontroller.routing.TopoRouteService
-net.floodlightcontroller.bgproute.BgpRoute
+net.onrc.onos.ofcontroller.onoslistener.OnosPublisher
+net.onrc.onos.ofcontroller.flowcache.FlowManager
+net.onrc.onos.ofcontroller.routing.TopoRouteService
+net.onrc.onos.ofcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
