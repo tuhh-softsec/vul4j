@@ -1,8 +1,8 @@
 package net.floodlightcontroller.linkdiscovery.web;
 
 import java.util.List;
-import net.floodlightcontroller.linkdiscovery.internal.TopoLinkServiceImpl;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.linkdiscovery.internal.TopoLinkServiceImpl;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
