@@ -46,6 +46,7 @@ public class LProbeRepository extends Repository{
     @Inject
     @Named("lprobevalidator")
     private Validator validator;
+
     /**
      * Filter for LProbe objects used for calls from a service.
      *
