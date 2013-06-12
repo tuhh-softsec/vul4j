@@ -190,6 +190,7 @@ public class HttpClientHelperTest extends TestCase {
 		mockConnectionManager.setResponse(response1);
 		result = executeRequest();
 		assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
+		Thread.sleep(100);
 		// Third request no more error but stale-while-refresh should trigger a
 		// background revalidation and serve the old version.
 		HttpResponse response2 = createMockResponse(200, "2");
@@ -197,7 +198,7 @@ public class HttpClientHelperTest extends TestCase {
 		result = executeRequest();
 		assertTrue("Response should not have been refreshed yet.", compare(response, result));
 		// Wait until revalidation is complete
-		Thread.sleep(1000);
+		Thread.sleep(100);
 		// Fourth request after cache has been updated at last
 		result = executeRequest();
 		assertTrue("Response should have been refreshed.", compare(response2, result));
