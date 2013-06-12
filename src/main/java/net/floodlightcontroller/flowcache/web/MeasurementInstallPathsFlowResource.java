@@ -1,7 +1,7 @@
 package net.floodlightcontroller.flowcache.web;
 
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 
 import org.openflow.util.HexString;
 import org.restlet.resource.Get;

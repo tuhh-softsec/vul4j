@@ -2,8 +2,8 @@ package net.floodlightcontroller.flowcache.web;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

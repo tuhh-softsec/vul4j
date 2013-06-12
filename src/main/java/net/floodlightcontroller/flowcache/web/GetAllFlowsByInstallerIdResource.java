@@ -2,13 +2,13 @@ package net.floodlightcontroller.flowcache.web;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPathEndpoints;
 import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowPath;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

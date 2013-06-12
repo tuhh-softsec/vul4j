@@ -2,9 +2,9 @@ package net.floodlightcontroller.flowcache.web;
 
 import java.io.IOException;
 
-import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
