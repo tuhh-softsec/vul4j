@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
 import de.intevation.lada.rest.Response;
+import de.intevation.lada.validation.LProbeValidator;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
@@ -29,10 +30,6 @@ import de.intevation.lada.validation.Validator;
  */
 @ApplicationScoped
 public class LProbeRepository extends Repository{
-
-    @Inject
-    @Named("lprobevalidator")
-    private Validator validator;
 
     /**
      * The entitymanager managing the data.
@@ -108,6 +105,7 @@ public class LProbeRepository extends Repository{
      */
     public Response create(LProbe probe) {
         Response response = new Response(true, 200, probe);
+        Validator validator = new LProbeValidator();
         // Try to save the new LProbe.
         try {
             validator.validate(probe);
@@ -142,6 +140,7 @@ public class LProbeRepository extends Repository{
 
     public Response update(LProbe probe) {
         Response response = new Response(true, 200, probe);
+        Validator validator = new LProbeValidator();
         // Try to save the new LProbe.
         try {
             validator.validate(probe);
