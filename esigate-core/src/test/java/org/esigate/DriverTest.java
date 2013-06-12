@@ -264,6 +264,15 @@ public class DriverTest extends TestCase {
 		assertEquals("http://www.bar.com/somewhere/", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
 
+	/**
+	 * 0000174: Redirect location with default port specified are incorrectly rewritten when preserveHost=true
+	 * <p>
+	 * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=174
+	 * 
+	 * <p>
+	 * Issue with default ports, which results in invalid url creation.
+	 * @throws Exception
+	 */
 	public void testRewriteRedirectResponseWithDefaultPortSpecifiedInLocation() throws Exception {
 		Properties properties = new Properties();
 		properties.put(Parameters.REMOTE_URL_BASE, "http://www.foo.com:8080");
@@ -285,8 +294,7 @@ public class DriverTest extends TestCase {
 		driver.proxy("/foo", request);
 		// The test initially failed with an invalid Location:
 		// http://www.foo.com:80:80/foo/bar
-		// TODO
-		//assertEquals("http://www.foo.com/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
+		assertEquals("http://www.foo.com/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
 
 	/**
