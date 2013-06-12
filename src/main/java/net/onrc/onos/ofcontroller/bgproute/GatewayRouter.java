@@ -1,4 +1,4 @@
-package net.floodlightcontroller.bgproute;
+package net.onrc.onos.ofcontroller.bgproute;
 
 import net.floodlightcontroller.util.IPv4;
 import net.floodlightcontroller.util.MACAddress;

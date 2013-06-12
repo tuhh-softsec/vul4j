@@ -1,4 +1,4 @@
-package net.floodlightcontroller.bgproute;
+package net.onrc.onos.ofcontroller.bgproute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

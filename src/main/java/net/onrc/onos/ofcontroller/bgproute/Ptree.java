@@ -1,4 +1,4 @@
-package net.floodlightcontroller.bgproute;
+package net.onrc.onos.ofcontroller.bgproute;
 
 public class Ptree {
 	int maxKeyBits;
