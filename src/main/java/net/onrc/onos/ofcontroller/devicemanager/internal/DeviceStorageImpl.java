@@ -1,4 +1,4 @@
-package net.floodlightcontroller.devicemanager.internal;
+package net.onrc.onos.ofcontroller.devicemanager.internal;
 
 import java.util.List;
 import org.openflow.util.HexString;
