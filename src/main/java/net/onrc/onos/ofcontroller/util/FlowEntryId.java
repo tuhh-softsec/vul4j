@@ -2,8 +2,8 @@ package net.onrc.onos.ofcontroller.util;
 
 import java.math.BigInteger;
 
-import net.floodlightcontroller.util.serializers.FlowEntryIdDeserializer;
-import net.floodlightcontroller.util.serializers.FlowEntryIdSerializer;
+import net.onrc.onos.ofcontroller.util.serializers.FlowEntryIdDeserializer;
+import net.onrc.onos.ofcontroller.util.serializers.FlowEntryIdSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;

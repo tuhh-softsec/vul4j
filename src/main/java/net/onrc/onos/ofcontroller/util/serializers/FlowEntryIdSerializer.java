@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 

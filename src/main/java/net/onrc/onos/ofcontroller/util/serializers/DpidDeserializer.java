@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -10,24 +10,24 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.Dpid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deserialize a Flow ID from a string.
+ * Deserialize a DPID from a string.
  */
-public class FlowIdDeserializer extends JsonDeserializer<FlowId> {
+public class DpidDeserializer extends JsonDeserializer<Dpid> {
 
-    protected static Logger log = LoggerFactory.getLogger(FlowIdDeserializer.class);
+    protected static Logger log = LoggerFactory.getLogger(DpidDeserializer.class);
 
     @Override
-    public FlowId deserialize(JsonParser jp,
-			      DeserializationContext ctxt)
+    public Dpid deserialize(JsonParser jp,
+			    DeserializationContext ctxt)
 	throws IOException, JsonProcessingException {
 
-	FlowId flowId = null;
+	Dpid dpid = null;
 
 	jp.nextToken();		// Move to JsonToken.START_OBJECT
 	while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -35,9 +35,9 @@ public class FlowIdDeserializer extends JsonDeserializer<FlowId> {
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
 		log.debug("Fieldname: " + fieldname + " Value: " + value);
-		flowId = new FlowId(value);
+		dpid = new Dpid(value);
 	    }
 	}
-	return flowId;
+	return dpid;
     }
 }

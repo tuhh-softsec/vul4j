@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -7,19 +7,19 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.onrc.onos.ofcontroller.util.IPv6;
+import net.onrc.onos.ofcontroller.util.Dpid;
 
 /**
- * Serialize an IPv6 address as a string.
+ * Serialize a DPID as a string.
  */
-public class IPv6Serializer extends JsonSerializer<IPv6> {
+public class DpidSerializer extends JsonSerializer<Dpid> {
 
     @Override
-    public void serialize(IPv6 ipv6, JsonGenerator jGen,
+    public void serialize(Dpid dpid, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
 	jGen.writeStartObject();
-	jGen.writeStringField("value", ipv6.toString());
+	jGen.writeStringField("value", dpid.toString());
 	jGen.writeEndObject();
     }
 }

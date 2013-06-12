@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -10,24 +10,24 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.util.IPv4;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deserialize a MAC address from a string.
+ * Deserialize an IPv4 address from a string.
  */
-public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
+public class IPv4Deserializer extends JsonDeserializer<IPv4> {
 
-    protected static Logger log = LoggerFactory.getLogger(MACAddressDeserializer.class);
+    protected static Logger log = LoggerFactory.getLogger(IPv4Deserializer.class);
 
     @Override
-    public MACAddress deserialize(JsonParser jp,
-				  DeserializationContext ctxt)
+    public IPv4 deserialize(JsonParser jp,
+			    DeserializationContext ctxt)
 	throws IOException, JsonProcessingException {
 
-	MACAddress mac = null;
+	IPv4 ipv4 = null;
 
 	jp.nextToken();		// Move to JsonToken.START_OBJECT
 	while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -35,9 +35,9 @@ public class MACAddressDeserializer extends JsonDeserializer<MACAddress> {
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
 		log.debug("Fieldname: " + fieldname + " Value: " + value);
-		mac = MACAddress.valueOf(value);
+		ipv4 = new IPv4(value);
 	    }
 	}
-	return mac;
+	return ipv4;
     }
 }

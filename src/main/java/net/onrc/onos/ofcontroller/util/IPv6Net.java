@@ -1,8 +1,8 @@
 package net.onrc.onos.ofcontroller.util;
 
-import net.floodlightcontroller.util.serializers.IPv6NetDeserializer;
-import net.floodlightcontroller.util.serializers.IPv6NetSerializer;
 import net.onrc.onos.ofcontroller.util.IPv6;
+import net.onrc.onos.ofcontroller.util.serializers.IPv6NetDeserializer;
+import net.onrc.onos.ofcontroller.util.serializers.IPv6NetSerializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;

@@ -1,8 +1,9 @@
 package net.onrc.onos.ofcontroller.util;
 
 import org.openflow.util.HexString;
-import net.floodlightcontroller.util.serializers.IPv6Deserializer;
-import net.floodlightcontroller.util.serializers.IPv6Serializer;
+
+import net.onrc.onos.ofcontroller.util.serializers.IPv6Deserializer;
+import net.onrc.onos.ofcontroller.util.serializers.IPv6Serializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;

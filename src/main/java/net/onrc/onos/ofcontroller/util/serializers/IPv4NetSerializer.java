@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -7,19 +7,19 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.onrc.onos.ofcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.util.IPv4Net;
 
 /**
- * Serialize a Flow ID as a hexadecimal string.
+ * Serialize an IPv4Net address as a string.
  */
-public class FlowIdSerializer extends JsonSerializer<FlowId> {
+public class IPv4NetSerializer extends JsonSerializer<IPv4Net> {
 
     @Override
-    public void serialize(FlowId flowId, JsonGenerator jGen,
+    public void serialize(IPv4Net ipv4Net, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
 	jGen.writeStartObject();
-	jGen.writeStringField("value", flowId.toString());
+	jGen.writeStringField("value", ipv4Net.toString());
 	jGen.writeEndObject();
     }
 }

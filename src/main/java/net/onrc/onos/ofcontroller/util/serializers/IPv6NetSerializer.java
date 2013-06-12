@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -7,19 +7,19 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.floodlightcontroller.util.MACAddress;
+import net.onrc.onos.ofcontroller.util.IPv6Net;
 
 /**
- * Serialize a MAC address as a string.
+ * Serialize an IPv6Net address as a string.
  */
-public class MACAddressSerializer extends JsonSerializer<MACAddress> {
+public class IPv6NetSerializer extends JsonSerializer<IPv6Net> {
 
     @Override
-    public void serialize(MACAddress mac, JsonGenerator jGen,
+    public void serialize(IPv6Net ipv6Net, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
 	jGen.writeStartObject();
-	jGen.writeStringField("value", mac.toString());
+	jGen.writeStringField("value", ipv6Net.toString());
 	jGen.writeEndObject();
     }
 }

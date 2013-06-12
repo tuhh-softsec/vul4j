@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -7,19 +7,19 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import net.onrc.onos.ofcontroller.util.Dpid;
+import net.onrc.onos.ofcontroller.util.FlowId;
 
 /**
- * Serialize a DPID as a string.
+ * Serialize a Flow ID as a hexadecimal string.
  */
-public class DpidSerializer extends JsonSerializer<Dpid> {
+public class FlowIdSerializer extends JsonSerializer<FlowId> {
 
     @Override
-    public void serialize(Dpid dpid, JsonGenerator jGen,
+    public void serialize(FlowId flowId, JsonGenerator jGen,
 			  SerializerProvider serializer)
 	throws IOException, JsonProcessingException {
 	jGen.writeStartObject();
-	jGen.writeStringField("value", dpid.toString());
+	jGen.writeStringField("value", flowId.toString());
 	jGen.writeEndObject();
     }
 }

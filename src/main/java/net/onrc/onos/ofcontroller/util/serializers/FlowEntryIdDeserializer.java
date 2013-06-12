@@ -1,4 +1,4 @@
-package net.floodlightcontroller.util.serializers;
+package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
@@ -10,24 +10,24 @@ import org.codehaus.jackson.ObjectCodec;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.DeserializationContext;
 
-import net.onrc.onos.ofcontroller.util.IPv6Net;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Deserialize an IPv6Net address from a string.
+ * Deserialize a Flow Entry ID from a string.
  */
-public class IPv6NetDeserializer extends JsonDeserializer<IPv6Net> {
+public class FlowEntryIdDeserializer extends JsonDeserializer<FlowEntryId> {
 
-    protected static Logger log = LoggerFactory.getLogger(IPv6NetDeserializer.class);
+    protected static Logger log = LoggerFactory.getLogger(FlowEntryIdDeserializer.class);
 
     @Override
-    public IPv6Net deserialize(JsonParser jp,
-			       DeserializationContext ctxt)
+    public FlowEntryId deserialize(JsonParser jp,
+				   DeserializationContext ctxt)
 	throws IOException, JsonProcessingException {
 
-	IPv6Net ipv6Net = null;
+	FlowEntryId flowEntryId = null;
 
 	jp.nextToken();		// Move to JsonToken.START_OBJECT
 	while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -35,9 +35,9 @@ public class IPv6NetDeserializer extends JsonDeserializer<IPv6Net> {
 	    if ("value".equals(fieldname)) {
 		String value = jp.getText();
 		log.debug("Fieldname: " + fieldname + " Value: " + value);
-		ipv6Net = new IPv6Net(value);
+		flowEntryId = new FlowEntryId(value);
 	    }
 	}
-	return ipv6Net;
+	return flowEntryId;
     }
 }
