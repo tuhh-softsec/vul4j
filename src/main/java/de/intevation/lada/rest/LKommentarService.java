@@ -53,7 +53,7 @@ public class LKommentarService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public LKommentarP findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(LKommentarP.class, id);
     }
 
@@ -95,7 +95,7 @@ public class LKommentarService
      */
     @GET
     @Produces("text/json")
-    public List<LKommentarP> filter(@Context UriInfo info) {
+    public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.containsKey("probe")) {
             String probe = params.getFirst("probe");
@@ -108,14 +108,7 @@ public class LKommentarService
 
     @POST
     @Consumes("application/json")
-    public String create(LKommentarP kommentar) {
-        String response = repository.create(kommentar);
-        if (response.isEmpty()) {
-            return "[{success: true}]";
-        }
-        else {
-            return "[{success: false," +
-                " error: " + response + "}]";
-        }
+    public Response create(LKommentarP kommentar) {
+        return repository.create(kommentar);
     }
 }

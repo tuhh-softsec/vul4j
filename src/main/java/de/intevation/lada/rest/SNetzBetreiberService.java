@@ -42,9 +42,8 @@ public class SNetzBetreiberService
      */
     @GET
     @Produces("text/json")
-    public List<SNetzBetreiber> findAll() {
-        List<SNetzBetreiber> result = repository.findAll(SNetzBetreiber.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(SNetzBetreiber.class);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SNetzBetreiberService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public SNetzBetreiber findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(SNetzBetreiber.class, id);
     }
 }

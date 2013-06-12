@@ -12,6 +12,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.inject.Named;
 
+import de.intevation.lada.rest.Response;
+
 /**
  * This generic Container is an interface to request and select Data
  * obejcts from the connected database.
@@ -42,20 +44,13 @@ public class Repository
      * @param clazz The class type.
      * @return List of objects.
      */
-    public <T> List<T> findAll(Class<T> clazz) {
-        this.reset();
+    public <T> Response findAll(Class<T> clazz) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         Root<T> member = criteria.from(clazz);
         criteria.select(member);
-        return em.createQuery(criteria).getResultList();
-    }
-
-    public void reset() {
-        this.setSuccess(true);
-        this.setGeneralError(200);
-        this.setErrors(new HashMap<String, Integer>());
-        this.setWarnings(new HashMap<String, Integer>());
+        List<T> result = em.createQuery(criteria).getResultList();
+        return new Response(true, 200, result);
     }
 
     /**
@@ -65,86 +60,11 @@ public class Repository
      * @param id The object id.
      * @return The requested object of type clazz
      */
-    public <T> T findById(Class<T> clazz, String id) {
-        this.reset();
+    public <T> Response findById(Class<T> clazz, String id) {
         T item = em.find(clazz, id);
         if (item == null) {
-            this.setGeneralError(600);
-            this.setSuccess(false);
+            return new Response(false, 600, null);
         }
-        return item;
-    }
-
-    /**
-     * Getter for the success boolean which indicates whether the request
-     * succeeds.
-     *
-     * @return The true or false.
-     */
-    public boolean getSuccess() {
-        return this.success;
-    }
-
-    /**
-     * Protected setter for the success boolean which indicates whether the
-     * request succeeds.
-     *
-     */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    /**
-     * Getter for the error code returned by the validator.
-     *
-     * @return The error code returned by the validator.
-     */
-    public int getGeneralError() {
-        return generalError;
-    }
-
-    /**
-     * Protected setter for the general error code.
-     *
-     * @param generalError
-     */
-    protected void setGeneralError(int generalError) {
-        this.generalError = generalError;
-    }
-
-    /**
-     * Getter for all errors occured while validating a LProbe object.
-     *
-     * @return Map of field - error code pairs.
-     */
-    public Map<String, Integer> getErrors() {
-        return errors;
-    }
-
-    /**
-     * Protected setter for validation errors.
-     * 
-     * @param errors
-     */
-    protected void setErrors(Map<String, Integer> errors) {
-        this.errors = errors;
-    }
-
-    /**
-     * Getter for all warnings occured while validating a LProbe object.
-     *
-     * @return Map of field - error code pairs.
-     */
-    public Map<String, Integer> getWarnings() {
-        return warnings;
-    }
-
-    /**
-     * Protected setter for validation warnings.
-     *
-     * @param warnings
-     */
-    protected void setWarnings(Map<String, Integer> warnings) {
-        this.warnings = warnings;
+        return new Response(true, 200, item);
     }
 }

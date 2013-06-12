@@ -42,9 +42,8 @@ public class SDatenbasisService
      */
     @GET
     @Produces("text/json")
-    public List<SDatenbasis> findAll() {
-        List<SDatenbasis> result = repository.findAll(SDatenbasis.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(SDatenbasis.class);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SDatenbasisService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public SDatenbasis findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(SDatenbasis.class, id);
     }
 }

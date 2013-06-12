@@ -54,8 +54,7 @@ public class LProbeRepository extends Repository{
      * @param begin probeentnahmebegin
      * @return
      */
-    public List<LProbe> filter(String mstId, String uwbId, Long begin) {
-        this.reset();
+    public Response filter(String mstId, String uwbId, Long begin) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
         Root<LProbe> member = criteria.from(LProbe.class);
@@ -87,7 +86,8 @@ public class LProbeRepository extends Repository{
             Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
             criteria.where(beg);
         }
-        return em.createQuery(criteria).getResultList();
+        List<LProbe> result = em.createQuery(criteria).getResultList();
+        return new Response(true, 200, result);
     }
 
     /**

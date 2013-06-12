@@ -51,11 +51,7 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     public Response findById(@PathParam("id") String id) {
-        LProbe item = repository.findById(LProbe.class, id);
-        Response response = new Response(repository.getSuccess(), repository.getGeneralError(), item);
-        response.setWarnings(repository.getWarnings());
-        response.setErrors(repository.getErrors());
-        return response;
+        return repository.findById(LProbe.class, id);
     }
 
     /**
@@ -75,8 +71,7 @@ public class LProbeService {
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
-            List<LProbe> items = repository.findAll(LProbe.class);
-            return new Response(true, repository.getGeneralError(), items);
+            return repository.findAll(LProbe.class);
         }
         String mstId = "";
         String uwbId = "";
@@ -96,8 +91,7 @@ public class LProbeService {
                 begin = null;
             }
         }
-        List<LProbe> items = repository.filter(mstId, uwbId, begin);
-        return new Response(true, repository.getGeneralError(), items);
+        return repository.filter(mstId, uwbId, begin);
     }
 
     @PUT

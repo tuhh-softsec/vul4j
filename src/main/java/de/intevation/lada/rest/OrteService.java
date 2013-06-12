@@ -42,9 +42,8 @@ public class OrteService
      */
     @GET
     @Produces("text/json")
-    public List<Ort> findAll() {
-        List<Ort> result = repository.findAll(Ort.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(Ort.class);
     }
 
     /**
@@ -56,7 +55,7 @@ public class OrteService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public Ort findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(Ort.class, id);
     }
 }

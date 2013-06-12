@@ -42,9 +42,8 @@ public class SProbenartService
      */
     @GET
     @Produces("text/json")
-    public List<SProbenart> findAll() {
-        List<SProbenart> result = repository.findAll(SProbenart.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(SProbenart.class);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SProbenartService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public SProbenart findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(SProbenart.class, id);
     }
 }

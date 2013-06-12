@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LKommentarPManager;
 import de.intevation.lada.model.LKommentarP;
+import de.intevation.lada.rest.Response;
 
 
 @Named("lkommentarRepository")
@@ -36,32 +37,33 @@ extends Repository
     @Inject
     private Logger logger;
 
-    public List<LKommentarP> filter(String probeId) {
+    public Response filter(String probeId) {
         if (probeId.isEmpty()) {
-            return new ArrayList<LKommentarP>(0);
+            return new Response(false, 600, new ArrayList<LKommentarP>(0));
         }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LKommentarP> criteria = cb.createQuery(LKommentarP.class);
         Root<LKommentarP> member = criteria.from(LKommentarP.class);
         criteria.where(cb.equal(member.get("probeId"), probeId));
 
-        return em.createQuery(criteria).getResultList();
+        List<LKommentarP> result = em.createQuery(criteria).getResultList();
+        return new Response(true, 200, result);
     }
 
-    public String create(LKommentarP kommentar) {
+    public Response create(LKommentarP kommentar) {
         try {
             manager.create(kommentar);
-            return "";
+            return new Response(true, 200, kommentar);
         }
         catch(EntityExistsException eee) {
-            return "Entity already exists.";
+            return new Response(false, 601, kommentar);
         }
         catch(IllegalArgumentException iae) {
-            return "Object is not an entity.";
+            return new Response(false, 602, kommentar);
         }
         catch(TransactionRequiredException tre) {
             logger.log(Level.INFO, "exception: " + tre);
-            return "Transaction failed.";
+            return new Response(false, 603, kommentar);
         }
     }
 }

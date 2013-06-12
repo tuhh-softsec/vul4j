@@ -43,9 +43,8 @@ public class SMessstelleService
      */
     @GET
     @Produces("text/json")
-    public List<SMessStelle> findAll() {
-        List<SMessStelle> result = repository.findAll(SMessStelle.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(SMessStelle.class);
     }
 
     /**
@@ -57,7 +56,7 @@ public class SMessstelleService
     @GET
     @Path("/{id}")
     @Produces("text/json")
-    public SMessStelle findById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(SMessStelle.class, id);
     }
 }

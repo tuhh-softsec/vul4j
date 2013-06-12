@@ -42,9 +42,8 @@ public class SUmweltService {
      */
     @GET
     @Produces("text/json")
-    public List<SUmwelt> findAll() {
-        List<SUmwelt> result = repository.findAll(SUmwelt.class);
-        return result;
+    public Response findAll() {
+        return repository.findAll(SUmwelt.class);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SUmweltService {
     @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces("text/json")
-    public SUmwelt loadById(@PathParam("id") String id) {
+    public Response findById(@PathParam("id") String id) {
         return repository.findById(SUmwelt.class, id);
     }
 }
