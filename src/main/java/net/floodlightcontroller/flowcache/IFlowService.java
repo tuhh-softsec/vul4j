@@ -2,12 +2,12 @@ package net.floodlightcontroller.flowcache;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPathEndpoints;
 import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
 /**
  * @short Interface for providing Flow Service to other modules.

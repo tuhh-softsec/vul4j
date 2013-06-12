@@ -1,7 +1,7 @@
-package net.floodlightcontroller.core;
+package net.onrc.onos.ofcontroller.core;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.flowcache.web.DatapathSummarySerializer;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;

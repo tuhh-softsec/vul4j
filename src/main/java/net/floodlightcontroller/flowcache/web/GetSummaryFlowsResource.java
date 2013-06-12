@@ -2,10 +2,10 @@ package net.floodlightcontroller.flowcache.web;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.flowcache.IFlowService;
 import net.floodlightcontroller.util.FlowId;
 import net.floodlightcontroller.util.FlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

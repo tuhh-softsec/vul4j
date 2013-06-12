@@ -2,12 +2,12 @@ package net.floodlightcontroller.util;
 
 import java.util.ArrayList;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.floodlightcontroller.util.CallerId;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.FlowEntryMatch;
 import net.floodlightcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

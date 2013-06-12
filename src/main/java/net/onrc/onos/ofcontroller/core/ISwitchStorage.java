@@ -1,8 +1,7 @@
-package net.floodlightcontroller.core;
+package net.onrc.onos.ofcontroller.core;
 
 import java.util.Collection;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 
 import org.openflow.protocol.OFPhysicalPort;
 

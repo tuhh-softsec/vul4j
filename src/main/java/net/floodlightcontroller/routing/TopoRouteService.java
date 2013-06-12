@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
@@ -23,6 +20,9 @@ import net.floodlightcontroller.util.Dpid;
 import net.floodlightcontroller.util.FlowEntry;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 

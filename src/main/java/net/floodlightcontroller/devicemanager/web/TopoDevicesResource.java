@@ -2,7 +2,7 @@ package net.floodlightcontroller.devicemanager.web;
 
 import java.util.Iterator;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.util.GraphDBConnection;
 
 import org.restlet.resource.Get;

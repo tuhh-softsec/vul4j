@@ -1,8 +1,8 @@
 package net.onrc.onos.util;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.flow.FlowManagerImpl;
 import net.onrc.onos.flow.IFlowManager;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

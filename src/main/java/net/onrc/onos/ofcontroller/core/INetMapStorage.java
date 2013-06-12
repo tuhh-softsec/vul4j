@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.floodlightcontroller.core;
+package net.onrc.onos.ofcontroller.core;
 
 /**
  * @author pankaj

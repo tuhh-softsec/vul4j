@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.floodlightcontroller.core.IFloodlightProviderService;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
@@ -31,6 +30,7 @@ import net.floodlightcontroller.util.IPv4;
 import net.floodlightcontroller.util.MACAddress;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;

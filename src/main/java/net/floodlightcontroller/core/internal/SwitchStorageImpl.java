@@ -2,9 +2,9 @@ package net.floodlightcontroller.core.internal;
 
 import java.util.Collection;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.GenerateEvent;
 import net.onrc.onos.util.GraphDBConnection.Transaction;

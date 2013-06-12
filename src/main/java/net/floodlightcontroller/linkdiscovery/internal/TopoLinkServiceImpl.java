@@ -3,10 +3,10 @@ package net.floodlightcontroller.linkdiscovery.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl.ExtractLink;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 

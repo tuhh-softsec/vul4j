@@ -1,16 +1,16 @@
-package net.floodlightcontroller.core;
+package net.onrc.onos.ofcontroller.core;
 
 import java.util.List;
 import java.util.Map;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.DataPath;
 import net.floodlightcontroller.util.SwitchPort;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 
 public interface INetMapTopologyService extends INetMapService {
 
