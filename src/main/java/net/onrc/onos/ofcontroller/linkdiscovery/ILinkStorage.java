@@ -1,7 +1,8 @@
-package net.floodlightcontroller.linkdiscovery;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
 import java.util.List;
 
+import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 

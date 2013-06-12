@@ -8,9 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
-import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
 
 import org.junit.After;
 import org.junit.Before;
