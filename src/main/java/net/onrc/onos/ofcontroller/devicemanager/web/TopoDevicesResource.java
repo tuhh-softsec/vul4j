@@ -1,4 +1,4 @@
-package net.floodlightcontroller.devicemanager.web;
+package net.onrc.onos.ofcontroller.devicemanager.web;
 
 import java.util.Iterator;
 
