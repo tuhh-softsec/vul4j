@@ -19,7 +19,7 @@ net.floodlightcontroller.core.test.MockFloodlightProvider
 net.floodlightcontroller.core.test.MockThreadPoolService
 net.onrc.onos.ofcontroller.onoslistener.OnosPublisher
 net.onrc.onos.ofcontroller.flowcache.FlowManager
-net.floodlightcontroller.routing.TopoRouteService
+net.onrc.onos.ofcontroller.routing.TopoRouteService
 net.onrc.onos.ofcontroller.bgproute.BgpRoute
 net.onrc.onos.registry.controller.ZookeeperRegistry
 net.onrc.onos.registry.controller.StandaloneRegistry
