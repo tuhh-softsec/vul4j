@@ -96,7 +96,7 @@ public class GraphDBOperationTest {
 		ISwitchObject sw = op.newSwitch("123");
 		
 		assertEquals("123", sw.getDPID());
-		conn.endTx(Transaction.COMMIT);
+		op.commit();
 
 		vertices = enumerateVertices("switch");
 		assertTrue(vertices.hasNext());
@@ -109,8 +109,8 @@ public class GraphDBOperationTest {
 	@Test
 	public final void testSearchSwitch() {
 		ISwitchObject sw = op.newSwitch("123");
-		conn.endTx(Transaction.COMMIT);
-
+		op.commit();
+		
 		sw = op.searchSwitch("123");
 		
 		assertNotNull(sw);
@@ -126,8 +126,8 @@ public class GraphDBOperationTest {
 		sw.setState(SwitchState.ACTIVE.toString());
 		sw = op.newSwitch("222");
 		sw.setState(SwitchState.INACTIVE.toString());
-		conn.endTx(Transaction.COMMIT);
-
+		op.commit();
+		
 		sw = op.searchActiveSwitch("111");
 		assertNotNull(sw);
 		assertEquals("111", sw.getDPID());
@@ -145,7 +145,7 @@ public class GraphDBOperationTest {
 		sw.setState(SwitchState.ACTIVE.toString());
 		sw = op.newSwitch("222");
 		sw.setState(SwitchState.INACTIVE.toString());
-		conn.endTx(Transaction.COMMIT);
+		op.commit();
 		
 		Iterator<ISwitchObject> i = op.getActiveSwitches().iterator();
 		assertTrue(i.hasNext());
@@ -159,7 +159,7 @@ public class GraphDBOperationTest {
 	@Test
 	public final void testRemoveSwitch() {
 		ISwitchObject sw = op.newSwitch("123");
-		conn.endTx(Transaction.COMMIT);		
+		op.commit();	
 		sw = op.searchSwitch("123");
 		
 		op.removeSwitch(sw);
