@@ -38,5 +38,8 @@ public interface IDBOperation {
 	public Iterable<IFlowEntry> getAllFlowEntries();
 	public void removeFlowEntry(IFlowEntry flowEntry);
 	
-	public IDBConnection getDBConnection();
+	public IDBConnection getDBConnection();	
+	public void commit();
+	public void rollback();
+	public void close();
 }

@@ -271,4 +271,8 @@ public class GraphDBOperation implements IDBOperation {
 	public void rollback() {
 		conn.endTx(Transaction.ROLLBACK);
 	}
+
+	public void close() {
+		conn.close();
+	}
 }
