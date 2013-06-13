@@ -200,31 +200,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-		IPortObject vportSrc, vportDst;
     	List<Link> links = null;
-    	Link lt;
-    	
-		vportSrc = dbop.searchPort(HexString.toHexString(dpid), port);
-		if (vportSrc != null) {
- 			
-			for (Edge e : vportSrc.asVertex().getEdges(Direction.IN)) {
-				if(e.getLabel().equals("link")) {
-					Vertex v = e.getVertex(Direction.OUT);
-					short dst_port = v.getProperty("number");
-					for(Edge e2 : v.getEdges(Direction.IN)) {
-						if(e2.getLabel().equals("on")) {
-							Vertex v2 = e2.getVertex(Direction.OUT);
-							long dst_dpid = HexString.toLong((String) v2.getProperty("dpid"));
-							
-			         		Link lt = new Link(dpid, port, dst_dpid, dst_port);
-			         		links.add(lt);
-						}
-					}
-				}
-			}
-		}
-		// END: Trial code
-		
      	return links;
 	}
 	
@@ -264,20 +240,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(String dpid) {
-		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
-		ISwitchObject vswitch;
 		List<Link> links = new ArrayList<Link>();
-
-		// BEGIN: Trial code
-		// author: Naoki Shiota
-		vswitch = conn.utils().searchSwitch(conn, dpid);
-
-		for(IPortObject vportSrc : vswitch.getPorts()) {
-			// array concatenation may be heavy...
-			List<Link> sublinks = getLinks(HexString.toLong(dpid), vportSrc.getNumber());
-			links.addAll(sublinks);
-		}
-		// END: Trial code
 
 		return links;
 	}

@@ -7,12 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import junit.framework.Assert;
 
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
-import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
@@ -25,7 +21,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflow.protocol.OFPhysicalPort;
-import org.openflow.protocol.OFPhysicalPort.OFPortState;
 import org.openflow.util.HexString;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
