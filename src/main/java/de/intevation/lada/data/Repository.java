@@ -3,13 +3,12 @@ package de.intevation.lada.data;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.inject.Named;
 
 import de.intevation.lada.rest.Response;
 
@@ -19,8 +18,7 @@ import de.intevation.lada.rest.Response;
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Named
-@ApplicationScoped
+@RequestScoped
 public abstract class Repository
 {
     /**

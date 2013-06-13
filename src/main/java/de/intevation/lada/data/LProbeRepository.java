@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBTransactionRolledbackException;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityExistsException;
@@ -29,7 +28,6 @@ import de.intevation.lada.validation.Validator;
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@ApplicationScoped
 @Named("lproberepository")
 public class LProbeRepository extends Repository{
 
