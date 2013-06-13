@@ -34,7 +34,6 @@ public class GraphDBConnection implements IDBConnection {
 	private static GraphDBConnection singleton = new GraphDBConnection();
 	private static TitanGraph graph;
 	private static EventTransactionalGraph<TitanGraph> eg;
-	private static GraphDBOperation utils;
 	private static String configFile;
 
 	/*
