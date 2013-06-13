@@ -31,13 +31,14 @@ import net.floodlightcontroller.util.FlowPath;
 import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.LocalTopologyEventListener;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 public class FlowManagerImpl implements IFlowManager {
 	
 	protected static Logger log = LoggerFactory.getLogger(LocalTopologyEventListener.class);
-	protected static GraphDBConnection conn;
+	protected GraphDBOperation op;
 
 	@Override
 	public void createFlow(IPortObject src_port, IPortObject dest_port) {
@@ -87,8 +88,8 @@ public class FlowManagerImpl implements IFlowManager {
 		Short dst_port = flow.getDstPort();
 		IPortObject src = null;
 		IPortObject dst = null;
-		src = conn.utils().searchPort(conn, src_dpid, src_port);
-		dst = conn.utils().searchPort(conn, dst_dpid, dst_port);
+		src = op.searchPort(src_dpid, src_port);
+		dst = op.searchPort(dst_dpid, dst_port);
 		if (src != null && dst != null) {
 			FlowPath newFlow = this.computeFlowPath(src,dst);
 			installFlow(newFlow);
