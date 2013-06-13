@@ -3,11 +3,11 @@ package net.floodlightcontroller.linkdiscovery.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
@@ -229,7 +229,8 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 	
-	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
+	// FIXME Scope changed to public to allow access from TopoLinkServiceImpl. Move class definition to appropriate place.
+	static public class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
