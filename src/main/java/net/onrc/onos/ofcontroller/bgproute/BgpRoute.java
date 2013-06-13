@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.bgproute;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,18 +24,19 @@ import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.topology.ITopologyListener;
 import net.floodlightcontroller.topology.ITopologyService;
-import net.floodlightcontroller.util.MACAddress;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;
-import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
-import net.onrc.onos.ofcontroller.util.IPv4;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
@@ -61,6 +63,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	protected static Ptree ptree;
 	protected String bgpdRestIp;
 	protected String routerId;
+	protected String gatewaysFilename = "gateways.json";
 	
 	protected Set<InetAddress> routerIpAddresses;
 	
@@ -75,43 +78,27 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	//need to be higher priority than this otherwise the rewrite may not get done
 	protected final short SDNIP_PRIORITY = 10;
 	
-	//TODO temporary
-	protected List<GatewayRouter> gatewayRouters;
+	protected Map<String, GatewayRouter> gatewayRouters;
 	
-	private void initGateways(){
-		gatewayRouters = new ArrayList<GatewayRouter>();
-		//00:00:00:00:00:00:0s0:a3 port 1
-		gatewayRouters.add(
-				new GatewayRouter(new SwitchPort(new Dpid(163L), new Port((short)1)),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x02, 0x01}),
-				new IPv4("192.168.10.1"),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x01}),
-				new IPv4("192.168.10.101")));
-		//00:00:00:00:00:00:00:a5 port 1
-		//gatewayRouters.add(new SwitchPort(new Dpid(165L), new Port((short)1)));
-		gatewayRouters.add(
-				new GatewayRouter(new SwitchPort(new Dpid(165L), new Port((short)1)),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x02, 0x02}),
-				new IPv4("192.168.20.1"),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x02}),
-				new IPv4("192.168.20.101")));
-		//00:00:00:00:00:00:00:a2 port 1
-		//gatewayRouters.add(new SwitchPort(new Dpid(162L), new Port((short)1)));
-		gatewayRouters.add(
-				new GatewayRouter(new SwitchPort(new Dpid(162L), new Port((short)1)),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x03, 0x01}),
-				new IPv4("192.168.30.1"),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x03}),
-				new IPv4("192.168.30.101")));
-		//00:00:00:00:00:00:00:a6
-		//gatewayRouters.add(new SwitchPort(new Dpid(166L), new Port((short)1)));
-		gatewayRouters.add(
-				new GatewayRouter(new SwitchPort(new Dpid(166L), new Port((short)1)),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x04, 0x01}),
-				new IPv4("192.168.40.1"),
-				new MACAddress(new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x04}),
-				new IPv4("192.168.40.101")));
+	private void readGatewaysConfiguration(String gatewaysFilename){
+		File gatewaysFile = new File(gatewaysFilename);
+		ObjectMapper mapper = new ObjectMapper();
 		
+		TypeReference<HashMap<String, GatewayRouter>> typeref 
+			= new TypeReference<HashMap<String, GatewayRouter>>() {};
+		
+		try {
+			gatewayRouters = mapper.readValue(gatewaysFile, typeref);
+		} catch (JsonParseException e) {
+			log.error("Error in JSON file", e);
+			System.exit(1);
+		} catch (JsonMappingException e) {
+			log.error("Error in JSON file", e);
+			System.exit(1);
+		} catch (IOException e) {
+			log.error("Error reading JSON file", e);
+			System.exit(1);
+		}
 	}
 	
 	@Override
@@ -146,8 +133,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	public void init(FloodlightModuleContext context)
 			throws FloodlightModuleException {
 	    
-		initGateways();
-		
 	    ptree = new Ptree(32);
 	    
 	    routerIpAddresses = new HashSet<InetAddress>();
@@ -177,6 +162,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		else {
 			log.info("RouterId set to {}", routerId);
 		}
+		
+		readGatewaysConfiguration(gatewaysFilename);
 		// Test.
 		//test();
 	}
@@ -332,14 +319,8 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 	
 	public void prefixAdded(PtreeNode node) {
 		//Add a flow to rewrite mac for this prefix to all border switches
-		GatewayRouter thisRouter = null;
-		for (GatewayRouter router : gatewayRouters){	
-			if (router.getRouterIp().value() == 
-					InetAddresses.coerceToInteger(node.rib.nextHop)){
-				thisRouter = router;
-				break;
-			}
-		}
+		GatewayRouter thisRouter = gatewayRouters
+				.get(InetAddresses.toAddrString(node.rib.nextHop));
 		
 		if (thisRouter == null){
 			//TODO local router isn't in gateway list so this will get thrown
@@ -349,7 +330,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 			return; //just quit out here? This is probably a configuration error
 		}
 
-		for (GatewayRouter ingressRouter : gatewayRouters){
+		for (GatewayRouter ingressRouter : gatewayRouters.values()){
 			if (ingressRouter == thisRouter) {
 				continue;
 			}
@@ -457,8 +438,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		
 		//have to account for switches not being there, paths not being found.
 		
-		//for (SwitchPort switchPort : gatewayRouters){
-		for (GatewayRouter router : gatewayRouters){
+		for (GatewayRouter router : gatewayRouters.values()){
 			SwitchPort switchPort = router.getAttachmentPoint();
 			
 			IOFSwitch sw = floodlightProvider.getSwitches().get(switchPort.dpid().value());
@@ -483,7 +463,7 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService, ITopologyL
 		//for each prefix received. This will be done later when prefixes have 
 		//actually been received.
 		
-		for (GatewayRouter dstRouter : gatewayRouters){
+		for (GatewayRouter dstRouter : gatewayRouters.values()){
 			SwitchPort routerAttachmentPoint = dstRouter.getAttachmentPoint();
 			for (Map.Entry<IOFSwitch, SwitchPort> src : gatewaySwitches.entrySet()) {
 		

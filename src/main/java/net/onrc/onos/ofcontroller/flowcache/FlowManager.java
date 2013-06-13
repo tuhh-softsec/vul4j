@@ -500,9 +500,9 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		nextFlowEntryIdPrefix = randomGenerator.nextInt();
 		
 		mapReaderScheduler.scheduleAtFixedRate(
-				mapReader, 1, 1, TimeUnit.SECONDS);
+				mapReader, 3, 3, TimeUnit.SECONDS);
 		shortestPathReconcileScheduler.scheduleAtFixedRate(
-				shortestPathReconcile, 100, 100, TimeUnit.MILLISECONDS);
+				shortestPathReconcile, 3, 3, TimeUnit.SECONDS);
     }
 
     /**
