@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LMessungManager;
