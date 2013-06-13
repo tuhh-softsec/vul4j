@@ -41,6 +41,8 @@ import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBOperation;
+import net.onrc.onos.util.IDBConnection;
 import net.onrc.onos.util.LocalTopologyEventListener;
 
 public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
@@ -52,7 +54,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 	protected static Logger log;
 	protected IDeviceService deviceService;
 	protected IControllerRegistryService registryService;
-	protected GraphDBConnection conn;
+	protected GraphDBOperation op;
 	
 	protected static final String DBConfigFile = "dbconf";
 	protected static final String CleanupEnabled = "EnableCleanup";
@@ -76,7 +78,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
             catch (Exception e) {
                 log.error("Error in cleanup thread", e);
             } finally {
-            	conn.close();
+            	op.close();
                     cleanupTask.reschedule(CLEANUP_TASK_INTERVAL,
                                               TimeUnit.SECONDS);
             }
@@ -95,8 +97,8 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
     }
 
     protected void switchCleanup() {
-    	conn.close();
-    	Iterable<ISwitchObject> switches = conn.utils().getActiveSwitches(conn);
+    	op.close();
+    	Iterable<ISwitchObject> switches = op.getActiveSwitches();
     	
     	log.debug("Checking for inactive switches");
     	// For each switch check if a controller exists in controller registry
@@ -119,7 +121,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 				e.printStackTrace();
 			}			
 		}
-    	conn.close();
+    	op.close();
     }
 
 	@Override
@@ -251,7 +253,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
-		conn = GraphDBConnection.getInstance(conf);
+		op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
 		
 		log = LoggerFactory.getLogger(OnosPublisher.class);
 		floodlightProvider =
@@ -285,7 +287,8 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
 		linkDiscovery.addListener(this);
 		
 		log.debug("Adding EventListener");
-		conn.addEventListener(new LocalTopologyEventListener(conn));
+		IDBConnection conn = op.getDBConnection();
+		conn.addEventListener(new LocalTopologyEventListener((GraphDBConnection) conn));
 	       // Setup the Cleanup task. 
 		if (cleanupNeeded == null || !cleanupNeeded.equals("False")) {
 				ScheduledExecutorService ses = threadPool.getScheduledExecutor();
