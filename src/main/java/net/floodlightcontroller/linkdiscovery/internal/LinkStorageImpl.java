@@ -200,7 +200,23 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-    	List<Link> links = null;
+    	List<Link> links = new ArrayList<Link>();
+    	
+    	IPortObject srcPort = dbop.searchPort(HexString.toHexString(dpid), port);
+    	ISwitchObject srcSw = srcPort.getSwitch();
+    	
+    	if(srcSw != null) {
+        	for(IPortObject dstPort : srcPort.getLinkedPorts()) {
+        		ISwitchObject dstSw = dstPort.getSwitch();
+        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
+        				srcPort.getNumber(),
+        				HexString.toLong(dstSw.getDPID()),
+        				dstPort.getNumber());
+    		
+        		links.add(link);
+        	}
+    	}
+    	
      	return links;
 	}
 	
@@ -222,14 +238,11 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public void deleteLinksOnPort(Long dpid, short port) {
-		// BEGIN: Trial code
-		// author: Naoki Shiota
 		List<Link> linksToDelete = getLinks(dpid,port);
 		
 		for(Link l : linksToDelete) {
 			deleteLink(l);
 		}
-		// END: Trial code
 	}
 
 	/**
@@ -242,6 +255,23 @@ public class LinkStorageImpl implements ILinkStorage {
 	public List<Link> getLinks(String dpid) {
 		List<Link> links = new ArrayList<Link>();
 
+		ISwitchObject srcSw = dbop.searchSwitch(dpid);
+		
+		if(srcSw != null) {
+			for(IPortObject srcPort : srcSw.getPorts()) {
+				for(IPortObject dstPort : srcPort.getLinkedPorts()) {
+					ISwitchObject dstSw = dstPort.getSwitch();
+					if(dstSw != null) {
+		        		Link link = new Link(HexString.toLong(srcSw.getDPID()),
+		        				srcPort.getNumber(),
+		        				HexString.toLong(dstSw.getDPID()),
+		        				dstPort.getNumber());
+		        		links.add(link);
+					}
+				}
+			}
+		}
+		
 		return links;
 	}
 

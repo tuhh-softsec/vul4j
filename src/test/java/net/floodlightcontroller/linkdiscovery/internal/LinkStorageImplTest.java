@@ -176,7 +176,7 @@ public class LinkStorageImplTest {
 		
 		//Use the link storage API to add the link
 		linkStorage.update(linkToCreate, ILinkStorage.DM_OPERATION.CREATE);
-		doTestLinkIsInGraph(linkToVerify);
+		doTestLinkExist(linkToVerify);
 
 		// Avoiding duplication is out of scope. DBOperation is responsible for this.
 //		// Add same link
@@ -197,7 +197,7 @@ public class LinkStorageImplTest {
 		
 		//Use the link storage API to add the link
 		linkStorage.update(linkToInsert, ILinkStorage.DM_OPERATION.INSERT);
-		doTestLinkIsInGraph(linkToVerify);
+		doTestLinkExist(linkToVerify);
 	}
 	
 	/**
@@ -210,7 +210,7 @@ public class LinkStorageImplTest {
 
 		// Test deletion of existing link
 		linkStorage.update(linkToDelete, DM_OPERATION.DELETE);
-		doTestLinkIsNotInGraph(linkToVerify);
+		doTestLinkNotExist(linkToVerify);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class LinkStorageImplTest {
 		// Test creation of new links
 		linkStorage.update(linksToCreate, ILinkStorage.DM_OPERATION.CREATE);
 		for(Link l : linksToVerify) {
-			doTestLinkIsInGraph(l);
+			doTestLinkExist(l);
 		}
 	
 		// Out of scope: DBOperation is responsible for avoiding duplication.
@@ -248,8 +248,8 @@ public class LinkStorageImplTest {
 		
 		// Test creation of mixture of new/existing links
 		linkStorage.update(linksToCreate, ILinkStorage.DM_OPERATION.CREATE);
-		doTestLinkIsInGraph(createFeasibleLink());
-		doTestLinkIsInGraph(createExistingLink());
+		doTestLinkExist(createFeasibleLink());
+		doTestLinkExist(createExistingLink());
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class LinkStorageImplTest {
 		// Test insertion of new links
 		linkStorage.update(linksToInsert, ILinkStorage.DM_OPERATION.INSERT);
 		for(Link l : linksToVerify) {
-			doTestLinkIsInGraph(l);
+			doTestLinkExist(l);
 		}
 	}
 	
@@ -278,8 +278,8 @@ public class LinkStorageImplTest {
 		
 		// Test insertion of mixture of new/existing links
 		linkStorage.update(linksToInsert, ILinkStorage.DM_OPERATION.INSERT);
-		doTestLinkIsInGraph(createFeasibleLink());
-		doTestLinkIsInGraph(createExistingLink());
+		doTestLinkExist(createFeasibleLink());
+		doTestLinkExist(createExistingLink());
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class LinkStorageImplTest {
 		// Test deletion of existing links
 		linkStorage.update(linksToDelete, ILinkStorage.DM_OPERATION.DELETE);
 		for(Link l : linksToVerify) {
-			doTestLinkIsNotInGraph(l);
+			doTestLinkNotExist(l);
 		}
 	}
 	
@@ -308,8 +308,8 @@ public class LinkStorageImplTest {
 		
 		// Test deletion of mixture of new/existing links
 		linkStorage.update(linksToDelete, ILinkStorage.DM_OPERATION.DELETE);
-		doTestLinkIsNotInGraph(createFeasibleLink());
-		doTestLinkIsNotInGraph(createExistingLink());
+		doTestLinkNotExist(createFeasibleLink());
+		doTestLinkNotExist(createExistingLink());
 	}
 	
 	// TODO: remove @Ignore after UPDATE method is implemented
@@ -338,7 +338,7 @@ public class LinkStorageImplTest {
 		
 		//Use the link storage API to add the link
 		linkStorage.updateLink(linkToCreate, null, ILinkStorage.DM_OPERATION.CREATE);
-		doTestLinkIsInGraph(linkToVerify);
+		doTestLinkExist(linkToVerify);
 	}
 	
 	/**
@@ -352,7 +352,7 @@ public class LinkStorageImplTest {
 		//Use the link storage API to add the link
 		linkStorage.updateLink(linkToInsert, null, ILinkStorage.DM_OPERATION.INSERT);
 
-		doTestLinkIsInGraph(linkToVerify);
+		doTestLinkExist(linkToVerify);
 	}
 	
 	// TODO: Check if addOrUpdateLink() should accept DELETE operation. If not, remove this test.
@@ -366,14 +366,14 @@ public class LinkStorageImplTest {
 
 		// Test deletion of existing link
 		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
-		doTestLinkIsNotInGraph(linkToVerify);
+		doTestLinkNotExist(linkToVerify);
 		
 		linkToDelete = createFeasibleLink();
 		linkToVerify = createFeasibleLink();
 
 		// Test deletion of not-existing link
 		linkStorage.updateLink(linkToDelete, null, DM_OPERATION.DELETE);
-		doTestLinkIsNotInGraph(linkToVerify);
+		doTestLinkNotExist(linkToVerify);
 	}
 	
 	/**
@@ -427,7 +427,7 @@ public class LinkStorageImplTest {
 		Link linkToVerify = createExistingLink();
 		
 		linkStorage.deleteLink(linkToDelete);
-		doTestLinkIsNotInGraph(linkToVerify);
+		doTestLinkNotExist(linkToVerify);
 	}
 	
 	/**
@@ -440,7 +440,7 @@ public class LinkStorageImplTest {
 		
 		linkStorage.deleteLinks(linksToDelete);
 		for(Link l : linksToVerify) {
-			doTestLinkIsNotInGraph(l);
+			doTestLinkNotExist(l);
 		}
 	}
 	
@@ -455,8 +455,8 @@ public class LinkStorageImplTest {
 		
 		// Test deletion of mixture of new/existing links
 		linkStorage.deleteLinks(linksToDelete);
-		doTestLinkIsNotInGraph(createFeasibleLink());
-		doTestLinkIsNotInGraph(createExistingLink());
+		doTestLinkNotExist(createFeasibleLink());
+		doTestLinkNotExist(createExistingLink());
 	}
 
 	/**
@@ -483,14 +483,14 @@ public class LinkStorageImplTest {
 		
 		linkStorage.deleteLinksOnPort(linkToDelete.getSrc(), linkToDelete.getSrcPort());
 		
-		doTestLinkIsNotInGraph(linkToVerify);
+		doTestLinkNotExist(linkToVerify);
 	}
 
 	/**
-	 * Test if titanGraph has specific link
+	 * Test if specific link is existing
 	 * @param link 
 	 */
-	private void doTestLinkIsInGraph(Link link) {
+	private void doTestLinkExist(Link link) {
 		int count = 0;
 		for(Link lt : links) {
 			if(lt.equals(link)) {
@@ -505,7 +505,7 @@ public class LinkStorageImplTest {
 	 * Test if titanGraph doesn't have specific link
 	 * @param link
 	 */
-	private void doTestLinkIsNotInGraph(Link link) {
+	private void doTestLinkNotExist(Link link) {
 		assertFalse(links.contains(link));
 	}
 	
@@ -516,6 +516,11 @@ public class LinkStorageImplTest {
 	private void doTestLinkHasStateOf(Link link, LinkInfo info) {
 	}
 	
+	/**
+	 * Class defines a function called back when IPortObject::removeLink is called.
+	 * @author Naoki Shiota
+	 *
+	 */
 	private class RemoveLinkCallback implements IAnswer<Object> {
 		private long dpid;
 		private short port;
@@ -535,6 +540,11 @@ public class LinkStorageImplTest {
 		}
 	}
 	
+	/**
+	 * Class defines a function called back when IPortObject::setLinkPort is called.
+	 * @author Naoki Shiota
+	 *
+	 */
 	private class SetLinkPortCallback implements IAnswer<Object> {
 		private long dpid;
 		private short port;
@@ -557,11 +567,11 @@ public class LinkStorageImplTest {
 	
 	// ------------------------Creation of Mock-----------------------------
 	/**
-	 * Create mock of GraphDBOperation which hooks port-related methods.
-	 * @return
+	 * Create a mock GraphDBOperation which hooks port-related methods.
+	 * @return EasyMock-wrapped GraphDBOperation object.
 	 */
 	private GraphDBOperation createMockGraphDBOperation() {
-		GraphDBOperation mockDBOpe = EasyMock.createMock(GraphDBOperation.class);
+		GraphDBOperation mockDBOpe = EasyMock.createNiceMock(GraphDBOperation.class);
 		
 		// Mock searchPort() method to create new mock IPortObject.
 		EasyMock.expect(mockDBOpe.searchPort((String)EasyMock.anyObject(), EasyMock.anyShort())).
@@ -572,13 +582,12 @@ public class LinkStorageImplTest {
 				short port = (Short) EasyMock.getCurrentArguments()[1];
 				
 				IPortObject ret = createMockPort(dpid,port);
-				mockToPortInfoMap.put(ret, new PortInfo(dpid,port));
 				
 				return ret;
 			}
 		}).anyTimes();
 		
-		// Mock commit() method to remember "COMMIT" event.
+		// Mock commit() method to commit change of link information
 		mockDBOpe.commit();
 		EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
 			@Override
@@ -605,14 +614,21 @@ public class LinkStorageImplTest {
 				actions.clear();
 				return null;
 			}
-		}).anyTimes();
+		}).atLeastOnce();
 		
 		EasyMock.replay(mockDBOpe);
 		return mockDBOpe;
 	}
 	
+	/**
+	 * Create a mock IPortObject using given DPID and port number.
+	 * IPortObject can't store DPID, so DPID is stored to mockToPortInfoMap for later use.
+	 * @param dpid DPID of a port
+	 * @param number Port Number
+	 * @return EasyMock-wrapped IPortObject
+	 */
 	private IPortObject createMockPort(long dpid, short number) {
-		IPortObject mockPort = EasyMock.createMock(IPortObject.class);
+		IPortObject mockPort = EasyMock.createNiceMock(IPortObject.class);
 		
 		EasyMock.expect(mockPort.getNumber()).andReturn(number);
 		
@@ -639,7 +655,9 @@ public class LinkStorageImplTest {
 			}
 		}).anyTimes();
 		
+		mockToPortInfoMap.put(mockPort, new PortInfo(dpid,number));
 		EasyMock.replay(mockPort);
+		
 		return mockPort;
 	}
 
