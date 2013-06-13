@@ -5,6 +5,10 @@ package net.onrc.onos.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
+import junit.framework.Assert;
+
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
@@ -23,6 +27,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Vertex;
 
 /**
  * @author Toshio Koide
@@ -31,7 +36,7 @@ import com.thinkaurelius.titan.core.TitanGraph;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TitanFactory.class})
 public class GraphDBOperationTest {
-	private static TitanGraph titanGraph;
+	private static TitanGraph testdb;
 	private static GraphDBConnection conn;
 	private static GraphDBOperation op;
 
@@ -55,12 +60,12 @@ public class GraphDBOperationTest {
 	@Before
 	public void setUp() throws Exception {
 		TestDatabaseManager.deleteTestDatabase();
-		titanGraph = TestDatabaseManager.getTestDatabase();
+		testdb = TestDatabaseManager.getTestDatabase();
 //		TestDatabaseManager.populateTestData(titanGraph);
 		
 		// replace return value of TitanFactory.open() to dummy DB created above
 		PowerMock.mockStatic(TitanFactory.class);
-		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
+		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(testdb);
 		PowerMock.replay(TitanFactory.class);
 		
 		conn = GraphDBConnection.getInstance("/dummy/to/conf");
@@ -73,50 +78,29 @@ public class GraphDBOperationTest {
 	@After
 	public void tearDown() throws Exception {
 		conn.close();
-		titanGraph.shutdown();
+		testdb.shutdown();
 	}
 
+	private Iterator<Vertex> enumerateVertices(String vertexType) {
+		return testdb.getVertices("type", vertexType).iterator();
+	}
+	
 	/**
 	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newSwitch(net.onrc.onos.util.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewSwitch() {
-		Iterable<ISwitchObject> switches;
-
-		switches = op.getAllSwitches();
-		assertFalse(switches.iterator().hasNext());
+		Iterator<Vertex> vertices;
+		assertFalse(enumerateVertices("switch").hasNext());
 
 		ISwitchObject sw = op.newSwitch("123");
-		sw.setState(SwitchState.ACTIVE.toString());
-		conn.endTx(Transaction.COMMIT);
-
-		switches = op.getAllSwitches();
-		assertTrue(switches.iterator().hasNext());
 		
-		ISwitchObject obtained_sw = switches.iterator().next();
-		String obtained_dpid = obtained_sw.getDPID(); 
-		assertEquals("123", obtained_dpid);
-	}
+		assertEquals("123", sw.getDPID());
+		op.commit();
 
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeSwitch(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject)}.
-	 */
-	@Test
-	public final void testRemoveSwitch() {
-		Iterable<ISwitchObject> switches;
-
-		// make sure there is no switch
-		switches = op.getAllSwitches();
-		assertFalse(switches.iterator().hasNext());
-		
-		ISwitchObject sw = op.newSwitch("123");
-		sw.setState(SwitchState.ACTIVE.toString());
-		conn.endTx(Transaction.COMMIT);
-		
-		sw = op.searchSwitch("123");
-		op.removeSwitch(sw);
-
-		assertNull(op.searchSwitch("123"));
+		vertices = enumerateVertices("switch");
+		assertTrue(vertices.hasNext());
+		assertEquals(vertices.next().getProperty("dpid").toString(), "123");		
 	}
 
 	/**
@@ -124,7 +108,63 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testSearchSwitch() {
-		fail("Not yet implemented");
+		ISwitchObject sw = op.newSwitch("123");
+		op.commit();
+		
+		sw = op.searchSwitch("123");
+		
+		assertNotNull(sw);
+		assertEquals("123", sw.getDPID());
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchActiveSwitch(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
+	 */
+	@Test
+	public final void testSearchActiveSwitch() {
+		ISwitchObject sw = op.newSwitch("111");
+		sw.setState(SwitchState.ACTIVE.toString());
+		sw = op.newSwitch("222");
+		sw.setState(SwitchState.INACTIVE.toString());
+		op.commit();
+		
+		sw = op.searchActiveSwitch("111");
+		assertNotNull(sw);
+		assertEquals("111", sw.getDPID());
+		
+		sw = op.searchActiveSwitch("222");
+		assertNull(sw);	
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getActiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 */
+	@Test
+	public final void testGetActiveSwitches() {
+		ISwitchObject sw = op.newSwitch("111");
+		sw.setState(SwitchState.ACTIVE.toString());
+		sw = op.newSwitch("222");
+		sw.setState(SwitchState.INACTIVE.toString());
+		op.commit();
+		
+		Iterator<ISwitchObject> i = op.getActiveSwitches().iterator();
+		assertTrue(i.hasNext());
+		assertEquals("111", i.next().getDPID());
+		assertFalse(i.hasNext());		
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeSwitch(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject)}.
+	 */
+	@Test
+	public final void testRemoveSwitch() {
+		ISwitchObject sw = op.newSwitch("123");
+		op.commit();	
+		sw = op.searchSwitch("123");
+		
+		op.removeSwitch(sw);
+
+		assertFalse(enumerateVertices("switch").hasNext());
 	}
 
 	/**
@@ -264,14 +304,6 @@ public class GraphDBOperationTest {
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getActiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
-	 */
-	@Test
-	public final void testGetActiveSwitches() {
-		fail("Not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitches(net.onrc.onos.util.GraphDBConnection)}.
 	 */
 	@Test
@@ -284,14 +316,6 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetInactiveSwitches() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchActiveSwitch(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
-	 */
-	@Test
-	public final void testSearchActiveSwitch() {
 		fail("Not yet implemented");
 	}
 

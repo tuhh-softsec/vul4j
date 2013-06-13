@@ -50,7 +50,7 @@ import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 
 public class FlowManager implements IFloodlightModule, IFlowService, INetMapStorage {
 
-    public GraphDBConnection conn;
+    protected GraphDBOperation op;
 
     protected IRestApiService restApi;
     protected volatile IFloodlightProviderService floodlightProvider;
@@ -114,7 +114,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    runImpl();
 		} catch (Exception e) {
 		    log.debug("Exception processing All Flow Entries from the Network MAP: ", e);
-		    conn.endTx(Transaction.ROLLBACK);
+		    op.rollback();
 		    return;
 		}
 	    }
@@ -141,7 +141,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		boolean processed_measurement_flow = false;
 		Iterable<IFlowEntry> allFlowEntries =
-		    conn.utils().getAllSwitchNotUpdatedFlowEntries(conn);
+		    op.getAllSwitchNotUpdatedFlowEntries();
 		for (IFlowEntry flowEntryObj : allFlowEntries) {
 		    counterAllFlowEntries++;
 
@@ -154,7 +154,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 			continue;	// Ignore the entry: not my switch
 
 		    IFlowPath flowObj =
-			conn.utils().getFlowPathByFlowEntry(conn, flowEntryObj);
+			op.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null)
 			continue;		// Should NOT happen
 		    if (flowObj.getFlowId() == null)
@@ -192,8 +192,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		for (IFlowEntry flowEntryObj : addFlowEntries) {
 		    IFlowPath flowObj =
-			conn.utils().getFlowPathByFlowEntry(conn,
-							    flowEntryObj);
+			op.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null)
 			continue;		// Should NOT happen
 		    if (flowObj.getFlowId() == null)
@@ -217,16 +216,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		while (! deleteFlowEntries.isEmpty()) {
 		    IFlowEntry flowEntryObj = deleteFlowEntries.poll();
 		    IFlowPath flowObj =
-			conn.utils().getFlowPathByFlowEntry(conn, flowEntryObj);
+			op.getFlowPathByFlowEntry(flowEntryObj);
 		    if (flowObj == null) {
 			log.debug("Did not find FlowPath to be deleted");
 			continue;
 		    }
 		    flowObj.removeFlowEntry(flowEntryObj);
-		    conn.utils().removeFlowEntry(conn, flowEntryObj);
+		    op.removeFlowEntry(flowEntryObj);
 		}
 
-		conn.endTx(Transaction.COMMIT);
+		op.commit();
 
 		if (processed_measurement_flow) {
 		    long estimatedTime =
@@ -255,7 +254,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		    runImpl();
 		} catch (Exception e) {
 		    log.debug("Exception processing All Flows from the Network MAP: ", e);
-		    conn.endTx(Transaction.ROLLBACK);
+		    op.rollback();
 		    return;
 		}
 	    }
@@ -281,7 +280,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		Map<Long, ?> shortestPathTopo =
 		    topoRouteService.prepareShortestPathTopo();
-		Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+		Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 		for (IFlowPath flowPathObj : allFlowPaths) {
 		    counterAllFlowPaths++;
 		    if (flowPathObj == null)
@@ -378,12 +377,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		//
 		while (! deleteFlows.isEmpty()) {
 		    IFlowPath flowPathObj = deleteFlows.poll();
-		    conn.utils().removeFlowPath(conn, flowPathObj);
+		    op.removeFlowPath(flowPathObj);
 		}
 
 		topoRouteService.dropShortestPathTopo(shortestPathTopo);
 
-		conn.endTx(Transaction.COMMIT);
+		op.commit();
 
 		if (processed_measurement_flow) {
 		    long estimatedTime =
@@ -414,16 +413,16 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     @Override
     public void init(String conf) {
-    	conn = GraphDBConnection.getInstance(conf);
+    	op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
     }
 
     public void finalize() {
-	close();
+    	close();
     }
 
     @Override
     public void close() {
-	conn.close();
+    	op.close();
     }
 
     @Override
@@ -530,19 +529,19 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	IFlowPath flowObj = null;
 	boolean found = false;
 	try {
-	    if ((flowObj = conn.utils().searchFlowPath(conn, flowPath.flowId()))
+	    if ((flowObj = op.searchFlowPath(flowPath.flowId()))
 		!= null) {
 		log.debug("Adding FlowPath with FlowId {}: found existing FlowPath",
 			  flowPath.flowId().toString());
 		found = true;
 	    } else {
-		flowObj = conn.utils().newFlowPath(conn);
+		flowObj = op.newFlowPath();
 		log.debug("Adding FlowPath with FlowId {}: creating new FlowPath",
 			  flowPath.flowId().toString());
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 
 	    StringWriter sw = new StringWriter();
 	    e.printStackTrace(new PrintWriter(sw));
@@ -555,7 +554,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	if (flowObj == null) {
 	    log.error(":addFlow FlowId:{} failed: Flow object not created",
 		      flowPath.flowId().toString());
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 	    return false;
 	}
 
@@ -619,11 +618,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	//
 	for (FlowEntry flowEntry : flowPath.dataPath().flowEntries()) {
 	    if (addFlowEntry(flowObj, flowEntry) == null) {
-		conn.endTx(Transaction.ROLLBACK);
+		op.rollback();
 		return false;
 	    }
 	}
-	conn.endTx(Transaction.COMMIT);
+	op.commit();
 
 	//
 	// TODO: We need a proper Flow ID allocation mechanism.
@@ -657,12 +656,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	boolean found = false;
 	try {
 	    if ((flowEntryObj =
-		 conn.utils().searchFlowEntry(conn, flowEntry.flowEntryId())) != null) {
+		 op.searchFlowEntry(flowEntry.flowEntryId())) != null) {
 		log.debug("Adding FlowEntry with FlowEntryId {}: found existing FlowEntry",
 			  flowEntry.flowEntryId().toString());
 		found = true;
 	    } else {
-		flowEntryObj = conn.utils().newFlowEntry(conn);
+		flowEntryObj = op.newFlowEntry();
 		log.debug("Adding FlowEntry with FlowEntryId {}: creating new FlowEntry",
 			  flowEntry.flowEntryId().toString());
 	    }
@@ -705,12 +704,12 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// - flowEntry.actionOutput()
 	//
 	ISwitchObject sw =
-	    conn.utils().searchSwitch(conn, flowEntry.dpid().toString());
+	    op.searchSwitch(flowEntry.dpid().toString());
 	flowEntryObj.setSwitchDpid(flowEntry.dpid().toString());
 	flowEntryObj.setSwitch(sw);
 	if (flowEntry.flowEntryMatch().matchInPort()) {
 	    IPortObject inport =
-		conn.utils().searchPort(conn, flowEntry.dpid().toString(),
+		op.searchPort(flowEntry.dpid().toString(),
 					flowEntry.flowEntryMatch().inPort().value());
 	    flowEntryObj.setMatchInPort(flowEntry.flowEntryMatch().inPort().value());
 	    flowEntryObj.setInPort(inport);
@@ -734,9 +733,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	for (FlowEntryAction fa : flowEntry.flowEntryActions()) {
 	    if (fa.actionOutput() != null) {
 		IPortObject outport =
-		    conn.utils().searchPort(conn,
-					    flowEntry.dpid().toString(),
-					    fa.actionOutput().port().value());
+		    op.searchPort(flowEntry.dpid().toString(),
+					      fa.actionOutput().port().value());
 		flowEntryObj.setActionOutput(fa.actionOutput().port().value());
 		flowEntryObj.setOutPort(outport);
 	    }
@@ -774,7 +772,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    new ConcurrentLinkedQueue<FlowId>();
 
 	// Get all Flow IDs
-	Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+	Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 	for (IFlowPath flowPathObj : allFlowPaths) {
 	    if (flowPathObj == null)
 		continue;
@@ -851,7 +849,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// it has been removed from the switches.
 	//
 	try {
-	    if ((flowObj = conn.utils().searchFlowPath(conn, flowId))
+	    if ((flowObj = op.searchFlowPath(flowId))
 		!= null) {
 		log.debug("Deleting FlowPath with FlowId {}: found existing FlowPath",
 			  flowId.toString());
@@ -861,11 +859,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 	    log.error(":deleteFlow FlowId:{} failed", flowId.toString());
 	}
 	if (flowObj == null) {
-	    conn.endTx(Transaction.COMMIT);
+	    op.commit();
 	    return true;		// OK: No such flow
 	}
 
@@ -885,8 +883,8 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	}
 	// Remove from the database empty flows
 	if (empty)
-	    conn.utils().removeFlowPath(conn, flowObj);
-	conn.endTx(Transaction.COMMIT);
+	    op.removeFlowPath(flowObj);
+	op.commit();
 
 	return true;
     }
@@ -901,7 +899,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	List<FlowId> allFlowIds = new LinkedList<FlowId>();
 
 	// Get all Flow IDs
-	Iterable<IFlowPath> allFlowPaths = conn.utils().getAllFlowPaths(conn);
+	Iterable<IFlowPath> allFlowPaths = op.getAllFlowPaths();
 	for (IFlowPath flowPathObj : allFlowPaths) {
 	    if (flowPathObj == null)
 		continue;
@@ -930,7 +928,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public boolean clearFlow(FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
-	    if ((flowObj = conn.utils().searchFlowPath(conn, flowId))
+	    if ((flowObj = op.searchFlowPath(flowId))
 		!= null) {
 		log.debug("Clearing FlowPath with FlowId {}: found existing FlowPath",
 			  flowId.toString());
@@ -940,11 +938,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 	    log.error(":clearFlow FlowId:{} failed", flowId.toString());
 	}
 	if (flowObj == null) {
-	    conn.endTx(Transaction.COMMIT);
+	    op.commit();
 	    return true;		// OK: No such flow
 	}
 
@@ -954,11 +952,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	Iterable<IFlowEntry> flowEntries = flowObj.getFlowEntries();
 	for (IFlowEntry flowEntryObj : flowEntries) {
 	    flowObj.removeFlowEntry(flowEntryObj);
-	    conn.utils().removeFlowEntry(conn, flowEntryObj);
+	    op.removeFlowEntry(flowEntryObj);
 	}
 	// Remove the Flow itself
-	conn.utils().removeFlowPath(conn, flowObj);
-	conn.endTx(Transaction.COMMIT);
+	op.removeFlowPath(flowObj);
+	op.commit();
 
 	return true;
     }
@@ -973,7 +971,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     public FlowPath getFlow(FlowId flowId) {
 	IFlowPath flowObj = null;
 	try {
-	    if ((flowObj = conn.utils().searchFlowPath(conn, flowId))
+	    if ((flowObj = op.searchFlowPath(flowId))
 		!= null) {
 		log.debug("Get FlowPath with FlowId {}: found existing FlowPath",
 			  flowId.toString());
@@ -983,11 +981,11 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 	    log.error(":getFlow FlowId:{} failed", flowId.toString());
 	}
 	if (flowObj == null) {
-	    conn.endTx(Transaction.COMMIT);
+	    op.commit();
 	    return null;		// Flow not found
 	}
 
@@ -995,7 +993,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	// Extract the Flow state
 	//
 	FlowPath flowPath = extractFlowPath(flowObj);
-	conn.endTx(Transaction.COMMIT);
+	op.commit();
 
 	return flowPath;
     }
@@ -1186,18 +1184,18 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
 	try {
-	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
+	    if ((flowPathsObj = op.getAllFlowPaths()) != null) {
 		log.debug("Get all FlowPaths: found FlowPaths");
 	    } else {
 		log.debug("Get all FlowPaths: no FlowPaths found");
 	    }
 	} catch (Exception e) {
 	    // TODO: handle exceptions
-	    conn.endTx(Transaction.ROLLBACK);
+	    op.rollback();
 	    log.error(":getAllFlowPaths failed");
 	}
 	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
-	    conn.endTx(Transaction.COMMIT);
+	    op.commit();
 	    return flowPaths;	// No Flows found
 	}
 
@@ -1210,7 +1208,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 		flowPaths.add(flowPath);
 	}
 
-	conn.endTx(Transaction.COMMIT);
+	op.commit();
 
 	return flowPaths;
     }
@@ -1220,17 +1218,17 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
     	ArrayList<IFlowPath> flowPathsObjArray = new ArrayList<IFlowPath>();
     	ArrayList<FlowPath> flowPaths = new ArrayList<FlowPath>();
 
-    	conn.endTx(Transaction.COMMIT);
+    	op.commit();
     	
     	try {
-    	    if ((flowPathsObj = conn.utils().getAllFlowPaths(conn)) != null) {
+    	    if ((flowPathsObj = op.getAllFlowPaths()) != null) {
     		log.debug("Get all FlowPaths: found FlowPaths");
     	    } else {
     		log.debug("Get all FlowPaths: no FlowPaths found");
     	    }
     	} catch (Exception e) {
     	    // TODO: handle exceptions
-    	    conn.endTx(Transaction.ROLLBACK);
+    	    op.rollback();
     	    log.error(":getAllFlowPaths failed");
     	}
     	if ((flowPathsObj == null) || (flowPathsObj.iterator().hasNext() == false)) {
