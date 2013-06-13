@@ -37,4 +37,6 @@ public interface IDBOperation {
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId);
 	public Iterable<IFlowEntry> getAllFlowEntries();
 	public void removeFlowEntry(IFlowEntry flowEntry);
+	
+	public IDBConnection getDBConnection();
 }

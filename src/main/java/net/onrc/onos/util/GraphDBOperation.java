@@ -11,6 +11,7 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowId;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
@@ -257,5 +258,17 @@ public class GraphDBOperation implements IDBOperation {
 	public void removeFlowEntry(IFlowEntry flowEntry) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		fg.removeVertex(flowEntry.asVertex());
+	}
+	
+	public IDBConnection getDBConnection() {
+		return conn;
+	}
+	
+	public void commit() {
+		conn.endTx(Transaction.COMMIT);
+	}
+	
+	public void rollback() {
+		conn.endTx(Transaction.ROLLBACK);
 	}
 }
