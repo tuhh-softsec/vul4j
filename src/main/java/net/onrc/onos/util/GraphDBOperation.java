@@ -29,6 +29,7 @@ public class GraphDBOperation implements IDBOperation {
 	public ISwitchObject newSwitch() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		ISwitchObject obj = fg.addVertex(null,ISwitchObject.class);
+		if (obj != null) obj.setType("switch");
 		return obj;
 	}
 
@@ -90,6 +91,7 @@ public class GraphDBOperation implements IDBOperation {
 	public IPortObject newPort() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IPortObject obj = fg.addVertex(null,IPortObject.class);
+		if (obj != null) obj.setType("port");
 		return obj;
 	}
 	
@@ -97,6 +99,7 @@ public class GraphDBOperation implements IDBOperation {
 	public IDeviceObject newDevice() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IDeviceObject obj = fg.addVertex(null,IDeviceObject.class);
+		if (obj != null) obj.setType("device");
 		return obj;
 	}
 	
@@ -132,6 +135,7 @@ public class GraphDBOperation implements IDBOperation {
 	public IFlowPath newFlowPath() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IFlowPath flowPath = fg.addVertex(null, IFlowPath.class);
+		if (flowPath != null) flowPath.setType("flow");
 		return flowPath;
 	}
 
@@ -179,6 +183,7 @@ public class GraphDBOperation implements IDBOperation {
 	public IFlowEntry newFlowEntry() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IFlowEntry flowEntry = fg.addVertex(null, IFlowEntry.class);
+		if (flowEntry != null) flowEntry.setType("flow_entry");
 		return flowEntry;
 	}
 

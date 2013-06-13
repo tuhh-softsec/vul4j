@@ -73,6 +73,7 @@ public class GraphDBOperationTest {
 	@After
 	public void tearDown() throws Exception {
 		conn.close();
+		titanGraph.shutdown();
 	}
 
 	/**
@@ -86,7 +87,6 @@ public class GraphDBOperationTest {
 		assertFalse(switches.iterator().hasNext());
 
 		ISwitchObject sw = op.newSwitch();
-		sw.setType("switch");
 		sw.setDPID("123");
 		sw.setState(SwitchState.ACTIVE.toString());
 		conn.endTx(Transaction.COMMIT);
@@ -109,20 +109,16 @@ public class GraphDBOperationTest {
 		// make sure there is no switch
 		switches = op.getAllSwitches();
 		assertFalse(switches.iterator().hasNext());
-
 		
 		ISwitchObject sw = op.newSwitch();
-		sw.setType("switch");
 		sw.setDPID("123");
 		sw.setState(SwitchState.ACTIVE.toString());
 		conn.endTx(Transaction.COMMIT);
-
-		switches = op.getAllSwitches();
-		assertTrue(switches.iterator().hasNext());
 		
-		ISwitchObject obtained_sw = switches.iterator().next();
-		String obtained_dpid = obtained_sw.getDPID(); 
-		assertEquals("123", obtained_dpid);
+		sw = op.searchSwitch("123");
+		op.removeSwitch(sw);
+
+		assertNull(op.searchSwitch("123"));
 	}
 
 	/**
