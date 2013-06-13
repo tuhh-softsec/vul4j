@@ -1,11 +1,12 @@
 package de.intevation.lada.rest;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.data.LProbeRepository;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
 
 /**
@@ -33,7 +34,8 @@ public class LProbeService {
      * The Repository for LProbe.
      */
     @Inject
-    private LProbeRepository repository;
+    @Named("lproberepository")
+    private Repository repository;
 
     /**
      * The logger for this class.
@@ -73,25 +75,12 @@ public class LProbeService {
         if (params.isEmpty()) {
             return repository.findAll(LProbe.class);
         }
-        String mstId = "";
-        String uwbId = "";
-        Long begin = null;
-        if (params.containsKey("mst")) {
-            mstId = params.getFirst("mst");
+        Map<String, String> filter = new HashMap<String, String>();
+        for (String key: params.keySet()) {
+            filter.put(key, params.getFirst(key));
         }
-        if (params.containsKey("uwb")) {
-            uwbId = params.getFirst("uwb");
-        }
-        if (params.containsKey("begin")) {
-            String tmp = params.getFirst("begin");
-            try {
-                begin = Long.valueOf(tmp);
-            }
-            catch (NumberFormatException nfe) {
-                begin = null;
-            }
-        }
-        return repository.filter(mstId, uwbId, begin);
+
+        return repository.filter(filter);
     }
 
     @PUT

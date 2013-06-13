@@ -1,17 +1,16 @@
 package de.intevation.lada.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -20,7 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.data.LKommentarPRepository;
+import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LKommentarP;
 
 /**
@@ -35,8 +34,9 @@ public class LKommentarService
     /**
      * The Repository.
      */
-    @Inject @Named("lkommentarRepository")
-    private LKommentarPRepository repository;
+    @Inject
+    @Named("lkommentarRepository")
+    private Repository repository;
 
     /**
      * The logger for this class
@@ -97,13 +97,14 @@ public class LKommentarService
     @Produces("text/json")
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.containsKey("probe")) {
-            String probe = params.getFirst("probe");
-            return repository.filter(probe);
+        if (params.isEmpty()) {
+            repository.findAll(LKommentarP.class);
         }
-        else {
-            return repository.findAll(LKommentarP.class);
+        Map<String, String> filter = new HashMap<String, String>();
+        for (String key: params.keySet()) {
+            filter.put(key, params.getFirst(key));
         }
+        return repository.filter(filter);
     }
 
     @POST

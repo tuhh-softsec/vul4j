@@ -1,5 +1,8 @@
 package de.intevation.lada.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -59,13 +62,13 @@ public class LMessungService
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
-            return repository.findAll(LMessung.class);
+            repository.findAll(LMessung.class);
         }
-        String probeId = "";
-        if (params.containsKey("probe")) {
-            probeId = params.getFirst("probe");
+        Map<String, String> filter = new HashMap<String, String>();
+        for (String key: params.keySet()) {
+            filter.put(key, params.getFirst(key));
         }
-        return repository.filter(probeId);
+        return repository.filter(filter);
     }
 
     @PUT

@@ -1,5 +1,6 @@
 package de.intevation.lada.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,24 +56,22 @@ extends Repository
      * @param begin probeentnahmebegin
      * @return
      */
-    public Response filter(String probeId) {
+    public Response filter(Map<String, String> filter) {
+        if (filter.isEmpty()) {
+            return findAll(LMessung.class);
+        }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LMessung> criteria = cb.createQuery(LMessung.class);
         Root<LMessung> member = criteria.from(LMessung.class);
-        Predicate probe = cb.equal(member.get("LProbeId"), probeId);
-        criteria.where(probe);
+        if (filter.containsKey("probe")) {
+            criteria.where(
+                cb.equal(member.get("LProbeId"), filter.get("probe")));
+        }
+        else {
+            return new Response(false, 600, new ArrayList<LMessung>());
+        }
         List<LMessung> result = filter(criteria);
         return new Response(true, 200, result);
-    }
-
-    /**
-     * Filter LProbe object list by the given criteria.
-     *
-     * @param criteria
-     * @return List of LProbe objects.
-     */
-    public List<LMessung> filter(CriteriaQuery<LMessung> criteria) {
-        return em.createQuery(criteria).getResultList();
     }
 
     /**
@@ -81,7 +80,11 @@ extends Repository
      * @param probe The new LProbe object
      * @return Response.
      */
-    public Response create(LMessung messung) {
+    public Response create(Object object) {
+        if (!(object instanceof LMessung)) {
+            return new Response(false, 602, object);
+        }
+        LMessung messung = (LMessung)object;
         Response response = new Response(true, 200, messung);
         // Try to save the new LMessung.
         try {
@@ -115,7 +118,11 @@ extends Repository
         return response;
     }
 
-    public Response update(LMessung messung) {
+    public Response update(Object object) {
+        if (!(object instanceof LMessung)) {
+            return new Response(false, 602, object);
+        }
+        LMessung messung = (LMessung)object;
         Response response = new Response(true, 200, messung);
         // Try to save the new LProbe.
         try {

@@ -22,7 +22,7 @@ import de.intevation.lada.rest.Response;
  */
 @Named
 @ApplicationScoped
-public class Repository
+public abstract class Repository
 {
     /**
      * The entitymanager managing the data.
@@ -30,13 +30,11 @@ public class Repository
     @Inject
     private EntityManager em;
 
-    /**
-     * Errors/Warnings occured in repository operations.
-     */
-    private boolean success;
-    private int generalError;
-    private Map<String, Integer> errors;
-    private Map<String, Integer> warnings;
+    public abstract Response create(Object object);
+
+    public abstract Response update(Object object);
+
+    public abstract Response filter(Map<String, String> keys);
 
     /**
      * Get all objects of type <link>clazz</link>from database.
@@ -66,6 +64,16 @@ public class Repository
             return new Response(false, 600, null);
         }
         return new Response(true, 200, item);
+    }
+
+    /**
+     * Filter object list by the given criteria.
+     *
+     * @param criteria
+     * @return List of LProbe objects.
+     */
+    public <T> List<T> filter(CriteriaQuery<T> criteria) {
+        return em.createQuery(criteria).getResultList();
     }
 
     public CriteriaBuilder getCriteriaBuilder() {

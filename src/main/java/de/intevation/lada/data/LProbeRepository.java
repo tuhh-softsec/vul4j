@@ -1,6 +1,6 @@
 package de.intevation.lada.data;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import de.intevation.lada.manage.LProbeManager;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
@@ -29,6 +30,7 @@ import de.intevation.lada.validation.Validator;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @ApplicationScoped
+@Named("lproberepository")
 public class LProbeRepository extends Repository{
 
     /**
@@ -55,50 +57,30 @@ public class LProbeRepository extends Repository{
      * @param begin probeentnahmebegin
      * @return
      */
-    public Response filter(String mstId, String uwbId, Long begin) {
+    public Response filter(Map<String, String> filter) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<LProbe> criteria = cb.createQuery(LProbe.class);
-        Root<LProbe> member = criteria.from(LProbe.class);
-        Predicate mst = cb.equal(member.get("mstId"), mstId);
-        Predicate uwb = cb.equal(member.get("umwId"), uwbId);
-
-        if (!mstId.isEmpty() && !uwbId.isEmpty() && begin != null) {
-            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
-            criteria.where(cb.and(mst, uwb, beg));
+        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
+        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
+        List<Predicate> andFilter = new ArrayList<Predicate>();
+        if (filter.containsKey("mst")) {
+            andFilter.add(cb.equal(member.get("mstId"), filter.get("mst")));
         }
-        else if (!mstId.isEmpty() && !uwbId.isEmpty() && begin == null) {
-            criteria.where(cb.and(mst, uwb));
+        if (filter.containsKey("uwb")) {
+            andFilter.add(cb.equal(member.get("umwId"), filter.get("uwb")));
         }
-        else if (!mstId.isEmpty() && uwbId.isEmpty() && begin != null) {
-            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
-            criteria.where(cb.and(mst, beg));
+        if (filter.containsKey("begin")) {
+            try {
+                Long date = Long.getLong(filter.get("begin"));
+                andFilter.add(
+                    cb.equal(member.get("probeentnahmeBeginn"), date));
+            }
+            catch(NumberFormatException nfe) {
+                //ignore filter parameter.
+            }
         }
-        else if (mstId.isEmpty() && !uwbId.isEmpty() && begin != null) {
-            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
-            criteria.where(cb.and(uwb, beg));
-        }
-        else if (!mstId.isEmpty() && uwbId.isEmpty() && begin == null) {
-            criteria.where(mst);
-        }
-        else if (mstId.isEmpty() && !uwbId.isEmpty() && begin == null) {
-            criteria.where(uwb);
-        }
-        else if (mstId.isEmpty() && uwbId.isEmpty() && begin != null) {
-            Predicate beg = cb.equal(member.get("probeentnahmeBeginn"), new Date(begin));
-            criteria.where(beg);
-        }
-        List<LProbe> result = filter(criteria);
+        criteria.where(andFilter.toArray(new Predicate[andFilter.size()]));
+        List<LProbeInfo> result = filter(criteria);
         return new Response(true, 200, result);
-    }
-
-    /**
-     * Filter LProbe object list by the given criteria.
-     *
-     * @param criteria
-     * @return List of LProbe objects.
-     */
-    public List<LProbe> filter(CriteriaQuery<LProbe> criteria) {
-        return em.createQuery(criteria).getResultList();
     }
 
     /**
@@ -107,7 +89,11 @@ public class LProbeRepository extends Repository{
      * @param probe The new LProbe object
      * @return Response.
      */
-    public Response create(LProbe probe) {
+    public Response create(Object object) {
+        if (!(object instanceof LProbe)) {
+            return new Response(false, 602, object);
+        }
+        LProbe probe = (LProbe)object;
         Response response = new Response(true, 200, probe);
         // Try to save the new LProbe.
         try {
@@ -141,7 +127,11 @@ public class LProbeRepository extends Repository{
         return response;
     }
 
-    public Response update(LProbe probe) {
+    public Response update(Object object) {
+        if (!(object instanceof LProbe)) {
+            return new Response(false, 602, object);
+        }
+        LProbe probe = (LProbe)object;
         Response response = new Response(true, 200, probe);
         // Try to save the new LProbe.
         try {

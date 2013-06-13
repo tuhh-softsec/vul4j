@@ -1,5 +1,6 @@
 package de.intevation.lada.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ import de.intevation.lada.rest.Response;
 import de.intevation.lada.validation.ValidationException;
 import de.intevation.lada.validation.Validator;
 
-
+@Named("lortrepository")
 public class LOrtRepository
 extends Repository
 {
@@ -43,24 +44,23 @@ extends Repository
      *
      * @return Response object containing LOrt objects.
      */
-    public Response filter(String probeId) {
+    public Response filter(Map<String, String> filter) {
+        if (filter.isEmpty()) {
+            return findAll(LOrt.class);
+        }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<LOrt> criteria = cb.createQuery(LOrt.class);
         Root<LOrt> member = criteria.from(LOrt.class);
-        Predicate pid = cb.equal(member.get("probeId"), probeId);
-        criteria.where(pid);
+        if (filter.containsKey("probe")) {
+            criteria.where(
+                cb.equal(member.get("probeId"), filter.get("probe")));
+        }
+        else {
+            return new Response(false, 600, new ArrayList<LOrt>());
+        }
         List<LOrt> result = filter(criteria);
 
         return new Response(true, 200, result);
-    }
-    /**
-     * Filter LProbe object list by the given criteria.
-     *
-     * @param criteria
-     * @return List of LProbe objects.
-     */
-    public List<LOrt> filter(CriteriaQuery<LOrt> criteria) {
-        return em.createQuery(criteria).getResultList();
     }
 
     /**
@@ -69,7 +69,11 @@ extends Repository
      * @param probe The new LProbe object
      * @return Response.
      */
-    public Response create(LOrt ort) {
+    public Response create(Object object) {
+        if (!(object instanceof LOrt)) {
+            return new Response(false, 600, object);
+        }
+        LOrt ort = (LOrt)object;
         Response response = new Response(true, 200, ort);
         // Try to save the new LOrt.
         try {
@@ -103,7 +107,11 @@ extends Repository
         return response;
     }
 
-    public Response update(LOrt ort) {
+    public Response update(Object object) {
+        if (!(object instanceof LOrt)) {
+            return new Response(false, 600, object);
+        }
+        LOrt ort = (LOrt)object;
         Response response = new Response(true, 200, ort);
         // Try to update a LOrt object.
         try {
