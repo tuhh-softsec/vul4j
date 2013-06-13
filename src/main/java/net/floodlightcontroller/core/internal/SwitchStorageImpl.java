@@ -6,8 +6,7 @@ import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.floodlightcontroller.core.ISwitchStorage;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.GenerateEvent;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFPhysicalPort.OFPortConfig;
@@ -16,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SwitchStorageImpl implements ISwitchStorage {
-	protected GraphDBConnection conn;
+	protected GraphDBOperation op;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
 	@Override
@@ -41,13 +40,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	}
 
 	private void setStatus(String dpid, SwitchState state) {
-		ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+		ISwitchObject sw = op.searchSwitch(dpid);
 		if (sw != null) {
 			sw.setState(state.toString());
-			conn.endTx(Transaction.COMMIT);
+			op.commit();
 			log.info("SwitchStorage:setStatus dpid:{} state: {} done", dpid, state);
 		} 	else {
-			conn.endTx(Transaction.ROLLBACK);
+			op.rollback();
 			log.info("SwitchStorage:setStatus dpid:{} state: {} failed: switch not found", dpid, state);
 		}
 	}
@@ -64,24 +63,20 @@ public class SwitchStorageImpl implements ISwitchStorage {
        }
              
 		try {
-			ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+			ISwitchObject sw = op.searchSwitch(dpid);
 
             if (sw != null) {
-            	IPortObject p = conn.utils().searchPort(conn, dpid, port.getPortNumber());
+            	IPortObject p = op.searchPort(dpid, port.getPortNumber());
             	log.info("SwitchStorage:addPort dpid:{} port:{}", dpid, port.getPortNumber());
             	if (p != null) {
             		log.error("SwitchStorage:addPort dpid:{} port:{} exists", dpid, port.getPortNumber());
             	} else {
-            		p = conn.utils().newPort(conn);
-
-            		p.setType("port");
-            		p.setNumber(port.getPortNumber());
+            		p = op.newPort(port.getPortNumber());
             		p.setState("ACTIVE");
             		p.setPortState(port.getState());
             		p.setDesc(port.getName());
             		sw.addPort(p);
-            		conn.endTx(Transaction.COMMIT);
-  
+            		op.commit();
             	}
             } else {
         		log.error("SwitchStorage:addPort dpid:{} port:{} : failed switch does not exist", dpid, port.getPortNumber());
@@ -89,7 +84,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		} catch (Exception e) {
              // TODO: handle exceptions
 			e.printStackTrace();
-			conn.endTx(Transaction.ROLLBACK);
+			op.rollback();
 			log.error("SwitchStorage:addPort dpid:{} port:{} failed", dpid, port.getPortNumber());
 		}	
 
@@ -119,7 +114,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 		log.info("SwitchStorage:addSwitch(): dpid {} ", dpid);
 		
 		try {
-			ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+			ISwitchObject sw = op.searchSwitch(dpid);
 			if (sw != null) {
 				/*
 				 *  Do nothing or throw exception?
@@ -127,15 +122,13 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 				log.info("SwitchStorage:addSwitch dpid:{} already exists", dpid);
 				sw.setState(SwitchState.ACTIVE.toString());
-				conn.endTx(Transaction.COMMIT);
+				op.commit();
 			} else {
-				sw = conn.utils().newSwitch(conn);
+				sw = op.newSwitch(dpid);
 
 				if (sw != null) {
-					sw.setType("switch");
-					sw.setDPID(dpid);
 					sw.setState(SwitchState.ACTIVE.toString());
-					conn.endTx(Transaction.COMMIT);
+					op.commit();
 					log.info("SwitchStorage:addSwitch dpid:{} added", dpid);
 				} else {
 					log.error("switchStorage:addSwitch dpid:{} failed -> newSwitch failed", dpid);
@@ -146,7 +139,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 			 * retry?
 			 */
 			e.printStackTrace();
-			conn.endTx(Transaction.ROLLBACK);
+			op.rollback();
 			log.info("SwitchStorage:addSwitch dpid:{} failed", dpid);
 		}
 
@@ -159,17 +152,17 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 		try {
 
-			ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+			ISwitchObject sw = op.searchSwitch(dpid);
             if (sw  != null) {
-            	conn.utils().removeSwitch(conn, sw);
+            	op.removeSwitch(sw);
  
-            	conn.endTx(Transaction.COMMIT);
+            	op.commit();
             	log.info("SwitchStorage:DeleteSwitch dpid:{} done", dpid);
             }
 		} catch (Exception e) {
              // TODO: handle exceptions
 			e.printStackTrace();
-			conn.endTx(Transaction.ROLLBACK);			
+			op.rollback();			
 			log.error("SwitchStorage:deleteSwitch {} failed", dpid);
 		}
 
@@ -179,21 +172,21 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	public void deletePort(String dpid, short port) {
 		// TODO Auto-generated method stub
 		try {
-			ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+			ISwitchObject sw = op.searchSwitch(dpid);
 
             if (sw != null) {
-            	IPortObject p = conn.utils().searchPort(conn, dpid, port);
+            	IPortObject p = op.searchPort(dpid, port);
                 if (p != null) {
             		log.info("SwitchStorage:deletePort dpid:{} port:{} found and deleted", dpid, port);
             		sw.removePort(p);
-            		conn.utils().removePort(conn, p);
-            		conn.endTx(Transaction.COMMIT);
+            		op.removePort(p);
+            		op.commit();
             	}
             }
 		} catch (Exception e) {
              // TODO: handle exceptions
 			e.printStackTrace();
-			conn.endTx(Transaction.ROLLBACK);
+			op.rollback();
 			log.info("SwitchStorage:deletePort dpid:{} port:{} failed", dpid, port);
 		}	
 	}
@@ -208,9 +201,8 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public void init(String conf) {
-
-		conn = GraphDBConnection.getInstance(conf);
-        
+		GraphDBConnection conn = GraphDBConnection.getInstance(conf);
+		op = new GraphDBOperation(conn);
 	}
 
 
@@ -221,7 +213,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 	
 	@Override
 	public void close() {
-		conn.close();		
+		op.close();		
 	}
 
 	
