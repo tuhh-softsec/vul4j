@@ -30,7 +30,7 @@ public interface IDBOperation {
 	public Iterable<IFlowEntry> getAllFlowEntries();
 	public IPortObject newPort();
 	public ISwitchObject newSwitch();
-	void removePort(IPortObject port);
-	void removeSwitch(ISwitchObject sw);
-	Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
+	public void removePort(IPortObject port);
+	public void removeSwitch(ISwitchObject sw);
+	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
 }
