@@ -26,7 +26,8 @@ public class SProbenartService
     /**
      * The Repository for SProbenart.
      */
-    @Inject @Named
+    @Inject
+    @Named("readolyrepository")
     private Repository repository;
 
     /**

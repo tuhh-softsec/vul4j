@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -12,7 +13,6 @@ import javax.ws.rs.Produces;
 
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.SMessStelle;
-import javax.inject.Named;
 
 /**
  * This class produces a RESTful service to read the contents of s_messstelle
@@ -27,7 +27,8 @@ public class SMessstelleService
     /**
      * The Repository for SMessStelle.
      */
-    @Inject @Named
+    @Inject
+    @Named("readolyrepository")
     private Repository repository;
 
     /**

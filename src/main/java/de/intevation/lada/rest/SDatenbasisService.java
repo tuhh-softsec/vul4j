@@ -26,7 +26,8 @@ public class SDatenbasisService
     /**
      * The Repository for SDatenbasis.
      */
-    @Inject @Named
+    @Inject
+    @Named("readolyrepository")
     private Repository repository;
 
     /**
