@@ -9,28 +9,32 @@ import net.floodlightcontroller.util.FlowEntryId;
 import net.floodlightcontroller.util.FlowId;
 
 public interface IDBOperation {	
+	public ISwitchObject newSwitch(String dpid);
 	public ISwitchObject searchSwitch(String dpid);
 	public ISwitchObject searchActiveSwitch(String dpid);
 	public Iterable<ISwitchObject> getActiveSwitches();
 	public Iterable<ISwitchObject> getAllSwitches();
 	public Iterable<ISwitchObject> getInactiveSwitches();
-	public IDeviceObject searchDevice(String macAddr);
-	public IDeviceObject newDevice();
-	public void removeDevice(IDeviceObject dev);
+	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
+	public void removeSwitch(ISwitchObject sw);
+	
+	public IPortObject newPort(Short portNumber);
 	public IPortObject searchPort(String dpid, short number);
+	public void removePort(IPortObject port);
+	
+	public IDeviceObject newDevice();
+	public IDeviceObject searchDevice(String macAddr);
 	public Iterable<IDeviceObject> getDevices();
-	public IFlowPath searchFlowPath(FlowId flowId);
+	public void removeDevice(IDeviceObject dev);
+
 	public IFlowPath newFlowPath();
-	public void removeFlowPath(IFlowPath flowPath);
+	public IFlowPath searchFlowPath(FlowId flowId);
 	public IFlowPath getFlowPathByFlowEntry(IFlowEntry flowEntry);
 	public Iterable<IFlowPath> getAllFlowPaths();
-	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId);
+	public void removeFlowPath(IFlowPath flowPath);
+
 	public IFlowEntry newFlowEntry();
-	public void removeFlowEntry(IFlowEntry flowEntry);
+	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId);
 	public Iterable<IFlowEntry> getAllFlowEntries();
-	public IPortObject newPort();
-	public ISwitchObject newSwitch();
-	public void removePort(IPortObject port);
-	public void removeSwitch(ISwitchObject sw);
-	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries();
+	public void removeFlowEntry(IFlowEntry flowEntry);
 }

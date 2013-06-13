@@ -26,10 +26,13 @@ public class GraphDBOperation implements IDBOperation {
 	}
 	
 	@Override
-	public ISwitchObject newSwitch() {
+	public ISwitchObject newSwitch(String dpid) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		ISwitchObject obj = fg.addVertex(null,ISwitchObject.class);
-		if (obj != null) obj.setType("switch");
+		if (obj != null) {
+			obj.setType("switch");
+			obj.setDPID(dpid);
+		}
 		return obj;
 	}
 
@@ -88,10 +91,13 @@ public class GraphDBOperation implements IDBOperation {
 	}
 
 	@Override
-	public IPortObject newPort() {
+	public IPortObject newPort(Short portNumber) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IPortObject obj = fg.addVertex(null,IPortObject.class);
-		if (obj != null) obj.setType("port");
+		if (obj != null) {
+			obj.setType("port");
+			obj.setNumber(portNumber);
+		}
 		return obj;
 	}
 	
