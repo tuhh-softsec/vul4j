@@ -3,14 +3,23 @@ package net.onrc.onos.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
-import net.floodlightcontroller.util.FlowEntryId;
-import net.floodlightcontroller.util.FlowId;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowId;
+
+//import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
+//import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
+//import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
+//import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
+//import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
+//import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
+//import net.floodlightcontroller.util.FlowEntryId;
+//import net.floodlightcontroller.util.FlowId;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import com.thinkaurelius.titan.core.TitanGraph;

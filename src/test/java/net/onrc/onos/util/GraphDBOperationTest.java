@@ -7,12 +7,9 @@ import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
-import junit.framework.Assert;
-
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
 
 import org.easymock.EasyMock;
 import org.junit.After;
