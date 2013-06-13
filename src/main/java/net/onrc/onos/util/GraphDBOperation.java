@@ -26,7 +26,7 @@ public class GraphDBOperation implements IDBOperation {
 	}
 	
 	@Override
-	public ISwitchObject newSwitch(String dpid) {
+ 	public ISwitchObject newSwitch(String dpid) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		ISwitchObject obj = fg.addVertex(null,ISwitchObject.class);
 		if (obj != null) {

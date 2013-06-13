@@ -86,8 +86,7 @@ public class GraphDBOperationTest {
 		switches = op.getAllSwitches();
 		assertFalse(switches.iterator().hasNext());
 
-		ISwitchObject sw = op.newSwitch();
-		sw.setDPID("123");
+		ISwitchObject sw = op.newSwitch("123");
 		sw.setState(SwitchState.ACTIVE.toString());
 		conn.endTx(Transaction.COMMIT);
 
@@ -110,8 +109,7 @@ public class GraphDBOperationTest {
 		switches = op.getAllSwitches();
 		assertFalse(switches.iterator().hasNext());
 		
-		ISwitchObject sw = op.newSwitch();
-		sw.setDPID("123");
+		ISwitchObject sw = op.newSwitch("123");
 		sw.setState(SwitchState.ACTIVE.toString());
 		conn.endTx(Transaction.COMMIT);
 		
