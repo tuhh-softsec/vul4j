@@ -9,9 +9,13 @@ import java.sql.Timestamp;
  * The persistent class for the l_probe_info database table.
  * 
  */
+@Entity
 @Table(name="l_probe_info")
 public class LProbeInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	@EmbeddedId
+	private LProbeInfoId lprobeInfoId;
 
 	@Column(name="ba_id")
 	private String baId;
@@ -51,13 +55,13 @@ public class LProbeInfo implements Serializable {
 	@Column(name="mst_id")
 	private String mstId;
 
-	@Column(name="nebenproben_nr")
+	@Column(name="nebenproben_nr", insertable = false, updatable = false)
 	private String nebenprobenNr;
 
 	@Column(name="netzbetreiber_id")
 	private String netzbetreiberId;
 
-	@Column(name="probe_id")
+	@Column(name="probe_id", insertable = false, updatable = false)
 	private String probeId;
 
 	@Column(name="probe_nehmer_id")
