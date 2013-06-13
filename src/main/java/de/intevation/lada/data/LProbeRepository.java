@@ -47,6 +47,28 @@ public class LProbeRepository extends Repository{
     @Named("lprobevalidator")
     private Validator validator;
 
+    @Override
+    public <T> Response findAll(Class<T> clazz) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
+        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
+        criteria.distinct(true);
+        List<LProbeInfo> result = filter(criteria);
+        return new Response(true, 200, result);
+    }
+
+    @Override
+    public <T> Response findById(Class<T> clazz, String id) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<LProbeInfo> criteria = cb.createQuery(LProbeInfo.class);
+        Root<LProbeInfo> member = criteria.from(LProbeInfo.class);
+        Predicate pid = cb.equal(member.get("probeId"), id);
+        criteria.where(pid);
+        criteria.distinct(true);
+        List<LProbeInfo> result = filter(criteria);
+        return new Response(true, 200, result);
+    }
+
     /**
      * Filter for LProbe objects used for calls from a service.
      *
@@ -76,6 +98,7 @@ public class LProbeRepository extends Repository{
                 //ignore filter parameter.
             }
         }
+        criteria.distinct(true);
         criteria.where(andFilter.toArray(new Predicate[andFilter.size()]));
         List<LProbeInfo> result = filter(criteria);
         return new Response(true, 200, result);

@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.data.Repository;
 import de.intevation.lada.model.LProbe;
+import de.intevation.lada.model.LProbeInfo;
 
 /**
 * This class produces a RESTful service to read the contents of LProbe table.
@@ -53,7 +54,7 @@ public class LProbeService {
     @Path("/{id}")
     @Produces("text/json")
     public Response findById(@PathParam("id") String id) {
-        return repository.findById(LProbe.class, id);
+        return repository.findById(LProbeInfo.class, id);
     }
 
     /**
@@ -73,7 +74,7 @@ public class LProbeService {
     public Response filter(@Context UriInfo info) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty()) {
-            return repository.findAll(LProbe.class);
+            return repository.findAll(LProbeInfo.class);
         }
         Map<String, String> filter = new HashMap<String, String>();
         for (String key: params.keySet()) {
