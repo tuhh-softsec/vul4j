@@ -25,6 +25,7 @@ import net.floodlightcontroller.util.Port;
 import net.floodlightcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -99,7 +100,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     private static Logger log =
 	LoggerFactory.getLogger(TopoRouteService.class);
     
-    GraphDBConnection conn;
+    protected GraphDBOperation op;
 
     @Override
     public Collection<Class<? extends IFloodlightService>> getModuleServices() {
@@ -134,7 +135,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	// TODO: Add the appropriate initialization
-    	conn = GraphDBConnection.getInstance("");
+    	op = new GraphDBOperation(GraphDBConnection.getInstance(""));
     }
 
     @Override
@@ -193,7 +194,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	// Fetch the relevant info from the Switch and Port vertices
 	// from the Titan Graph.
 	//
-	Iterable<ISwitchObject> nodes = conn.utils().getActiveSwitches(conn);
+	Iterable<ISwitchObject> nodes = op.getActiveSwitches();
 	for (ISwitchObject switchObj : nodes) {
 	    Vertex nodeVertex = switchObj.asVertex();
 	    //
@@ -253,7 +254,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 		}
 	    }
 	}
-	conn.endTx(Transaction.COMMIT);
+	op.commit();
 
 	return shortestPathTopo;
     }
@@ -416,9 +417,9 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 
 	// Get the source and destination switches
 	ISwitchObject srcSwitch =
-	    conn.utils().searchActiveSwitch(conn, dpid_src);
+	    op.searchActiveSwitch(dpid_src);
 	ISwitchObject destSwitch =
-	    conn.utils().searchActiveSwitch(conn, dpid_dest);
+	    op.searchActiveSwitch(dpid_dest);
 	if (srcSwitch == null || destSwitch == null) {
 	    return null;
 	}
@@ -433,7 +434,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    flowEntry.setInPort(src.port());
 	    flowEntry.setOutPort(dest.port());
 	    result_data_path.flowEntries().add(flowEntry);
-	    conn.endTx(Transaction.COMMIT);
+	    op.commit();
 	    return result_data_path;
 	}
 
@@ -552,7 +553,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
 	    result_data_path.flowEntries().add(flowEntry);
 	}
 
-	conn.endTx(Transaction.COMMIT);
+	op.commit();
 	if (result_data_path.flowEntries().size() > 0)
 	    return result_data_path;
 
