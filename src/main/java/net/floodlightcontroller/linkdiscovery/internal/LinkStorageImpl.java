@@ -3,13 +3,13 @@ package net.floodlightcontroller.linkdiscovery.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ import com.tinkerpop.pipes.transform.PathPipe;
 public class LinkStorageImpl implements ILinkStorage {
 	
 	protected static Logger log = LoggerFactory.getLogger(LinkStorageImpl.class);
-	protected String conf;
+	protected GraphDBOperation dbop;
 
 	/**
 	 * Update a record in the LinkStorage in a way provided by op.
@@ -77,7 +77,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * @param op Operation to be done. (only INSERT/CREATE/UPDATE is acceptable)
 	 */
 	public void updateLink(Link lt, LinkInfo linkinfo, DM_OPERATION op) {
-		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		IPortObject vportSrc = null, vportDst = null;
 	
 		log.trace("updateLink(): op {} {} {}", new Object[]{op, lt, linkinfo});
@@ -86,12 +85,12 @@ public class LinkStorageImpl implements ILinkStorage {
             // get source port vertex
         	String dpid = HexString.toHexString(lt.getSrc());
         	short port = lt.getSrcPort();
-        	vportSrc = conn.utils().searchPort(conn, dpid, port);
+        	vportSrc = dbop.searchPort(dpid, port);
             
             // get dest port vertex
             dpid = HexString.toHexString(lt.getDst());
             port = lt.getDstPort();
-            vportDst = conn.utils().searchPort(conn, dpid, port);
+            vportDst = dbop.searchPort(dpid, port);
                         
             if (vportSrc != null && vportDst != null) {
             	// check if the link exists
@@ -111,12 +110,12 @@ public class LinkStorageImpl implements ILinkStorage {
             	} else {
             		vportSrc.setLinkPort(vportDst);
 
-            		conn.endTx(Transaction.COMMIT);
+            		dbop.commit();
             		log.debug("updateLink(): link added {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
             	}
             } else {
             	log.error("updateLink(): failed invalid vertices {} {} src {} dst {}", new Object[]{op, lt, vportSrc, vportDst});
-            	conn.endTx(Transaction.ROLLBACK);
+            	dbop.rollback();
             }
         } catch (TitanException e) {
             /*
@@ -145,7 +144,6 @@ public class LinkStorageImpl implements ILinkStorage {
 	 */
 	@Override
 	public void deleteLink(Link lt) {
-		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
 		IPortObject vportSrc = null, vportDst = null;
 		int count = 0;
 		
@@ -155,12 +153,12 @@ public class LinkStorageImpl implements ILinkStorage {
             // get source port vertex
          	String dpid = HexString.toHexString(lt.getSrc());
          	short port = lt.getSrcPort();
-         	vportSrc = conn.utils().searchPort(conn, dpid, port);
+         	vportSrc = dbop.searchPort(dpid, port);
             
             // get dst port vertex
          	dpid = HexString.toHexString(lt.getDst());
          	port = lt.getDstPort();
-         	vportDst = conn.utils().searchPort(conn, dpid, port);
+         	vportDst = dbop.searchPort(dpid, port);
      		// FIXME: This needs to remove all edges
          	
          	if (vportSrc != null && vportDst != null) {
@@ -174,14 +172,13 @@ public class LinkStorageImpl implements ILinkStorage {
          			}
          		}*/
          		vportSrc.removeLink(vportDst);
-         		
-        		conn.endTx(Transaction.COMMIT);
+        		dbop.commit();
             	log.debug("deleteLink(): deleted edges src {} dst {}", new Object[]{
             			lt, vportSrc, vportDst});
             	
             } else {
             	log.error("deleteLink(): failed invalid vertices {} src {} dst {}", new Object[]{lt, vportSrc, vportDst});
-            	conn.endTx(Transaction.ROLLBACK);
+            	dbop.rollback();
             }
          	
         } catch (TitanException e) {
@@ -189,7 +186,7 @@ public class LinkStorageImpl implements ILinkStorage {
              * retry till we succeed?
              */
         	log.error("deleteLink(): titan exception {} {}", new Object[]{lt, e.toString()});
-        	conn.endTx(Transaction.ROLLBACK);
+        	dbop.rollback();
         	e.printStackTrace();
         }
 	}
@@ -203,14 +200,11 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
-		IPortObject vportSrc;
-		
-		List<Link> links = new ArrayList<Link>();
+		IPortObject vportSrc, vportDst;
+    	List<Link> links = null;
+    	Link lt;
     	
-		// BEGIN: Trial code
-		// author: Naoki Shiota
-		vportSrc = conn.utils().searchPort(conn, HexString.toHexString(dpid), port);
+		vportSrc = dbop.searchPort(HexString.toHexString(dpid), port);
 		if (vportSrc != null) {
  			
 			for (Edge e : vportSrc.asVertex().getEdges(Direction.IN)) {
@@ -241,9 +235,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from properties
-	
-		this.conf = conf;
-		
+		this.dbop = new GraphDBOperation(GraphDBConnection.getInstance(conf));
 	}
 
 	/**
@@ -295,10 +287,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	 * @return List of active links. Empty list if no port was found.
 	 */
 	public List<Link> getActiveLinks() {
-
-		GraphDBConnection conn = GraphDBConnection.getInstance(this.conf);
-		
-		Iterable<ISwitchObject> switches = conn.utils().getActiveSwitches(conn);
+		Iterable<ISwitchObject> switches = dbop.getActiveSwitches();
 
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {
@@ -318,10 +307,8 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 	
-	/**
-	 * PipeFunction object to extract link from given "switch-port-port-switch" Path.
-	 */
-	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
+	// FIXME Scope changed to public to allow access from TopoLinkServiceImpl. Move class definition to appropriate place.
+	static public class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {

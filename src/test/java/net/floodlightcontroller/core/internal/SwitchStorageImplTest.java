@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.floodlightcontroller.core.ISwitchStorage;
-import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage;
+import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 
 import org.junit.After;
 import org.junit.Before;

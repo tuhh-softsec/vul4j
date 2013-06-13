@@ -11,11 +11,12 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import net.floodlightcontroller.core.INetMapStorage.DM_OPERATION;
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
 import net.floodlightcontroller.linkdiscovery.ILinkStorage;
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
 
 import org.easymock.EasyMock;
 import org.junit.After;
