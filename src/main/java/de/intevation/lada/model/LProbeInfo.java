@@ -87,6 +87,9 @@ public class LProbeInfo implements Serializable {
 	@Column(name="umw_id")
 	private String umwId;
 
+	@Column(name="messmethode")
+	private String messmethode;
+
 	public LProbeInfo() {
 	}
 
@@ -290,4 +293,11 @@ public class LProbeInfo implements Serializable {
 		this.umwId = umwId;
 	}
 
+    public String getMessmethode() {
+        return messmethode;
+    }
+
+    public void setMessmethode(String messmethode) {
+        this.messmethode = messmethode;
+    }
 }
