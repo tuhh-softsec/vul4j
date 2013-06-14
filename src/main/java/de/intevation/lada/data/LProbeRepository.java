@@ -99,7 +99,8 @@ public class LProbeRepository extends Repository{
             }
         }
         criteria.distinct(true);
-        criteria.where(andFilter.toArray(new Predicate[andFilter.size()]));
+        Predicate af = cb.and(andFilter.toArray(new Predicate[andFilter.size()]));
+        criteria.where(af);
         List<LProbeInfo> result = filter(criteria);
         return new Response(true, 200, result);
     }

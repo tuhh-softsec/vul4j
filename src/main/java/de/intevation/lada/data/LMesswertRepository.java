@@ -116,7 +116,8 @@ extends Repository
             andFilter.add(cb.equal(member.get("messungsId"), filter.get("messung")));
         }
         criteria.distinct(true);
-        criteria.where(andFilter.toArray(new Predicate[andFilter.size()]));
+        Predicate ap = cb.and(andFilter.toArray(new Predicate[andFilter.size()]));
+        criteria.where(ap);
         List<LMesswert> result = filter(criteria);
         return new Response(true, 200, result);
     }
