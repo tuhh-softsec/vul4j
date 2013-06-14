@@ -16,7 +16,7 @@ import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 public class FloodlightProvider implements IFloodlightModule {

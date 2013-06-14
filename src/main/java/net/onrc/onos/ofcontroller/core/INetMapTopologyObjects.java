@@ -1,6 +1,6 @@
 package net.onrc.onos.ofcontroller.core;
 
-import net.onrc.onos.ofcontroller.flowcache.web.DatapathSummarySerializer;
+import net.onrc.onos.ofcontroller.flowmanager.web.DatapathSummarySerializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;

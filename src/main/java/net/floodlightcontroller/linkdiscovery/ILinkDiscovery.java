@@ -8,7 +8,7 @@ public interface ILinkDiscovery {
 
     @JsonSerialize(using=ToStringSerializer.class)
     public enum UpdateOperation {
-    	LINK_ADDED("Link Added"),
+    	LINK_ADDED("Link Added"), // Operation Added by ONOS
         LINK_UPDATED("Link Updated"),
         LINK_REMOVED("Link Removed"),
         SWITCH_UPDATED("Switch Updated"),

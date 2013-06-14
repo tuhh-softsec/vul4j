@@ -1,18 +1,18 @@
-package net.onrc.onos.ofcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowmanager.web;
 
-import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MeasurementGetPerFlowInstallTimeFlowResource extends ServerResource {
-    protected static Logger log = LoggerFactory.getLogger(MeasurementGetPerFlowInstallTimeFlowResource.class);
+public class MeasurementGetInstallPathsTimeNsecFlowResource extends ServerResource {
+    protected static Logger log = LoggerFactory.getLogger(MeasurementGetInstallPathsTimeNsecFlowResource.class);
 
     @Get("json")
-    public String retrieve() {
-	String result = null;
+    public Long retrieve() {
+	Long result = null;
 
         IFlowService flowService =
                 (IFlowService)getContext().getAttributes().
@@ -26,7 +26,7 @@ public class MeasurementGetPerFlowInstallTimeFlowResource extends ServerResource
 	// Extract the arguments
 
 	// Process the request
-	result = flowService.measurementGetPerFlowInstallTime();
+	result = flowService.measurementGetInstallPathsTimeNsec();
 
 	log.debug("Measurement Get Install Paths Time (nsec): " + result);
 

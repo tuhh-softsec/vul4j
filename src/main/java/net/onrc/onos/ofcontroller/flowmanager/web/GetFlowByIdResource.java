@@ -1,6 +1,6 @@
-package net.onrc.onos.ofcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowmanager.web;
 
-import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.ofcontroller.util.FlowPath;
 

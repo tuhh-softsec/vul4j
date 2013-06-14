@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowcache.web;
+package net.onrc.onos.ofcontroller.flowmanager.web;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
 

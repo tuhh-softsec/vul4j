@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.flowcache;
+package net.onrc.onos.ofcontroller.flowmanager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +33,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.flowcache.web.FlowWebRoutable;
+import net.onrc.onos.ofcontroller.flowmanager.web.FlowWebRoutable;
 import net.onrc.onos.ofcontroller.util.CallerId;
 import net.onrc.onos.ofcontroller.util.DataPath;
 import net.onrc.onos.ofcontroller.util.DataPathEndpoints;

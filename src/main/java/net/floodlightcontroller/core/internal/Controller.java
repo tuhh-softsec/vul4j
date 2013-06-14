@@ -75,7 +75,7 @@ import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
