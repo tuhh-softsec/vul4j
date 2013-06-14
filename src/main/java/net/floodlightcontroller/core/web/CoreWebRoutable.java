@@ -63,6 +63,7 @@ public class CoreWebRoutable implements RestletRoutable {
         router.attach("/role/json", ControllerRoleResource.class);
         router.attach("/health/json", HealthCheckResource.class);
         router.attach("/system/uptime/json", SystemUptimeResource.class);
+        // Following added by ONOS
         router.attach("/topology/switches/{filter}/json", TopoSwitchesResource.class);
         router.attach("/topology/links/json", TopoLinksResource.class);
         router.attach("/topology/devices/json", TopoDevicesResource.class);
