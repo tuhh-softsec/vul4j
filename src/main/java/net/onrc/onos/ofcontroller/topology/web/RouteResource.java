@@ -1,4 +1,4 @@
-package net.floodlightcontroller.topology.web;
+package net.onrc.onos.ofcontroller.topology.web;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.util.DataPath;

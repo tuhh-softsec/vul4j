@@ -5,6 +5,7 @@ import org.restlet.routing.Router;
 
 import net.floodlightcontroller.linkdiscovery.web.LinksResource;
 import net.floodlightcontroller.restserver.RestletRoutable;
+import net.onrc.onos.ofcontroller.topology.web.RouteResource;
 
 public class TopologyWebRoutable implements RestletRoutable {
     /**
