@@ -126,12 +126,6 @@ implements IOFMessageListener, IOFSwitchListener,
 IStorageSourceListener, ILinkDiscoveryService,
 IFloodlightModule, IInfoProvider, IHAListener {
     protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManager.class);
-    
-    protected enum NetworkMapOperation {
-    	NONE,
-    	INSERT,
-    	UPDATE
-    }
 
     // Names of table/fields for links in the storage API
     private static final String LINK_TABLE_NAME = "controller_link";
@@ -152,6 +146,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
     protected IControllerRegistryService registryService;
+
 
     // LLDP and BDDP fields
     private static final byte[] LLDP_STANDARD_DST_MAC_STRING = 
@@ -196,7 +191,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected LLDPTLV controllerTLV;
     protected ReentrantReadWriteLock lock;
     int lldpTimeCount = 0;
-    
+
     /**
      * Flag to indicate if automatic port fast is enabled or not.
      * Default is set to false -- Initialized in the init method as well.
@@ -963,7 +958,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
             if (bsn.getPayload() instanceof LLDP == false)
                 return Command.CONTINUE;
             return handleLldp((LLDP) bsn.getPayload(), sw, pi, false, cntx);
-            //return Command.STOP;
         } else if (eth.getEtherType() == Ethernet.TYPE_LLDP)  {
             return handleLldp((LLDP) eth.getPayload(), sw, pi, true, cntx);
         } else if (eth.getEtherType() < 1500) {
@@ -1013,7 +1007,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
         NodePortTuple srcNpt, dstNpt;
         boolean linkChanged = false;
-        NetworkMapOperation operation = NetworkMapOperation.NONE;
 
         lock.writeLock().lock();
         try {
@@ -1116,7 +1109,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // valid time, plus the port states if they've changed (i.e. if
                 // they weren't set to null in the previous block of code.
                 writeLinkToStorage(lt, newInfo);
-                
+
                 if (linkChanged) {
                     updateOperation = getUpdateOperation(newInfo.getSrcPortState(),
                                                          newInfo.getDstPortState());
@@ -1145,7 +1138,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
         } finally {
             lock.writeLock().unlock();
         }
-        
 
         return linkChanged;
     }
@@ -1165,6 +1157,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     /**
      * Removes links from memory and storage.
      * @param links The List of @LinkTuple to delete.
+     * FIXME Parameter hasControl is never used.
      */
     protected void deleteLinks(List<Link> links, String reason, Boolean hasControl) {
         NodePortTuple srcNpt, dstNpt;
@@ -1212,7 +1205,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
                 // remove link from storage.
                 removeLinkFromStorage(lt);
-                
+
                 // TODO  Whenever link is removed, it has to checked if
                 // the switchports must be added to quarantine.
 
@@ -1263,7 +1256,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     ((byte)OFPortReason.OFPPR_MODIFY.ordinal() ==
                     ps.getReason() && !portEnabled(ps.getDesc()))) {
                 deleteLinksOnPort(npt, "Port Status Changed");
-                
                 LDUpdate update = new LDUpdate(sw, port, UpdateOperation.PORT_DOWN);
                 updates.add(update);
                 linkDeleted = true;
@@ -1306,7 +1298,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
                                                      getLinkType(lt, linkInfo),
                                                      operation));
                             writeLinkToStorage(lt, linkInfo);
-                            
                             linkInfoChanged = true;
                         }
                     }
@@ -1923,7 +1914,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
             log.error("Error in installing listener for " +
             		  "switch table {}", SWITCH_CONFIG_TABLE_NAME);
         }
-                
+
         ScheduledExecutorService ses = threadPool.getScheduledExecutor();
 
         // To be started by the first switch connection
