@@ -8,7 +8,7 @@ import javax.inject.Named;
 import de.intevation.lada.rest.Response;
 
 @RequestScoped
-@Named("readolyrepository")
+@Named("readonlyrepository")
 public class ReadOnlyRepository
 extends Repository
 {

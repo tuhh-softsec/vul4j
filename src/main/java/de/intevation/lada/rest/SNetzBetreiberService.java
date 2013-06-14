@@ -26,7 +26,7 @@ public class SNetzBetreiberService
      * The Repository for SDatenbasis.
      */
     @Inject
-    @Named("readolyrepository")
+    @Named("readonlyrepository")
     private Repository repository;
 
     /**

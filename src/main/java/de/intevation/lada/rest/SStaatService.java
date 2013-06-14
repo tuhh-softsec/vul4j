@@ -24,7 +24,7 @@ public class SStaatService
      * The Repository for SUmwelt.
      */
     @Inject
-    @Named("readolyrepository")
+    @Named("readonlyrepository")
     private Repository repository;
 
     /**

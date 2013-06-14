@@ -27,7 +27,7 @@ public class SMessstelleService
      * The Repository for SMessStelle.
      */
     @Inject
-    @Named("readolyrepository")
+    @Named("readonlyrepository")
     private Repository repository;
 
     /**

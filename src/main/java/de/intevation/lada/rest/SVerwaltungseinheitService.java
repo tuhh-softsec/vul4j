@@ -25,7 +25,7 @@ public class SVerwaltungseinheitService
      * The Repository for SUmwelt.
      */
     @Inject
-    @Named("readolyrepository")
+    @Named("readonlyrepository")
     private Repository repository;
 
     /**
