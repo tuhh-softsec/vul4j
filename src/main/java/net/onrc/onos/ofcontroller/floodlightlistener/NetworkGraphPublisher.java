@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.onoslistener;
+package net.onrc.onos.ofcontroller.floodlightlistener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +44,7 @@ import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.IDBConnection;
 import net.onrc.onos.util.LocalTopologyEventListener;
 
-public class OnosPublisher implements IDeviceListener, IOFSwitchListener, IOFSwitchPortListener,
+public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener, IOFSwitchPortListener,
 		ILinkDiscoveryListener, IFloodlightModule {
 	
 	protected IDeviceStorage devStore;
@@ -188,7 +188,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener, IOFSwi
 
 	@Override
 	public String getName() {
-		return "OnosPublisher";
+		return "NetworkGraphPublisher";
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener, IOFSwi
 		String conf = configMap.get(DBConfigFile);
 		op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
 		
-		log = LoggerFactory.getLogger(OnosPublisher.class);
+		log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 		floodlightProvider =
 	            context.getServiceImpl(IFloodlightProviderService.class);
 		deviceService = context.getServiceImpl(IDeviceService.class);
@@ -271,7 +271,7 @@ public class OnosPublisher implements IDeviceListener, IOFSwitchListener, IOFSwi
 		linkStore = new LinkStorageImpl();
 		linkStore.init(conf);
 				
-		log.debug("Initializing OnosPublisher module with {}", conf);
+		log.debug("Initializing NetworkGraphPublisher module with {}", conf);
 		
 	}
 
