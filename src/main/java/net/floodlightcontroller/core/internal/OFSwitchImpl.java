@@ -268,7 +268,7 @@ public class OFSwitchImpl implements IOFSwitch {
     public void disconnectOutputStream() {
         channel.close();
     }
-    
+
     @Override
     @JsonIgnore
     public void setFeaturesReply(OFFeaturesReply featuresReply) {
