@@ -9,7 +9,7 @@ import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.util.GraphDBOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +19,8 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class TopoLinkServiceImpl implements ITopoLinkService {
 	
-	public GraphDBConnection conn;
+	protected GraphDBOperation op;
 	protected static Logger log = LoggerFactory.getLogger(TopoLinkServiceImpl.class);
-
 
 	public void finalize() {
 		close();
@@ -29,15 +28,15 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	
 	@Override
 	public void close() {
-		conn.close();
+		op.close();
 	}
  
 	@Override
 	public List<Link> getActiveLinks() {
 		// TODO Auto-generated method stub
-		conn = GraphDBConnection.getInstance("");
-		conn.close(); //Commit to ensure we see latest data
-		Iterable<ISwitchObject> switches = conn.utils().getActiveSwitches(conn);
+		op = new GraphDBOperation(GraphDBConnection.getInstance(""));
+		op.close(); //Commit to ensure we see latest data
+		Iterable<ISwitchObject> switches = op.getActiveSwitches();
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {
 			GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
@@ -53,7 +52,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 			}
 						
 		}
-		conn.endTx(Transaction.COMMIT);
+		op.commit();
 		return links;
 	}
 
@@ -61,7 +60,7 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	public List<Link> getLinksOnSwitch(String dpid) {
 		// TODO Auto-generated method stub
 		List<Link> links = new ArrayList<Link>(); 
-		ISwitchObject sw = conn.utils().searchSwitch(conn, dpid);
+		ISwitchObject sw = op.searchSwitch(dpid);
 		GremlinPipeline<Vertex, Link> pipe = new GremlinPipeline<Vertex, Link>();
 		ExtractLink extractor = new ExtractLink();
 
