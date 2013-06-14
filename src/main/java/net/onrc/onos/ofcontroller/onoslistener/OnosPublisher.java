@@ -27,6 +27,7 @@ import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl;
 import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
@@ -43,7 +44,7 @@ import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.IDBConnection;
 import net.onrc.onos.util.LocalTopologyEventListener;
 
-public class OnosPublisher implements IDeviceListener, IOFSwitchListener,
+public class OnosPublisher implements IDeviceListener, IOFSwitchListener, IOFSwitchPortListener,
 		ILinkDiscoveryListener, IFloodlightModule {
 	
 	protected IDeviceStorage devStore;

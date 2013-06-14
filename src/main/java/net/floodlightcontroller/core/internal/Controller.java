@@ -73,6 +73,7 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
@@ -298,10 +299,14 @@ public class Controller implements IFloodlightProviderService,
                             listener.switchPortChanged(sw.getId());
                             break;
                         case PORTADDED:
-                        	listener.switchPortAdded(sw.getId(), port);
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortAdded(sw.getId(), port);
+                        	}
                         	break;
                         case PORTREMOVED:
-                        	listener.switchPortRemoved(sw.getId(), port);
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortRemoved(sw.getId(), port);
+                        	}
                         	break;
                         default:
                         	break;
