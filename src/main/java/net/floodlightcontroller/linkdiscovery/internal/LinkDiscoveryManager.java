@@ -145,6 +145,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     protected IStorageSourceService storageSource;
     protected IThreadPoolService threadPool;
     protected IRestApiService restApi;
+    // Registry Service for ONOS
     protected IControllerRegistryService registryService;
 
 
@@ -200,7 +201,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
     /**
      * Map of remote switches that are not connected to this controller. This
-     * is used to learn remote switches in a distributed controller.
+     * is used to learn remote switches in a distributed controller ONOS.
      */
     protected Map<Long, IOFSwitch> remoteSwitches;
     
@@ -514,7 +515,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     }
 
     /**
-     * Learn remote switches when running as a distributed controller
+     * Learn remote switches when running as a distributed controller ONOS
      */
     protected IOFSwitch addRemoteSwitch(long sw, short port) {
     	IOFSwitch remotesw = null;
@@ -805,6 +806,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 ByteBuffer dpidBB = ByteBuffer.wrap(lldptlv.getValue());
                 remoteSwitch = floodlightProvider.getSwitches().get(dpidBB.getLong(4));
                 if (remoteSwitch == null) {
+                	// Added by ONOS
                 	// floodlight LLDP coming from a remote switch connected to a different controller
                 	// add it to our cache of unconnected remote switches
                 	remoteSwitch = addRemoteSwitch(dpidBB.getLong(4), remotePort);
@@ -837,7 +839,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                     log.trace("Getting BDDP packets from a different controller" +
                             "and letting it go through normal processing chain.");
                 }
-                //XXX Fix the BDDP broadcast issue
+                //XXX ONOS: Fix the BDDP broadcast issue
                 //return Command.CONTINUE;
                 return Command.STOP;
             }
@@ -1054,6 +1056,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
                 writeLinkToStorage(lt, newInfo);
                 
+                // ONOS: Distinguish added event separately from updated event
                 updateOperation = UpdateOperation.LINK_ADDED;
                 linkChanged = true;
 
@@ -1155,7 +1158,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
     }
     
     /**
-     * Removes links from memory and storage.
+     * Removes links from memory and storage.(Added by ONOS)
      * @param links The List of @LinkTuple to delete.
      * FIXME Parameter hasControl is never used.
      */
@@ -1230,7 +1233,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
         if (iofSwitch == null) return Command.CONTINUE;
         
-        // If we do not control this switch, then we should not process its port status messages
+        // ONOS: If we do not control this switch, then we should not process its port status messages
         if (!registryService.hasControl(iofSwitch.getId())) return Command.CONTINUE;
         
         if (log.isTraceEnabled()) {
@@ -1402,6 +1405,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 // add all tuples with an endpoint on this switch to erase list
                 eraseList.addAll(switchLinks.get(sw));
                 
+                // Added by ONOS
                 // We can get called to delete links when we lose mastership. To avoid clearing the network map in that case,
                 // figure out if we have control of the switch
                 boolean hasControl = registryService.hasControl(sw);
@@ -1835,6 +1839,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         l.add(IStorageSourceService.class);
         l.add(IThreadPoolService.class);
         l.add(IRestApiService.class);
+        // Added by ONOS
         l.add(IControllerRegistryService.class);
         return l;
     }
@@ -1846,6 +1851,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         storageSource = context.getServiceImpl(IStorageSourceService.class);
         threadPool = context.getServiceImpl(IThreadPoolService.class);
         restApi = context.getServiceImpl(IRestApiService.class);
+        // Added by ONOS
         registryService = context.getServiceImpl(IControllerRegistryService.class);
 
         // Set the autoportfast feature to false.
@@ -1863,6 +1869,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.switchLinks = new HashMap<Long, Set<Link>>();
         this.quarantineQueue = new LinkedBlockingQueue<NodePortTuple>();
         this.maintenanceQueue = new LinkedBlockingQueue<NodePortTuple>();
+        // Added by ONOS
         this.remoteSwitches = new HashMap<Long, IOFSwitch>();
 
         this.evHistTopologySwitch =
