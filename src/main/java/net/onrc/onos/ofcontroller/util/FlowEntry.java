@@ -2,15 +2,6 @@ package net.onrc.onos.ofcontroller.util;
 
 import java.util.ArrayList;
 
-
-import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.util.FlowEntryAction;
-import net.onrc.onos.ofcontroller.util.FlowEntryErrorState;
-import net.onrc.onos.ofcontroller.util.FlowEntryId;
-import net.onrc.onos.ofcontroller.util.FlowEntryMatch;
-import net.onrc.onos.ofcontroller.util.FlowEntrySwitchState;
-import net.onrc.onos.ofcontroller.util.FlowEntryUserState;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 

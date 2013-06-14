@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
 import net.onrc.onos.ofcontroller.util.FlowId;
-import net.onrc.onos.ofcontroller.util.FlowPath;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

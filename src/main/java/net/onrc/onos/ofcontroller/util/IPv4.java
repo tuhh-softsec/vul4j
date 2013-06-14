@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.util;
 import net.onrc.onos.ofcontroller.util.serializers.IPv4Deserializer;
 import net.onrc.onos.ofcontroller.util.serializers.IPv4Serializer;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

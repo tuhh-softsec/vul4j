@@ -3,7 +3,6 @@ package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl;
 import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl.ExtractLink;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;

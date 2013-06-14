@@ -1,9 +1,7 @@
 package net.onrc.onos.ofcontroller.flowcache.web;
 
 import net.onrc.onos.ofcontroller.flowcache.IFlowService;
-import net.onrc.onos.ofcontroller.util.FlowId;
 
-import org.openflow.util.HexString;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;

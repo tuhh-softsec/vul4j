@@ -39,7 +39,6 @@ import net.floodlightcontroller.routing.Link;
 import net.floodlightcontroller.routing.Route;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.web.TopologyWebRoutable;
-import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketIn;
