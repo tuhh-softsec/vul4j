@@ -140,14 +140,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * The main controller class.  Handles all setup and network listeners
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
-   	
-	
+    
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static final String ERROR_DATABASE = 
@@ -804,10 +802,9 @@ public class Controller implements IFloodlightProviderService,
                     dfuture);
 
         }
- 
+        
       	volatile Boolean controlRequested = Boolean.FALSE;
         protected void checkSwitchReady() {
-  
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
@@ -1622,7 +1619,6 @@ public class Controller implements IFloodlightProviderService,
         // from slave controllers. Then we need to move this cancelation
         // to switch disconnect
         sw.cancelAllStatisticsReplies();
-        
             
         // FIXME: I think there's a race condition if we call updateInactiveSwitchInfo
         // here if role support is enabled. In that case if the switch is being
@@ -1634,7 +1630,6 @@ public class Controller implements IFloodlightProviderService,
         // of the switch state that's written to storage.
         
         updateInactiveSwitchInfo(sw);
-        
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -2228,13 +2223,11 @@ public class Controller implements IFloodlightProviderService,
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
         this.providerMap = new HashMap<String, List<IInfoProvider>>();
-        
         setConfigParams(configParams);
         //this.role = getInitialRole(configParams);
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
-		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
     }
