@@ -143,6 +143,9 @@ public class DriverFactory {
 	 */
 	public final static void configure(Properties props) {
 		Properties defaultProperties = new Properties();
+		// Error page if default provider is not configured.
+		defaultProperties.put( Parameters.REMOTE_URL_BASE.name, "http://esigate/no-mapping/");
+		
 		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
 		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
 			String propertyName = (String) enumeration.nextElement();

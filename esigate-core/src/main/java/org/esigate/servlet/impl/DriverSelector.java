@@ -110,19 +110,9 @@ public class DriverSelector {
 	 * the very first hit to Esigate (instead of 'on startup').
 	 */
 	public void touchDriverFactory() {
-
-		// Using getDriver() instead of DriverFactory#configure() to prevent
+		// Using DriverFactory.getInstance() instead of DriverFactory#configure() to prevent
 		// multiple configuration loading if several servlets are used
+		DriverFactory.getInstance();
 
-		if (this.webXmlProvider != null) {
-			// Get defined provider
-			DriverFactory.getInstance(this.webXmlProvider);
-		} else if (this.webXmlProviderMappings != null && this.webXmlProviderMappings.size() > 0) {
-			// Get provider for the first mapping
-			DriverFactory.getInstance(this.webXmlProviderMappings.values().iterator().next());
-		} else {
-			// Get default provider
-			// DriverFactory.getInstanceFor(null, null, "/");
-		}
 	}
 }
