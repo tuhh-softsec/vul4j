@@ -44,6 +44,7 @@ import net.floodlightcontroller.core.annotations.LogMessageDocs;
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.util.TimedCache;
+import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -75,7 +76,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This is the internal representation of an openflow switch.
  */
-public class OFSwitchImpl implements IOFSwitch {
+public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
     // TODO: should we really do logging in the class or should we throw
     // exception that can then be handled by callers?
     protected static Logger log = LoggerFactory.getLogger(OFSwitchImpl.class);

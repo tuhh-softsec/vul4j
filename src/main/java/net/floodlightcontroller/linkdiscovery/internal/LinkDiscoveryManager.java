@@ -81,6 +81,7 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.EventHistory;
 import net.floodlightcontroller.util.EventHistory.EvAction;
+import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;
@@ -203,7 +204,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * Map of remote switches that are not connected to this controller. This
      * is used to learn remote switches in a distributed controller ONOS.
      */
-    protected Map<Long, IOFSwitch> remoteSwitches;
+    protected Map<Long, IOnosRemoteSwitch> remoteSwitches;
     
     /**
      * Map from link to the most recent time it was verified functioning
@@ -518,7 +519,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * Learn remote switches when running as a distributed controller ONOS
      */
     protected IOFSwitch addRemoteSwitch(long sw, short port) {
-    	IOFSwitch remotesw = null;
+    	IOnosRemoteSwitch remotesw = null;
     	
     	// add a switch if we have not seen it before
     	remotesw = remoteSwitches.get(sw);
@@ -1870,7 +1871,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
         this.quarantineQueue = new LinkedBlockingQueue<NodePortTuple>();
         this.maintenanceQueue = new LinkedBlockingQueue<NodePortTuple>();
         // Added by ONOS
-        this.remoteSwitches = new HashMap<Long, IOFSwitch>();
+        this.remoteSwitches = new HashMap<Long, IOnosRemoteSwitch>();
 
         this.evHistTopologySwitch =
                 new EventHistory<EventHistoryTopologySwitch>("Topology: Switch");
