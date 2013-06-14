@@ -18,16 +18,6 @@ public class NodePortTuple {
     protected short portId; // switch port id
 
     /**
-     * A copy constructor for NodePortTuple.
-     *
-     * @param other the object to copy the state from.
-     */
-    public NodePortTuple(NodePortTuple other) {
-	this.nodeId = other.nodeId;
-	this.portId = other.portId;
-    }
-
-    /**
      * Creates a NodePortTuple
      * @param nodeId The DPID of the switch
      * @param portId The port of the switch
