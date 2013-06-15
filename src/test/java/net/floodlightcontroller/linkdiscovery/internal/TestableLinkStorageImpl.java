@@ -2,7 +2,7 @@ package net.floodlightcontroller.linkdiscovery.internal;
 
 import java.util.Set;
 
-import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkStorageImpl;
+import net.onrc.onos.ofcontroller.core.internal.LinkStorageImpl;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;

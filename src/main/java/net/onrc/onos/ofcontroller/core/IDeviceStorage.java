@@ -1,7 +1,6 @@
-package net.onrc.onos.ofcontroller.devicemanager;
+package net.onrc.onos.ofcontroller.core;
 
 import net.floodlightcontroller.devicemanager.IDevice;
-import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 
 public interface IDeviceStorage extends INetMapStorage {

@@ -1,10 +1,9 @@
-package net.onrc.onos.ofcontroller.linkdiscovery;
+package net.onrc.onos.ofcontroller.core;
 
 import java.util.List;
 
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
 import net.floodlightcontroller.routing.Link;
-import net.onrc.onos.ofcontroller.core.INetMapStorage;
 
 public interface ILinkStorage extends INetMapStorage {
 	
