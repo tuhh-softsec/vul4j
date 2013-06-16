@@ -6,31 +6,20 @@ import static org.easymock.EasyMock.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javassist.bytecode.Descriptor.Iterator;
-
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.devicemanager.internal.DeviceStorageImpl;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
 import net.onrc.onos.util.GraphDBOperation;
-import net.floodlightcontroller.core.internal.TestDatabaseManager;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.SwitchPort;
-import net.floodlightcontroller.flowcache.FlowReconcileManager;
-import net.floodlightcontroller.packet.IPacket;
 import net.floodlightcontroller.packet.IPv4;
-import net.floodlightcontroller.storage.memory.MemoryStorageSource;
-
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflow.protocol.OFPacketIn;
 import org.openflow.util.HexString;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -39,9 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thinkaurelius.titan.core.TitanFactory;
-import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 //Add Powermock preparation
 @RunWith(PowerMockRunner.class)
@@ -50,29 +36,14 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 	
+	String conf;
 	DeviceStorageImpl deviceImpl;
-	DeviceManagerImpl deviceManager;
-	protected IPacket testARPReplyPacket_1;
-    FlowReconcileManager flowReconcileMgr;
-    MemoryStorageSource storageSource;
-    protected byte[] testARPReplyPacket_1_Srld;
-    protected OFPacketIn packetIn_1;
-    private static TitanGraph titanGraph;
-    String conf;
     private GraphDBConnection mockConn;
     private GraphDBOperation mockOpe;
     
 	@Before
 	public void setUp() throws Exception {
 
-// 		Make mock cassandra DB
-// 		Replace TitanFactory.open() to return mock DB
-//		titanGraph = TestDatabaseManager.getTestDatabase();
-//		TestDatabaseManager.populateTestData(titanGraph);
-//		PowerMock.mockStatic(TitanFactory.class);
-//		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(titanGraph);
-//		PowerMock.replay(TitanFactory.class);
-		
 		PowerMock.mockStatic(GraphDBConnection.class);
 		mockConn = createMock(GraphDBConnection.class);
 		PowerMock.suppress(PowerMock.constructor(GraphDBConnection.class));
@@ -104,7 +75,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
         		multiIntString = "[" + IPv4.fromIPv4Address(intValue);
         	}
         	else{
-           		multiIntString += ":" + IPv4.fromIPv4Address(intValue);
+           		multiIntString += "," + IPv4.fromIPv4Address(intValue);
         	}
         }
         return multiIntString + "]";
@@ -171,6 +142,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.newDevice()).andReturn(mockIDev);
 			expect(mockOpe.searchPort(switchMacAddr, portNum)).andReturn(mockIPort);
 			mockOpe.commit();
+
 			replay(mockOpe);				
 			
 			deviceImpl.init(conf);
@@ -178,6 +150,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			//Add the device
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
 			assertNotNull(obj);
+			
+			verify(mockIDev);
+			verify(mockOpe);
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -191,7 +166,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * 	Already added device is existed.
 	 * Expect:
 	 * 	Get proper IDeviceObject still.
-	 *  Check the IDeviceObject properties set.
+	 *  Check the IDeviceObject properties set expectedly. 
 	 */
 	//@Ignore
 	@Test
@@ -259,6 +234,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	        IDeviceObject obj2 = deviceImpl.addDevice(mockDev);
 			assertNotNull(obj2);
 			
+			verify(mockIDev);
+			verify(mockOpe);
+			
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -271,7 +249,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * 	The mac address and attachment point are the same. 
 	 *  All of the other parameter are different.
 	 * Expect:
-	 * 	Changed parameters are set properly.
+	 * 	Changed parameters are set expectedly.
 	 */
 	//@Ignore
 	@Test
@@ -350,6 +328,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			IDeviceObject obj2 = deviceImpl.updateDevice(mockDev2);
 			assertNotNull(obj2);
 			
+			verify(mockIDev);
+			verify(mockOpe);
+			
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -380,29 +361,17 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			SwitchPort sp1 = new SwitchPort(switchMacAddrL, portNum);
 			SwitchPort[] sps = {sp1};
 			
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			expect(mockDev.getIPv4Addresses()).andReturn(ipaddrs);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev);
 			
 			//Dev2 (attached port is the same)
 			IDevice mockDev2 = createMock(Device.class);
 			String macAddr2 = "33:33:33:33:33:33";
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
+			expect(mockDev2.getMACAddressString()).andReturn(macAddr2).anyTimes();
 			expect(mockDev2.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev2.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr2);
 			replay(mockDev2);
 			
 			//Mock IPortObject 1 with dpid "00:00:00:00:00:00:0a:01" and port "1"
@@ -452,7 +421,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			deviceImpl.removeDevice(mockDev);		
 		    IDeviceObject dev2 = deviceImpl.getDeviceByMac(macAddr);
 		    assertNull(dev2);
-		 
+		    
+			verify(mockIDev);
+			verify(mockOpe);
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -466,7 +437,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * Expect:
 	 * 	1.Nothing happen when you put unregistered mac address
 	 *  2.Get the proper IDeviceObject.
-	 *  3.Check the IDeviceObject properties set.
+	 *  3.Check the IDeviceObject properties set expectedly.
 	 */
 	//@Ignore
 	@Test
@@ -486,14 +457,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			
 			String dummyMac = "33:33:33:33:33:33";
 			
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev);
 			
 			//Mock IPortObject 1 with dpid "00:00:00:00:00:00:0a:01" and port "1"
@@ -538,6 +504,8 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    IDeviceObject dev = deviceImpl.getDeviceByMac(macAddr);
 		    assertNotNull(dev);
 		    
+			verify(mockIDev);
+			verify(mockOpe);   
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
@@ -551,7 +519,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * Expect:
 	 * 	1. Nothing happen when you put unregistered mac address
 	 * 	2. Get the proper IDeviceObject.
-	 *  3. Check the IDeviceObject properties set.
+	 *  3. Check the IDeviceObject properties set expectedly.
 	 */
 	//@Ignore
 	@Test
@@ -561,8 +529,10 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			IDevice mockDev = createMock(Device.class);
 			String macAddr = "99:99:99:99:99:99";
 			String ip = "192.168.100.1";
+			String ip2 = "192.168.100.2";
 			Integer ipInt = IPv4.toIPv4Address(ip);
-			Integer[] ipaddrs = {ipInt};
+			Integer ipInt2 = IPv4.toIPv4Address(ip2);
+			Integer[] ipaddrs = {ipInt, ipInt2};
 			String switchMacAddr = "00:00:00:00:00:00:0a:01";		
 			long switchMacAddrL = HexString.toLong(switchMacAddr);
 			short portNum = 2; 
@@ -571,14 +541,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			
 			String dummyIP = "222.222.222.222";
 			
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev);
 			
 			//Mock IPortObject 1 with dpid "00:00:00:00:00:00:0a:01" and port "1"
@@ -597,7 +562,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			//Expectation for mockIDeviceObject
 			IDeviceObject mockIDev = createMock(IDeviceObject.class);	
 			expect(mockIDev.getAttachedPorts()).andReturn(portList);
-			expect(mockIDev.getIPAddress()).andReturn(ip).times(2);
+			expect(mockIDev.getIPAddress()).andReturn(makeIPStringFromArray(ipaddrs)).times(2);
 			mockIDev.setIPAddress(makeIPStringFromArray(ipaddrs));
 			mockIDev.setMACAddress(macAddr);
 			mockIDev.setType("device");
@@ -617,8 +582,6 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			expect(mockOpe.getDevices()).andReturn(deviceList).times(2);
 			replay(mockOpe);				
 			
-
-			
 			deviceImpl.init(conf);
 	
 	        IDeviceObject obj = deviceImpl.addDevice(mockDev);	
@@ -629,6 +592,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			
 		    IDeviceObject dev = deviceImpl.getDeviceByIP(ip);
 		    assertNotNull(dev);
+		    
+			verify(mockIDev);
+			verify(mockOpe);
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -642,7 +608,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * 	1. Unexisting attachment point argument is set
 	 * Expect:
 	 * 	1. Nothing happen when you put unexisting attachment point.
-	 * 	2. Change the attachment point.
+	 * 	2. Set the attachment point expectedly;
 	 */
 	//@Ignore
 	@Test
@@ -660,14 +626,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			SwitchPort sp1 = new SwitchPort(switchMacAddrL, portNum);
 			SwitchPort[] sps = {sp1};
 			
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev);
 			
 			//Dev2
@@ -678,14 +639,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			SwitchPort sp2 = new SwitchPort(lSwitchMacAddr2, portNum2);
 			SwitchPort sps2[] = {sp2};
 			
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev2.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev2.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev2.getAttachmentPoints()).andReturn(sps2);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev2.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev2);
 			
 			//Dev3
@@ -696,14 +652,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			SwitchPort sp3 = new SwitchPort(lSwitchMacAddr3, portNum3);
 			SwitchPort sps3[] = {sp3};
 			
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev3.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev3.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev3.getAttachmentPoints()).andReturn(sps3);
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev3.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev3);
 			
 			IDeviceObject mockIDev = createMock(IDeviceObject.class);	
@@ -776,6 +727,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 		    deviceImpl.changeDeviceAttachments(mockDev2);
 			
 		    deviceImpl.changeDeviceAttachments(mockDev3);
+		    
+			verify(mockIDev);
+			verify(mockOpe);
 			
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -795,7 +749,7 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 	 * Condition:
 	 * 	N/A
 	 * Expect:
-	 *  1. Check correctly changed the ipadress
+	 *  1. Set the ipadress expectedly.
 	 */
 	//@Ignore
 	@Test
@@ -814,14 +768,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			SwitchPort sp1 = new SwitchPort(switchMacAddrL, portNum);
 			SwitchPort[] sps = {sp1};
 			
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
+			expect(mockDev.getMACAddressString()).andReturn(macAddr).anyTimes();
 			expect(mockDev.getIPv4Addresses()).andReturn(ipaddrs);
 			expect(mockDev.getAttachmentPoints()).andReturn(sps);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
-			expect(mockDev.getMACAddressString()).andReturn(macAddr);
 			replay(mockDev);
 			
 			//Dev2
@@ -871,6 +820,9 @@ public class DeviceStorageImplTest{ //extends FloodlightTestCase{
 			assertNotNull(obj);
 
 	        deviceImpl.changeDeviceIPv4Address(mockDev2);	
+	        
+			verify(mockIDev);
+			verify(mockOpe);
 					
 		} 
 		catch(Exception e) {

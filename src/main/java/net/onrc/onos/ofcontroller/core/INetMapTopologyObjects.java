@@ -92,12 +92,8 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
-		@Incidence(label="on",direction = Direction.IN)
-		public ISwitchObject getSwitch();
-		
-		@JsonIgnore
 		@Adjacency(label="on",direction = Direction.IN)
-		public ISwitchObject getVertexSwitch();
+		public ISwitchObject getSwitch();
 				
 		@JsonProperty("devices")
 		@Adjacency(label="host")
