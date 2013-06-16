@@ -123,55 +123,55 @@ public class JCEMapper {
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_NOT_RECOMMENDED_MD5,
-            new Algorithm("", "HmacMD5", "Mac")
+            new Algorithm("", "HmacMD5", "Mac", 128, 0)
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_RIPEMD160, 
-            new Algorithm("", "HMACRIPEMD160", "Mac")
+            new Algorithm("", "HMACRIPEMD160", "Mac", 160, 0)
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA1, 
-            new Algorithm("", "HmacSHA1", "Mac")
+            new Algorithm("", "HmacSHA1", "Mac", 160, 0)
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA256, 
-            new Algorithm("", "HmacSHA256", "Mac")
+            new Algorithm("", "HmacSHA256", "Mac", 256, 0)
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA384, 
-            new Algorithm("", "HmacSHA384", "Mac")
+            new Algorithm("", "HmacSHA384", "Mac", 384, 0)
         );
         algorithmsMap.put(
             XMLSignature.ALGO_ID_MAC_HMAC_SHA512, 
-            new Algorithm("", "HmacSHA512", "Mac")
+            new Algorithm("", "HmacSHA512", "Mac", 512, 0)
         );
         algorithmsMap.put(
             XMLCipher.TRIPLEDES, 
-            new Algorithm("DESede", "DESede/CBC/ISO10126Padding", "BlockEncryption", 192)
+            new Algorithm("DESede", "DESede/CBC/ISO10126Padding", "BlockEncryption", 192, 64)
         );
         algorithmsMap.put(
             XMLCipher.AES_128, 
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 128)
+            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 128, 128)
         );
         algorithmsMap.put(
             XMLCipher.AES_192, 
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 192)
+            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 192, 128)
         );
         algorithmsMap.put(
             XMLCipher.AES_256, 
-            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 256)
+            new Algorithm("AES", "AES/CBC/ISO10126Padding", "BlockEncryption", 256, 128)
         );
         algorithmsMap.put(
             XMLCipher.AES_128_GCM, 
-            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 128)
+            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 128, 96)
         );
         algorithmsMap.put(
             XMLCipher.AES_192_GCM, 
-            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 192)
+            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 192, 96)
         );
         algorithmsMap.put(
             XMLCipher.AES_256_GCM, 
-            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 256)
+            new Algorithm("AES", "AES/GCM/NoPadding", "BlockEncryption", 256, 96)
         );
         algorithmsMap.put(
             XMLCipher.RSA_v1dot5, 
@@ -191,19 +191,19 @@ public class JCEMapper {
         );
         algorithmsMap.put(
             XMLCipher.TRIPLEDES_KeyWrap, 
-            new Algorithm("DESede", "DESedeWrap", "SymmetricKeyWrap", 192)
+            new Algorithm("DESede", "DESedeWrap", "SymmetricKeyWrap", 192, 0)
         );
         algorithmsMap.put(
             XMLCipher.AES_128_KeyWrap, 
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 128)
+            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 128, 0)
         );
         algorithmsMap.put(
             XMLCipher.AES_192_KeyWrap, 
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 192)
+            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 192, 0)
         );
         algorithmsMap.put(
             XMLCipher.AES_256_KeyWrap, 
-            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 256)
+            new Algorithm("AES", "AESWrap", "SymmetricKeyWrap", 256, 0)
         );
     }
 
@@ -255,6 +255,14 @@ public class JCEMapper {
         Algorithm algorithm = algorithmsMap.get(algorithmURI);
         if (algorithm != null) {
             return algorithm.keyLength;
+        }
+        return 0;
+    }
+
+    public static int getIVLengthFromURI(String algorithmURI) {
+        Algorithm algorithm = algorithmsMap.get(algorithmURI);
+        if (algorithm != null) {
+            return algorithm.ivLength;
         }
         return 0;
     }
@@ -318,6 +326,7 @@ public class JCEMapper {
         final String jceName;
         final String algorithmClass;
         final int keyLength;
+        final int ivLength;
         final String jceProvider;
         
         /**
@@ -334,32 +343,37 @@ public class JCEMapper {
             } else {
                 keyLength = 0;
             }
+            if (el.hasAttribute("IVLength")) {
+                ivLength = Integer.parseInt(el.getAttributeNS(null, "IVLength"));
+            } else {
+                ivLength = 0;
+            }
         }
         
         public Algorithm(String requiredKey, String jceName) {
-            this(requiredKey, jceName, null, 0);
+            this(requiredKey, jceName, null, 0, 0);
         }
         
         public Algorithm(String requiredKey, String jceName, String algorithmClass) {
-            this(requiredKey, jceName, algorithmClass, 0);
+            this(requiredKey, jceName, algorithmClass, 0, 0);
         }
         
         public Algorithm(String requiredKey, String jceName, int keyLength) {
-            this(requiredKey, jceName, null, keyLength);
+            this(requiredKey, jceName, null, keyLength, 0);
         }
         
-        public Algorithm(String requiredKey, String jceName, String algorithmClass, int keyLength) {
-            this(requiredKey, jceName, algorithmClass, keyLength, null);
+        public Algorithm(String requiredKey, String jceName, String algorithmClass, int keyLength, int ivLength) {
+            this(requiredKey, jceName, algorithmClass, keyLength, ivLength, null);
         }
         
         public Algorithm(String requiredKey, String jceName, 
-                         String algorithmClass, int keyLength, String jceProvider) {
+                         String algorithmClass, int keyLength, int ivLength, String jceProvider) {
             this.requiredKey = requiredKey;
             this.jceName = jceName;
             this.algorithmClass = algorithmClass;
             this.keyLength = keyLength;
+            this.ivLength = ivLength;
             this.jceProvider = jceProvider;
         }
     }
-    
 }

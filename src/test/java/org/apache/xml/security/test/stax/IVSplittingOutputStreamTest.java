@@ -48,7 +48,7 @@ public class IVSplittingOutputStreamTest extends org.junit.Assert {
         Cipher cipher = Cipher.getInstance("AES/CBC/ISO10126Padding");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey);
+        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey, ivSize);
         ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
         ivSplittingOutputStream.setParentOutputStream(replaceableOuputStream);
         byte[] testBytes = testString.getBytes();
@@ -74,7 +74,7 @@ public class IVSplittingOutputStreamTest extends org.junit.Assert {
         Cipher cipher = Cipher.getInstance("AES/CBC/ISO10126Padding");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey);
+        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey, ivSize);
         ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
         ivSplittingOutputStream.setParentOutputStream(replaceableOuputStream);
         replaceableOuputStream.write(testString.getBytes());
@@ -97,7 +97,7 @@ public class IVSplittingOutputStreamTest extends org.junit.Assert {
         Cipher cipher = Cipher.getInstance("AES/CBC/ISO10126Padding");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey);
+        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey, ivSize);
         ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
         ivSplittingOutputStream.setParentOutputStream(replaceableOuputStream);
 
@@ -126,7 +126,7 @@ public class IVSplittingOutputStreamTest extends org.junit.Assert {
         Cipher cipher = Cipher.getInstance("AES/CBC/ISO10126Padding");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey);
+        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey, ivSize);
         ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
         ivSplittingOutputStream.setParentOutputStream(replaceableOuputStream);
 
@@ -153,7 +153,7 @@ public class IVSplittingOutputStreamTest extends org.junit.Assert {
         Cipher cipher = Cipher.getInstance("AES/CBC/ISO10126Padding");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey);
+        IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(byteArrayOutputStream, cipher, secretKey, ivSize);
         ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
         ivSplittingOutputStream.setParentOutputStream(replaceableOuputStream);
 

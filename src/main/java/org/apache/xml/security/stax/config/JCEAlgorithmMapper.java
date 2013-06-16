@@ -41,10 +41,14 @@ public class JCEAlgorithmMapper extends JCEMapper {
             if (algorithmType.getKeyLength() != null) {
                 keyLength = algorithmType.getKeyLength();
             }
+            int ivLength = 0;
+            if (algorithmType.getIVLength() != null) {
+                ivLength = algorithmType.getIVLength();
+            }
             Algorithm algorithm = 
                 new Algorithm(algorithmType.getRequiredKey(), algorithmType.getJCEName(),
                               algorithmType.getAlgorithmClass(), keyLength,
-                              algorithmType.getJCEProvider());
+                              ivLength, algorithmType.getJCEProvider());
             
             register(algorithmType.getURI(), algorithm);
         }

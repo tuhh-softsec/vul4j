@@ -19,6 +19,7 @@
 package org.apache.xml.security.stax.impl.processor.output;
 
 import org.apache.commons.codec.binary.Base64OutputStream;
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.stax.config.JCEAlgorithmMapper;
 import org.apache.xml.security.stax.ext.AbstractOutputProcessor;
@@ -151,17 +152,11 @@ public abstract class AbstractEncryptOutputProcessor extends AbstractOutputProce
                 }
                 Cipher symmetricCipher = Cipher.getInstance(jceAlgorithm);
 
-                // The Spec mandates a 96-bit IV for GCM algorithms
-                if ("AES/GCM/NoPadding".equals(symmetricCipher.getAlgorithm())) {
-                    byte[] temp = new byte[12];
-                    XMLSecurityConstants.secureRandom.nextBytes(temp);
-                    IvParameterSpec ivParameterSpec = new IvParameterSpec(temp);
-                    symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey(), ivParameterSpec);
-                } else {
-                    symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey());
-                }
-                //Should internally generate an IV
-                byte[] iv = symmetricCipher.getIV();
+                int ivLen = JCEMapper.getIVLengthFromURI(encryptionSymAlgorithm) / 8;
+                byte[] iv = new byte[ivLen];
+                XMLSecurityConstants.secureRandom.nextBytes(iv);
+                IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
+                symmetricCipher.init(Cipher.ENCRYPT_MODE, encryptionPartDef.getSymmetricKey(), ivParameterSpec);
 
                 characterEventGeneratorOutputStream = new CharacterEventGeneratorOutputStream();
                 Base64OutputStream base64EncoderStream =

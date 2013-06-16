@@ -282,6 +282,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="REQUIRED"
                     KeyLength="192"
+                    IVLength="64"
                     RequiredKey="DESede"
                     JCEName="DESede/CBC/ISO10126Padding"/>
 
@@ -290,6 +291,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="REQUIRED"
                     KeyLength="128"
+                    IVLength="128"
                     RequiredKey="AES"
                     JCEName="AES/CBC/ISO10126Padding"/>
 
@@ -298,6 +300,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="OPTIONAL"
                     KeyLength="192"
+                    IVLength="128"
                     RequiredKey="AES"
                     JCEName="AES/CBC/ISO10126Padding"/>
 
@@ -306,6 +309,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="REQUIRED"
                     KeyLength="256"
+                    IVLength="128"
                     RequiredKey="AES"
                     JCEName="AES/CBC/ISO10126Padding"/>
 
@@ -314,6 +318,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="OPTIONAL"
                     KeyLength="128"
+                    IVLength="96"
                     RequiredKey="AES"
                     JCEName="AES/GCM/NoPadding"/>
 
@@ -322,6 +327,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="OPTIONAL"
                     KeyLength="192"
+                    IVLength="96"
                     RequiredKey="AES"
                     JCEName="AES/GCM/NoPadding"/>
 
@@ -330,6 +336,7 @@
                     AlgorithmClass="BlockEncryption"
                     RequirementLevel="OPTIONAL"
                     KeyLength="256"
+                    IVLength="96"
                     RequiredKey="AES"
                     JCEName="AES/GCM/NoPadding"/>
 

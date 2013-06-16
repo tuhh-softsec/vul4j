@@ -202,6 +202,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                 }
 
                 final String algorithmURI = encryptedDataType.getEncryptionMethod().getAlgorithm();
+                final int ivLength = JCEAlgorithmMapper.getIVLengthFromURI(algorithmURI) / 8;
                 Cipher symCipher = getCipher(algorithmURI);
 
                 //create a new Thread for streaming decryption
@@ -209,6 +210,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
                         new DecryptionThread(subInputProcessorChain, isSecurityHeaderEvent);
                 decryptionThread.setSecretKey(inboundSecurityToken.getSecretKey(algorithmURI, XMLSecurityConstants.Enc, encryptedDataType.getId()));
                 decryptionThread.setSymmetricCipher(symCipher);
+                decryptionThread.setIvLength(ivLength);
                 XMLSecStartElement parentXMLSecStartElement = xmlSecStartElement.getParentXMLSecStartElement();
                 if (encryptedHeader) {
                     parentXMLSecStartElement = parentXMLSecStartElement.getParentXMLSecStartElement();
@@ -668,6 +670,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         private final PipedOutputStream pipedOutputStream;
         private final PipedInputStream pipedInputStream;
         private Cipher symmetricCipher;
+        private int ivLength;
         private Key secretKey;
 
         protected DecryptionThread(InputProcessorChain inputProcessorChain,
@@ -704,7 +707,7 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
             try {
                 IVSplittingOutputStream ivSplittingOutputStream = new IVSplittingOutputStream(
                         new CipherOutputStream(pipedOutputStream, getSymmetricCipher()),
-                        getSymmetricCipher(), getSecretKey());
+                        getSymmetricCipher(), getSecretKey(), getIvLength());
                 //buffering seems not to help
                 //bufferedOutputStream = new BufferedOutputStream(new Base64OutputStream(ivSplittingOutputStream, false), 8192 * 5);
                 ReplaceableOuputStream replaceableOuputStream = new ReplaceableOuputStream(ivSplittingOutputStream);
@@ -757,6 +760,14 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
 
         protected void setSymmetricCipher(Cipher symmetricCipher) {
             this.symmetricCipher = symmetricCipher;
+        }
+
+        int getIvLength() {
+            return ivLength;
+        }
+
+        void setIvLength(int ivLength) {
+            this.ivLength = ivLength;
         }
 
         protected Key getSecretKey() {

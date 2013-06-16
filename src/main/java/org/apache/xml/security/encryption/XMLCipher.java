@@ -1121,16 +1121,11 @@ public class XMLCipher {
         // Now perform the encryption
 
         try {
-            // The Spec mandates a 96-bit IV for GCM algorithms
-            if (AES_128_GCM.equals(algorithm) || AES_192_GCM.equals(algorithm) 
-                || AES_256_GCM.equals(algorithm)) {
-                byte[] temp = new byte[12];
-                XMLSecurityConstants.secureRandom.nextBytes(temp);
-                IvParameterSpec paramSpec = new IvParameterSpec(temp);
-                c.init(cipherMode, key, paramSpec);
-            } else {
-                c.init(cipherMode, key);
-            }
+            int ivLen = JCEMapper.getIVLengthFromURI(algorithm) / 8;
+            byte[] temp = new byte[ivLen];
+            XMLSecurityConstants.secureRandom.nextBytes(temp);
+            IvParameterSpec paramSpec = new IvParameterSpec(temp);
+            c.init(cipherMode, key, paramSpec);
         } catch (InvalidKeyException ike) {
             throw new XMLEncryptionException("empty", ike);
         }
@@ -1723,16 +1718,7 @@ public class XMLCipher {
             throw new XMLEncryptionException("empty", nspae);
         }
 
-        // Calculate the IV length and copy out
-
-        // For now, we only work with Block ciphers, so this will work.
-        // This should probably be put into the JCE mapper.
-
-        int ivLen = c.getBlockSize();
-        String alg = encryptedData.getEncryptionMethod().getAlgorithm();
-        if (AES_128_GCM.equals(alg) || AES_192_GCM.equals(alg) || AES_256_GCM.equals(alg)) {
-            ivLen = 12;
-        }
+        int ivLen = JCEMapper.getIVLengthFromURI(encryptedData.getEncryptionMethod().getAlgorithm()) / 8;
         byte[] ivBytes = new byte[ivLen];
 
         // You may be able to pass the entire piece in to IvParameterSpec
