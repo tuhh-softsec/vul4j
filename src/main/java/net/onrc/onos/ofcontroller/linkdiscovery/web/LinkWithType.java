@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery.web;
+package net.onrc.onos.ofcontroller.linkdiscovery.web;
 
 import java.io.IOException;
 
@@ -9,8 +9,8 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openflow.util.HexString;
 
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LinkType;
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
 
 /**
  * This class is both the datastructure and the serializer

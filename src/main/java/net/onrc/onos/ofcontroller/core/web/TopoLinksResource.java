@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.linkdiscovery.web;
+package net.onrc.onos.ofcontroller.core.web;
 
 import java.util.List;
 import net.floodlightcontroller.routing.Link;

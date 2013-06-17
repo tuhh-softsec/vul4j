@@ -15,7 +15,7 @@
 *    under the License.
 **/
 
-package net.floodlightcontroller.linkdiscovery;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
 import java.util.Map;
 import java.util.Set;

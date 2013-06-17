@@ -1,22 +1,23 @@
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
+import net.floodlightcontroller.core.web.serializers.IPv4Serializer;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /***
- * Topology Cluster merge/split event history related classes and members
+ * Topology Switch event history related classes and members
  * @author subrata
  *
  */
-public class EventHistoryTopologyCluster {
+public class EventHistoryTopologySwitch {
     // The following fields are not stored as String to save memory
     // They should be converted to appropriate human-readable strings by 
     // the front end (e.g. in cli in Python)
     public long     dpid;
-    public long     clusterIdOld; // Switch with dpid moved from cluster x to y
-    public long     clusterIdNew;
+    public int  ipv4Addr;
+    public int    l4Port;
     public String   reason;
     
     @JsonProperty("Switch")
@@ -24,15 +25,14 @@ public class EventHistoryTopologyCluster {
     public long getDpid() {
         return dpid;
     }
-    @JsonProperty("OldClusterId")
-    @JsonSerialize(using=DPIDSerializer.class)
-    public long getClusterIdOld() {
-        return clusterIdOld;
+    @JsonProperty("IpAddr")
+    @JsonSerialize(using=IPv4Serializer.class)
+    public int getIpv4Addr() {
+        return ipv4Addr;
     }
-    @JsonProperty("NewClusterId")
-    @JsonSerialize(using=DPIDSerializer.class)
-    public long getClusterIdNew() {
-        return clusterIdNew;
+    @JsonProperty("Port")
+    public int getL4Port() {
+        return l4Port;
     }
     @JsonProperty("Reason")
     public String getReason() {

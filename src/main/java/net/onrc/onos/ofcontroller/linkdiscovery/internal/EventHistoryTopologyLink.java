@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import net.floodlightcontroller.core.web.serializers.DPIDSerializer;
 

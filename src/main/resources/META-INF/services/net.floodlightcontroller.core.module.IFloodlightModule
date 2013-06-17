@@ -1,7 +1,7 @@
 net.floodlightcontroller.core.FloodlightProvider
 net.floodlightcontroller.storage.memory.MemoryStorageSource
 net.floodlightcontroller.devicemanager.internal.DeviceManagerImpl
-net.floodlightcontroller.linkdiscovery.internal.LinkDiscoveryManager
+net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager
 net.floodlightcontroller.topology.TopologyManager
 net.floodlightcontroller.forwarding.Forwarding
 net.floodlightcontroller.flowcache.FlowReconcileManager

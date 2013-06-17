@@ -20,9 +20,9 @@ package net.floodlightcontroller.core.web;
 import net.floodlightcontroller.core.module.ModuleLoaderResource;
 import net.floodlightcontroller.restserver.RestletRoutable;
 import net.onrc.onos.ofcontroller.core.web.ClearFlowTableResource;
+import net.onrc.onos.ofcontroller.core.web.TopoLinksResource;
 import net.onrc.onos.ofcontroller.core.web.TopoSwitchesResource;
 import net.onrc.onos.ofcontroller.devicemanager.web.TopoDevicesResource;
-import net.onrc.onos.ofcontroller.linkdiscovery.web.TopoLinksResource;
 
 import org.restlet.Context;
 import org.restlet.Restlet;

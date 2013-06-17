@@ -15,7 +15,7 @@
  *    under the License.
  **/
 
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -56,15 +56,6 @@ import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.IFloodlightModule;
 import net.floodlightcontroller.core.module.IFloodlightService;
 import net.floodlightcontroller.core.util.SingletonTask;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LinkType;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.SwitchType;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.floodlightcontroller.linkdiscovery.LinkInfo;
-import net.floodlightcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.floodlightcontroller.packet.BSN;
 import net.floodlightcontroller.packet.Ethernet;
 import net.floodlightcontroller.packet.IPv4;
@@ -82,6 +73,15 @@ import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.util.EventHistory;
 import net.floodlightcontroller.util.EventHistory.EvAction;
 import net.onrc.onos.ofcontroller.core.IOnosRemoteSwitch;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.SwitchType;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.UpdateOperation;
+import net.onrc.onos.ofcontroller.linkdiscovery.web.LinkDiscoveryWebRoutable;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 
 import org.openflow.protocol.OFMessage;

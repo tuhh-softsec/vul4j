@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery.web;
+package net.onrc.onos.ofcontroller.linkdiscovery.web;
 
 import net.floodlightcontroller.restserver.RestletRoutable;
 

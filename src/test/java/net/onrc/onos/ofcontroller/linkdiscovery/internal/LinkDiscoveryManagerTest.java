@@ -15,7 +15,7 @@
 *    under the License.
 **/
 
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.linkdiscovery.internal;
 
 import static org.easymock.EasyMock.*;
 
@@ -35,10 +35,6 @@ import net.floodlightcontroller.core.IFloodlightProviderService.Role;
 import net.floodlightcontroller.core.IOFSwitch;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryListener;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
-import net.floodlightcontroller.linkdiscovery.LinkInfo;
-import net.floodlightcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 import net.floodlightcontroller.restserver.IRestApiService;
 import net.floodlightcontroller.restserver.RestApiServer;
 import net.floodlightcontroller.routing.IRoutingService;
@@ -50,6 +46,10 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.topology.TopologyManager;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
+import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 
 /**
  *

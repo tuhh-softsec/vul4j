@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;

@@ -13,9 +13,9 @@
 *    under the License.
 **/
 
-package net.floodlightcontroller.linkdiscovery;
+package net.onrc.onos.ofcontroller.linkdiscovery;
 
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LinkType;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LinkType;
 
 import org.openflow.protocol.OFPhysicalPort.OFPortState;
 

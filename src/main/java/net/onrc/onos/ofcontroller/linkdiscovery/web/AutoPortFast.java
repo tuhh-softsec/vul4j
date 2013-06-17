@@ -1,6 +1,6 @@
-package net.floodlightcontroller.linkdiscovery.web;
+package net.onrc.onos.ofcontroller.linkdiscovery.web;
 
-import net.floodlightcontroller.linkdiscovery.ILinkDiscoveryService;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 
 import org.restlet.data.Status;
 import org.restlet.resource.Get;
