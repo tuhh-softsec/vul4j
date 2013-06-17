@@ -205,7 +205,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * is used to learn remote switches in a distributed controller ONOS.
      */
     protected Map<Long, IOnosRemoteSwitch> remoteSwitches;
-    
+
     /**
      * Map from link to the most recent time it was verified functioning
      */
