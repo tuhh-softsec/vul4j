@@ -106,9 +106,9 @@ public class UriUtils {
 	 * Translates an URL by replacing the beginning like in the example passed
 	 * as parameters
 	 * 
-	 * @param sourceUrl
-	 * @param sourceContext
-	 * @param targetContext
+	 * @param sourceUrl The url to translate
+	 * @param sourceContext The request which was sent to backend
+	 * @param targetContext The request which was received by esigate
 	 * @return The translated URL
 	 * @throws MalformedURLException
 	 */
@@ -117,14 +117,20 @@ public class UriUtils {
 		// transform it to targetContext
 		String commonSuffix = StringUtils.reverse(StringUtils.getCommonPrefix(StringUtils.reverse(sourceContext), StringUtils.reverse(targetContext)));
 		String sourcePrefix = StringUtils.removeEnd(sourceContext, commonSuffix);
+		HttpHost sourceHost = extractHost( sourcePrefix);
 		String targetPrefix = StringUtils.removeEnd(targetContext, commonSuffix);
 		// Make the source url absolute
 		String absoluteSourceUrl;
 		absoluteSourceUrl = resolve(sourceContext, sourceUrl).toString();
-		if (absoluteSourceUrl.startsWith(sourcePrefix))
+		
+		// If url is on the same host than the request, do translation 
+		if (extractHost( absoluteSourceUrl).equals(sourceHost ) && absoluteSourceUrl.startsWith(sourcePrefix)){
 			return targetPrefix + StringUtils.removeStart(absoluteSourceUrl, sourcePrefix);
-		else
+		}
+		else{
+			// follow redirect url.
 			return absoluteSourceUrl;
+		}
 	}
 
 }

@@ -53,6 +53,22 @@ public class UriUtilsTest extends TestCase {
 		String expected = "https://localhost:8080/eee/bb";
 		assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
 	}
+	
+	public void testTranslateSlash1() throws Exception {
+		String sourceUrl = "http://www.test.com";
+		String sourceExample = "https://localhost:8080/" ;
+		String targetExample = "http://www.test.com/";
+		String expected = "http://www.test.com";
+		assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
+	}
+
+	public void testTranslateSlash2() throws Exception {
+		String sourceUrl = "http://www.test.com/";
+		String sourceExample = "https://localhost:8080/" ;
+		String targetExample = "http://www.test.com";
+		String expected = "http://www.test.com/";
+		assertEquals(expected, UriUtils.translateUrl(sourceUrl, sourceExample, targetExample));
+	}
 
 	public void testTranslateUnmodified() throws Exception {
 		String sourceUrl = "http://www.test.com/zz/bb";
