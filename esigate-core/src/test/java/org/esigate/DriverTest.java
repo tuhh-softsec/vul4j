@@ -312,7 +312,7 @@ public class DriverTest extends TestCase {
 		driver.proxy("/foo", request);
 		// The test initially failed with an invalid Location:
 		// http://www.foo.com:80:80/foo/bar
-		assertEquals("http://www.foo.com/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
+		assertEquals("http://www.foo.com:80/foo/bar", TestUtils.getResponse(request).getFirstHeader("Location").getValue());
 	}
 
 	/**
