@@ -47,6 +47,7 @@ public class DriverFactory {
 	static {
 		// Load default settings
 		configure();
+		System.out.println( "configure done");
 	}
 
 	private DriverFactory() {
@@ -143,8 +144,6 @@ public class DriverFactory {
 	 */
 	public final static void configure(Properties props) {
 		Properties defaultProperties = new Properties();
-		// Error page if default provider is not configured.
-		defaultProperties.put( Parameters.REMOTE_URL_BASE.name, "http://esigate/no-mapping/");
 		
 		HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
 		for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
@@ -230,8 +229,9 @@ public class DriverFactory {
 	 * @param url
 	 *            The requested url
 	 * @return
+	 * @throws HttpErrorPage 
 	 */
-	public static Driver getInstanceFor(String scheme, String host, String url) {
+	public static Driver getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
 		for (UriMapping mapping : INSTANCES.getUrimappings().keySet()) {
 			if (mapping.matches(scheme, host, url)) {
 				return getInstance(INSTANCES.getUrimappings().get(mapping));
@@ -239,7 +239,7 @@ public class DriverFactory {
 		}
 
 		// If no match, return default instance.
-		return getInstance();
+		 throw new HttpErrorPage(404, "Not found", "No mapping defined for this url.");
 	}
 
 	/**
@@ -286,5 +286,9 @@ public class DriverFactory {
 		newInstances.put(instanceName, d);
 
 		INSTANCES = new IndexedInstances(newInstances);
+	}
+	
+	public static void ensureConfigured(){
+		// Just trigger static init.
 	}
 }

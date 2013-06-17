@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.servlet.impl.DriverSelector;
 import org.esigate.servlet.impl.RequestUrl;
@@ -86,7 +87,7 @@ public class ProxyServlet extends HttpServlet {
 
 		// Force esigate configuration parsing to trigger errors right away (if
 		// any) and prevent delay on first call.
-		this.driverSelector.touchDriverFactory();
+		DriverFactory.ensureConfigured();
 
 	}
 

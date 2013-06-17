@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
+import org.esigate.HttpErrorPage;
 
 /**
  * This class handles support of legacy options for Driver selection.
@@ -78,7 +79,7 @@ public class DriverSelector {
 	 * @param request
 	 * @return provider name or null.
 	 */
-	public Driver selectProvider(HttpServletRequest request) {
+	public Driver selectProvider(HttpServletRequest request) throws HttpErrorPage {
 
 		String host = request.getHeader("Host");
 		String scheme = request.getScheme();
@@ -104,15 +105,4 @@ public class DriverSelector {
 		return DriverFactory.getInstance(targetProvider);
 	}
 
-	/**
-	 * This methods forces DriverFactory to load configuration and init. This is
-	 * used to prevent delayed configuration error reporting when a user sends
-	 * the very first hit to Esigate (instead of 'on startup').
-	 */
-	public void touchDriverFactory() {
-		// Using DriverFactory.getInstance() instead of DriverFactory#configure() to prevent
-		// multiple configuration loading if several servlets are used
-		DriverFactory.getInstance();
-
-	}
 }

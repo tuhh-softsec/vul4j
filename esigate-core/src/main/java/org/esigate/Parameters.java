@@ -19,7 +19,6 @@ import org.esigate.authentication.RemoteUserAuthenticationHandler;
 import org.esigate.cache.BasicCacheStorage;
 import org.esigate.cookie.DefaultCookieManager;
 import org.esigate.extension.Aggregate;
-import org.esigate.extension.ErrorPages;
 import org.esigate.extension.Esi;
 import org.esigate.extension.FetchLogging;
 import org.esigate.extension.FragmentLogging;
@@ -82,7 +81,7 @@ public interface Parameters {
 	public static final Parameter EXTENSIONS = new Parameter("extensions",
 			FragmentLogging.class.getName() + ","
 					+ FetchLogging.class.getName() + ","
-					+ ErrorPages.class.getName() + ","
+			//		+ ErrorPages.class.getName() + ","
 					+ RemoteUserAuthenticationHandler.class.getName() + ","
 					+ Esi.class.getName() + "," + Aggregate.class.getName()
 					+ "," + ResourceFixup.class.getName() + ","

@@ -35,8 +35,9 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 
 	/**
 	 * Test simple mappings /provider1/* and /provider2/* , no host.
+	 * @throws HttpErrorPage 
 	 */
-	public void testBasicUrlMapping() {
+	public void testBasicUrlMapping() throws HttpErrorPage {
 		Properties properties = new Properties();
 
 		// Setup provider1
@@ -60,8 +61,9 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 
 	/**
 	 * Ensure virtual-host marching.
+	 * @throws HttpErrorPage 
 	 */
-	public void testHostUrlMapping() {
+	public void testHostUrlMapping() throws HttpErrorPage {
 		Properties properties = new Properties();
 
 		// Setup provider1
@@ -84,9 +86,10 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 	}
 
 	/**
-	 * Ensure a default, "catch-all" mapping can be defined with *
+	 * Ensure a default, "catch-all" mapping can be defined with 
+	 * @throws HttpErrorPage *
 	 */
-	public void testExplicitDefaultMapping() {
+	public void testExplicitDefaultMapping() throws HttpErrorPage {
 		Properties properties = new Properties();
 
 		// Setup provider1
@@ -105,6 +108,30 @@ public class UrlMappingDriverFactoryTest extends TestCase {
 				.getConfiguration().getInstanceName());
 		Assert.assertEquals("provider2", DriverFactory.getInstanceFor("http", "localhost:8080", "/provider2/test")
 				.getConfiguration().getInstanceName());
+
+	}
+	
+	
+	public void testNoMapping() {
+		Properties properties = new Properties();
+
+		// Setup provider1
+		properties.setProperty("provider1." + Parameters.REMOTE_URL_BASE.name, "http://example1.com");
+		properties.setProperty("provider1." + Parameters.MAPPINGS.name, "/provider1/*");
+
+
+		// Configure Esigate using the previous configuration
+		DriverFactory.configure(properties);
+
+		// Assert requests go to the right provider
+		try {
+			DriverFactory.getInstanceFor("http", "localhost:8080", "/");
+			fail( "Should throw HttpErrorPage");
+		} catch (HttpErrorPage e) {
+
+			 // Success
+		}
+
 
 	}
 
