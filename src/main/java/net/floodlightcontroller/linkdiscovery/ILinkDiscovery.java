@@ -107,6 +107,7 @@ public interface ILinkDiscovery {
         @Override
         public String toString() {
             switch (operation) {
+            case LINK_ADDED:
             case LINK_REMOVED:
             case LINK_UPDATED:
                 return "LDUpdate [operation=" + operation +
