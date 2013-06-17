@@ -91,7 +91,8 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
-		@GremlinGroovy("it.in('on')")
+//		@GremlinGroovy("it.in('on')")
+		@Adjacency(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 				
 		@JsonProperty("devices")
@@ -142,7 +143,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void setIPAddress(String ipaddr);
 		
 		@JsonIgnore
-		@Incidence(label="host",direction = Direction.IN)
+		@Adjacency(label="host",direction = Direction.IN)
 		public Iterable<IPortObject> getAttachedPorts();
 			
 		@JsonIgnore
