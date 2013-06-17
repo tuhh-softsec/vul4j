@@ -171,7 +171,9 @@ public class AggregatorServletTest {
 		DriverFactory.configure(p);
 
 		AggregatorServlet servlet = new AggregatorServlet();
-		// NO INIT : depends on esigate configuration.
+		ServletConfig conf =	Mockito.mock(ServletConfig.class);
+		Mockito.when(conf.getInitParameter("useMappings")).thenReturn("true");
+		servlet.init(conf);
 
 		// Do testing
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
