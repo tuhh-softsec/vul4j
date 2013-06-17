@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.core.internal;
 
 import java.util.ArrayList;
 import java.util.List;

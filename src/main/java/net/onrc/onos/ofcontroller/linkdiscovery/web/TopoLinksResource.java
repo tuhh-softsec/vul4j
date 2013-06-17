@@ -2,7 +2,7 @@ package net.onrc.onos.ofcontroller.linkdiscovery.web;
 
 import java.util.List;
 import net.floodlightcontroller.routing.Link;
-import net.onrc.onos.ofcontroller.linkdiscovery.internal.TopoLinkServiceImpl;
+import net.onrc.onos.ofcontroller.core.internal.TopoLinkServiceImpl;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;

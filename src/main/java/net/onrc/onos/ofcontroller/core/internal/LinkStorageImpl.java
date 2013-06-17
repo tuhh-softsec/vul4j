@@ -221,8 +221,7 @@ public class LinkStorageImpl implements ILinkStorage {
 		return links;
 	}
 	
-	// FIXME Scope changed to public to allow access from TopoLinkServiceImpl. Move class definition to appropriate place.
-	static public class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
+	static class ExtractLink implements PipeFunction<PathPipe<Vertex>, Link> {
 	
 		@Override
 		public Link compute(PathPipe<Vertex> pipe ) {
