@@ -27,6 +27,7 @@ import junit.framework.Assert;
 
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
+import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -97,9 +98,10 @@ public class ProxyServletTest {
 	 * 
 	 * @throws ServletException
 	 * @throws IOException
+	 * @throws HttpErrorPage 
 	 */
 	@Test
-	public void testProviderSelectionWebXml() throws ServletException, IOException {
+	public void testProviderSelectionWebXml() throws ServletException, IOException, HttpErrorPage {
 
 		// Setup Esigate
 		Properties p = new Properties();
@@ -152,9 +154,10 @@ public class ProxyServletTest {
 	 * 
 	 * @throws ServletException
 	 * @throws IOException
+	 * @throws HttpErrorPage 
 	 */
 	@Test
-	public void testProviderSelectionEsigate() throws ServletException, IOException {
+	public void testProviderSelectionEsigate() throws ServletException, IOException, HttpErrorPage {
 
 		// Setup Esigate
 		Properties p = new Properties();

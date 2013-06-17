@@ -22,6 +22,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.esigate.DriverFactory;
+import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.servlet.impl.DriverSelector;
 import org.junit.Test;
@@ -41,9 +42,10 @@ public class DriverSelectorTest extends TestCase {
 
 	/**
 	 * Test setting a unique Driver instance for a servlet (web.xml)
+	 * @throws HttpErrorPage 
 	 */
 	@Test
-	public void testWebXmlProviderSelection() {
+	public void testWebXmlProviderSelection() throws HttpErrorPage {
 		// Setup default
 		Properties properties = new Properties();
 		properties.setProperty("default." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
@@ -62,9 +64,10 @@ public class DriverSelectorTest extends TestCase {
 
 	/**
 	 * Test setting a host-based mapping for a servlet. (web.xml)
+	 * @throws HttpErrorPage 
 	 */
 	@Test
-	public void testWebXmlProvidersSelection() {
+	public void testWebXmlProvidersSelection() throws HttpErrorPage {
 		Properties properties = new Properties();
 		properties.setProperty("default." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
 		properties.setProperty("aggregated1." + Parameters.REMOTE_URL_BASE.name, "http://example2.com");
