@@ -95,7 +95,7 @@ public class DriverSelector {
 
 		String relUrl = RequestUrl.getRelativeUrl(request);
 
-		if (this.webXmlProvider == null && this.webXmlProviderMappings == null) {
+		if (this.useMappings) {
 			return DriverFactory.getInstanceFor(scheme, host, relUrl);
 		}
 
