@@ -1,14 +1,14 @@
 package net.floodlightcontroller.linkdiscovery.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.easymock.EasyMock;
 import org.openflow.util.HexString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
@@ -23,7 +23,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.util.GraphDBConnection;
@@ -31,23 +30,141 @@ import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.IDBConnection;
 
 public class TestGraphDBOperation extends GraphDBOperation {
+	protected static Logger log = LoggerFactory.getLogger(TestGraphDBOperation.class);
+
 	protected List<TestSwitchObject> switches;
 	protected List<TestPortObject> ports;
-//	protected List<TestDeviceObject> devices;
+	protected List<TestDeviceObject> devices;
 //	protected List<TestFlowEntry> flows;
 
 	protected List<TestSwitchObject> switchesToAdd;
 	protected List<TestPortObject> portsToAdd;
-//	protected List<TestDeviceObject> devicesToAdd;
+	protected List<TestDeviceObject> devicesToAdd;
 //	protected List<TestFlowEntry> flowsToAdd;
 
 	protected List<TestSwitchObject> switchesToRemove;
 	protected List<TestPortObject> portsToRemove;
-//	protected List<TestDeviceObject> devicesToRemove;
+	protected List<TestDeviceObject> devicesToRemove;
 //	protected List<TestFlowEntry> flowsToRemove;
 
 
 	// Testable implementations of INetMapTopologyObject interfaces
+	public static class TestDeviceObject implements IDeviceObject {
+		private String state,type,mac,ipaddr;
+		private List<IPortObject> ports;
+		private List<ISwitchObject> switches;
+		
+		private String stateToUpdate,typeToUpdate,macToUpdate,ipaddrToUpdate;
+		private List<IPortObject> portsToAdd;
+		private List<IPortObject> portsToRemove;
+
+		public TestDeviceObject() {
+			ports = new ArrayList<IPortObject>();
+			portsToAdd = new ArrayList<IPortObject>();
+			portsToRemove = new ArrayList<IPortObject>();
+			switches = new ArrayList<ISwitchObject>();
+			
+			clearUncommitedData();
+		}
+		
+		public void commit() {
+			for(IPortObject port : portsToAdd) {
+				ports.add(port);
+			}
+			for(IPortObject port : portsToRemove) {
+				ports.remove(port);
+			}
+			
+			if(stateToUpdate != null) { state = stateToUpdate; }
+			if(typeToUpdate != null) { type = typeToUpdate; }
+			if(macToUpdate != null) { mac = macToUpdate; }
+			if(ipaddrToUpdate != null) { ipaddr = ipaddrToUpdate; }
+			
+			clearUncommitedData();
+		}
+		
+		public void rollback() {
+			clearUncommitedData();
+		}
+		
+		public void clearUncommitedData() {
+			ports.clear();
+			portsToAdd.clear();
+			portsToRemove.clear();
+			
+			stateToUpdate = typeToUpdate = macToUpdate = ipaddrToUpdate = null;
+		}
+		
+		public void addSwitchForTest(ISwitchObject sw) {
+			switches.add(sw);
+		}
+		
+		public void addPortForTest(IPortObject port) {
+			ports.add(port);
+		}
+		
+		@Override
+		@JsonProperty("state")
+		@Property("state")
+		public String getState() { return state; }
+	
+		@Override
+		@Property("state")
+		public void setState(String state) { stateToUpdate = state; }
+	
+		@Override
+		@JsonIgnore
+		@Property("type")
+		public String getType() { return type; }
+	
+		@Override
+		@Property("type")
+		public void setType(String type) { typeToUpdate = type; }
+	
+		@Override
+		public Vertex asVertex() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+		@Override
+		@JsonProperty("mac")
+		@Property("dl_addr")
+		public String getMACAddress() { return mac; }
+	
+		@Override
+		@Property("dl_addr")
+		public void setMACAddress(String macaddr) { macToUpdate = macaddr; }
+	
+		@Override
+		@JsonProperty("ipv4")
+		@Property("nw_addr")
+		public String getIPAddress() { return ipaddr; }
+
+		@Override
+		@Property("dl_addr")
+		public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public Iterable<IPortObject> getAttachedPorts() { return ports; }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public void setHostPort(IPortObject port) { portsToAdd.add(port); }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public void removeHostPort(IPortObject port) { portsToRemove.add(port); }
+	
+		@Override
+		@JsonIgnore
+		@GremlinGroovy("_().in('host').in('on')")
+		public Iterable<ISwitchObject> getSwitch() { return switches; }
+	}
 	
 	public static class TestSwitchObject implements ISwitchObject {
 		private String state,type,dpid;
@@ -182,6 +299,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private Integer port_stateToUpdate;
 		private List<IPortObject> linkedPortsToAdd;
 		private List<IPortObject> linkedPortsToRemove;
+		private List<IDeviceObject> devicesToAdd;
+		private List<IDeviceObject> devicesToRemove;
 		
 
 		public TestPortObject() {
@@ -192,18 +311,19 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			linkedPortsToAdd = new ArrayList<IPortObject>();
 			linkedPortsToRemove = new ArrayList<IPortObject>();
 			devices = new ArrayList<IDeviceObject>();
+			devicesToAdd = new ArrayList<IDeviceObject>();
+			devicesToRemove = new ArrayList<IDeviceObject>();
 			flows = new ArrayList<IFlowEntry>();
 			
 			clearUncommitedData();
 		}
 		
 		public void commit() {
-			for(IPortObject port : linkedPortsToAdd) {
-				linkedPorts.add(port);
-			}
-			for(IPortObject port : linkedPortsToRemove) {
-				linkedPorts.remove(port);
-			}
+			for(IPortObject port : linkedPortsToAdd) { linkedPorts.add(port); }
+			for(IPortObject port : linkedPortsToRemove) { linkedPorts.remove(port); }
+			for(IDeviceObject dev : devicesToAdd) { devices.add(dev); }
+			for(IDeviceObject dev : devicesToRemove) { devices.remove(dev); }
+			
 			if(stateToUpdate != null) { state = stateToUpdate; }
 			if(typeToUpdate != null) { type = typeToUpdate; }
 			if(descToUpdate != null) { desc = descToUpdate; }
@@ -220,6 +340,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		public void clearUncommitedData() {
 			linkedPortsToAdd.clear();
 			linkedPortsToRemove.clear();
+			devicesToAdd.clear();
+			devicesToRemove.clear();
 			stateToUpdate = typeToUpdate = descToUpdate = null;
 			port_stateToUpdate = null;
 			numberToUpdate = null;
@@ -296,11 +418,11 @@ public class TestGraphDBOperation extends GraphDBOperation {
 
 		@Override
 		@Adjacency(label = "host")
-		public void setDevice(IDeviceObject device) { devices.add(device); }
+		public void setDevice(IDeviceObject device) { devicesToAdd.add(device); }
 
 		@Override
 		@Adjacency(label = "host")
-		public void removeDevice(IDeviceObject device) { devices.remove(device); }
+		public void removeDevice(IDeviceObject device) { devicesToRemove.add(device); }
 
 		@Override
 		@JsonIgnore
@@ -321,7 +443,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		@Override
 		@JsonIgnore
 		@Adjacency(label = "link")
-		public Iterable<IPortObject> getLinkedPorts() { return linkedPorts; }
+		public Iterable<IPortObject> getLinkedPorts() {
+			return linkedPorts; }
 
 		@Override
 		@Adjacency(label = "link")
@@ -338,23 +461,30 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		
 		switches = new ArrayList<TestSwitchObject>();
 		ports = new ArrayList<TestPortObject>();
-//		devices = new ArrayList<TestDeviceObject>();
+		devices = new ArrayList<TestDeviceObject>();
 //		flows = new ArrayList<TestFlowEntry>();
 		
 		switchesToAdd = new ArrayList<TestSwitchObject>();
 		portsToAdd = new ArrayList<TestPortObject>();
-//		devicesToAdd = new ArrayList<TestDeviceObject>();
+		devicesToAdd = new ArrayList<TestDeviceObject>();
 //		flowsToAdd = new ArrayList<TestFlowEntry>();
 
 		switchesToRemove = new ArrayList<TestSwitchObject>();
 		portsToRemove = new ArrayList<TestPortObject>();
-//		devicesToRemove = new ArrayList<TestDeviceObject>();
+		devicesToRemove = new ArrayList<TestDeviceObject>();
 //		flowsToRemove = new ArrayList<TestFlowEntry>();
 		
-		clear();
+		clearUncommitedData();
 	}
 	
-	private void clear() {
+	private void clearUncommitedData() {
+		for(TestDeviceObject dev : devices) {
+			dev.clearUncommitedData();
+		}
+		for(TestDeviceObject dev : devicesToAdd) {
+			dev.clearUncommitedData();
+		}
+		
 		for(TestSwitchObject sw : switches) {
 			sw.clearUncommitedData();
 		}
@@ -369,6 +499,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			port.clearUncommitedData();
 		}
 		
+		devicesToAdd.clear();
+		devicesToRemove.clear();
 		switchesToAdd.clear();
 		switchesToRemove.clear();
 		portsToAdd.clear();
@@ -386,6 +518,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		for(TestSwitchObject sw_loop : switches) {
 			if(sw_loop.getDPID().equals(dpid)) {
 				// Already created
+				log.error("switch already exists : " + dpid);
 				return sw_loop;
 			}
 		}
@@ -411,6 +544,9 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			TestPortObject port = new TestPortObject();
 			port.setNumberForTest(number);
 			port.setSwitchForTest(sw);
+			sw.addPortForTest(port);
+			
+			ports.add(port);
 
 			return port;
 		} else {
@@ -422,20 +558,56 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		src.addLinkedPortForTest(dst);
 		//dst.addLinkedPortForTest(src);
 	}
+	
+	public boolean hasLinkBetween(String srcSw_str, Short srcNumber, String dstSw_str, Short dstNumber) {
+		IPortObject srcPort = null, dstPort = null;
+		long srcSw = HexString.toLong(srcSw_str);
+		long dstSw = HexString.toLong(dstSw_str);
+		
+		for(TestSwitchObject sw : switches) {
+			long swLong = HexString.toLong(sw.getDPID());
+			if(swLong == srcSw) {
+				for(IPortObject port : sw.getPorts()) {
+					if(port.getNumber().equals(srcNumber)) {
+						srcPort = port;
+					}
+				}
+			} else if(swLong == dstSw) {
+				for(IPortObject port : sw.getPorts()) {
+					if(port.getNumber().equals(dstNumber)) {
+						dstPort = port;
+					}
+				}
+			}
+		}
+		
+		if(srcPort != null && dstPort != null) {
+			for(IPortObject port : srcPort.getLinkedPorts()) {
+				if(port.equals(dstPort)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	// Overriding methods below are to mock GraphDBOperation class.
 	@Override
 	public ISwitchObject newSwitch(String dpid) {
 		TestSwitchObject sw = new TestSwitchObject();
+		sw.setDPID(dpid);
 		switchesToAdd.add(sw);
 		
 		return sw;
 	}
 
 	@Override
-	public ISwitchObject searchSwitch(String dpid) {
+	public ISwitchObject searchSwitch(String dpid_str) {
+		Long dpid = HexString.toLong(dpid_str);
+		
 		for(ISwitchObject sw : switches) {
-			if(sw.getDPID().equals(dpid)) {
+			if(HexString.toLong(sw.getDPID()) == dpid) {
 				return sw;
 			}
 		}
@@ -443,9 +615,11 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	}
 
 	@Override
-	public ISwitchObject searchActiveSwitch(String dpid) {
+	public ISwitchObject searchActiveSwitch(String dpid_str) {
+		Long dpid = HexString.toLong(dpid_str);
+
 		for(ISwitchObject sw : switches) {
-			if(sw.getDPID().equals(dpid) && sw.getState().equals("ACTIVE")) {
+			if(HexString.toLong(sw.getDPID()) == dpid && sw.getState().equals("ACTIVE")) {
 				return sw;
 			}
 		}
@@ -523,8 +697,10 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	
 	@Override
 	public IPortObject searchPort(String dpid_str, short number) {
+		long dpid = HexString.toLong(dpid_str);
+		
 		for(TestSwitchObject sw : switches) {
-			if(sw.getDPID().equals(dpid_str)) {
+			if(HexString.toLong(sw.getDPID()) == dpid) {
 				for(IPortObject port : sw.getPorts()) {
 					if(port.getNumber().equals(number)) {
 						return port;
@@ -654,12 +830,23 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			port.commit();
 		}
 		
-		clear();
+		for(TestDeviceObject dev : devicesToAdd) {
+			devices.add(dev);
+		}
+		for(TestDeviceObject dev : devicesToRemove) {
+			dev.commit();
+			devices.remove(dev);
+		}
+		for(TestDeviceObject dev : devices) {
+			dev.commit();
+		}
+		
+		clearUncommitedData();
 	}
 
 	@Override
 	public void rollback() {
-		clear();
+		clearUncommitedData();
 	}
 
 	@Override
