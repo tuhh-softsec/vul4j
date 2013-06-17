@@ -47,7 +47,6 @@ public class DriverFactory {
 	static {
 		// Load default settings
 		configure();
-		System.out.println( "configure done");
 	}
 
 	private DriverFactory() {
