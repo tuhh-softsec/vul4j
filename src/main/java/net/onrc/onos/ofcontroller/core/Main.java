@@ -1,8 +1,9 @@
-package net.floodlightcontroller.core;
+package net.onrc.onos.ofcontroller.core;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.internal.CmdLineSettings;
 import net.floodlightcontroller.core.module.FloodlightModuleException;
 import net.floodlightcontroller.core.module.FloodlightModuleLoader;
@@ -10,7 +11,7 @@ import net.floodlightcontroller.core.module.IFloodlightModuleContext;
 import net.floodlightcontroller.restserver.IRestApiService;
 
 /**
- * Host for the Floodlight main method
+ * Host for the ONOS main method
  * @author alexreimers
  */
 public class Main {

@@ -38,7 +38,7 @@
     <property name="source-test" location="src/test/java"/>
     <property name="python-src" location="src/main/python"/>
     <property name="docs" location="${target}/docs"/>
-    <property name="main-class" value="net.floodlightcontroller.core.Main"/>
+    <property name="main-class" value="net.onrc.onos.ofcontroller.core.Main"/>
     <property name="floodlight-jar" location="${target}/floodlight.jar"/>
     <property name="floodlight-test-jar" location="${target}/floodlight-test.jar"/>
     <property name="floodlight-only-jar" location="${target}/floodlight-only.jar"/>
