@@ -275,10 +275,11 @@ public class Controller implements IFloodlightProviderService,
     }
     /**
      * Update message indicating a switch was added or removed 
+     * ONOS: This message extended to indicate Port add or removed event.
      */
     protected class SwitchUpdate implements IUpdate {
         public IOFSwitch sw;
-        public OFPhysicalPort port;
+        public OFPhysicalPort port; // Added by ONOS
         public SwitchUpdateType switchUpdateType;
         public SwitchUpdate(IOFSwitch sw, SwitchUpdateType switchUpdateType) {
             this.sw = sw;
