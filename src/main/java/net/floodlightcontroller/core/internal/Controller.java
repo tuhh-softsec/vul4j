@@ -141,6 +141,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The main controller class.  Handles all setup and network listeners
+ * 
+ * Extensions made by ONOS are:
+ * - Detailed Port event: PORTCHANGED -> {PORTCHANGED, PORTADDED, PORTREMOVED} 
+ *    Available as net.onrc.onos.ofcontroller.core.IOFSwitchPortListener
+ * - Distributed ownership control of switch through RegistryService(IControllerRegistryService)
+ * - Register ONOS services. (IFlowService, ITopoRouteService, IControllerRegistryService)
+ * - Additional DEBUG logs
+ * - Try using hostname as controller ID, when ID was not explicitly given.
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
