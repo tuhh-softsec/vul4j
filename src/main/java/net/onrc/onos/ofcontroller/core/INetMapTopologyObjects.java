@@ -48,7 +48,7 @@ public interface ISwitchObject extends IBaseObject{
 
 // Requires Frames 2.3.0		
 		@JsonIgnore
-		@GremlinGroovy("in.out('on').has('number',port_num)")
+		@GremlinGroovy("it.out('on').has('number',port_num)")
 		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
 		
 		@Adjacency(label="on")
@@ -58,7 +58,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void removePort(final IPortObject port);
 		
 		@JsonIgnore
-		@GremlinGroovy("in.out('on').out('host')")
+		@GremlinGroovy("it.out('on').out('host')")
 		public Iterable<IDeviceObject> getDevices();
 		
 		@JsonIgnore
