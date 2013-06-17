@@ -107,6 +107,14 @@ public abstract class AbstractDecryptInputProcessor extends AbstractInputProcess
         }
     }
 
+    public Map<String, ReferenceType> getReferences() {
+        return references;
+    }
+
+    public List<ReferenceType> getProcessedReferences() {
+        return processedReferences;
+    }
+
     /*
    <xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Id="EncDataId-1612925417" Type="http://www.w3.org/2001/04/xmlenc#Content">
        <xenc:EncryptionMethod xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc" />
