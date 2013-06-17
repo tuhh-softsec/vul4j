@@ -1,5 +1,6 @@
 package net.onrc.onos.ofcontroller.devicemanager.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -9,149 +10,259 @@ import com.google.common.collect.Lists;
 import com.thinkaurelius.titan.core.TitanException;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.SwitchPort;
+import net.floodlightcontroller.packet.IPv4;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.ofcontroller.devicemanager.IDeviceStorage;
 import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBConnection.Transaction;
 import net.onrc.onos.util.GraphDBOperation;
 
+/**
+ * This is the class for storing the information of devices into CassandraDB
+ * @author Pankaj
+ */
 public class DeviceStorageImpl implements IDeviceStorage {
 	
-	public GraphDBOperation op;
+	private GraphDBConnection conn;
+	private GraphDBOperation ope;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
+	/***
+	 * Initialize function. Before you use this class, please call this method
+	 * @param conf configuration file for Cassandra DB
+	 */
 	@Override
 	public void init(String conf) {
-		op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
+		try{
+			if((conn = GraphDBConnection.getInstance(conf)) != null)
+			{
+				ope = new GraphDBOperation(conn);
+			}
+		} catch(Exception e) {
+			log.error(e.getMessage());
+		}
 	}	
-
-	public void finalize() {		
-		close();
-	}
 	
+	/***
+	 * Finalize/close function. After you use this class, please call this method.
+	 * It will close the DB connection.
+	 */
 	@Override
 	public void close() {
-		op.close();
+		conn.close();
+	}
+	
+	/***
+	 * Finalize/close function. After you use this class, please call this method.
+	 * It will close the DB connection. This is for Java gabage collection.
+	 */
+	@Override
+	public void finalize() {
+		close();
 	}
 
+	/***
+	 * This function is for adding the device into the DB.
+	 * @param device The device you want to add into the DB.
+	 * @return IDeviceObject which was added in the DB. 
+	 */
 	@Override
 	public IDeviceObject addDevice(IDevice device) {
-		// TODO Auto-generated method stub
 		IDeviceObject obj = null;
  		try {
-            if ((obj = op.searchDevice(device.getMACAddressString())) != null) {
-                log.debug("Adding device {}: found existing device",device.getMACAddressString());
+ 			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
+ 				log.debug("Adding device {}: found existing device",device.getMACAddressString());
             } else {
-            	obj = op.newDevice();
+            	obj = ope.newDevice();
                 log.debug("Adding device {}: creating new device",device.getMACAddressString());
             }
-            changeDeviceAttachments(device, obj);
-            
- 			obj.setIPAddress(device.getIPv4Addresses().toString());
- 			obj.setMACAddress(device.getMACAddressString());
- 			obj.setState("ACTIVE");
- 			op.commit();
+	            changeDeviceAttachments(device, obj);
+	
+				String multiIntString = "";
+				for(Integer intValue : device.getIPv4Addresses()) {
+				   if (multiIntString == null || multiIntString.isEmpty()){
+				     multiIntString = IPv4.fromIPv4Address(intValue);
+				     multiIntString = "[" + IPv4.fromIPv4Address(intValue);
+				   }else{
+				        multiIntString += "," + IPv4.fromIPv4Address(intValue);
+				   }
+				}
+	 	            
+	            if(multiIntString.toString() != null && !multiIntString.toString().isEmpty()){
+	            	obj.setIPAddress(multiIntString + "]");
+	            }
+	            
+	 			obj.setMACAddress(device.getMACAddressString());
+	 			obj.setType("device");
+	 			obj.setState("ACTIVE");
+	 			ope.commit();
  			
- 			log.debug("Adding device {}",device.getMACAddressString());
+	 			log.debug("Adding device {}",device.getMACAddressString());
 		} catch (Exception e) {
-            // TODO: handle exceptions
-          	op.rollback();
+			ope.rollback();
 			log.error(":addDevice mac:{} failed", device.getMACAddressString());
+			obj = null;
 		}	
-		
-		return obj;
+ 			return obj;		
 	}
 
+	/***
+	 * This function is for updating the Device properties.
+	 * @param device The device you want to add into the DB.
+	 * @return IDeviceObject which was added in the DB. 
+	 */
 	@Override
 	public IDeviceObject updateDevice(IDevice device) {
 		return addDevice(device);
 	}
 
+	/***
+	 * This function is for removing the Device from the DB.
+	 * @param device The device you want to delete from the DB.
+	 */
 	@Override
 	public void removeDevice(IDevice device) {
-		// TODO Auto-generated method stub
 		IDeviceObject dev;
 		try {
-			if ((dev = op.searchDevice(device.getMACAddressString())) != null) {
-             	op.removeDevice(dev);
-              	op.commit();
+			if ((dev = ope.searchDevice(device.getMACAddressString())) != null) {
+             	ope.removeDevice(dev);
+             	ope.commit();
             	log.error("DeviceStorage:removeDevice mac:{} done", device.getMACAddressString());
             }
 		} catch (Exception e) {
-             // TODO: handle exceptions
-          	op.rollback();
+			ope.rollback();
 			log.error("DeviceStorage:removeDevice mac:{} failed", device.getMACAddressString());
 		}
 	}
 
+	/***
+	 * This function is for getting the Device from the DB by Mac address of the device.
+	 * @param mac The device mac address you want to get from the DB.
+	 * @return IDeviceObject you want to get.
+	 */
 	@Override
 	public IDeviceObject getDeviceByMac(String mac) {
-		return op.searchDevice(mac);
+		return ope.searchDevice(mac);
 	}
 
+	/***
+	 * This function is for getting the Device from the DB by IP address of the device.
+	 * @param ip The device ip address you want to get from the DB.
+	 * @return IDeviceObject you want to get.
+	 */
 	@Override
 	public IDeviceObject getDeviceByIP(String ip) {
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+			for(IDeviceObject dev : ope.getDevices()){
+				String ips;
+				if((ips = dev.getIPAddress()) != null){
+					String nw_addr_wob = ips.replace("[", "").replace("]", "");
+					ArrayList<String> iplists = Lists.newArrayList(nw_addr_wob.split(","));	
+					if(iplists.contains(ip)){
+						return dev;
+					}
+				}
+			}
+			return null;
+		}
+		catch (Exception e)
+		{
+			log.error("DeviceStorage:getDeviceByIP:{} failed");
+			return null;
+		}
 	}
 
+	/***
+	 * This function is for changing the Device attachment point.
+	 * @param device The device you want change the attachment point
+	 */
 	@Override
 	public void changeDeviceAttachments(IDevice device) {
-		// TODO Auto-generated method stub
 		IDeviceObject obj = null;
  		try {
-            if ((obj = op.searchDevice(device.getMACAddressString())) != null) {
+            if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
                 log.debug("Changing device ports {}: found existing device",device.getMACAddressString());
                 changeDeviceAttachments(device, obj);
-     			op.commit();
-           } else {
+                ope.commit();
+            } else {
    				log.debug("failed to search device...now adding {}",device.getMACAddressString());
    				addDevice(device);
-           }            			
+            }            			
 		} catch (Exception e) {
-            // TODO: handle exceptions
-          	op.rollback();
+			ope.rollback();
 			log.error(":addDevice mac:{} failed", device.getMACAddressString());
 		}	
 	}
 	
+	/***
+	 * This function is for changing the Device attachment point.
+	 * @param device The new device you want change the attachment point
+	 * @param obj The old device IDeviceObject that is going to change the attachment point.
+	 */
 	public void changeDeviceAttachments(IDevice device, IDeviceObject obj) {
 		SwitchPort[] attachmentPoints = device.getAttachmentPoints();
 		List<IPortObject> attachedPorts = Lists.newArrayList(obj.getAttachedPorts());
-
+		
         for (SwitchPort ap : attachmentPoints) {
-       	 IPortObject port = op.searchPort(
-       			 HexString.toHexString(ap.getSwitchDPID()),
-       			 (short) ap.getPort());
-       	if (attachedPorts.contains(port)) {
-       		attachedPorts.remove(port);
-       	} else {
-               log.debug("Adding device {}: attaching to port",device.getMACAddressString());
-               port.setDevice(obj);
-       		//obj.setHostPort(port);
-       	}            		
-       }
-       for (IPortObject port: attachedPorts) {
+        	//Check weather there is the port
+          	 IPortObject port = ope.searchPort( HexString.toHexString(ap.getSwitchDPID()),
+												(short) ap.getPort());
+          	 log.debug("New Switch Port is {},{}", HexString.toHexString(ap.getSwitchDPID()),(short) ap.getPort());
+	       	 
+	       	 if(port != null){
+	   			if(attachedPorts.contains(port))
+	       		{
+		       		log.debug("This is the port you already attached {}: do nothing",device.getMACAddressString());
+		       		//This port will be remained, so remove from the removed port lists.
+		       		attachedPorts.remove(port);
+		       	} else {
+	     		   log.debug("Adding device {}: attaching to port",device.getMACAddressString());
+		       		port.setDevice(obj);  
+		        }
+	    	
+		       	log.debug("port number is {}", port.getNumber().toString());
+		        log.debug("port desc is {}", port.getDesc());  
+	       	 }
+        }      		 
+	            
+	    for (IPortObject port: attachedPorts) {
+            log.debug("Detouching the device {}: detouching from port",device.getMACAddressString());
        		port.removeDevice(obj);
-       	//	obj.removeHostPort(port);
-       }	
+        }
 	}
 
+	/***
+	 * This function is for changing the Device IPv4 address.
+	 * @param device The new device you want change the ipaddress
+	 */
 	@Override
 	public void changeDeviceIPv4Address(IDevice device) {
-		// TODO Auto-generated method stub
 		IDeviceObject obj;
   		try {
-  			if ((obj = op.searchDevice(device.getMACAddressString())) != null) {
-            	obj.setIPAddress(device.getIPv4Addresses().toString());
-              	op.commit(); 
+  			if ((obj = ope.searchDevice(device.getMACAddressString())) != null) {
+
+  				String multiIntString = "";
+  				for(Integer intValue : device.getIPv4Addresses()){
+  				   if (multiIntString == null || multiIntString.isEmpty()){
+  				     multiIntString = "[" + IPv4.fromIPv4Address(intValue);
+  				   } else {
+  				        multiIntString += "," + IPv4.fromIPv4Address(intValue);
+  				   }
+  				}
+  				
+  	            if(multiIntString != null && !multiIntString.isEmpty()){
+  	            	obj.setIPAddress(multiIntString + "]");
+  	            }
+  	            
+              	ope.commit();
   			} else {
             	log.error(":changeDeviceIPv4Address mac:{} failed", device.getMACAddressString());
-             }		
+            }		
   		} catch (TitanException e) {
-            // TODO: handle exceptions
-          	op.rollback();
+  			ope.rollback();
 			log.error(":changeDeviceIPv4Address mac:{} failed due to exception {}", device.getMACAddressString(),e);
 		}
 	}
