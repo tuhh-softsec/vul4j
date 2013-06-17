@@ -1155,15 +1155,6 @@ IFloodlightModule, IInfoProvider, IHAListener {
      * @param links The List of @LinkTuple to delete.
      */
     protected void deleteLinks(List<Link> links, String reason) {
-    	deleteLinks(links, reason, Boolean.TRUE);
-    }
-    
-    /**
-     * Removes links from memory and storage.(Added by ONOS)
-     * @param links The List of @LinkTuple to delete.
-     * FIXME Parameter hasControl is never used.
-     */
-    protected void deleteLinks(List<Link> links, String reason, Boolean hasControl) {
         NodePortTuple srcNpt, dstNpt;
 
         lock.writeLock().lock();
@@ -1233,7 +1224,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
 
         IOFSwitch iofSwitch = floodlightProvider.getSwitches().get(sw);
         if (iofSwitch == null) return Command.CONTINUE;
-        
+
         // ONOS: If we do not control this switch, then we should not process its port status messages
         if (!registryService.hasControl(iofSwitch.getId())) return Command.CONTINUE;
         
@@ -1405,12 +1396,7 @@ IFloodlightModule, IInfoProvider, IHAListener {
                 }
                 // add all tuples with an endpoint on this switch to erase list
                 eraseList.addAll(switchLinks.get(sw));
-                
-                // Added by ONOS
-                // We can get called to delete links when we lose mastership. To avoid clearing the network map in that case,
-                // figure out if we have control of the switch
-                boolean hasControl = registryService.hasControl(sw);
-                deleteLinks(eraseList, "Switch Removed", hasControl);
+                deleteLinks(eraseList, "Switch Removed");
 
                 // Send a switch removed update
                 LDUpdate update = new LDUpdate(sw, null, UpdateOperation.SWITCH_REMOVED);
@@ -2133,5 +2119,4 @@ IFloodlightModule, IInfoProvider, IHAListener {
     public void setAutoPortFastFeature(boolean autoPortFastFeature) {
         this.autoPortFastFeature = autoPortFastFeature;
     }
-
 }
