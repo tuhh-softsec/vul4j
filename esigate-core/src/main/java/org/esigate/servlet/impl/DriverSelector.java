@@ -40,8 +40,17 @@ import org.esigate.HttpErrorPage;
  */
 public class DriverSelector {
 
-	String webXmlProvider = null;
+	private String webXmlProvider = null;
 	private Map<String, String> webXmlProviderMappings = null;
+	private boolean useMappings = false;
+
+	public void setUseMappings(boolean useConfiguration) {
+		this.useMappings = useConfiguration;
+	}
+
+	public boolean isUseMappings() {
+		return this.useMappings;
+	}
 
 	public Map<String, String> getWebXmlProviderMappings() {
 		return this.webXmlProviderMappings;

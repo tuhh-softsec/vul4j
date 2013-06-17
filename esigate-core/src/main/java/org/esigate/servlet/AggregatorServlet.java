@@ -94,6 +94,8 @@ public class AggregatorServlet extends HttpServlet {
 		// Load mappings from web.xml (deprecated)
 		this.driverSelector.setWebXmlProviders(config.getInitParameter("providers"));
 
+		this.driverSelector.setUseMappings("true".equalsIgnoreCase(config.getInitParameter("useMappings")));
+
 		// Force esigate configuration parsing to trigger errors right away (if
 		// any) and prevent delay on first call.
 		DriverFactory.ensureConfigured();
