@@ -1151,7 +1151,7 @@ public class Controller implements IFloodlightProviderService,
                             }
                             state.firstRoleReplyReceived = true;
                             Role requestedRole = 
-                            		sw.deliverRoleRequestNotSupported(error.getXid());
+                            		sw.deliverRoleRequestNotSupportedEx(error.getXid());
                             synchronized(roleChanger) {
                                 if (sw.role == null && Controller.this.role==Role.SLAVE) {
                                 	//This will now never happen. The Controller's role

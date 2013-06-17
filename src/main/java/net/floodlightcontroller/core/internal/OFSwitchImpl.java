@@ -788,7 +788,18 @@ public class OFSwitchImpl implements IOFSwitch, IOnosRemoteSwitch {
      * Otherwise we ignore it.
      * @param xid
      */
-    protected Role deliverRoleRequestNotSupported(int xid) {
+    protected void deliverRoleRequestNotSupported(int xid) {
+        deliverRoleRequestNotSupportedEx(xid);
+    }
+
+    /**
+     * ONOS Extension to deliverRoleRequestNotSupported().
+     * This version return the Roll request made.
+     * @see deliverRoleRequestNotSupported
+     * @param xid
+     * @return Role of attempted RoleRequest.
+     */
+    protected Role deliverRoleRequestNotSupportedEx(int xid) {
         synchronized(pendingRoleRequests) {
             PendingRoleRequestEntry head = pendingRoleRequests.poll();
             this.role = null;
