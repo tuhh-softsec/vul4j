@@ -1,4 +1,4 @@
-package net.floodlightcontroller.core.internal;
+package net.onrc.onos.ofcontroller.core.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

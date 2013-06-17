@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
-import net.floodlightcontroller.core.internal.TestDatabaseManager;
+import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
 
 import org.easymock.EasyMock;
 import org.junit.After;

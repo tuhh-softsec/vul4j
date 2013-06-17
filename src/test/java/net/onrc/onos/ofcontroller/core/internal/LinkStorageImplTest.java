@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.core.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 import java.util.List;
 
-import net.floodlightcontroller.core.internal.TestDatabaseManager;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;

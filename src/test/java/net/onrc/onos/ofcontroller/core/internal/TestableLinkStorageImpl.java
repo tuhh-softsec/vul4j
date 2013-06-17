@@ -1,4 +1,4 @@
-package net.floodlightcontroller.linkdiscovery.internal;
+package net.onrc.onos.ofcontroller.core.internal;
 
 import java.util.Set;
 
