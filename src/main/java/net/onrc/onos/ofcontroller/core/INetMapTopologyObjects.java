@@ -92,7 +92,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
-		@Incidence(label="on",direction = Direction.IN)
+		@Adjacency(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 				
 		@JsonProperty("devices")
@@ -139,11 +139,11 @@ public interface ISwitchObject extends IBaseObject{
 		@JsonProperty("ipv4")
 		@Property("nw_addr")
 		public String getIPAddress();
-		@Property("dl_addr")
+		@Property("nw_addr")
 		public void setIPAddress(String ipaddr);
 		
 		@JsonIgnore
-		@Incidence(label="host",direction = Direction.IN)
+		@Adjacency(label="host",direction = Direction.IN)
 		public Iterable<IPortObject> getAttachedPorts();
 			
 		@JsonIgnore
