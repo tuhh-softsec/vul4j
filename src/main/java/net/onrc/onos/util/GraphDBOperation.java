@@ -174,9 +174,8 @@ public class GraphDBOperation implements IDBOperation {
 	public IDeviceObject searchDevice(String macAddr) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-		return (fg != null && fg.getVertices("dl_address",macAddr).iterator().hasNext()) ? fg.getVertices("dl_address",macAddr,
-    			IDeviceObject.class).iterator().next() : null;
-    			
+		return (fg != null && fg.getVertices("dl_addr",macAddr).iterator().hasNext()) ?
+			fg.getVertices("dl_addr",macAddr, IDeviceObject.class).iterator().next() : null;
 	}
 
 	@Override
