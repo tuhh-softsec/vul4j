@@ -46,8 +46,6 @@ import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.ITopologyService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.topology.TopologyManager;
-import net.onrc.onos.registry.controller.IControllerRegistryService;
-import net.onrc.onos.registry.controller.StandaloneRegistry;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryListener;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscoveryService;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
@@ -60,7 +58,6 @@ import net.onrc.onos.ofcontroller.linkdiscovery.internal.LinkDiscoveryManager;
 public class LinkDiscoveryManagerTest extends FloodlightTestCase {
 
     private TestLinkDiscoveryManager ldm;
-    private StandaloneRegistry srs;
     protected static Logger log = LoggerFactory.getLogger(LinkDiscoveryManagerTest.class);
     
     public class TestLinkDiscoveryManager extends LinkDiscoveryManager {
@@ -102,7 +99,6 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         ldm = new TestLinkDiscoveryManager();
         TopologyManager routingEngine = new TopologyManager();
         ldm.linkDiscoveryAware = new ArrayList<ILinkDiscoveryListener>();
-        srs = new StandaloneRegistry();
         MockThreadPoolService tp = new MockThreadPoolService();
         RestApiServer restApi = new RestApiServer();
         cntx.addService(IRestApiService.class, restApi);
@@ -112,17 +108,13 @@ public class LinkDiscoveryManagerTest extends FloodlightTestCase {
         cntx.addService(ITopologyService.class, ldm);
         cntx.addService(IStorageSourceService.class, new MemoryStorageSource());
         cntx.addService(IFloodlightProviderService.class, getMockFloodlightProvider());
-        cntx.addService(IControllerRegistryService.class, srs);
-
         restApi.init(cntx);
         tp.init(cntx);
         routingEngine.init(cntx);
-        srs.init(cntx);
         ldm.init(cntx);
         restApi.startUp(cntx);
         tp.startUp(cntx);
         routingEngine.startUp(cntx);
-        srs.startUp(cntx);
         ldm.startUp(cntx);
 
         IOFSwitch sw1 = createMockSwitch(1L);
