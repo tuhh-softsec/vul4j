@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.easymock.EasyMock;
 import org.openflow.util.HexString;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import net.onrc.onos.ofcontroller.flowcache.web.DatapathSummarySerializer;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 import net.onrc.onos.util.GraphDBConnection;
@@ -35,142 +37,28 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	protected List<TestSwitchObject> switches;
 	protected List<TestPortObject> ports;
 	protected List<TestDeviceObject> devices;
-//	protected List<TestFlowEntry> flows;
+	protected List<TestFlowPath> paths;
+	protected List<TestFlowEntry> entries;
 
 	protected List<TestSwitchObject> switchesToAdd;
 	protected List<TestPortObject> portsToAdd;
 	protected List<TestDeviceObject> devicesToAdd;
-//	protected List<TestFlowEntry> flowsToAdd;
+	protected List<TestFlowPath> pathsToAdd;
+	protected List<TestFlowEntry> entriesToAdd;
 
 	protected List<TestSwitchObject> switchesToRemove;
 	protected List<TestPortObject> portsToRemove;
 	protected List<TestDeviceObject> devicesToRemove;
-//	protected List<TestFlowEntry> flowsToRemove;
-
+	protected List<TestFlowPath> pathsToRemove;
+	protected List<TestFlowEntry> entriesToRemove;
 
 	// Testable implementations of INetMapTopologyObject interfaces
-	public static class TestDeviceObject implements IDeviceObject {
-		private String state,type,mac,ipaddr;
-		private List<IPortObject> ports;
-		private List<ISwitchObject> switches;
-		
-		private String stateToUpdate,typeToUpdate,macToUpdate,ipaddrToUpdate;
-		private List<IPortObject> portsToAdd;
-		private List<IPortObject> portsToRemove;
 
-		public TestDeviceObject() {
-			ports = new ArrayList<IPortObject>();
-			portsToAdd = new ArrayList<IPortObject>();
-			portsToRemove = new ArrayList<IPortObject>();
-			switches = new ArrayList<ISwitchObject>();
-			
-			clearUncommitedData();
-		}
-		
-		public void commit() {
-			for(IPortObject port : portsToAdd) {
-				ports.add(port);
-			}
-			for(IPortObject port : portsToRemove) {
-				ports.remove(port);
-			}
-			
-			if(stateToUpdate != null) { state = stateToUpdate; }
-			if(typeToUpdate != null) { type = typeToUpdate; }
-			if(macToUpdate != null) { mac = macToUpdate; }
-			if(ipaddrToUpdate != null) { ipaddr = ipaddrToUpdate; }
-			
-			clearUncommitedData();
-		}
-		
-		public void rollback() {
-			clearUncommitedData();
-		}
-		
-		public void clearUncommitedData() {
-			ports.clear();
-			portsToAdd.clear();
-			portsToRemove.clear();
-			
-			stateToUpdate = typeToUpdate = macToUpdate = ipaddrToUpdate = null;
-		}
-		
-		public void addSwitchForTest(ISwitchObject sw) {
-			switches.add(sw);
-		}
-		
-		public void addPortForTest(IPortObject port) {
-			ports.add(port);
-		}
-		
-		@Override
-		@JsonProperty("state")
-		@Property("state")
-		public String getState() { return state; }
-	
-		@Override
-		@Property("state")
-		public void setState(String state) { stateToUpdate = state; }
-	
-		@Override
-		@JsonIgnore
-		@Property("type")
-		public String getType() { return type; }
-	
-		@Override
-		@Property("type")
-		public void setType(String type) { typeToUpdate = type; }
-	
-		@Override
-		public Vertex asVertex() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	
-		@Override
-		@JsonProperty("mac")
-		@Property("dl_addr")
-		public String getMACAddress() { return mac; }
-	
-		@Override
-		@Property("dl_addr")
-		public void setMACAddress(String macaddr) { macToUpdate = macaddr; }
-	
-		@Override
-		@JsonProperty("ipv4")
-		@Property("nw_addr")
-		public String getIPAddress() { return ipaddr; }
-
-		@Override
-		@Property("dl_addr")
-		public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
-	
-		@Override
-		@JsonIgnore
-		@Incidence(label = "host", direction = Direction.IN)
-		public Iterable<IPortObject> getAttachedPorts() { return ports; }
-	
-		@Override
-		@JsonIgnore
-		@Incidence(label = "host", direction = Direction.IN)
-		public void setHostPort(IPortObject port) { portsToAdd.add(port); }
-	
-		@Override
-		@JsonIgnore
-		@Incidence(label = "host", direction = Direction.IN)
-		public void removeHostPort(IPortObject port) { portsToRemove.add(port); }
-	
-		@Override
-		@JsonIgnore
-		@GremlinGroovy("_().in('host').in('on')")
-		public Iterable<ISwitchObject> getSwitch() { return switches; }
-	}
-	
 	public static class TestSwitchObject implements ISwitchObject {
 		private String state,type,dpid;
 		private List<IPortObject> ports;
 		private List<IDeviceObject> devices;
-		private List<IFlowEntry> flows;
+		private List<IFlowEntry> entries;
 
 		private String stateToUpdate, typeToUpdate, dpidToUpdate;
 		private List<IPortObject> portsToAdd;
@@ -184,7 +72,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			portsToAdd = new ArrayList<IPortObject>();
 			portsToRemove = new ArrayList<IPortObject>();
 			devices = new ArrayList<IDeviceObject>();
-			flows = new ArrayList<IFlowEntry>();
+			entries = new ArrayList<IFlowEntry>();
 			
 			clearUncommitedData();
 		}
@@ -213,10 +101,12 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			stateToUpdate = typeToUpdate = dpidToUpdate = null;
 		}
 		
-		public void setDpidForTest(String dpid) { this.dpid = dpid; }
 		public void setStateForTest(String state) { this.state = state; }
 		public void setTypeForTest(String type) { this.type = type; }
+		public void setDpidForTest(String dpid) { this.dpid = dpid; }
 		public void addPortForTest(TestPortObject port) { ports.add(port);  }
+		public void addDeviceForTest(TestDeviceObject dev) { devices.add(dev); }
+		public void addEntryForTest(TestFlowEntry entry) { entries.add(entry); }
 		
 		@Override
 		@JsonProperty("state")
@@ -282,7 +172,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		@Override
 		@JsonIgnore
 		@Incidence(label = "switch", direction = Direction.IN)
-		public Iterable<IFlowEntry> getFlowEntries() { return flows; }
+		public Iterable<IFlowEntry> getFlowEntries() { return entries; }
 	}
 	
 	public static class TestPortObject implements IPortObject {
@@ -292,7 +182,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private ISwitchObject sw;
 		private List<IPortObject> linkedPorts;
 		private List<IDeviceObject> devices;
-		private List<IFlowEntry> flows;
+		private List<IFlowEntry> inflows,outflows;
 		
 		private String stateToUpdate,typeToUpdate,descToUpdate;
 		private Short numberToUpdate;
@@ -313,7 +203,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			devices = new ArrayList<IDeviceObject>();
 			devicesToAdd = new ArrayList<IDeviceObject>();
 			devicesToRemove = new ArrayList<IDeviceObject>();
-			flows = new ArrayList<IFlowEntry>();
+			inflows = new ArrayList<IFlowEntry>();
+			outflows = new ArrayList<IFlowEntry>();
 			
 			clearUncommitedData();
 		}
@@ -347,6 +238,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			numberToUpdate = null;
 		}
 		
+		// Setter methods for test
 		public void setStateForTest(String state) { this.state = state; }
 		public void setTypeForTest(String type) { this.type = type; }
 		public void setDescForTest(String desc) { this.desc = desc; }
@@ -354,7 +246,10 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		public void setPortStateForTest(Integer state) { this.port_state = state; }
 		public void setSwitchForTest(ISwitchObject sw) { this.sw = sw; }
 		public void addLinkedPortForTest(TestPortObject port) { this.linkedPorts.add(port); }
+		public void addInflowForTest(TestFlowEntry entry) { inflows.add(entry); }
+		public void addOutflowForTest(TestFlowEntry entry) { outflows.add(entry); }
 		
+		// Override methods for mock IPortObject
 		@Override
 		@JsonProperty("state")
 		@Property("state")
@@ -427,24 +322,17 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		@Override
 		@JsonIgnore
 		@Incidence(label = "inport", direction = Direction.IN)
-		public Iterable<IFlowEntry> getInFlowEntries() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		public Iterable<IFlowEntry> getInFlowEntries() { return inflows; }
 
 		@Override
 		@JsonIgnore
 		@Incidence(label = "outport", direction = Direction.IN)
-		public Iterable<IFlowEntry> getOutFlowEntries() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		public Iterable<IFlowEntry> getOutFlowEntries() { return outflows; }
 
 		@Override
 		@JsonIgnore
 		@Adjacency(label = "link")
-		public Iterable<IPortObject> getLinkedPorts() {
-			return linkedPorts; }
+		public Iterable<IPortObject> getLinkedPorts() { return linkedPorts; }
 
 		@Override
 		@Adjacency(label = "link")
@@ -454,30 +342,658 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		@Adjacency(label = "link")
 		public void setLinkPort(IPortObject dest_port) { linkedPortsToAdd.add(dest_port); }
 	}
+		
+	public static class TestDeviceObject implements IDeviceObject {
+		private String state,type,mac,ipaddr;
+		private List<IPortObject> ports;
+		private List<ISwitchObject> switches;
+		
+		private String stateToUpdate,typeToUpdate,macToUpdate,ipaddrToUpdate;
+		private List<IPortObject> portsToAdd;
+		private List<IPortObject> portsToRemove;
 	
+		public TestDeviceObject() {
+			ports = new ArrayList<IPortObject>();
+			portsToAdd = new ArrayList<IPortObject>();
+			portsToRemove = new ArrayList<IPortObject>();
+			switches = new ArrayList<ISwitchObject>();
+			
+			clearUncommitedData();
+		}
+		
+		public void commit() {
+			for(IPortObject port : portsToAdd) {
+				ports.add(port);
+			}
+			for(IPortObject port : portsToRemove) {
+				ports.remove(port);
+			}
+			
+			if(stateToUpdate != null) { state = stateToUpdate; }
+			if(typeToUpdate != null) { type = typeToUpdate; }
+			if(macToUpdate != null) { mac = macToUpdate; }
+			if(ipaddrToUpdate != null) { ipaddr = ipaddrToUpdate; }
+			
+			clearUncommitedData();
+		}
+		
+		public void rollback() {
+			clearUncommitedData();
+		}
+		
+		public void clearUncommitedData() {
+			ports.clear();
+			portsToAdd.clear();
+			portsToRemove.clear();
+			
+			stateToUpdate = typeToUpdate = macToUpdate = ipaddrToUpdate = null;
+		}
+		
+		// Setter methods for test
+		public void setStateForTest(String state) { this.state = state; }
+		public void setTypeForTest(String type) { this.type = type; }
+		public void setMacForTest(String mac) { this.mac = mac; }
+		public void setIpaddrForTest(String ipaddr) { this.ipaddr = ipaddr; }
+		public void addSwitchForTest(ISwitchObject sw) { switches.add(sw); }
+		public void addPortForTest(IPortObject port) { ports.add(port); }
+		
+		@Override
+		@JsonProperty("state")
+		@Property("state")
+		public String getState() { return state; }
 	
+		@Override
+		@Property("state")
+		public void setState(String state) { stateToUpdate = state; }
+	
+		@Override
+		@JsonIgnore
+		@Property("type")
+		public String getType() { return type; }
+	
+		@Override
+		@Property("type")
+		public void setType(String type) { typeToUpdate = type; }
+	
+		@Override
+		public Vertex asVertex() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+		@Override
+		@JsonProperty("mac")
+		@Property("dl_addr")
+		public String getMACAddress() { return mac; }
+	
+		@Override
+		@Property("dl_addr")
+		public void setMACAddress(String macaddr) { macToUpdate = macaddr; }
+	
+		@Override
+		@JsonProperty("ipv4")
+		@Property("nw_addr")
+		public String getIPAddress() { return ipaddr; }
+	
+		@Override
+		@Property("dl_addr")
+		public void setIPAddress(String ipaddr) { ipaddrToUpdate = ipaddr; }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public Iterable<IPortObject> getAttachedPorts() {
+			return ports; }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public void setHostPort(IPortObject port) { portsToAdd.add(port); }
+	
+		@Override
+		@JsonIgnore
+		@Incidence(label = "host", direction = Direction.IN)
+		public void removeHostPort(IPortObject port) { portsToRemove.add(port); }
+	
+		@Override
+		@JsonIgnore
+		@GremlinGroovy("_().in('host').in('on')")
+		public Iterable<ISwitchObject> getSwitch() { return switches; }
+	}
+	
+	public static class TestFlowPath implements IFlowPath {
+		private String state,type,flowId,installerId,srcSw,dstSw;
+		private String dataPathSummary,userState;
+		private String matchSrcMac,matchDstMac,matchSrcIpaddr,matchDstIpaddr;
+		private Short srcPort,dstPort,matchEthernetFrameType;
+		
+		private List<IFlowEntry> entries;
+		private List<ISwitchObject> switches;
+
+		private String stateToUpdate,typeToUpdate,flowIdToUpdate,installerIdToUpdate,srcSwToUpdate,dstSwToUpdate;
+		private String dataPathSummaryToUpdate,userStateToUpdate;
+		private String matchSrcMacToUpdate,matchDstMacToUpdate,matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
+		private Short srcPortToUpdate,dstPortToUpdate,matchEthernetFrameTypeToUpdate;
+
+		private List<IFlowEntry> flowsToAdd;
+		private List<IFlowEntry> flowsToRemove;
+
+		public TestFlowPath() {
+			entries = new ArrayList<IFlowEntry>();
+			flowsToAdd = new ArrayList<IFlowEntry>();
+			flowsToRemove = new ArrayList<IFlowEntry>();
+			
+			switches = new ArrayList<ISwitchObject>();
+			
+			clear();
+		}
+		
+		public void commit() {
+			for(IFlowEntry flow : flowsToAdd) {
+				entries.add(flow);
+			}
+			for(IFlowEntry flow : flowsToRemove) {
+				entries.remove(flow);
+			}
+			if(stateToUpdate != null) { state = stateToUpdate; }
+			if(typeToUpdate != null) { type = typeToUpdate; }
+			if(flowIdToUpdate != null) { flowId = flowIdToUpdate; }
+			if(installerIdToUpdate != null) { installerId = installerIdToUpdate; }
+			if(srcSwToUpdate != null) { srcSw = srcSwToUpdate; }
+			if(dstSwToUpdate != null) { dstSw = dstSwToUpdate; }
+			if(dataPathSummaryToUpdate != null) { dataPathSummary = dataPathSummaryToUpdate; }
+			if(userStateToUpdate != null) { userState = userStateToUpdate; }
+			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
+			if(matchDstMacToUpdate != null) { matchDstMac = matchDstMacToUpdate; }
+			if(matchSrcIpaddrToUpdate != null) { matchSrcIpaddr = matchSrcIpaddrToUpdate; }
+			if(matchDstIpaddrToUpdate != null) { matchDstIpaddr = matchDstIpaddrToUpdate; }
+			if(srcPortToUpdate != null) { srcPort = srcPortToUpdate; }
+			if(dstPortToUpdate != null) { dstPort = dstPortToUpdate; }
+			if(matchEthernetFrameTypeToUpdate != null) { matchEthernetFrameType = matchEthernetFrameTypeToUpdate; }
+		}
+		
+		public void rollback() {
+			clear();
+		}
+		
+		public void clear() {
+			flowsToAdd.clear();
+			flowsToRemove.clear();
+			
+			stateToUpdate = typeToUpdate = flowIdToUpdate = installerIdToUpdate = null;
+			srcSwToUpdate = dstSwToUpdate = dataPathSummaryToUpdate = userStateToUpdate = null;
+			matchSrcMacToUpdate = matchDstMacToUpdate = matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
+			srcPortToUpdate = dstPortToUpdate = matchEthernetFrameTypeToUpdate = null;
+		}
+		
+		// Setter methods for test
+		public void setStateForTest(String state) { this.state = state; }
+		public void setTypeForTest(String type) { this.type = type; }
+		public void setFlowIdForTest(String flowId) { this.flowId = flowId; }
+		public void setInstallerIdForTest(String installerId) { this.installerId = installerId; }
+		public void setSrcSwForTest(String srcSw) { this.srcSw = srcSw; }
+		public void setDstSwForTest(String dstSw) { this.dstSw = dstSw; }
+		public void setDataPathSummaryForTest(String dataPathSummary) { this.dataPathSummary = dataPathSummary; }
+		public void setUserStateForTest(String userState) { this.userState = userState; }
+		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
+		public void setMatchDstMacForTest(String matchDstMac) { this.matchDstMac = matchDstMac; }
+		public void setMatchSrcIpaddrForTest(String matchSrcIpaddr) { this.matchSrcIpaddr = matchSrcIpaddr; }
+		public void setMatchDstIpaddrForTest(String matchDstIpaddr) { this.matchDstIpaddr = matchDstIpaddr; }
+		public void setSrcPortForTest(Short srcPort) { this.srcPort = srcPort; }
+		public void setDstPortForTest(Short dstPort) { this.dstPort = dstPort; }
+		public void setMatchEthernetFrameTypeForTest(Short matchEthernetFrameType) { this.matchEthernetFrameType = matchEthernetFrameType; }
+		public void addFlowEntryForTest(IFlowEntry entry) { entries.add(entry); }
+		public void addSwitchForTest(ISwitchObject sw) { switches.add(sw); }
+
+		@Override
+		@JsonProperty("state")
+		@Property("state")
+		public String getState() { return state; }
+
+		@Override
+		@Property("state")
+		public void setState(String state) { stateToUpdate = state; }
+
+		@Override
+		@JsonIgnore
+		@Property("type")
+		public String getType() { return type; }
+
+		@Override
+		@Property("type")
+		public void setType(String type) { typeToUpdate = type; }
+
+		@Override
+		public Vertex asVertex() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		@JsonProperty("flowId")
+		@Property("flow_id")
+		public String getFlowId() { return flowId; }
+
+		@Override
+		@Property("flow_id")
+		public void setFlowId(String flowId) { flowIdToUpdate = flowId; }
+
+		@Override
+		@JsonProperty("installerId")
+		@Property("installer_id")
+		public String getInstallerId() { return installerId; }
+
+		@Override
+		@Property("installer_id")
+		public void setInstallerId(String installerId) { installerIdToUpdate = installerId; }
+
+		@Override
+		@JsonProperty("srcDpid")
+		@Property("src_switch")
+		public String getSrcSwitch() { return srcSw; }
+
+		@Override
+		@Property("src_switch")
+		public void setSrcSwitch(String srcSwitch) { srcSwToUpdate = srcSwitch; }
+
+		@Override
+		@JsonProperty("srcPort")
+		@Property("src_port")
+		public Short getSrcPort() { return srcPort; }
+
+		@Override
+		@Property("src_port")
+		public void setSrcPort(Short srcPort) { srcPortToUpdate = srcPort; }
+
+		@Override
+		@JsonProperty("dstDpid")
+		@Property("dst_switch")
+		public String getDstSwitch() { return dstSw; }
+
+		@Override
+		@Property("dst_switch")
+		public void setDstSwitch(String dstSwitch) { dstSwToUpdate = dstSwitch; }
+
+		@Override
+		@JsonProperty("dstPort")
+		@Property("dst_port")
+		public Short getDstPort() { return dstPort; }
+
+		@Override
+		@Property("dst_port")
+		public void setDstPort(Short dstPort) { dstPortToUpdate = dstPort; }
+
+		@Override
+		@JsonProperty("dataPath")
+		@JsonSerialize(using = DatapathSummarySerializer.class)
+		@Property("data_path_summary")
+		public String getDataPathSummary() { return dataPathSummary; }
+
+		@Override
+		@Property("data_path_summary")
+		public void setDataPathSummary(String dataPathSummary) { dataPathSummaryToUpdate = dataPathSummary; }
+
+		@Override
+		@JsonIgnore
+		@Adjacency(label = "flow", direction = Direction.IN)
+		public Iterable<IFlowEntry> getFlowEntries() { return entries; }
+
+		@Override
+		@Adjacency(label = "flow", direction = Direction.IN)
+		public void addFlowEntry(IFlowEntry flowEntry) {
+			if(! entries.contains(flowEntry)) {
+				flowsToAdd.add(flowEntry);
+			}
+		}
+
+		@Override
+		@Adjacency(label = "flow", direction = Direction.IN)
+		public void removeFlowEntry(IFlowEntry flowEntry) {
+			if(entries.contains(flowEntry)) {
+				flowsToAdd.add(flowEntry);
+			}
+		}
+
+		@Override
+		@JsonIgnore
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType() { return matchEthernetFrameType; }
+
+		@Override
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType) {
+			matchEthernetFrameTypeToUpdate = matchEthernetFrameType; }
+
+		@Override
+		@JsonIgnore
+		@Property("matchSrcMac")
+		public String getMatchSrcMac() { return matchSrcMac; }
+
+		@Override
+		@Property("matchSrcMac")
+		public void setMatchSrcMac(String matchSrcMac) { matchSrcMacToUpdate = matchSrcMac; }
+
+		@Override
+		@JsonIgnore
+		@Property("matchDstMac")
+		public String getMatchDstMac() { return matchDstMac; }
+
+		@Override
+		@Property("matchDstMac")
+		public void setMatchDstMac(String matchDstMac) { matchDstMacToUpdate = matchDstMac; }
+
+		@Override
+		@JsonIgnore
+		@Property("matchSrcIPv4Net")
+		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
+
+		@Override
+		@Property("matchSrcIPv4Net")
+		public void setMatchSrcIPv4Net(String matchSrcIPv4Net) {
+			matchSrcIpaddrToUpdate = matchSrcIPv4Net; }
+
+		@Override
+		@JsonIgnore
+		@Property("matchDstIPv4Net")
+		public String getMatchDstIPv4Net() { return matchDstIpaddr; }
+
+		@Override
+		@Property("matchDstIPv4Net")
+		public void setMatchDstIPv4Net(String matchDstIPv4Net) {
+			matchDstIpaddrToUpdate = matchDstIPv4Net; }
+
+		@Override
+		@JsonIgnore
+		@GremlinGroovy("_().in('flow').out('switch')")
+		public Iterable<ISwitchObject> getSwitches() { return switches; }
+
+		@Override
+		@JsonIgnore
+		@Property("user_state")
+		public String getUserState() { return userState; }
+
+		@Override
+		@Property("user_state")
+		public void setUserState(String userState) { userStateToUpdate = userState; }
+	}
+
+	public static class TestFlowEntry implements IFlowEntry {
+		private String state,type,entryId,dpid,userState,switchState,errorStateType,errorStateCode;
+		private String matchSrcMac,matchDstMac,matchSrcIpaddr,matchDstIpaddr;
+		private Short matchInPort,matchEtherFrameType,actionOutput;
+		
+		private IFlowPath flowPath;
+		private ISwitchObject sw;
+		private IPortObject inport,outport;
+	
+		private String stateToUpdate,typeToUpdate,entryIdToUpdate,dpidToUpdate,
+			userStateToUpdate,switchStateToUpdate,errorStateTypeToUpdate,errorStateCodeToUpdate;
+		private String matchSrcMacToUpdate,matchDstMacToUpdate,matchSrcIpaddrToUpdate,matchDstIpaddrToUpdate;
+	
+		private Short matchInPortToUpdate,matchEtherFrameTypeToUpdate,actionOutputToUpdate;
+	
+		private IFlowPath flowPathToUpdate;
+		private ISwitchObject swToUpdate;
+		private IPortObject inportToUpdate,outportToUpdate;
+	
+		public TestFlowEntry() {
+			clearUncommitedData();
+		}
+		
+		public void commit() {
+			if(stateToUpdate != null) { state = stateToUpdate; }
+			if(typeToUpdate != null) { type = typeToUpdate; }
+			if(entryIdToUpdate != null) { entryId = entryIdToUpdate; }
+			if(dpidToUpdate != null) { dpid = dpidToUpdate; }
+			if(userStateToUpdate != null) { userState = userStateToUpdate; }
+			if(switchStateToUpdate != null) { switchState = switchStateToUpdate; }
+			if(errorStateTypeToUpdate != null) { errorStateType = errorStateTypeToUpdate; }
+			if(errorStateCodeToUpdate != null) { errorStateCode = errorStateCodeToUpdate; }
+			if(matchSrcMacToUpdate != null) { matchSrcMac = matchSrcMacToUpdate; }
+			if(matchDstMacToUpdate != null) { matchDstMac = matchDstMacToUpdate; }
+			if(matchSrcIpaddrToUpdate != null) { matchSrcIpaddr = matchSrcIpaddrToUpdate; }
+			if(matchDstIpaddrToUpdate != null) { matchDstIpaddr = matchDstIpaddrToUpdate; }
+			if(matchInPortToUpdate != null) { matchInPort = matchInPortToUpdate; }
+			if(matchEtherFrameTypeToUpdate != null) { matchEtherFrameType = matchEtherFrameTypeToUpdate; }
+			if(actionOutputToUpdate != null) { actionOutput = actionOutputToUpdate; }
+			
+			if(flowPathToUpdate != null) { flowPath = flowPathToUpdate; }
+			if(swToUpdate != null) { sw = swToUpdate; }
+			if(inportToUpdate != null) { inport = inportToUpdate; }
+			if(outportToUpdate != null) { outport = outportToUpdate; }
+	
+			clearUncommitedData();
+		}
+		
+		public void rollback() {
+			clearUncommitedData();
+		}
+		
+		public void clearUncommitedData() {
+			stateToUpdate = typeToUpdate = entryIdToUpdate = dpidToUpdate = null;
+			userStateToUpdate = switchStateToUpdate = errorStateTypeToUpdate = errorStateCodeToUpdate = null;
+			matchSrcMacToUpdate = matchDstMacToUpdate = matchSrcIpaddrToUpdate = matchDstIpaddrToUpdate = null;
+			matchInPortToUpdate = matchEtherFrameTypeToUpdate = actionOutputToUpdate = null;
+			flowPathToUpdate = null;
+			swToUpdate = null;
+			inportToUpdate = outportToUpdate = null;
+		}
+		
+		// Setter methods for test
+		public void setStateForTest(String state) { this.state = state; }
+		public void setTypeForTest(String type) { this.type = type; }
+		public void setEntryIdForTest(String entryId) { this.entryId = entryId; }
+		public void setDpidForTest(String dpid) { this.dpid = dpid; }
+		public void setUserStateForTest(String userState) { this.userState = userState; }
+		public void setSwitchStateForTest(String switchState) { this.switchState = switchState; }
+		public void setErrorStateTypeForTest(String errorStateType) { this.errorStateType = errorStateType; }
+		public void setErrorStateCodeForTest(String errorStateCode) { this.errorStateCode = errorStateCode; }
+		public void setMatchSrcMacForTest(String matchSrcMac) { this.matchSrcMac = matchSrcMac; }
+		public void setMatchDstMacForTest(String matchDstMac) { this.matchDstMac = matchDstMac; }
+		public void setMatchSrcIpaddrForTest(String matchSrcIpaddr) { this.matchSrcIpaddr = matchSrcIpaddr; }
+		public void setMatchDstIpaddrForTest(String matchDstIpaddr) { this.matchDstIpaddr = matchDstIpaddr; }
+		public void setMatchInPortForTest(Short matchInPort) { this.matchInPort = matchInPort; }
+		public void setMatchEtherFrameTypeForTest(Short matchEtherFrameType) { this.matchEtherFrameType = matchEtherFrameType; }
+		public void setActionOutputForTest(Short actionOutput) { this.actionOutput = actionOutput; }
+		public void setFlowPathForTest(IFlowPath flowPath) { this.flowPath = flowPath; }
+		public void setSwitchForTest(ISwitchObject sw) { this.sw = sw; }
+		public void setInportForTest(IPortObject inport) { this.inport = inport; }
+		public void setOutportForTest(IPortObject outport) { this.outport = outport; }
+		
+		@Override
+		@JsonProperty("state")
+		@Property("state")
+		public String getState() { return state; }
+	
+		@Override
+		@Property("state")
+		public void setState(String state) { stateToUpdate = state; }
+	
+		@Override
+		@JsonIgnore
+		@Property("type")
+		public String getType() { return type; }
+	
+		@Override
+		@Property("type")
+		public void setType(String type) { typeToUpdate = type; }
+	
+		@Override
+		public Vertex asVertex() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	
+		@Override
+		@Property("flow_entry_id")
+		public String getFlowEntryId() { return entryId; }
+	
+		@Override
+		@Property("flow_entry_id")
+		public void setFlowEntryId(String flowEntryId) { entryIdToUpdate = flowEntryId; }
+	
+		@Override
+		@Property("switch_dpid")
+		public String getSwitchDpid() { return dpid; }
+	
+		@Override
+		@Property("switch_dpid")
+		public void setSwitchDpid(String switchDpid) { dpidToUpdate = switchDpid; }
+	
+		@Override
+		@Property("user_state")
+		public String getUserState() { return userState; }
+	
+		@Override
+		@Property("user_state")
+		public void setUserState(String userState) { userStateToUpdate = userState; }
+	
+		@Override
+		@Property("switch_state")
+		public String getSwitchState() { return switchState; }
+	
+		@Override
+		@Property("switch_state")
+		public void setSwitchState(String switchState) { switchStateToUpdate = switchState; }
+	
+		@Override
+		@Property("error_state_type")
+		public String getErrorStateType() { return errorStateType; }
+	
+		@Override
+		@Property("error_state_type")
+		public void setErrorStateType(String errorStateType) { errorStateTypeToUpdate = errorStateType; }
+	
+		@Override
+		@Property("error_state_code")
+		public String getErrorStateCode() { return errorStateCode; }
+	
+		@Override
+		@Property("error_state_code")
+		public void setErrorStateCode(String errorStateCode) { errorStateCodeToUpdate = errorStateCode; }
+	
+		@Override
+		@Property("matchInPort")
+		public Short getMatchInPort() { return matchInPort; }
+	
+		@Override
+		@Property("matchInPort")
+		public void setMatchInPort(Short matchInPort) { matchInPortToUpdate = matchInPort; }
+	
+		@Override
+		@Property("matchEthernetFrameType")
+		public Short getMatchEthernetFrameType() {return matchEtherFrameType; }
+	
+		@Override
+		@Property("matchEthernetFrameType")
+		public void setMatchEthernetFrameType(Short matchEthernetFrameType) { matchEtherFrameTypeToUpdate = matchEthernetFrameType; }
+		
+		@Override
+		@Property("matchSrcMac")
+		public String getMatchSrcMac() { return matchSrcMac; }
+	
+		@Override
+		@Property("matchSrcMac")
+		public void setMatchSrcMac(String matchSrcMac) { matchSrcMacToUpdate = matchSrcMac; }
+	
+		@Override
+		@Property("matchDstMac")
+		public String getMatchDstMac() { return matchDstMac; }
+	
+		@Override
+		@Property("matchDstMac")
+		public void setMatchDstMac(String matchDstMac) { matchDstMacToUpdate = matchDstMac; }
+	
+		@Override
+		@Property("matchSrcIPv4Net")
+		public String getMatchSrcIPv4Net() { return matchSrcIpaddr; }
+	
+		@Override
+		@Property("matchSrcIPv4Net")
+		public void setMatchSrcIPv4Net(String matchSrcIPv4Net) { matchSrcIpaddrToUpdate = matchSrcIPv4Net; }
+	
+		@Override
+		@Property("matchDstIPv4Net")
+		public String getMatchDstIPv4Net() { return matchDstIpaddr; }
+	
+		@Override
+		@Property("matchDstIPv4Net")
+		public void setMatchDstIPv4Net(String matchDstIPv4Net) { matchDstIpaddrToUpdate = matchDstIPv4Net; }
+	
+		@Override
+		@Property("actionOutput")
+		public Short getActionOutput() { return actionOutput; }
+	
+		@Override
+		@Property("actionOutput")
+		public void setActionOutput(Short actionOutput) { actionOutputToUpdate = actionOutput; }
+	
+		@Override
+		@Adjacency(label = "flow")
+		public IFlowPath getFlow() { return flowPath; }
+	
+		@Override
+		@Adjacency(label = "flow")
+		public void setFlow(IFlowPath flow) { flowPathToUpdate = flow; }
+	
+		@Override
+		@Adjacency(label = "switch")
+		public ISwitchObject getSwitch() { return sw; }
+	
+		@Override
+		@Adjacency(label = "switch")
+		public void setSwitch(ISwitchObject sw) { swToUpdate = sw; }
+	
+		@Override
+		@Adjacency(label = "inport")
+		public IPortObject getInPort() { return inport; }
+	
+		@Override
+		@Adjacency(label = "inport")
+		public void setInPort(IPortObject port) { inportToUpdate = port; }
+	
+		@Override
+		@Adjacency(label = "outport")
+		public IPortObject getOutPort() { return outport; }
+	
+		@Override
+		@Adjacency(label = "outport")
+		public void setOutPort(IPortObject port) { outportToUpdate = port; }
+	}
+
+
 	public TestGraphDBOperation() {
 		super(EasyMock.createNiceMock(GraphDBConnection.class));
 		
 		switches = new ArrayList<TestSwitchObject>();
 		ports = new ArrayList<TestPortObject>();
 		devices = new ArrayList<TestDeviceObject>();
-//		flows = new ArrayList<TestFlowEntry>();
+		paths = new ArrayList<TestFlowPath>();
+		entries = new ArrayList<TestFlowEntry>();
 		
 		switchesToAdd = new ArrayList<TestSwitchObject>();
 		portsToAdd = new ArrayList<TestPortObject>();
 		devicesToAdd = new ArrayList<TestDeviceObject>();
-//		flowsToAdd = new ArrayList<TestFlowEntry>();
+		pathsToAdd = new ArrayList<TestFlowPath>();
+		entriesToAdd = new ArrayList<TestFlowEntry>();
 
 		switchesToRemove = new ArrayList<TestSwitchObject>();
 		portsToRemove = new ArrayList<TestPortObject>();
 		devicesToRemove = new ArrayList<TestDeviceObject>();
-//		flowsToRemove = new ArrayList<TestFlowEntry>();
+		pathsToRemove = new ArrayList<TestFlowPath>();
+		entriesToRemove = new ArrayList<TestFlowEntry>();
 		
 		clearUncommitedData();
 	}
 	
 	private void clearUncommitedData() {
+		for(TestFlowEntry flow : entries) {
+			flow.clearUncommitedData();
+		}
+		for(TestFlowEntry flow : entriesToAdd) {
+			flow.clearUncommitedData();
+		}
+		
 		for(TestDeviceObject dev : devices) {
 			dev.clearUncommitedData();
 		}
@@ -499,6 +1015,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 			port.clearUncommitedData();
 		}
 		
+		entriesToAdd.clear();
+		entriesToRemove.clear();
 		devicesToAdd.clear();
 		devicesToRemove.clear();
 		switchesToAdd.clear();
@@ -509,6 +1027,12 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	
 	
 	// this.*ForTest() methods below are supposed to be used for creation of test topology.
+	public TestSwitchObject createNewSwitchForTest() {
+		TestSwitchObject sw = new TestSwitchObject();
+		switches.add(sw);
+		return sw;
+	}
+	
 	/**
 	 * 
 	 * @param dpid
@@ -529,6 +1053,12 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		switches.add(sw);
 		
 		return sw;
+	}
+	
+	public TestPortObject createNewPortForTest() {
+		TestPortObject port = new TestPortObject();
+		ports.add(port);
+		return port;
 	}
 	
 	public TestPortObject createNewPortForTest(String dpid, Short number) {
@@ -558,6 +1088,25 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		src.addLinkedPortForTest(dst);
 		//dst.addLinkedPortForTest(src);
 	}
+		
+	public TestDeviceObject createNewDeviceForTest() {
+		TestDeviceObject dev = new TestDeviceObject();
+		
+		return dev;
+	}
+	
+	public TestFlowPath createNewFlowPathForTest() {
+		TestFlowPath path = new TestFlowPath();
+		paths.add(path);
+		return path;
+	}
+
+	public TestFlowEntry createNewFlowEntryForTest() {
+		TestFlowEntry entry = new TestFlowEntry();
+		entries.add(entry);
+		return entry;
+	}
+
 	
 	public boolean hasLinkBetween(String srcSw_str, Short srcNumber, String dstSw_str, Short dstNumber) {
 		IPortObject srcPort = null, dstPort = null;
@@ -663,8 +1212,14 @@ public class TestGraphDBOperation extends GraphDBOperation {
 
 	@Override
 	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		List<IFlowEntry> list = new ArrayList<IFlowEntry>();
+		
+		for(TestFlowEntry entry : entries) {
+			if(entry.getSwitchState().equals("FE_SWITCH_NOT_UPDATED")) {
+				list.add(entry);
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -725,80 +1280,123 @@ public class TestGraphDBOperation extends GraphDBOperation {
 
 	@Override
 	public IDeviceObject newDevice() {
-		// TODO Auto-generated method stub
-		return null;
+		TestDeviceObject dev = new TestDeviceObject();
+		devicesToAdd.add(dev);
+		
+		return dev;
 	}
 
 	@Override
 	public IDeviceObject searchDevice(String macAddr) {
-		// TODO Auto-generated method stub
+		for(IDeviceObject dev : devices) {
+			if(dev.getMACAddress().equals(macAddr)) {
+				return dev;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Iterable<IDeviceObject> getDevices() {
-		// TODO Auto-generated method stub
-		return null;
+		List<IDeviceObject> list = new ArrayList<IDeviceObject>();
+		
+		for(TestDeviceObject dev : devices) {
+			list.add(dev);
+		}
+		
+		return list;
 	}
 
 	@Override
 	public void removeDevice(IDeviceObject dev) {
-		// TODO Auto-generated method stub
-
+		if(devices.contains((TestDeviceObject)dev)) {
+			devicesToRemove.add((TestDeviceObject)dev);
+		}
 	}
 
 	@Override
 	public IFlowPath newFlowPath() {
-		// TODO Auto-generated method stub
-		return null;
+		TestFlowPath path = new TestFlowPath();
+		pathsToAdd.add(path);
+		
+		return path;
 	}
 
 	@Override
 	public IFlowPath searchFlowPath(FlowId flowId) {
-		// TODO Auto-generated method stub
+		for(IFlowPath path : paths) {
+			if(path.getFlowId().equals(flowId)) {
+				return path;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public IFlowPath getFlowPathByFlowEntry(IFlowEntry flowEntry) {
-		// TODO Auto-generated method stub
+		for(IFlowPath path : paths) {
+			for(IFlowEntry entry : path.getFlowEntries()) {
+				if(entry.equals(flowEntry)) {
+					return path;
+				}
+			}
+
+		}
 		return null;
 	}
 
 	@Override
 	public Iterable<IFlowPath> getAllFlowPaths() {
-		// TODO Auto-generated method stub
-		return null;
+		List<IFlowPath> list = new ArrayList<IFlowPath>();
+		
+		for(IFlowPath path : paths) {
+			list.add(path);
+		}
+		
+		return list;
 	}
 
 	@Override
 	public void removeFlowPath(IFlowPath flowPath) {
-		// TODO Auto-generated method stub
-
+		if(paths.contains((TestFlowPath)flowPath)) {
+			pathsToRemove.add((TestFlowPath)flowPath);
+		}
 	}
 
 	@Override
 	public IFlowEntry newFlowEntry() {
-		// TODO Auto-generated method stub
-		return null;
+		TestFlowEntry entry = new TestFlowEntry();
+		entriesToAdd.add(entry);
+		return entry;
 	}
 
 	@Override
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
-		// TODO Auto-generated method stub
+		for(TestFlowEntry entry : entries) {
+			// TODO check if this matching works
+			if(entry.getFlowEntryId().equals(flowEntryId)) {
+				return entry;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public Iterable<IFlowEntry> getAllFlowEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		List<IFlowEntry> list = new ArrayList<IFlowEntry>();
+		
+		for(TestFlowEntry entry : entries) {
+			list.add(entry);
+		}
+		
+		return list;
 	}
 
 	@Override
 	public void removeFlowEntry(IFlowEntry flowEntry) {
-		// TODO Auto-generated method stub
-
+		if(entries.contains((TestFlowEntry)flowEntry)) {
+			entriesToRemove.add((TestFlowEntry)flowEntry);
+		}
 	}
 
 	@Override

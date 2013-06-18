@@ -15,7 +15,7 @@ import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
 import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
-import org.easymock.*;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
