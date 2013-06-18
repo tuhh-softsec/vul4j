@@ -23,7 +23,6 @@ import net.onrc.onos.ofcontroller.util.Dpid;
 import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
@@ -133,7 +132,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
     public void init(FloodlightModuleContext context)
 	throws FloodlightModuleException {
 	// TODO: Add the appropriate initialization
-    	op = new GraphDBOperation(GraphDBConnection.getInstance(""));
+    	op = new GraphDBOperation("");
     }
 
     @Override

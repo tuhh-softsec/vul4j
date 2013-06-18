@@ -252,7 +252,7 @@ public class NetworkGraphPublisher implements IDeviceListener, IOFSwitchListener
 		// TODO Auto-generated method stub
 		Map<String, String> configMap = context.getConfigParams(this);
 		String conf = configMap.get(DBConfigFile);
-		op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
+		op = new GraphDBOperation(conf);
 		
 		log = LoggerFactory.getLogger(NetworkGraphPublisher.class);
 		floodlightProvider =

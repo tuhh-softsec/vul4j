@@ -5,7 +5,6 @@ import java.util.Collection;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.protocol.OFPhysicalPort;
@@ -201,8 +200,7 @@ public class SwitchStorageImpl implements ISwitchStorage {
 
 	@Override
 	public void init(String conf) {
-		GraphDBConnection conn = GraphDBConnection.getInstance(conf);
-		op = new GraphDBOperation(conn);
+		op = new GraphDBOperation(conf);
 	}
 
 

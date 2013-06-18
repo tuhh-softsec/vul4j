@@ -12,16 +12,6 @@ import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
-//import net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject;
-//import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry;
-//import net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath;
-//import net.floodlightcontroller.core.INetMapTopologyObjects.IPortObject;
-//import net.floodlightcontroller.core.INetMapTopologyObjects.ISwitchObject;
-//import net.floodlightcontroller.core.ISwitchStorage.SwitchState;
-//import net.floodlightcontroller.util.FlowEntryId;
-//import net.floodlightcontroller.util.FlowId;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
-
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.FramedGraph;
@@ -33,6 +23,10 @@ public class GraphDBOperation implements IDBOperation {
 	
 	public GraphDBOperation(GraphDBConnection dbConnection) {
 		this.conn = dbConnection;
+	}
+	
+	public GraphDBOperation(final String dbConfPath) {
+		this.conn = GraphDBConnection.getInstance(dbConfPath);
 	}
 
 	@Override
@@ -209,7 +203,6 @@ public class GraphDBOperation implements IDBOperation {
 
 	@Override
 	public IFlowPath getFlowPathByFlowEntry(IFlowEntry flowEntry) {
-		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
 		pipe.start(flowEntry.asVertex());
 		pipe.out("flow");
@@ -273,11 +266,11 @@ public class GraphDBOperation implements IDBOperation {
 	}
 	
 	public void commit() {
-		conn.endTx(Transaction.COMMIT);
+		conn.commit();
 	}
 	
 	public void rollback() {
-		conn.endTx(Transaction.ROLLBACK);
+		conn.rollback();
 	}
 
 	public void close() {

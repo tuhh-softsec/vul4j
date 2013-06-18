@@ -8,7 +8,6 @@ import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
@@ -166,9 +165,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	// TODO: Fix me
 	@Override
 	public List<Link> getLinks(Long dpid, short port) {
-		IPortObject vportSrc, vportDst;
-    	List<Link> links = null;
-    	Link lt;
+		IPortObject vportSrc;
     	
 		vportSrc = dbop.searchPort(HexString.toHexString(dpid), port);
 		if (vportSrc != null) {
@@ -185,7 +182,7 @@ public class LinkStorageImpl implements ILinkStorage {
 	@Override
 	public void init(String conf) {
 		//TODO extract the DB location from properties
-		this.dbop = new GraphDBOperation(GraphDBConnection.getInstance(conf));
+		this.dbop = new GraphDBOperation(conf);
 	}
 
 	@Override
