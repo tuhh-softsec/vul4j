@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.floodlightcontroller.linkdiscovery.LinkInfo;
-import net.floodlightcontroller.linkdiscovery.internal.TestGraphDBOperation.TestPortObject;
+import net.floodlightcontroller.linkdiscovery.internal.TestableGraphDBOperation.TestPortObject;
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.linkdiscovery.ILinkStorage;
@@ -40,7 +40,7 @@ public class LinkStorageImplTest {
 	private static GraphDBConnection conn;
 	
 	// Mock GraphDBOperation (mocks port-related methods only)
-	private static TestGraphDBOperation ope;
+	private static TestableGraphDBOperation ope;
 
 	/**
 	 * Setup code called before each tests.
@@ -55,7 +55,7 @@ public class LinkStorageImplTest {
 		EasyMock.expect(GraphDBConnection.getInstance((String)EasyMock.anyObject())).andReturn(conn).anyTimes();
 		PowerMock.replay(GraphDBConnection.class);
 		
-		ope = new TestGraphDBOperation();
+		ope = new TestableGraphDBOperation();
 		PowerMock.expectNew(GraphDBOperation.class, (GraphDBConnection)EasyMock.anyObject()).andReturn(ope).anyTimes();
 		PowerMock.replay(GraphDBOperation.class);
 

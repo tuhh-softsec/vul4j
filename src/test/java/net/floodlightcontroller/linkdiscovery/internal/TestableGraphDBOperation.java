@@ -31,8 +31,15 @@ import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.util.IDBConnection;
 
-public class TestGraphDBOperation extends GraphDBOperation {
-	protected static Logger log = LoggerFactory.getLogger(TestGraphDBOperation.class);
+/**
+ * Mock class of GraphDBOperation which provides additional setter to construct a graph for test.
+ * This object simply caches parameters set up by override interfaces and reflect them when commit().
+ * *ForTest() methods are exempt from cache, parameters through those methods are reflected soon.
+ * @author Naoki Shiota
+ *
+ */
+public class TestableGraphDBOperation extends GraphDBOperation {
+	protected static Logger log = LoggerFactory.getLogger(TestableGraphDBOperation.class);
 
 	protected List<TestSwitchObject> switches;
 	protected List<TestPortObject> ports;
@@ -66,7 +73,6 @@ public class TestGraphDBOperation extends GraphDBOperation {
 
 		public TestSwitchObject() {
 			type = "switch";
-			state = "ACTIVE";
 			
 			ports = new ArrayList<IPortObject>();
 			portsToAdd = new ArrayList<IPortObject>();
@@ -180,6 +186,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private Short number;
 		private Integer port_state;
 		private ISwitchObject sw;
+		
 		private List<IPortObject> linkedPorts;
 		private List<IDeviceObject> devices;
 		private List<IFlowEntry> inflows,outflows;
@@ -187,6 +194,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private String stateToUpdate,typeToUpdate,descToUpdate;
 		private Short numberToUpdate;
 		private Integer port_stateToUpdate;
+		
 		private List<IPortObject> linkedPortsToAdd;
 		private List<IPortObject> linkedPortsToRemove;
 		private List<IDeviceObject> devicesToAdd;
@@ -195,7 +203,6 @@ public class TestGraphDBOperation extends GraphDBOperation {
 
 		public TestPortObject() {
 			type = "port";
-			state = "ACTIVE";
 
 			linkedPorts = new ArrayList<IPortObject>();
 			linkedPortsToAdd = new ArrayList<IPortObject>();
@@ -353,6 +360,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private List<IPortObject> portsToRemove;
 	
 		public TestDeviceObject() {
+			type = "device";
+			
 			ports = new ArrayList<IPortObject>();
 			portsToAdd = new ArrayList<IPortObject>();
 			portsToRemove = new ArrayList<IPortObject>();
@@ -397,6 +406,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		public void addSwitchForTest(ISwitchObject sw) { switches.add(sw); }
 		public void addPortForTest(IPortObject port) { ports.add(port); }
 		
+		
+		// Override methods
 		@Override
 		@JsonProperty("state")
 		@Property("state")
@@ -479,6 +490,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private List<IFlowEntry> flowsToRemove;
 
 		public TestFlowPath() {
+			type = "flow";
+			
 			entries = new ArrayList<IFlowEntry>();
 			flowsToAdd = new ArrayList<IFlowEntry>();
 			flowsToRemove = new ArrayList<IFlowEntry>();
@@ -737,6 +750,8 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		private IPortObject inportToUpdate,outportToUpdate;
 	
 		public TestFlowEntry() {
+			type = "flow_entry";
+			
 			clearUncommitedData();
 		}
 		
@@ -962,7 +977,7 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	}
 
 
-	public TestGraphDBOperation() {
+	public TestableGraphDBOperation() {
 		super(EasyMock.createNiceMock(GraphDBConnection.class));
 		
 		switches = new ArrayList<TestSwitchObject>();
@@ -1027,6 +1042,10 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	
 	
 	// this.*ForTest() methods below are supposed to be used for creation of test topology.
+	/**
+	 * Create new empty TestSwitchObject.
+	 * @return New TestSwitchObject
+	 */
 	public TestSwitchObject createNewSwitchForTest() {
 		TestSwitchObject sw = new TestSwitchObject();
 		switches.add(sw);
@@ -1034,9 +1053,9 @@ public class TestGraphDBOperation extends GraphDBOperation {
 	}
 	
 	/**
-	 * 
-	 * @param dpid
-	 * @return
+	 * Create new TestSwitchObject with specific DPID.
+	 * @param dpid DPID to be set
+	 * @return New TestSwitchObject
 	 */
 	public TestSwitchObject createNewSwitchForTest(String dpid) {
 		for(TestSwitchObject sw_loop : switches) {
@@ -1055,12 +1074,22 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		return sw;
 	}
 	
+	/**
+	 * Create new empty TestPortObject.
+	 * @return New TestPortObject
+	 */
 	public TestPortObject createNewPortForTest() {
 		TestPortObject port = new TestPortObject();
 		ports.add(port);
 		return port;
 	}
 	
+	/**
+	 * Create new TestPortObject with specific DPID and port number.
+	 * @param dpid DPID to be set
+	 * @param number Port number to be set
+	 * @return New TestPortObject
+	 */
 	public TestPortObject createNewPortForTest(String dpid, Short number) {
 		TestSwitchObject sw = null;
 		
@@ -1084,23 +1113,39 @@ public class TestGraphDBOperation extends GraphDBOperation {
 		}
 	}
 	
+	/**
+	 * Link a TestPortObject to other TestPortObject.
+	 * @param src TestPortObjecgt of source port.
+	 * @param dst TestPortObjecgt of destination port.
+	 */
 	public void setLinkBetweenPortsForTest(TestPortObject src, TestPortObject dst) {
 		src.addLinkedPortForTest(dst);
-		//dst.addLinkedPortForTest(src);
 	}
-		
+	
+	/**
+	 * Create new empty TestDeviceObject.
+	 * @return New TestDeviceObject
+	 */
 	public TestDeviceObject createNewDeviceForTest() {
 		TestDeviceObject dev = new TestDeviceObject();
 		
 		return dev;
 	}
 	
+	/**
+	 * Create new empty TestFlowPathObject.
+	 * @return New TestFlowPathObject
+	 */
 	public TestFlowPath createNewFlowPathForTest() {
 		TestFlowPath path = new TestFlowPath();
 		paths.add(path);
 		return path;
 	}
 
+	/**
+	 * Create new empty TestFlowEntryObject.
+	 * @return New TestFlowEntryObject
+	 */
 	public TestFlowEntry createNewFlowEntryForTest() {
 		TestFlowEntry entry = new TestFlowEntry();
 		entries.add(entry);
