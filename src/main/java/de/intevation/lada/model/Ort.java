@@ -36,6 +36,8 @@ public class Ort implements java.io.Serializable {
 	private Date letzteAenderung;
 	private Double latitude;
 	private Double longitude;
+    private int staatId;
+    private String gemId;
 
 	public Ort() {
 	}
@@ -47,7 +49,8 @@ public class Ort implements java.io.Serializable {
 	public Ort(int ortId,  String OTyp, String bezeichnung,
 			String beschreibung, Character unscharf, String nutsCode,
 			String koordXExtern, String koordYExtern, Float hoeheLand,
-			Date letzteAenderung, Double latitude, Double longitude) {
+			Date letzteAenderung, Double latitude, Double longitude,
+            int staatId, String gemId) {
 		this.ortId = ortId;
 		this.OTyp = OTyp;
 		this.bezeichnung = bezeichnung;
@@ -60,6 +63,8 @@ public class Ort implements java.io.Serializable {
 		this.letzteAenderung = letzteAenderung;
 		this.latitude = latitude;
 		this.longitude = longitude;
+        this.staatId = staatId;
+        this.gemId = gemId;
 	}
 
 	@Id
@@ -171,4 +176,22 @@ public class Ort implements java.io.Serializable {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
+
+    @Column(name = "gem_id")
+    public String getGemId() {
+        return this.gemId;
+    }
+
+    public void setGemId(String gemId) {
+        this.gemId= gemId;
+    }
+
+    @Column(name = "staat_id")
+    public int getStaatId() {
+        return this.staatId;
+    }
+
+    public void setStaatId(int staatId) {
+        this.staatId= staatId;
+    }
 }
