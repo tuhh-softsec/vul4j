@@ -61,7 +61,6 @@ public class TestDatabaseManager {
         	Integer portNum = (Integer) port.getProperty("number");
         	port.setProperty("number", portNum.shortValue());
         }
-        
         titanGraph.stopTransaction(Conclusion.SUCCESS);
 	}
 	

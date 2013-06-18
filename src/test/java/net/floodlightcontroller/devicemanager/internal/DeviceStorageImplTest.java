@@ -1,20 +1,26 @@
 package net.floodlightcontroller.devicemanager.internal;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
-import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
-import net.onrc.onos.ofcontroller.devicemanager.internal.DeviceStorageImpl;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 import net.floodlightcontroller.devicemanager.IDevice;
 import net.floodlightcontroller.devicemanager.SwitchPort;
 import net.floodlightcontroller.packet.IPv4;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.internal.DeviceStorageImpl;
+import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBOperation;
+
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;

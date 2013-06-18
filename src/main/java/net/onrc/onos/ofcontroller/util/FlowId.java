@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import net.onrc.onos.ofcontroller.util.serializers.FlowIdDeserializer;
 import net.onrc.onos.ofcontroller.util.serializers.FlowIdSerializer;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

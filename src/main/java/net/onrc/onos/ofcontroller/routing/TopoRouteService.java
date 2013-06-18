@@ -24,7 +24,6 @@ import net.onrc.onos.ofcontroller.util.FlowEntry;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
 import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.util.HexString;
@@ -32,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.TransactionalGraph.Conclusion;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.pipes.PipeFunction;
 import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;

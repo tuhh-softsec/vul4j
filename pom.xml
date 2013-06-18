@@ -88,7 +88,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>net.floodlightcontroller.core.Main</mainClass>
+          <mainClass>net.onrc.onos.ofcontroller.core.Main</mainClass>
         </configuration>
         <executions>
         </executions>

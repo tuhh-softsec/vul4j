@@ -11,11 +11,11 @@ import net.floodlightcontroller.core.IFloodlightProviderService;
 import net.floodlightcontroller.core.module.FloodlightModuleContext;
 import net.floodlightcontroller.core.test.MockFloodlightProvider;
 import net.floodlightcontroller.core.test.MockThreadPoolService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
 import net.floodlightcontroller.topology.NodePortTuple;
 import net.floodlightcontroller.topology.TopologyInstance;
 import net.floodlightcontroller.topology.TopologyManager;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery;
 
 import org.junit.Before;
 import org.junit.Test;
