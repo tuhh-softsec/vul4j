@@ -24,6 +24,10 @@ public class GraphDBOperation implements IDBOperation {
 	public GraphDBOperation(GraphDBConnection dbConnection) {
 		this.conn = dbConnection;
 	}
+	
+	public GraphDBOperation(final String dbConfPath) {
+		this.conn = GraphDBConnection.getInstance(dbConfPath);
+	}
 
 	@Override
 	public ISwitchObject newSwitch(String dpid) {

@@ -49,7 +49,6 @@ import net.onrc.onos.ofcontroller.util.FlowPath;
 import net.onrc.onos.ofcontroller.util.IPv4Net;
 import net.onrc.onos.ofcontroller.util.Port;
 import net.onrc.onos.ofcontroller.util.SwitchPort;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.openflow.protocol.OFFlowMod;
@@ -413,7 +412,7 @@ public class FlowManager implements IFloodlightModule, IFlowService, INetMapStor
 
     @Override
     public void init(String conf) {
-    	op = new GraphDBOperation(GraphDBConnection.getInstance(conf));
+    	op = new GraphDBOperation(conf);
     }
 
     public void finalize() {

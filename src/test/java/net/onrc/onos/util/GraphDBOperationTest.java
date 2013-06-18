@@ -43,7 +43,6 @@ import com.tinkerpop.blueprints.Vertex;
 @PrepareForTest({TitanFactory.class})
 public class GraphDBOperationTest extends TestCase {
 	private static TitanGraph testdb;
-	private static GraphDBConnection conn;
 	private static GraphDBOperation op;
 
 	/**
@@ -75,8 +74,7 @@ public class GraphDBOperationTest extends TestCase {
 		EasyMock.expect(TitanFactory.open(dummyPath)).andReturn(testdb);
 		PowerMock.replay(TitanFactory.class);
 		
-		conn = GraphDBConnection.getInstance(dummyPath);
-		op = new GraphDBOperation(conn);
+		op = new GraphDBOperation(dummyPath);
 	}
 
 	/**
@@ -84,7 +82,7 @@ public class GraphDBOperationTest extends TestCase {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		conn.close();
+		op.close();
 		testdb.shutdown();
 		PowerMock.verifyAll();
 	}

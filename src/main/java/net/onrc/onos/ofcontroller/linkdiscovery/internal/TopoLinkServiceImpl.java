@@ -8,7 +8,6 @@ import net.floodlightcontroller.linkdiscovery.internal.LinkStorageImpl.ExtractLi
 import net.floodlightcontroller.routing.Link;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoLinkService;
-import net.onrc.onos.util.GraphDBConnection;
 import net.onrc.onos.util.GraphDBOperation;
 
 import org.slf4j.Logger;
@@ -34,8 +33,8 @@ public class TopoLinkServiceImpl implements ITopoLinkService {
 	@Override
 	public List<Link> getActiveLinks() {
 		// TODO Auto-generated method stub
-		op = new GraphDBOperation(GraphDBConnection.getInstance(""));
-		op.close(); //Commit to ensure we see latest data
+		op = new GraphDBOperation("");
+		op.commit(); //Commit to ensure we see latest data
 		Iterable<ISwitchObject> switches = op.getActiveSwitches();
 		List<Link> links = new ArrayList<Link>(); 
 		for (ISwitchObject sw : switches) {
