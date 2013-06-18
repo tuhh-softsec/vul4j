@@ -42,7 +42,6 @@ import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
 import org.openflow.protocol.OFPacketOut;
-import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.action.OFAction;
 import org.openflow.protocol.action.OFActionDataLayerDestination;
@@ -761,10 +760,6 @@ public class BgpRoute implements IFloodlightModule, IBgpRouteService,
 
 	@Override
 	public void switchPortChanged(Long switchId) {}
-	@Override
-	public void switchPortAdded(Long switchId, OFPhysicalPort port) {}
-	@Override
-	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {}
 
 	@Override
 	public String getName() {
