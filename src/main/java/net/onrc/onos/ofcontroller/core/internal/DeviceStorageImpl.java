@@ -14,8 +14,7 @@ import net.floodlightcontroller.packet.IPv4;
 import net.onrc.onos.ofcontroller.core.IDeviceStorage;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBConnection.Transaction;
+import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
 import net.onrc.onos.util.GraphDBOperation;
 
 /**
@@ -24,7 +23,6 @@ import net.onrc.onos.util.GraphDBOperation;
  */
 public class DeviceStorageImpl implements IDeviceStorage {
 	
-	private GraphDBConnection conn;
 	private GraphDBOperation ope;
 	protected static Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
 
@@ -35,10 +33,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	@Override
 	public void init(String conf) {
 		try{
-			if((conn = GraphDBConnection.getInstance(conf)) != null)
-			{
-				ope = new GraphDBOperation(conn);
-			}
+			ope = new GraphDBOperation(conf);
 		} catch(Exception e) {
 			log.error(e.getMessage());
 		}
@@ -50,7 +45,7 @@ public class DeviceStorageImpl implements IDeviceStorage {
 	 */
 	@Override
 	public void close() {
-		conn.close();
+		ope.close();
 	}
 	
 	/***
