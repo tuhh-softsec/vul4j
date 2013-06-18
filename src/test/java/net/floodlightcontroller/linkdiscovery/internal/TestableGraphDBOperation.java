@@ -1225,7 +1225,7 @@ public class TestableGraphDBOperation extends GraphDBOperation {
 		List<ISwitchObject> list = new ArrayList<ISwitchObject>();
 		
 		for(ISwitchObject sw : switches) {
-			if(sw.getState().equals("ACTIVE")) {
+			if(sw.getState() != null && sw.getState().equals("ACTIVE")) {
 				list.add(sw);
 			}
 		}

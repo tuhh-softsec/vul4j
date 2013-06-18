@@ -446,9 +446,9 @@ public class LinkStorageImplTest {
 		final String dpid2 = "00:00:00:00:0a:02";
 		final String dpid3 = "00:00:00:00:0a:03";
 		
-		ope.createNewSwitchForTest(dpid1);
-		ope.createNewSwitchForTest(dpid2);
-		ope.createNewSwitchForTest(dpid3);
+		ope.createNewSwitchForTest(dpid1).setStateForTest("ACTIVE");
+		ope.createNewSwitchForTest(dpid2).setStateForTest("ACTIVE");
+		ope.createNewSwitchForTest(dpid3).setStateForTest("ACTIVE");
 
 		TestPortObject ports1 [] = {
 				ope.createNewPortForTest(dpid1, (short)1),
