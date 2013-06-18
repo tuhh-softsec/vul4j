@@ -1,13 +1,11 @@
 package net.onrc.onos.ofcontroller.util;
 
-import org.openflow.util.HexString;
-
 import net.onrc.onos.ofcontroller.util.serializers.DpidDeserializer;
 import net.onrc.onos.ofcontroller.util.serializers.DpidSerializer;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openflow.util.HexString;
 
 /**
  * The class representing a network switch DPID.

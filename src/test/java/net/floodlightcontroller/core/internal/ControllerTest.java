@@ -69,6 +69,7 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.memory.MemoryStorageSource;
 import net.floodlightcontroller.test.FloodlightTestCase;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
+import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 
 import org.easymock.Capture;
 import org.easymock.EasyMock;
@@ -404,7 +405,7 @@ public class ControllerTest extends FloodlightTestCase {
     
     @Test
     public void testUpdateQueue() throws Exception {
-        class DummySwitchListener implements IOFSwitchListener {
+        class DummySwitchListener implements IOFSwitchListener, IOFSwitchPortListener {
             public int nAdded;
             public int nRemoved;
             public int nPortChanged;
@@ -824,7 +825,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.SLAVE;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupported(xid);
+        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
         expect(chdlr.sw.getChannel()).andReturn(ch).anyTimes();
         expect(ch.close()).andReturn(null);
         
@@ -844,7 +845,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.SLAVE;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupported(xid);
+        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
         expect(chdlr.sw.getChannel()).andReturn(ch).anyTimes();
         expect(ch.close()).andReturn(null);
         replay(ch, chdlr.sw);
@@ -863,7 +864,7 @@ public class ControllerTest extends FloodlightTestCase {
         state.firstRoleReplyReceived = false;
         controller.role = Role.MASTER;
         expect(chdlr.sw.checkFirstPendingRoleRequestXid(xid)).andReturn(true);
-        chdlr.sw.deliverRoleRequestNotSupported(xid);
+        chdlr.sw.deliverRoleRequestNotSupportedEx(xid);
         setupSwitchForAddSwitch(chdlr.sw, 0L);
         chdlr.sw.clearAllFlowMods();
         replay(ch, chdlr.sw);

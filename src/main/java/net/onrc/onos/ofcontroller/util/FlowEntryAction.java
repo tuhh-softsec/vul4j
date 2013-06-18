@@ -1,7 +1,6 @@
 package net.onrc.onos.ofcontroller.util;
 
 import net.floodlightcontroller.util.MACAddress;
-import net.onrc.onos.ofcontroller.util.Port.PortValues;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

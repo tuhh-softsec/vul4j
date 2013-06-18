@@ -17,8 +17,6 @@
 
 package net.floodlightcontroller.core;
 
-import org.openflow.protocol.OFPhysicalPort;
-
 /**
  *
  *
@@ -44,16 +42,6 @@ public interface IOFSwitchListener {
      * of OFPhysicalPorts and/or to a particular port)
      */
     public void switchPortChanged(Long switchId);
-    
-    /**
-     * Fired when ports on a switch area added
-     */
-    public void switchPortAdded(Long switchId, OFPhysicalPort port);
-    
-    /**
-     * Fired when ports on a switch area removed
-     */
-    public void switchPortRemoved(Long switchId, OFPhysicalPort port);
     
     /**
      * The name assigned to this listener

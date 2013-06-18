@@ -39,7 +39,6 @@ import org.openflow.protocol.OFFlowMod;
 import org.openflow.protocol.OFFlowRemoved;
 import org.openflow.protocol.OFMatch;
 import org.openflow.protocol.OFMessage;
-import org.openflow.protocol.OFPhysicalPort;
 import org.openflow.protocol.OFType;
 import org.openflow.protocol.factory.BasicFactory;
 import org.openflow.util.HexString;
@@ -676,17 +675,5 @@ public class StaticFlowEntryPusher
             Map<String, String> removedControllerNodeIPs) {
         // ignore
     }
-
-	@Override
-	public void switchPortAdded(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void switchPortRemoved(Long switchId, OFPhysicalPort port) {
-		// TODO Auto-generated method stub
-		
-	}
      
 }

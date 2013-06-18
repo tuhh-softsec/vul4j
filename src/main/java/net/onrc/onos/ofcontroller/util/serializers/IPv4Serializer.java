@@ -2,12 +2,12 @@ package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
+import net.onrc.onos.ofcontroller.util.IPv4;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-
-import net.onrc.onos.ofcontroller.util.IPv4;
 
 /**
  * Serialize an IPv4 address as a string.

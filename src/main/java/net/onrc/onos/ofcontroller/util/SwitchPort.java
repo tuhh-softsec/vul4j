@@ -1,7 +1,5 @@
 package net.onrc.onos.ofcontroller.util;
 
-import net.onrc.onos.ofcontroller.util.Port;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
