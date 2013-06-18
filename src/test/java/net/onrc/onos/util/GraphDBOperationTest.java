@@ -15,9 +15,9 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
+import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
-import net.floodlightcontroller.core.internal.TestDatabaseManager;
 
 import org.easymock.EasyMock;
 import org.junit.After;

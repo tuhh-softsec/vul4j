@@ -8,7 +8,7 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
 
-public interface IDBOperation {	
+public interface IDBOperation {
 	public ISwitchObject newSwitch(String dpid);
 	public ISwitchObject searchSwitch(String dpid);
 	public ISwitchObject searchActiveSwitch(String dpid);

@@ -2,16 +2,13 @@ package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.ObjectCodec;
-import org.codehaus.jackson.map.JsonDeserializer;
-import org.codehaus.jackson.map.DeserializationContext;
-
 import net.onrc.onos.ofcontroller.util.IPv4Net;
 
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
