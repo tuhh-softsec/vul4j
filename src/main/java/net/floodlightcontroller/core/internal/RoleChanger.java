@@ -277,8 +277,9 @@ public class RoleChanger {
                     // Handle cases #1 and #2
                 	log.debug("Sending NxRoleRequest to {}", sw);
                     sw.sendNxRoleRequest(role, cookie);
-                } else {         
+                } else {
                 	if (role == Role.MASTER) {
+                		// ONOS extension:
                 		log.debug("Switch {} doesn't support NxRoleRequests, but sending " + 
                 					"{} request anyway", sw, role);
                 		//Send the role request anyway, even though we know the switch

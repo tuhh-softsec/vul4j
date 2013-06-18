@@ -2,12 +2,12 @@ package net.onrc.onos.ofcontroller.util.serializers;
 
 import java.io.IOException;
 
+import net.onrc.onos.ofcontroller.util.IPv6Net;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-
-import net.onrc.onos.ofcontroller.util.IPv6Net;
 
 /**
  * Serialize an IPv6Net address as a string.

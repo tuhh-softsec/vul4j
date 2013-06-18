@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.floodlightcontroller.core.module.IFloodlightService;
-import net.floodlightcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
+import net.onrc.onos.ofcontroller.linkdiscovery.ILinkDiscovery.LDUpdate;
 
 public interface ITopologyService extends IFloodlightService  {
 

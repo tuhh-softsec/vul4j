@@ -73,10 +73,9 @@ import net.floodlightcontroller.storage.IStorageSourceService;
 import net.floodlightcontroller.storage.OperatorPredicate;
 import net.floodlightcontroller.storage.StorageException;
 import net.floodlightcontroller.threadpool.IThreadPoolService;
-import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
+import net.onrc.onos.ofcontroller.core.IOFSwitchPortListener;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyService.ITopoRouteService;
-import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
-import net.onrc.onos.ofcontroller.flowcache.IFlowService;
+import net.onrc.onos.ofcontroller.flowmanager.IFlowService;
 import net.onrc.onos.registry.controller.IControllerRegistryService;
 import net.onrc.onos.registry.controller.IControllerRegistryService.ControlChangeCallback;
 import net.onrc.onos.registry.controller.RegistryException;
@@ -140,14 +139,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * The main controller class.  Handles all setup and network listeners
+ * 
+ * Extensions made by ONOS are:
+ * - Detailed Port event: PORTCHANGED -> {PORTCHANGED, PORTADDED, PORTREMOVED} 
+ *    Available as net.onrc.onos.ofcontroller.core.IOFSwitchPortListener
+ * - Distributed ownership control of switch through RegistryService(IControllerRegistryService)
+ * - Register ONOS services. (IFlowService, ITopoRouteService, IControllerRegistryService)
+ * - Additional DEBUG logs
+ * - Try using hostname as controller ID, when ID was not explicitly given.
  */
 public class Controller implements IFloodlightProviderService, 
             IStorageSourceListener {
-   	
-	
+    
     protected static Logger log = LoggerFactory.getLogger(Controller.class);
 
     private static final String ERROR_DATABASE = 
@@ -270,10 +275,11 @@ public class Controller implements IFloodlightProviderService,
     }
     /**
      * Update message indicating a switch was added or removed 
+     * ONOS: This message extended to indicate Port add or removed event.
      */
     protected class SwitchUpdate implements IUpdate {
         public IOFSwitch sw;
-        public OFPhysicalPort port;
+        public OFPhysicalPort port; // Added by ONOS
         public SwitchUpdateType switchUpdateType;
         public SwitchUpdate(IOFSwitch sw, SwitchUpdateType switchUpdateType) {
             this.sw = sw;
@@ -302,10 +308,14 @@ public class Controller implements IFloodlightProviderService,
                             listener.switchPortChanged(sw.getId());
                             break;
                         case PORTADDED:
-                        	listener.switchPortAdded(sw.getId(), port);
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortAdded(sw.getId(), port);
+                        	}
                         	break;
                         case PORTREMOVED:
-                        	listener.switchPortRemoved(sw.getId(), port);
+                        	if (listener instanceof IOFSwitchPortListener) {
+                        		((IOFSwitchPortListener) listener).switchPortRemoved(sw.getId(), port);
+                        	}
                         	break;
                         default:
                         	break;
@@ -804,10 +814,9 @@ public class Controller implements IFloodlightProviderService,
                     dfuture);
 
         }
- 
+        
       	volatile Boolean controlRequested = Boolean.FALSE;
         protected void checkSwitchReady() {
-  
             if (state.hsState == HandshakeState.FEATURES_REPLY &&
                     state.hasDescription && state.hasGetConfigReply) {
                 
@@ -1143,7 +1152,7 @@ public class Controller implements IFloodlightProviderService,
                             }
                             state.firstRoleReplyReceived = true;
                             Role requestedRole = 
-                            		sw.deliverRoleRequestNotSupported(error.getXid());
+                            		sw.deliverRoleRequestNotSupportedEx(error.getXid());
                             synchronized(roleChanger) {
                                 if (sw.role == null && Controller.this.role==Role.SLAVE) {
                                 	//This will now never happen. The Controller's role
@@ -1622,7 +1631,6 @@ public class Controller implements IFloodlightProviderService,
         // from slave controllers. Then we need to move this cancelation
         // to switch disconnect
         sw.cancelAllStatisticsReplies();
-        
             
         // FIXME: I think there's a race condition if we call updateInactiveSwitchInfo
         // here if role support is enabled. In that case if the switch is being
@@ -1634,7 +1642,6 @@ public class Controller implements IFloodlightProviderService,
         // of the switch state that's written to storage.
         
         updateInactiveSwitchInfo(sw);
-        
         SwitchUpdate update = new SwitchUpdate(sw, SwitchUpdateType.REMOVED);
         try {
             this.updates.put(update);
@@ -2228,13 +2235,11 @@ public class Controller implements IFloodlightProviderService,
         this.updates = new LinkedBlockingQueue<IUpdate>();
         this.factory = new BasicFactory();
         this.providerMap = new HashMap<String, List<IInfoProvider>>();
-        
         setConfigParams(configParams);
         //this.role = getInitialRole(configParams);
         //Set the controller's role to MASTER so it always tries to do role requests.
         this.role = Role.MASTER;
         this.roleChanger = new RoleChanger();
-		
         initVendorMessages();
         this.systemStartTime = System.currentTimeMillis();
     }
