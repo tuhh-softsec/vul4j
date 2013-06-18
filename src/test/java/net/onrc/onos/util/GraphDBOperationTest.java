@@ -5,11 +5,19 @@ package net.onrc.onos.util;
 
 import static org.junit.Assert.*;
 
-import java.util.Iterator;
+import java.util.*;
 
+import junit.framework.TestCase;
+
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.core.internal.TestDatabaseManager;
+import net.onrc.onos.ofcontroller.util.FlowEntryId;
+import net.onrc.onos.ofcontroller.util.FlowId;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -30,9 +38,10 @@ import com.tinkerpop.blueprints.Vertex;
  * @author Toshio Koide
  *
  */
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TitanFactory.class})
-public class GraphDBOperationTest {
+public class GraphDBOperationTest extends TestCase {
 	private static TitanGraph testdb;
 	private static GraphDBConnection conn;
 	private static GraphDBOperation op;
@@ -59,13 +68,14 @@ public class GraphDBOperationTest {
 		TestDatabaseManager.deleteTestDatabase();
 		testdb = TestDatabaseManager.getTestDatabase();
 //		TestDatabaseManager.populateTestData(titanGraph);
-		
+
+		String dummyPath = "/dummy/to/conf";
 		// replace return value of TitanFactory.open() to dummy DB created above
 		PowerMock.mockStatic(TitanFactory.class);
-		EasyMock.expect(TitanFactory.open((String)EasyMock.anyObject())).andReturn(testdb);
+		EasyMock.expect(TitanFactory.open(dummyPath)).andReturn(testdb);
 		PowerMock.replay(TitanFactory.class);
 		
-		conn = GraphDBConnection.getInstance("/dummy/to/conf");
+		conn = GraphDBConnection.getInstance(dummyPath);
 		op = new GraphDBOperation(conn);
 	}
 
@@ -76,28 +86,22 @@ public class GraphDBOperationTest {
 	public void tearDown() throws Exception {
 		conn.close();
 		testdb.shutdown();
+		PowerMock.verifyAll();
 	}
 
-	private Iterator<Vertex> enumerateVertices(String vertexType) {
-		return testdb.getVertices("type", vertexType).iterator();
-	}
-	
 	/**
 	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newSwitch(net.onrc.onos.util.GraphDBConnection)}.
 	 */
 	@Test
 	public final void testNewSwitch() {
-		Iterator<Vertex> vertices;
-		assertFalse(enumerateVertices("switch").hasNext());
+		assertNull(op.searchSwitch("123"));
 
-		ISwitchObject sw = op.newSwitch("123");
-		
-		assertEquals("123", sw.getDPID());
+		op.newSwitch("123");		
 		op.commit();
 
-		vertices = enumerateVertices("switch");
-		assertTrue(vertices.hasNext());
-		assertEquals(vertices.next().getProperty("dpid").toString(), "123");		
+		ISwitchObject sw = op.searchSwitch("123");
+		assertNotNull(op);
+		assertEquals("123", sw.getDPID());
 	}
 
 	/**
@@ -105,13 +109,16 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testSearchSwitch() {
-		ISwitchObject sw = op.newSwitch("123");
+		op.newSwitch("123");
+		op.newSwitch("456");
 		op.commit();
-		
-		sw = op.searchSwitch("123");
-		
+
+		ISwitchObject sw = op.searchSwitch("123");
 		assertNotNull(sw);
 		assertEquals("123", sw.getDPID());
+
+		sw = op.searchSwitch("789");
+		assertNull(sw);
 	}
 
 	/**
@@ -119,13 +126,11 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testSearchActiveSwitch() {
-		ISwitchObject sw = op.newSwitch("111");
-		sw.setState(SwitchState.ACTIVE.toString());
-		sw = op.newSwitch("222");
-		sw.setState(SwitchState.INACTIVE.toString());
+		op.newSwitch("111").setState(SwitchState.ACTIVE.toString());
+		op.newSwitch("222").setState(SwitchState.INACTIVE.toString());
 		op.commit();
 		
-		sw = op.searchActiveSwitch("111");
+		ISwitchObject sw = op.searchActiveSwitch("111");
 		assertNotNull(sw);
 		assertEquals("111", sw.getDPID());
 		
@@ -138,16 +143,71 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetActiveSwitches() {
-		ISwitchObject sw = op.newSwitch("111");
-		sw.setState(SwitchState.ACTIVE.toString());
-		sw = op.newSwitch("222");
-		sw.setState(SwitchState.INACTIVE.toString());
+		op.newSwitch("111").setState(SwitchState.ACTIVE.toString());
+		op.newSwitch("222").setState(SwitchState.INACTIVE.toString());
 		op.commit();
 		
 		Iterator<ISwitchObject> i = op.getActiveSwitches().iterator();
+		
 		assertTrue(i.hasNext());
 		assertEquals("111", i.next().getDPID());
-		assertFalse(i.hasNext());		
+		assertFalse(i.hasNext());
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 */
+	@Test
+	public final void testGetAllSwitches() {
+		List<String> dpids = Arrays.asList("111", "222", "333");
+		Collections.sort(dpids);
+		
+		for (String dpid: dpids) op.newSwitch(dpid);
+		op.commit();
+
+		List<String> actual_ids = new ArrayList<String>();
+		for (ISwitchObject switchObj: op.getAllSwitches()) actual_ids.add(switchObj.getDPID());
+		Collections.sort(actual_ids);
+
+		assertArrayEquals(dpids.toArray(), actual_ids.toArray());
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getInactiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
+	 */
+	@Test
+	public final void testGetInactiveSwitches() {
+		op.newSwitch("111").setState(SwitchState.ACTIVE.toString());
+		op.newSwitch("222").setState(SwitchState.INACTIVE.toString());
+		op.commit();
+		
+		Iterator<ISwitchObject> i = op.getInactiveSwitches().iterator();
+		
+		assertTrue(i.hasNext());
+		assertEquals("222", i.next().getDPID());
+		assertFalse(i.hasNext());
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitchNotUpdatedFlowEntries(net.onrc.onos.util.GraphDBConnection)}.
+	 */
+	@Test
+	public final void testGetAllSwitchNotUpdatedFlowEntries() {
+		FlowEntryId flowEntryId10 = new FlowEntryId(10);
+		FlowEntryId flowEntryId20 = new FlowEntryId(20);
+		IFlowEntry flowEntry10 = op.newFlowEntry();
+		IFlowEntry flowEntry20 = op.newFlowEntry();
+		flowEntry10.setFlowEntryId(flowEntryId10.toString());
+		flowEntry20.setFlowEntryId(flowEntryId20.toString());
+		flowEntry10.setSwitchState("FE_SWITCH_NOT_UPDATED");
+		flowEntry20.setSwitchState("FE_SWITCH_UPDATED");
+ 		op.commit();
+		
+		Iterator<IFlowEntry> flowEntries = op.getAllSwitchNotUpdatedFlowEntries().iterator();
+		assertNotNull(flowEntries);
+		assertTrue(flowEntries.hasNext());
+		assertEquals(flowEntryId10.toString(), flowEntries.next().getFlowEntryId());
+		assertFalse(flowEntries.hasNext());
 	}
 
 	/**
@@ -158,26 +218,12 @@ public class GraphDBOperationTest {
 		ISwitchObject sw = op.newSwitch("123");
 		op.commit();	
 		sw = op.searchSwitch("123");
-		
+		assertNotNull(sw);
+
 		op.removeSwitch(sw);
-
-		assertFalse(enumerateVertices("switch").hasNext());
-	}
-
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchDevice(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
-	 */
-	@Test
-	public final void testSearchDevice() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchPort(net.onrc.onos.util.GraphDBConnection, java.lang.String, short)}.
-	 */
-	@Test
-	public final void testSearchPort() {
-		fail("Not yet implemented");
+		op.commit();
+		
+		assertNull(op.searchSwitch("123"));
 	}
 
 	/**
@@ -185,15 +231,65 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testNewPort() {
-		fail("Not yet implemented");
+		assertFalse(testdb.getVertices("type", "port").iterator().hasNext());
+		
+		IPortObject port = op.newPort((short) 10);
+		assertTrue(port.getNumber() == 10);
+		op.commit();
+		
+		Iterator<Vertex> vertices = testdb.getVertices("type", "port").iterator();
+		assertTrue(vertices.hasNext());
+		assertEquals(vertices.next().getProperty("number").toString(), "10");		
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newDevice(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchPort(net.onrc.onos.util.GraphDBConnection, java.lang.String, short)}.
 	 */
 	@Test
-	public final void testNewDevice() {
-		fail("Not yet implemented");
+	public final void testSearchPort() {
+		ISwitchObject sw;
+		IPortObject port;
+		
+		sw = op.newSwitch("1");
+		sw.addPort(op.newPort((short) 1));
+		sw.addPort(op.newPort((short) 2));
+		
+		sw = op.newSwitch("2");
+		sw.addPort(op.newPort((short) 1));
+		sw.addPort(op.newPort((short) 2));
+
+		op.commit();
+
+		assertNull(op.searchPort("3", (short) 1));
+		assertNull(op.searchPort("1", (short) 3));
+
+		port = op.searchPort("1", (short) 1);
+		assertNotNull(port);
+		assertTrue(port.getNumber() == 1);
+		sw = port.getSwitch();
+		assertNotNull(sw);
+		assertEquals("1", sw.getDPID());
+
+		port = op.searchPort("1", (short) 2);
+		assertNotNull(port);
+		assertTrue(port.getNumber() == 2);
+		sw = port.getSwitch();
+		assertNotNull(sw);
+		assertEquals("1", sw.getDPID());
+
+		port = op.searchPort("2", (short) 1);
+		assertNotNull(port);
+		assertTrue(port.getNumber() == 1);
+		sw = port.getSwitch();
+		assertNotNull(sw);
+		assertEquals("2", sw.getDPID());
+
+		port = op.searchPort("2", (short) 2);
+		assertNotNull(port);
+		assertTrue(port.getNumber() == 2);
+		sw = port.getSwitch();
+		assertNotNull(sw);
+		assertEquals("2", sw.getDPID());
 	}
 
 	/**
@@ -201,15 +297,69 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testRemovePort() {
-		fail("Not yet implemented");
+		ISwitchObject sw;
+		IPortObject port;
+		
+		sw = op.newSwitch("1");
+		sw.addPort(op.newPort((short) 1));
+		sw.addPort(op.newPort((short) 2));
+		
+		op.commit();
+
+		port = op.searchPort("1", (short) 1);
+		assertNotNull(port);
+		assertNotNull(op.searchPort("1", (short) 2));
+		assertNull(op.searchPort("1", (short) 3));
+
+		op.removePort(port);
+		op.commit();
+		
+		assertNull(op.searchPort("1", (short) 1));
+		port = op.searchPort("1", (short) 2);
+		assertNotNull(port);
+		
+		op.removePort(port);
+		op.commit();
+
+		assertNull(op.searchPort("1", (short) 1));
+		assertNull(op.searchPort("1", (short) 2));
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeDevice(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#newDevice(net.onrc.onos.util.GraphDBConnection)}.
 	 */
 	@Test
-	public final void testRemoveDevice() {
-		fail("Not yet implemented");
+	public final void testNewDevice() {
+		assertFalse(testdb.getVertices("type", "device").iterator().hasNext());
+		
+		IDeviceObject device = op.newDevice();
+		device.setMACAddress("11:22:33:44:55:66");
+		device.setIPAddress("192.168.1.1");
+		op.commit();
+		
+		Iterator<Vertex> vertices = testdb.getVertices("type", "device").iterator();
+		assertTrue(vertices.hasNext());
+		Vertex v = vertices.next();
+		assertEquals("11:22:33:44:55:66", v.getProperty("dl_addr").toString());
+		assertEquals("192.168.1.1", v.getProperty("nw_addr").toString());
+	}
+
+	/**
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchDevice(net.onrc.onos.util.GraphDBConnection, java.lang.String)}.
+	 */
+	@Test
+	public final void testSearchDevice() {
+		assertNull(op.searchDevice("11:22:33:44:55:66"));
+		assertNull(op.searchDevice("66:55:44:33:22:11"));
+
+		op.newDevice().setMACAddress("11:22:33:44:55:66");
+		op.commit();
+		
+		IDeviceObject device = op.searchDevice("11:22:33:44:55:66");
+		assertNotNull(device);
+		assertEquals("11:22:33:44:55:66", device.getMACAddress());
+		
+		assertNull(op.searchDevice("66:55:44:33:22:11"));
 	}
 
 	/**
@@ -217,15 +367,33 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetDevices() {
-		fail("Not yet implemented");
+		List<String> original_macs = Arrays.asList(
+				"11:11:11:11:11:11",
+				"22:22:22:22:22:22",
+				"33:33:33:33:33:33"
+				);
+		
+		for (String mac: original_macs) op.newDevice().setMACAddress(mac);
+		op.commit();
+		
+		Iterable<IDeviceObject> devices = op.getDevices();
+		List<String> macs = new ArrayList<String>();
+		for (IDeviceObject device: devices) macs.add(device.getMACAddress());
+		Collections.sort(macs);
+		assertArrayEquals(original_macs.toArray(), macs.toArray());
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowId)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeDevice(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IDeviceObject)}.
 	 */
 	@Test
-	public final void testSearchFlowPath() {
-		fail("Not yet implemented");
+	public final void testRemoveDevice() {
+		op.newDevice().setMACAddress("11:22:33:44:55:66");
+		op.commit();
+		
+		op.removeDevice(op.searchDevice("11:22:33:44:55:66"));
+		op.commit();
+		assertNull(op.searchDevice("11:22:33:44:55:66"));
 	}
 
 	/**
@@ -233,15 +401,30 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testNewFlowPath() {
-		fail("Not yet implemented");
+		FlowId flowId = new FlowId(10);
+		IFlowPath flowPath = op.newFlowPath();
+		flowPath.setFlowId(flowId.toString());
+		op.commit();
+
+		Iterator<IFlowPath> flows = op.getAllFlowPaths().iterator();
+		assertTrue(flows.hasNext());
+		assertEquals(flowId.toString(), flows.next().getFlowId());
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowId)}.
 	 */
 	@Test
-	public final void testRemoveFlowPath() {
-		fail("Not yet implemented");
+	public final void testSearchFlowPath() {
+		FlowId flowId = new FlowId(20);
+		assertNull(op.searchFlowPath(flowId));
+
+		op.newFlowPath().setFlowId(flowId.toString());
+		op.commit();
+		
+		IFlowPath flowPath = op.searchFlowPath(flowId);
+		assertNotNull(flowPath);
+		assertEquals(flowId.toString(), flowPath.getFlowId());
 	}
 
 	/**
@@ -249,7 +432,38 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetFlowPathByFlowEntry() {
-		fail("Not yet implemented");
+		FlowId flowId10 = new FlowId(10);
+		FlowId flowId20 = new FlowId(20);
+		IFlowPath flowPath10 = op.newFlowPath();
+		IFlowPath flowPath20 = op.newFlowPath();
+		IFlowEntry flowEntry10 = op.newFlowEntry();
+		IFlowEntry flowEntry20 = op.newFlowEntry();
+		IFlowEntry flowEntry30 = op.newFlowEntry();
+		FlowEntryId flowEntryId10 = new FlowEntryId(10); 
+		FlowEntryId flowEntryId20 = new FlowEntryId(20); 
+		FlowEntryId flowEntryId30 = new FlowEntryId(30); 
+		flowEntry10.setFlowEntryId(flowEntryId10.toString());
+		flowEntry20.setFlowEntryId(flowEntryId20.toString());
+		flowEntry30.setFlowEntryId(flowEntryId30.toString());
+		flowPath10.setFlowId(flowId10.toString());
+		flowPath10.addFlowEntry(flowEntry10);
+		flowPath20.setFlowId(flowId20.toString());
+		flowPath20.addFlowEntry(flowEntry20);
+		op.commit();
+
+		flowEntry10 = op.searchFlowEntry(flowEntryId10);
+		IFlowPath obtainedFlowPath = op.getFlowPathByFlowEntry(flowEntry10);
+		assertNotNull(obtainedFlowPath);
+		assertEquals(flowId10.toString(), obtainedFlowPath.getFlowId());
+		
+		flowEntry20 = op.searchFlowEntry(flowEntryId20);
+		obtainedFlowPath = op.getFlowPathByFlowEntry(flowEntry20);
+		assertNotNull(obtainedFlowPath);
+		assertEquals(flowId20.toString(), obtainedFlowPath.getFlowId());
+		
+		flowEntry30 = op.searchFlowEntry(flowEntryId30);
+		obtainedFlowPath = op.getFlowPathByFlowEntry(flowEntry30);
+		assertNull(obtainedFlowPath);
 	}
 
 	/**
@@ -257,15 +471,43 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetAllFlowPaths() {
-		fail("Not yet implemented");
+		List<FlowId> flowids = Arrays.asList(
+				new FlowId(10), new FlowId(20), new FlowId(30)
+				);
+		
+		for (FlowId flowId: flowids)
+			op.newFlowPath().setFlowId(flowId.toString());
+		op.commit();
+
+		List<String> actual_ids = new ArrayList<String>();
+		for (IFlowPath flowPath: op.getAllFlowPaths()) actual_ids.add(flowPath.getFlowId());
+		Collections.sort(actual_ids);
+
+		List<String> expected_ids = new ArrayList<String>();
+		for (FlowId flowid: flowids) expected_ids.add(flowid.toString());
+		Collections.sort(expected_ids);
+		
+		assertArrayEquals(expected_ids.toArray(), actual_ids.toArray());
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowEntryId)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowPath(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowPath)}.
 	 */
 	@Test
-	public final void testSearchFlowEntry() {
-		fail("Not yet implemented");
+	public final void testRemoveFlowPath() {
+		FlowId flowId10 = new FlowId(10);
+		FlowId flowId20 = new FlowId(20);
+		op.newFlowPath().setFlowId(flowId10.toString());
+		op.newFlowPath().setFlowId(flowId20.toString());
+		op.commit();
+		
+		IFlowPath flowPath = op.searchFlowPath(flowId10);
+		assertNotNull(flowPath);
+		op.removeFlowPath(flowPath);
+		op.commit();
+		
+		assertNull(op.searchFlowPath(flowId10));
+		assertNotNull(op.searchFlowPath(flowId20));
 	}
 
 	/**
@@ -273,15 +515,38 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testNewFlowEntry() {
-		fail("Not yet implemented");
+		IFlowEntry flowEntry = op.newFlowEntry();
+		FlowEntryId flowEntryId = new FlowEntryId();
+		flowEntryId.setValue(12345);
+		flowEntry.setFlowEntryId(flowEntryId.toString());
+		op.commit();
+		
+		flowEntry = op.searchFlowEntry(flowEntryId);
+		assertNotNull(flowEntry);
+		assertEquals(flowEntry.getFlowEntryId(), flowEntryId.toString());		
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#searchFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.util.FlowEntryId)}.
 	 */
 	@Test
-	public final void testRemoveFlowEntry() {
-		fail("Not yet implemented");
+	public final void testSearchFlowEntry() {
+		FlowEntryId flowEntryId10 = new FlowEntryId();
+		flowEntryId10.setValue(10);
+		FlowEntryId flowEntryId20 = new FlowEntryId();
+		flowEntryId20.setValue(20);
+		FlowEntryId flowEntryId30 = new FlowEntryId();
+		flowEntryId30.setValue(30);
+		
+		op.newFlowEntry().setFlowEntryId(flowEntryId10.toString());
+		op.newFlowEntry().setFlowEntryId(flowEntryId20.toString());
+		op.commit();
+		
+		assertNull(op.searchFlowEntry(flowEntryId30));
+		IFlowEntry flowEntry = op.searchFlowEntry(flowEntryId10);
+		assertEquals(flowEntry.getFlowEntryId(), flowEntryId10.toString());
+		flowEntry = op.searchFlowEntry(flowEntryId20);
+		assertEquals(flowEntry.getFlowEntryId(), flowEntryId20.toString());
 	}
 
 	/**
@@ -289,31 +554,43 @@ public class GraphDBOperationTest {
 	 */
 	@Test
 	public final void testGetAllFlowEntries() {
-		fail("Not yet implemented");
+		List<FlowEntryId> flowEntryIds = Arrays.asList(
+				new FlowEntryId(10), new FlowEntryId(20), new FlowEntryId(30)
+				);
+		
+		for (FlowEntryId flowEntryId: flowEntryIds)
+			op.newFlowEntry().setFlowEntryId(flowEntryId.toString());
+		op.commit();
+
+		List<String> actual_ids = new ArrayList<String>();
+		for (IFlowEntry flowEntry: op.getAllFlowEntries()) actual_ids.add(flowEntry.getFlowEntryId());
+		Collections.sort(actual_ids);
+
+		List<String> expected_ids = new ArrayList<String>();
+		for (FlowEntryId flowEntryId: flowEntryIds) expected_ids.add(flowEntryId.toString());
+		Collections.sort(expected_ids);
+		
+		assertArrayEquals(expected_ids.toArray(), actual_ids.toArray());
 	}
 
 	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitchNotUpdatedFlowEntries(net.onrc.onos.util.GraphDBConnection)}.
+	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#removeFlowEntry(net.onrc.onos.util.GraphDBConnection, net.floodlightcontroller.core.INetMapTopologyObjects.IFlowEntry)}.
 	 */
 	@Test
-	public final void testGetAllSwitchNotUpdatedFlowEntries() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getAllSwitches(net.onrc.onos.util.GraphDBConnection)}.
-	 */
-	@Test
-	public final void testGetAllSwitches() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link net.onrc.onos.util.GraphDBOperation#getInactiveSwitches(net.onrc.onos.util.GraphDBConnection)}.
-	 */
-	@Test
-	public final void testGetInactiveSwitches() {
-		fail("Not yet implemented");
+	public final void testRemoveFlowEntry() {
+		FlowEntryId flowEntryId10 = new FlowEntryId(10);
+		FlowEntryId flowEntryId20 = new FlowEntryId(20);
+		op.newFlowEntry().setFlowEntryId(flowEntryId10.toString());
+		op.newFlowEntry().setFlowEntryId(flowEntryId20.toString());
+		op.commit();
+		
+		IFlowEntry flowEntry = op.searchFlowEntry(flowEntryId10);
+		assertNotNull(flowEntry);
+		op.removeFlowEntry(flowEntry);
+		op.commit();
+		
+		assertNull(op.searchFlowEntry(flowEntryId10));
+		assertNotNull(op.searchFlowEntry(flowEntryId20));
 	}
 
 }

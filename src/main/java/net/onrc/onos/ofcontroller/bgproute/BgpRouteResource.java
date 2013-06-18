@@ -184,6 +184,16 @@ public class BgpRouteResource extends ServerResource {
 			}
 
 			PtreeNode node = ptree.lookup(p.getAddress(), p.masklen);
+			
+			//Remove the flows from the switches before the rib is lost
+			//Theory: we could get a delete for a prefix not in the Ptree.
+			//This would result in a null node being returned. We could get a delete for
+			//a node that's not actually there, but is a aggregate node. This would result
+			//in a non-null node with a null rib. Only a non-null node with a non-null
+			//rib is an actual prefix in the Ptree.
+			if (node != null && node.rib != null){
+				bgpRoute.prefixDeleted(node);
+			}
 
 			Rib r = new Rib(routerId, nextHop, p.masklen);
 
@@ -193,8 +203,6 @@ public class BgpRouteResource extends ServerResource {
 					ptree.delReference(node);					
 				}
 			}
-
-			bgpRoute.prefixDeleted(node);
 			
 			reply =reply + "[DELE: " + prefix + "/" + mask + ":" + nextHop + "]";
 		}

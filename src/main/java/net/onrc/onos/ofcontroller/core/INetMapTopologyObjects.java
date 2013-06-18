@@ -48,7 +48,7 @@ public interface ISwitchObject extends IBaseObject{
 
 // Requires Frames 2.3.0		
 		@JsonIgnore
-		@GremlinGroovy("_().out('on').has('number',port_num)")
+		@GremlinGroovy("it.out('on').has('number',port_num)")
 		public IPortObject getPort(@GremlinParam("port_num") final short port_num);
 		
 		@Adjacency(label="on")
@@ -58,7 +58,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void removePort(final IPortObject port);
 		
 		@JsonIgnore
-		@GremlinGroovy("_().out('on').out('host')")
+		@GremlinGroovy("it.out('on').out('host')")
 		public Iterable<IDeviceObject> getDevices();
 		
 		@JsonIgnore
@@ -91,6 +91,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void setPortState(Integer s);
 		
 		@JsonIgnore
+//		@GremlinGroovy("it.in('on')")
 		@Adjacency(label="on",direction = Direction.IN)
 		public ISwitchObject getSwitch();
 				
@@ -154,7 +155,7 @@ public interface ISwitchObject extends IBaseObject{
 		public void removeHostPort(final IPortObject port);
 		
 		@JsonIgnore
-		@GremlinGroovy("_().in('host').in('on')")
+		@GremlinGroovy("it.in('host').in('on')")
 		public Iterable<ISwitchObject> getSwitch();
 		
 /*		@JsonProperty("dpid")
@@ -267,7 +268,7 @@ public interface IFlowPath extends IBaseObject {
 		public void setMatchDstIPv4Net(String matchDstIPv4Net);
 		
 		@JsonIgnore
-		@GremlinGroovy("_().in('flow').out('switch')")
+		@GremlinGroovy("it.in('flow').out('switch')")
 		public Iterable<ISwitchObject> getSwitches();
 		
 		@JsonIgnore
