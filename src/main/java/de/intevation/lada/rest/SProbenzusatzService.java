@@ -7,18 +7,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import de.intevation.lada.data.Repository;
-import de.intevation.lada.model.SDatenbasis;
+import de.intevation.lada.model.SProbenZusatz;
 
 /**
  * This class produces a RESTful service to read the contents of SDatenbasis table.
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("/datenbasis")
+@Path("/probenzusatz")
 @RequestScoped
 public class SProbenzusatzService
 {
@@ -43,19 +42,6 @@ public class SProbenzusatzService
     @GET
     @Produces("text/json")
     public Response findAll() {
-        return repository.findAll(SDatenbasis.class);
-    }
-
-    /**
-     * Request a single SDatenbasis via its id.
-     *
-     * @param id The mst_id
-     * @return JSON Object via REST service.
-     */
-    @GET
-    @Path("/{id}")
-    @Produces("text/json")
-    public Response findById(@PathParam("id") String id) {
-        return repository.findById(SDatenbasis.class, id);
+        return repository.findAll(SProbenZusatz.class);
     }
 }

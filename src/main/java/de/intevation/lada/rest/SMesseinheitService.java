@@ -17,7 +17,7 @@ import de.intevation.lada.model.SMessEinheit;
  * 
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("/datenbasis")
+@Path("/messeinheit")
 @RequestScoped
 public class SMesseinheitService
 {
