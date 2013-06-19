@@ -32,13 +32,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Servlet used to proxy requests from a remote application.
- *
+ * 
  * <p>
  * Parameters are :
  * <ul>
  * <li>provider (optional - deprecated): single provider name</li>
  * <li>providers (optional - deprecated): comma-separated list of provider
  * mappings based on host requested. Format is: host1=provider,host2=provider2</li>
+ * <li>useMappings (optional - recommended): true or false : use mappings from
+ * esigate.properties</li>
  * </ul>
  * 
  * <p>
