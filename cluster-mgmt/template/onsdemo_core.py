@@ -65,21 +65,12 @@ class SDNTopo( Topo ):
         host5 = self.addHost( 'host5' )
         host6 = self.addHost( 'host6' )
 
-        root1 = self.addHost( 'root1', inNamespace=False )
-        root2 = self.addHost( 'root2', inNamespace=False )
-        root3 = self.addHost( 'root3', inNamespace=False )
-        root4 = self.addHost( 'root4', inNamespace=False )
-        root5 = self.addHost( 'root5', inNamespace=False )
-        root6 = self.addHost( 'root6', inNamespace=False )
-
-
         self.addLink( host1, sw1 )
         self.addLink( host2, sw2 )
         self.addLink( host3, sw3 )
         self.addLink( host4, sw4 )
         self.addLink( host5, sw5 )
         self.addLink( host6, sw6 )
-
 
         self.addLink( sw1, sw2 )
         self.addLink( sw1, sw6 )
@@ -89,13 +80,6 @@ class SDNTopo( Topo ):
         self.addLink( sw4, sw5 )
         self.addLink( sw5, sw6 )
         self.addLink( sw4, sw6 )
-
-        self.addLink( root1, host1 )
-        self.addLink( root2, host2 )
-        self.addLink( root3, host3 )
-        self.addLink( root4, host4 )
-        self.addLink( root5, host5 )
-        self.addLink( root6, host6 )
 
 def startsshd( host ):
     "Start sshd on host"
@@ -153,25 +137,6 @@ def sdnnet(opt):
     host4.defaultIntf().setIP('192.168.100.144/16')
     host5.defaultIntf().setIP('192.168.100.145/16')
     host6.defaultIntf().setIP('192.168.100.146/16')
-
-    root1, root2, root3, root4, root5, root6  = net.get( 'root1', 'root2', 'root3', 'root4', 'root5', 'root6' )
-    host1.intf('host1-eth1').setIP('1.1.1.1/24')
-    root1.intf('root1-eth0').setIP('1.1.1.2/24')
-
-    host2.intf('host2-eth1') .setIP('1.1.2.1/24')
-    root2.intf('root2-eth0').setIP('1.1.2.2/24')
-
-    host3.intf('host3-eth1') .setIP('1.1.3.1/24')
-    root3.intf('root3-eth0').setIP('1.1.3.2/24')
-
-    host4.intf('host4-eth1') .setIP('1.1.4.1/24')
-    root4.intf('root4-eth0').setIP('1.1.4.2/24')
-
-    host5.intf('host5-eth1') .setIP('1.1.5.1/24')
-    root5.intf('root5-eth0').setIP('1.1.5.2/24')
-
-    host6.intf('host6-eth1') .setIP('1.1.6.1/24')
-    root6.intf('root6-eth0').setIP('1.1.6.2/24')
 
     hosts = [ host1, host2, host3, host4, host5, host6 ]
     stopsshd ()
