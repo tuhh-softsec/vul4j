@@ -20,16 +20,27 @@ import com.tinkerpop.gremlin.java.GremlinPipeline;
 
 public class GraphDBOperation implements IDBOperation {
 	private GraphDBConnection conn;
-	
+
+	/**
+	 * Create a GraphDBOperation instance from specified GraphDBConnection's instance.
+	 * @param dbConnection an instance of GraphDBConnection
+	 */
 	public GraphDBOperation(GraphDBConnection dbConnection) {
 		this.conn = dbConnection;
 	}
-	
+
+	/**
+	 * Create a GraphDBOperation instance from database configuration path.
+	 * @param dbConfPath a path for database configuration file.
+	 */
 	public GraphDBOperation(final String dbConfPath) {
 		this.conn = GraphDBConnection.getInstance(dbConfPath);
 	}
 
-	@Override
+	/**
+	 * Create a new switch and return the created switch object.
+	 * @param dpid DPID of the switch
+	 */
 	public ISwitchObject newSwitch(String dpid) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		ISwitchObject obj = fg.addVertex(null,ISwitchObject.class);
@@ -40,7 +51,10 @@ public class GraphDBOperation implements IDBOperation {
 		return obj;
 	}
 
-	@Override
+	/**
+	 * Search and get a switch object with DPID.
+	 * @param dpid DPID of the switch 
+	 */
 	public ISwitchObject searchSwitch(String dpid) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
@@ -50,7 +64,10 @@ public class GraphDBOperation implements IDBOperation {
 				
 	}
 
-	@Override
+	/**
+	 * Search and get an active switch object with DPID.
+	 * @param dpid DPID of the switch 
+	 */
 	public ISwitchObject searchActiveSwitch(String dpid) {
 	
 	    ISwitchObject sw = searchSwitch(dpid);
@@ -61,14 +78,18 @@ public class GraphDBOperation implements IDBOperation {
 	    return null;
 	}
 
-	@Override
+	/**
+	 * Get all switch objects.
+	 */
 	public Iterable<ISwitchObject> getAllSwitches() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
 		return switches;
 	}
 
-	@Override
+	/**
+	 * Get all active switch objects.
+	 */
 	public Iterable<ISwitchObject> getActiveSwitches() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
@@ -82,7 +103,9 @@ public class GraphDBOperation implements IDBOperation {
 		return activeSwitches;
 	}
 
-	@Override
+	/**
+	 * Get all inactive switch objects.
+	 */
 	public Iterable<ISwitchObject> getInactiveSwitches() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		Iterable<ISwitchObject> switches =  fg.getVertices("type","switch",ISwitchObject.class);
@@ -96,20 +119,28 @@ public class GraphDBOperation implements IDBOperation {
 		return inactiveSwitches;
 	}
 
-	@Override
+	/**
+	 * Get all flow entries' objects where their switches are not updated.
+	 */
 	public Iterable<IFlowEntry> getAllSwitchNotUpdatedFlowEntries() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		//TODO: Should use an enum for flow_switch_state
 		return fg.getVertices("switch_state", "FE_SWITCH_NOT_UPDATED", IFlowEntry.class);
 	}
 
-	@Override
+	/**
+	 * Remove specified switch.
+	 * @param sw switch object to remove
+	 */
 	public void removeSwitch(ISwitchObject sw) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		fg.removeVertex(sw.asVertex());		
 	}
 
-	@Override
+	/**
+	 * Create a port having specified port number.
+	 * @param portNumber port number
+	 */
 	public IPortObject newPort(Short portNumber) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IPortObject obj = fg.addVertex(null,IPortObject.class);
@@ -120,24 +151,28 @@ public class GraphDBOperation implements IDBOperation {
 		return obj;
 	}
 
-	@Override
-		public IPortObject searchPort(String dpid, short number) {
-			ISwitchObject sw = searchSwitch(dpid);
-			if (sw != null) {
-				
-				IPortObject port = null;
-				
-				// Requires Frames 2.3.0
-				
-				try {
-					port = sw.getPort(number);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				return port;
+	/**
+	 * Search and get a port object of specified switch and port number.
+	 * @param dpid DPID of a switch
+	 * @param number port number of the switch's port
+	 */
+	public IPortObject searchPort(String dpid, short number) {
+		ISwitchObject sw = searchSwitch(dpid);
+		if (sw != null) {
+			
+			IPortObject port = null;
+			
+			// Requires Frames 2.3.0
+			
+			try {
+				port = sw.getPort(number);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
+			return port;
+		}
 			
 	//		if (sw != null) {
 	//			GremlinPipeline<Vertex, IPortObject> pipe = new GremlinPipeline<Vertex, IPortObject>();
@@ -146,17 +181,22 @@ public class GraphDBOperation implements IDBOperation {
 	//			FramedVertexIterable<IPortObject> r = new FramedVertexIterable<IPortObject>(conn.getFramedGraph(), (Iterable) pipe, IPortObject.class);
 	//			return r != null && r.iterator().hasNext() ? r.iterator().next() : null;
 	//		}
-			return null;
-		}
+		return null;
+	}
 
-	@Override
-		public void removePort(IPortObject port) {
-			FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
-	//		EventGraph<TitanGraph> eg = conn.getEventGraph();
-			if (fg != null) fg.removeVertex(port.asVertex());		
-		}
+	/**
+	 * Remove the specified switch port.
+	 * @param port switch port object to remove
+	 */
+	public void removePort(IPortObject port) {
+		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
+//		EventGraph<TitanGraph> eg = conn.getEventGraph();
+		if (fg != null) fg.removeVertex(port.asVertex());		
+	}
 
-	@Override
+	/**
+	 * Create and return a device object.
+	 */
 	public IDeviceObject newDevice() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IDeviceObject obj = fg.addVertex(null,IDeviceObject.class);
@@ -164,7 +204,10 @@ public class GraphDBOperation implements IDBOperation {
 		return obj;
 	}
 
-	@Override
+	/**
+	 * Search and get a device object having specified MAC address.
+	 * @param macAddr MAC address to search and get
+	 */
 	public IDeviceObject searchDevice(String macAddr) {
 		// TODO Auto-generated method stub
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
@@ -172,19 +215,26 @@ public class GraphDBOperation implements IDBOperation {
 			fg.getVertices("dl_addr",macAddr, IDeviceObject.class).iterator().next() : null;
 	}
 
-	@Override
+	/**
+	 * Get all devices.
+	 */
 	public Iterable<IDeviceObject> getDevices() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		return fg != null ? fg.getVertices("type","device",IDeviceObject.class) : null;
 	}
 
-	@Override
+	/**
+	 * Remove the specified device.
+	 * @param dev a device object to remove
+	 */
 	public void removeDevice(IDeviceObject dev) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		if (fg != null) fg.removeVertex(dev.asVertex());		
 	}
 
-	@Override
+	/**
+	 * Create and return a flow path object.
+	 */
 	public IFlowPath newFlowPath() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IFlowPath flowPath = fg.addVertex(null, IFlowPath.class);
@@ -192,7 +242,10 @@ public class GraphDBOperation implements IDBOperation {
 		return flowPath;
 	}
 
-	@Override
+	/**
+	 * Search and get a flow path object with specified flow ID.
+	 * @param flowId flow ID to search
+	 */
 	public IFlowPath searchFlowPath(FlowId flowId) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
@@ -201,7 +254,10 @@ public class GraphDBOperation implements IDBOperation {
 				   IFlowPath.class).iterator().next() : null;
 	}
 
-	@Override
+	/**
+	 * Get a flow path object with a flow entry.
+	 * @param flowEntry flow entry object
+	 */
 	public IFlowPath getFlowPathByFlowEntry(IFlowEntry flowEntry) {
 		GremlinPipeline<Vertex, IFlowPath> pipe = new GremlinPipeline<Vertex, IFlowPath>();
 		pipe.start(flowEntry.asVertex());
@@ -210,7 +266,9 @@ public class GraphDBOperation implements IDBOperation {
 		return r.iterator().hasNext() ? r.iterator().next() : null;
 	}
 
-	@Override
+	/**
+	 * Get all flow path objects.
+	 */
     public Iterable<IFlowPath> getAllFlowPaths() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		Iterable<IFlowPath> flowPaths = fg.getVertices("type", "flow", IFlowPath.class);
@@ -225,13 +283,18 @@ public class GraphDBOperation implements IDBOperation {
 		return nonNullFlows;
 	}
 
-	@Override
+    /**
+     * Remove the specified flow path.
+     * @param flowPath flow path object to remove
+     */
 	public void removeFlowPath(IFlowPath flowPath) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		fg.removeVertex(flowPath.asVertex());
 	}
 
-	@Override
+	/**
+	 * Create and return a flow entry object.
+	 */
 	public IFlowEntry newFlowEntry() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();	
 		IFlowEntry flowEntry = fg.addVertex(null, IFlowEntry.class);
@@ -239,7 +302,10 @@ public class GraphDBOperation implements IDBOperation {
 		return flowEntry;
 	}
 
-	@Override
+	/**
+	 * Search and get a flow entry object with flow entry ID.
+	 * @param flowEntryId flow entry ID to search
+	 */
 	public IFlowEntry searchFlowEntry(FlowEntryId flowEntryId) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
@@ -248,14 +314,19 @@ public class GraphDBOperation implements IDBOperation {
 				   IFlowEntry.class).iterator().next() : null;
 	}
 
-	@Override
-        public Iterable<IFlowEntry> getAllFlowEntries() {
+	/**
+	 * Get all flow entry objects.
+	 */
+	public Iterable<IFlowEntry> getAllFlowEntries() {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		
 		return fg.getVertices("type", "flow_entry", IFlowEntry.class);
 	}
 
-	@Override
+	/**
+	 * Remove the specified flow entry.
+	 * @param flowEntry flow entry object to remove
+	 */
 	public void removeFlowEntry(IFlowEntry flowEntry) {
 		FramedGraph<TitanGraph> fg = conn.getFramedGraph();
 		fg.removeVertex(flowEntry.asVertex());
