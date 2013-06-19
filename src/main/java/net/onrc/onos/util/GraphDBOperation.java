@@ -332,18 +332,30 @@ public class GraphDBOperation implements IDBOperation {
 		fg.removeVertex(flowEntry.asVertex());
 	}
 	
+	/**
+	 * Get the instance of GraphDBConnection assigned to this class.
+	 */
 	public IDBConnection getDBConnection() {
 		return conn;
 	}
 	
+	/**
+	 * Commit changes for the graph.
+	 */
 	public void commit() {
 		conn.commit();
 	}
-	
+
+	/**
+	 * Rollback changes for the graph.
+	 */
 	public void rollback() {
 		conn.rollback();
 	}
 
+	/**
+	 * Close the connection of the assigned GraphDBConnection.
+	 */
 	public void close() {
 		conn.close();
 	}
