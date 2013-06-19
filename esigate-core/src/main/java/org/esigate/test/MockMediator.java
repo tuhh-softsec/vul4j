@@ -22,6 +22,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -33,15 +34,19 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.api.ContainerRequestMediator;
+import org.esigate.servlet.HttpServletMediator;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 
 /**
- * @author Francois-Xavier Bonnet
+ * MockMediator can be used in unit test, instead of {@link HttpServletMediator}.
+ * @see  HttpServletMediator
  * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
  */
 public class MockMediator implements ContainerRequestMediator {
-	private final HashMap<String, Object> attributes = new HashMap<String, Object>();
+	private final Map<String, Object> sessionAttributes = new HashMap<String, Object>();
 	private final ArrayList<Cookie> cookies = new ArrayList<Cookie>();
 	private String remoteUser;
 	private HttpResponse httpResponse;
@@ -53,12 +58,15 @@ public class MockMediator implements ContainerRequestMediator {
 		String scheme = uri.getScheme();
 		String host = uri.getHost();
 		int port = uri.getPort();
-		httpRequest = new BasicHttpEntityEnclosingRequest("GET", uriString);
+		this.httpRequest = new BasicHttpEntityEnclosingRequest("GET", uriString);
+
+		// Remove default ports
 		if (port == -1 || (port == 80 && "http".equals(scheme)) || (port == 443 && "https".equals(scheme)))
-			httpRequest.setHeader("Host", host);
+			this.httpRequest.setHeader("Host", host);
 		else
-			httpRequest.setHeader("Host", host + ":" + port);
-		HttpRequestHelper.setMediator(httpRequest, this);
+			this.httpRequest.setHeader("Host", host + ":" + port);
+
+		HttpRequestHelper.setMediator(this.httpRequest, this);
 	}
 
 	public MockMediator() {
@@ -67,23 +75,23 @@ public class MockMediator implements ContainerRequestMediator {
 
 	@Override
 	public Cookie[] getCookies() {
-		Cookie[] cookiesArray = new Cookie[cookies.size()];
-		return cookies.toArray(cookiesArray);
+		Cookie[] cookiesArray = new Cookie[this.cookies.size()];
+		return this.cookies.toArray(cookiesArray);
 	}
 
 	@Override
 	public void addCookie(Cookie cookie) {
-		cookies.add(cookie);
+		this.cookies.add(cookie);
 	}
 
 	@Override
 	public String getRemoteAddr() {
-		return remoteAddr;
+		return this.remoteAddr;
 	}
 
 	@Override
 	public String getRemoteUser() {
-		return remoteUser;
+		return this.remoteUser;
 	}
 
 	@Override
@@ -93,25 +101,25 @@ public class MockMediator implements ContainerRequestMediator {
 
 	@Override
 	public void sendResponse(HttpResponse response) throws IOException {
-		httpResponse = new BasicHttpResponse(response.getStatusLine());
-		httpResponse.setHeaders(response.getAllHeaders());
+		this.httpResponse = new BasicHttpResponse(response.getStatusLine());
+		this.httpResponse.setHeaders(response.getAllHeaders());
 		HttpEntity entity = response.getEntity();
 		if (entity != null) {
 			ByteArrayEntity copiedEntity = new ByteArrayEntity(EntityUtils.toByteArray(entity), ContentType.get(entity));
 			if (entity.getContentEncoding() != null)
 				copiedEntity.setContentEncoding(entity.getContentEncoding());
-			httpResponse.setEntity(copiedEntity);
+			this.httpResponse.setEntity(copiedEntity);
 		}
 	}
 
 	@Override
 	public void setSessionAttribute(String key, Serializable value) {
-		attributes.put(key, value);
+		this.sessionAttributes.put(key, value);
 	}
 
 	@Override
 	public Serializable getSessionAttribute(String key) {
-		return (Serializable) attributes.get(key);
+		return (Serializable) this.sessionAttributes.get(key);
 	}
 
 	@Override
@@ -121,7 +129,7 @@ public class MockMediator implements ContainerRequestMediator {
 
 	@Override
 	public HttpEntityEnclosingRequest getHttpRequest() {
-		return httpRequest;
+		return this.httpRequest;
 	}
 
 	@Override
@@ -130,7 +138,7 @@ public class MockMediator implements ContainerRequestMediator {
 	}
 
 	public HttpResponse getHttpResponse() {
-		return httpResponse;
+		return this.httpResponse;
 	}
 
 	public void setRemoteAddr(String remoteAddr) {
