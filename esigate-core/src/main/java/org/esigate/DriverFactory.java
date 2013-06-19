@@ -287,6 +287,10 @@ public class DriverFactory {
 		INSTANCES = new IndexedInstances(newInstances);
 	}
 	
+	/**
+	 * Ensure configuration has been loaded at least once. Helps to prevent
+	 * delay on first call because of initialization.
+	 */
 	public static void ensureConfigured(){
 		// Just trigger static init.
 	}
