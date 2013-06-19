@@ -1,4 +1,4 @@
-package net.onrc.onos.ofcontroller.core.internal;
+package net.floodlightcontroller.core.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
