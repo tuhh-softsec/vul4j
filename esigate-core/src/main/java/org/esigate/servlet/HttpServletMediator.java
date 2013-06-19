@@ -42,21 +42,47 @@ import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestMediator;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * This mediator converts esigate request/responses to Servlet
+ * request/responses.
+ * <p>
+ * When converting requests, a mediator instance is attached to the request and
+ * call be retrieved anytime in esigate code, usually to update session and
+ * cookies.
+ * 
+ * @author Francois-Xavier Bonnet
+ * @author Nicolas Richeton
+ * 
+ */
 public class HttpServletMediator implements ContainerRequestMediator {
+	private static final String WARN_SESSION_CREATION = "Cannot create session to store attribute {}. The attribute was discarded. "
+			+ "This usually means that esigate is configured "
+			+ "to store cookies in user session AND stale-while-revalidate is enabled "
+			+ "AND backend is sending a cookie update. "
+			+ "This configuration is unsupported. Please update configuration to turn off stale-while-revalidate "
+			+ "or discard cookies. ";
+
+	private static final Logger LOG = LoggerFactory.getLogger(HttpServletMediator.class);
+
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 	private final ServletContext servletContext;
 	private final HttpEntityEnclosingRequest httpRequest;
 
-	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws IOException {
+	public HttpServletMediator(HttpServletRequest request, HttpServletResponse response, ServletContext servletContext)
+			throws IOException {
 		this.request = request;
 		this.response = response;
 		this.servletContext = servletContext;
 		// create request line
-		String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), request.getQueryString(), null).toString();
+		String uri = UriUtils.createURI(request.getScheme(), request.getServerName(), request.getServerPort(),
+				request.getRequestURI(), request.getQueryString(), null).toString();
 		ProtocolVersion protocolVersion = BasicLineParser.parseProtocolVersion(request.getProtocol(), null);
-		BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(request.getMethod(), uri, protocolVersion));
+		BasicHttpEntityEnclosingRequest result = new BasicHttpEntityEnclosingRequest(new BasicRequestLine(
+				request.getMethod(), uri, protocolVersion));
 		// copy headers
 		@SuppressWarnings("rawtypes")
 		Enumeration names = request.getHeaderNames();
@@ -112,7 +138,7 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	public void addCookie(Cookie src) {
 		response.addCookie(rewriteCookie(src));
 	}
-	
+
 	static javax.servlet.http.Cookie rewriteCookie(Cookie src) {
 		javax.servlet.http.Cookie servletCookie = new javax.servlet.http.Cookie(src.getName(), src.getValue());
 
@@ -133,7 +159,6 @@ public class HttpServletMediator implements ContainerRequestMediator {
 		}
 		return servletCookie;
 	}
-	
 
 	@Override
 	public String getRemoteAddr() {
@@ -176,7 +201,12 @@ public class HttpServletMediator implements ContainerRequestMediator {
 	@Override
 	public void setSessionAttribute(String key, Serializable value) {
 		HttpSession session = request.getSession();
-		session.setAttribute(key, value);
+
+		if (session != null) {
+			session.setAttribute(key, value);
+		} else {
+			LOG.warn(WARN_SESSION_CREATION, key);
+		}
 	}
 
 	@Override
