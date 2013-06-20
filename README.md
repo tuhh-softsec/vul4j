@@ -64,7 +64,7 @@ Running ONOS with Cassandra embedded (Optional)
     
 2. Start ONOS and Cassandra embedded
 
-    $ cd (ONOS-INSTAL_DIR)/
+    $ cd (ONOS-INSTALL_DIR)/
     
     $ ./start-onos-embedded.sh start
     
