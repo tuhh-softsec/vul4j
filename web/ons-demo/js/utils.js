@@ -103,6 +103,7 @@ function updateHeader() {
 
 
 	d3.select('#activeFlows').text(model.flows.length);
+	d3.select('#activeLinks').text(model.links.length);
 }
 
 /***************************************************************************************************
