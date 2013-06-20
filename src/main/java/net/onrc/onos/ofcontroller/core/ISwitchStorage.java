@@ -23,18 +23,6 @@ public interface ISwitchStorage extends INetMapStorage {
 	/*
 	 * Get all ports associated on a switch
 	 */
-	public Collection<OFPhysicalPort> getPorts(long dpid);
-	/*
-	 * Get Port by Number
-	 */
-	public OFPhysicalPort getPort(String dpid, short portnum);
-	/*
-	 * Get port by name
-	 */
-	public OFPhysicalPort getPort(String dpid, String portName);
-	/*
-	 * Add a switch
-	 */
 	public void addSwitch(String dpid);
 	/*
 	 * Delete switch and associated ports
@@ -44,12 +32,6 @@ public interface ISwitchStorage extends INetMapStorage {
 	 * Delete a port on a switch by num
 	 */
 	public void deletePort(String dpid, short port);
-	/*
-	 * Delete port on a switch by name
-	 */
-	public void deletePort(String dpid, String portName);
-	
-	
 	/*
 	 * Initialize
 	 */
