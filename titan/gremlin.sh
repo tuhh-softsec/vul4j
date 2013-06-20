@@ -1,8 +1,12 @@
 #!/bin/bash
 
+if [ -z "${MVN}" ]; then
+    MVN="mvn"
+fi
+
 ONOS_DIR="`dirname $0`/.."
 #CP=$( echo `dirname $0`/../lib/*.jar `dirname $0`/../lib/titan/*.jar . | sed 's/ /:/g')
-CP=`mvn -f ${ONOS_DIR}/pom.xml dependency:build-classpath -Dmdep.outputFile=/dev/stdout -l /dev/stderr`
+CP=`${MVN} -f ${ONOS_DIR}/pom.xml dependency:build-classpath -Dmdep.outputFile=/dev/stdout -l /dev/stderr`
 
 # Find Java 
 if [ "$JAVA_HOME" = "" ] ; then

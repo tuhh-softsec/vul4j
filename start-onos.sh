@@ -24,6 +24,10 @@ JVM_OPTS="$JVM_OPTS -XX:CompileThreshold=1500 -XX:PreBlockSpin=8"
 CLASSPATH="${FL_ONLY_JAR}:${FL_HOME}/lib/*:${FL_HOME}/lib/titan/*"
 MAIN_CLASS="net.onrc.onos.ofcontroller.core.Main"
 
+if [ -z "${MVN}" ]; then
+    MVN="mvn"
+fi
+
 #<logger name="net.floodlightcontroller.linkdiscovery.internal" level="TRACE"/>
 #<appender-ref ref="STDOUT" />
 
@@ -84,7 +88,7 @@ EOF_LOGBACK
   #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -jar ${FL_JAR} -cf ${FL_HOME}/onos.properties > /dev/null 2>&1 &
   #java ${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp ${CLASSPATH} ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties > /dev/n
 
-  mvn exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
+  ${MVN} exec:exec -Dexec.executable="java" -Dexec.args="${JVM_OPTS} -Dlogback.configurationFile=${FL_LOGBACK} -cp %classpath ${MAIN_CLASS} -cf ${FL_HOME}/onos.properties" > ${LOGDIR}/onos.stdout 2>${LOGDIR}/onos.stderr &
 
   echo "Waiting for ONOS to start..."
   COUNT=0

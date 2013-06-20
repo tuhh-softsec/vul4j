@@ -1,4 +1,6 @@
 #!/bin/bash
-
-mvn eclipse:eclipse
+if [ -z "${MVN}" ]; then
+    MVN="mvn"
+fi
+${MVN} eclipse:eclipse
 

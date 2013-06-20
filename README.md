@@ -9,9 +9,9 @@ BELOW TO BE WRITTEN IN DETAIL
 Building ONOS
 -------------
 
-0. Install custom jars (Only need to be run only once)
+0. Install custom jars and dependencies (Only need to be run only once)
 
-    $ ./setup-local-jar.sh
+    $ ./setup-local-maven.sh
 
 1. Cleanly Build ONOS
 
@@ -71,4 +71,19 @@ Running ONOS with Cassandra embedded (Optional)
 3. Start ONOS rest apis
 
     $ ./start-rest.sh start
+
+
+Running in offline mode (Optional)
+----------------------------------
+
+Maven is used to build and run ONOS. 
+By default, maven tries to reach the repositories.
+To suppress this behavior '-o' option should be given to `mvn` command.
+
+To give additional option to `mvn` commands used in ONOS, 
+use the MVN environment variable.
+
+* Example: Running in offline mode
+
+    $ env MVN="mvn -o" ./start-onos.sh start
 
