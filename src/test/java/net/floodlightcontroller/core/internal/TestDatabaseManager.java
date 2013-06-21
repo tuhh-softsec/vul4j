@@ -58,8 +58,17 @@ public class TestDatabaseManager {
         Iterator<Vertex> it = titanGraph.getVertices("type", "port").iterator();
         while (it.hasNext()){
         	Vertex port = it.next();
-        	Integer portNum = (Integer) port.getProperty("number");
-        	port.setProperty("number", portNum.shortValue());
+
+        	if(port.getProperty("number") instanceof Short)
+        	{
+        		Short portNum = (Short) port.getProperty("number");
+        		port.setProperty("number", portNum.shortValue());
+        	}
+        	else{
+        		Integer portNum = (Integer) port.getProperty("number");	
+        		port.setProperty("number", portNum.shortValue());
+        	}
+
         }
         titanGraph.stopTransaction(Conclusion.SUCCESS);
 	}

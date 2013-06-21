@@ -1,278 +1,768 @@
 package net.onrc.onos.ofcontroller.core.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import static org.easymock.EasyMock.*;
 
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
-
+import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
+import net.onrc.onos.util.GraphDBConnection;
+import net.onrc.onos.util.GraphDBOperation;
+import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
+import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openflow.protocol.OFPhysicalPort;
+import org.openflow.protocol.OFPhysicalPort.OFPortState;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.LoggerFactory;
 
+import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.java.GremlinPipeline;
-import com.tinkerpop.pipes.PipeFunction;
-import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngine;
-
-
+//Add Powermock preparation
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({TitanFactory.class, GraphDBConnection.class, GraphDBOperation.class, SwitchStorageImpl.class})
 public class SwitchStorageImplTest {
 
-	private ISwitchStorage switchStorage;
-	private TitanGraph titanGraph;
-	
+	protected static org.slf4j.Logger log = LoggerFactory.getLogger(SwitchStorageImpl.class);
+
+	String conf;
+    private GraphDBConnection mockConn = null;
+    private GraphDBOperation mockOpe = null;
+    private GraphDBOperation realOpe = null;
+    private TitanGraph titanGraph = null;
+    ISwitchStorage swSt = null;
+    
 	@Before
 	public void setUp() throws Exception {
-		titanGraph = TestDatabaseManager.getTestDatabase();
-		TestDatabaseManager.populateTestData(titanGraph);
 		
-		switchStorage = new TestableSwitchStorageImpl();
+		swSt = new SwitchStorageImpl();
+		conf = "/dummy/path/to/db";
+		
+        // Make mock cassandra DB
+		// Replace TitanFactory.open() to return mock DB
+
+		PowerMock.mockStatic(GraphDBConnection.class);
+		mockConn = createMock(GraphDBConnection.class);
+		PowerMock.suppress(PowerMock.constructor(GraphDBConnection.class));
+		EasyMock.expect(GraphDBConnection.getInstance((String)EasyMock.anyObject())).andReturn(mockConn);
+		PowerMock.replay(GraphDBConnection.class);
+		
+		PowerMock.mockStatic(GraphDBOperation.class);
+		mockOpe = PowerMock.createStrictMock(GraphDBOperation.class);
+		PowerMock.expectNew(GraphDBOperation.class, mockConn).andReturn(mockOpe);
+		PowerMock.replay(GraphDBOperation.class);
+        // Replace the conf to dummy conf
+		// String conf = "/tmp/cassandra.titan";
+		
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		titanGraph.shutdown();
+		swSt.close();
+		swSt = null;
+		
 	}
-
-	@Ignore @Test
-	public void testUpdate() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddPort() {
-		
-		String dpid = "00:00:00:00:00:00:0a:01";
-		short portNumber = 5;
-		
-		OFPhysicalPort portToAdd = new OFPhysicalPort();
-		portToAdd.setName("port 5 at SEA switch");
-		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
-		portToAdd.setPortNumber(portNumber);
-		
-		switchStorage.addPort(dpid, portToAdd);
-		
-		Vertex sw = titanGraph.getVertices("dpid", dpid).iterator().next();
-		
-		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-		pipe.start(sw).out("on").has("number", portNumber);
-		
-		assertTrue(pipe.hasNext());
-		Vertex addedPort = pipe.next();
-		assertFalse(pipe.hasNext());
-		
-		assertEquals(addedPort.getProperty("number"), portNumber);
-	}
-
-	@Ignore @Test
-	public void testGetPorts() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore @Test
-	public void testGetPortStringShort() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore @Test
-	public void testGetPortStringString() {
-		fail("Not yet implemented");
-	}
-
+	
+	/**
+	 * Desc:
+	 *  Test method for addSwitch method.
+	 * Condition:
+	 *  Normal
+	 * Expect:
+	 * 	Call SwitchStorageImpl.addSwitch func with proper properties.
+	 */
+	@Ignore 
 	@Test
 	public void testAddSwitch() {
 		String dpid = "00:00:00:00:00:00:0a:07";
+		String state = "ACTIVE";
 		
-		switchStorage.addSwitch(dpid);
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		replay(mockISw);
 		
-		Iterator<Vertex> it = titanGraph.getVertices("dpid", dpid).iterator();
-		assertTrue(it.hasNext());
-		Vertex addedSwitch = it.next();
-		assertFalse(it.hasNext());
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
 		
-		assertEquals(addedSwitch.getProperty("type"), "switch");
-		assertEquals(addedSwitch.getProperty("dpid"), dpid);
-		assertEquals(addedSwitch.getProperty("state"), SwitchState.ACTIVE.toString());
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
 	}
-
 	
+	/**
+	 * Desc:
+	 *  Test method for addSwitch method.
+	 * Condition:
+	 *  The switch is already existing.
+	 * Expect:
+	 * 	Call SwitchStorageImpl.addSwitch func with proper properties.
+	 */
+	//@Ignore 
+	@Test
+	public void testAddSwitchExisting() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		String state = "ACTIVE";
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.setState(state);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addSwitch(dpid);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addSwitch method.
+	 * Condition:
+	 *  The switch construction is fail and return null
+	 * Expect:
+	 * 	Write the status as info log.
+	 */
+	//@Ignore 
+	@Test
+	public void testAddSwitchAbnormal() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(null);
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addSwitch method.
+	 * Condition:
+	 *  Tthrow runtimeException. 
+	 * Expect:
+	 * 	The rollback method is called.
+	 */
+	//@Ignore 
+	@Test
+	public void testAddSwitchException() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		String state = "ACTIVE";
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expectLastCall().andThrow(new RuntimeException());
+		mockOpe.rollback();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for updateSwitch method.
+	 * Condition:
+	 *  SwitchState : INACTIVE
+	 *  DMOPERATION : UPDATE
+	 * Expect:
+	 * 	Should call addSwitch function and commit.
+	 */
+	//@Ignore 
+	@Test
+	public void testUpdateUPDATE() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		SwitchState stateINACTIVE = SwitchState.INACTIVE;
+		DM_OPERATION opUPDATE = DM_OPERATION.UPDATE;
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState("ACTIVE");
+		mockISw.setState(stateINACTIVE.toString());
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.update(dpid, stateINACTIVE, opUPDATE);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for updateSwitch method.
+	 * Condition:
+	 *  SwitchState : INACTIVE
+	 *  DMOPERATION : CREATE
+	 * Expect:
+	 * 	Should call addSwitch function and commit.
+	 */
+	//@Ignore 
+	@Test
+	public void testUpdateCREATE() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		SwitchState stateINACTIVE = SwitchState.INACTIVE;
+		DM_OPERATION opCREATE = DM_OPERATION.CREATE;
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState("ACTIVE");
+		mockISw.setState(stateINACTIVE.toString());
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.update(dpid, stateINACTIVE, opCREATE);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for updateSwitch method.
+	 * Condition:
+	 *  SwitchState : INACTIVE
+	 *  DMOPERATION : INSERT
+	 * Expect:
+	 * 	Should call addSwitch function and commit.
+	 */
+	//@Ignore 
+	@Test
+	public void testUpdateINSERT() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		SwitchState stateINACTIVE = SwitchState.INACTIVE;
+		DM_OPERATION opINSERT = DM_OPERATION.INSERT;
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState("ACTIVE");
+		mockISw.setState(stateINACTIVE.toString());
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.update(dpid, stateINACTIVE, opINSERT);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for updateSwitch method.
+	 * Condition:
+	 *  SwitchState : ACTIVE
+	 *  DMOPERATION : DELETE
+	 * Expect:
+	 * 	Should call removeSwitch function and commit.
+	 */
+	//@Ignore 
+	@Test
+	public void testUpdateDELETE() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		SwitchState stateACTIVE = SwitchState.ACTIVE;
+		DM_OPERATION opDELETE = DM_OPERATION.DELETE;
+		
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(stateACTIVE.toString());
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		mockOpe.removeSwitch(mockISw);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
+		
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.update(dpid, stateACTIVE, opDELETE);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for deleteSwitch method.
+	 * Condition:
+	 *  The switch is existing.
+	 * Expect:
+	 * 	Should call removeSwitch function and commit.
+	 */
+	//@Ignore
 	@Test
 	public void testDeleteSwitch() {
-		String dpid = "00:00:00:00:00:00:0a:01";
+		String dpid = "00:00:00:00:00:00:0a:07";
+		String state = "ACTIVE";
+	
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		replay(mockISw);
 		
-		switchStorage.deleteSwitch(dpid);
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+    	mockOpe.removeSwitch(mockISw);
+    	mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
 		
-		Iterator<Vertex> it = titanGraph.getVertices("dpid", dpid).iterator();
-		assertFalse(it.hasNext());
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.deleteSwitch(dpid);
+		
+		//Iterator<Vertex> it = titanGraph.getVertices("dpid", dpid).iterator();
+		//assertFalse(it.hasNext());
 	}
-
+	
+	/**
+	 * Desc:
+	 *  Test method for deleteSwitch method.
+	 * Condition:
+	 *  The commit func throw exception.
+	 * Expect:
+	 * 	Should call rollback.
+	 */
+	//@Ignore
 	@Test
-	public void testDeletePortByPortNum() {
-		//FIXME fails because query for the port is wrong in SwitchStorageImpl
+	public void testDeleteSwitchException() {
+		String dpid = "00:00:00:00:00:00:0a:07";
+		String state = "ACTIVE";
+		String type = "";
 		
-		String dpid = "00:00:00:00:00:00:0a:01";
-		short portNum = 3;
+		//Mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		replay(mockISw);
 		
-		switchStorage.deletePort(dpid, portNum);
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+    	mockOpe.removeSwitch(mockISw);
+    	mockOpe.commit();
+		expectLastCall().andThrow(new RuntimeException());
+		mockOpe.rollback();
+		mockOpe.close();
+		replay(mockOpe);
 		
-		Vertex sw = titanGraph.getVertices("dpid", dpid).iterator().next();
-		
-		/*
-		Iterator<Vertex> it = sw.getVertices(Direction.OUT, "on").iterator();
-		
-		while (it.hasNext()){
-			System.out.println(it.next());
-		}
-		*/
-		
-		GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-		pipe.start(sw).out("on").has("number", portNum);
-		assertFalse(pipe.hasNext());
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.deleteSwitch(dpid);
 	}
-
-	@Ignore @Test
-	public void testDeletePortStringString() {
-		fail("Not yet implemented");
-	}
-
-	@Ignore @Test
-	public void testGetActiveSwitches() {
-		fail("Not yet implemented");
-	}
-
-	static class MyLoopFunction implements PipeFunction<LoopBundle<Vertex>, Boolean> {
-	    String dpid;
-	    public MyLoopFunction(String dpid) {
-		super();
-		this.dpid = dpid;
-	    }
-	    public Boolean compute(LoopBundle<Vertex> bundle) {
-		Boolean output = false;
-		if (! bundle.getObject().getProperty("dpid").equals(dpid)) {
-		    output = true;
-		}
-		return output;
-	    }
-	}
-
+	
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  port is existing.
+	 * Expect:
+	 * 	Should call addPort and commit.
+	 */
+	//@Ignore
 	@Test
-	public void testShortestPath() {
-	    String dpid_src = "00:00:00:00:00:00:0a:01";
-	    String dpid_dest = "00:00:00:00:00:00:0a:06";
+	public void testAddPort() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.addPort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
 
-	    //
-	    // Implement the Shortest Path between two vertices by using
-	    // the following Gremlin CLI code:
-	    //   v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path(){it.dpid}{it.number}{it.number}
-	    // The equivalent code used here is:
-	    //   results = []; v_src.as("x").out("on").out("link").in("on").dedup().loop("x"){it.object.dpid != v_dest.dpid}.path().fill(results)
-	    //
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  Port status is down.
+	 * Expect:
+	 * 	Should call removePort and commit.
+	 */
+	//@Ignore
+	@Test
+	public void testAddPortWithPortLinkDown() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_LINK_DOWN.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.removePort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);	
+		mockOpe.commit();	
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+		mockOpe.removePort(mockIPort);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
 
-	    // Get the source vertex
-	    Iterator<Vertex> iter = titanGraph.getVertices("dpid", dpid_src).iterator();
-	    if (! iter.hasNext())
-		return;			// Source vertex not found
-	    Vertex v_src = iter.next();
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  The switch is not existing.
+	 * Expect:
+	 * 	Nothing happens.
+	 */
+	//@Ignore
+	@Test
+	public void testAddPortAbnormalNoSwitch() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createStrictMock(IPortObject.class);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createStrictMock(ISwitchObject.class);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		mockOpe.close();
+		replay(mockOpe);
 
-	    // Get the destination vertex
-	    iter = titanGraph.getVertices("dpid", dpid_dest).iterator();
-	    if (! iter.hasNext())
-		return;			// Destination vertex not found
-	    Vertex v_dest = iter.next();
+		swSt.init(conf);
+		swSt.addPort(dpid, portToAdd);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  port is not existing.
+	 * Expect:
+	 * 	Should call addPort and commit.
+	 */
+	//@Ignore
+	@Test
+	public void testAddPortAbnormalNoPort() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.addPort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+		expect(mockOpe.newPort(portNumber)).andReturn(null);	
+		mockOpe.rollback();
+		mockOpe.close();
+		replay(mockOpe);
 
-	    //
-	    // Implement the Gremlin script and run it
-	    //
-	    // NOTE: This mechanism is slower. The code is kept here
-	    // for future reference.
-	    //
-	    /*
-	    String gremlin = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != v_dest.dpid}.path().fill(results)";
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+	}
+	
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  commit throw the exception.
+	 * Expect:
+	 * 	Should call rollback.
+	 */
+	//@Ignore
+	@Test
+	public void testAddPortWithException() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.addPort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		mockOpe.commit();
+		expectLastCall().andThrow(new RuntimeException());
+		mockOpe.rollback();
+		mockOpe.close();
+		replay(mockOpe);
 
-	    String gremlin_nopath = "v_src.as(\"x\").out(\"on\").out(\"link\").in(\"on\").dedup().loop(\"x\"){it.object.dpid != \"NO-SUCH-DPID\"}.path().fill(results)";
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+	}
 
-	    ScriptEngine engine = new GremlinGroovyScriptEngine();
-	    ArrayList<ArrayList<Vertex>> results = new ArrayList<ArrayList<Vertex>>();
-	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("g", titanGraph);
-	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("v_src", v_src);
-	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("v_dest", v_dest);
-	    engine.getBindings(ScriptContext.ENGINE_SCOPE).put("results", results);
+	/**
+	 * Desc:
+	 *  Test method for deletePort method.
+	 * Condition:
+	 *  port is existing.
+	 * Expect:
+	 * 	Should call removePort and commit.
+	 */
+	//@Ignore
+	@Test
+	public void testDeletePort() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.addPort(mockIPort);
+		mockISw.removePort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+		mockOpe.removePort(mockIPort);
+		mockOpe.commit();
+		mockOpe.close();
+		replay(mockOpe);
 
-	    try {
-		engine.eval(gremlin);
-	    } catch (ScriptException e) {
-		System.err.println("Caught ScriptException running Gremlin script: " + e.getMessage());
-		return;
-	    }
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+		swSt.deletePort(dpid, portNumber);
+	}
 
-	    for (ArrayList<Vertex> lv : results) {
-		...
-	    }
-	    */
-
-	    MyLoopFunction whileFunction = new MyLoopFunction(dpid_dest);
-	    GremlinPipeline<Vertex, Vertex> pipe = new GremlinPipeline<Vertex, Vertex>();
-	    Collection<List> results = new ArrayList<List>();
-	    GremlinPipeline<Vertex, List> path;
-	    path = pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", whileFunction).path();
-	    path.fill(results);
-
-	    //
-	    // Extract the result and compose it into a string
-	    //
-	    String results_str = "";
-	    // System.out.println("BEGIN " + results.size());
-	    for (List l : results) {
-		for (Object o: l) {
-		    Vertex v = (Vertex)(o);
-		    // System.out.println(v);
-		    String type = v.getProperty("type").toString();
-		    results_str += "[type: " + type;
-		    // System.out.println("type: " + type);
-		    if (type.equals("port")) {
-			String number = v.getProperty("number").toString();
-			// System.out.println("number: " + number);
-			results_str += " number: " + number + "]";
-		    }
-		    if (type.equals("switch")) {
-			String dpid = v.getProperty("dpid").toString();
-			// System.out.println("dpid: " + dpid);
-			results_str += " dpid: " + dpid + "]";
-		    }
-		}
-	    }
-	    // System.out.println("END\n");
-	    System.out.println(results_str);
-
-	    //
-	    // Check the result
-	    //
-	    String expected_result = "[type: switch dpid: 00:00:00:00:00:00:0a:01][type: port number: 2][type: port number: 1][type: switch dpid: 00:00:00:00:00:00:0a:03][type: port number: 2][type: port number: 2][type: switch dpid: 00:00:00:00:00:00:0a:04][type: port number: 3][type: port number: 1][type: switch dpid: 00:00:00:00:00:00:0a:06]";
-
-	    assertEquals(results_str, expected_result);
-
-	    //
-	    // Test Shortest-Path computation to non-existing destination
-	    //
-	    results.clear();
-	    MyLoopFunction noDestWhileFunction = new MyLoopFunction("NO-SUCH-DPID");
-	    path = pipe.start(v_src).as("x").out("on").out("link").in("on").dedup().loop("x", noDestWhileFunction).path();
-	    path.fill(results);
-	    assertTrue(results.size() == 0);
+	/**
+	 * Desc:
+	 *  Test method for addPort method.
+	 * Condition:
+	 *  commit throws the exception.
+	 * Expect:
+	 * 	Should call rollback.
+	 */
+	//@Ignore
+	@Test
+	public void testDeletePortException() {
+		String dpid = "00:00:00:00:00:00:0a:01";
+		short portNumber = 5;
+		String state = "ACTIVE";
+		String name = "port 5 at SEA switch";
+		
+		OFPhysicalPort portToAdd = new OFPhysicalPort();
+		portToAdd.setName(name);
+		portToAdd.setCurrentFeatures(OFPhysicalPort.OFPortFeatures.OFPPF_100MB_FD.getValue());
+		portToAdd.setPortNumber(portNumber);
+		portToAdd.setState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		
+		//Expectation of  mock Port
+		IPortObject mockIPort = createMock(IPortObject.class);
+		mockIPort.setState(state);
+		mockIPort.setPortState(OFPortState.OFPPS_STP_FORWARD.getValue());
+		mockIPort.setDesc(name);
+		replay(mockIPort);
+		
+		//Expectation of mock Switch
+		ISwitchObject mockISw = createMock(ISwitchObject.class);
+		mockISw.setState(state);
+		mockISw.addPort(mockIPort);
+		mockISw.removePort(mockIPort);
+		replay(mockISw);
+		
+		//Expectation of mock operation.
+		expect(mockOpe.searchSwitch(dpid)).andReturn(null);
+		expect(mockOpe.newSwitch(dpid)).andReturn(mockISw);
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(null);
+		expect(mockOpe.newPort(portNumber)).andReturn(mockIPort);	
+		mockOpe.commit();
+		expect(mockOpe.searchSwitch(dpid)).andReturn(mockISw);
+		expect(mockOpe.searchPort(dpid, portNumber)).andReturn(mockIPort);
+		mockOpe.removePort(mockIPort);
+		expectLastCall().andThrow(new RuntimeException());
+		mockOpe.rollback();
+		mockOpe.close();
+		replay(mockOpe);
+	
+		swSt.init(conf);
+		swSt.addSwitch(dpid);
+		swSt.addPort(dpid, portToAdd);
+		swSt.deletePort(dpid, portNumber);
 	}
 }
