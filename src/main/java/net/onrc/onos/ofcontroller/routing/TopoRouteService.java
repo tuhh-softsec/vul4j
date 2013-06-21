@@ -263,7 +263,7 @@ public class TopoRouteService implements IFloodlightModule, ITopoRouteService {
      * See the documentation for method @ref prepareShortestPathTopo()
      * for additional information and usage.
      *
-     * @shortestPathTopo the Shortest Path info handler to release.
+     * @param shortestPathTopo the Shortest Path info handler to release.
      */
     public void dropShortestPathTopo(Map<Long, ?> shortestPathTopo) {
 	shortestPathTopo = null;
