@@ -30,6 +30,7 @@ function start {
 
   # Run cassandra 
   echo "Starting cassandra"
+  cp ${ONOS_HOME}/conf/cassandra.yaml $CASSANDRA_DIR/conf
   $CASSANDRA_DIR/bin/cassandra > $CASSANDRA_LOG 2>&1 
 }
 

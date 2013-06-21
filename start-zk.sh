@@ -8,7 +8,8 @@ ZK_CONF=${ONOS_HOME}/conf/zoo.cfg
 function start {
   # Run Zookeeper with our configuration
   echo "Starting Zookeeper"
-  $ZK_DIR/bin/zkServer.sh start $ZK_CONF
+  cp $ZK_CONF $ZKDIR/conf
+  $ZK_DIR/bin/zkServer.sh start
 }
 
 function stop {
