@@ -1,5 +1,5 @@
 #! /bin/bash
-. $HOME/bin/func.sh
+. `dirname $0`/func.sh
 
 onos stop
 cassandra cleandb
