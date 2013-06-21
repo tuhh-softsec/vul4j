@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.frames.annotations.gremlin.GremlinParam;
 
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
+import net.onrc.onos.graph.IDBConnection;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IDeviceObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowEntry;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IFlowPath;
@@ -18,9 +21,6 @@ import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.ISwitchObject;
 import net.onrc.onos.ofcontroller.util.FlowEntryId;
 import net.onrc.onos.ofcontroller.util.FlowId;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
-import net.onrc.onos.util.IDBConnection;
 
 /**
  * Mock class of GraphDBOperation which provides additional setter to construct a graph for test.

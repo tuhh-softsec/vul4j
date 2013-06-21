@@ -3,11 +3,11 @@ package net.onrc.onos.ofcontroller.core.internal;
 import static org.junit.Assert.*;
 
 import net.floodlightcontroller.core.internal.TestDatabaseManager;
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage;
 import net.onrc.onos.ofcontroller.core.ISwitchStorage.SwitchState;
 import net.onrc.onos.ofcontroller.core.internal.SwitchStorageImpl;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.INetMapStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.INetMapTopologyObjects.IPortObject;

@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.floodlightcontroller.routing.Link;
+import net.onrc.onos.graph.GraphDBConnection;
+import net.onrc.onos.graph.GraphDBOperation;
 import net.onrc.onos.ofcontroller.core.ILinkStorage;
 import net.onrc.onos.ofcontroller.core.INetMapStorage.DM_OPERATION;
 import net.onrc.onos.ofcontroller.core.internal.TestableGraphDBOperation.TestPortObject;
-import net.onrc.onos.util.GraphDBConnection;
-import net.onrc.onos.util.GraphDBOperation;
 import net.onrc.onos.ofcontroller.linkdiscovery.LinkInfo;
 
 import org.easymock.EasyMock;
